@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class GoogleMap extends Component {
     componentDidMount() {
     // runs right after component is rendered to the screeen
-    new google.maps.Map(this.refs.map, {
+    const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
       zoom: 12,
       center: {
@@ -14,11 +14,20 @@ class GoogleMap extends Component {
         // options object
       }
     });
+
+    const marker = new google.maps.Marker({
+      position: {
+        lat: 37.7952,
+        lng: -122.4029
+      },
+      map
+    });
   }
 
   // shouldComponentUpdate() {
   //   return false;
   // }
+
 
   render() {
     //this.refs.map gives reference to this element
