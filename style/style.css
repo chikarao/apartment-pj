@@ -1,0 +1,47 @@
+/* HEADER */
+
+/* take out border lines for the header box */
+.navbar-default {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+/* change text color of brand */
+.navbar-default .navbar-brand {
+  color: black;
+  font-size: 20px;
+}
+
+/* take out border line of expanded header */
+.navbar-default .navbar-collapse {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.navbar-nav > li:first-child > a:first-child {
+  display: none;
+}
+
+.navbar-nav > li > a {
+  height: 60px;
+  font-size: 17px;
+}
+
+.sign-up-nav-item > a:first-child {
+  display: none;
+}
+
+/* forms */
+
+.form-control {
+  width: 90%;
+}
+
+@media screen and (min-width: 800px) {
+    /* body {
+        background-color: lightgreen;
+    } */
+    .form-control {
+      width: 500px;
+    }
+}
