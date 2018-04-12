@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import GoogleMap from './google_map';
+
 
 class Feature extends Component {
   componentWillMount() {
@@ -8,7 +10,11 @@ class Feature extends Component {
   }
   render() {
     // return <div>{this.props.message}</div>;
-    return <div>Welcome to /features</div>;
+    return (
+      <div id="map">
+        <GoogleMap />
+      </div>
+    );
   }
 }
 

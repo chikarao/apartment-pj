@@ -37,6 +37,43 @@
   width: 90%;
 }
 
+.error {
+  color: blue;
+}
+
+/* main {
+  height: 100%;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+} */
+
+#map {
+  height: 300px;
+  /* width: 100%; */
+  /* position: relative; */
+  /* background-color: lightgray; */
+}
+
+#map > div:first-child {
+  height: 100%;
+  width: 100%;
+  /* position: absolute; */
+}
+
+/* .map-canvas {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+} */
+
+html, body {
+  height: 100%;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+}
+
 @media screen and (min-width: 800px) {
     /* body {
         background-color: lightgreen;
