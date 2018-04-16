@@ -147,6 +147,20 @@ body > div:first-child {
   color: white;
 }
 
+/* FILE UPLOAD */
+.dropzone-area {
+  height: 300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dropzone {
+  width : 50%;
+  height : 80%;
+  /* border : 1px solid black; */
+}
+
 
 
 @media screen and (min-width: 800px) {

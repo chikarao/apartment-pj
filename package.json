@@ -21,25 +21,28 @@
     "eslint-config-rallycoding": "^3.2.0",
     "mocha": "^2.4.5",
     "react-addons-test-utils": "^0.14.7",
-    "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
+    "webpack": "^1.12.9",
     "axios": "^0.18.0",
     "babel-preset-stage-1": "^6.1.18",
     "cloudinary-core": "^2.5.0",
     "cloudinary-react": "^1.0.6",
+    "dotenv-webpack": "^1.5.5",
     "jquery": "^2.2.4",
     "jsdom": "^8.1.0",
     "lodash": "^4.1.0",
     "react": "^0.14.3",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^0.14.3",
+    "react-dropzone": "^4.2.9",
     "react-redux": "4.3.0",
     "react-router": "^2.0.1",
     "react-router-dom": "^4.0.0",
     "redux": "^3.0.4",
     "redux-form": "^5.3.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "sha1": "^1.1.1"
   }
 }
