@@ -1,9 +1,37 @@
+/* html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+} */
+html, body {
+  height: 100%;
+  margin: 0 auto 0 auto;
+  padding: 0;
+  width: 100%;
+  text-align:center;
+}
+
+body > div:first-child {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
 /* HEADER */
 
 /* take out border lines for the header box */
 .navbar-default {
   border-color: transparent;
   background-color: transparent;
+  width: 100%;
+}
+
+.navbar-default > div:first-child {
+  width: 100%;
 }
 
 /* change text color of brand */
@@ -31,7 +59,7 @@
   display: none;
 }
 
-/* forms */
+/* FORMS */
 
 .form-control {
   width: 90%;
@@ -41,18 +69,18 @@
   color: blue;
 }
 
-/* main {
-  height: 100%;
-   margin: 0;
-   padding: 0;
-   width: 100%;
-} */
+/* MAP */
 
 #map {
   height: 350px;
   /* width: 100%; */
   /* position: relative; */
   /* background-color: lightgray; */
+  max-width: 1000px;
+  padding: 10px;
+  /* margin-right: 0px !important; */
+  display: flex;
+  justify-content: center;
 }
 
 #map > div:first-child {
@@ -61,18 +89,65 @@
   /* position: absolute; */
 }
 
-/* .map-canvas {
-  height: 100px;
-  width: 100px;
-  position: absolute;
+/* div > img {
+  display: none;
 } */
 
-html, body {
-  height: 100%;
-   margin: 0;
-   padding: 0;
-   width: 100%;
+/* CARDS */
+/* .card-row {
+  height: 300px;
+} */
+
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+.card-container {
+  height: 300px;
+  width: 300px;
+  background-color: lightgray;
+  padding: 0px;
+  margin: 10px 10px 0px 0px;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  /* background-size: cover; */
+  background-size: cover !important;
+  padding: 0;
+  background-position: center;
+  /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
+}
+
+.card {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-detail {
+  color: transparent;
+  font-size: 50px;
+  /* text-align: center; */
+}
+
+.card:hover {
+  background-color: black;
+  opacity: .7;
+}
+
+.card:hover .card-detail {
+  background-color: black;
+  opacity: .7;
+  color: white;
+}
+
+
 
 @media screen and (min-width: 800px) {
     /* body {
@@ -81,4 +156,8 @@ html, body {
     .form-control {
       width: 500px;
     }
+
+    /* body > div:first-of-type {
+      margin: 0px;
+    } */
 }

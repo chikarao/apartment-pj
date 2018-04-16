@@ -6,29 +6,29 @@ import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-boots
 
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
-  constructor() {
-       super();
-       this.state = {
-           screenIsbig: true
-       };
-   }
-
-
-  componentDidMount() {
-       window.addEventListener('resize', this.handleResize.bind(this));
-   }
-
-   componentWillUnmount() {
-       window.removeEventListener('resize', this.handleResize.bind(this));
-   }
-
-   handleResize() {
-     if (window.innerWidth < 700) {
-       this.setState({ screenIsbig: false })
-     } else {
-       this.setState({ screenIsbig: true });
-     }
-   }
+  // constructor() {
+  //      super();
+  //      this.state = {
+  //          screenIsbig: true
+  //      };
+  //  }
+  //
+  //
+  // componentDidMount() {
+  //      window.addEventListener('resize', this.handleResize.bind(this));
+  //  }
+  //
+  //  componentWillUnmount() {
+  //      window.removeEventListener('resize', this.handleResize.bind(this));
+  //  }
+  //
+  //  handleResize() {
+  //    if (window.innerWidth < 700) {
+  //      this.setState({ screenIsbig: false })
+  //    } else {
+  //      this.setState({ screenIsbig: true });
+  //    }
+  //  }
    // **********THIS PART IS EXPERIMENTAL CODE ***********
 
   renderLinks() {
@@ -37,12 +37,11 @@ class Header extends Component {
       // console.log('here is the email: ', this.props.email);
       return (
         [
-          <NavItem key={1} eventKey={1} href="#">
-
-            <Link className="nav-link" to="/signout">Sign Out</Link>
+          <NavItem key={1} eventKey={1} href="/signout">
+            // <Link className="nav-link" to="/signout">Sign Out</Link>
           </NavItem>,
           <NavItem key={2} eventKey={2} href="#">
-            <p className="nav-link">Signed in as {this.props.email}</p>
+            Signed in as {this.props.email}
           </NavItem>
           // <li className="nav-item" key={3}>
           //   <Link className="nav-link" to="/signout">Sign Out</Link>
@@ -55,11 +54,11 @@ class Header extends Component {
     } else {
       // show link to sign in or sign out
     return ([
-      <NavItem key={3} eventKey={3} href="#">
-        <Link className="nav-link" to="/signin">Sign in</Link>
+      <NavItem key={3} eventKey={3} href="/signin">
+        // <Link className="nav-link" to="/signin">Sign in</Link>
       </NavItem>,
-      <NavItem className="sign-up-nav-item" key={4} eventKey={4} href="#">
-        <Link className="nav-link" to="/signup">Sign Up</Link>
+      <NavItem className="sign-up-nav-item" key={4} eventKey={4} href="/signup">
+        // <Link className="nav-link" to="/signup">Sign Up</Link>
       </NavItem>
           //
           // <li className="nav-item" key={1}>
