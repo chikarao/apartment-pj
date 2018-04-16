@@ -155,11 +155,25 @@ body > div:first-child {
   justify-content: center;
   align-items: center;
 }
-.dropzone {
-  width : 50%;
-  height : 80%;
-  /* border : 1px solid black; */
+
+.dropzone-area > div:first-child {
+  border-style: dashed;
+  border-color: blue !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
+.dropzone-area p {
+  color: gray !important;
+  font-size: 20px;
+}
+.dropzone-area i {
+  color: gray !important;
+  font-size: 80px;
+}
+
+
 
 
 

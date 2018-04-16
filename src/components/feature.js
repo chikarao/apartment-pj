@@ -131,6 +131,7 @@ class Feature extends Component {
           // style={styles.dropzone}
           >
             <p>Drop your files or click here to upload</p>
+            <i className="fa fa-image"></i>
           </Dropzone>
         </div>
       </div>
