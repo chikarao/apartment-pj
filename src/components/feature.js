@@ -65,9 +65,9 @@ class Feature extends Component {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
     }).then(response => {
       // const data = response.data;
-      const fileUrl = response.data.secure_url;
+      const filePublicId = response.data.public_id;
       // You should store this URL for future references in your app
-      console.log(fileUrl);
+      console.log(response.data.public_id);
     });
   });
   console.log('uploaders: ', uploaders);
