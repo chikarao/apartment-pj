@@ -21,7 +21,7 @@ body > div:first-child {
 
 
 
-/* HEADER */
+/* **************HEADER************* */
 
 /* take out border lines for the header box */
 .navbar-default {
@@ -69,7 +69,7 @@ body > div:first-child {
   color: blue;
 }
 
-/* MAP */
+/* ************MAP**************** */
 
 #map {
   height: 350px;
@@ -89,15 +89,7 @@ body > div:first-child {
   /* position: absolute; */
 }
 
-/* div > img {
-  display: none;
-} */
-
-/* CARDS */
-/* .card-row {
-  height: 300px;
-} */
-
+/* *************CARDS*************** */
 
 .card-row {
   display: flex;
@@ -106,6 +98,13 @@ body > div:first-child {
 }
 
 .card-container {
+  height: 370px;
+  width: 300px;
+  margin: 10px 10px 0px 0px;
+  padding: 0;
+  /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
+}
+.card-image {
   height: 300px;
   width: 300px;
   background-color: lightgray;
@@ -162,6 +161,13 @@ body > div:first-child {
 
 .card-flat-price {
   text-align: left;
+}
+
+.card-flat-amenities {
+  text-align: left;
+}
+.card-flat-amenities i {
+  padding-right: 5px;
 }
 
 /* FILE UPLOAD */

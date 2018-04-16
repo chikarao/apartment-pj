@@ -89,49 +89,61 @@ class Feature extends Component {
         </div>
         <div className="container main-card-container">
           <div className="row card-row">
-            <div
-              className="card-container col-xs-12 col-sm-3"
-              style={{ background: `url(${this.createBackgroundImage(publicId[0])})` }}
-            >
-              <div className="card">
-                <div className="card-cover">
-                  Spacious loft in Soho
+            <div className="card-container col-xs-12 col-sm-3">
+              <div
+                className="card-image"
+                style={{ background: `url(${this.createBackgroundImage(publicId[0])})` }}
+              >
+                <div className="card">
+                  <div className="card-cover">
+                    Only a short walk to the station!
+                  </div>
                 </div>
+                <div className="card-details">
+                  <div className="card-flat-caption">
+                    Spacious loft in Soho
+                  </div>
+                  <div className="card-flat-price">
+                    $2,000 per month
+                  </div>
+                  <div className="card-flat-amenities">
+                    <i className="fa fa-wifi"></i>
+                    <i className="fa fa-bath"></i>
+                    <i className="fa fa-utensils"></i>
+                  </div>
               </div>
-              <div className="card-details">
-                <div className="card-flat-caption">
-                  Spacious loft in Soho
-                </div>
-                <div className="card-flat-price">
-                  $2,000 per month
-                </div>
               </div>
+
             </div>
-            <div
-              className="card-container col-xs-12 col-sm-3"
-              style={{ background: `url(${this.createBackgroundImage(publicId[1])})` }}
-            >
-              <div className="card">
-                <div className="card-cover">
-                  Cool factory building in Brooklyn
+            <div className="card-container col-xs-12 col-sm-3">
+              <div
+                className="card-image"
+                style={{ background: `url(${this.createBackgroundImage(publicId[1])})` }}
+              >
+                <div className="card">
+                  <div className="card-cover">
+                    Lots of museums close by!
+                  </div>
+                </div>
+                <div className="card-details">
+                  <div className="card-flat-caption">
+                    Cool factory building in the Village
+                  </div>
+                  <div className="card-flat-price">
+                    $3,000 per month
+                  </div>
                 </div>
               </div>
-              <div className="card-details">
-                <div className="card-flat-caption">
-                  Cool factory building in the Village
-                </div>
-                <div className="card-flat-price">
-                  $3,000 per month
-                </div>
-              </div>
+
             </div>
+            <div className="card-container col-xs-12 col-sm-3">
             <div
-              className="card-container col-xs-12 col-sm-3"
+              className="card-image"
               style={{ background: `url(${this.createBackgroundImage(publicId[2])})` }}
             >
               <div className="card">
                 <div className="card-cover">
-                  Awesome former tofu store in Daikanyama
+                  Nice cafes in the area!
                 </div>
               </div>
               <div className="card-details">
@@ -143,6 +155,9 @@ class Feature extends Component {
                 </div>
               </div>
             </div>
+
+            </div>
+
           </div>
         </div>
 
