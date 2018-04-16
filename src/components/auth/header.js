@@ -111,8 +111,8 @@ class Header extends Component {
       <Navbar>
         <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/" className="navbar-brand"> Redux Auth <br />
-               <small>w/ react-router-dom</small></Link>
+              <Link to="/" className="navbar-brand"> FLATS FLATS <br />
+               <small>and FLATS</small></Link>
             </Navbar.Brand>
             <Navbar.Toggle />
         </Navbar.Header>

@@ -130,9 +130,10 @@ body > div:first-child {
   align-items: center;
 }
 
-.card-detail {
+.card-cover {
   color: transparent;
-  font-size: 50px;
+  font-size: 20px;
+  padding: 10px;
   /* text-align: center; */
 }
 
@@ -141,16 +142,33 @@ body > div:first-child {
   opacity: .7;
 }
 
-.card:hover .card-detail {
+.card:hover .card-cover {
   background-color: black;
   opacity: .7;
   color: white;
+}
+
+.card-details {
+  height: 60px;
+  padding-top: 5px;
+  margin-bottom: 10px;
+}
+
+.card-flat-caption {
+  color: gray;
+  text-align: left;
+  font-weight: bold;
+}
+
+.card-flat-price {
+  text-align: left;
 }
 
 /* FILE UPLOAD */
 .dropzone-area {
   height: 300px;
   width: 100%;
+  margin: 20px;
   display: flex;
   justify-content: center;
   align-items: center;

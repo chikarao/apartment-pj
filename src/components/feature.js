@@ -94,8 +94,16 @@ class Feature extends Component {
               style={{ background: `url(${this.createBackgroundImage(publicId[0])})` }}
             >
               <div className="card">
-                <div className="card-detail">
-                  Hello
+                <div className="card-cover">
+                  Spacious loft in Soho
+                </div>
+              </div>
+              <div className="card-details">
+                <div className="card-flat-caption">
+                  Spacious loft in Soho
+                </div>
+                <div className="card-flat-price">
+                  $2,000 per month
                 </div>
               </div>
             </div>
@@ -104,8 +112,16 @@ class Feature extends Component {
               style={{ background: `url(${this.createBackgroundImage(publicId[1])})` }}
             >
               <div className="card">
-                <div className="card-detail">
-                  Hello
+                <div className="card-cover">
+                  Cool factory building in Brooklyn
+                </div>
+              </div>
+              <div className="card-details">
+                <div className="card-flat-caption">
+                  Cool factory building in the Village
+                </div>
+                <div className="card-flat-price">
+                  $3,000 per month
                 </div>
               </div>
             </div>
@@ -114,14 +130,22 @@ class Feature extends Component {
               style={{ background: `url(${this.createBackgroundImage(publicId[2])})` }}
             >
               <div className="card">
-                <div className="card-detail">
-                  Hello
+                <div className="card-cover">
+                  Awesome former tofu store in Daikanyama
+                </div>
+              </div>
+              <div className="card-details">
+                <div className="card-flat-caption">
+                  Awesome former tofu store in Daikanyama
+                </div>
+                <div className="card-flat-price">
+                  $2,000 per month
                 </div>
               </div>
             </div>
-
           </div>
         </div>
+
         <div className="dropzone-area">
           <Dropzone
             onDrop={this.handleDrop}
@@ -130,7 +154,7 @@ class Feature extends Component {
             // className="dropzone"
           // style={styles.dropzone}
           >
-            <p>Drop your files or click here to upload</p>
+            <p>Drop your files or <br/>click here <br/>to upload</p>
             <i className="fa fa-image"></i>
           </Dropzone>
         </div>
