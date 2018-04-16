@@ -49,7 +49,6 @@ class Feature extends Component {
     formData.append('signature', signatureSha1);
     // formData.append('tags', `chikarao, medium, gist`);
     // formData.append('upload_preset', 'chikarao'); // Replace the preset name with your own
-    // formData.append('api_secret', 'eJMnC5URXNV2HFHhGLqSAgFhJQM');
 
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
 
