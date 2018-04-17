@@ -89,6 +89,15 @@ class Feature extends Component {
   });
 }
 
+handleCardClick(event) {
+  console.log('event.target.className: ', event.target.className);
+  const wasParentClicked = event.target.className === 'card-cover' || event.target.className === 'card';
+  console.log('wasParentClicked: ', wasParentClicked);
+  if (wasParentClicked) {
+    console.log('Card clicked');
+  }
+}
+
 handleLeftArrowClick() {
   console.log('in handleLeftArrowClick, maxImagesIndex: ', maxImagesIndex);
   console.log('in handleLeftArrowClick, this.state.imageIndex: ', this.state);
@@ -135,18 +144,22 @@ handleRightArrowClick() {
         </div>
         <div className="container main-card-container">
           <div className="row card-row">
-            <div className="card-container col-xs-12 col-sm-3">
+            <div className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
               <div
                 className="card-image"
                 style={{ background: `url(${this.createBackgroundImage(publicId[this.state.imageIndex])})` }}
               >
                 <div className="card">
                   <div className="card-box">
-                      <i className="fa fa-angle-left" onClick={this.handleLeftArrowClick.bind(this)}></i>
+                    <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
+                      <i className="fa fa-angle-left"></i>
+                    </div>
                       <div className="card-cover">
                         Nice park nearby!
                       </div>
-                      <i className="fa fa-angle-right" onClick={this.handleRightArrowClick.bind(this)}></i>
+                      <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
+                        <i className="fa fa-angle-right"></i>
+                      </div>
                   </div>
 
                 </div>

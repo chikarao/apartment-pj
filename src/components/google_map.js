@@ -25,7 +25,7 @@ class GoogleMap extends Component {
     });
 
     _.each(FLATS, flat => {
-      console.log('flat: ', flat.flatName);
+      // console.log('flat: ', flat.flatName);
       const marker = new google.maps.Marker({
         position: {
           lat: flat.lat,
