@@ -91,10 +91,11 @@ body > div:first-child {
 
 /* *************CARDS*************** */
 
-.card-row {
+.card-row > div{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
 }
 
 .card-container {
@@ -167,7 +168,7 @@ body > div:first-child {
 
 .card:hover {
   background-color: black;
-  opacity: .7;
+  opacity: .6;
 }
 
 .card:hover .card-cover {
