@@ -129,6 +129,19 @@ body > div:first-child {
   align-items: center;
 }
 
+.card-box {
+  display: flex;
+  /* align-items: center; */
+  justify-content: space-between;
+  width: 100%;
+}
+
+.card-box i {
+  color: dark-gray;
+  font-size: 40px;
+  padding: 10px;
+}
+
 .card-cover {
   color: transparent;
   font-size: 20px;

@@ -14,8 +14,21 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 const API_KEY = process.env.CLOUDINARY_API_KEY;
 const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
+const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife'];
+const maxImagesIndex = publicId.length - 1;
 
 class Feature extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageIndex: 0
+    };
+    console.log('we are in the constructor');
+    console.log('imageIndex in constructor: ', this.state.imageIndex);
+    // this.onClick = this.onClick.bind(this);
+    // this.handleLeftArrowClick = this.handleLeftArrowClick.bind(this);
+  }
+
   componentWillMount() {
     this.props.fetchMessage();
   }
@@ -76,12 +89,45 @@ class Feature extends Component {
   });
 }
 
+handleLeftArrowClick() {
+  console.log('in handleLeftArrowClick, maxImagesIndex: ', maxImagesIndex);
+  console.log('in handleLeftArrowClick, this.state.imageIndex: ', this.state);
+  if (this.state.imageIndex === 0) {
+    this.setState({
+      imageIndex: maxImagesIndex
+    });
+  } else {
+    const nextIndex = this.state.imageIndex - 1;
+    this.setState({
+      imageIndex: nextIndex
+    });
+  }
+
+    console.log('left arrow clicked');
+    console.log('number of images: ', maxImagesIndex);
+}
+
+handleRightArrowClick() {
+  console.log('in handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
+  console.log('in handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
+  if (this.state.imageIndex === maxImagesIndex) {
+    this.setState({
+      imageIndex: 0
+    });
+  } else {
+    const nextIndex = this.state.imageIndex + 1;
+    this.setState({
+      imageIndex: nextIndex
+    });
+  }
+    console.log('Right arrow clicked');
+}
 
   render() {
-    const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife'];
     const transformation = new cloudinary.Transformation();
     transformation.width(300).crop('scale');
     // return <div>{this.props.message}</div>;
+
     return (
       <div>
         <div className="container" id="map">
@@ -92,12 +138,17 @@ class Feature extends Component {
             <div className="card-container col-xs-12 col-sm-3">
               <div
                 className="card-image"
-                style={{ background: `url(${this.createBackgroundImage(publicId[0])})` }}
+                style={{ background: `url(${this.createBackgroundImage(publicId[this.state.imageIndex])})` }}
               >
                 <div className="card">
-                  <div className="card-cover">
-                    Only a short walk to the station!
+                  <div className="card-box">
+                      <i className="fa fa-angle-left" onClick={this.handleLeftArrowClick.bind(this)}></i>
+                      <div className="card-cover">
+                        Nice park nearby!
+                      </div>
+                      <i className="fa fa-angle-right" onClick={this.handleRightArrowClick.bind(this)}></i>
                   </div>
+
                 </div>
                 <div className="card-details">
                   <div className="card-flat-caption">
@@ -111,9 +162,8 @@ class Feature extends Component {
                     <i className="fa fa-bath"></i>
                     <i className="fa fa-utensils"></i>
                   </div>
+                </div>
               </div>
-              </div>
-
             </div>
             <div className="card-container col-xs-12 col-sm-3">
               <div
