@@ -16,7 +16,7 @@ class MainCards extends Component {
     this.state = {
       imageIndex: 0
     };
-    console.log('we are in the constructor');
+    console.log('we are in the constructor of main_cards');
     console.log('imageIndex in constructor: ', this.state.imageIndex);
     // this.onClick = this.onClick.bind(this);
     // this.handleLeftArrowClick = this.handleLeftArrowClick.bind(this);
@@ -36,6 +36,7 @@ class MainCards extends Component {
     console.log('wasParentClicked: ', wasParentClicked);
     if (wasParentClicked) {
       console.log('Card clicked');
+      console.log(this.props.whatever);
     }
   }
 
@@ -86,20 +87,19 @@ class MainCards extends Component {
                 <i className="fa fa-angle-left"></i>
               </div>
                 <div className="card-cover">
-                  Nice park nearby!
+                  {this.props.sales_point}
                 </div>
                 <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
                   <i className="fa fa-angle-right"></i>
                 </div>
             </div>
-
           </div>
           <div className="card-details">
             <div className="card-flat-caption">
-              Spacious loft in Soho
+              {this.props.description}
             </div>
             <div className="card-flat-price">
-              $2,000 per month
+              {this.props.currency} {this.props.price_per_month}
             </div>
             <div className="card-flat-amenities">
               <i className="fa fa-wifi"></i>
@@ -121,15 +121,11 @@ class MainCards extends Component {
   // }
 
   render() {
+    console.log('in main_cards, this.props.images: ', this.props.images);
     const transformation = new cloudinary.Transformation();
     transformation.width(300).crop('scale');
     return (
       <div>
-        {this.renderCards()}
-        {this.renderCards()}
-        {this.renderCards()}
-        {this.renderCards()}
-        {this.renderCards()}
         {this.renderCards()}
       </div>
     );

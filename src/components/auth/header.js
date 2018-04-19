@@ -112,7 +112,7 @@ class Header extends Component {
         <Navbar.Header>
             <Navbar.Brand>
               <Link to="/" className="navbar-brand"> FLATS FLATS <br />
-               <small>and FLATS</small></Link>
+               <small>and more FLATS</small></Link>
             </Navbar.Brand>
             <Navbar.Toggle />
         </Navbar.Header>

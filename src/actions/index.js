@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -15,7 +15,7 @@ export function signinUser({ email, password }, callback) {
     // submit email/password to the server
     // same as { email: email, password: password}
     // console.log({ sign_in: { email, password } });
-    axios.post(`${ROOT_URL}/api/v1//sign_in`, { sign_in: { email, password } })
+    axios.post(`${ROOT_URL}/api/v1/sign_in`, { sign_in: { email, password } })
     // axios.post(`${ROOT_URL}/sign_in`, { email, password })
     //signin for express server
       .then(response => {
@@ -85,6 +85,20 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
+export function fetchFlats() {
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/flats`, {
+      headers: { authorization: localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchFlats: ', response.data.data.flats);
+      dispatch({
+      type: FETCH_FLATS,
+      payload: response.data.data.flats
+    });
+  });
+};
+}
 export function fetchMessage() {
   return function (dispatch) {
     axios.get(ROOT_URL, {
