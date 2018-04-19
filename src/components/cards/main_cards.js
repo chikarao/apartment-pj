@@ -7,8 +7,8 @@ import cloudinary from 'cloudinary-core';
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
-const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife'];
-const maxImagesIndex = publicId.length - 1;
+// const a = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife'];
+// const a = this.props.images;
 
 class MainCards extends Component {
   constructor(props) {
@@ -20,13 +20,14 @@ class MainCards extends Component {
     // console.log('imageIndex in constructor: ', this.state.imageIndex);
     // this.onClick = this.onClick.bind(this);
     // this.handleLeftArrowClick = this.handleLeftArrowClick.bind(this);
+    console.log('in main_cards, images: ', this.props.flat.images);
   }
 
-  createBackgroundImage(publicId) {
+  createBackgroundImage(image) {
     const width = 400;
     const t = new cloudinary.Transformation();
     t.angle(0).crop('scale').width(width).aspectRatio('1:1');
-    return cloudinaryCore.url(publicId, t);
+    return cloudinaryCore.url(image, t);
   }
 
   handleCardClick(event) {
@@ -36,11 +37,12 @@ class MainCards extends Component {
     console.log('wasParentClicked: ', wasParentClicked);
     if (wasParentClicked) {
       console.log('Card clicked');
-      console.log(this.props.whatever);
     }
   }
 
   handleLeftArrowClick() {
+    const a = this.props.flat.images;
+    const maxImagesIndex = a.length - 1;
     console.log('in handleLeftArrowClick, maxImagesIndex: ', maxImagesIndex);
     console.log('in handleLeftArrowClick, this.state.imageIndex: ', this.state);
     if (this.state.imageIndex === 0) {
@@ -59,6 +61,8 @@ class MainCards extends Component {
   }
 
   handleRightArrowClick() {
+    const a = this.props.flat.images;
+    const maxImagesIndex = a.length - 1;
     console.log('in handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
     console.log('in handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
     if (this.state.imageIndex === maxImagesIndex) {
@@ -75,11 +79,12 @@ class MainCards extends Component {
   }
 
   renderCards() {
+console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
     return (
       <div className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
         <div
           className="card-image"
-          style={{ background: `url(${this.createBackgroundImage(publicId[this.state.imageIndex])})` }}
+          style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
         >
           <div className="card">
             <div className="card-box">
@@ -87,7 +92,7 @@ class MainCards extends Component {
                 <i className="fa fa-angle-left"></i>
               </div>
                 <div className="card-cover">
-                  {this.props.sales_point}
+                  {this.props.flat.sales_point}
                 </div>
                 <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
                   <i className="fa fa-angle-right"></i>
@@ -96,10 +101,10 @@ class MainCards extends Component {
           </div>
           <div className="card-details">
             <div className="card-flat-caption">
-              {this.props.description}
+              {this.props.flat.description}
             </div>
             <div className="card-flat-price">
-              {this.props.currency} {this.props.price_per_month}
+              {this.props.currency} {this.props.flat.price_per_month}
             </div>
             <div className="card-flat-amenities">
               <i className="fa fa-wifi"></i>
@@ -121,7 +126,7 @@ class MainCards extends Component {
   // }
 
   render() {
-    // console.log('in main_cards, this.props.images: ', this.props.images);
+    // console.log('in main_cards, this.props.flats.images: ', this.props.flats.images);
     const transformation = new cloudinary.Transformation();
     transformation.width(300).crop('scale');
     return (

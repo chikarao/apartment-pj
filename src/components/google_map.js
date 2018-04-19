@@ -6,11 +6,11 @@ const INITIAL_POSITION = { lat: 37.7952,
 
 const INITIAL_ZOOM = 12;
 
-const FLATS = [
-  { lat: 37.7952, lng: -122.4029, flatName: 'Transamerica Building' },
-  { lat: 37.787994, lng: -122.407437, flatName: 'Union Square' },
-  { lat: 37.76904, lng: -122.483519, flatName: 'Golden Gate Park' }
-];
+// const FLATS = [
+//   { lat: 37.7952, lng: -122.4029, flatName: 'Transamerica Building' },
+//   { lat: 37.787994, lng: -122.407437, flatName: 'Union Square' },
+//   { lat: 37.76904, lng: -122.483519, flatName: 'Golden Gate Park' }
+// ];
 
 class GoogleMap extends Component {
     componentDidMount() {
@@ -23,7 +23,7 @@ class GoogleMap extends Component {
         lng: INITIAL_POSITION.lng
       }
     });
-    console.log('in googlemap, this.props.flats: ', this.props.flats);
+    // console.log('in googlemap, this.props.flats: ', this.props.flats);
 
     _.each(this.props.flats, flat => {
       // console.log('flat: ', flat.flatName);

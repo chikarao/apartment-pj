@@ -67,6 +67,7 @@ class Feature extends Component {
     console.log('in feature renderFlats, flats empty: ', flatsEmpty);
 
       if (!flatsEmpty) {
+        // console.log('in feature renderFlats, this.props.flats.rooms: ', this.props.flats.rooms);
         // const { id } = this.props.flats[0];
         // console.log('in feature renderFlats, id: ', id);
         const flats = this.props.flats;
@@ -77,21 +78,23 @@ class Feature extends Component {
               // <span> {flat.images}</span>
               <div>
                 <MainCards
-                  id={flat.id}
-                  area={flat.area}
-                  bath={flat.bath}
-                  beds={flat.beds}
-                  rooms={flat.rooms}
-                  flat_type={flat.flat_type}
-                  description={flat.description}
-                  guests={flat.guests}
-                  lat={flat.lat}
-                  lng={flat.lng}
-                  price_per_day={flat.price_per_day}
-                  price_per_month={flat.price_per_month}
+                  flat={flat}
                   currency='$'
-                  sales_point={flat.sales_point}
-                  images={flat.images}
+                  // id={flat.id}
+                  // area={flat.area}
+                  // bath={flat.bath}
+                  // beds={flat.beds}
+                  // rooms={flat.rooms}
+                  // flat_type={flat.flat_type}
+                  // description={flat.description}
+                  // guests={flat.guests}
+                  // lat={flat.lat}
+                  // lng={flat.lng}
+                  // price_per_day={flat.price_per_day}
+                  // price_per_month={flat.price_per_month}
+                  // currency='$'
+                  // sales_point={flat.sales_point}
+                  // images={flat.images}
                 />
               </div>
             );
