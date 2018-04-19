@@ -16,8 +16,8 @@ class MainCards extends Component {
     this.state = {
       imageIndex: 0
     };
-    console.log('we are in the constructor of main_cards');
-    console.log('imageIndex in constructor: ', this.state.imageIndex);
+    // console.log('we are in the constructor of main_cards');
+    // console.log('imageIndex in constructor: ', this.state.imageIndex);
     // this.onClick = this.onClick.bind(this);
     // this.handleLeftArrowClick = this.handleLeftArrowClick.bind(this);
   }
@@ -121,7 +121,7 @@ class MainCards extends Component {
   // }
 
   render() {
-    console.log('in main_cards, this.props.images: ', this.props.images);
+    // console.log('in main_cards, this.props.images: ', this.props.images);
     const transformation = new cloudinary.Transformation();
     transformation.width(300).crop('scale');
     return (

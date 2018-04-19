@@ -34,6 +34,30 @@ class Feature extends Component {
 
   // componentWillReceiveProps() {
   // }
+  renderMap() {
+    const flatsEmpty = _.isEmpty(this.props.flats);
+    console.log('in feature renderMap, flats empty: ', flatsEmpty);
+
+    if (!flatsEmpty) {
+      // const { id } = this.props.flats[0];
+      // console.log('in feature renderFlats, id: ', id);
+      return (
+        <div>
+          <GoogleMap
+            flats={this.props.flats}
+          />
+        </div>
+      );
+      // <div>{console.log('in div: ', flats)}</div>
+    } else {
+      return (
+        <div>
+        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <div className="spinner">Loading...</div>
+        </div>
+      );
+    }
+  }
 
   renderFlats() {
     let index = 1;
@@ -81,23 +105,14 @@ class Feature extends Component {
           </div>
         );
       }
-    index = index + 1;
-    console.log('in feature renderFlats, index after running: ', index);
   }
 
+
   render() {
-    // const { isFetching } = this.state;
-    // console.log('in feature, flats data, images: ', this.props.flats[0].images);
-    // return <div>{this.props.message}</div>;
     return (
-      // {
-      //   isFetching ? <div>Loading</div> : (
-      //
-      //   )
-      // }
       <div>
         <div className="container" id="map">
-          <GoogleMap />
+          {this.renderMap()}
         </div>
 
         <div className="container main-card-container">
@@ -105,6 +120,7 @@ class Feature extends Component {
             {this.renderFlats()}
           </div>
         </div>
+
         <Upload />
 
       </div>

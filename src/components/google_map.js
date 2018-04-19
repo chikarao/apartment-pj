@@ -23,8 +23,9 @@ class GoogleMap extends Component {
         lng: INITIAL_POSITION.lng
       }
     });
+    console.log('in googlemap, this.props.flats: ', this.props.flats);
 
-    _.each(FLATS, flat => {
+    _.each(this.props.flats, flat => {
       // console.log('flat: ', flat.flatName);
       const marker = new google.maps.Marker({
         position: {
@@ -32,11 +33,12 @@ class GoogleMap extends Component {
           lng: flat.lng
         },
         map,
-        flatName: flat.flatName
+        flatName: flat.description
       });
 
         const infowindow = new google.maps.InfoWindow({
-          content: marker.flatName
+          content: marker.flatName,
+          maxWidth: 300
         });
 
         marker.addListener('click', () => {
