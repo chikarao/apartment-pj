@@ -156,7 +156,7 @@ function infowindowContent(flat) {
   const content =
   `<a href="/show" target="_blank">
 
-    <img src={${flat.images[0].publicid}}> <br />
+    <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
     <strong>${flat.description}</strong> <br />
     ${flat.area} <br />
     $${parseFloat(flat.price_per_month).toFixed(0)} per month
