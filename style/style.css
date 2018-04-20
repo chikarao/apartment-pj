@@ -91,7 +91,28 @@ body > div:first-child {
   color: gray;
   font-weight: bold;
   padding: 10px;
+  /* display: none; */
 }
+
+a {
+    text-decoration: none !important;
+}
+
+.gm-style img {
+    max-width: none;
+    width: 100px;
+    height: 100px;
+}
+
+/* .infowindow-content {
+  width: 100%;
+  height: 100%;
+}
+.infowindow-content-items{
+  list-style-type: none;
+} */
+
+
 
 /* *************CARDS*************** */
 

@@ -7,7 +7,7 @@ import GoogleMap from './google_map';
 import Upload from './images/upload';
 import MainCards from './cards/main_cards';
 
-const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife', 'flat_image-1523948892-1', 'flat_image-1523948892-0'];
+// const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife', 'flat_image-1523948892-1', 'flat_image-1523948892-0'];
 
 
 class Feature extends Component {

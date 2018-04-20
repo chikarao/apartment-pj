@@ -109,7 +109,7 @@ class MainCards extends Component {
               {this.props.flat.description}
             </div>
             <div className="card-flat-price">
-              {this.props.currency} {this.props.flat.price_per_month}
+              {this.props.currency} {parseFloat(this.props.flat.price_per_month).toFixed(0)}
             </div>
             <div className="card-flat-amenities">
               <i className="fa fa-wifi"></i>
@@ -132,8 +132,8 @@ class MainCards extends Component {
 
   render() {
     // console.log('in main_cards, this.props.flats.images: ', this.props.flats.images);
-    const transformation = new cloudinary.Transformation();
-    transformation.width(300).crop('scale');
+    // const transformation = new cloudinary.Transformation();
+    // transformation.width(300).crop('scale');
     return (
       <div>
         {this.renderCards()}

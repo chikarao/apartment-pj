@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+
+import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
+import cloudinary from 'cloudinary-core';
+
 import * as actions from '../actions';
+
+
+const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 
 // const INITIAL_POSITION = { lat: 37.7952,
@@ -16,12 +24,6 @@ const INITIAL_ZOOM = 12;
 // ];
 
 class GoogleMap extends Component {
-  constructor(props) {
-      super(props);
-      // this.updateBounds = this.updateBounds.bind(this);
-      // this.props.updateMapBounds = this.props.updateMapBounds.bind(this);
-  }
-
     componentDidMount() {
     // runs right after component is rendered to the screeen
     const map = new google.maps.Map(this.refs.map, {
@@ -40,11 +42,20 @@ class GoogleMap extends Component {
            mapTypeIds: ['roadmap', 'terrain']
          }
     });
-    // console.log('in googlemap, this.props.flats: ', this.props.flats);
 
     _.each(this.props.flats, flat => {
       // console.log('flat: ', flat.flatName);
+
+      console.log('in google map, infowidow, infowindowContent: ', infowindowContent(flat));
+
+      const infowindow = new google.maps.InfoWindow({
+        content: infowindowContent(flat),
+        // content: marker.flatArea,
+        maxWidth: 300
+      });
+
       const marker = new google.maps.Marker({
+        label: '',
         position: {
           lat: flat.lat,
           lng: flat.lng
@@ -54,26 +65,27 @@ class GoogleMap extends Component {
         flatArea: flat.area
       });
 
-        const infowindow = new google.maps.InfoWindow({
-          content: marker.flatName,
-          // content: marker.flatArea,
-          maxWidth: 300
-        });
 
-        marker.addListener('click', () => {
-          map.setZoom(14);
-          map.setCenter(marker.getPosition());
-          // console.log('marker clicked: ', marker.flatName);
-          infowindow.open(map, marker);
-        });
-        marker.addListener('click', (event) => {
-          const latitude = event.latLng.lat();
-          const longitude = event.latLng.lng();
-          console.log('in googlemaps clicked marker latitude: ', latitude);
-          console.log('in googlemaps clicked marker longitude: ', longitude);
-        });
+      marker.addListener('click', () => {
+        // map.setZoom(14);
+        // map.setCenter(marker.getPosition());
+        // console.log('marker clicked: ', marker.flatName);
+        infowindow.open(map, marker);
+        console.log('in google map, marker clicked');
+      });
+      marker.addListener('click', (event) => {
+        const latitude = event.latLng.lat();
+        const longitude = event.latLng.lng();
+        console.log('in googlemaps clicked marker latitude: ', latitude);
+        console.log('in googlemaps clicked marker longitude: ', longitude);
+      });
       // createMarkers(flat)
+      infowindow.addListener('click', (event) => {
+        console.log('in googleMap, infowindow addlistner: ', event);
+      });
     });
+    //end of _.each
+
     google.maps.event.addListener(map, 'idle', () => {
       console.log('in googlemap, map idle listener fired');
       const bounds = map.getBounds();
@@ -122,19 +134,51 @@ class GoogleMap extends Component {
    // }, 2000);
    //  });
   }
+  //end of componentDidMount
 
-  // shouldComponentUpdate() {
-  //   return false;
-  // }
+  createBackgroundImage(image) {
+    console.log('in googlemaps in createBackgroundImage image: ', image);
 
-  // updateBounds(mapBounds) {
-  //   this.props.updateMapBounds(mapBounds);
-  // }
+    const width = 400;
+    const t = new cloudinary.Transformation();
+    t.angle(0).crop('scale').width(width).aspectRatio('1:1');
+    return cloudinaryCore.url(image, t);
+  }
 
   render() {
     //this.refs.map gives reference to this element
     return <div ref="map" />;
   }
 }
+
+function infowindowContent(flat) {
+  console.log('in googlemaps in infowindowContent flat: ', flat.images[0].publicid);
+  const content =
+  `<a href="/show" target="_blank">
+
+    <img src={${flat.images[0].publicid}}> <br />
+    <strong>${flat.description}</strong> <br />
+    ${flat.area} <br />
+    $${parseFloat(flat.price_per_month).toFixed(0)} per month
+
+  </a>
+  `;
+  // return (
+  //     'Hello'
+  // );
+  return (
+    content
+  );
+  // return (
+  //   <div>
+  //     <ul>
+  //       <li>{flat.description}</li>
+  //       <li>{flat.area}</li>
+  //     </ul>
+  //   </div>
+  // );
+}
+// end of class
+
 
 export default connect(null, actions)(GoogleMap);
