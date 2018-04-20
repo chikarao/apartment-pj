@@ -90,8 +90,10 @@ class Feature extends Component {
     console.log('in feature renderFlats, flats data length: ', this.props.flats);
     const flatsEmpty = _.isEmpty(this.props.flats);
     console.log('in feature renderFlats, flats empty: ', flatsEmpty);
+    const randomNum = _.random(0, 1);
+    console.log('in feature renderFlats, randomNum: ', randomNum);
 
-      if (!flatsEmpty) {
+      if (!flatsEmpty && randomNum === 0) {
         // console.log('in feature renderFlats, this.props.flats.rooms: ', this.props.flats.rooms);
         // const { id } = this.props.flats[0];
         // console.log('in feature renderFlats, id: ', id);
@@ -130,7 +132,7 @@ class Feature extends Component {
         return (
           <div>
             <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-            <div className="spinner">Loading...</div>
+            <div className="spinner">Loading flats...</div>
           </div>
         );
       }

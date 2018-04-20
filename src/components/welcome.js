@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export default () => (
-  <div>Welcome to the jungle!!!</div>
-);
+class Welcome extends Component {
+  render() {
+    return (
+      <div>Welcome to the Jungle</div>
+    );
+  }
+}
+
+export default Welcome;

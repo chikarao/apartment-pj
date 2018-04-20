@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 
-const INITIAL_POSITION = { lat: 37.7952,
-  lng: -122.4029 };
+
+// const INITIAL_POSITION = { lat: 37.7952,
+//   lng: -122.4029 };
 
 const INITIAL_ZOOM = 12;
 
@@ -13,6 +16,12 @@ const INITIAL_ZOOM = 12;
 // ];
 
 class GoogleMap extends Component {
+  constructor(props) {
+      super(props);
+      // this.updateBounds = this.updateBounds.bind(this);
+      // this.props.updateMapBounds = this.props.updateMapBounds.bind(this);
+  }
+
     componentDidMount() {
     // runs right after component is rendered to the screeen
     const map = new google.maps.Map(this.refs.map, {
@@ -26,7 +35,7 @@ class GoogleMap extends Component {
       zoomControl: true,
       scaleControl: true,
        mapTypeControl: true,
-      mapTypeControlOptions: {
+       mapTypeControlOptions: {
            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
            mapTypeIds: ['roadmap', 'terrain']
          }
@@ -65,22 +74,39 @@ class GoogleMap extends Component {
         });
       // createMarkers(flat)
     });
-    google.maps.event.addListener(map, 'idle', function () {
+    google.maps.event.addListener(map, 'idle', () => {
       console.log('in googlemap, map idle listener fired');
       const bounds = map.getBounds();
-      console.log('in googlemap, bounds: ', bounds);
-      const ew = bounds.b; // LatLng of the north-east corner
-      const ns = bounds.f; // LatLng of the south-west corder
-      const east = ew.f;
-      const west = ew.b;
-      const north = ns.f;
-      const south = ns.b;
-      console.log('in googlemap, EW bounds: ', ew);
-      console.log('in googlemap, NS bounds: ', ns);
-      console.log('in googlemap, E lng: ', east);
-      console.log('in googlemap, W lng: ', west);
-      console.log('in googlemap, N lat: ', north);
-      console.log('in googlemap, S lat: ', south);
+      // console.log('in googlemap, bounds: ', bounds);
+      // const ew = bounds.b; // LatLng of the north-east corner
+      // const ns = bounds.f; // LatLng of the south-west corder
+      // const east = ew.f;
+      // const west = ew.b;
+      // const north = ns.f;
+      // const south = ns.b;
+      // console.log('in googlemap, EW bounds: ', ew);
+      // console.log('in googlemap, NS bounds: ', ns);
+      // console.log('in googlemap, E bound lng: ', east);
+      // console.log('in googlemap, W bound lng: ', west);
+      // console.log('in googlemap, N bound lat: ', north);
+      // console.log('in googlemap, S bound lat: ', south);
+      // const mapBounds = {
+      //   east,
+      //   west,
+      //   north,
+      //   south
+      // };
+      const mapBounds = {
+        east: bounds.b.f,
+        west: bounds.b.b,
+        north: bounds.f.f,
+        south: bounds.f.b
+      };
+
+      console.log('in googlemap, mapBounds: ', mapBounds);
+      // this.updateBounds(mapBounds);
+      this.props.updateMapBounds(mapBounds);
+      this.props.fetchFlats();
     });
 
     google.maps.event.addListener(map, 'click', function (event) {
@@ -95,13 +121,15 @@ class GoogleMap extends Component {
    //      console.log('in googlemap, map bounds changed listener fired');
    // }, 2000);
    //  });
-
   }
 
   // shouldComponentUpdate() {
   //   return false;
   // }
 
+  // updateBounds(mapBounds) {
+  //   this.props.updateMapBounds(mapBounds);
+  // }
 
   render() {
     //this.refs.map gives reference to this element
@@ -109,4 +137,4 @@ class GoogleMap extends Component {
   }
 }
 
-export default GoogleMap;
+export default connect(null, actions)(GoogleMap);

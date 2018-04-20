@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -111,4 +111,19 @@ export function fetchMessage() {
     });
   });
 };
+}
+
+export function updateMapBounds(mapBounds) {
+  console.log('in actions index, updateMapBounds: ', mapBounds);
+  return {
+    type: UPDATE_MAP_BOUNDS,
+    payload: mapBounds
+  };
+}
+export function selectedFlat(flat) {
+  console.log('in actions index, selectedFlat: ', flat);
+  return {
+    type: SELECTED_FLAT,
+    payload: flat
+  };
 }

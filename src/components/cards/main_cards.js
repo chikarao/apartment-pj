@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
@@ -20,7 +22,7 @@ class MainCards extends Component {
     // console.log('imageIndex in constructor: ', this.state.imageIndex);
     // this.onClick = this.onClick.bind(this);
     // this.handleLeftArrowClick = this.handleLeftArrowClick.bind(this);
-    console.log('in main_cards, images: ', this.props.flat.images);
+    // console.log('in main_cards, images: ', this.props.flat.images);
   }
 
   createBackgroundImage(image) {
@@ -30,13 +32,16 @@ class MainCards extends Component {
     return cloudinaryCore.url(image, t);
   }
 
-  handleCardClick(event) {
-    console.log('event.target.className: ', event.target.className);
+  handleCardClick = (event) => {
+    console.log('in main_cards, handleCardClick, event.target.className: ', event.target.className);
     const wasParentClicked = event.target.className === 'card-cover' ||
     event.target.className === 'card';
-    console.log('wasParentClicked: ', wasParentClicked);
+    console.log('in main_cards, handleCardClick, wasParentClicked: ', wasParentClicked);
     if (wasParentClicked) {
-      console.log('Card clicked');
+      this.props.selectedFlat(this.props.flat);
+      console.log('in main_cards, handleCardClick, Card clicked');
+      const win = window.open('/show', '_blank');
+      win.focus();
     }
   }
 
@@ -56,15 +61,15 @@ class MainCards extends Component {
       });
     }
 
-      console.log('left arrow clicked');
-      console.log('number of images: ', maxImagesIndex);
+      console.log('in main_cards, left arrow clicked');
+      console.log('in main_cards, number of images: ', maxImagesIndex);
   }
 
   handleRightArrowClick() {
     const a = this.props.flat.images;
     const maxImagesIndex = a.length - 1;
-    console.log('in handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
-    console.log('in handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
+    console.log('in main_cards, handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
+    console.log('in main_cards, handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
     if (this.state.imageIndex === maxImagesIndex) {
       this.setState({
         imageIndex: 0
@@ -75,11 +80,11 @@ class MainCards extends Component {
         imageIndex: nextIndex
       });
     }
-      console.log('Right arrow clicked');
+      console.log('in main cards, Right arrow clicked');
   }
 
   renderCards() {
-console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
+    // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
     return (
       <div className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
         <div
@@ -137,4 +142,4 @@ console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.f
   }
 }
 
-export default MainCards;
+export default connect(null, actions)(MainCards);

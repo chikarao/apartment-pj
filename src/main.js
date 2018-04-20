@@ -6,6 +6,7 @@ import Signout from './components/auth/signout';
 import Signup from './components/auth/signup';
 import Feature from './components/feature';
 import Welcome from './components/welcome';
+import ShowFlat from './components/show_flat';
 
 import RequireAuth from './components/auth/require_auth';
 
@@ -17,6 +18,7 @@ export const Main = () => (
       <Route path='/signin' component={Signin} />
       <Route path='/signout' component={Signout} />
       <Route path='/signup' component={Signup} />
+      <Route path='/show' component={ShowFlat} />
       <Route path='/feature' component={RequireAuth(Feature)} />
     </Switch>
   </main>
