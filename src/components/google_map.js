@@ -19,9 +19,17 @@ class GoogleMap extends Component {
       // creates embedded map in component
       zoom: INITIAL_ZOOM,
       center: {
-        lat: INITIAL_POSITION.lat,
-        lng: INITIAL_POSITION.lng
-      }
+        lat: this.props.initialPosition.lat,
+        lng: this.props.initialPosition.lng
+      },
+      disableDefaultUI: true,
+      zoomControl: true,
+      scaleControl: true,
+       mapTypeControl: true,
+      mapTypeControlOptions: {
+           style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+           mapTypeIds: ['roadmap', 'terrain']
+         }
     });
     // console.log('in googlemap, this.props.flats: ', this.props.flats);
 
@@ -33,22 +41,61 @@ class GoogleMap extends Component {
           lng: flat.lng
         },
         map,
-        flatName: flat.description
+        flatName: flat.description,
+        flatArea: flat.area
       });
 
         const infowindow = new google.maps.InfoWindow({
           content: marker.flatName,
+          // content: marker.flatArea,
           maxWidth: 300
         });
 
         marker.addListener('click', () => {
           map.setZoom(14);
           map.setCenter(marker.getPosition());
-          console.log('marker clicked: ', marker.flatName);
+          // console.log('marker clicked: ', marker.flatName);
           infowindow.open(map, marker);
+        });
+        marker.addListener('click', (event) => {
+          const latitude = event.latLng.lat();
+          const longitude = event.latLng.lng();
+          console.log('in googlemaps clicked marker latitude: ', latitude);
+          console.log('in googlemaps clicked marker longitude: ', longitude);
         });
       // createMarkers(flat)
     });
+    google.maps.event.addListener(map, 'idle', function () {
+      console.log('in googlemap, map idle listener fired');
+      const bounds = map.getBounds();
+      console.log('in googlemap, bounds: ', bounds);
+      const ew = bounds.b; // LatLng of the north-east corner
+      const ns = bounds.f; // LatLng of the south-west corder
+      const east = ew.f;
+      const west = ew.b;
+      const north = ns.f;
+      const south = ns.b;
+      console.log('in googlemap, EW bounds: ', ew);
+      console.log('in googlemap, NS bounds: ', ns);
+      console.log('in googlemap, E lng: ', east);
+      console.log('in googlemap, W lng: ', west);
+      console.log('in googlemap, N lat: ', north);
+      console.log('in googlemap, S lat: ', south);
+    });
+
+    google.maps.event.addListener(map, 'click', function (event) {
+    const latitude = event.latLng.lat();
+    const longitude = event.latLng.lng();
+    console.log('in googlemaps clicked latitude: ', latitude);
+    console.log('in googlemaps clicked longitude: ', longitude);
+}); //end addListener
+   //  google.maps.event.addListener(map, 'bounds_changed', function () {
+   //    window.setTimeout(function() {
+   //
+   //      console.log('in googlemap, map bounds changed listener fired');
+   // }, 2000);
+   //  });
+
   }
 
   // shouldComponentUpdate() {

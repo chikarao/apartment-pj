@@ -34,6 +34,27 @@ class Feature extends Component {
 
   // componentWillReceiveProps() {
   // }
+  calculateLatLngAve(flats) {
+    let totalLat = 0;
+    let totalLng = 0;
+    let totalNumFlats = 0;
+    _.map(flats, (flat) => {
+      if (flat.lat && flat.lng) {
+        totalLat += flat.lat;
+        totalLng += flat.lng;
+        totalNumFlats++;
+      }
+    });
+    const aveLat = totalLat / totalNumFlats;
+    const aveLng = totalLng / totalNumFlats;
+    return (
+      {
+        lat: aveLat,
+        lng: aveLng
+      }
+    );
+  }
+
   renderMap() {
     const flatsEmpty = _.isEmpty(this.props.flats);
     console.log('in feature renderMap, flats empty: ', flatsEmpty);
@@ -41,10 +62,14 @@ class Feature extends Component {
     if (!flatsEmpty) {
       // const { id } = this.props.flats[0];
       // console.log('in feature renderFlats, id: ', id);
+      console.log('here is the average lat lng: ', this.calculateLatLngAve(this.props.flats));
+      const latLngAve = this.calculateLatLngAve(this.props.flats);
+      console.log('here is latLngAve: ', latLngAve);
       return (
         <div>
           <GoogleMap
             flats={this.props.flats}
+            initialPosition={latLngAve}
           />
         </div>
       );
@@ -59,9 +84,9 @@ class Feature extends Component {
     }
   }
 
+
   renderFlats() {
     let index = 1;
-    console.log('in feature renderFlats, index: ', index);
     console.log('in feature renderFlats, flats data length: ', this.props.flats);
     const flatsEmpty = _.isEmpty(this.props.flats);
     console.log('in feature renderFlats, flats empty: ', flatsEmpty);
@@ -71,6 +96,7 @@ class Feature extends Component {
         // const { id } = this.props.flats[0];
         // console.log('in feature renderFlats, id: ', id);
         const flats = this.props.flats;
+
         return _.map(flats, (flat) => {
             return (
               // <span>{flat.id}</span>

@@ -14,3 +14,11 @@
     <MainCards />
   </div>
 </div>
+
+// <i className="fa fa-wifi"></i>
+// <i className="fa fa-bath"></i>
+// <i className="fa fa-utensils"></i>
+
+// <div className="card-flat-amenities">
+//
+// </div>
