@@ -1,4 +1,5 @@
-import { FETCH_FLATS, SELECTED_FLAT } from '../actions/types';
+import _ from 'lodash';
+import { FETCH_FLATS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS } from '../actions/types';
 
 export default function (state = {}, action) {
   console.log('in flats reducer, action.payload: ', action.payload);
@@ -9,6 +10,9 @@ export default function (state = {}, action) {
 
     case SELECTED_FLAT:
       return { ...state, selectedFlat: action.payload };
+
+    case SELECTED_FLAT_FROM_PARAMS:
+      return { ...state, selectedFlatFromParams: action.payload };
 
     default:
       return state;

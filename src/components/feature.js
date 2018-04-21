@@ -106,6 +106,7 @@ class Feature extends Component {
               // <span> {flat.images}</span>
               <div>
                 <MainCards
+                  key={flat.id}
                   flat={flat}
                   currency='$'
                   // id={flat.id}

@@ -100,8 +100,8 @@ a {
 
 .gm-style img {
     max-width: none;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
 /* .infowindow-content {
@@ -112,6 +112,21 @@ a {
   list-style-type: none;
 } */
 
+/* **********SHOW FLAT***************** */
+
+.show-flat-image-box {
+  height: 300px;
+  width: 300px;
+  /* padding: 15px; */
+  /* background-color: lightgray; */
+  /* margin-bottom: 0; */
+}
+
+.show-flat-image-box img {
+  height: 100%;
+  width: 100%;
+  padding-left: 15px;
+}
 
 
 /* *************CARDS*************** */

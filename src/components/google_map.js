@@ -49,12 +49,14 @@ class GoogleMap extends Component {
       console.log('in google map, infowidow, infowindowContent: ', infowindowContent(flat));
 
       const infowindow = new google.maps.InfoWindow({
-        content: infowindowContent(flat),
-        // content: marker.flatArea,
-        maxWidth: 300
+        // content: infowindowContent(flat),
+        // // content: marker.flatArea,
+        maxWidth: 300,
+        key: flat.id
       });
 
       const marker = new google.maps.Marker({
+        key: flat.id,
         label: '',
         position: {
           lat: flat.lat,
@@ -80,9 +82,19 @@ class GoogleMap extends Component {
         console.log('in googlemaps clicked marker longitude: ', longitude);
       });
       // createMarkers(flat)
-      infowindow.addListener('click', (event) => {
-        console.log('in googleMap, infowindow addlistner: ', event);
-      });
+      // infowindow.addListener('click', (event) => {
+      //   console.log('in googleMap, infowindow addlistner: ', event);
+      // });
+      const div = document.createElement('div');
+      div.id = 'infowindow-box';
+      div.innerHTML = infowindowContent(flat);
+      // div.onClick = () => { infowindowClickHandler(flat); };
+      // infowidow.setPosition();
+      infowindow.setContent(div);
+
+      // google.maps.event.addListener(div, 'clicked', function () {
+      //   infowindowClickHandler(flat);
+      // });
     });
     //end of _.each
 
@@ -127,12 +139,7 @@ class GoogleMap extends Component {
     console.log('in googlemaps clicked latitude: ', latitude);
     console.log('in googlemaps clicked longitude: ', longitude);
 }); //end addListener
-   //  google.maps.event.addListener(map, 'bounds_changed', function () {
-   //    window.setTimeout(function() {
-   //
-   //      console.log('in googlemap, map bounds changed listener fired');
-   // }, 2000);
-   //  });
+
   }
   //end of componentDidMount
 
@@ -150,35 +157,38 @@ class GoogleMap extends Component {
     return <div ref="map" />;
   }
 }
+// end of class
 
 function infowindowContent(flat) {
   console.log('in googlemaps in infowindowContent flat: ', flat.images[0].publicid);
   const content =
-  `<a href="/show" target="_blank">
-
+  `<a href="/show/${flat.id}" onclick={infowindowClickHandler(${flat})} target="_blank">
     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
     <strong>${flat.description}</strong> <br />
     ${flat.area} <br />
     $${parseFloat(flat.price_per_month).toFixed(0)} per month
-
-  </a>
-  `;
-  // return (
-  //     'Hello'
-  // );
+  </a>`;
   return (
     content
   );
-  // return (
-  //   <div>
-  //     <ul>
-  //       <li>{flat.description}</li>
-  //       <li>{flat.area}</li>
-  //     </ul>
-  //   </div>
-  // );
 }
-// end of class
+// function infowindowContent(flat) {
+//   console.log('in googlemaps in infowindowContent flat: ', flat.images[0].publicid);
+//   const content =
+//   `
+//     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
+//     <strong>${flat.description}</strong> <br />
+//     ${flat.area} <br />
+//     $${parseFloat(flat.price_per_month).toFixed(0)} per month
+//   `;
+//   return (
+//     content
+//   );
+// }
+
+function infowindowClickHandler(flat) {
+  console.log('in google map, infowindow clicked, flat', flat);
+}
 
 
 export default connect(null, actions)(GoogleMap);

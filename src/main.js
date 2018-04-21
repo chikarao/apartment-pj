@@ -18,7 +18,7 @@ export const Main = () => (
       <Route path='/signin' component={Signin} />
       <Route path='/signout' component={Signout} />
       <Route path='/signup' component={Signup} />
-      <Route path='/show' component={ShowFlat} />
+      <Route path='/show/:id' component={ShowFlat} />
       <Route path='/feature' component={RequireAuth(Feature)} />
     </Switch>
   </main>

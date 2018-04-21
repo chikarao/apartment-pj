@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -93,12 +93,13 @@ export function fetchFlats() {
     .then(response => {
       console.log('response to fetchFlats: ', response.data.data.flats);
       dispatch({
-      type: FETCH_FLATS,
-      payload: response.data.data.flats
+        type: FETCH_FLATS,
+        payload: response.data.data.flats
     });
   });
 };
 }
+
 export function fetchMessage() {
   return function (dispatch) {
     axios.get(ROOT_URL, {
@@ -106,8 +107,8 @@ export function fetchMessage() {
     })
     .then(response => {
       dispatch({
-      type: FETCH_MESSAGE,
-      payload: response.data.message
+        type: FETCH_MESSAGE,
+        payload: response.data.message
     });
   });
 };
@@ -125,5 +126,21 @@ export function selectedFlat(flat) {
   return {
     type: SELECTED_FLAT,
     payload: flat
+  };
+}
+
+export function selectedFlatFromParams(id) {
+  console.log('in actions index, selectedFlatFromParams id: ', id);
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/flats/${id}`, {
+      headers: { authorization: localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to selectedFlatFromParams: ', response.data.data.flat);
+      dispatch({
+        type: SELECTED_FLAT_FROM_PARAMS,
+        payload: response.data.data.flat
+    });
+  });
   };
 }

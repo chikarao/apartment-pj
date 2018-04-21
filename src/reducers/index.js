@@ -10,6 +10,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   // originnally form: reducer; use ES6 so just form
   flats: flatsReducer,
+  flat: flatsReducer,
+  flatFromParams: flatsReducer,
   mapBounds: mapReducer
   // can access mapbounds.east .west., etc
 });
