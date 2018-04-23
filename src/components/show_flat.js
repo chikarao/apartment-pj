@@ -32,18 +32,48 @@ class ShowFlat extends Component {
         return (
           <div>
             <div className="show-flat-image-box">
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[0].publicid + '.jpg'} />
-            </div>
-            <div>
-              { description }
+              <div id="carousel-show">
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[0].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[1].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
+                </div>
+                <div className="slide-show">
+                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
+                </div>
+              </div>
             </div>
 
-            <div>
-              { area }
-            </div>
+            <div className="show-container">
 
-            <div>
-              { price_per_month }
+              <div>
+                { description }
+              </div>
+
+              <div>
+                { area }
+              </div>
+
+              <div>
+                ${ parseFloat(price_per_month).toFixed(0) }
+              </div>
+              <div>
+                ID: {this.props.match.params.id}
+              </div>
+
             </div>
 
           </div>
@@ -64,9 +94,7 @@ class ShowFlat extends Component {
         <div>
           {this.renderFlat(this.props.match.params.id)}
         </div>
-        <div>
-        ID: {this.props.match.params.id}
-        </div>
+
       </div>
     );
   }

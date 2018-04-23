@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-import { connect } from 'react-redux';
-import * as actions from '../../actions';
 
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
-// import Carousel from '../carousel/carousel';
-
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
-// const a = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife'];
-// const a = this.props.images;
+// import Images from './images'
 
-class MainCards extends Component {
+// ************PROVDE CAROUSEL with FLAT object******************
+
+class Carousel extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,7 +38,7 @@ class MainCards extends Component {
     if (wasParentClicked) {
       this.props.selectedFlat(this.props.flat);
       console.log('in main_cards, handleCardClick, Card clicked');
-      const win = window.open(`/show/${this.props.flat.id}`, '_blank');
+      const win = window.open('/show', '_blank');
       win.focus();
     }
   }
@@ -85,63 +81,30 @@ class MainCards extends Component {
       console.log('in main cards, Right arrow clicked');
   }
 
-  renderCards() {
-    // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
+  render() {
     return (
-      <div className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
+      <div>
         <div
-          className="card-image"
-          style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
+        className={(this.props.cardOrInfoWindow ? 'card-image-infowindow' : 'card-image')}
+        style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
         >
           <div className="card">
-            <div className="card-box">
+            <div className={(this.props.cardOrInfoWindow ? 'card-box-infowindow' : 'card-box')}>
               <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
-                <i className="fa fa-angle-left"></i>
+              <i className="fa fa-angle-left"></i>
               </div>
               <div className="card-cover">
-                {this.props.flat.sales_point}
+                Hello!
               </div>
               <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
-                <i className="fa fa-angle-right"></i>
+              <i className="fa fa-angle-right"></i>
               </div>
-            </div>
-          </div>
-          <div className="card-details">
-            <div className="card-flat-caption">
-              {this.props.flat.description}
-            </div>
-            <div className="card-flat-price">
-              {this.props.currency} {parseFloat(this.props.flat.price_per_month).toFixed(0)}
-            </div>
-            <div className="card-flat-amenities">
-              <i className="fa fa-wifi"></i>
-              <i className="fa fa-bath"></i>
-              <i className="fa fa-utensils"></i>
             </div>
           </div>
         </div>
       </div>
     );
   }
-
-  // renderTimesCards() {
-  //   // (5).times((i) => this.renderCards());
-  //   const times = 5;
-  //   for (let i = 0; i < times; i++) {
-  //     this.renderCards();
-  //   }
-  // }
-
-  render() {
-    // console.log('in main_cards, this.props.flats.images: ', this.props.flats.images);
-    // const transformation = new cloudinary.Transformation();
-    // transformation.width(300).crop('scale');
-    return (
-      <div>
-        {this.renderCards()}
-      </div>
-    );
-  }
 }
 
-export default connect(null, actions)(MainCards);
+export default Carousel;

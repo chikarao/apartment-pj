@@ -68,9 +68,10 @@ class Feature extends Component {
       return (
         <div>
           <GoogleMap
-            flats={this.props.flats}
-            initialPosition={latLngAve}
+          flats={this.props.flats}
+          initialPosition={latLngAve}
           />
+    
         </div>
       );
       // <div>{console.log('in div: ', flats)}</div>
