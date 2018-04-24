@@ -6,6 +6,7 @@ import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
 import * as actions from '../actions';
+import Carousel from './carousel/carousel';
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -55,6 +56,12 @@ class ShowFlat extends Component {
                     <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
                 </div>
               </div>
+            </div>
+
+            <div className="carousel-container">
+              <Carousel
+                flat={this.props.flat.selectedFlat}
+              />
             </div>
 
             <div className="show-container">

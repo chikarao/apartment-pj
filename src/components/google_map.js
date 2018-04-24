@@ -19,8 +19,13 @@ const INITIAL_ZOOM = 12;
 // ];
 
 class GoogleMap extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageIndex: 0
+    };
+  }
     componentDidMount() {
-
     // runs right after component is rendered to the screeen
       const map = new google.maps.Map(this.refs.map, {
         // creates embedded map in component
@@ -56,11 +61,28 @@ class GoogleMap extends Component {
           // flatArea: flat.area
         });
         //
+
+        // const contentString =
+        // `<div id="carousel-iw">
+        //   <div className="slide-iw" onclick="console.log('Hello from the left side')">
+        //     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
+        //   </div>
+        //   <div className="slide-iw" onclick=" console.log('Hello from the right side') ">
+        //     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[1].publicid}.jpg"> <br />
+        //   </div>
+        // </div>
+        // <a href="/show/${flat.id}" target="_blank">
+        //   <strong>${flat.description}</strong> <br />
+        //   ${flat.area} <br />
+        //   $${parseFloat(flat.price_per_month).toFixed(0)} per month
+        // </a>`;
+
         const infowindow = new google.maps.InfoWindow({
           // content: infowindowContent(flat),
           // // content: marker.flatArea,
           maxWidth: 300,
           key: flat.id
+          // content: contentString
         });
 
         // const infoboxContent = infowindowContent(flat);
@@ -91,9 +113,17 @@ class GoogleMap extends Component {
           // map.setZoom(14);
           // map.setCenter(marker.getPosition());
           // console.log('marker clicked: ', marker.flatName);
+          // const div = document.createElement('div');
+          // div.id = 'infowindow-box';
+          // div.ref = 'infowindow-box-ref';
+          // div.innerHTML = '<div>Hello</div>';
+          // div.onClick = function () { console.log('div clicked'); };
+          // // infowindow.setPosition();
+          // infowindow.setContent(div);
+//
           infowindow.open(map, marker);
           console.log('in google map, marker clicked');
-          infowindowClickHandler(flat);
+          // infowindowClickHandler(flat);
         });
         marker.addListener('click', (event) => {
           const latitude = event.latLng.lat();
@@ -106,14 +136,73 @@ class GoogleMap extends Component {
         //   console.log('in googleMap, infowindow addlistner: ', event);
         // });
 
-        console.log('in googlemaps info window, flat: ', flat);
-        const div = document.createElement('div');
-        div.id = 'infowindow-box';
-        div.innerHTML = infowindowContent(flat);
-        // div.innerHTML = ReactDOMServer.renderToString(infowindowContent(flat));
-        // div.onClick = function () { infowindowClickHandler(flat); };
-        // infowindow.setPosition();
-        infowindow.setContent(div);
+        //******************************************
+        //************ createElement ***************
+        // console.log('in googlemaps info window, flat: ', flat);
+        //Parent Div has image div and detaildiv as immediate children
+        const iwDivParent = document.createElement('div');
+
+        // Image div
+        const iwImageDiv = document.createElement('iwImageDiv');
+        iwImageDiv.id = 'infowindow-box-image-box';
+        // div.ref = 'infowindow-box-ref';
+        iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
+        const iwImageLeftArrow = document.createElement('iwImageLeftArrow');
+        const iwImageRightArrow = document.createElement('iwImageRightArrow');
+        iwImageLeftArrow.id = 'infowidow-box-image-box-sib';
+        iwImageRightArrow.id = 'infowidow-box-image-box-sib';
+        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[0].publicid}.jpg)`);
+        iwImageLeftArrow.setAttribute('ref', 'infowindowBoxSibRef');
+        iwImageRightArrow.setAttribute('ref', 'infowindowBoxSibRef');
+        // iwImageDiv.innerHTML = `<div style="background-image: url(http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg)"></div>`;
+        // iwImageLeftArrow.innerHTML = '<i className="fa fa-angle-left"></i>';
+        // iwImageRightArrow.innerHTML = '<i className="fa fa-angle-right"></i>';
+        iwImageLeftArrow.innerHTML = '<div>Left</div>';
+        iwImageRightArrow.innerHTML = '<div>Right</div>';
+        // const insertDiv = this.refs.infowindowSubBoxRef;
+        iwImageDiv.appendChild(iwImageLeftArrow);
+        iwImageDiv.appendChild(iwImageRightArrow);
+
+        //IW Details
+        const iwDetailDiv = document.createElement('iwDetailDiv');
+        iwDetailDiv.id = 'infowindow-box-Detail-box';
+        const iwDetailDescription = document.createElement('iwDetailDescription');
+        // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+        iwDetailDescription.innerHTML = `<div>${flat.description}</div>`;
+        const iwDetailArea = document.createElement('iwDetailDescription');
+        // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+        iwDetailArea.innerHTML = `<div>${flat.area}</div>`;
+        const iwDetailPrice = document.createElement('iwDetailPrice');
+        // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+        iwDetailPrice.innerHTML = `<div>$${flat.price_per_month}</div>`;
+
+        iwDetailDiv.appendChild(iwDetailDescription);
+        iwDetailDiv.appendChild(iwDetailArea);
+        iwDetailDiv.appendChild(iwDetailPrice);
+
+        iwDivParent.appendChild(iwImageDiv);
+        iwDivParent.appendChild(iwDetailDiv);
+
+        // div.innerHTML = `<div id="carousel-iw">
+        //   <div className="slide-iw" onclick="console.log('Hello from the left side')">
+        //     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
+        //   </div>
+        //   <div className="slide-iw" onclick=" console.log('Hello from the right side') ">
+        //     <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[1].publicid}.jpg"> <br />
+        //   </div>
+        // </div>
+        // <a href="/show/${flat.id}" target="_blank">
+        //   <strong>${flat.description}</strong> <br />
+        //   ${flat.area} <br />
+        //   $${parseFloat(flat.price_per_month).toFixed(0)} per month
+        // </a>`;
+        // div.innerHTML = infowindowContent(flat);
+        // // div.onClick = function () { infowindowClickHandler(flat); };
+        // // infowindow.setPosition();
+        console.log('in google map, iwDivParent: ', iwDivParent);
+        infowindow.setContent(iwDivParent);
+        //******************************************
+        //************ createElement ***************
 
         // google.maps.event.addListener(div, 'clicked', function () {
         //   infowindowClickHandler(flat);
@@ -123,6 +212,18 @@ class GoogleMap extends Component {
         //    infowindowClickHandler(flat);
         //  };
         // });
+        google.maps.event.addDomListener(iwImageLeftArrow, 'click', function (marker) {
+          console.log('in googlemap, map iwImageLeftArrow clicked');
+          infowindowClickHandler(flat);
+        });
+        google.maps.event.addDomListener(iwImageRightArrow, 'click', function (marker) {
+          console.log('in googlemap, map iwImageRightArrow clicked');
+          infowindowClickHandler(flat);
+        });
+        google.maps.event.addDomListener(iwDetailDiv, 'click', function (marker) {
+          console.log('in googlemap, map iwDetailDiv clicked');
+          infowindowClickHandler(flat);
+        });
       });
       //end of _.each
 
@@ -192,6 +293,10 @@ class GoogleMap extends Component {
     // }
   }
 
+  infowindowClickHandler = (flat) => {
+    console.log('in google map, infowindowClickHandler, arrow clicked', flat);
+  }
+
   render() {
     //this.refs.map gives reference to this element
     return <div ref="map" />;
@@ -200,10 +305,11 @@ class GoogleMap extends Component {
 // end of class
 
 function infowindowContent(flat) {
-  console.log('in googlemaps in infowindowContent flat: ', flat.images[0].publicid);
-  const content =
+  console.log('in googlemaps in infowindowContent flat: ', flat.images);
+
+  const infowindowContent =
   `<div id="carousel-iw">
-    <div className="slide-iw" onclick=" console.log('Hello from the left side') ">
+    <div className="slide-iw" onclick="console.log('Hello from the left side');">
       <img src="http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg"> <br />
     </div>
     <div className="slide-iw" onclick=" console.log('Hello from the right side') ">
@@ -215,8 +321,15 @@ function infowindowContent(flat) {
     ${flat.area} <br />
     $${parseFloat(flat.price_per_month).toFixed(0)} per month
   </a>`;
+
+//   const store = [];
+// const oldf = console.log;
+//   console.log = function (){
+//    store.push(arguments);
+//    oldf.apply(console, arguments);
+// }
   return (
-    content
+    infowindowContent
   );
 }
 // function infowindowContent(flat) {
