@@ -145,15 +145,29 @@ export function selectedFlatFromParams(id) {
   };
 }
 
-export function incrementImageIndex() {
+export function incrementImageIndex(indexAtMax, maxImageIndex) {
   console.log('in actions incrementImageIndex');
+  if (indexAtMax) {
+    return {
+      type: INCREMENT_IMAGE_INDEX,
+      payload: -maxImageIndex
+    };
+  }
   return {
-    type: INCREMENT_IMAGE_INDEX
+    type: INCREMENT_IMAGE_INDEX,
+    payload: 1
   };
 }
-export function decrementImageIndex() {
+export function decrementImageIndex(indexAtZero, maxImageIndex) {
   console.log('in actions decrementImageIndex');
+  if (indexAtZero) {
+    return {
+      type: DECREMENT_IMAGE_INDEX,
+      payload: -maxImageIndex
+    };
+  }
   return {
-    type: DECREMENT_IMAGE_INDEX
+    type: DECREMENT_IMAGE_INDEX,
+    payload: 1
   };
 }

@@ -213,16 +213,21 @@ class GoogleMap extends Component {
       //  };
       // });
       google.maps.event.addDomListener(iwImageLeftArrow, 'click', (marker) => {
+        let indexAtZero = false;
         console.log('in googlemap, map iwImageLeftArrow clicked');
         // console.log('in googlemap, map iwImageLeftArrow clicked, infowindowClickHandler', infowindowClickHandler(flat));
-        const maxNumOfImages = infowindowClickHandler(flat);
-        const maxImageIndex = maxNumOfImages.length - 1;
+        // const maxNumOfImages = infowindowClickHandler(flat);
+        const maxImageIndex = flat.images.length - 1;
         console.log('in googlemap, iwImageLeftArrow, maxImageIndex:', maxImageIndex);
         console.log('in googlemap, iwImageLeftArrow, this.props.imageIndex, before if statement:', this.props.imageIndex.count);
         if (this.props.imageIndex.count <= 0) {
           console.log('in googlemap, iwImageLeftArrow, if statement, we are at 0');
+          indexAtZero = true;
+          console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
+          this.props.decrementImageIndex(indexAtZero, maxImageIndex);
         } else {
-          this.props.decrementImageIndex();
+          this.props.decrementImageIndex(indexAtZero, maxImageIndex);
+          console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
         }
         console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
         // console.log('in googlemap, map iwImageLeftArrow clicked, this.props.imageIndex', this.props.imageIndex);
@@ -230,22 +235,26 @@ class GoogleMap extends Component {
       });
 
       google.maps.event.addDomListener(iwImageRightArrow, 'click', (marker) => {
+        let indexAtMax = false;
         console.log('in googlemap, map iwImageRightArrow clicked');
-        const maxNumOfImages = infowindowClickHandler(flat);
-        const maxImageIndex = maxNumOfImages.length - 1;
+        // const maxNumOfImages = infowindowClickHandler(flat);
+        const maxImageIndex = flat.images.length - 1;
 
         console.log('in googlemap, iwImageRightArrow, maxImageIndex:', maxImageIndex);
         console.log('in googlemap, iwImageRightArrow, this.props.imageIndex.count before if statement:', this.props.imageIndex.count);
 
         if (this.props.imageIndex.count >= maxImageIndex) {
           console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
+          indexAtMax = true;
+          this.props.incrementImageIndex(indexAtMax, maxImageIndex);
+          console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         } else {
-          this.props.incrementImageIndex();
+          this.props.incrementImageIndex(indexAtMax, maxImageIndex);
+          console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         }
-
         console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
-
       });
+
       google.maps.event.addDomListener(iwDetailDiv, 'click', function (marker) {
         console.log('in googlemap, map iwDetailDiv clicked');
         infowindowClickHandler(flat);
