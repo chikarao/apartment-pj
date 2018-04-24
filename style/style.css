@@ -69,7 +69,7 @@ body > div:first-child {
 /* ************MAP**************** */
 
 #map {
-  height: 350px;
+  height: 400px;
   /* width: 100%; */
   /* position: relative; */
   /* background-color: lightgray; */
@@ -99,9 +99,11 @@ body > div:first-child {
    } */
 
 gm-style-iw {
+  top: 0px !important;
+  left: -10px !important;
   color: gray;
   font-weight: bold;
-  padding: 10px;
+  /* padding: 10px; */
   /* display: none; */
   pointer-events: none;
 }
@@ -167,6 +169,8 @@ a {
   justify-content: space-around;
   padding-bottom: 5px;
 }
+/* Do not display close icon in IW */
+.gm-style-iw + div {display: none;}
 
 #carousel-iw {
   /* width: 100%;
@@ -183,8 +187,8 @@ a {
 }
 
 #infowindow-box-image-box {
-  height: 140px;
-  width: 200px;
+  height: 200px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
 
@@ -197,12 +201,16 @@ a {
   padding: 0;
   background-position: center;
 }
-#infowindow-box-image-box-sib div:first-child {
-  height: 100px;
-  width: 100px;
+#infowindow-box-image-box-sib {
+  height: 100%;
+  width: 150px;
 
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-content: center !important;
+}
+#infowindow-box-image-box-sib div {
+  height: 25% !important;
+  width: 100% !important;
 }
 
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -142,5 +142,18 @@ export function selectedFlatFromParams(id) {
         payload: response.data.data.flat
     });
   });
+  };
+}
+
+export function incrementImageIndex() {
+  console.log('in actions incrementImageIndex');
+  return {
+    type: INCREMENT_IMAGE_INDEX
+  };
+}
+export function decrementImageIndex() {
+  console.log('in actions decrementImageIndex');
+  return {
+    type: DECREMENT_IMAGE_INDEX
   };
 }

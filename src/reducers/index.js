@@ -4,6 +4,7 @@ import { reducer as form } from 'redux-form';
 import authReducer from './auth_reducer';
 import flatsReducer from './flats_reducer';
 import mapReducer from './map_reducer';
+import imageCountReducer from './image_count_reducer';
 
 const rootReducer = combineReducers({
   form,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   flats: flatsReducer,
   flat: flatsReducer,
   flatFromParams: flatsReducer,
-  mapBounds: mapReducer
+  mapBounds: mapReducer,
+  imageIndex: imageCountReducer
   // can access mapbounds.east .west., etc
 });
 
