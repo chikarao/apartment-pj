@@ -216,12 +216,14 @@ class GoogleMap extends Component {
         console.log('in googlemap, map iwImageLeftArrow clicked');
         // console.log('in googlemap, map iwImageLeftArrow clicked, infowindowClickHandler', infowindowClickHandler(flat));
         const maxNumOfImages = infowindowClickHandler(flat);
-        console.log('in googlemap, iwImageLeftArrow, maxNumOfImages:', maxNumOfImages);
+        const maxImageIndex = maxNumOfImages.length - 1;
+        console.log('in googlemap, iwImageLeftArrow, maxImageIndex:', maxImageIndex);
         console.log('in googlemap, iwImageLeftArrow, this.props.imageIndex, before if statement:', this.props.imageIndex.count);
-        if (this.props.imageIndex.count === 0) {
+        if (this.props.imageIndex.count <= 0) {
           console.log('in googlemap, iwImageLeftArrow, if statement, we are at 0');
+        } else {
+          this.props.decrementImageIndex();
         }
-        this.props.decrementImageIndex();
         console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
         // console.log('in googlemap, map iwImageLeftArrow clicked, this.props.imageIndex', this.props.imageIndex);
         // infowindowClickHandler(flat);
@@ -230,10 +232,12 @@ class GoogleMap extends Component {
       google.maps.event.addDomListener(iwImageRightArrow, 'click', (marker) => {
         console.log('in googlemap, map iwImageRightArrow clicked');
         const maxNumOfImages = infowindowClickHandler(flat);
-        console.log('in googlemap, iwImageRightArrow, maxNumOfImages:', maxNumOfImages);
+        const maxImageIndex = maxNumOfImages.length - 1;
+
+        console.log('in googlemap, iwImageRightArrow, maxImageIndex:', maxImageIndex);
         console.log('in googlemap, iwImageRightArrow, this.props.imageIndex.count before if statement:', this.props.imageIndex.count);
 
-        if (this.props.imageIndex.count <= maxNumOfImages) {
+        if (this.props.imageIndex.count >= maxImageIndex) {
           console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
         } else {
           this.props.incrementImageIndex();
