@@ -158,8 +158,8 @@ class GoogleMap extends Component {
       // iwImageDiv.innerHTML = `<div style="background-image: url(http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg)"></div>`;
       // iwImageLeftArrow.innerHTML = '<i className="fa fa-angle-left"></i>';
       // iwImageRightArrow.innerHTML = '<i className="fa fa-angle-right"></i>';
-      iwImageLeftArrow.innerHTML = '<div>Left</div>';
-      iwImageRightArrow.innerHTML = '<div>Right</div>';
+      iwImageLeftArrow.innerHTML = '<div style="font-size: 20px; color: gray; font-weight: bold;"><<</div>';
+      iwImageRightArrow.innerHTML = '<div style="font-size: 20px; color: gray;font-weight: bold;">>></div>';
       // const insertDiv = this.refs.infowindowSubBoxRef;
       iwImageDiv.appendChild(iwImageLeftArrow);
       iwImageDiv.appendChild(iwImageRightArrow);
@@ -204,7 +204,7 @@ class GoogleMap extends Component {
       infowindow.setContent(iwDivParent);
       //******************************************
       //************ createElement ***************
-
+      testFunction();
       // google.maps.event.addListener(div, 'clicked', function () {
       //   infowindowClickHandler(flat);
       // });
@@ -233,6 +233,7 @@ class GoogleMap extends Component {
         console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
         // console.log('in googlemap, map iwImageLeftArrow clicked, this.props.imageIndex', this.props.imageIndex);
         // infowindowClickHandler(flat);
+        document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       });
 
       google.maps.event.addDomListener(iwImageRightArrow, 'click', (marker) => {
@@ -254,6 +255,8 @@ class GoogleMap extends Component {
           console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         }
           console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
+          document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
+
       });
 
       google.maps.event.addDomListener(iwDetailDiv, 'click', function () {
@@ -404,6 +407,9 @@ function infowindowClickHandler(flat) {
   return (
     maxNumOfImages
   );
+}
+function testFunction() {
+  console.log('in google map, testFunction!!!!!!!');
 }
 
 function mapStateToProps(state) {
