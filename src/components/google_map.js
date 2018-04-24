@@ -57,8 +57,7 @@ class GoogleMap extends Component {
           lng: flat.lng
         },
         map,
-        // flatName: flat.description,
-        // flatArea: flat.area
+        flatId: flat.id
       });
       //
 
@@ -122,7 +121,8 @@ class GoogleMap extends Component {
         // infowindow.setContent(div);
 //
         infowindow.open(map, marker);
-        console.log('in google map, marker clicked');
+        console.log('in google map, marker addlistener clicked');
+        console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
         // infowindowClickHandler(flat);
       });
       marker.addListener('click', (event) => {
@@ -130,6 +130,7 @@ class GoogleMap extends Component {
         const longitude = event.latLng.lng();
         console.log('in googlemaps clicked marker latitude: ', latitude);
         console.log('in googlemaps clicked marker longitude: ', longitude);
+        // console.log('in googlemaps clicked marker longitude: ', event);
       });
       // createMarkers(flat)
       // infowindow.addListener('click', (event) => {
@@ -151,7 +152,7 @@ class GoogleMap extends Component {
       const iwImageRightArrow = document.createElement('iwImageRightArrow');
       iwImageLeftArrow.className = 'infowidow-box-image-box-sib';
       iwImageRightArrow.className = 'infowidow-box-image-box-sib';
-      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[0].publicid}.jpg)`);
+      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       iwImageLeftArrow.setAttribute('ref', 'infowindowBoxSibRef');
       iwImageRightArrow.setAttribute('ref', 'infowindowBoxSibRef');
       // iwImageDiv.innerHTML = `<div style="background-image: url(http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg)"></div>`;
@@ -252,12 +253,15 @@ class GoogleMap extends Component {
           this.props.incrementImageIndex(indexAtMax, maxImageIndex);
           console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         }
-        console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
+          console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
       });
 
-      google.maps.event.addDomListener(iwDetailDiv, 'click', function (marker) {
-        console.log('in googlemap, map iwDetailDiv clicked');
-        infowindowClickHandler(flat);
+      google.maps.event.addDomListener(iwDetailDiv, 'click', function () {
+        console.log('in googlemap, map iwDetailDiv clicked, marker', iwDetailDiv);
+        console.log('in googlemap, map iwDetailDiv clicked, marker', marker.flatId);
+        // infowindowClickHandler(flat);
+        const win = window.open(`/show/${marker.flatId}`, '_blank');
+        win.focus();
       });
     });
     //end of _.each
