@@ -149,3 +149,20 @@
       font-size: 12px;
       font-weight: bold;
   }
+
+  .gm-style-iw div div div div div {
+    height: 125px !important;
+    width: 125px !important;
+    /* background-color: lightgray; */
+    padding: 0px;
+    margin: 5px 5px 0px 0px;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    /* background-size: cover; */
+    background-size: cover !important;
+    padding: 0;
+    background-position: center;
+    /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
+  }

@@ -91,13 +91,13 @@ class Carousel extends Component {
           <div className="card">
             <div className={(this.props.cardOrInfoWindow ? 'card-box-infowindow' : 'card-box')}>
               <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
-              <i className="fa fa-angle-left"></i>
+                <i className="fa fa-angle-left"></i>
               </div>
               <div className="card-cover">
                 Hello!
               </div>
               <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
-              <i className="fa fa-angle-right"></i>
+                <i className="fa fa-angle-right"></i>
               </div>
             </div>
           </div>

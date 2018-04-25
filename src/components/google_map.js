@@ -144,38 +144,57 @@ class GoogleMap extends Component {
       const iwDivParent = document.createElement('div');
 
       // Image div
-      const iwImageDiv = document.createElement('iwImageDiv');
+      const iwImageDiv = document.createElement('div');
       iwImageDiv.id = 'infowindow-box-image-box';
       // div.ref = 'infowindow-box-ref';
       iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
-      const iwImageLeftArrow = document.createElement('iwImageLeftArrow');
-      const iwImageRightArrow = document.createElement('iwImageRightArrow');
-      iwImageLeftArrow.className = 'infowidow-box-image-box-sib';
-      iwImageRightArrow.className = 'infowidow-box-image-box-sib';
       iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
-      iwImageLeftArrow.setAttribute('ref', 'infowindowBoxSibRef');
-      iwImageRightArrow.setAttribute('ref', 'infowindowBoxSibRef');
-      // iwImageDiv.innerHTML = `<div style="background-image: url(http://res.cloudinary.com/chikarao/image/upload/v1524032785/${flat.images[0].publicid}.jpg)"></div>`;
-      // iwImageLeftArrow.innerHTML = '<i className="fa fa-angle-left"></i>';
-      // iwImageRightArrow.innerHTML = '<i className="fa fa-angle-right"></i>';
-      iwImageLeftArrow.innerHTML = '<div style="font-size: 20px; color: gray; font-weight: bold;"><<</div>';
-      iwImageRightArrow.innerHTML = '<div style="font-size: 20px; color: gray;font-weight: bold;">>></div>';
+
+      const iwImageLeftArrowDiv = document.createElement('div');
+      const iwImageRightArrowDiv = document.createElement('div');
+      // iwImageLeftArrow.className = 'infowidow-box-image-box-sib';
+      // iwImageRightArrow.className = 'infowidow-box-image-box-sib';
+      // iwImageLeftArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
+      // iwImageRightArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
+      iwImageLeftArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
+      iwImageRightArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
+
+      iwImageLeftArrowDiv.id = 'infowindow-box-image-box-sib';
+      iwImageRightArrowDiv.id = 'infowindow-box-image-box-sib';
+
+      console.log('in google maps, create IW elements, iwImageLeftArrowDiv: ', iwImageLeftArrowDiv);
+      iwImageDiv.appendChild(iwImageLeftArrowDiv);
+      iwImageDiv.appendChild(iwImageRightArrowDiv);
+
+      const iwImageLeftArrow = document.createElement('div');
+      const iwImageRightArrow = document.createElement('div');
+
+      iwImageLeftArrow.setAttribute('class', 'iw-arrow');
+      iwImageRightArrow.setAttribute('class', 'iw-arrow');
+      iwImageLeftArrow.setAttribute('style', 'style="font-size: 20px; color: gray; font-weight: bold;"');
+      iwImageRightArrow.setAttribute('style', 'style="font-size: 20px; color: gray; font-weight: bold;"');
+      iwImageLeftArrow.textContent = '<';
+      iwImageRightArrow.textContent = '>';
+
+      iwImageLeftArrowDiv.appendChild(iwImageLeftArrow);
+      iwImageRightArrowDiv.appendChild(iwImageRightArrow);
+
+      // iwImageLeftArrow.innerHTML = '<div class="iw-arrow" style="font-size: 20px; color: gray; font-weight: bold;">Left';
+      // iwImageRightArrow.innerHTML = '<div class="iw-arrow" style="font-size: 20px; color: gray;font-weight: bold;">Right';
       // const insertDiv = this.refs.infowindowSubBoxRef;
-      iwImageDiv.appendChild(iwImageLeftArrow);
-      iwImageDiv.appendChild(iwImageRightArrow);
 
       //IW Details
-      const iwDetailDiv = document.createElement('iwDetailDiv');
+      const iwDetailDiv = document.createElement('div');
       iwDetailDiv.id = 'infowindow-box-Detail-box';
-      const iwDetailDescription = document.createElement('iwDetailDescription');
+      const iwDetailDescription = document.createElement('div');
       // iwDetailDescription.id = 'infowidow-box-image-box-sib';
       iwDetailDescription.innerHTML = `<div style="color: gray; padding-top: 10px;"><strong>${flat.description}</strong></div>`;
-      const iwDetailArea = document.createElement('iwDetailDescription');
+      const iwDetailArea = document.createElement('div');
       // iwDetailDescription.id = 'infowidow-box-image-box-sib';
       iwDetailArea.innerHTML = `<div>${flat.area}</div>`;
-      const iwDetailPrice = document.createElement('iwDetailPrice');
+      const iwDetailPrice = document.createElement('div');
       // iwDetailDescription.id = 'infowidow-box-image-box-sib';
-      iwDetailPrice.innerHTML = `<div>$${flat.price_per_month}</div>`;
+      iwDetailPrice.innerHTML = `<div>${this.props.currency}${parseFloat(flat.price_per_month).toFixed(0)}</div>`;
 
       iwDetailDiv.appendChild(iwDetailDescription);
       iwDetailDiv.appendChild(iwDetailArea);
@@ -204,7 +223,6 @@ class GoogleMap extends Component {
       infowindow.setContent(iwDivParent);
       //******************************************
       //************ createElement ***************
-      testFunction();
       // google.maps.event.addListener(div, 'clicked', function () {
       //   infowindowClickHandler(flat);
       // });
@@ -213,7 +231,15 @@ class GoogleMap extends Component {
       //    infowindowClickHandler(flat);
       //  };
       // });
-      google.maps.event.addDomListener(iwImageLeftArrow, 'click', (marker) => {
+      google.maps.event.addListener(infowindow, 'domready', () => {
+        const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+        console.log('in googlemap, infowindow domready', gmStyleIw);
+        // const iwBackground = gmStyleIw.prev();
+        // console.log('in googlemap, infowindow domready', iwBackground);
+
+      });
+
+      google.maps.event.addDomListener(iwImageLeftArrowDiv, 'click', (marker) => {
         let indexAtZero = false;
         console.log('in googlemap, map iwImageLeftArrow clicked');
         // console.log('in googlemap, map iwImageLeftArrow clicked, infowindowClickHandler', infowindowClickHandler(flat));
@@ -236,7 +262,7 @@ class GoogleMap extends Component {
         document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       });
 
-      google.maps.event.addDomListener(iwImageRightArrow, 'click', (marker) => {
+      google.maps.event.addDomListener(iwImageRightArrowDiv, 'click', (marker) => {
         let indexAtMax = false;
         console.log('in googlemap, map iwImageRightArrow clicked');
         // const maxNumOfImages = infowindowClickHandler(flat);
