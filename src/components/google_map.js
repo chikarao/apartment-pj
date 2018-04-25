@@ -44,10 +44,12 @@ class GoogleMap extends Component {
          }
     });
 
+    let infowindowArray = [];
+
     _.each(this.props.flats, flat => {
       // console.log('flat: ', flat.flatName);
 
-      // console.log('in google map, infowidow, infowindowContent: ', infowindowContent(flat));
+      // console.log('in google map, infowindow, infowindowContent: ', infowindowContent(flat));
 
       const marker = new google.maps.Marker({
         key: flat.id,
@@ -84,6 +86,8 @@ class GoogleMap extends Component {
         // content: contentString
       });
 
+      infowindowArray.push(infowindow);
+      console.log('in google map, componentDidMount, infowindowArray: ', infowindowArray);
       // const infoboxContent = infowindowContent(flat);
       // const infoboxContent = '<carousel />';
       //
@@ -107,6 +111,7 @@ class GoogleMap extends Component {
       //
       // const infowindow = new InfoBox(infoboxOptions);
       // infowindow.open(map, marker);
+
 
       marker.addListener('click', () => {
         // map.setZoom(14);
@@ -138,7 +143,7 @@ class GoogleMap extends Component {
       // });
 
       //******************************************
-      //************ createElement ***************
+      //************ INFOWINDOW createElement ***************
       // console.log('in googlemaps info window, flat: ', flat);
       //Parent Div has image div and detaildiv as immediate children
       const iwDivParent = document.createElement('div');
@@ -152,8 +157,8 @@ class GoogleMap extends Component {
 
       const iwImageLeftArrowDiv = document.createElement('div');
       const iwImageRightArrowDiv = document.createElement('div');
-      // iwImageLeftArrow.className = 'infowidow-box-image-box-sib';
-      // iwImageRightArrow.className = 'infowidow-box-image-box-sib';
+      // iwImageLeftArrow.className = 'infowindow-box-image-box-sib';
+      // iwImageRightArrow.className = 'infowindow-box-image-box-sib';
       // iwImageLeftArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
       // iwImageRightArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
       iwImageLeftArrowDiv.setAttribute = ('class', 'infowindow-box-image-box-sib');
@@ -162,7 +167,7 @@ class GoogleMap extends Component {
       iwImageLeftArrowDiv.id = 'infowindow-box-image-box-sib';
       iwImageRightArrowDiv.id = 'infowindow-box-image-box-sib';
 
-      console.log('in google maps, create IW elements, iwImageLeftArrowDiv: ', iwImageLeftArrowDiv);
+      // console.log('in google maps, create IW elements, iwImageLeftArrowDiv: ', iwImageLeftArrowDiv);
       iwImageDiv.appendChild(iwImageLeftArrowDiv);
       iwImageDiv.appendChild(iwImageRightArrowDiv);
 
@@ -171,8 +176,6 @@ class GoogleMap extends Component {
 
       iwImageLeftArrow.setAttribute('class', 'iw-arrow');
       iwImageRightArrow.setAttribute('class', 'iw-arrow');
-      iwImageLeftArrow.setAttribute('style', 'style="font-size: 20px; color: gray; font-weight: bold;"');
-      iwImageRightArrow.setAttribute('style', 'style="font-size: 20px; color: gray; font-weight: bold;"');
       iwImageLeftArrow.textContent = '<';
       iwImageRightArrow.textContent = '>';
 
@@ -187,13 +190,13 @@ class GoogleMap extends Component {
       const iwDetailDiv = document.createElement('div');
       iwDetailDiv.id = 'infowindow-box-Detail-box';
       const iwDetailDescription = document.createElement('div');
-      // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+      // iwDetailDescription.id = 'infowindow-box-image-box-sib';
       iwDetailDescription.innerHTML = `<div style="color: gray; padding-top: 10px;"><strong>${flat.description}</strong></div>`;
       const iwDetailArea = document.createElement('div');
-      // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+      // iwDetailDescription.id = 'infowindow-box-image-box-sib';
       iwDetailArea.innerHTML = `<div>${flat.area}</div>`;
       const iwDetailPrice = document.createElement('div');
-      // iwDetailDescription.id = 'infowidow-box-image-box-sib';
+      // iwDetailDescription.id = 'infowindow-box-image-box-sib';
       iwDetailPrice.innerHTML = `<div>${this.props.currency}${parseFloat(flat.price_per_month).toFixed(0)}</div>`;
 
       iwDetailDiv.appendChild(iwDetailDescription);
@@ -222,7 +225,7 @@ class GoogleMap extends Component {
       console.log('in google map, iwDivParent: ', iwDivParent);
       infowindow.setContent(iwDivParent);
       //******************************************
-      //************ createElement ***************
+      //************ INFOWINDOW createElement ***************
       // google.maps.event.addListener(div, 'clicked', function () {
       //   infowindowClickHandler(flat);
       // });
@@ -335,6 +338,9 @@ class GoogleMap extends Component {
       const longitude = event.latLng.lng();
       console.log('in googlemaps clicked latitude: ', latitude);
       console.log('in googlemaps clicked longitude: ', longitude);
+      for (let i = 0; i < infowindowArray.length; i++) {
+        infowindowArray[i].close();
+      }
     }); //end addListener
   }
   //end of componentDidMount
