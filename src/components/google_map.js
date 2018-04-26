@@ -61,10 +61,10 @@ class GoogleMap extends Component {
       // console.log('flat: ', flat.flatName);
 
       // console.log('in google map, infowindow, infowindowContent: ', infowindowContent(flat));
+      // const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 
       const marker = new google.maps.Marker({
         key: flat.id,
-        label: '',
         position: {
           lat: flat.lat,
           lng: flat.lng
@@ -73,6 +73,7 @@ class GoogleMap extends Component {
         flatId: flat.id
       });
       //
+      // marker.setLabel('b');
 
       // const contentString =
       // `<div id="carousel-iw">
@@ -98,7 +99,7 @@ class GoogleMap extends Component {
       });
 
       infowindowArray.push(infowindow);
-      console.log('in google map, componentDidMount, infowindowArray: ', infowindowArray);
+      // console.log('in google map, componentDidMount, infowindowArray: ', infowindowArray);
       // const infoboxContent = infowindowContent(flat);
       // const infoboxContent = '<carousel />';
       //
@@ -246,33 +247,15 @@ class GoogleMap extends Component {
       //  };
       // });
       google.maps.event.addListener(infowindow, 'domready', () => {
+        // gets infowindow element, returns array of HTML so get the first element in array
         const gmStyleIw = document.getElementsByClassName('gm-style-iw');
         const iwBackground = gmStyleIw[0].previousSibling;
+        //gets the element with the white background and assign style of display none
         const iwBackgroundWhite = iwBackground.lastChild;
-        console.log('in googlemap, infowindow domready, iwBackgroundWhite', iwBackgroundWhite);
-        // const iwBackground = gmStyleIw[0].previousSibling;
         iwBackgroundWhite.style.display = 'none';
-        // gmStyleIw.setAttribute('style', 'display: none;');
+        // get element with shadow behind the IW and assign style of display none; item number is index
         const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
-        // const iwBackgroundShadow = iwBackground.lastChild;
-        console.log('in googlemap, infowindow domready, iwBackgroundShadow', iwBackgroundShadow);
         iwBackgroundShadow.style.display = 'none';
-
-
-        console.log('in googlemap, infowindow domready, gm-style-iw', gmStyleIw[0]);
-        console.log('in googlemap, infowindow domready, gm-style-iw previousSibling', iwBackground);
-        const mapDiv = document.getElementById('map');
-        const gmStyleIwFromMapDiv = mapDiv.getElementsByTagName('div').item(4);
-        console.log('in googlemap, infowindow domready, nth div item from #map div', gmStyleIwFromMapDiv);
-        console.log('in googlemap, infowindow domready, #map', mapDiv);
-        const mapDivChildren = mapDiv.children;
-        console.log('in googlemap, infowindow domready, iwWhiteBackground', mapDivChildren);
-        // const iwBackground = gmStyleIw.prev();
-        // console.log('in googlemap, infowindow domready', iwBackground);
-        const gmStyle = document.getElementsByClassName('gm-style');
-        const gmStyleChildren = gmStyle.children;
-        console.log('in googlemap, infowindow domready, gm-style.children', gmStyleChildren);
-
       });
 
       google.maps.event.addDomListener(iwImageLeftArrowDiv, 'click', (marker) => {

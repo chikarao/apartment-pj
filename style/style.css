@@ -98,10 +98,10 @@ body > div:first-child {
   width: 100px;
    } */
 
-gm-style-iw {
+.gm-style-iw {
   width: 350px !important;
-  top: 0 !important;
-  left: 0 !important;
+  top: 18px !important;
+  left: 0px !important;
 
   /* color: gray; */
   /* font-weight: bold; */
