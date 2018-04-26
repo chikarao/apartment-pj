@@ -62,6 +62,19 @@ class GoogleMap extends Component {
 
       // console.log('in google map, infowindow, infowindowContent: ', infowindowContent(flat));
       // const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+      const markerLabel = `$${parseFloat(flat.price_per_month).toFixed(0)}`;
+      // Marker sizes are expressed as a Size of X,Y where the origin of the image
+      // (0,0) is located in the top left of the image.
+      var markerIcon = {
+        url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+        // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+        scaledSize: new google.maps.Size(40, 40),
+        origin: new google.maps.Point(0, 0),
+        //anchor starts at 0,0 at left corner of marker
+        anchor: new google.maps.Point(20, 40),
+        //label origin starts at 0, 0 somewhere above the marker
+        labelOrigin: new google.maps.Point(20, 60)
+        };
 
       const marker = new google.maps.Marker({
         key: flat.id,
@@ -70,7 +83,13 @@ class GoogleMap extends Component {
           lng: flat.lng
         },
         map,
-        flatId: flat.id
+        flatId: flat.id,
+        icon: markerIcon,
+        label: markerLabel
+        //this is for the MarkerWithLabel library; somehow it doesn't work
+        // labelAnchor: new google.maps.Point(20, 60),
+        // labelClass: 'gm-marker-label', // your desired CSS class
+        // labelInBackground: true
       });
       //
       // marker.setLabel('b');
@@ -209,7 +228,7 @@ class GoogleMap extends Component {
       iwDetailArea.innerHTML = `<div>${flat.area}</div>`;
       const iwDetailPrice = document.createElement('div');
       // iwDetailDescription.id = 'infowindow-box-image-box-sib';
-      iwDetailPrice.innerHTML = `<div>${this.props.currency}${parseFloat(flat.price_per_month).toFixed(0)}</div>`;
+      iwDetailPrice.innerHTML = `<div>${this.props.currency}${parseFloat(flat.price_per_month).toFixed(0)} per month</div>`;
 
       iwDetailDiv.appendChild(iwDetailDescription);
       iwDetailDiv.appendChild(iwDetailArea);

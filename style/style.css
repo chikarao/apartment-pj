@@ -199,6 +199,7 @@ body > div:first-child {
 #infowindow-box-Detail-box {
   background-color: white !important;
   padding: 5px;
+  padding-bottom: 10px;
   border-radius: 0 0 5px 5px;
 }
 /* .infowindow-box-Detail-box div {
@@ -213,6 +214,20 @@ body > div:first-child {
   /* font-weight: bold; */
   margin: 0px !important;
   padding: 0;
+}
+
+.gm-marker-label {
+  width: 50px;
+  height: 20px;
+
+  border: 1px solid #eb3a44;
+  border-radius: 5px;
+  background: #fee1d7;
+  text-align: center;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #eb3a44;
 }
 
 
