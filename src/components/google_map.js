@@ -37,14 +37,25 @@ class GoogleMap extends Component {
       disableDefaultUI: true,
       zoomControl: true,
       scaleControl: true,
-       mapTypeControl: true,
-       mapTypeControlOptions: {
+      mapTypeControl: true,
+      mapTypeControlOptions: {
            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
            mapTypeIds: ['roadmap', 'terrain']
-         }
-    });
+      },
+      clickableIcons: false
+      //hide POIs
+      // styles: [
+      //   {
+      //     featureType: 'poi',
+      //     stylers: [
+      //       { visibility: 'off' }
+      //     ]
+      //   }
+      // ]
 
-    let infowindowArray = [];
+    });
+    // required infowindowArray to close infowindow on map click
+    const infowindowArray = [];
 
     _.each(this.props.flats, flat => {
       // console.log('flat: ', flat.flatName);
@@ -236,9 +247,31 @@ class GoogleMap extends Component {
       // });
       google.maps.event.addListener(infowindow, 'domready', () => {
         const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-        console.log('in googlemap, infowindow domready', gmStyleIw);
+        const iwBackground = gmStyleIw[0].previousSibling;
+        const iwBackgroundWhite = iwBackground.lastChild;
+        console.log('in googlemap, infowindow domready, iwBackgroundWhite', iwBackgroundWhite);
+        // const iwBackground = gmStyleIw[0].previousSibling;
+        iwBackgroundWhite.style.display = 'none';
+        // gmStyleIw.setAttribute('style', 'display: none;');
+        const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
+        // const iwBackgroundShadow = iwBackground.lastChild;
+        console.log('in googlemap, infowindow domready, iwBackgroundShadow', iwBackgroundShadow);
+        iwBackgroundShadow.style.display = 'none';
+
+
+        console.log('in googlemap, infowindow domready, gm-style-iw', gmStyleIw[0]);
+        console.log('in googlemap, infowindow domready, gm-style-iw previousSibling', iwBackground);
+        const mapDiv = document.getElementById('map');
+        const gmStyleIwFromMapDiv = mapDiv.getElementsByTagName('div').item(4);
+        console.log('in googlemap, infowindow domready, nth div item from #map div', gmStyleIwFromMapDiv);
+        console.log('in googlemap, infowindow domready, #map', mapDiv);
+        const mapDivChildren = mapDiv.children;
+        console.log('in googlemap, infowindow domready, iwWhiteBackground', mapDivChildren);
         // const iwBackground = gmStyleIw.prev();
         // console.log('in googlemap, infowindow domready', iwBackground);
+        const gmStyle = document.getElementsByClassName('gm-style');
+        const gmStyleChildren = gmStyle.children;
+        console.log('in googlemap, infowindow domready, gm-style.children', gmStyleChildren);
 
       });
 

@@ -175,6 +175,7 @@ gm-style-iw {
   background-size: cover !important;
   padding: 0;
   background-position: center;
+  border-radius: 5px 5px 0 0;
 }
 
 #infowindow-box-image-box-sib {
@@ -194,6 +195,16 @@ gm-style-iw {
   height: 30px !important;
   width: 25% !important;
 } */
+
+#infowindow-box-Detail-box {
+  background-color: white !important;
+  padding: 5px;
+  border-radius: 0 0 5px 5px;
+}
+/* .infowindow-box-Detail-box div {
+  background-color: transparent !important;
+} */
+
 .iw-arrow {
   height: 30px !important;
   width: 50px !important;
