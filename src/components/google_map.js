@@ -85,7 +85,11 @@ class GoogleMap extends Component {
         map,
         flatId: flat.id,
         icon: markerIcon,
-        label: markerLabel
+        label: {
+          text: markerLabel,
+          fontWeight: 'bold'
+          // color: 'gray'
+        }
         //this is for the MarkerWithLabel library; somehow it doesn't work
         // labelAnchor: new google.maps.Point(20, 60),
         // labelClass: 'gm-marker-label', // your desired CSS class
@@ -117,6 +121,7 @@ class GoogleMap extends Component {
         // content: contentString
       });
 
+      //infowindowArray for closing all open infowindows at map click
       infowindowArray.push(infowindow);
       // console.log('in google map, componentDidMount, infowindowArray: ', infowindowArray);
       // const infoboxContent = infowindowContent(flat);
@@ -155,7 +160,6 @@ class GoogleMap extends Component {
         // div.onClick = function () { console.log('div clicked'); };
         // // infowindow.setPosition();
         // infowindow.setContent(div);
-//
         infowindow.open(map, marker);
         console.log('in google map, marker addlistener clicked');
         console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
@@ -253,7 +257,7 @@ class GoogleMap extends Component {
       // div.innerHTML = infowindowContent(flat);
       // // div.onClick = function () { infowindowClickHandler(flat); };
       // // infowindow.setPosition();
-      console.log('in google map, iwDivParent: ', iwDivParent);
+      // console.log('in google map, iwDivParent: ', iwDivParent);
       infowindow.setContent(iwDivParent);
       //******************************************
       //************ INFOWINDOW createElement ***************
@@ -363,9 +367,14 @@ class GoogleMap extends Component {
       };
 
       console.log('in googlemap, mapBounds: ', mapBounds);
-      // this.updateBounds(mapBounds);
-      this.props.updateMapBounds(mapBounds);
-      this.props.fetchFlats();
+
+      // updateMapBounds not available as app state obj but not currently used
+      // this.props.updateMapBounds(mapBounds);
+      // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
+
+      // if (mapBounds) {
+        this.props.fetchFlats(mapBounds);
+      // }
     });
 
     google.maps.event.addListener(map, 'click', function (event) {
@@ -373,6 +382,8 @@ class GoogleMap extends Component {
       const longitude = event.latLng.lng();
       console.log('in googlemaps clicked latitude: ', latitude);
       console.log('in googlemaps clicked longitude: ', longitude);
+
+      //close open infowindows
       for (let i = 0; i < infowindowArray.length; i++) {
         infowindowArray[i].close();
       }
@@ -481,7 +492,8 @@ function testFunction() {
 
 function mapStateToProps(state) {
   return {
-    imageIndex: state.imageIndex
+    imageIndex: state.imageIndex,
+    mapBounds: state.mapBounds
   };
 }
 

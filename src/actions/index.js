@@ -10,6 +10,8 @@ export function signinUser({ email, password }, callback) {
 //dispatch accepts action and forwards to all reducers;
 // main pipeline of redux; dispatch can wait for async
   // now can place lots of logic
+  console.log('in actions index, signinUser:');
+
   return function (dispatch) {
     // redux thunk let's us call dispatch method; returns action
     // submit email/password to the server
@@ -46,6 +48,8 @@ export function signinUser({ email, password }, callback) {
 }
 
 export function signupUser({ email, password }, callback) {
+  console.log('in actions index, signupUser:');
+
   return function (dispatch) {
     console.log({ user: { email, password } });
     axios.post(`${ROOT_URL}/api/v1/sign_up`, { user: { email, password } })
@@ -71,6 +75,7 @@ export function signupUser({ email, password }, callback) {
 }
 
 export function authError(error) {
+  console.log('in actions index, authError:');
   return {
     type: AUTH_ERROR,
     payload: error
@@ -78,6 +83,8 @@ export function authError(error) {
 }
 
 export function signoutUser() {
+  console.log('in actions index, signoutUser:');
+
   //flip authenticated to false
   // delete token from local storage
   localStorage.removeItem('token');
@@ -85,9 +92,12 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
-export function fetchFlats() {
+export function fetchFlats(mapBounds) {
+  const { north, south, east, west } = mapBounds;
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+
   return function (dispatch) {
-    axios.get(`${ROOT_URL}/api/v1/flats`, {
+    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { authorization: localStorage.getItem('token') }
     })
     .then(response => {
@@ -95,12 +105,14 @@ export function fetchFlats() {
       dispatch({
         type: FETCH_FLATS,
         payload: response.data.data.flats
+      });
     });
-  });
-};
+  };
 }
 
 export function fetchMessage() {
+  console.log('in actions index, fetchMessage:');
+
   return function (dispatch) {
     axios.get(ROOT_URL, {
       headers: { authorization: localStorage.getItem('token') }
@@ -122,6 +134,7 @@ export function updateMapBounds(mapBounds) {
   };
 }
 export function selectedFlat(flat) {
+  console.log('in actions index, selectedFlat:');
   console.log('in actions index, selectedFlat: ', flat);
   return {
     type: SELECTED_FLAT,

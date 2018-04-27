@@ -11,25 +11,51 @@ import MainCards from './cards/main_cards';
 
 
 class Feature extends Component {
-  constructor(props) {
-      super(props);
-      // this.state = {
-      //     isFetching: false
-      // };
-  }
-
 
   componentDidMount() {
-    let index = 1;
-    console.log('in feature componentDidMount, index: ', index);
-    // this.setState({ isFetching: true });
-    // this.props.fetchMessage();
-    this.props.fetchFlats();
+    // let index = 1;
+    // console.log('in feature componentDidMount, index: ', index);
+
+    // Set up initial mapBounds to make Mapbounds not undefined in action fetchFlats
+    // When able to obtain user location or search location, enter initial position here
+    // SF Transamerica touwer
+    const initialPosition = {
+      lat: 37.7952,
+      lng: -122.4029
+    };
+
+    // initial position offsets; based on zoom twelve of
+    //SF area showing tip of marin counth, tip of the sf peninsula, and tip of oakland
+    // const latOffsetNorth = 0.06629999999999825;
+    // const latOffsetSouth = -0.036700000000003286;
+    // const lngOffsetWest = -0.13469999999999516;
+    // const lngOffsetEast = 0.11589000000000738;
+    //wider offsets
+    const latOffsetNorth = 0.06629999999999825;
+    const latOffsetSouth = -0.036700000000003286;
+    const lngOffsetWest = -0.14;
+    const lngOffsetEast = 0.2;
+    // const latOffsetNorth = 37.8615 - initialPosition.lat; //about .07
+    // const latOffsetSouth = 37.7585 - initialPosition.lat; // about -.04
+    // const lngOffsetWest = -122.28701 - initialPosition.lng; //about .12
+    // const lngOffsetEast = -122.5376 - initialPosition.lng; // about -.13
+
+    console.log('in feature componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
+
+    const mapBounds = {
+      east: (initialPosition.lng + lngOffsetEast),
+      west: (initialPosition.lng + lngOffsetWest),
+      north: (initialPosition.lat + latOffsetNorth),
+      south: (initialPosition.lat + latOffsetSouth)
+    };
+
+    //initial call of fetchFlats to get initial set of flats
+    this.props.fetchFlats(mapBounds);
     // if (this.props.flats) {
     //   this.setState({ isFetching: false });
     // }
-    index = index + 1;
-    console.log('in feature componentDidMount, index after running: ', index);
+    // index = index + 1;
+    // console.log('in feature componentDidMount, index after running: ', index);
   }
 
   // componentWillReceiveProps() {
@@ -62,7 +88,7 @@ class Feature extends Component {
     if (!flatsEmpty) {
       // const { id } = this.props.flats[0];
       // console.log('in feature renderFlats, id: ', id);
-      console.log('here is the average lat lng: ', this.calculateLatLngAve(this.props.flats));
+      console.log('here is the average lat lng, feature from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       console.log('here is latLngAve: ', latLngAve);
       return (
@@ -92,10 +118,11 @@ class Feature extends Component {
     console.log('in feature renderFlats, flats data length: ', this.props.flats);
     const flatsEmpty = _.isEmpty(this.props.flats);
     console.log('in feature renderFlats, flats empty: ', flatsEmpty);
-    const randomNum = _.random(0, 1);
-    console.log('in feature renderFlats, randomNum: ', randomNum);
+    // const randomNum = _.random(0, 1);
+    // console.log('in feature renderFlats, randomNum: ', randomNum);
 
-      if (!flatsEmpty && randomNum === 0) {
+      // if (!flatsEmpty && randomNum === 1) {
+      if (!flatsEmpty) {
         // console.log('in feature renderFlats, this.props.flats.rooms: ', this.props.flats.rooms);
         // const { id } = this.props.flats[0];
         // console.log('in feature renderFlats, id: ', id);
