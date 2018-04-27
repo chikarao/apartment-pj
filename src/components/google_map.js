@@ -336,7 +336,6 @@ class GoogleMap extends Component {
       });
     });
     //end of _.each
-
     google.maps.event.addListener(map, 'idle', () => {
       console.log('in googlemap, map idle listener fired');
       const bounds = map.getBounds();
@@ -373,9 +372,10 @@ class GoogleMap extends Component {
       // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
       // if (mapBounds) {
-        this.props.fetchFlats(mapBounds);
+      this.props.fetchFlats(mapBounds);
       // }
     });
+
 
     google.maps.event.addListener(map, 'click', function (event) {
       const latitude = event.latLng.lat();

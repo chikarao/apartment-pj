@@ -28,33 +28,15 @@ class ShowFlat extends Component {
     const flatEmpty = _.isEmpty(this.props.flat);
     console.log('in show_flat renderFlat, flat empty: ', flatEmpty);
 
+
       if (!flatEmpty) {
         const { description, area, price_per_month, images } = this.props.flat.selectedFlat;
+        console.log('in show_flat renderFlat, renderImages: ', renderImages(images));
         return (
           <div>
             <div className="show-flat-image-box">
               <div id="carousel-show">
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[0].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[1].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
-                </div>
-                <div className="slide-show">
-                    <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + images[2].publicid + '.jpg'} />
-                </div>
+                {renderImages(images)}
               </div>
             </div>
 
@@ -65,7 +47,6 @@ class ShowFlat extends Component {
             </div>
 
             <div className="show-container">
-
               <div>
                 { description }
               </div>
@@ -106,11 +87,20 @@ class ShowFlat extends Component {
     );
   }
 }
-// export default function ShowFlat(props) {
-//     return (
-//       <div>Show Flat {props.match.params.id}</div>
-//     );
-// }
+
+function renderImages(images) {
+  console.log('in show_flat renderImages, images: ', images);
+  return (
+    _.map(images, (image) => {
+      console.log('in show_flat renderImages, image: ', image.publicid);
+      return (
+          <div className="slide-show">
+            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+          </div>
+      );
+    })
+  );
+}
 
 function mapStateToProps(state) {
   return {

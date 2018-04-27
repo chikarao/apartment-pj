@@ -30,7 +30,7 @@ class Feature extends Component {
     // const latOffsetSouth = -0.036700000000003286;
     // const lngOffsetWest = -0.13469999999999516;
     // const lngOffsetEast = 0.11589000000000738;
-    //wider offsets
+    // wider offsets; reaches Oakland
     const latOffsetNorth = 0.06629999999999825;
     const latOffsetSouth = -0.036700000000003286;
     const lngOffsetWest = -0.14;
@@ -111,7 +111,6 @@ class Feature extends Component {
       );
     }
   }
-
 
   renderFlats() {
     let index = 1;
