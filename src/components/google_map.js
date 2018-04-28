@@ -118,8 +118,13 @@ class GoogleMap extends Component {
 
       // to open infowindows
       marker.addListener('click', () => {
+        //close all open infowindows first
+        for (let i = 0; i < infowindowArray.length; i++) {
+          infowindowArray[i].close();
+        }
         console.log('in google map, marker addlistener clicked');
         console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
+        // then open clicked infowindow
         infowindow.open(map, marker);
       });
 
