@@ -86,6 +86,11 @@ body > div:first-child {
   /* position: absolute; */
 }
 
+.no-results-message {
+  font-size: 15px;
+  padding: 20px;
+}
+
 /* #wrapper {
   position: relative;
 }

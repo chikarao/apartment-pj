@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_BOUNDS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -126,11 +126,11 @@ export function fetchMessage() {
 };
 }
 
-export function updateMapBounds(mapBounds) {
-  console.log('in actions index, updateMapBounds: ', mapBounds);
+export function updateMapDimensions(mapDimensions) {
+  console.log('in actions index, updateMapBounds: ', mapDimensions);
   return {
-    type: UPDATE_MAP_BOUNDS,
-    payload: mapBounds
+    type: UPDATE_MAP_DIMENSIONS,
+    payload: mapDimensions
   };
 }
 export function selectedFlat(flat) {
@@ -182,5 +182,12 @@ export function decrementImageIndex(indexAtZero, maxImageIndex) {
   return {
     type: DECREMENT_IMAGE_INDEX,
     payload: 1
+  };
+}
+
+export function startUpIndex() {
+  console.log('in actions index, startUpIndex');
+  return {
+    type: START_UP_INDEX
   };
 }

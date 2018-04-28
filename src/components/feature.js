@@ -49,6 +49,7 @@ class Feature extends Component {
       south: (initialPosition.lat + latOffsetSouth)
     };
 
+    this.props.startUpIndex();
     //initial call of fetchFlats to get initial set of flats
     this.props.fetchFlats(mapBounds);
     // if (this.props.flats) {
@@ -83,30 +84,56 @@ class Feature extends Component {
 
   renderMap() {
     const flatsEmpty = _.isEmpty(this.props.flats);
+    const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     console.log('in feature renderMap, flats empty: ', flatsEmpty);
+    console.log('in feature renderMap, mapDimensions empty: ', mapDimensionsEmpty);
+
 
     if (!flatsEmpty) {
+      if (!mapDimensionsEmpty) {
+        console.log('in feature, renderMap this.props.mapDimensions, mapBounds: ', this.props.mapDimensions.mapDimensions.mapBounds);
+        console.log('in feature, this.props.mapDimensions, mapCenter.lat: ', this.props.mapDimensions.mapDimensions.mapCenter.lat());
+        console.log('in feature, this.props.mapDimensions, mapCenter.lng: ', this.props.mapDimensions.mapDimensions.mapCenter.lng());
+        console.log('in feature, this.props.mapDimensions, mapZoom: ', this.props.mapDimensions.mapDimensions.mapZoom);
+      }
       // const { id } = this.props.flats[0];
       // console.log('in feature renderFlats, id: ', id);
       console.log('here is the average lat lng, feature from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       console.log('here is latLngAve: ', latLngAve);
+
       return (
         <div>
           <GoogleMap
+          flatsEmpty={flatsEmpty}
           flats={this.props.flats}
           initialPosition={latLngAve}
           currency='$'
           />
-
         </div>
       );
       // <div>{console.log('in div: ', flats)}</div>
+    } else if (!mapDimensionsEmpty) {
+      // return <div>Map Goes Here</div>;
+      const emptyMapLatLngCenter = {
+        lat: this.props.mapDimensions.mapDimensions.mapCenter.lat(),
+        lng: this.props.mapDimensions.mapDimensions.mapCenter.lng()
+      };
+      return (
+        <div>
+          <GoogleMap
+           flatsEmpty={flatsEmpty}
+           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
+           // initialPosition={emptyMapLatLngCenter}
+           initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
+          />
+        </div>
+      );
     } else {
       return (
         <div>
-        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-        <div className="spinner">Loading...</div>
+          <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <div className="spinner">Loading...</div>
         </div>
       );
     }
@@ -116,7 +143,9 @@ class Feature extends Component {
     let index = 1;
     console.log('in feature renderFlats, flats data length: ', this.props.flats);
     const flatsEmpty = _.isEmpty(this.props.flats);
+    const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     console.log('in feature renderFlats, flats empty: ', flatsEmpty);
+    console.log('in feature renderFlats, this.props.startUpCount.startUpCount: ', this.props.startUpCount.startUpCount);
     // const randomNum = _.random(0, 1);
     // console.log('in feature renderFlats, randomNum: ', randomNum);
 
@@ -157,6 +186,9 @@ class Feature extends Component {
             );
           });
           // <div>{console.log('in div: ', flats)}</div>
+          // this.props.startUpIndex();
+      } else if (this.props.startUpCount.startUpCount !== 0) {
+        return <div className="no-results-message">No results match that criteria. <br/>Please search again!</div>;
       } else {
         return (
           <div>
@@ -189,9 +221,12 @@ class Feature extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log('in feature mapStateToProps: ', state);
   return {
     message: state.auth.message,
-    flats: state.flats
+    flats: state.flats,
+    startUpCount: state.startUpCount,
+    mapDimensions: state.mapDimensions
    };
 }
 
