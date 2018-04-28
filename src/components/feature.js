@@ -188,7 +188,7 @@ class Feature extends Component {
           // <div>{console.log('in div: ', flats)}</div>
           // this.props.startUpIndex();
       } else if (this.props.startUpCount.startUpCount !== 0) {
-        return <div className="no-results-message">No results match that criteria. <br/>Please search again!</div>;
+        return <div className="no-results-message">No flats in that area or with that criteria. <br/>Please search again!</div>;
       } else {
         return (
           <div>
