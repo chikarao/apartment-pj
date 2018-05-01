@@ -74,6 +74,8 @@ body > div:first-child {
 .auth-form-label {
   float: left;
   margin: 0 15px 0 20px;
+  min-width: 170px;
+  text-align: left;
 }
 
 .reset-password {

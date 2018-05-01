@@ -6,15 +6,15 @@ import * as actions from '../../actions';
 const FIELDS = {
   email: {
     type: 'input',
-    label: 'Email'
+    label: 'Email:'
   },
   password: {
     type: 'input',
-    label: 'Password'
+    label: 'Password:'
   },
   passwordConfirm: {
     type: 'input',
-    label: 'Password Confirmation'
+    label: 'Password Confirmation:'
   }
 };
 // ['email', 'password', 'passwordConfirm'];

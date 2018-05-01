@@ -114,7 +114,7 @@ export function getPasswordResetToken(email) {
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/password/forgot`, { user: { email } })
     .then(response => {
-      console.log('response to getPasswordResetToken: ', response.data.data);
+      console.log('response to getPasswordResetToken: ', response.data);
       dispatch({
         type: GET_PW_RESET_TOKEN
       });
@@ -126,7 +126,7 @@ export function resetPassword({ email, password, token }) {
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/password/reset`, { user: { email, password, token } })
     .then(response => {
-      console.log('response to resetPassword: ', response.data.data);
+      console.log('response to resetPassword: ', response.data);
       dispatch({
         type: GET_PW_RESET_TOKEN
       });

@@ -49,7 +49,7 @@ class ResetPassword extends Component {
           <button className="btn btn-primary reset-password-btn">Send Reset Token to My Email</button>
         </form>
         <form id="auth-reset-password-form" onSubmit={handleSubmit(this.handlePasswordFormSubmit.bind(this))}>
-          <fieldset id="form-group">
+          <fieldset className="form-group">
             <label className="auth-form-label">Reset Token:</label>
             <input {...token} className="form-control" placeholder="Second, enter the token we sent to your email"/>
           </fieldset>
