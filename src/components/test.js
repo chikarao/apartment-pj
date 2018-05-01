@@ -166,3 +166,6 @@
     background-position: center;
     /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
   }
+
+  <div id="auth-reset-password-email" style={this.state.shouldHide ? { display: 'none' } : { display: 'block' }}>Email address here</div>
+  <form id="auth-reset-password-form" style={this.state.shouldHide ? { display: 'none' } : { display: 'block' }}>

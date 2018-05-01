@@ -67,9 +67,13 @@ body > div:first-child {
   color: blue;
 }
 
+.auth-form-group {
+  /* margin-top: 20px; */
+  padding-top: 20px;
+}
 .auth-form-label {
   float: left;
-  margin-left: 20px;
+  margin: 0 15px 0 20px;
 }
 
 .reset-password {

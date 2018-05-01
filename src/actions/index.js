@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -105,6 +105,30 @@ export function fetchFlats(mapBounds) {
       dispatch({
         type: FETCH_FLATS,
         payload: response.data.data.flats
+      });
+    });
+  };
+}
+
+export function getPasswordResetToken(email) {
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/password/forgot`, { user: { email } })
+    .then(response => {
+      console.log('response to getPasswordResetToken: ', response.data.data);
+      dispatch({
+        type: GET_PW_RESET_TOKEN
+      });
+    });
+  };
+}
+
+export function resetPassword({ email, password, token }) {
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/password/reset`, { user: { email, password, token } })
+    .then(response => {
+      console.log('response to resetPassword: ', response.data.data);
+      dispatch({
+        type: GET_PW_RESET_TOKEN
       });
     });
   };
