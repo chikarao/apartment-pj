@@ -45,7 +45,7 @@ class Signup extends Component {
 
     return (
       <fieldset className="form-group" key={fieldConfig.label}>
-        <label>{fieldConfig.label}</label>
+        <label className="auth-form-label">{fieldConfig.label}</label>
         <fieldConfig.type
           className="form-control"
           type={fieldHelper.name === 'password' ||

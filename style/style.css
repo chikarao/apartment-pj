@@ -60,10 +60,26 @@ body > div:first-child {
 
 .form-control {
   width: 90%;
+  margin-left: 20px;
 }
 
 .error {
   color: blue;
+}
+
+.auth-form-label {
+  float: left;
+  margin-left: 20px;
+}
+
+.reset-password {
+  padding: 20px;
+  /* margin-bottom: 20px; */
+}
+.reset-password-btn {
+  padding: 10px;
+  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 /* ************MAP**************** */

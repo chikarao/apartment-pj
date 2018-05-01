@@ -111,8 +111,8 @@ class Header extends Component {
       <Navbar>
         <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/" className="navbar-brand"> FLATS Trains <br />
-               <small>and Automobiles</small></Link>
+              <Link to="/" className="navbar-brand"> FLATS flats <br />
+               <small>and more flats</small></Link>
             </Navbar.Brand>
             <Navbar.Toggle />
         </Navbar.Header>

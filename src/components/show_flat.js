@@ -96,6 +96,7 @@ function renderImages(images) {
       return (
           <div className="slide-show">
             <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
           </div>
       );
     })

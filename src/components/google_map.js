@@ -318,7 +318,7 @@ class GoogleMap extends Component {
       // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
       // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
       // console.log('in googlemap, mapZoom: ', mapZoom);
-      // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+      console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
       // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
       // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
       // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());

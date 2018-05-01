@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
+
 import * as actions from '../../actions';
 
 class Signin extends Component {
@@ -30,13 +32,14 @@ class Signin extends Component {
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset className="form-group">
-          <label>Email:</label>
+          <label className="auth-form-label">Email:</label>
           <input {...email} className="form-control" />
         </fieldset>
         <fieldset className="form-group">
-          <label>Password:</label>
+          <label className="auth-form-label">Password:</label>
           <input {...password} type="password" className="form-control" />
         </fieldset>
+        <Link to="/resetpassword" className="reset-password">Reset Password</Link>
           {this.renderAlert()}
         <button action="submit" className="btn btn-primary">Sign in</button>
       </form>
