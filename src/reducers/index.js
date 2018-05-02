@@ -6,6 +6,7 @@ import flatsReducer from './flats_reducer';
 import mapReducer from './map_reducer';
 import imageCountReducer from './image_count_reducer';
 import startUpIndexReducer from './start_up_index_reducer';
+import bookingReducer from './booking_reducer';
 
 const rootReducer = combineReducers({
   form,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   flatFromParams: flatsReducer,
   mapDimensions: mapReducer,
   imageIndex: imageCountReducer,
-  startUpCount: startUpIndexReducer
+  startUpCount: startUpIndexReducer,
+  selectedBookingDates: bookingReducer
   // can access mapbounds.east .west., etc
 });
 

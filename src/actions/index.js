@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, SELECTED_DATES, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -213,5 +213,14 @@ export function startUpIndex() {
   console.log('in actions index, startUpIndex');
   return {
     type: START_UP_INDEX
+  };
+}
+
+// receives object of dates
+export function selectedDates(dates) {
+  console.log('in actions index, selectedDates, dates', dates);
+  return {
+    type: SELECTED_DATES,
+    payload: dates
   };
 }

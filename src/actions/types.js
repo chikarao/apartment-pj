@@ -10,3 +10,4 @@ export const INCREMENT_IMAGE_INDEX = 'increment_image_index';
 export const DECREMENT_IMAGE_INDEX = 'decrement_image_index';
 export const START_UP_INDEX = 'start_up_index';
 export const GET_PW_RESET_TOKEN = 'get_pw_reset_token';
+export const SELECTED_DATES = 'selected_dates';

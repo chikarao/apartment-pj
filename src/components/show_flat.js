@@ -22,7 +22,7 @@ class ShowFlat extends Component {
 
   renderFlat(flatId) {
     console.log('in show flat, flatId: ', flatId);
-    console.log('in show flat, flat: ', this.props.flat.selectedFlat);
+    console.log('in show flat, flat: ', this.props.flat);
     // const flat = _.find(this.props.flats, (f) => {
     //   return f.id === flatId;
     // });
@@ -32,7 +32,7 @@ class ShowFlat extends Component {
 
 
       if (!flatEmpty) {
-        const { description, area, price_per_month, images } = this.props.flat.selectedFlat;
+        const { description, area, price_per_month, images } = this.props.flat;
         console.log('in show_flat renderFlat, renderImages: ', renderImages(images));
         return (
           <div>
@@ -71,21 +71,34 @@ class ShowFlat extends Component {
       }
     }
 
-  // renderDatePicker() {
-  //   return (
-  //     <div>
-  //     <p>Please type a day:</p>
-  //       // <DatePicker />
-  //     </div>
-  //   );
-  // }
+  handleBookingClick() {
+    if (this.props.selectedBookingDates) {
+      console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
+      console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
+      const bookingRequest = { flatId: this.props.flat.id, to: this.props.selectedBookingDates.to, from: this.props.selectedBookingDates.from}
+      console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
+    }
+  }
+
+  renderDatePicker() {
+    return (
+      <div>
+      <p>Please select a range of dates:</p>
+        <DatePicker />
+      </div>
+    );
+  }
 
   render() {
+    if (this.props.selectedDates) {
+    }
     return (
       <div>
         <div>
           {this.renderFlat(this.props.match.params.id)}
         </div>
+        {this.renderDatePicker()}
+        <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary">Book Now</button>
       </div>
     );
   }
@@ -107,8 +120,10 @@ function renderImages(images) {
 }
 
 function mapStateToProps(state) {
+  console.log('in show_flat render, mapStateToProps, state: ', state);
   return {
-    flat: state.flatFromParams
+    flat: state.flatFromParams.selectedFlat,
+    selectedBookingDates: state.selectedBookingDates.selectedBookingDates
   };
 }
 
