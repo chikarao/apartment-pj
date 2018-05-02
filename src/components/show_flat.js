@@ -8,6 +8,8 @@ import cloudinary from 'cloudinary-core';
 import * as actions from '../actions';
 import Carousel from './carousel/carousel';
 
+import DatePicker from './date_picker/date_picker';
+
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
@@ -39,13 +41,6 @@ class ShowFlat extends Component {
                 {renderImages(images)}
               </div>
             </div>
-
-            <div className="carousel-container">
-              <Carousel
-                flat={this.props.flat.selectedFlat}
-              />
-            </div>
-
             <div className="show-container">
               <div>
                 { description }
@@ -76,13 +71,21 @@ class ShowFlat extends Component {
       }
     }
 
+  // renderDatePicker() {
+  //   return (
+  //     <div>
+  //     <p>Please type a day:</p>
+  //       // <DatePicker />
+  //     </div>
+  //   );
+  // }
+
   render() {
     return (
       <div>
         <div>
           {this.renderFlat(this.props.match.params.id)}
         </div>
-
       </div>
     );
   }

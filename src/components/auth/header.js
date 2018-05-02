@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+// import DayPicker from 'react-day-picker';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
 // import $ from 'jquery';
 import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
 

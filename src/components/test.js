@@ -169,3 +169,11 @@
 
   <div id="auth-reset-password-email" style={this.state.shouldHide ? { display: 'none' } : { display: 'block' }}>Email address here</div>
   <form id="auth-reset-password-form" style={this.state.shouldHide ? { display: 'none' } : { display: 'block' }}>
+
+  <div className="carousel-container">
+    <Carousel
+      flat={this.props.flat.selectedFlat}
+    />
+
+    <DayPickerInput onDayChange={day => console.log(day)} />
+  </div>
