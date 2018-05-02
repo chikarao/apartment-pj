@@ -77,6 +77,7 @@ class ShowFlat extends Component {
       console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
       const bookingRequest = { flatId: this.props.flat.id, to: this.props.selectedBookingDates.to, from: this.props.selectedBookingDates.from}
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
+
     }
   }
 
