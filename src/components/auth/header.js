@@ -83,7 +83,7 @@ navigationLinks() {
   if (this.props.authenticated) {
      // show link to signout and signed in as...
      return [
-       <ul>
+       <ul className="header-list">
          <li className="nav-item" key={4}>
           <p className="nav-link">Signed in as {this.props.email}</p>
          </li>
@@ -95,7 +95,7 @@ navigationLinks() {
   } else {
     // show link to sign in or sign out
     return [
-      <ul>
+      <ul className="header-list">
         <li className="nav-item" key={1}>
           <Link className="nav-link" to="/signin">Sign In</Link>
         </li>
@@ -129,7 +129,7 @@ renderMobileNav() {
 }
 
 renderNavigation() {
-  if (this.state.windowWidth <= 1080) {
+  if (this.state.windowWidth <= 800) {
     return [
       <div className="mobile_nav">
         <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}><i className="fa fa-bars"></i></p>

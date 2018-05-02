@@ -78,8 +78,13 @@ body > div:first-child {
 
 .navbar-brand {
   text-decoration: none;
+  font-size: 25px;
   color: black;
   padding: 20px 0 0 20px;
+}
+
+.header-list {
+  float: right;
 }
 
 .nav-item {
@@ -341,6 +346,14 @@ body > div:first-child {
   align-items: left;
   padding-left: 15px;
   font-size: 20px;
+}
+
+.date-picker-container {
+  margin: 20px;
+}
+
+.booking-button {
+  margin: 30px;
 }
 
 .carousel-container {

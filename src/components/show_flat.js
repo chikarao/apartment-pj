@@ -72,10 +72,11 @@ class ShowFlat extends Component {
     }
 
   handleBookingClick() {
+    console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
     if (this.props.selectedBookingDates) {
       console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
-      const bookingRequest = { flatId: this.props.flat.id, to: this.props.selectedBookingDates.to, from: this.props.selectedBookingDates.from}
+      const bookingRequest = { flatId: this.props.flat.id, user: this.props.auth.email, to: this.props.selectedBookingDates.to, from: this.props.selectedBookingDates.from}
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
     }
@@ -83,7 +84,7 @@ class ShowFlat extends Component {
 
   renderDatePicker() {
     return (
-      <div>
+      <div className="date-picker-container">
       <p>Please select a range of dates:</p>
         <DatePicker />
       </div>
@@ -124,7 +125,8 @@ function mapStateToProps(state) {
   console.log('in show_flat render, mapStateToProps, state: ', state);
   return {
     flat: state.flatFromParams.selectedFlat,
-    selectedBookingDates: state.selectedBookingDates.selectedBookingDates
+    selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
+    auth: state.auth
   };
 }
 

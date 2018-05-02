@@ -21,7 +21,7 @@ export function signinUser({ email, password }, callback) {
     // axios.post(`${ROOT_URL}/sign_in`, { email, password })
     //signin for express server
       .then(response => {
-        console.log(response);
+        console.log('in action, index, sign in, response: ', response);
         // request is good
         // Update state to indicate user is authenticated
         dispatch({ type: AUTH_USER, payload: email });
