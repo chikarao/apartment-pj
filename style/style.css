@@ -56,7 +56,46 @@ body > div:first-child {
   display: none;
 }
 
+/* CUSTOM HEADER RESPONSIVE NAV BAR */
+.nav_container {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  height: 100px;
+}
+
+.header-hamburger {
+  float: right;
+  /* left: 95%; */
+  width: 50px;
+  height: 50px;
+  padding: 20px 70px 20px 20px;
+  font-size: 30px;
+  text-align: center;
+}
+.header-hamburger {
+  padding: 10px;
+}
+
+.navbar-brand {
+  text-decoration: none;
+  color: black;
+  padding: 20px 0 0 20px;
+}
+
+.nav-item {
+  list-style-type: none;
+  float: right;
+  padding-top: 0;
+  padding: 20px 20px 0 20px;
+  margin: 0;
+  font-size: 17px;
+}
+
 /* FORMS */
+/* form {
+  padding: 20px;
+  margin: 20px;
+} */
 
 .form-control {
   width: 90%;
@@ -397,7 +436,7 @@ body > div:first-child {
 }
 
 .card:hover .card-cover {
-  background-color: dark-gray;
+  /* background-color: dark-gray; */
   opacity: .7;
   color: white;
 }

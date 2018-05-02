@@ -9,22 +9,26 @@ import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-boots
 
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
-  // constructor() {
-  //      super();
-  //      this.state = {
-  //          screenIsbig: true
-  //      };
-  //  }
-  //
-  //
-  // componentDidMount() {
-  //      window.addEventListener('resize', this.handleResize.bind(this));
-  //  }
-  //
-  //  componentWillUnmount() {
-  //      window.removeEventListener('resize', this.handleResize.bind(this));
-  //  }
-  //
+  constructor() {
+       super();
+       this.state = {
+            windowWidth: window.innerWidth,
+            mobileNavVisible: false
+       };
+   }
+
+
+  componentDidMount() {
+       window.addEventListener('resize', this.handleResize.bind(this));
+   }
+
+   componentWillUnmount() {
+       window.removeEventListener('resize', this.handleResize.bind(this));
+   }
+
+   handleResize() {
+     this.setState({ windowWidth: window.innerWidth });
+   }
   //  handleResize() {
   //    if (window.innerWidth < 700) {
   //      this.setState({ screenIsbig: false })
@@ -34,46 +38,124 @@ class Header extends Component {
   //  }
    // **********THIS PART IS EXPERIMENTAL CODE ***********
 
-  renderLinks() {
-    if (this.props.authenticated) {
-      // show link to signout
-      // console.log('here is the email: ', this.props.email);
-      return (
-        [
-          <NavItem key={1} eventKey={1} href="/signout">
-            // <Link className="nav-link" to="/signout">Sign Out</Link>
-          </NavItem>,
-          <NavItem key={2} eventKey={2} href="#">
-            Signed in as {this.props.email}
-          </NavItem>
-          // <li className="nav-item" key={3}>
-          //   <Link className="nav-link" to="/signout">Sign Out</Link>
-          // </li>,
-          // <li className="nav-item" key={4}>
-          //     <p className="nav-link">Signed in as {this.props.email}</p>
-          // </li>
-        ]
-      );
-    } else {
-      // show link to sign in or sign out
-    return ([
-      <NavItem key={3} eventKey={3} href="/signin">
-        // <Link className="nav-link" to="/signin">Sign in</Link>
-      </NavItem>,
-      <NavItem className="sign-up-nav-item" key={4} eventKey={4} href="/signup">
-        // <Link className="nav-link" to="/signup">Sign Up</Link>
-      </NavItem>
-          //
-          // <li className="nav-item" key={1}>
-          //   <Link className="nav-link" to="/signin">Sign In</Link>
-          // </li>,
-          // <li className="nav-item" key={2}>
-          //   <Link className="nav-link" to="/signup">Sign Up</Link>
-          // </li>
-        ]
-      );
-    }
+  // renderLinks() {
+  //   if (this.props.authenticated) {
+  //     // show link to signout
+  //     // console.log('here is the email: ', this.props.email);
+  //     return (
+  //       [
+  //         // <NavItem key={1} eventKey={1} href="/signout">
+  //         //   // <Link className="nav-link" to="/signout">Sign Out</Link>
+  //         // </NavItem>,
+  //         // <NavItem key={2} eventKey={2} href="#">
+  //         //   Signed in as {this.props.email}
+  //         // </NavItem>
+  //         <li className="nav-item" key={3}>
+  //           <Link className="nav-link" to="/signout">Sign Out</Link>
+  //         </li>,
+  //         <li className="nav-item" key={4}>
+  //             <p className="nav-link">Signed in as {this.props.email}</p>
+  //         </li>
+  //       ]
+  //     );
+  //   } else {
+  //     // show link to sign in or sign out
+  //   return ([
+  //     // <NavItem key={3} eventKey={3} href="/signin">
+  //     //   // <Link className="nav-link" to="/signin">Sign in</Link>
+  //     // </NavItem>,
+  //     // <NavItem className="sign-up-nav-item" key={4} eventKey={4} href="/signup">
+  //     //   // <Link className="nav-link" to="/signup">Sign Up</Link>
+  //     // </NavItem>
+  //         //
+  //         <li className="nav-item" key={1}>
+  //           <Link className="nav-link" to="/signin">Sign In</Link>
+  //         </li>,
+  //         <li className="nav-item" key={2}>
+  //           <Link className="nav-link" to="/signup">Sign Up</Link>
+  //         </li>
+  //       ]
+  //     );
+  //   }
+  // }
+
+navigationLinks() {
+  if (this.props.authenticated) {
+     // show link to signout and signed in as...
+     return [
+       <ul>
+         <li className="nav-item" key={4}>
+          <p className="nav-link">Signed in as {this.props.email}</p>
+         </li>
+         <li className="nav-item" key={3}>
+          <Link className="nav-link" to="/signout">Sign Out</Link>
+         </li>
+       </ul>
+     ];
+  } else {
+    // show link to sign in or sign out
+    return [
+      <ul>
+        <li className="nav-item" key={1}>
+          <Link className="nav-link" to="/signin">Sign In</Link>
+        </li>
+        <li className="nav-item" key={2}>
+          <Link className="nav-link" to="/signup">Sign Up</Link>
+        </li>
+      </ul>
+
+    ];
   }
+  // return [
+  //   <ul>
+  //     <li className="nav-item"key={1}><Link to="about">ABOUT</Link></li>
+  //     <li className="nav-item"key={2}><Link to="blog">BLOG</Link></li>
+  //     <li className="nav-item"key={3}><Link to="portfolio">PORTFOLIO</Link></li>
+  //   </ul>
+  // ];
+}
+
+handleNavClick() {
+  if (!this.state.mobileNavVisible) {
+    this.setState({ mobileNavVisible: true });
+  } else {
+    this.setState({ mobileNavVisible: false });
+  }
+}
+renderMobileNav() {
+  if (this.state.mobileNavVisible) {
+    return this.navigationLinks();
+  }
+}
+
+renderNavigation() {
+  if (this.state.windowWidth <= 1080) {
+    return [
+      <div className="mobile_nav">
+        <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}><i className="fa fa-bars"></i></p>
+        {this.renderMobileNav()}
+      </div>
+    ];
+  } else {
+    return [
+      <div key={7} className="nav_menu">
+        {this.navigationLinks()}
+      </div>
+    ];
+  }
+}
+
+render() {
+  return (
+    <div className="nav_container">
+      <div>
+        <Link to="/" className="navbar-brand"> FLATS flats <br />
+        <small>and more flats</small></Link>
+      </div>
+      {this.renderNavigation()}
+    </div>
+  );
+}
   // render() {
   //   return (
   //     <nav className="navbar navbar-light">
@@ -108,26 +190,26 @@ class Header extends Component {
   //     </nav>
   //   );
   // }
-  render() {
-    return (
-      // <Navbar inverse collapseOnSelect>
-      <Navbar>
-        <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/" className="navbar-brand"> FLATS flats <br />
-               <small>and more flats</small></Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            {this.renderLinks()}
-          </Nav>
-        </Navbar.Collapse>
-
-    </Navbar>
-);
-}
+//   render() {
+//     return (
+//       // <Navbar inverse collapseOnSelect>
+//       <Navbar>
+//         <Navbar.Header>
+//             <Navbar.Brand>
+//               <Link to="/" className="navbar-brand"> FLATS flats <br />
+//                <small>and more flats</small></Link>
+//             </Navbar.Brand>
+//             <Navbar.Toggle />
+//         </Navbar.Header>
+//         <Navbar.Collapse>
+//           <Nav pullRight>
+//             {this.renderLinks()}
+//           </Nav>
+//         </Navbar.Collapse>
+//
+//     </Navbar>
+// );
+// }
 //
 // render() {
 //   // let renderThis;
