@@ -84,11 +84,14 @@ navigationLinks() {
      // show link to signout and signed in as...
      return [
        <ul className="header-list">
-         <li className="nav-item" key={4}>
-          <p className="nav-link">Signed in as {this.props.email}</p>
+         <li className="nav-item" key={2}>
+          <Link className="nav-link" to="/signout">Sign Out</Link>
+         </li>
+         <li className="nav-item" key={1}>
+          <Link className="nav-link" to="/mypage">My Page</Link>
          </li>
          <li className="nav-item" key={3}>
-          <Link className="nav-link" to="/signout">Sign Out</Link>
+          <p className="nav-link">Signed in as {this.props.email}</p>
          </li>
        </ul>
      ];
@@ -96,10 +99,10 @@ navigationLinks() {
     // show link to sign in or sign out
     return [
       <ul className="header-list">
-        <li className="nav-item" key={1}>
+        <li className="nav-item" key={4}>
           <Link className="nav-link" to="/signin">Sign In</Link>
         </li>
-        <li className="nav-item" key={2}>
+        <li className="nav-item" key={5}>
           <Link className="nav-link" to="/signup">Sign Up</Link>
         </li>
       </ul>

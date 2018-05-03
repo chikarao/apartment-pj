@@ -8,6 +8,7 @@ import ResetPassword from './components/auth/reset_password';
 import Feature from './components/feature';
 import Welcome from './components/welcome';
 import ShowFlat from './components/show_flat';
+import MyPage from './components/mypage';
 
 import RequireAuth from './components/auth/require_auth';
 
@@ -22,6 +23,7 @@ export const Main = () => (
       <Route path='/resetpassword' component={ResetPassword} />
       <Route path='/show/:id' component={ShowFlat} />
       <Route path='/feature' component={RequireAuth(Feature)} />
+      <Route path='/mypage' component={RequireAuth(MyPage)} />
     </Switch>
   </main>
 );
