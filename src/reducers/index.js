@@ -14,11 +14,12 @@ const rootReducer = combineReducers({
   // originnally form: reducer; use ES6 so just form
   flats: flatsReducer,
   flat: flatsReducer,
-  flatFromParams: flatsReducer,
+  selectedFlatFromParams: flatsReducer,
   mapDimensions: mapReducer,
   imageIndex: imageCountReducer,
   startUpCount: startUpIndexReducer,
-  selectedBookingDates: bookingReducer
+  selectedBookingDates: bookingReducer,
+  bookingData: bookingReducer
   // can access mapbounds.east .west., etc
 });
 

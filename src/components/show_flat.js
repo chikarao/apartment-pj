@@ -51,10 +51,10 @@ class ShowFlat extends Component {
               </div>
 
               <div>
-                ${ parseFloat(price_per_month).toFixed(0) }
+                ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
               <div>
-                ID: {this.props.match.params.id}
+                <small>flat id: {this.props.match.params.id}</small>
               </div>
 
             </div>
@@ -76,19 +76,69 @@ class ShowFlat extends Component {
     if (this.props.selectedBookingDates) {
       console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
-      const bookingRequest = { flatId: this.props.flat.id, user: this.props.auth.email, to: this.props.selectedBookingDates.to, from: this.props.selectedBookingDates.from}
+
+      const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
+      this.props.requestBooking(bookingRequest);
     }
   }
 
+  disabledDays(bookings) {
+    // Note that new disabledDays does not include the after and before daysr!!!!!!!!!!!!!!!!!!!!!!!
+    let daysList = [];
+    console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
+    console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
+
+    _.each(bookings, (booking) => {
+      console.log('in show_flat, disabledDays, in _.each, booking: ', booking);
+      console.log('in show_flat, disabledDays, in _.each, booking.date_start: ', booking.date_start);
+      const reformatStart = booking.date_start.split('-').join(', ');
+      const reformatEnd = booking.date_end.split('-').join(', ');
+      console.log('in show_flat, disabledDays, in _.each, reformatStart: ', reformatStart);
+      console.log('in show_flat, disabledDays, in _.each, reformatEnd: ', reformatEnd);
+//       function addDays(date, days) {
+//   var result = new Date(date);
+//   result.setDate(result.getDate() + days);
+//   return result;
+// }
+      // // {
+      const afterDate = new Date(reformatStart);
+      const beforeDate = new Date(reformatEnd);
+      console.log('in show_flat, disabledDays, in _.each, afterDate before setDate: ', afterDate);
+      console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', beforeDate);
+
+      afterDate.setDate(afterDate.getDate() - 1);
+      beforeDate.setDate(beforeDate.getDate() + 1);
+
+      console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', afterDate);
+      console.log('in show_flat, disabledDays, in _.each, before Date after setDate: ', beforeDate);
+      const bookingRange = { after: afterDate, before: beforeDate };
+      // // const bookingRange = { after: new Date(2018, 4, 10), before: new Date(2018, 4, 18) };
+      daysList.push(bookingRange);
+    });
+
+    console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+    return daysList;
+  }
+
   renderDatePicker() {
-    return (
-      <div className="date-picker-container">
-      <p>Please select a range of dates:</p>
-        <DatePicker />
-      </div>
-    );
+    console.log('in show_flat, renderDatePicker, before if, this.props.flat: ', this.props.flat);
+    // const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
+    if (this.props.flat) {
+      console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
+      return (
+        <div className="date-picker-container">
+        <p>Please select a range of dates:</p>
+        <DatePicker
+          // initialMonth={new Date(2017, 4)}
+          daysToDisable={this.disabledDays(this.props.flat.bookings)}
+          // disabledDays={this.disabledDays(this.props.flat.bookings)}
+          // daysToDisable={[{ after: new Date(2018, 4, 18), before: new Date(2018, 5, 25), }]}
+        />
+        </div>
+      );
+    }
   }
 
   render() {
@@ -100,7 +150,7 @@ class ShowFlat extends Component {
           {this.renderFlat(this.props.match.params.id)}
         </div>
         {this.renderDatePicker()}
-        <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary">Book Now</button>
+        <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary">Book Now!</button>
       </div>
     );
   }
@@ -124,7 +174,7 @@ function renderImages(images) {
 function mapStateToProps(state) {
   console.log('in show_flat render, mapStateToProps, state: ', state);
   return {
-    flat: state.flatFromParams.selectedFlat,
+    flat: state.selectedFlatFromParams.selectedFlat,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth
   };

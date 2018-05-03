@@ -102,7 +102,8 @@ class DatePicker extends Component {
          numberOfMonths={2}
          fromMonth={from}
          selectedDays={selectedDays}
-         disabledDays={disabledDays}
+         disabledDays={this.props.daysToDisable}
+         // disabledDays={[{ after: new Date(2018, 4, 10), before: new Date(2018, 4, 18), }]}
          modifiers={modifiers}
          onDayClick={this.handleDayClick}
          onDayMouseEnter={this.handleDayMouseEnter}
