@@ -9,6 +9,10 @@ import MainCards from './cards/main_cards';
 
 // const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife', 'flat_image-1523948892-1', 'flat_image-1523948892-0'];
 
+const initialPosition = {
+  lat: 37.7952,
+  lng: -122.4029
+};
 
 class Feature extends Component {
 
@@ -19,10 +23,6 @@ class Feature extends Component {
     // Set up initial mapBounds to make Mapbounds not undefined in action fetchFlats
     // When able to obtain user location or search location, enter initial position here
     // SF Transamerica touwer
-    const initialPosition = {
-      lat: 37.7952,
-      lng: -122.4029
-    };
 
     // initial position offsets; based on zoom twelve of
     //SF area showing tip of marin counth, tip of the sf peninsula, and tip of oakland
@@ -105,10 +105,10 @@ class Feature extends Component {
       return (
         <div>
           <GoogleMap
-          flatsEmpty={flatsEmpty}
-          flats={this.props.flats}
-          initialPosition={latLngAve}
-          currency='$'
+            flatsEmpty={flatsEmpty}
+            flats={this.props.flats}
+            initialPosition={latLngAve || initialPosition}
+            currency='$'
           />
         </div>
       );

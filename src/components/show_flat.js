@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
@@ -87,35 +88,39 @@ class ShowFlat extends Component {
   disabledDays(bookings) {
     // Note that new disabledDays does not include the after and before daysr!!!!!!!!!!!!!!!!!!!!!!!
     // So need to adjust dates with setDate and getDate
-    const daysList = [];
-    console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
-    console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
+    const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
 
-    _.each(bookings, (booking) => {
-      // console.log('in show_flat, disabledDays, in _.each, booking: ', booking);
-      // console.log('in show_flat, disabledDays, in _.each, booking.date_start: ', booking.date_start);
-      const reformatStart = booking.date_start.split('-').join(', ');
-      const reformatEnd = booking.date_end.split('-').join(', ');
-      // console.log('in show_flat, disabledDays, in _.each, reformatStart: ', reformatStart);
-      // console.log('in show_flat, disabledDays, in _.each, reformatEnd: ', reformatEnd);
+    if (!bookingsEmpty) {
+      const daysList = [];
+      console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
+      console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
 
-      const adjustedAfterDate = new Date(reformatStart);
-      const adjustedBeforeDate = new Date(reformatEnd);
-      // console.log('in show_flat, disabledDays, in _.each, afterDate before setDate: ', adjustedAfterDate);
-      // console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', adjustedBeforeDate);
+      _.each(bookings, (booking) => {
+        // console.log('in show_flat, disabledDays, in _.each, booking: ', booking);
+        // console.log('in show_flat, disabledDays, in _.each, booking.date_start: ', booking.date_start);
+        const reformatStart = booking.date_start.split('-').join(', ');
+        const reformatEnd = booking.date_end.split('-').join(', ');
+        // console.log('in show_flat, disabledDays, in _.each, reformatStart: ', reformatStart);
+        // console.log('in show_flat, disabledDays, in _.each, reformatEnd: ', reformatEnd);
 
-      adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
-      adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
+        const adjustedAfterDate = new Date(reformatStart);
+        const adjustedBeforeDate = new Date(reformatEnd);
+        // console.log('in show_flat, disabledDays, in _.each, afterDate before setDate: ', adjustedAfterDate);
+        // console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', adjustedBeforeDate);
 
-      // console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
-      // console.log('in show_flat, disabledDays, in _.each, before Date after setDate: ', adjustedBeforeDate);
-      const bookingRange = { after: adjustedAfterDate, before: adjustedBeforeDate };
-      // // const bookingRange = { after: new Date(2018, 4, 10), before: new Date(2018, 4, 18) };
-      daysList.push(bookingRange);
-    });
+        adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
+        adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
 
-    console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
-    return daysList;
+        // console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
+        // console.log('in show_flat, disabledDays, in _.each, before Date after setDate: ', adjustedBeforeDate);
+        const bookingRange = { after: adjustedAfterDate, before: adjustedBeforeDate };
+        // // const bookingRange = { after: new Date(2018, 4, 10), before: new Date(2018, 4, 18) };
+        daysList.push(bookingRange);
+      });
+
+      console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+      return daysList;
+    }
   }
 
   renderDatePicker() {
@@ -137,6 +142,23 @@ class ShowFlat extends Component {
     }
   }
 
+  renderButton() {
+    console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
+      if (this.props.auth.authenticated) {
+        return (
+          <div>
+            <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <Link className="btn btn-primary btn-lg" to="/signin">Sign in to Book!</Link>
+          </div>
+        );
+      }
+  }
+
   render() {
     if (this.props.selectedDates) {
     }
@@ -145,8 +167,12 @@ class ShowFlat extends Component {
         <div>
           {this.renderFlat(this.props.match.params.id)}
         </div>
-        {this.renderDatePicker()}
-        <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
+        <div>
+          {this.renderDatePicker()}
+        </div>
+        <div>
+          {this.renderButton()}
+        </div>
       </div>
     );
   }

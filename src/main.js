@@ -22,7 +22,7 @@ export const Main = () => (
       <Route path='/signup' component={Signup} />
       <Route path='/resetpassword' component={ResetPassword} />
       <Route path='/show/:id' component={ShowFlat} />
-      <Route path='/feature' component={RequireAuth(Feature)} />
+      <Route path='/feature' component={Feature} />
       <Route path='/mypage' component={RequireAuth(MyPage)} />
     </Switch>
   </main>
