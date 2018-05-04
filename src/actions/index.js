@@ -94,6 +94,8 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
+// main fetchflats action for feature page;
+// gets mapbounds from gmap adn sends to api which sends back query results
 export function fetchFlats(mapBounds) {
   const { north, south, east, west } = mapBounds;
   // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
@@ -112,6 +114,7 @@ export function fetchFlats(mapBounds) {
   };
 }
 
+// AFer clikcing buttton in resetpassword page, takes email and obtains token from API
 export function getPasswordResetToken(email) {
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/password/forgot`, { user: { email } })
@@ -124,6 +127,7 @@ export function getPasswordResetToken(email) {
   };
 }
 
+// takes parameters from resetpassword page and calls API
 export function resetPassword({ email, password, token }) {
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/password/reset`, { user: { email, password, token } })
@@ -136,6 +140,7 @@ export function resetPassword({ email, password, token }) {
   };
 }
 
+// Not used but kept for references
 export function fetchMessage() {
   console.log('in actions index, fetchMessage:');
 
@@ -152,6 +157,8 @@ export function fetchMessage() {
 };
 }
 
+// Gets map dimansions (lat, lng, zoom and center);
+// Requred to render map when there are no flats in the panned area
 export function updateMapDimensions(mapDimensions) {
   console.log('in actions index, updateMapBounds: ', mapDimensions);
   return {
@@ -159,6 +166,8 @@ export function updateMapDimensions(mapDimensions) {
     payload: mapDimensions
   };
 }
+// selectedFlat has been commented out in feature since show flat can be rendered with only params
+// keep just in case need it later
 export function selectedFlat(flat) {
   console.log('in actions index, selectedFlat:');
   console.log('in actions index, selectedFlat: ', flat);
@@ -168,6 +177,7 @@ export function selectedFlat(flat) {
   };
 }
 
+// takes id params in show flat page and fetches flat from api
 export function selectedFlatFromParams(id) {
   console.log('in actions index, selectedFlatFromParams id: ', id);
   return function (dispatch) {
@@ -184,6 +194,7 @@ export function selectedFlatFromParams(id) {
   };
 }
 
+// Required for carousel in map infowindow and main cards
 export function incrementImageIndex(indexAtMax, maxImageIndex) {
   console.log('in actions incrementImageIndex');
   if (indexAtMax) {
@@ -197,6 +208,8 @@ export function incrementImageIndex(indexAtMax, maxImageIndex) {
     payload: 1
   };
 }
+
+// Required for carousel in map infowindow and main cards
 export function decrementImageIndex(indexAtZero, maxImageIndex) {
   console.log('in actions decrementImageIndex');
   if (indexAtZero) {
@@ -211,6 +224,7 @@ export function decrementImageIndex(indexAtZero, maxImageIndex) {
   };
 }
 
+// Flag for finding if state has been updated on shtartup; not used anywhere but keep for future
 export function startUpIndex() {
   console.log('in actions index, startUpIndex');
   return {
@@ -218,7 +232,7 @@ export function startUpIndex() {
   };
 }
 
-// receives object of dates
+// receives object of dates from calendar to be used for booking
 export function selectedDates(dates) {
   console.log('in actions index, selectedDates, dates', dates);
   return {
@@ -227,7 +241,8 @@ export function selectedDates(dates) {
   };
 }
 
-export function requestBooking(bookingRequest) {
+// called in show flats to post to api
+export function requestBooking(bookingRequest, callback) {
   console.log('in actions index, requestBooking, bookingRequest: ', bookingRequest);
   console.log('in actions index, requestBooking, localStorage.getItem : ', localStorage.getItem('token'));
 
@@ -242,6 +257,7 @@ export function requestBooking(bookingRequest) {
           type: REQUEST_BOOKING,
           payload: response.data.data.booking
         });
+        callback();
       });
   };
 }

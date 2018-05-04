@@ -9,6 +9,7 @@ import Feature from './components/feature';
 import Welcome from './components/welcome';
 import ShowFlat from './components/show_flat';
 import MyPage from './components/mypage';
+import BookingConfirmation from './components/booking_confirmation';
 
 import RequireAuth from './components/auth/require_auth';
 
@@ -24,6 +25,7 @@ export const Main = () => (
       <Route path='/show/:id' component={ShowFlat} />
       <Route path='/feature' component={Feature} />
       <Route path='/mypage' component={RequireAuth(MyPage)} />
+      <Route path='/bookingconfirmation' component={RequireAuth(BookingConfirmation)} />
     </Switch>
   </main>
 );

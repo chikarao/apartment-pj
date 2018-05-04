@@ -40,7 +40,7 @@ class MainCards extends Component {
     event.target.className === 'card';
     console.log('in main_cards, handleCardClick, wasParentClicked: ', wasParentClicked);
     if (wasParentClicked) {
-      this.props.selectedFlat(this.props.flat);
+      // this.props.selectedFlat(this.props.flat);
       console.log('in main_cards, handleCardClick, Card clicked');
       const win = window.open(`/show/${this.props.flat.id}`, '_blank');
       win.focus();

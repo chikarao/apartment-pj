@@ -142,7 +142,7 @@ class GoogleMap extends Component {
         // console.log('in googlemaps clicked marker longitude: ', event);
       });
 
-      //************ INFOWINDOW createElement ***************
+      //************ INFOWINDOW create element ***************
       //Parent Div has image div and detaildiv as immediate children
       const iwDivParent = document.createElement('div');
 
@@ -204,7 +204,7 @@ class GoogleMap extends Component {
       iwDivParent.appendChild(iwDetailDiv);
 
       infowindow.setContent(iwDivParent);
-      //************ INFOWINDOW createElement ***************
+      //************ INFOWINDOW create element ***************
 
       google.maps.event.addListener(infowindow, 'domready', () => {
         // this addDomListener takes display nones some divs in google maps

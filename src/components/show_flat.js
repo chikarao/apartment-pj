@@ -18,7 +18,7 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 class ShowFlat extends Component {
   componentDidMount() {
-    // gets flat id from params
+    // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
   }
 
@@ -91,7 +91,8 @@ class ShowFlat extends Component {
       const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
-      this.props.requestBooking(bookingRequest);
+      // calls action craetor and sends callback to action to go to the booking confiramtion page
+      this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
     }
   }
 
