@@ -83,14 +83,14 @@ navigationLinks() {
   if (this.props.authenticated) {
      // show link to signout and signed in as...
      return [
-       <ul className="header-list">
-         <li className="nav-item" key={2}>
+       <ul key={'1'} className="header-list">
+         <li className="nav-item">
           <Link className="nav-link" to="/signout">Sign Out</Link>
          </li>
-         <li className="nav-item" key={1}>
+         <li className="nav-item">
           <Link className="nav-link" to="/mypage">My Page</Link>
          </li>
-         <li className="nav-item" key={3}>
+         <li className="nav-item">
           <p className="nav-link">Signed in as {this.props.email}</p>
          </li>
        </ul>
@@ -98,11 +98,11 @@ navigationLinks() {
   } else {
     // show link to sign in or sign out
     return [
-      <ul className="header-list">
-        <li className="nav-item" key={4}>
+      <ul key={'2'} className="header-list">
+        <li className="nav-item">
           <Link className="nav-link" to="/signin">Sign In</Link>
         </li>
-        <li className="nav-item" key={5}>
+        <li className="nav-item">
           <Link className="nav-link" to="/signup">Sign Up</Link>
         </li>
       </ul>
@@ -134,14 +134,14 @@ renderMobileNav() {
 renderNavigation() {
   if (this.state.windowWidth <= 800) {
     return [
-      <div className="mobile_nav">
+      <div key={'3'} className="mobile_nav">
         <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}><i className="fa fa-bars"></i></p>
         {this.renderMobileNav()}
       </div>
     ];
   } else {
     return [
-      <div key={7} className="nav_menu">
+      <div key={'4'} className="nav_menu">
         {this.navigationLinks()}
       </div>
     ];

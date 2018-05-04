@@ -105,6 +105,7 @@ class Feature extends Component {
       return (
         <div>
           <GoogleMap
+            // key={'1'}
             flatsEmpty={flatsEmpty}
             flats={this.props.flats}
             initialPosition={latLngAve || initialPosition}
@@ -161,9 +162,9 @@ class Feature extends Component {
               // <span>{flat.id}</span>
               // <span> {flat.lng}</span>
               // <span> {flat.images}</span>
-              <div>
+              <div key={flat.id.toString()}>
                 <MainCards
-                  key={flat.id}
+                  // key={flat.id.toString()}
                   flat={flat}
                   currency='$'
                   // id={flat.id}

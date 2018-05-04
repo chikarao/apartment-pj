@@ -88,7 +88,7 @@ class MainCards extends Component {
   renderCards() {
     // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
     return (
-      <div className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
+      <div key={this.props.flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
         <div
           className="card-image"
           style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
@@ -106,7 +106,7 @@ class MainCards extends Component {
               </div>
             </div>
           </div>
-          <div className="card-details">
+          <div key={this.props.flat.id.toString()} className="card-details">
             <div className="card-flat-caption">
               {this.props.flat.description}
             </div>

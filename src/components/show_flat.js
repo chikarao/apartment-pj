@@ -92,7 +92,6 @@ class ShowFlat extends Component {
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
       // calls action craetor and sends callback to action to go to the booking confiramtion page
-      // this.props.requestBooking(bookingRequest, () => this.props.history.push(`/bookingconfirmation/${bookingRequest.flat_id}`));
       this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
     }
   }
