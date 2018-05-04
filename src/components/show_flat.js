@@ -7,7 +7,8 @@ import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
 import * as actions from '../actions';
-import Carousel from './carousel/carousel';
+// import Carousel from './carousel/carousel';
+import GoogleMap from './google_map';
 
 import DatePicker from './date_picker/date_picker';
 
@@ -17,6 +18,7 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 class ShowFlat extends Component {
   componentDidMount() {
+    // gets flat id from params
     this.props.selectedFlatFromParams(this.props.match.params.id);
   }
 
@@ -33,7 +35,7 @@ class ShowFlat extends Component {
 
 
       if (!flatEmpty) {
-        const { description, area, price_per_month, images } = this.props.flat;
+        const { description, area, beds, sales_point, price_per_month, images } = this.props.flat;
         console.log('in show_flat renderFlat, renderImages: ', renderImages(images));
         return (
           <div>
@@ -42,19 +44,27 @@ class ShowFlat extends Component {
                 {renderImages(images)}
               </div>
             </div>
-            <div className="show-container">
-              <div>
+            <div className="show-flat-container">
+              <div className="show-flat-desription">
                 { description }
               </div>
 
-              <div>
+              <div className="show-flat-area">
                 { area }
               </div>
 
-              <div>
+              <div className="show-flat-beds">
+                Beds: { beds }
+              </div>
+
+              <div className="show-flat-sales_point">
+                { sales_point }
+              </div>
+
+              <div className="show-flat-price">
                 ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
-              <div>
+              <div className="show-flat-id">
                 <small>flat id: {this.props.match.params.id}</small>
               </div>
 
@@ -109,7 +119,8 @@ class ShowFlat extends Component {
         // console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', adjustedBeforeDate);
 
         adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
-        adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
+        // adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
+        // no need to adjust if check in on check out day
 
         // console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
         // console.log('in show_flat, disabledDays, in _.each, before Date after setDate: ', adjustedBeforeDate);
@@ -142,11 +153,52 @@ class ShowFlat extends Component {
     }
   }
 
+  renderMap() {
+    if (this.props.flat) {
+      console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
+      const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+      const flatsEmpty = false;
+      const flatArray = [this.props.flat];
+      const flatArrayMapped = _.mapKeys(flatArray, 'id');
+
+      console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+
+      return (
+        <div>
+          <GoogleMap
+            showFlat
+            flatsEmpty={flatsEmpty}
+            flats={flatArrayMapped}
+            initialPosition={initialPosition}
+          />
+        </div>
+      );
+    }
+  }
+
+  // renderMap() {
+  //   if (this.props.flat) {
+  //     console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
+  //     const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng }
+  //     const flatsEmpty = false;
+  //     const flatArray = [this.props.flat];
+  //     const flatArrayMapped = _.mapKeys(flatArray, 'id');
+  //
+  //     console.log('in show_flat, renderMap, flatArray: ', flatArray);
+  //     console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+  //
+  //     return (
+  //       <div>*******************MAP*********************</div>
+  //     );
+  //   }
+  // }
+
   renderButton() {
     console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
         return (
-          <div>
+          <div className="show-flat-button-box">
             <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
           </div>
         );
@@ -169,6 +221,9 @@ class ShowFlat extends Component {
         </div>
         <div>
           {this.renderDatePicker()}
+        </div>
+        <div className="container" id="map">
+          {this.renderMap()}
         </div>
         <div>
           {this.renderButton()}

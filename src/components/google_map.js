@@ -33,8 +33,9 @@ class GoogleMap extends Component {
   // flatsEmpty is prop passed in map render
   // and is true if there are no search results for the map area or criteria
     const initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
-    console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
-    console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
+    // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
+    // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
+    console.log('in googlemap, componentDidMount, FLATS:', this.props.flats);
 
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
@@ -73,10 +74,11 @@ class GoogleMap extends Component {
 
       //flats is object from props in map render
     _.each(this.props.flats, flat => {
-      const markerLabel = `$${parseFloat(flat.price_per_month).toFixed(0)}`;
+      console.log('in googlemaps, each, flat: ', flat);
+      const markerLabel = this.props.showFlat ? 'Here I am' : `$${parseFloat(flat.price_per_month).toFixed(0)}`;
       // Marker sizes are expressed as a Size of X,Y where the origin of the image
       // (0,0) is located in the top left of the image.
-      var markerIcon = {
+      const markerIcon = {
         url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
         // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
         scaledSize: new google.maps.Size(40, 40),
@@ -107,10 +109,12 @@ class GoogleMap extends Component {
         // labelInBackground: true
       });
 
-      const infowindow = new google.maps.InfoWindow({
-        maxWidth: 300,
-        key: flat.id
-      });
+      // if (!this.props.showFlat) {
+        const infowindow = new google.maps.InfoWindow({
+          maxWidth: 300,
+          key: flat.id
+        });
+      // }
 
       //infowindowArray for closing all open infowindows at map click
       infowindowArray.push(infowindow);
@@ -122,7 +126,7 @@ class GoogleMap extends Component {
         for (let i = 0; i < infowindowArray.length; i++) {
           infowindowArray[i].close();
         }
-        console.log('in google map, marker addlistener clicked');
+        // console.log('in google map, marker addlistener clicked');
         console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
         // then open clicked infowindow
         infowindow.open(map, marker);
@@ -143,6 +147,7 @@ class GoogleMap extends Component {
       const iwDivParent = document.createElement('div');
 
       // Image div
+      console.log('in googlemaps, infowindow create elements, flat.images: ', flat.images);
       const iwImageDiv = document.createElement('div');
       iwImageDiv.id = 'infowindow-box-image-box';
       iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
@@ -318,17 +323,21 @@ class GoogleMap extends Component {
       // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
       // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
       // console.log('in googlemap, mapZoom: ', mapZoom);
-      console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
       // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
       // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
       // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
       // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
 
       // updateMapBounds not available as app state obj but not currently used
-      this.props.updateMapDimensions(MAP_DIMENSIONS);
+
       // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
-      this.props.fetchFlats(mapBounds);
+      //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
+      if (!this.props.showFlat) {
+        console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+        this.props.updateMapDimensions(MAP_DIMENSIONS);
+        this.props.fetchFlats(mapBounds);
+      }
     });
 
 
