@@ -92,7 +92,8 @@ class ShowFlat extends Component {
       console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
       // calls action craetor and sends callback to action to go to the booking confiramtion page
-      this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
+      // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
+      this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
     }
   }
 
@@ -195,6 +196,11 @@ class ShowFlat extends Component {
   //   }
   // }
 
+  bookingRequestCallback(flatId) {
+    console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
+    this.props.history.push(`/bookingconfirmation/${flatId}`);
+  }
+
   renderButton() {
     console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
@@ -248,6 +254,11 @@ function renderImages(images) {
     })
   );
 }
+
+// function bookingRequestCallback(flatId) {
+//   console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
+//   this.props.history.push(`/bookingconfirmation/${flatId}`);
+// }
 
 function mapStateToProps(state) {
   console.log('in show_flat render, mapStateToProps, state: ', state);

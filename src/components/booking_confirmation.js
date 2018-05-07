@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import * as actions from '../actions';
+
+
 class BookingConfirmation extends Component {
-    // componentDidMount() {
-    //
-    //   // localStorage.setItem('flat', response.data.data.user.authentication_token);
-    // }
+  componentDidMount() {
+    // gets flat id from params set in click of main_cards or infowindow detail click
+    this.props.fetchBooking(this.props.match.params.id);
+    console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
+  }
 
     componentWillUnmount() {
-
-      localStorage.removeItem('data');
+      console.log('in booking confirmation, componentWillUnmount');
     }
 
     renderBookingData() {
-      if (this.props.flat && this.props.bookingData) {
+      if (this.props.bookingData) {
         // const data = this.props.bookingData.id;
         // localStorage.setItem('data', data);
         // const localData = localStorage.getItem('data');
@@ -22,26 +25,29 @@ class BookingConfirmation extends Component {
         return (
           <div>
             <h2>
-              Thank you for booking with us!
+              Thank you for your booking!
             </h2>
             <h3>
               You can manage your bookings in My Page.
             </h3>
             <div className="booking-confirmation">
               <div>
-                Description: {this.props.flat.description}
+                Description: {this.props.bookingData.flat.description}
               </div>
               <div>
-                Area: {this.props.flat.area}
+                Area: {this.props.bookingData.flat.area}
               </div>
               <div>
-                Beds: {this.props.flat.beds}
+                Beds: {this.props.bookingData.flat.beds}
               </div>
               <div>
                 Booking start: {this.props.bookingData.date_start}
               </div>
               <div>
                 Booking end: {this.props.bookingData.date_end}
+              </div>
+              <div>
+                Booking ID: {this.props.bookingData.id}
               </div>
             </div>
           </div>
@@ -100,9 +106,9 @@ class BookingConfirmation extends Component {
 function mapStateToProps(state) {
   console.log('in booking confirmation, mapStateToProps, state: ', state);
   return {
-    bookingData: state.bookingData.bookingData,
-    flat: state.flat.selectedFlat
+    bookingData: state.bookingData.fetchBookingData
+    // flat: state.flat.selectedFlat
   };
 }
 
-export default connect(mapStateToProps)(BookingConfirmation);
+export default connect(mapStateToProps, actions)(BookingConfirmation);

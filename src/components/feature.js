@@ -159,34 +159,18 @@ class Feature extends Component {
 
         return _.map(flats, (flat) => {
             return (
-              // <span>{flat.id}</span>
-              // <span> {flat.lng}</span>
-              // <span> {flat.images}</span>
+
               <div key={flat.id.toString()}>
                 <MainCards
                   // key={flat.id.toString()}
                   flat={flat}
                   currency='$'
-                  // id={flat.id}
-                  // area={flat.area}
-                  // bath={flat.bath}
-                  // beds={flat.beds}
-                  // rooms={flat.rooms}
-                  // flat_type={flat.flat_type}
-                  // description={flat.description}
-                  // guests={flat.guests}
-                  // lat={flat.lat}
-                  // lng={flat.lng}
-                  // price_per_day={flat.price_per_day}
-                  // price_per_month={flat.price_per_month}
-                  // currency='$'
-                  // sales_point={flat.sales_point}
-                  // images={flat.images}
+
                 />
               </div>
             );
           });
-          // <div>{console.log('in div: ', flats)}</div>
+          // <div>{console.log('in feature renderFlats, flats: ', flats)}</div>
           // this.props.startUpIndex();
       } else if (this.props.startUpCount.startUpCount !== 0) {
         return <div className="no-results-message">No flats in that area or with that criteria. <br/>Please search again!</div>;

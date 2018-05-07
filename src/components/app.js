@@ -10,6 +10,7 @@ export default class App extends Component {
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
     // added async and defer to make sure gmap loads before component...
     // https://medium.com/@nikjohn/speed-up-google-maps-and-everything-else-with-async-defer-7b9814efb2b
+    // https://stackoverflow.com/questions/41289602/add-defer-or-async-attribute-to-dynamically-generated-script-tags-via-javascript/41289721
     script.async = true;
     script.defer = true;
     document.head.append(script);

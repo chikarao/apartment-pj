@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, SELECTED_DATES, REQUEST_BOOKING, FETCH_MESSAGE } from './types';
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, SELECTED_DATES, REQUEST_BOOKING, FETCH_BOOKING, FETCH_MESSAGE } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -257,7 +257,24 @@ export function requestBooking(bookingRequest, callback) {
           type: REQUEST_BOOKING,
           payload: response.data.data.booking
         });
-        callback();
+        callback(response.data.data.booking.id);
       });
+  };
+}
+
+export function fetchBooking(id) {
+  console.log('in actions index, fetch booking: ', id);
+
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/bookings/${id}`, {
+      headers: { authorization: localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchBooking: ', response.data.data.booking);
+      dispatch({
+        type: FETCH_BOOKING,
+        payload: response.data.data.booking
+      });
+    });
   };
 }

@@ -1,12 +1,15 @@
 // ************* COPIED FROM HOC LESSOIN *****************
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+// import PropTypes from 'prop-types';
 
 // argument is compoent we want to wrap
 export default function (AuthRequiredComponent) {
   class Authentication extends Component {
     static contextTypes = {
+      //React.PropTypes deprecated https://github.com/facebook/prop-types#prop-types
       router: React.PropTypes.object
+      // router: PropTypes.object
     }
     // context is just like props but skips levels in app
     // forces you to not abuse context by defining context types
