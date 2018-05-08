@@ -298,22 +298,23 @@ export function fetchBooking(id) {
   };
 }
 
-// export function createFlat(flatAttributes, callback) {
-//   console.log('in actions index, createFlat, flatAttributes: ', flatAttributes);
-//   console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
-//
-//   const { } = flatAttributes;
-//   return function (dispatch) {
-//     axios.post(`${ROOT_URL}/api/v1/flats`, { flat: {  } }, {
-//       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-//     })
-//     .then(response => {
-//       console.log('response to createFlat: ', response.data.data);
-//       dispatch({
-//         type: CREATE_FLAT,
-//         payload: response.data.data
-//       });
-//       callback();
-//     });
-//   };
-// }
+export function createFlat(flatAttributes, callback) {
+  console.log('in actions index, createFlat, flatAttributes: ', flatAttributes);
+  console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/flats`, { flat: flatAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createFlat, response: ', response);
+      console.log('response to createFlat, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_FLAT,
+        payload: response.data.data
+      });
+      callback(response.data.data.flat.id, flatAttributes.files);
+    });
+  };
+}

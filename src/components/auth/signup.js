@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import * as actions from '../../actions';
 
 
@@ -31,19 +33,20 @@ class Signup extends Component {
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset className="form-group">
-          <label>Email:</label>
+          <label className="auth-form-label">Email:</label>
           <Field name="email" component="input" type="email" className="form-control" />
         </fieldset>
         <fieldset className="form-group">
-          <label>Password:</label>
+          <label className="auth-form-label">Password:</label>
           <Field name="password" component="input" type="password" className="form-control" type="password" />
         </fieldset>
         <fieldset className="form-group">
-          <label>Confirm Password:</label>
+          <label className="auth-form-label">Confirm Password:</label>
           <Field name="passwordConfirmation" component="input" className="form-control" type="password" />
         </fieldset>
         {this.renderAlert()}
-        <button action="submit" className="btn btn-primary">Sign Up!</button>
+        <Link to="/signin" className="reset-password">Already signed up? Sign in</Link>
+        <button action="submit" className="btn btn-primary btn-lg">Sign Up!</button>
       </form>
     );
   }
