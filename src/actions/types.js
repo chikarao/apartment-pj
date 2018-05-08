@@ -14,3 +14,4 @@ export const SELECTED_DATES = 'selected_dates';
 export const REQUEST_BOOKING = 'request_booking';
 export const FETCH_BOOKING = 'fetch_booking';
 export const CREATE_FLAT = 'create_flat';
+export const CREATE_IMAGE = 'create_image';

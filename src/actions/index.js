@@ -16,6 +16,7 @@ import {
   REQUEST_BOOKING,
   FETCH_BOOKING,
   CREATE_FLAT,
+  CREATE_IMAGE,
   FETCH_MESSAGE
 } from './types';
 
@@ -315,6 +316,26 @@ export function createFlat(flatAttributes, callback) {
         payload: response.data.data
       });
       callback(response.data.data.flat.id, flatAttributes.files);
+    });
+  };
+}
+export function createImage(image, flatId) {
+  console.log('in actions index, createImage, Image publicid: ', image);
+  console.log('in actions index, createImage: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/images`, { publicid: image, flat_id: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createImage, response: ', response);
+      console.log('response to createImage, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_IMAGE,
+        payload: response.data.data
+      });
+      // callback(response.data.data.flat.id, flatAttributes.files);
     });
   };
 }
