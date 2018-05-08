@@ -20,7 +20,7 @@ export default function (AuthRequiredComponent) {
     componentWillMount() {
       if (!this.props.authenticated) {
         // this.context.router.push('/');
-        this.context.router.history.push('/');
+        this.context.router.history.push('/signin');
       }
     }
 
@@ -28,7 +28,7 @@ export default function (AuthRequiredComponent) {
       if (!nextProps.authenticated) {
         // do not use this.nextProps
         // this.context.router.push('/');
-        this.context.router.history.push('/');
+        this.context.router.history.push('/signin');
       }
     }
 

@@ -1,6 +1,23 @@
 import axios from 'axios';
 // import { browserHistory } from 'react-router-dom';
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FETCH_FLATS, UPDATE_MAP_DIMENSIONS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, INCREMENT_IMAGE_INDEX, DECREMENT_IMAGE_INDEX, START_UP_INDEX, GET_PW_RESET_TOKEN, SELECTED_DATES, REQUEST_BOOKING, FETCH_BOOKING, FETCH_MESSAGE } from './types';
+import {
+  AUTH_USER,
+  AUTH_ERROR,
+  UNAUTH_USER,
+  FETCH_FLATS,
+  UPDATE_MAP_DIMENSIONS,
+  SELECTED_FLAT,
+  SELECTED_FLAT_FROM_PARAMS,
+  INCREMENT_IMAGE_INDEX,
+  DECREMENT_IMAGE_INDEX,
+  START_UP_INDEX,
+  GET_PW_RESET_TOKEN,
+  SELECTED_DATES,
+  REQUEST_BOOKING,
+  FETCH_BOOKING,
+  CREATE_FLAT,
+  FETCH_MESSAGE
+} from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
 const ROOT_URL = 'http://localhost:3000';
@@ -31,6 +48,7 @@ export function signinUser({ email, password }, callback) {
         // data.token for express server api
         //redirect to the route '/feature'
 
+        console.log('in action, signin user, .then, response, auth token: ', response.data.data.user.authentication_token);
         localStorage.setItem('token', response.data.data.user.authentication_token);
         localStorage.setItem('email', email);
         // authentication_token for rails book review api
@@ -57,9 +75,9 @@ export function signupUser({ email, password }, callback) {
     axios.post(`${ROOT_URL}/api/v1/sign_up`, { user: { email, password } })
     // signup for express server; sign_up for rails book review api
     .then(response => {
-      console.log('here is the response: ', response);
+      console.log('in action, signup user, .then, response: ', response);
       dispatch({ type: AUTH_USER, payload: email });
-      console.log('here is the response: ', response.data.data.user.authentication_token);
+      console.log('in action, signup user, .then, response, auth token: ', response.data.data.user.authentication_token);
       localStorage.setItem('token', response.data.data.user.authentication_token);
       // localStorage.setItem('token', response.data.token);
       localStorage.setItem('email', email);
@@ -241,12 +259,12 @@ export function selectedDates(dates) {
   };
 }
 
-// called in show flats to post to api
+// called in show flats to post to api; callback to navigate to confirmation page with id as params
 export function requestBooking(bookingRequest, callback) {
   console.log('in actions index, requestBooking, bookingRequest: ', bookingRequest);
   console.log('in actions index, requestBooking, localStorage.getItem : ', localStorage.getItem('token'));
 
-  const { flat_id, user_email, date_start, date_end } = bookingRequest
+  const { flat_id, user_email, date_start, date_end } = bookingRequest;
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/bookings`, { booking: { flat_id, user_email, date_start, date_end } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -262,6 +280,7 @@ export function requestBooking(bookingRequest, callback) {
   };
 }
 
+//called when BookingConfirmation mounted; sent id from params
 export function fetchBooking(id) {
   console.log('in actions index, fetch booking: ', id);
 
@@ -278,3 +297,23 @@ export function fetchBooking(id) {
     });
   };
 }
+
+// export function createFlat(flatAttributes, callback) {
+//   console.log('in actions index, createFlat, flatAttributes: ', flatAttributes);
+//   console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+//
+//   const { } = flatAttributes;
+//   return function (dispatch) {
+//     axios.post(`${ROOT_URL}/api/v1/flats`, { flat: {  } }, {
+//       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//     })
+//     .then(response => {
+//       console.log('response to createFlat: ', response.data.data);
+//       dispatch({
+//         type: CREATE_FLAT,
+//         payload: response.data.data
+//       });
+//       callback();
+//     });
+//   };
+// }

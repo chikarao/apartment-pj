@@ -132,6 +132,19 @@ body > div:first-child {
   /* margin-bottom: 20px; */
 }
 
+/* CREATE FLAT Form */
+
+.create-flat-form-group {
+  /* margin-top: 20px; */
+  padding-top: 20px;
+}
+.create-flat-form-label {
+  float: left;
+  margin: 0 15px 0 20px;
+  min-width: 170px;
+  text-align: left;
+}
+
 /* ************MAP**************** */
 
 #map {
@@ -304,7 +317,7 @@ body > div:first-child {
   margin: 30px 20px 30px 20px;
 }
 
-/* *************CARDS*************** */
+/* *************MAIN CARDS*************** */
 
 .card-row {
   display: flex;
@@ -419,7 +432,7 @@ body > div:first-child {
 
 /* ***************FILE UPLOAD************** */
 .dropzone-area {
-  height: 300px;
+  height: 200px;
   width: 100%;
   margin: 20px;
   display: flex;
@@ -442,6 +455,15 @@ body > div:first-child {
 .dropzone-area i {
   color: gray !important;
   font-size: 80px;
+}
+
+.image-upload-preview-ul {
+  list-style-type: square;
+  text-align: left;
+}
+
+.image-upload-preview-ul > li {
+  color: blue;
 }
 
 

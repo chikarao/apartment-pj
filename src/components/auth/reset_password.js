@@ -26,7 +26,6 @@ class ResetPassword extends Component {
     console.log('in reset_password, handleFormSubmit token entered, clicked, token', token);
     console.log('in reset_password, handleFormSubmit password entered, clicked, password', password);
     this.props.resetPassword({ email, token, password });
-
   }
   //
   // renderTokenEnterAndPasswordReset() {

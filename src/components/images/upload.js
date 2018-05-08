@@ -10,11 +10,13 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 const API_KEY = process.env.CLOUDINARY_API_KEY;
 const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
+
 class Upload extends Component {
   handleDrop = files => {
+    const imagesArray = [];
   // Push all the axios request promise into a single array
-  const uploaders = files.map((file, index) => {
-      console.log(file);
+    const uploaders = files.map((file, index) => {
+    console.log('in Upload, handleDrop, uploaders, file: ', file);
     // Initial FormData
     const formData = new FormData();
     const apiSecret = API_SECRET;
@@ -37,12 +39,12 @@ class Upload extends Component {
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
 
     // console.log('api_key: ', formData.get('api_key'));
-    console.log('timestamp: ', formData.get('timestamp'));
-    console.log('public id: ', formData.get('public_id'));
+    console.log('in Upload, handleDrop, uploaders, timestamp: ', formData.get('timestamp'));
+    console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
     // console.log('formData api_key: ', formData.get('api_key'));
-    console.log('formData eager: ', formData.get('eager'));
-    console.log('formData file: ', formData.get('file'));
-    console.log('signature: ', formData.get('signature'));
+    console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
+    console.log('in Upload, handleDrop, uploaders, formData file: ', formData.get('file'));
+    console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
 
     return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -50,15 +52,21 @@ class Upload extends Component {
       // const data = response.data;
       const filePublicId = response.data.public_id;
       // You should store this URL for future references in your app
-      console.log(response.data.public_id);
+      console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
+      imagesArray.push(filePublicId);
+      // call create image action, send images Array with flat id
     });
+    //end of then
   });
-  console.log('uploaders: ', uploaders);
+  //end of uploaders
+  console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
     // ... perform after upload is successful operation
+    //
   });
 }
+//end of handleDrop
 
     render() {
       return (

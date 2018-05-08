@@ -1,31 +1,16 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
-import _ from 'lodash';
+import { reduxForm, Field } from 'redux-form';
+import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-const FIELDS = {
-  email: {
-    type: 'input',
-    label: 'Email:'
-  },
-  password: {
-    type: 'input',
-    label: 'Password:'
-  },
-  passwordConfirm: {
-    type: 'input',
-    label: 'Password Confirmation:'
-  }
-};
-// ['email', 'password', 'passwordConfirm'];
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
 
 class Signup extends Component {
-  handleFormSubmit(formProps) {
+  handleFormSubmit({ email, password }) {
     // call action creator to sign up user
     // if form is not valid, handlesubmit will not called by redux-form
     // this.props.signupUser(formProps);
-    this.props.signupUser(formProps, () => this.props.history.push('/feature')
+    console.log('in signup, render, handleFormSubmit: ', email, password);
+    this.props.signupUser({ email, password }, () => this.props.history.push('/feature')
     );
   }
   renderAlert() {
@@ -38,84 +23,43 @@ class Signup extends Component {
     }
   }
 
-  renderField(fieldConfig, field) {
-    const fieldHelper = this.props.fields[field];
-    // console.log('here is the fieldhelper: ', fieldHelper);
-    // one fieldHelper for each field declared below in redux form
-
-    return (
-      <fieldset className="form-group" key={fieldConfig.label}>
-        <label className="auth-form-label">{fieldConfig.label}</label>
-        <fieldConfig.type
-          className="form-control"
-          type={fieldHelper.name === 'password' ||
-          fieldHelper.name === 'passwordConfirm' ? 'password' : ''}
-          {...fieldHelper}
-        />
-        {fieldHelper.touched && fieldHelper.error
-          && <div className="error">{fieldHelper.error}</div>}
-      </fieldset>
-    );
-  }
-
   render() {
-    // const { handleSubmit, fields: { email, password, passwordConfirm } } = this.props;
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting, touched, fields: { email, password, passwordConfirm } } = this.props;
+    console.log('in signup, render, this.props: ', this.props);
+    console.log('in signup, render, email: ', this.props.fields.email);
+
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        {_.map(FIELDS, this.renderField.bind(this))}
+        <fieldset className="form-group">
+          <label>Email:</label>
+          <Field name="email" component="input" type="email" className="form-control" />
+        </fieldset>
+        <fieldset className="form-group">
+          <label>Password:</label>
+          <Field name="password" component="input" type="password" className="form-control" type="password" />
+        </fieldset>
+        <fieldset className="form-group">
+          <label>Confirm Password:</label>
+          <Field name="passwordConfirmation" component="input" className="form-control" type="password" />
+        </fieldset>
         {this.renderAlert()}
         <button action="submit" className="btn btn-primary">Sign Up!</button>
       </form>
     );
   }
-//   render() {
-//     const { handleSubmit, fields: { email, password, passwordConfirm } } = this.props;
-//     return (
-//       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-//         <fieldset className="form-group">
-//           <label>Email:</label>
-//           <input className="form-control" {...email} />
-//           {email.touched && email.error && <div className="error">{email.error}</div>}
-//         </fieldset>
-//         <fieldset className="form-group">
-//           <label>Password:</label>
-//           <input className="form-control" type="password" {...password} />
-//           {password.touched && password.error && <div className="error">{password.error}</div>}
-//         </fieldset>
-//         <fieldset className="form-group">
-//           <label>Confirm Password:</label>
-//           <input className="form-control" type="password" {...passwordConfirm} />
-//           {passwordConfirm.touched && passwordConfirm.error && <div className="error">
-//           {passwordConfirm.error}</div>}
-//         </fieldset>
-//         {this.renderAlert()}
-//         <button action="submit" className="btn btn-primary">Sign Up!</button>
-//       </form>
-//     );
-//   }
 }
 
 function validate(formProps) {
   const errors = {};
   // console.log(formProps);
-  // if (!formProps.email) {
-  //   errors.email = 'Please enter an email';
-  // }
-  // if (!formProps.password) {
-  //   errors.password = 'Please enter a password';
-  // }
-  // if (!formProps.passwordConfirm) {
-  //   errors.passwordConfirm = 'Please enter a password confirmation';
-  // }
-  _.each(FIELDS, (label, field) => {
-    if (!formProps[field]) {
-      errors[field] = `Please enter ${field}`;
-    }
-  });
-
-  if (!emailRegex.test(formProps.email)) {
-    errors.email = 'Please input a valid email';
+  if (!formProps.email) {
+    errors.email = 'Please enter an email';
+  }
+  if (!formProps.password) {
+    errors.password = 'Please enter a password';
+  }
+  if (!formProps.passwordConfirm) {
+    errors.passwordConfirm = 'Please enter a password confirmation';
   }
 
   if (formProps.password !== formProps.passwordConfirm) {
@@ -125,19 +69,26 @@ function validate(formProps) {
   return errors;
 }
 
+Signup = reduxForm({
+    // (your redux-form config)
+    form: 'signup',
+    fields: ['email', 'password', 'passwordConfirm']
+    //returns array of all different keys of FIELDS which will be email,
+    // password and passwordConfirm
+    // validate
+})(Signup);
+
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error
   };
 }
 
-export default reduxForm({
-  form: 'signup',
-  fields: _.keys(FIELDS),
-  // fields: ['email', 'password', 'passwordConfirm'],
-  //returns array of all different keys of FIELDS which will be email, password and passwordConfirm
-// ['email', 'password', 'passwordConfirm'];
-  validate
-  //same as validate: validate
-}, mapStateToProps, actions
-)(Signup);
+// export default reduxForm({
+//   form: 'signup',
+//   fields: ['email', 'password', 'passwordConfirm'],
+//   validate
+//   //same as validate: validate
+// }, mapStateToProps, actions
+// )(Signup);
+export default connect(mapStateToProps, actions)(Signup);

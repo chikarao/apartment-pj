@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 
 class MyPage extends Component {
@@ -10,6 +11,7 @@ class MyPage extends Component {
         <div>My Stays with show, delete</div>
         <div>My Bookings with show, delete</div>
         <div>My Messages with create, delete</div>
+        <Link to="/createflat" className="create-flat"><button className="btn btn-primary btn-lg">Create Flat!</button></Link>
       </div>
     );
   }

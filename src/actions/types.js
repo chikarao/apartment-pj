@@ -13,3 +13,4 @@ export const GET_PW_RESET_TOKEN = 'get_pw_reset_token';
 export const SELECTED_DATES = 'selected_dates';
 export const REQUEST_BOOKING = 'request_booking';
 export const FETCH_BOOKING = 'fetch_booking';
+export const CREATE_FLAT = 'create_flat';
