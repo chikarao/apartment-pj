@@ -18,7 +18,7 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 class ShowFlat extends Component {
   componentDidMount() {
-    console.log('in show flat, componentDidMount');
+    console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
   }

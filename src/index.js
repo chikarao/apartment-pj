@@ -1,3 +1,8 @@
+//required for async await https://babeljs.io/docs/usage/polyfill/
+// https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined
+import 'babel-core/register';
+import 'babel-polyfill';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -8,9 +13,6 @@ import App from './components/app';
 import reducers from './reducers';
 import { AUTH_USER } from './actions/types';
 
-//required for async await
-require('babel-core/register');
-require('babel-polyfill');
 
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');

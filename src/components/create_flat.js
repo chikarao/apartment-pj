@@ -134,44 +134,11 @@ class CreateFlat extends Component {
   axios.all(uploaders).then(() => {
     // ... perform after upload is successful operation
     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
-    // setTimeout(() => this.props.createImage(imagesArray, flatId, (id) => this.createImageCallback(id))
-    // //do what you need here
-    // , 1000);
-    // this.props.createImage(imagesArray, flatId, (id) => this.createImageCallback(id));
-    //
+
     const imageCount = 0;
     this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-
-    // _.each(imagesArray, (image, i) => {
-    //   //if last in array, send create image with nav callback and a boolean flag with last
-    //   let lastImage = false;
-    //
-    //   if (i < (imagesArray.length - 1)) {
-    //     console.log('in createFlat, handleCreateImages, axios all, then, if imagesArray less than, i: ', i);
-    //     // this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
-    //     setTimeout(() => this.createEachImage(image, flatId)
-    //     //do what you need here
-    //     , 1000);
-    //     // this.createEachImage(image, flatId);
-    //   } else {
-    //     console.log('in createFlat, handleCreateImages, axios all, then, if else imagesArray less than, i: ', i);
-    //     lastImage = true;
-    //     console.log('in createFlat, handleCreateImages, axios all, then, if else imagesArray less than, lastImage: ', lastImage);
-    //     // setTimeout(() => this.createEachImage(image, flatId, lastImage, (id) => this.createImageCallback(id))
-    //     // //do what you need here
-    //     // , 1000);
-    //     // this.createEachImage(image, flatId);
-    //     this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
-    //   }
-    // });
-    // this.props.history.push(`/showFlat/${flatId}`);
   });
 }
-
-// async createEachImage(image, flatId) {
-//   // await this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
-//   await this.props.createImage(image, flatId);
-// }
 
 createImageCallback(imagesArray, imageCount, flatId) {
   console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
@@ -180,18 +147,9 @@ createImageCallback(imagesArray, imageCount, flatId) {
     this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
 
   } else {
-    this.props.history.push(`/showFlat/${flatId}`);
+    this.props.history.push(`/show/${flatId}`);
   }
 }
-// createImageCallback(flatId) {
-//   console.log('in show_flat createImageCallback, passed from callback: ', flatId);
-//   this.props.history.push(`/showFlat/${flatId}`);
-// }
-
-
-  // createImages(images) {
-  //  upload image code here...
-  // }
 
   renderAlert() {
     if (this.props.errorMessage) {
@@ -202,10 +160,6 @@ createImageCallback(imagesArray, imageCount, flatId) {
       );
     }
   }
-
-  // :user_id, :lat, :lng, :address1, :address2, :city, :state, :region, :zip, :country, :area,
-  // :price_per_day, :price_per_month, :guests, :sales_point, :description, :rooms, :beds,
-  // :flat_type,:bath, :intro, :cancellation, :smoking
 
   renderFields() {
     const { handleSubmit } = this.props;
@@ -303,32 +257,7 @@ createImageCallback(imagesArray, imageCount, flatId) {
     );
   }
 }
-//   render() {
-//     return (
-//       <div>
-//         {this.renderFields()}
-//       <div>
-//         <Upload />
-//       </div>
-//       </div>
-//     );
-//   }
-// }
-//   render() {
-//     return (
-//       <div>
-//         {this.renderFields()}
-//       <div>
-//       <label htmlFor={FILE_FIELD_NAME}>Files</label>
-//        <Field
-//          name={FILE_FIELD_NAME}
-//          component={RenderDropzoneInput}
-//        />
-//       </div>
-//       </div>
-//     );
-//   }
-// }
+
 CreateFlat = reduxForm({
   form: 'simple'
   // fields: [

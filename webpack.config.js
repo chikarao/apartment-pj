@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 
+// reference for babel and polyfill; async await
+// https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined
+
 module.exports = {
   // polyfill for async await
   entry: [
