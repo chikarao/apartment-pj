@@ -4,11 +4,13 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
-
 import App from './components/app';
 import reducers from './reducers';
 import { AUTH_USER } from './actions/types';
 
+//required for async await
+require('babel-core/register');
+require('babel-polyfill');
 
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');

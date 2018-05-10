@@ -134,12 +134,59 @@ class CreateFlat extends Component {
   axios.all(uploaders).then(() => {
     // ... perform after upload is successful operation
     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+    // setTimeout(() => this.props.createImage(imagesArray, flatId, (id) => this.createImageCallback(id))
+    // //do what you need here
+    // , 1000);
+    // this.props.createImage(imagesArray, flatId, (id) => this.createImageCallback(id));
     //
-    _.each(imagesArray, (image) => {
-      this.props.createImage(image, flatId);
-    });
+    const imageCount = 0;
+    this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+
+    // _.each(imagesArray, (image, i) => {
+    //   //if last in array, send create image with nav callback and a boolean flag with last
+    //   let lastImage = false;
+    //
+    //   if (i < (imagesArray.length - 1)) {
+    //     console.log('in createFlat, handleCreateImages, axios all, then, if imagesArray less than, i: ', i);
+    //     // this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
+    //     setTimeout(() => this.createEachImage(image, flatId)
+    //     //do what you need here
+    //     , 1000);
+    //     // this.createEachImage(image, flatId);
+    //   } else {
+    //     console.log('in createFlat, handleCreateImages, axios all, then, if else imagesArray less than, i: ', i);
+    //     lastImage = true;
+    //     console.log('in createFlat, handleCreateImages, axios all, then, if else imagesArray less than, lastImage: ', lastImage);
+    //     // setTimeout(() => this.createEachImage(image, flatId, lastImage, (id) => this.createImageCallback(id))
+    //     // //do what you need here
+    //     // , 1000);
+    //     // this.createEachImage(image, flatId);
+    //     this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
+    //   }
+    // });
+    // this.props.history.push(`/showFlat/${flatId}`);
   });
 }
+
+// async createEachImage(image, flatId) {
+//   // await this.props.createImage(image, flatId, lastImage, (id) => this.createImageCallback(id));
+//   await this.props.createImage(image, flatId);
+// }
+
+createImageCallback(imagesArray, imageCount, flatId) {
+  console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
+  const count = imageCount + 1;
+  if (count <= (imagesArray.length - 1)) {
+    this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+
+  } else {
+    this.props.history.push(`/showFlat/${flatId}`);
+  }
+}
+// createImageCallback(flatId) {
+//   console.log('in show_flat createImageCallback, passed from callback: ', flatId);
+//   this.props.history.push(`/showFlat/${flatId}`);
+// }
 
 
   // createImages(images) {

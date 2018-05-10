@@ -2,8 +2,9 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
+  // polyfill for async await
   entry: [
-    './src/index.js'
+    'babel-polyfill', './src/index.js'
   ],
   output: {
     path: __dirname,
@@ -15,7 +16,9 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       query: {
-        presets: ['react', 'es2015', 'stage-1']
+        // presets: ['react', 'es2015', 'stage-1']
+        // state-0 for async await
+        presets: ['react', 'es2015', 'stage-0']
       }
     }]
     // for react-day-picker !!!!!!!!!!! Decided to use just a link tag in index.html

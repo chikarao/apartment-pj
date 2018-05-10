@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 // import { browserHistory } from 'react-router-dom';
 import {
   AUTH_USER,
@@ -315,13 +316,92 @@ export function createFlat(flatAttributes, callback) {
         type: CREATE_FLAT,
         payload: response.data.data
       });
+      // sends back to createflat.js the flat_id and the images
       callback(response.data.data.flat.id, flatAttributes.files);
     });
   };
 }
-export function createImage(image, flatId) {
-  console.log('in actions index, createImage, Image publicid: ', image);
-  console.log('in actions index, createImage: localStorage.getItem, token; ', localStorage.getItem('token'));
+// export function createImage(imagesArray, flatId, callback) {
+//   console.log('in actions index, createImage, Image publicid: ', imagesArray);
+//   console.log('in actions index, createImage: localStorage.getItem, token; ', localStorage.getItem('token'));
+//
+//   // const { } = flatAttributes;
+//     // let lastImage = false;
+//     _.each(imagesArray, (image, i) => {
+//       return function (dispatch) {
+//        if (i < (imagesArray.length - 1)) {
+//          console.log('in actions index, createImage, in each, if less than, i: ', i);
+//
+//          axios.post(`${ROOT_URL}/api/v1/images`, { publicid: image, flat_id: flatId }, {
+//            headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//          })
+//          .then(response => {
+//            console.log('response to createImage, response: ', response);
+//            console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+//            dispatch({
+//              type: CREATE_IMAGE,
+//              payload: response.data.data.image
+//            });
+//            // if (lastImage) {
+//            //   console.log('response to createImage, if last image, lastImage: ', lastImage);
+//            //   callback(response.data.data.image.flat_id);
+//            // }
+//          });
+//        } else {
+//          console.log('in actions index, createImage, in each, if else, i: ', i);
+//          axios.post(`${ROOT_URL}/api/v1/images`, { publicid: image, flat_id: flatId }, {
+//            headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//          })
+//          .then(response => {
+//            console.log('response to createImage, response: ', response);
+//            console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+//            dispatch({
+//              type: CREATE_IMAGE,
+//              payload: response.data.data.image
+//            });
+//            // if (lastImage) {
+//            //   console.log('response to createImage, if last image, lastImage: ', lastImage);
+//              callback(response.data.data.image.flat_id);
+//            // }
+//          });
+//        }
+//        //end of else
+//      };
+//      //end of return function dispatch
+//     });
+//     //end of each
+// }
+// export function createImage(image, flatId, lastImage, callback) {
+//   console.log('in actions index, createImage, Image publicid: ', image);
+//   console.log('in actions index, createImage: localStorage.getItem, token: ', localStorage.getItem('token'));
+//   console.log('in actions index, createImage: lastImage: ', lastImage);
+//
+//   // const { } = flatAttributes;
+//   return function (dispatch) {
+//     axios.post(`${ROOT_URL}/api/v1/images`, { publicid: image, flat_id: flatId }, {
+//       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//     })
+//     .then(response => {
+//       console.log('response to createImage, response: ', response);
+//       console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+//       if (lastImage) {
+//         console.log('response to createImage, if last image, lastImage: ', lastImage);
+//         callback(response.data.data.image.flat_id);
+//       }
+//       dispatch({
+//         type: CREATE_IMAGE,
+//         payload: response.data.data.image
+//       });
+//     });
+//   };
+// }
+export function createImage(imagesArray, imageCount, flatId, callback) {
+  console.log('in actions index, createImage, imageArray: ', imagesArray);
+  console.log('in actions index, createImage: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, createImage: imageCount: ', imageCount);
+  console.log('in actions index, createImage: flatId: ', flatId);
+  const image = imagesArray[imageCount];
+  console.log('in actions index, createImage: image: ', image);
 
   // const { } = flatAttributes;
   return function (dispatch) {
@@ -330,12 +410,13 @@ export function createImage(image, flatId) {
     })
     .then(response => {
       console.log('response to createImage, response: ', response);
-      console.log('response to createImage, response.data.data: ', response.data.data);
+      console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+
+      callback(imagesArray, imageCount, response.data.data.image.flat_id);
       dispatch({
         type: CREATE_IMAGE,
-        payload: response.data.data
+        payload: response.data.data.image
       });
-      // callback(response.data.data.flat.id, flatAttributes.files);
     });
   };
 }
