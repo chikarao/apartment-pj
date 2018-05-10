@@ -21,6 +21,7 @@ class ShowFlat extends Component {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
+    this.props.getCurrentUser();
   }
 
 
@@ -202,14 +203,32 @@ class ShowFlat extends Component {
     this.props.history.push(`/bookingconfirmation/${flatId}`);
   }
 
+  currentUser() {
+    if (this.props.auth && this.props.flat) {
+      console.log('in show_flat, currentUser, this.props.auth.id: ', this.props.auth.id);
+      console.log('in show_flat, currentUser, this.props.flat: ', this.props.flat.user_id);
+      return (this.props.auth.id === this.props.flat.user_id);
+      // return true;
+      // return true;
+    }
+  }
+// get boolean returned from currentUser and render or do not render an appropriate buttton
+// current user that is owner of flat should be able to block out days on calendar without charge
+// also need an edit button if current user is owner
   renderButton() {
+    console.log('in show_flat, currentUser: ', this.currentUser());
     console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
-        return (
-          <div className="show-flat-button-box">
+        if (!this.currentUser()) {
+          console.log('in show_flat, renderButton, if, not current user; I am not the currentUser: ', this.currentUser());
+          return (
+            <div className="show-flat-button-box">
             <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
-          </div>
-        );
+            </div>
+          );
+        } else {
+          console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUser());
+        }
       } else {
         return (
           <div>

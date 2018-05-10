@@ -197,9 +197,6 @@ class Feature extends Component {
             {this.renderFlats()}
           </div>
         </div>
-
-        <Upload />
-
       </div>
     );
   }

@@ -15,3 +15,4 @@ export const REQUEST_BOOKING = 'request_booking';
 export const FETCH_BOOKING = 'fetch_booking';
 export const CREATE_FLAT = 'create_flat';
 export const CREATE_IMAGE = 'create_image';
+export const GET_CURRENT_USER = 'get_current_user';

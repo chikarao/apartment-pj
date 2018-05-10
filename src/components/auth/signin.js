@@ -14,9 +14,9 @@ class Signin extends Component {
 
   handleFormSubmit({ email, password }) {
     console.log('in signin, handleFormSubmit, email, password: ', email, password);
-    // this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
+    this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
     // navigates back to prior page after sign in; call back sent to action signinUser
-    this.props.signinUser({ email, password }, () => this.props.history.goBack());
+    // this.props.signinUser({ email, password }, () => this.props.history.goBack());
   }
 
   renderAlert() {

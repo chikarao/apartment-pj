@@ -18,6 +18,7 @@ import {
   FETCH_BOOKING,
   CREATE_FLAT,
   CREATE_IMAGE,
+  GET_CURRENT_USER,
   FETCH_MESSAGE
 } from './types';
 
@@ -41,9 +42,12 @@ export function signinUser({ email, password }, callback) {
     //signin for express server
       .then(response => {
         console.log('in action, index, sign in, response: ', response);
+        console.log('in action, index, sign in, esponse.data.data.user.email: ', response.data.data.user.email);
+        console.log('in action, index, sign in, esponse.data.data.user.id: ', response.data.data.user.id);
         // request is good
         // Update state to indicate user is authenticated
-        dispatch({ type: AUTH_USER, payload: email });
+        // dispatch({ type: AUTH_USER, payload: email });
+        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
         // save JWT token
         // localStorage.setItem('token', response.data.token);
@@ -52,7 +56,8 @@ export function signinUser({ email, password }, callback) {
 
         console.log('in action, signin user, .then, response, auth token: ', response.data.data.user.authentication_token);
         localStorage.setItem('token', response.data.data.user.authentication_token);
-        localStorage.setItem('email', email);
+        localStorage.setItem('email', response.data.data.user.email);
+        localStorage.setItem('id', response.data.data.user.id);
         // authentication_token for rails book review api
         // browserHistory.push('/feature');
         callback();
@@ -82,7 +87,7 @@ export function signupUser({ email, password }, callback) {
       console.log('in action, signup user, .then, response, auth token: ', response.data.data.user.authentication_token);
       localStorage.setItem('token', response.data.data.user.authentication_token);
       // localStorage.setItem('token', response.data.token);
-      localStorage.setItem('email', email);
+      localStorage.setItem('email', response.data.data.user.email);
 
       // browserHistory.push('/feature'); deprecated in router-dom v4
       callback();
@@ -94,6 +99,12 @@ export function signupUser({ email, password }, callback) {
     });
     // .catch(response => dispatch(console.log(response.data)));
   };
+}
+export function getCurrentUser() {
+  console.log('in actions index, getCurrentUser:');
+  const id = localStorage.getItem('id');
+  const email = localStorage.getItem('email');
+  return { type: GET_CURRENT_USER, payload: { email, id } };
 }
 
 export function authError(error) {

@@ -33,13 +33,8 @@ export default class App extends Component {
   }
 
   renderApp() {
-    // console.log('in app.js, renderApp, type of google: ', typeof google);
-    // console.log('in app.js, renderApp, this.loadedMap: ', this.loadedMap());
-    // this.loadedMap();
-
-    if (this.state.gmapLoaded) {
+      if (this.state.gmapLoaded) {
       console.log('in app.js, renderApp, after if, this.state.gmapLoaded', this.state.gmapLoaded);
-
       return (
         <div>
           <Header />
