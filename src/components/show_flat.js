@@ -207,9 +207,29 @@ class ShowFlat extends Component {
     if (this.props.auth && this.props.flat) {
       console.log('in show_flat, currentUser, this.props.auth.id: ', this.props.auth.id);
       console.log('in show_flat, currentUser, this.props.flat: ', this.props.flat.user_id);
-      return (this.props.auth.id === this.props.flat.user_id);
-      // return true;
-      // return true;
+      // return (this.props.auth.id === this.props.flat.user_id);
+      return true;
+      // return false;
+    }
+  }
+
+  handleDateBlockClick() {
+    console.log('in show_flat, handleDateBlockClick: ');
+  }
+
+  handleEditFlatClick() {
+    console.log('in show_flat, handleEditFlatClick, this.props.flat.id: ', this.props.flat.id);
+    this.props.history.push(`/editflat/${this.props.flat.id}`);
+  }
+
+  handleDeleteFlatClick() {
+    console.log('in show_flat, handleDeleteFlatClick: ');
+    if (window.confirm('Are you sure you want to delete this listing?')) {
+      console.log('in show_flat, handleDeleteFlatClick, window.confirm, YES, this.props.flat.id: ', this.props.flat.id);
+      // call deleteFlat action creator
+      this.props.deleteFlat(this.props.flat.id, () => this.props.history.push('/mypage'));
+    } else {
+      console.log('in show_flat, handleDeleteFlatClick, window.confirm, NO: ');
     }
   }
 // get boolean returned from currentUser and render or do not render an appropriate buttton
@@ -228,6 +248,19 @@ class ShowFlat extends Component {
           );
         } else {
           console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUser());
+          return (
+            <div className="show-flat-current-user-button-box">
+              <div className="show-flat-button-box">
+                <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg">Block Dates</button>
+              </div>
+              <div className="show-flat-button-box">
+                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg">Edit</button>
+              </div>
+              <div className="show-flat-button-box">
+                <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">Delete</button>
+              </div>
+            </div>
+          );
         }
       } else {
         return (

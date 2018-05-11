@@ -306,9 +306,17 @@ body > div:first-child {
 .show-flat-button-box {
   margin: 30px;
 }
+.show-flat-button-box:hover {
+  opacity: .6;
+}
 
 .carousel-container {
   padding-left: 15px;
+}
+
+.show-flat-current-user-button-box {
+  display: flex;
+  justify-content: center;
 }
 
 /* **********Booking Confirmation *************** */

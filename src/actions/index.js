@@ -19,6 +19,7 @@ import {
   CREATE_FLAT,
   CREATE_IMAGE,
   GET_CURRENT_USER,
+  DELETE_FLAT,
   FETCH_MESSAGE
 } from './types';
 
@@ -83,11 +84,12 @@ export function signupUser({ email, password }, callback) {
     // signup for express server; sign_up for rails book review api
     .then(response => {
       console.log('in action, signup user, .then, response: ', response);
-      dispatch({ type: AUTH_USER, payload: email });
+      dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
       console.log('in action, signup user, .then, response, auth token: ', response.data.data.user.authentication_token);
       localStorage.setItem('token', response.data.data.user.authentication_token);
       // localStorage.setItem('token', response.data.token);
       localStorage.setItem('email', response.data.data.user.email);
+      localStorage.setItem('id', response.data.data.user.id);
 
       // browserHistory.push('/feature'); deprecated in router-dom v4
       callback();
@@ -122,6 +124,7 @@ export function signoutUser() {
   // delete token from local storage
   localStorage.removeItem('token');
   localStorage.removeItem('email');
+  localStorage.removeItem('id');
   return { type: UNAUTH_USER };
 }
 
@@ -331,6 +334,31 @@ export function createFlat(flatAttributes, callback) {
       callback(response.data.data.flat.id, flatAttributes.files);
     });
   };
+}
+
+export function deleteFlat(id, callback) {
+  console.log('in actions index, deleteFlat, flatAttributes: ', id);
+  console.log('in actions index, deleteFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/flats/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteFlat, response: ', response);
+      console.log('response to deleteFlat, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_FLAT,
+        payload: response.data.data
+      });
+      // redirects to mypage
+      callback();
+      window.alert('Delete listing');
+    });
+    //end of then
+  };
+  //end of return function
 }
 
 export function createImage(imagesArray, imageCount, flatId, callback) {
