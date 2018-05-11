@@ -319,6 +319,20 @@ body > div:first-child {
   justify-content: center;
 }
 
+/* ************Edit Flat******************* */
+
+.edit-flat-image-box {
+  margin: 20px;
+}
+
+.flat-input-form-container {
+  margin: 20px 0 20px 0;
+}
+
+form {
+  margin: 20px 0 20px 0;
+}
+
 /* **********Booking Confirmation *************** */
 
 .booking-confirmation-details {

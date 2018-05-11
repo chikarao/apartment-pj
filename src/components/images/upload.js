@@ -62,6 +62,8 @@ class Upload extends Component {
   console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
+    console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
+    // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
     //
   });

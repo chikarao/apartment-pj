@@ -17,3 +17,4 @@ export const CREATE_FLAT = 'create_flat';
 export const CREATE_IMAGE = 'create_image';
 export const GET_CURRENT_USER = 'get_current_user';
 export const DELETE_FLAT = 'delete_flat';
+export const EDIT_FLAT_LOAD = 'edit_flat_load';

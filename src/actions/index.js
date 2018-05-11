@@ -20,6 +20,7 @@ import {
   CREATE_IMAGE,
   GET_CURRENT_USER,
   DELETE_FLAT,
+  EDIT_FLAT_LOAD,
   FETCH_MESSAGE
 } from './types';
 
@@ -272,6 +273,14 @@ export function selectedDates(dates) {
   return {
     type: SELECTED_DATES,
     payload: dates
+  };
+}
+
+export function editFlatLoad(flat) {
+  console.log('in actions index, editFlatLoad, flat', flat);
+  return {
+    type: EDIT_FLAT_LOAD,
+    payload: flat
   };
 }
 
