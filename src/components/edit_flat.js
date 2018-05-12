@@ -5,13 +5,20 @@ import { reduxForm, Field } from 'redux-form';
 import * as actions from '../actions';
 import Upload from './images/upload';
 
-
 class EditFlat extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // confirmChecked: false
+      confirmChecked: false
+    };
+  }
   componentDidMount() {
-    console.log('in edit flat, componentDidMount, params', this.props.match.params);
+    console.log('in edit flat, componentDidMount, this.props.match.params:', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
+    console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
     //   console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
@@ -19,7 +26,20 @@ class EditFlat extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in edit flat, handleFormSubmit, data', data);
+    console.log('in edit flat, handleFormSubmit, data: ', data);
+    if (this.state.confirmChecked) {
+      this.props.editFlat(data, (id) => this.editFlatCallback(id));
+    } else {
+      console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
+      window.alert('Please check box to confirm your inputs then push submit')
+    }
+  }
+
+  editFlatCallback(id) {
+    console.log('in edit flat, editFlatCallback, id: ', id);
+    // this.props.history.push(`/editflat/${id}`);
+    // reload page; fetches new flat data
+    document.location.reload()
   }
 
   renderAlert() {
@@ -38,12 +58,19 @@ class EditFlat extends Component {
       _.map(images, (image) => {
         console.log('in show_flat renderImages, image: ', image.publicid);
         return (
-            <div className="slide-show">
+            <div key={image.id} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
             </div>
         );
       })
     );
+  }
+
+  handleConfirmCheck(event) {
+  // Get the checkbox
+  const checkBox = document.getElementById('editFlatConfirmCheck');
+
+  this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in edit flat, myfunction, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
   }
 
 
@@ -124,7 +151,13 @@ class EditFlat extends Component {
             <Field name="smoking" component="input" type="boolean" className="form-control" />
           </fieldset>
           {this.renderAlert()}
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg">Submit Changes to Form</button>
+          <div className="confirm-change-and-button">
+            <label className="confirm-radio">
+              <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i>  Check to confirm changes then submit
+              <span className="checkmark"></span>
+            </label>
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+          </div>
         </form>
 
         <div className="edit-flat-image-box">
@@ -168,14 +201,7 @@ EditFlat = reduxForm({
   // ]
 })(EditFlat);
 
-// EditFlat = connect(
-//   // console.log('in show_flat, EditFlat connect, state: ', state);
-//   state => ({
-//     initialValues: this.state.selectedFlatFromParams.selectedFlat // pull initial values from account reducer
-//   }),
-//   { actions } // bind account loading action creator
-// )(EditFlat);
-
+// initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
   return {

@@ -21,6 +21,7 @@ import {
   GET_CURRENT_USER,
   DELETE_FLAT,
   EDIT_FLAT_LOAD,
+  EDIT_FLAT,
   FETCH_MESSAGE
 } from './types';
 
@@ -337,6 +338,29 @@ export function createFlat(flatAttributes, callback) {
       console.log('response to createFlat, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_FLAT,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback(response.data.data.flat.id, flatAttributes.files);
+    });
+  };
+}
+
+export function editFlat(flatAttributes, callback) {
+  const { id } = flatAttributes;
+  console.log('in actions index, editFlat, flatAttributes: ', flatAttributes);
+  console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/flats/${id}`, { flat: flatAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editFlat, response: ', response);
+      console.log('response to editFlat, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_FLAT,
         payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images

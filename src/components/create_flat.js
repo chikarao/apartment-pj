@@ -19,35 +19,46 @@ import RenderDropzoneInput from './images/render_dropzone_input';
 const FILE_FIELD_NAME = 'files';
 
 class CreateFlat extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // confirmChecked: false
+      confirmChecked: false
+    };
+  }
 
   handleFormSubmit(data) {
-    const { address1, city, state, zip, country } = data;
-    console.log('in createflat, handleFormSubmit, data: ', data);
-    console.log('in createflat, handleFormSubmit, submit clicked');
-    console.log('in createflat, handleFormSubmitr, this.props:', this.props);
-    const addressHash = { address1, city, state, zip, country }
-    // const addressHash = { address1: '4-2-23 Shibuya', city: 'Shibuya', state: 'Tokyo', zip: '150-0002', country: 'Japan' }
-    let addressString = '';
-    for (const i in addressHash) {
-       addressString += addressHash[i] + ", ";
+    if (this.state.confirmChecked) {
+      const { address1, city, state, zip, country } = data;
+      console.log('in createflat, handleFormSubmit, data: ', data);
+      console.log('in createflat, handleFormSubmit, submit clicked');
+      console.log('in createflat, handleFormSubmitr, this.props:', this.props);
+      const addressHash = { address1, city, state, zip, country }
+      // const addressHash = { address1: '4-2-23 Shibuya', city: 'Shibuya', state: 'Tokyo', zip: '150-0002', country: 'Japan' }
+      let addressString = '';
+      for (const i in addressHash) {
+        addressString += addressHash[i] + ", ";
+      }
+
+      console.log('in createflat, handleFormSubmit, addressString:', addressString);
+      console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
+
+      this.handleGeocode(addressString, data, () => this.props.createFlat(data, (id, files) => this.handleCreateImages(id, files)));
+      // console.log('in createflat, handleFormSubmit, geocodedData:', geocodedData);
+
+      // this.props.createFlat(geocodedData, (id) => this.handleCreateImages(id));
+
+      // call action creator to createFlat and send in callback to create images, cloudinary and api with flat id
+
+      // console.log('in createflat, handleFormSubmit, description: ', description);
+      // console.log('in createflat, handleFormSubmit, area: ', area);
+      // this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
+      // navigates back to prior page after sign in; call back sent to action signinUser
+      // this.props.signinUser({ email, password }, () => this.props.history.goBack());
+      // this.props.createFlat({ flatAttributes }, (images) => this.props.history.goBack(images));
+    } else {
+      window.alert('Please confirm input by checking the box then pressing submit')
     }
-
-    console.log('in createflat, handleFormSubmit, addressString:', addressString);
-    console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
-
-    this.handleGeocode(addressString, data, () => this.props.createFlat(data, (id, files) => this.handleCreateImages(id, files)));
-    // console.log('in createflat, handleFormSubmit, geocodedData:', geocodedData);
-
-    // this.props.createFlat(geocodedData, (id) => this.handleCreateImages(id));
-
-    // call action creator to createFlat and send in callback to create images, cloudinary and api with flat id
-
-    // console.log('in createflat, handleFormSubmit, description: ', description);
-    // console.log('in createflat, handleFormSubmit, area: ', area);
-    // this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
-    // navigates back to prior page after sign in; call back sent to action signinUser
-    // this.props.signinUser({ email, password }, () => this.props.history.goBack());
-    // this.props.createFlat({ flatAttributes }, (images) => this.props.history.goBack(images));
   }
 
   handleGeocode(addressString, data, callback) {
@@ -161,6 +172,13 @@ createImageCallback(imagesArray, imageCount, flatId) {
     }
   }
 
+  handleConfirmCheck(event) {
+  // Get the checkbox
+  const checkBox = document.getElementById('editFlatConfirmCheck');
+
+  this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in create flat, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
+  }
+
   renderFields() {
     const { handleSubmit } = this.props;
     console.log('in createflat, renderFields, this.props: ', this.props);
@@ -244,7 +262,13 @@ createImageCallback(imagesArray, imageCount, flatId) {
           />
         </fieldset>
         {this.renderAlert()}
-        <button action="submit" id="submit-all" className="btn btn-primary btn-lg">Submit</button>
+        <div className="confirm-change-and-button">
+          <label className="confirm-radio">
+            <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i> Check to confirm changes then submit
+            <span className="checkmark"></span>
+          </label>
+          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+        </div>
       </form>
     );
   }
