@@ -119,10 +119,13 @@ class ShowFlat extends Component {
 
         const adjustedAfterDate = new Date(reformatStart);
         const adjustedBeforeDate = new Date(reformatEnd);
-        // console.log('in show_flat, disabledDays, in _.each, afterDate before setDate: ', adjustedAfterDate);
+
+        // const adjustedAfterDateForBooking = adjustedAfterDate;
+        // console.log('in show_flat, disabledDays, in _.each, afterDate before setDate: ', adjustedAfterDateForBooking);
         // console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', adjustedBeforeDate);
 
         adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
+        console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
         // adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
         // no need to adjust if check in on check out day
 
@@ -132,6 +135,8 @@ class ShowFlat extends Component {
         // // const bookingRange = { after: new Date(2018, 4, 10), before: new Date(2018, 4, 18) };
         daysList.push(bookingRange);
       });
+
+      // const firstofMonth = new Date.now()
 
       console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
       return daysList;

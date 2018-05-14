@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import Helmet from 'react-helmet';
 // import DayPicker from 'react-day-picker';
@@ -14,6 +15,9 @@ const INITIAL_STATE = {
     enteredTo: null, // Keep track of the last day for mouseEnter
 };
 
+// let daysToDisableForBooking = {};
+const daysToDisableForBookingArray = [];
+
 class DatePicker extends Component {
   constructor(props) {
    super(props);
@@ -24,56 +28,160 @@ class DatePicker extends Component {
    this.state = INITIAL_STATE;
  }
 
+ componentDidMount() {
+   const { daysToDisable } = this.props;
+   _.each(daysToDisable, (range) => {
+     console.log('in date_picker, componentDidMount, each, range.after', range);
+     // setDate and getTime seems to mutate daysToDisable, so make a new copied date and adjust it
+     //https://stackoverflow.com/questions/1090815/how-to-clone-a-date-object-in-javascript
+     const copiedDateToDisableForBooking = new Date(range.after);
+     copiedDateToDisableForBooking.setDate(copiedDateToDisableForBooking.getDate() + 1);
+     const adjustedDaysToDisable = { after: copiedDateToDisableForBooking, before: range.before };
+     daysToDisableForBookingArray.push(adjustedDaysToDisable);
+   });
+   // adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
+   console.log('in date_picker, componentDidMount, daysToDisableForBookingArray', daysToDisableForBookingArray);
+ }
+
  isSelectingFirstDay(from, to, day) {
    const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from);
    const isRangeSelected = from && to;
+
+   // !!!!!!!!!!!!!!Change to original code!!!!!!!
    return !from || isBeforeFirstDay || isRangeSelected;
+ }
+
+ isDayDisabled(day) {
+   let inRange = false;
+   // const { daysToDisable } = this.props;
+   // let inRange1 = false;
+   // console.log('in date_picker, isSelectingFirstDay, from', from);
+   // console.log('in date_picker, isSelectingFirstDay, to', to);
+   console.log('in date_picker, isDayDisabled, day:', day);
+   console.log('in date_picker, isDayDisabled, this.props.daysToDisable:', this.props.daysToDisable);
+   // console.log('in date_picker, isSelectingFirstDay, isBeforeFirstDay', isBeforeFirstDay);
+   // console.log('in date_picker, isSelectingFirstDay, isRangeSelected', isRangeSelected);
+
+  _.each(daysToDisableForBookingArray, (range) => {
+     console.log('in date_picker, isDayDisabled, in each, range:', range);
+     // const after = range.after;
+
+     // const adjustedAfter = range.afterForBooking.setDate(after.getDate() + 1);
+     console.log('in date_picker, isDayDisabled, in each, setDate then after:', range.after);
+     if ((day > range.after) && (day < range.before)) {
+     // if (day > range.after && day < range.before) {
+       // if (day > range.after) {
+       // console.log('in date_picker, isDayDisabled, in each, if, in disabled range:');
+       // console.log('in date_picker, isDayDisabled, in each, if, in disabled range, day:', day);
+       inRange = true;
+       return;
+       // console.log('in date_picker, isDayDisabled, in each, if, in disabled range, inRange:', inRange);
+     }
+     // else {
+     //   // console.log('in date_picker, isDayDisabled, in each, if, not in disabled range:');
+     //   // console.log('in date_picker, isDayDisabled, in each, if, not in disabled range, day:', day);
+     //   // console.log('in date_picker, isDayDisabled, in each, if, not in disabled range, inRange:', inRange);
+     // }
+   });
+   return inRange;
+ }
+
+ getDatesArray(startDate, endDate) {
+   const datesArray = [];
+   // datesArray.push(startDate);
+   const numDays = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
+   console.log('in date_picker, getDatesArray, numDays', numDays);
+
+   const nextDate = startDate;
+   console.log('in date_picker, getDatesArray, nextDate', nextDate);
+
+   const nextDateCopied = new Date(nextDate);
+   console.log('in date_picker, getDatesArray, nextDateCopied', nextDateCopied);
+   //
+   // datesArray.push(nextDateCopied);
+
+   const addDays = function (i, date) {
+     console.log('calling function within getDatesArray for loop', i, date);
+     const dateNew = new Date(date);
+     dateNew.setDate(dateNew.getDate() + i);
+     return dateNew;
+    };
+
+   for (let i = 0; i <= numDays; i++) {
+     // datesArray.push(nextDateCopied);
+     // console.log('in date_picker, getDatesArray, nextDateCopied', nextDateCopied);
+     //
+     // nextDateCopied.setDate(nextDateCopied.getDate() + i);
+     // console.log('in date_picker, getDatesArray, datesArray:', datesArray);
+     datesArray.push(addDays(i, nextDate));
+   }
+
+   console.log('in date_picker, getDatesArray, datesArray:', datesArray);
+   return datesArray;
  }
 
  handleDayClick(day) {
    const { from, to } = this.state;
-   if (from && to && day >= from && day <= to) {
-     this.handleResetClick();
-     return;
-   }
-   if (this.isSelectingFirstDay(from, to, day)) {
-     this.setState({
-       from: day,
-       to: null,
-       enteredTo: null,
-     });
-     console.log('in date_picker, handleDayClick, second if', this.state);
-   } else {
-     console.log('in date_picker, handleDayClick, if statement else first', day);
-     this.setState({
-       to: day,
-       enteredTo: day
-     });
-     console.log('in date_picker, handleDayClick, if statement else', this.state);
-     // added by co to call action creator and update application state in booking reducer
-   }
-   const dates = this.state;
-   console.log('in date_picker, handleDayClick, dates.to', dates.to);
-   console.log('in date_picker, handleDayClick, dates.to', dates.enteredTo);
-   console.log('in date_picker, handleDayClick, dates.from', dates.from);
-   console.log('in date_picker, handleDayClick, dates', dates);
+   const isDayDisabled = this.isDayDisabled(day);
+   console.log('in date_picker, handleDayClick, this.isDayDisabled:', this.isDayDisabled(day));
+  if (isDayDisabled) {
+    this.handleResetClick();
+    // return;
+  } else {
+    if (from && to && day >= from && day <= to) {
+      this.handleResetClick();
+      console.log('in date_picker, handleDayClick, first if', this.state);
+      return;
+    }
+    if (this.isSelectingFirstDay(from, to, day)) {
+      this.setState({
+        from: day,
+        to: null,
+        enteredTo: null,
+      });
+      console.log('in date_picker, handleDayClick, second if', this.state);
+    } else {
+      console.log('in date_picker, handleDayClick, if statement else first', day);
+      const datesArray = this.getDatesArray(from, day);
+      // const noDisabledDaysInBetween = this.getDates(from, day);
+      console.log('in date_picker, handleDayClick, if statement else first', datesArray);
 
-   if (dates.from && dates.enteredTo) {
-     const datesForAction = { from: dates.from, to: dates.enteredTo };
-     console.log('in date_picker, handleClick, calling selectedDates(datesForAction)', datesForAction);
-     return this.props.selectedDates(datesForAction);
+      this.setState({
+        to: day,
+        enteredTo: day
+      });
+      console.log('in date_picker, handleDayClick, if statement else', this.state);
+      // added by co to call action creator and update application state in booking reducer
+    }
+    //end of else second if
+    const dates = this.state;
+    console.log('in date_picker, handleDayClick, dates.to', dates.to);
+    console.log('in date_picker, handleDayClick, dates.to', dates.enteredTo);
+    console.log('in date_picker, handleDayClick, dates.from', dates.from);
+    console.log('in date_picker, handleDayClick, dates', dates);
+
+    if (dates.from && dates.enteredTo) {
+      const datesForAction = { from: dates.from, to: dates.enteredTo };
+      console.log('in date_picker, handleClick, calling selectedDates(datesForAction)', datesForAction);
+      return this.props.selectedDates(datesForAction);
+    }
    }
+   //end of else, first if
  }
 
  handleDayMouseEnter(day) {
    const { from, to } = this.state;
+   const isDayDisabled = this.isDayDisabled(day);
+   console.log('in date_picker, handleDayMouseEnter, calling isDayDisabled:', isDayDisabled);
+
    if (!this.isSelectingFirstDay(from, to, day)) {
      this.setState({
-       enteredTo: day,
+       enteredTo: day
      });
    }
  }
  handleResetClick() {
+   console.log('in date_picker, handleResetClick');
    this.setState(INITIAL_STATE);
  }
 
@@ -93,13 +201,13 @@ class DatePicker extends Component {
    // console.log('in date_picker, render, to:', to);
    // this.handleDateSelect(from, to);
    const modifiers = { start: from, end: enteredTo };
-   const disabledDays = { before: this.state.from };
+   // const disabledDays = { before: this.state.from };
    const selectedDays = [from, { from, to: enteredTo }];
    return (
      <div>
        <DayPicker
          className="Range"
-         numberOfMonths={2}
+         numberOfMonths={3}
          fromMonth={from}
          selectedDays={selectedDays}
          disabledDays={this.props.daysToDisable}
@@ -131,8 +239,7 @@ class DatePicker extends Component {
          }
          .Range .DayPicker-Day {
            border-radius: 0 !important;
-         }
-      `}</style>
+         }`}</style>
 
        </Helmet>
      </div>
