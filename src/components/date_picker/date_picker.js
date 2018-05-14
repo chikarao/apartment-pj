@@ -120,6 +120,29 @@ class DatePicker extends Component {
    return datesArray;
  }
 
+ checkRangeDisabled(datesArray) {
+   console.log('in date_picker, checkRangeDisabled, datesArray:', datesArray);
+    let dayIsDisabled = false;
+    let disabledCounter = 0;
+
+   _.each(datesArray, (date) => {
+     // console.log('in date_picker, checkRangeDisabled, in each, date:', date);
+     dayIsDisabled = this.isDayDisabled(date);
+     if (dayIsDisabled) {
+       // console.log('in date_picker, checkRangeDisabled, in each, if isDayDisabled:', date, dayIsDisabled);
+       console.log('in date_picker, checkRangeDisabled, in each, if isDayDisabled:', date, dayIsDisabled);
+       disabledCounter++;
+     }
+     console.log('in date_picker, checkRangeDisabled, in each, if isDayDisabled:', date, dayIsDisabled);
+   });
+   console.log('in date_picker, checkRangeDisabled, after each, counter:', disabledCounter);
+   if (disabledCounter > 0) {
+     dayIsDisabled = true;
+   }
+   console.log('in date_picker, checkRangeDisabled, after each and checking counter, isDayDisabled:', dayIsDisabled);
+   return dayIsDisabled;
+ }
+
  handleDayClick(day) {
    const { from, to } = this.state;
    const isDayDisabled = this.isDayDisabled(day);
@@ -144,14 +167,17 @@ class DatePicker extends Component {
       console.log('in date_picker, handleDayClick, if statement else first', day);
       const datesArray = this.getDatesArray(from, day);
       // const noDisabledDaysInBetween = this.getDates(from, day);
-      console.log('in date_picker, handleDayClick, if statement else first', datesArray);
-
-      this.setState({
-        to: day,
-        enteredTo: day
-      });
-      console.log('in date_picker, handleDayClick, if statement else', this.state);
-      // added by co to call action creator and update application state in booking reducer
+      console.log('in date_picker, handleDayClick, if statement else first, datesArray', datesArray);
+      console.log('in date_picker, handleDayClick, if statement else first, this.checkRangeDisabled(datesArray)', this.checkRangeDisabled(datesArray));
+      if (!this.checkRangeDisabled(datesArray)) {
+        console.log('in date_picker, handleDayClick, if statement else first, if inside checkRangeDisabled false');
+        this.setState({
+          to: day,
+          enteredTo: day
+        });
+        console.log('in date_picker, handleDayClick, if statement else', this.state);
+        // added by co to call action creator and update application state in booking reducer
+      }
     }
     //end of else second if
     const dates = this.state;
