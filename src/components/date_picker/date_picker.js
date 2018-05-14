@@ -169,6 +169,7 @@ class DatePicker extends Component {
       // const noDisabledDaysInBetween = this.getDates(from, day);
       console.log('in date_picker, handleDayClick, if statement else first, datesArray', datesArray);
       console.log('in date_picker, handleDayClick, if statement else first, this.checkRangeDisabled(datesArray)', this.checkRangeDisabled(datesArray));
+
       if (!this.checkRangeDisabled(datesArray)) {
         console.log('in date_picker, handleDayClick, if statement else first, if inside checkRangeDisabled false');
         this.setState({
@@ -177,6 +178,8 @@ class DatePicker extends Component {
         });
         console.log('in date_picker, handleDayClick, if statement else', this.state);
         // added by co to call action creator and update application state in booking reducer
+      } else {
+        this.handleResetClick();
       }
     }
     //end of else second if
