@@ -103,9 +103,9 @@ class ShowFlat extends Component {
     // Note that new disabledDays does not include the after and before daysr!!!!!!!!!!!!!!!!!!!!!!!
     // So need to adjust dates with setDate and getDate
     const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
+    const daysList = [];
 
     if (!bookingsEmpty) {
-      const daysList = [];
       console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
       console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
 
@@ -139,16 +139,16 @@ class ShowFlat extends Component {
       });
 
       // first of month to today https://stackoverflow.com/questions/13571700/get-first-and-last-date-of-current-month-with-javascript-or-jquery
-      const today = new Date();
-      const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDay() - 2);
-      const firstOfMonthRange = { after: firstOfMonth, before: today }
-      daysList.push(firstOfMonthRange);
-      console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
-      // const firstofMonth = new Date.now()
-
-      console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
-      return daysList;
     }
+    const today = new Date();
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDay() - 2);
+    const firstOfMonthRange = { after: firstOfMonth, before: today }
+    daysList.push(firstOfMonthRange);
+    console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
+    // const firstofMonth = new Date.now()
+
+    console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+    return daysList;
   }
 
   renderDatePicker() {
