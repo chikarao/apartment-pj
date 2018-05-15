@@ -179,6 +179,7 @@ class DatePicker extends Component {
         console.log('in date_picker, handleDayClick, if statement else', this.state);
         // added by co to call action creator and update application state in booking reducer
       } else {
+        console.log('in date_picker, handleDayClick, if !checkRangeDisabled statement else, handleResetClick called.');
         this.handleResetClick();
       }
     }
@@ -226,6 +227,7 @@ class DatePicker extends Component {
 
  render() {
    const { from, to, enteredTo } = this.state;
+   console.log('in date_picker, render, from: ', from);
    // console.log('in date_picker, render, from:', from);
    // console.log('in date_picker, render, to:', to);
    // this.handleDateSelect(from, to);
@@ -237,6 +239,7 @@ class DatePicker extends Component {
        <DayPicker
          className="Range"
          numberOfMonths={3}
+         // month={new Date(2015, 8)}
          fromMonth={from}
          selectedDays={selectedDays}
          disabledDays={this.props.daysToDisable}
