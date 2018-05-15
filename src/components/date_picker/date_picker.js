@@ -87,6 +87,8 @@ class DatePicker extends Component {
  }
 
  getDatesArray(startDate, endDate) {
+   //reference
+   // https://stackoverflow.com/questions/542938/how-do-i-get-the-number-of-days-between-two-dates-in-javascript
    const datesArray = [];
    // datesArray.push(startDate);
    const numDays = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
@@ -99,7 +101,7 @@ class DatePicker extends Component {
    console.log('in date_picker, getDatesArray, nextDateCopied', nextDateCopied);
    //
    // datesArray.push(nextDateCopied);
-
+   //https://gist.github.com/miguelmota/7905510
    const addDays = function (i, date) {
      console.log('calling function within getDatesArray for loop', i, date);
      const dateNew = new Date(date);

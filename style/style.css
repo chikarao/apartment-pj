@@ -237,6 +237,42 @@ body > div:first-child {
   color: #eb3a44;
 }
 
+/* ***********PAGINATION*************** */
+
+.pagination-container {
+  /* width: 66%; */
+  /* height: 30px; */
+  /* display: flex;
+  justify-content: center;
+  font-size: 17px; */
+  margin-top: 30px;
+}
+
+.pagination li {
+
+}
+.pagination {
+  /* display: inline-block; */
+}
+
+.pagination li {
+  list-style-type: none;
+  display: inline-block;
+  font-size: 17px;
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+     border: 1px solid #ddd;
+}
+.pagination li.active {
+  background-color: #4CAF50;
+  color: white;
+}
+.pagination li:hover:not(.active) {
+  background-color: #ddd;
+}
+
 
 
 /* **********SHOW FLAT***************** */

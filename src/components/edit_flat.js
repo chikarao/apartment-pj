@@ -13,6 +13,9 @@ class EditFlat extends Component {
       confirmChecked: false
     };
   }
+// reference for checkbox
+//https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
+
   componentDidMount() {
     console.log('in edit flat, componentDidMount, this.props.match.params:', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
@@ -201,7 +204,7 @@ EditFlat = reduxForm({
   // ]
 })(EditFlat);
 
-// initialValues required for redux form to prepopulate fields
+// !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
   return {

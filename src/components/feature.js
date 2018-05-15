@@ -15,6 +15,15 @@ const initialPosition = {
 };
 
 class Feature extends Component {
+  constructor() {
+  super();
+  this.state = {
+    currentPage: 1,
+    //******* Adjust how many to show per page here
+    cardsPerPage: 3
+  };
+  // this.handleClick = this.handleClick.bind(this);
+}
 
   componentDidMount() {
     // let index = 1;
@@ -140,6 +149,80 @@ class Feature extends Component {
     }
   }
 
+  handlePageClick(event) {
+    console.log('in feature renderPageNumbers, handlePageClick, event: ', event.target);
+    this.setState({
+      currentPage: Number(event.target.id)
+    });
+  }
+
+  handleLeftPageClick() {
+    if (this.state.currentPage > 2) {
+      this.setState({
+        currentPage: this.state.currentPage - 1
+      });
+    }
+    console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
+  }
+
+  handleRightPageClick() {
+    if (this.state.currentPage < 4) {
+      this.setState({
+        currentPage: this.state.currentPage + 1
+      });
+    }
+    console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
+  }
+
+  renderPageNumbers(pageNumbersArray) {
+    // pageNumbersArray ? pageNumbersArray : [];
+    console.log('in feature renderPageNumbers, pageNumbersArray: ', pageNumbersArray);
+      console.log('in feature renderPageNumbers, pageNumbersArray: ', pageNumbersArray);
+      return pageNumbersArray.map((pageNumber, index) => {
+        console.log('in feature renderPageNumbers, pageNumber, index: ', pageNumber, index);
+        return (
+          <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+        );
+    });
+  }
+
+  renderPagination() {
+      const flatsEmpty = _.isEmpty(this.props.flats);
+      console.log('in feature renderPagination, outside of if, flatsEmpty: ', flatsEmpty);
+    if (!flatsEmpty) {
+      const { currentPage, cardsPerPage } = this.state;
+      console.log('in feature renderPagination, flatsEmpty: ', flatsEmpty);
+      console.log('in feature renderPagination, currentPage: ', currentPage);
+      console.log('in feature renderPagination, cardsPerPage: ', cardsPerPage);
+      const cards = this.props.flats;
+      console.log('in feature renderPagination, cards: ', cards);
+      const slicedCards = Object.entries(cards).slice(0, 2);
+      console.log('in feature renderPagination, slicedCards: ', slicedCards);
+      // Logic for displaying todos
+      const indexOfLastCard = currentPage * cardsPerPage;
+      const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+      // const currentCards = cards.slice(indexOfFirstCard, indexOfLastCard);
+
+      const pageNumbersArray = [];
+      for (let i = 1; i <= Math.ceil(Object.keys(cards).length / cardsPerPage); i++) {
+        pageNumbersArray.push(i);
+      }
+      console.log('in feature renderPagination, pageNumbers: ', pageNumbersArray);
+      console.log('in feature renderPagination, renderPageNumbers: ', this.renderPageNumbers(pageNumbersArray));
+      // this.renderPageNumbers(pageNumbers)
+
+      return (
+        <div>
+        <ul className="pagination">
+          <li onClick={this.handleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
+            {this.renderPageNumbers(pageNumbersArray)}
+          <li onClick={this.handleRightPageClick.bind(this)}><i className="fa fa-angle-double-right"></i></li>
+        </ul>
+        </div>
+      );
+    }
+  }
+
   renderFlats() {
     let index = 1;
     console.log('in feature renderFlats, flats data length: ', this.props.flats);
@@ -165,7 +248,6 @@ class Feature extends Component {
                   // key={flat.id.toString()}
                   flat={flat}
                   currency='$'
-
                 />
               </div>
             );
@@ -183,19 +265,22 @@ class Feature extends Component {
         );
       }
   }
-
+//  {this.renderMap()}
 
   render() {
     return (
       <div>
         <div className="container" id="map">
-          {this.renderMap()}
+
         </div>
 
         <div className="container main-card-container">
           <div className="row card-row">
             {this.renderFlats()}
           </div>
+        </div>
+        <div className="pagination-container">
+          {this.renderPagination()}
         </div>
       </div>
     );
