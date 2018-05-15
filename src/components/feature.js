@@ -14,13 +14,15 @@ const initialPosition = {
   lng: -122.4029
 };
 
+let lastPage = 1;
+
 class Feature extends Component {
   constructor() {
   super();
   this.state = {
     currentPage: 1,
     //******* Adjust how many to show per page here
-    cardsPerPage: 3
+    cardsPerPage: 4
   };
   // this.handleClick = this.handleClick.bind(this);
 }
@@ -149,29 +151,68 @@ class Feature extends Component {
     }
   }
 
+  removeCurrent() {
+    const currentPageLi = document.getElementsByClassName('current');
+    if (currentPageLi[0]) {
+      console.log('in feature, removeCurrent, currentPageLi[0]: ', currentPageLi[0]);
+      currentPageLi[0].classList.remove('current');
+    }
+  }
+
+  addCurrent() {
+    // refator from hnadle right and left click
+    const currentLi = document.getElementById(this.state.currentPage);
+    currentLi.classList.add('current');
+  }
+
   handlePageClick(event) {
-    console.log('in feature renderPageNumbers, handlePageClick, event: ', event.target);
+    // const currentPageLi = document.getElementsByClassName('current');
+    // if (currentPageLi[0]) {
+    //   console.log('in feature handlePageClick, currentPageLi[0]: ', currentPageLi[0]);
+    //   currentPageLi[0].classList.remove('current');
+    // }
+    this.removeCurrent();
+
+    // let clickedPagesArray = [];
+    // console.log('in feature renderPageNumbers, handlePageClick, event: ', event);
+    const clickedPages = event.target.classList.add('current');
+    // clickedPagesArray.push(clickedPages);
+    console.log('in feature, handlePageClick, event: ', event.target.classList);
+    // console.log('in feature, handlePageClick, currentPageLi: ', currentPageLi);
     this.setState({
       currentPage: Number(event.target.id)
-    });
+      }, () => console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage)
+    );
   }
 
   handleLeftPageClick() {
-    if (this.state.currentPage > 2) {
+    if (this.state.currentPage >= 2) {
+      this.removeCurrent();
       this.setState({
-        currentPage: this.state.currentPage - 1
+        currentPage: (this.state.currentPage - 1)
+      }, () => {
+        console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
+        // const currentLi = document.getElementById(this.state.currentPage);
+        // currentLi.classList.add('current');
+        this.addCurrent();
       });
     }
-    console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
   }
 
   handleRightPageClick() {
-    if (this.state.currentPage < 4) {
+     // console.log('in feature handleRightPageClick, this.state.currentPage: ', this.state.currentPage);
+     console.log('in feature handleRightPageClick, lastpage: ', lastPage);
+    if (this.state.currentPage < lastPage) {
+      this.removeCurrent();
       this.setState({
-        currentPage: this.state.currentPage + 1
+        currentPage: (this.state.currentPage + 1)
+      }, () => {
+        console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
+        // const currentLi = document.getElementById(this.state.currentPage);
+        // currentLi.classList.add('current');
+        this.addCurrent();
       });
     }
-    console.log('in feature handleLeftPageClick, this.state.currentPage: ', this.state.currentPage);
   }
 
   renderPageNumbers(pageNumbersArray) {
@@ -180,24 +221,30 @@ class Feature extends Component {
       console.log('in feature renderPageNumbers, pageNumbersArray: ', pageNumbersArray);
       return pageNumbersArray.map((pageNumber, index) => {
         console.log('in feature renderPageNumbers, pageNumber, index: ', pageNumber, index);
-        return (
-          <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
-        );
+        if (index === 0) {
+          return (
+            <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+          );
+        } else {
+          return (
+            <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+          );
+        }
     });
   }
 
   renderPagination() {
       const flatsEmpty = _.isEmpty(this.props.flats);
-      console.log('in feature renderPagination, outside of if, flatsEmpty: ', flatsEmpty);
+      // console.log('in feature renderPagination, outside of if, flatsEmpty: ', flatsEmpty);
     if (!flatsEmpty) {
       const { currentPage, cardsPerPage } = this.state;
-      console.log('in feature renderPagination, flatsEmpty: ', flatsEmpty);
-      console.log('in feature renderPagination, currentPage: ', currentPage);
-      console.log('in feature renderPagination, cardsPerPage: ', cardsPerPage);
+      // console.log('in feature renderPagination, flatsEmpty: ', flatsEmpty);
+      // console.log('in feature renderPagination, currentPage: ', currentPage);
+      // console.log('in feature renderPagination, cardsPerPage: ', cardsPerPage);
       const cards = this.props.flats;
       console.log('in feature renderPagination, cards: ', cards);
       const slicedCards = Object.entries(cards).slice(0, 2);
-      console.log('in feature renderPagination, slicedCards: ', slicedCards);
+      // console.log('in feature renderPagination, slicedCards: ', slicedCards);
       // Logic for displaying todos
       const indexOfLastCard = currentPage * cardsPerPage;
       const indexOfFirstCard = indexOfLastCard - cardsPerPage;
@@ -206,10 +253,14 @@ class Feature extends Component {
       const pageNumbersArray = [];
       for (let i = 1; i <= Math.ceil(Object.keys(cards).length / cardsPerPage); i++) {
         pageNumbersArray.push(i);
+        console.log('in feature renderPagination, pageNumbers: ', i);
+        if (i === Math.ceil(Object.keys(cards).length / cardsPerPage)) {
+          console.log('in feature renderPagination, if i === ... lastPage: ', i);
+            lastPage = i;
+        }
       }
-      console.log('in feature renderPagination, pageNumbers: ', pageNumbersArray);
-      console.log('in feature renderPagination, renderPageNumbers: ', this.renderPageNumbers(pageNumbersArray));
-      // this.renderPageNumbers(pageNumbers)
+      console.log('in feature renderPagination, lastPage: ', lastPage);
+      console.log('in feature renderPagination, pageNumbers: ', pageNumbersArray);      // this.renderPageNumbers(pageNumbers)
 
       return (
         <div>
@@ -238,7 +289,28 @@ class Feature extends Component {
         // console.log('in feature renderFlats, this.props.flats.rooms: ', this.props.flats.rooms);
         // const { id } = this.props.flats[0];
         // console.log('in feature renderFlats, id: ', id);
-        const flats = this.props.flats;
+        const { currentPage, cardsPerPage } = this.state;
+        // console.log('in feature renderPagination, flatsEmpty: ', flatsEmpty);
+        // console.log('in feature renderPagination, currentPage: ', currentPage);
+        // console.log('in feature renderPagination, cardsPerPage: ', cardsPerPage);
+        const cards = this.props.flats;
+        console.log('in feature renderPagination, cards: ', cards);
+        // Logic for displaying todos
+        const indexOfLastCard = currentPage * cardsPerPage;
+        const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+        //slice reference: https://stackoverflow.com/questions/39336556/how-can-i-slice-an-object-in-javascript
+        const slicedCards = Object.entries(cards).slice(indexOfFirstCard, indexOfLastCard).map(entry => entry[1]);
+        // console.log('in feature renderFlats, slicedCards, currentPage: ', currentPage);
+        // console.log('in feature renderFlats, slicedCards, indexOfFirstCard: ', indexOfFirstCard);
+        // console.log('in feature renderFlats, slicedCards, indexOfLastCard: ', indexOfLastCard);
+        // console.log('in feature renderFlats, slicedCards: ', slicedCards);
+        const mappedSlicedCards = _.mapKeys(slicedCards, 'id');
+
+        const flats = mappedSlicedCards;
+        // const flats = this.props.flats;
+        console.log('in feature renderFlats, slicedCards, slicedCards: ', slicedCards);
+        console.log('in feature renderFlats, slicedCards, mappedSlicedCards: ', mappedSlicedCards);
+        console.log('in feature renderFlats, slicedCards, this.props.flats: ', this.props.flats);
 
         return _.map(flats, (flat) => {
             return (
@@ -265,13 +337,13 @@ class Feature extends Component {
         );
       }
   }
-//  {this.renderMap()}
+
 
   render() {
     return (
       <div>
         <div className="container" id="map">
-
+          {this.renderMap()}
         </div>
 
         <div className="container main-card-container">
