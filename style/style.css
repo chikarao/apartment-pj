@@ -547,6 +547,16 @@ display: block;
   transform: rotate(45deg);
 }
 
+.btn-delete-all-images {
+  margin-right: 15px;
+}
+
+.btn-uncheck-all-images {
+  background-color: gray;
+  color: white;
+  margin-right: 15px;
+}
+
 
 /* **********Booking Confirmation *************** */
 

@@ -19,3 +19,4 @@ export const GET_CURRENT_USER = 'get_current_user';
 export const DELETE_FLAT = 'delete_flat';
 export const EDIT_FLAT_LOAD = 'edit_flat_load';
 export const EDIT_FLAT = 'edit_flat';
+export const DELETE_IMAGE = 'delete_image';

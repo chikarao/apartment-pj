@@ -70,6 +70,81 @@ class EditFlat extends Component {
     console.log('in edit flat, handleImageDeleteCheck, deleteImageArray: ', deleteImageArray);
   }
 
+  uncheckAllImages() {
+    //reference: https://stackoverflow.com/questions/18862149/how-to-uncheck-a-checkbox-in-pure-javascript
+    deleteImageArray = [];
+    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+
+    const ImageDeleteCheckBoxes = document.getElementsByClassName('editFlatImageDeleteCheck');
+    console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
+
+    _.each(ImageDeleteCheckBoxes, (checkbox) => {
+      checkbox.checked = false;
+      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
+    });
+    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+  }
+
+  checkAllImages() {
+    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+
+    // const ImageDeleteCheckBoxes = document.getElementsByClassName('checkmarkDeleteImage');
+    // const ImageDeleteCheckBoxes = document.getElementById('editFlatImageDeleteCheck');
+    const ImageDeleteCheckBoxes = document.getElementsByClassName('editFlatImageDeleteCheck');
+    // ImageDeleteCheckBoxes.checked = false;
+    console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
+
+    _.each(ImageDeleteCheckBoxes, (checkbox) => {
+      checkbox.checked = true;
+      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox.value);
+      deleteImageArray.push(checkbox.value)
+    });
+    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+  }
+
+  deleteImageCallback(imageCount) {
+    console.log('in edit flat, deleteImageCallback, deleteImageArray: ', deleteImageArray);
+    const currentImageCount = imageCount + 1;
+    if (currentImageCount <= (deleteImageArray.length - 1)) {
+        this.props.deleteImage(deleteImageArray[currentImageCount], currentImageCount, (countCB) => this.deleteImageCallback(countCB));
+    } else {
+      this.props.history.push(`/editflat/${this.props.flat.id}`);
+      deleteImageArray = [];
+    }
+  }
+
+  deleteCheckedImages() {
+    console.log('in edit flat, deleteCheckedImages, deleteImageArray: ', deleteImageArray);
+    const imageArrayEmpty = _.isEmpty(deleteImageArray);
+    if (imageArrayEmpty) {
+      window.alert('No images checked')
+      return;
+    }
+    let imageCount = 0;
+
+    const deleteConfirm = window.confirm(`Are you sure you want to delete all checked images?`)
+    if (deleteConfirm) {
+      console.log('in edit flat, deleteCheckedImages, deleteConfirm Yes.');
+      // _.each(deleteImageArray, (image) => {
+        this.props.deleteImage(deleteImageArray[imageCount], imageCount, (countCB) => this.deleteImageCallback(countCB));
+        console.log('in edit flat, deleteCheckedImages, image:', deleteImageArray[imageCount]);
+      // });
+    } else {
+      console.log('in edit flat, deleteCheckedImages, deleteConfirm No.');
+    }
+  }
+
+  renderDeleteImageButtons() {
+    console.log('in edit flat, renderDeleteImageButtons: ');
+    return (
+      <div>
+      <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>Delete checked images</button>
+      <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>Uncheck all images</button>
+      <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>Check all images</button>
+      </div>
+    );
+  }
+
   renderImages(images) {
     console.log('in edit flat, renderImages, images: ', images);
     // reference: https://stackoverflow.com/questions/8877807/how-can-i-display-the-checkbox-over-the-images-for-selection
@@ -80,7 +155,7 @@ class EditFlat extends Component {
             <div key={image.id} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
               <label className="delete-image-radio">
-                <input type="checkbox" value={image.id} id="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
                 <span className="checkmarkDeleteImage"></span>
               </label>
             </div>
@@ -186,6 +261,9 @@ class EditFlat extends Component {
         <div className="edit-flat-image-box">
           <div id="carousel-show">
             {this.renderImages(this.props.flat.images)}
+          </div>
+          <div className="delete-image-buttons">
+            {this.renderDeleteImageButtons()}
           </div>
         </div>
 

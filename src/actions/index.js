@@ -22,6 +22,7 @@ import {
   DELETE_FLAT,
   EDIT_FLAT_LOAD,
   EDIT_FLAT,
+  DELETE_IMAGE,
   FETCH_MESSAGE
 } from './types';
 
@@ -387,7 +388,7 @@ export function deleteFlat(id, callback) {
       });
       // redirects to mypage
       callback();
-      window.alert('Delete listing');
+      window.alert('Deleted listing');
     });
     //end of then
   };
@@ -414,6 +415,26 @@ export function createImage(imagesArray, imageCount, flatId, callback) {
       callback(imagesArray, imageCount, response.data.data.image.flat_id);
       dispatch({
         type: CREATE_IMAGE,
+        payload: response.data.data.image
+      });
+    });
+  };
+}
+export function deleteImage(id, imageCount, callback) {
+  console.log('in actions index, createImage: id: ', id);
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/images/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createImage, response: ', response);
+      console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+
+      callback(imageCount);
+      dispatch({
+        type: DELETE_IMAGE,
         payload: response.data.data.image
       });
     });
