@@ -24,6 +24,27 @@ class ShowFlat extends Component {
     this.props.getCurrentUser();
   }
 
+  renderImages(images) {
+    console.log('in show_flat renderImages, images: ', images);
+    const imagesEmpty = _.isEmpty(images);
+    if(!imagesEmpty) {
+      return (
+        _.map(images, (image) => {
+          console.log('in show_flat renderImages, image: ', image.publicid);
+          return (
+            <div className="slide-show">
+              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+            </div>
+          );
+        })
+      );
+    } else {
+      return (
+        <div className="no-results-message">Images are not available for this flat</div>
+      );
+    }
+  }
+
 
   renderFlat(flatId) {
     console.log('in show flat, flatId: ', flatId);
@@ -38,12 +59,12 @@ class ShowFlat extends Component {
 
       if (!flatEmpty) {
         const { description, area, beds, sales_point, price_per_month, images } = this.props.flat;
-        console.log('in show_flat renderFlat, renderImages: ', renderImages(images));
+        console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
         return (
           <div>
             <div className="show-flat-image-box">
               <div id="carousel-show">
-                {renderImages(images)}
+                {this.renderImages(images)}
               </div>
             </div>
             <div className="show-flat-container">
@@ -256,7 +277,7 @@ class ShowFlat extends Component {
           console.log('in show_flat, renderButton, if, not current user; I am not the currentUser: ', this.currentUser());
           return (
             <div className="show-flat-button-box">
-            <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
+              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
             </div>
           );
         } else {
@@ -305,26 +326,6 @@ class ShowFlat extends Component {
     );
   }
 }
-
-function renderImages(images) {
-  console.log('in show_flat renderImages, images: ', images);
-  return (
-    _.map(images, (image) => {
-      console.log('in show_flat renderImages, image: ', image.publicid);
-      return (
-          <div className="slide-show">
-            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
-            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
-          </div>
-      );
-    })
-  );
-}
-
-// function bookingRequestCallback(flatId) {
-//   console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
-//   this.props.history.push(`/bookingconfirmation/${flatId}`);
-// }
 
 function mapStateToProps(state) {
   console.log('in show_flat render, mapStateToProps, state: ', state);

@@ -76,11 +76,11 @@ class EditFlat extends Component {
     console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
 
     const ImageDeleteCheckBoxes = document.getElementsByClassName('editFlatImageDeleteCheck');
-    console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
+    // console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
 
     _.each(ImageDeleteCheckBoxes, (checkbox) => {
       checkbox.checked = false;
-      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
+      // console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
     });
     console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
   }
@@ -148,20 +148,27 @@ class EditFlat extends Component {
   renderImages(images) {
     console.log('in edit flat, renderImages, images: ', images);
     // reference: https://stackoverflow.com/questions/8877807/how-can-i-display-the-checkbox-over-the-images-for-selection
-    return (
-      _.map(images, (image) => {
-        console.log('in show_flat renderImages, image: ', image.publicid);
-        return (
-            <div key={image.id} className="slide-show">
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
-              <label className="delete-image-radio">
-                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
-                <span className="checkmarkDeleteImage"></span>
-              </label>
+    const imagesEmpty = _.isEmpty(images);
+    if(!imagesEmpty) {
+      return (
+        _.map(images, (image) => {
+          console.log('in show_flat renderImages, image: ', image.publicid);
+          return (
+            <div key={image.id} className="slide-show-edit-flat">
+            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+            <label className="delete-image-radio">
+            <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+            <span className="checkmarkDeleteImage"></span>
+            </label>
             </div>
-        );
-      })
-    );
+          );
+        })
+      );
+    } else {
+      return (
+        <div className="no-results-message">Images are not available for this flat</div>
+      );
+    }
   }
 
   handleConfirmCheck(event) {
@@ -259,7 +266,7 @@ class EditFlat extends Component {
         </form>
 
         <div className="edit-flat-image-box">
-          <div id="carousel-show">
+          <div id="carousel-show-edit-flat">
             {this.renderImages(this.props.flat.images)}
           </div>
           <div className="delete-image-buttons">

@@ -477,8 +477,39 @@ display: block;
 }
 
 /* ************Edit flat images************* */
-.slide-show {
+
+/* #carousel-show-edit-flat {
+  width: 100%;
+  height: 210px;
+  overflow: auto;
+  white-space: nowrap;
+  margin-bottom: 15px;
+} */
+#carousel-show-edit-flat {
+  width: 100%;
+  /* height: 210px; */
+  /* overflow: auto;
+  white-space: nowrap;
+  margin-bottom: 15px; */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.slide-show-edit-flat {
+  /* display: inline-block; */
   position: relative;
+}
+.slide-show-edit-flat img {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.delete-image-buttons {
+  margin-bottom: 30px;
 }
 
 .delete-image-radio {
@@ -548,13 +579,18 @@ display: block;
 }
 
 .btn-delete-all-images {
-  margin-right: 15px;
+  margin: 0 15px 10px 0;
 }
 
 .btn-uncheck-all-images {
   background-color: gray;
   color: white;
-  margin-right: 15px;
+  margin: 0 15px 10px 0;
+}
+.btn-check-all-images {
+  /* background-color: gray; */
+  color: white;
+  margin: 0 15px 10px 0;
 }
 
 
