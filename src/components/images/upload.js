@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import cloudinary from 'cloudinary-core';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import sha1 from 'sha1';
+
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -12,6 +16,20 @@ const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 
 class Upload extends Component {
+  createImageCallback(imagesArray, imageCount, flatId) {
+    console.log('in Upload, createImageCallback, flatId: ', flatId);
+    const currentCount = imageCount + 1;
+    // export function createImage(imagesArray, imageCount, flatId, callback)
+    if (currentCount <= (imagesArray.length - 1)) {
+      this.props.createImage(imagesArray, currentCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+
+    } else {
+      this.props.history.push(`/editflat/${flatId}`);
+      // document.location.reload()
+      console.log('in Upload, createImageCallback, create image completed, flatId.', flatId);
+    }
+  }
+
   handleDrop = files => {
     const imagesArray = [];
   // Push all the axios request promise into a single array
@@ -65,7 +83,11 @@ class Upload extends Component {
     console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
     // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
-    //
+    // CALL createImage and send public id, counter, callback with flat id
+    //xport function createImage(imagesArray, imageCount, flatId, callback)
+    const imageCount = 0;
+    console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
+    this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
   });
 }
 //end of handleDrop
@@ -89,5 +111,6 @@ class Upload extends Component {
       );
     }
 }
-
-export default Upload;
+// withRouter used for letting this component use router history; enables rerender witout reload
+// must more smooth renering
+export default withRouter(connect(null, actions)(Upload));

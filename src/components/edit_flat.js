@@ -106,7 +106,7 @@ class EditFlat extends Component {
     console.log('in edit flat, deleteImageCallback, deleteImageArray: ', deleteImageArray);
     const currentImageCount = imageCount + 1;
     if (currentImageCount <= (deleteImageArray.length - 1)) {
-        this.props.deleteImage(deleteImageArray[currentImageCount], currentImageCount, (countCB) => this.deleteImageCallback(countCB));
+      this.props.deleteImage(deleteImageArray[currentImageCount], currentImageCount, (countCB) => this.deleteImageCallback(countCB));
     } else {
       this.props.history.push(`/editflat/${this.props.flat.id}`);
       deleteImageArray = [];
@@ -268,7 +268,9 @@ class EditFlat extends Component {
         </div>
 
         <div>
-          <Upload />
+          <Upload
+            flatId={this.props.flat.id}
+          />
         </div>
         </div>
       );
