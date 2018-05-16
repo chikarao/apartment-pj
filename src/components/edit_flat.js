@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
+import _ from 'lodash';
 
 import * as actions from '../actions';
 import Upload from './images/upload';
+
+let deleteImageArray = [];
 
 class EditFlat extends Component {
   constructor(props) {
@@ -55,8 +58,21 @@ class EditFlat extends Component {
     }
   }
 
+  handleImageDeleteCheck(event) {
+    // reference: https://stackoverflow.com/questions/7378228/check-if-an-element-is-present-in-an-array
+    console.log('in edit flat, handleImageDeleteCheck, event.target: ', event.target.value);
+    const includesImage = deleteImageArray.includes(event.target.value);
+    if (!includesImage) {
+      deleteImageArray.push(event.target.value);
+    } else {
+      deleteImageArray = _.without(deleteImageArray, event.target.value);
+    }
+    console.log('in edit flat, handleImageDeleteCheck, deleteImageArray: ', deleteImageArray);
+  }
+
   renderImages(images) {
     console.log('in edit flat, renderImages, images: ', images);
+    // reference: https://stackoverflow.com/questions/8877807/how-can-i-display-the-checkbox-over-the-images-for-selection
     return (
       _.map(images, (image) => {
         console.log('in show_flat renderImages, image: ', image.publicid);
@@ -64,7 +80,7 @@ class EditFlat extends Component {
             <div key={image.id} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
               <label className="delete-image-radio">
-                <input type="checkbox" id="editFlatImageDeleteCheck" />
+                <input type="checkbox" value={image.id} id="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
                 <span className="checkmarkDeleteImage"></span>
               </label>
             </div>
