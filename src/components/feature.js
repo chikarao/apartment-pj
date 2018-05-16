@@ -26,6 +26,7 @@ class Feature extends Component {
   };
   // this.handleClick = this.handleClick.bind(this);
 }
+// Pagination reference: https://stackoverflow.com/questions/40232847/how-to-implement-pagination-in-reactjs
 
   componentDidMount() {
     // let index = 1;

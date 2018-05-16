@@ -63,6 +63,10 @@ class EditFlat extends Component {
         return (
             <div key={image.id} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+              <label className="delete-image-radio">
+                <input type="checkbox" id="editFlatImageDeleteCheck" />
+                <span className="checkmarkDeleteImage"></span>
+              </label>
             </div>
         );
       })
@@ -155,8 +159,8 @@ class EditFlat extends Component {
           </fieldset>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
-            <label className="confirm-radio">
-              <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i>  Check to confirm changes then submit
+            <label className="confirm-radio"><i className="fa fa-check fa-lg"></i>  Check to confirm changes then submit
+              <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
               <span className="checkmark"></span>
             </label>
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
