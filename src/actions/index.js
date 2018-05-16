@@ -105,6 +105,7 @@ export function signupUser({ email, password }, callback) {
     // .catch(response => dispatch(console.log(response.data)));
   };
 }
+
 export function getCurrentUser() {
   console.log('in actions index, getCurrentUser:');
   const id = localStorage.getItem('id');

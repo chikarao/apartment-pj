@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 // import DayPicker from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -20,6 +20,7 @@ class Header extends Component {
 
   componentDidMount() {
        window.addEventListener('resize', this.handleResize.bind(this));
+       // this.props.getCurrentUser();
    }
 
    componentWillUnmount() {
@@ -80,21 +81,38 @@ class Header extends Component {
   // }
 
 navigationLinks() {
+  console.log('in header, navigationLinks, this.props.location: ', this.props.location);
+  const onMyPage = this.props.location.pathname === '/mypage';
+  console.log('in header, navigationLinks, onMyPage: ', onMyPage);
+
   if (this.props.authenticated) {
      // show link to signout and signed in as...
-     return [
-       <ul key={'1'} className="header-list">
+     if(onMyPage) {
+       return [
+         <ul key={'1'} className="header-list">
          <li className="nav-item">
-          <Link className="nav-link" to="/signout">Sign Out</Link>
+         <Link className="nav-link" to="/signout">Sign Out</Link>
          </li>
          <li className="nav-item">
-          <Link className="nav-link" to="/mypage">My Page</Link>
+         <p className="nav-link">Signed in as {this.props.email}</p>
+         </li>
+         </ul>
+       ];
+     } else {
+       return [
+         <ul key={'1'} className="header-list">
+         <li className="nav-item">
+         <Link className="nav-link" to="/signout">Sign Out</Link>
          </li>
          <li className="nav-item">
-          <p className="nav-link">Signed in as {this.props.email}</p>
+         <Link className="nav-link" to={'/mypage'}>My Page</Link>
          </li>
-       </ul>
-     ];
+         <li className="nav-item">
+         <p className="nav-link">Signed in as {this.props.email}</p>
+         </li>
+         </ul>
+       ];
+     }
   } else {
     // show link to sign in or sign out
     return [
@@ -234,10 +252,12 @@ render() {
 }
 // end of class
 function mapStateToProps(state) {
+  console.log('in header, mapStateToProps, state: ', state)
   return {
     authenticated: state.auth.authenticated,
-    email: state.auth.email
+    email: state.auth.email,
+    id: state.auth.id
   };
 }
 
-export default connect(mapStateToProps)(Header);
+export default withRouter(connect(mapStateToProps)(Header));

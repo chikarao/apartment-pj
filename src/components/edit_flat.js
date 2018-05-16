@@ -44,6 +44,7 @@ class EditFlat extends Component {
   editFlatCallback(id) {
     console.log('in edit flat, editFlatCallback, id: ', id);
     // this.props.history.push(`/editflat/${id}`);
+    //for some reason, history.push does not update the default values in fields
     // reload page; fetches new flat data
     document.location.reload()
   }
@@ -173,9 +174,9 @@ class EditFlat extends Component {
 
   handleConfirmCheck(event) {
   // Get the checkbox
-  const checkBox = document.getElementById('editFlatConfirmCheck');
+    const checkBox = document.getElementById('editFlatConfirmCheck');
 
-  this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in edit flat, myfunction, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
+    this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in edit flat, myfunction, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
   }
 
 
