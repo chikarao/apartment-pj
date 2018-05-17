@@ -29,10 +29,10 @@ class ShowFlat extends Component {
     const imagesEmpty = _.isEmpty(images);
     if(!imagesEmpty) {
       return (
-        _.map(images, (image) => {
+        _.map(images, (image, index) => {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
-            <div className="slide-show">
+            <div key={index} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
             </div>
           );

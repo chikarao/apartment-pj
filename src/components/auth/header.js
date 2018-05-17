@@ -82,12 +82,14 @@ class Header extends Component {
 
 navigationLinks() {
   console.log('in header, navigationLinks, this.props.location: ', this.props.location);
+  // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
+  // added withRouter before connect
   const onMyPage = this.props.location.pathname === '/mypage';
   console.log('in header, navigationLinks, onMyPage: ', onMyPage);
 
   if (this.props.authenticated) {
      // show link to signout and signed in as...
-     if(onMyPage) {
+     if (onMyPage) {
        return [
          <ul key={'1'} className="header-list">
          <li className="nav-item">
@@ -113,6 +115,7 @@ navigationLinks() {
          </ul>
        ];
      }
+     //end of second if
   } else {
     // show link to sign in or sign out
     return [

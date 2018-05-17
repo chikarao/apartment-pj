@@ -62,9 +62,14 @@ class EditFlat extends Component {
   handleImageDeleteCheck(event) {
     // reference: https://stackoverflow.com/questions/7378228/check-if-an-element-is-present-in-an-array
     console.log('in edit flat, handleImageDeleteCheck, event.target: ', event.target.value);
+    // const parent = event.target.parentElement;
+    // const parentElement = parent.parentElement;
+    // console.log('in edit flat, handleImageDeleteCheck, parentElement: ', parent);
+    // console.log('in edit flat, handleImageDeleteCheck, parentElement: ', parentElement);
     const includesImage = deleteImageArray.includes(event.target.value);
     if (!includesImage) {
       deleteImageArray.push(event.target.value);
+      // parentElement.style.backgroundColor = 'LightSkyBlue';
     } else {
       deleteImageArray = _.without(deleteImageArray, event.target.value);
     }
@@ -81,7 +86,7 @@ class EditFlat extends Component {
 
     _.each(ImageDeleteCheckBoxes, (checkbox) => {
       checkbox.checked = false;
-      // console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
+      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
     });
     console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
   }
@@ -156,11 +161,11 @@ class EditFlat extends Component {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={image.id} className="slide-show-edit-flat">
-            <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
-            <label className="delete-image-radio">
-            <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
-            <span className="checkmarkDeleteImage"></span>
-            </label>
+              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+                <label className="delete-image-radio">
+                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+              <span className="checkmarkDeleteImage"></span>
+              </label>
             </div>
           );
         })

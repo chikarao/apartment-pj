@@ -6,6 +6,7 @@ import {
   AUTH_ERROR,
   UNAUTH_USER,
   FETCH_FLATS,
+  FETCH_FLATS_BY_USER,
   UPDATE_MAP_DIMENSIONS,
   SELECTED_FLAT,
   SELECTED_FLAT_FROM_PARAMS,
@@ -19,6 +20,7 @@ import {
   CREATE_FLAT,
   CREATE_IMAGE,
   GET_CURRENT_USER,
+  GET_CURRENT_USER_FOR_MY_PAGE,
   DELETE_FLAT,
   EDIT_FLAT_LOAD,
   EDIT_FLAT,
@@ -113,6 +115,14 @@ export function getCurrentUser() {
   return { type: GET_CURRENT_USER, payload: { email, id } };
 }
 
+export function getCurrentUserForMyPage(callback) {
+  console.log('in actions index, getCurrentUserforMyPage:');
+  const id = localStorage.getItem('id');
+  const email = localStorage.getItem('email');
+  callback(id);
+  return { type: GET_CURRENT_USER_FOR_MY_PAGE, payload: { email, id } };
+}
+
 export function authError(error) {
   console.log('in actions index, authError:');
   return {
@@ -140,12 +150,31 @@ export function fetchFlats(mapBounds) {
 
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
-      headers: { authorization: localStorage.getItem('token') }
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('response to fetchFlats: ', response.data.data.flats);
       dispatch({
         type: FETCH_FLATS,
+        payload: response.data.data.flats
+      });
+    });
+  };
+}
+export function fetchFlatsByUser(id) {
+  // const { north, south, east, west } = mapBounds;
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+  console.log('in action index, fetchFlatsByUser, id: ', id);
+
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/users/flats`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchFlatsByUser: ', response);
+      console.log('in action index, response to fetchFlatsByUser: ', response.data.data.flats);
+      dispatch({
+        type: FETCH_FLATS_BY_USER,
         payload: response.data.data.flats
       });
     });

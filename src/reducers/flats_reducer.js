@@ -1,11 +1,14 @@
 import _ from 'lodash';
-import { FETCH_FLATS, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, CREATE_FLAT, EDIT_FLAT_LOAD, EDIT_FLAT } from '../actions/types';
+import { FETCH_FLATS, FETCH_FLATS_BY_USER, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, CREATE_FLAT, EDIT_FLAT_LOAD, EDIT_FLAT } from '../actions/types';
 
 export default function (state = {}, action) {
   console.log('in flats reducer, action.payload: ', action.payload);
 
   switch (action.type) {
     case FETCH_FLATS:
+      return _.mapKeys(action.payload, 'id');
+      
+    case FETCH_FLATS_BY_USER:
       return _.mapKeys(action.payload, 'id');
 
     case SELECTED_FLAT:
