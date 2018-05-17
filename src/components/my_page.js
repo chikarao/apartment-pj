@@ -118,18 +118,88 @@ class MyPage extends Component {
     );
   }
 
-  renderEachOwnBookings() {
-      const { flats } = this.props;
-      const flatsEmpty = _.isEmpty(flats);
-      console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
+  sortBookings(bookings) {
+    console.log('in mypage, sortBookings, bookings: ', bookings);
+    // bookings.sort((a, b) => {
+    // return parseFloat(a.date_start) - parseFloat(b.date_start);
+    // });
+    return bookings;
+  }
 
-      if (!flatsEmpty) {
-        return _.map(flats, (flat) => {
+  // renderEachOwnBookings() {
+  //     const { flats } = this.props;
+  //     const flatsEmpty = _.isEmpty(flats);
+  //     let bookingsObj = {};
+  //     console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
+  //     const bookingsList = {}
+  //     if (!flatsEmpty) {
+  //       return _.map(flats, (flat) => {
+  //         console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+  //         const bookings = flat.bookings;
+  //         return _.map(bookings, (booking, index) => {
+  //           console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
+  //           console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+  //           // var element = { quantity: quantity };
+  //           // cart[id] = element;
+  //           // This allows you to add multiple items to the cart like so:
+  //           //
+  //           // cart["1"] = { quantity: 5};
+  //           // cart["2"] = { quantity: 10};
+  //           //
+  //           // // Cart is now:
+  //           // // { "1": { quantity: 5 }, "2": { quantity: 10 } }
+  //           bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
+  //           console.log('in mypage, renderEachOwnBookings, bookingsList: ', bookingsList);
+  //           return (
+  //             <li key={index} className="my-page-each-card">
+  //               <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+  //                 <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+  //                 <div className="my-page-details">
+  //                   <ul>
+  //                     <li>{flat.description}</li>
+  //                     <li>check in: {booking.date_start}</li>
+  //                     <li>check out: {booking.date_end}</li>
+  //                     <li>booking id: {booking.id}</li>
+  //                     <li>flat id: {flat.id}</li>
+  //                   </ul>
+  //
+  //                 </div>
+  //               </div>
+  //               <div className="my-page-card-button-box">
+  //                 <button className="btn btn-danger btn-sm">Delete</button>
+  //               </div>
+  //             </li>
+  //           );
+  //           // end of return
+  //         });
+  //         // end of second each
+  //       });
+  //       //end of first each
+  //     }
+  // }
+  renderEachOwnBookings() {
+    const bookings = this.createBookingObject((b) => this.sortBookings(b));
+    // const sortedBookings = this.sortBookings(bookings);
+    console.log('in mypage, renderEachOwnBookings, bookings: ', bookings);
+
+        return _.map(bookings, (booking, index) => {
+          console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
+          const flat = booking.flat;
           console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
-          const bookings = flat.bookings;
-          return _.map(bookings, (booking, index) => {
-            console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
-            console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+          // return _.map(bookings, (booking, index) => {
+          //   console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
+            // console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+            // var element = { quantity: quantity };
+            // cart[id] = element;
+            // This allows you to add multiple items to the cart like so:
+            //
+            // cart["1"] = { quantity: 5};
+            // cart["2"] = { quantity: 10};
+            //
+            // // Cart is now:
+            // // { "1": { quantity: 5 }, "2": { quantity: 10 } }
+            // bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
+            // console.log('in mypage, renderEachOwnBookings, bookingsList: ', bookingsList);
             return (
               <li key={index} className="my-page-each-card">
                 <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
@@ -147,29 +217,49 @@ class MyPage extends Component {
                 </div>
                 <div className="my-page-card-button-box">
                   <button className="btn btn-danger btn-sm">Delete</button>
-                  <button className="btn btn-sm btn-edit">Edit</button>
                 </div>
               </li>
             );
             // end of return
+          // });
+          // end of second each
+        });
+        //end of first each
+      // }
+  }
+
+  createBookingObject(callback) {
+      const { flats } = this.props;
+      const flatsEmpty = _.isEmpty(flats);
+      let bookingsObj = {};
+      console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
+      const bookingsList = {}
+      if (!flatsEmpty) {
+         _.map(flats, (flat) => {
+          console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+          const bookings = flat.bookings;
+           _.map(bookings, (booking, index) => {
+            console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
+            console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+            // var element = { quantity: quantity };
+            // cart[id] = element;
+            // This allows you to add multiple items to the cart like so:
+            //
+            // cart["1"] = { quantity: 5};
+            // cart["2"] = { quantity: 10};
+            //
+            // // Cart is now:
+            // // { "1": { quantity: 5 }, "2": { quantity: 10 } }
+            bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
+            console.log('in mypage, renderEachOwnBookings, bookingsList: ', bookingsList);
+
           });
           // end of second each
         });
         //end of first each
+        callback(bookingsList);
+        return bookingsList;
       }
-    return (
-      <div>
-      <div className="my-page-category-title">Bookings for Your Flat</div>
-      <ul>
-        <li className="my-page-each-card"></li>
-        <li className="my-page-each-card"></li>
-        <li className="my-page-each-card"></li>
-        <li className="my-page-each-card"></li>
-        <li className="my-page-each-card"></li>
-        <li className="my-page-each-card"></li>
-      </ul>
-      </div>
-    );
   }
 
   render() {
