@@ -55,10 +55,18 @@ class MyPage extends Component {
     this.props.history.push(`/show/${elementVal}`);
   }
 
+  handleBookingCardClick(event) {
+    console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
+    this.props.history.push(`/bookingconfirmation/${elementVal}`);
+  }
+
   renderEachFlat() {
     // const { flats } = this.props;
-
-    if (this.props.flats) {
+    const flatsEmpty = _.isEmpty(this.props.flats);
+    if (!flatsEmpty) {
       const { flats } = this.props;
       console.log('in mypage, renderEachFlat, flats: ', flats);
       return _.map(flats, (flat, index) => {
@@ -68,7 +76,7 @@ class MyPage extends Component {
           <li key={index} className="my-page-each-card">
             <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
-              <div className="my-page-flat-details">
+              <div className="my-page-details">
                 <ul>
                   <li>{flat.description}</li>
                   <li>{flat.area}</li>
@@ -78,7 +86,7 @@ class MyPage extends Component {
 
               </div>
             </div>
-            <div className="my-page-flats-button-box">
+            <div className="my-page-card-button-box">
               <button className="btn btn-danger btn-sm">Delete</button>
               <button className="btn btn-sm btn-edit">Edit</button>
             </div>
@@ -102,7 +110,56 @@ class MyPage extends Component {
   renderOwnBookings() {
     return (
       <div>
-      <div className="my-page-category-title">Own Bookings</div>
+        <div className="my-page-category-title">Bookings for Your Flats</div>
+        <ul>
+        {this.renderEachOwnBookings()}
+        </ul>
+      </div>
+    );
+  }
+
+  renderEachOwnBookings() {
+      const { flats } = this.props;
+      const flatsEmpty = _.isEmpty(flats);
+      console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
+
+      if (!flatsEmpty) {
+        return _.map(flats, (flat) => {
+          console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+          const bookings = flat.bookings;
+          return _.map(bookings, (booking, index) => {
+            console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
+            console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+            return (
+              <li key={index} className="my-page-each-card">
+                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                  <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+                  <div className="my-page-details">
+                    <ul>
+                      <li>{flat.description}</li>
+                      <li>check in: {booking.date_start}</li>
+                      <li>check out: {booking.date_end}</li>
+                      <li>booking id: {booking.id}</li>
+                      <li>flat id: {flat.id}</li>
+                    </ul>
+
+                  </div>
+                </div>
+                <div className="my-page-card-button-box">
+                  <button className="btn btn-danger btn-sm">Delete</button>
+                  <button className="btn btn-sm btn-edit">Edit</button>
+                </div>
+              </li>
+            );
+            // end of return
+          });
+          // end of second each
+        });
+        //end of first each
+      }
+    return (
+      <div>
+      <div className="my-page-category-title">Bookings for Your Flat</div>
       <ul>
         <li className="my-page-each-card"></li>
         <li className="my-page-each-card"></li>

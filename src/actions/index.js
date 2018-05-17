@@ -35,6 +35,7 @@ export function signinUser({ email, password }, callback) {
   // reduxthunk allow return of function and edirect access to dispatch method
 //dispatch accepts action and forwards to all reducers;
 // main pipeline of redux; dispatch can wait for async
+console.log('in action, index, sign in, email and password: ', { email, password });
   // now can place lots of logic
   console.log('in actions index, signinUser:');
 
