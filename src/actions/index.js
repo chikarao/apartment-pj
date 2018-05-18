@@ -18,6 +18,7 @@ import {
   REQUEST_BOOKING,
   FETCH_BOOKING,
   FETCH_BOOKINGS_BY_USER,
+  DELETE_BOOKING,
   CREATE_FLAT,
   CREATE_IMAGE,
   GET_CURRENT_USER,
@@ -375,6 +376,31 @@ export function fetchBookingsByUser(id) {
   };
 }
 
+export function deleteBooking(id, callback) {
+  console.log('in actions index, deleteFlat, id: ', id);
+  console.log('in actions index, deleteFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/bookings/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteBooking, response: ', response);
+      console.log('response to deleteBooking, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_FLAT,
+        payload: response.data.data
+      });
+      // redirects to mypage
+      callback();
+      window.alert('Deleted booking');
+    });
+    //end of then
+  };
+  //end of return function
+}
+
 export function createFlat(flatAttributes, callback) {
   console.log('in actions index, createFlat, flatAttributes: ', flatAttributes);
   console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -388,8 +414,7 @@ export function createFlat(flatAttributes, callback) {
       console.log('response to createFlat, response: ', response);
       console.log('response to createFlat, response.data.data: ', response.data.data);
       dispatch({
-        type: CREATE_FLAT,
-        payload: response.data.data
+        type: CREATE_FLAT
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.flat.id, flatAttributes.files);

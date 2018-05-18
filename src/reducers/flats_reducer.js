@@ -18,7 +18,8 @@ export default function (state = {}, action) {
       return { ...state, selectedFlatFromParams: action.payload };
 
     case CREATE_FLAT:
-      return { ...state, createdFlat: action.payload };
+      // return _.mapKeys(action.payload, 'id');
+      return { ...state };
 
     case EDIT_FLAT_LOAD:
       return { ...state, editFlatData: action.payload };

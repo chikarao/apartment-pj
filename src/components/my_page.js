@@ -11,24 +11,25 @@ class MyPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // not being used
       sortByDate: false
     };
   }
   componentDidMount() {
-    this.props.getCurrentUserForMyPage((id) => this.fetchData(id));
+    // this.props.getCurrentUserForMyPage((id) => this.fetchData(id));
     // if (this.props.flat) {
     //   console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
     // }
     // this.props.fetchUserFlats(this.props.auth.id);
+    this.props.fetchFlatsByUser(this.props.auth.id);
+    this.props.fetchBookingsByUser(this.props.auth.id);
   }
 
-  fetchData(id) {
+ fetchData(id) {
     //callback from getCurrentUserForMyPageid
     console.log('in mypage, fetchData, this.props.auth.id: ', this.props.auth.id);
     console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
-    this.props.fetchFlatsByUser(id);
-    this.props.fetchBookingsByUser(id);
   }
 
   renderEachBookingByUser() {
@@ -93,7 +94,7 @@ class MyPage extends Component {
       console.log('in mypage, renderEachFlat, flats: ', flats);
       return _.map(flats, (flat, index) => {
         console.log('in mypage, renderEachFlat, flat.id: ', flat.id);
-        console.log('in mypage, renderEachFlat, flat.desription: ', flat.description);
+        console.log('in mypage, renderEachFlat, flat.description: ', flat.description);
         return (
           <li key={index} className="my-page-each-card">
             <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
@@ -109,7 +110,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button className="btn btn-sm btn-delete">Delete</button>
+              <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
               <button className="btn btn-sm btn-edit">Edit</button>
             </div>
           </li>
@@ -178,6 +179,23 @@ class MyPage extends Component {
     return bookingsList;
   }
 
+  handleDeleteClick(event) {
+    console.log('in mypage, handleDeleteClick, event.target: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    const elementType = clickedElement.getAttribute('type');
+    console.log('in mypage, handleDeleteClick, elementVal: ', elementVal);
+    console.log('in mypage, handleDeleteClick, elementType: ', elementType);
+    if (elementType === 'ownBooking' && window.confirm('Are you sure you want to delete this booking?')) {
+      console.log('in mypage, handleDeleteClick, if statement, delete own booking: ', elementType);
+      this.props.deleteBooking(elementVal, () => this.props.history.push('/mypage'));
+    }
+    if (elementType === 'flat' && window.confirm('Are you sure you want to delete this flat?')) {
+      console.log('in mypage, handleDeleteClick, if statement, delete flat: ', elementType);
+      this.props.deleteFlat(elementVal, () => this.props.history.push('/mypage'));
+    }
+  }
+
   renderEachOwnBookings() {
     // takes flats with bookings and creates object with bookings then flat
     const preSortBookings = this.createBookingObject();
@@ -209,7 +227,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button className="btn btn-delete btn-sm">Delete</button>
+                  <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
                 </div>
               </li>
             );
@@ -268,7 +286,7 @@ class MyPage extends Component {
 function mapStateToProps(state) {
   console.log('in mypage, mapStateToProps, state: ', state);
   return {
-    flat: state.selectedFlatFromParams.selectedFlat,
+    // flat: state.selectedFlatFromParams.selectedFlat,
     flats: state.flats,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,

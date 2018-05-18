@@ -330,7 +330,7 @@ class ShowFlat extends Component {
 function mapStateToProps(state) {
   console.log('in show_flat render, mapStateToProps, state: ', state);
   return {
-    flat: state.selectedFlatFromParams.selectedFlat,
+    flat: state.flat.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth
   };

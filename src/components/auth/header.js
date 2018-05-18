@@ -5,7 +5,9 @@ import { Link, withRouter } from 'react-router-dom';
 // import DayPicker from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 // import $ from 'jquery';
-import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
+// import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
+
+import * as actions from '../../actions';
 
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
@@ -20,7 +22,7 @@ class Header extends Component {
 
   componentDidMount() {
        window.addEventListener('resize', this.handleResize.bind(this));
-       // this.props.getCurrentUser();
+       this.props.getCurrentUser();
    }
 
    componentWillUnmount() {
@@ -30,55 +32,6 @@ class Header extends Component {
    handleResize() {
      this.setState({ windowWidth: window.innerWidth });
    }
-  //  handleResize() {
-  //    if (window.innerWidth < 700) {
-  //      this.setState({ screenIsbig: false })
-  //    } else {
-  //      this.setState({ screenIsbig: true });
-  //    }
-  //  }
-   // **********THIS PART IS EXPERIMENTAL CODE ***********
-
-  // renderLinks() {
-  //   if (this.props.authenticated) {
-  //     // show link to signout
-  //     // console.log('here is the email: ', this.props.email);
-  //     return (
-  //       [
-  //         // <NavItem key={1} eventKey={1} href="/signout">
-  //         //   // <Link className="nav-link" to="/signout">Sign Out</Link>
-  //         // </NavItem>,
-  //         // <NavItem key={2} eventKey={2} href="#">
-  //         //   Signed in as {this.props.email}
-  //         // </NavItem>
-  //         <li className="nav-item" key={3}>
-  //           <Link className="nav-link" to="/signout">Sign Out</Link>
-  //         </li>,
-  //         <li className="nav-item" key={4}>
-  //             <p className="nav-link">Signed in as {this.props.email}</p>
-  //         </li>
-  //       ]
-  //     );
-  //   } else {
-  //     // show link to sign in or sign out
-  //   return ([
-  //     // <NavItem key={3} eventKey={3} href="/signin">
-  //     //   // <Link className="nav-link" to="/signin">Sign in</Link>
-  //     // </NavItem>,
-  //     // <NavItem className="sign-up-nav-item" key={4} eventKey={4} href="/signup">
-  //     //   // <Link className="nav-link" to="/signup">Sign Up</Link>
-  //     // </NavItem>
-  //         //
-  //         <li className="nav-item" key={1}>
-  //           <Link className="nav-link" to="/signin">Sign In</Link>
-  //         </li>,
-  //         <li className="nav-item" key={2}>
-  //           <Link className="nav-link" to="/signup">Sign Up</Link>
-  //         </li>
-  //       ]
-  //     );
-  //   }
-  // }
 
 navigationLinks() {
   console.log('in header, navigationLinks, this.props.location: ', this.props.location);
@@ -92,26 +45,26 @@ navigationLinks() {
      if (onMyPage) {
        return [
          <ul key={'1'} className="header-list">
-         <li className="nav-item">
-         <Link className="nav-link" to="/signout">Sign Out</Link>
-         </li>
-         <li className="nav-item">
-         <p className="nav-link">Signed in as {this.props.email}</p>
-         </li>
+           <li className="nav-item">
+            <Link className="nav-link" to="/signout">Sign Out</Link>
+           </li>
+           <li className="nav-item">
+            <p className="nav-link">Signed in as {this.props.email}</p>
+           </li>
          </ul>
        ];
      } else {
        return [
          <ul key={'1'} className="header-list">
-         <li className="nav-item">
-         <Link className="nav-link" to="/signout">Sign Out</Link>
-         </li>
-         <li className="nav-item">
-         <Link className="nav-link" to={'/mypage'}>My Page</Link>
-         </li>
-         <li className="nav-item">
-         <p className="nav-link">Signed in as {this.props.email}</p>
-         </li>
+           <li className="nav-item">
+            <Link className="nav-link" to="/signout">Sign Out</Link>
+           </li>
+           <li className="nav-item">
+            <Link className="nav-link" to={'/mypage'}>My Page</Link>
+           </li>
+           <li className="nav-item">
+            <p className="nav-link">Signed in as {this.props.email}</p>
+           </li>
          </ul>
        ];
      }
@@ -263,4 +216,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default withRouter(connect(mapStateToProps)(Header));
+export default withRouter(connect(mapStateToProps, actions)(Header));
