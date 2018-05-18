@@ -262,16 +262,17 @@ class Feature extends Component {
       }
       console.log('in feature renderPagination, lastPage: ', lastPage);
       console.log('in feature renderPagination, pageNumbers: ', pageNumbersArray);      // this.renderPageNumbers(pageNumbers)
-
-      return (
-        <div>
-        <ul className="pagination">
+      if (pageNumbersArray.length > 1) {
+        return (
+          <div>
+          <ul className="pagination">
           <li onClick={this.handleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
-            {this.renderPageNumbers(pageNumbersArray)}
+          {this.renderPageNumbers(pageNumbersArray)}
           <li onClick={this.handleRightPageClick.bind(this)}><i className="fa fa-angle-double-right"></i></li>
-        </ul>
-        </div>
-      );
+          </ul>
+          </div>
+        );
+      }
     }
   }
 

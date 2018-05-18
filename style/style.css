@@ -595,11 +595,6 @@ display: block;
   margin: 0 15px 10px 0;
 }
 
-/* ***************** MYPAGE ********************  */
-
-.btn-create-flat {
-  margin-top: 20px;
-}
 
 
 /* **********Booking Confirmation *************** */
@@ -758,6 +753,13 @@ display: block;
 }
 
 /* **************MY PAGE**************** */
+/* ***************** MYPAGE ********************  */
+
+.btn-create-flat {
+  margin: 20px 20px;
+  background-color: green;
+  color: white;
+}
 
 .my-page-container {
  display: flex;
@@ -766,7 +768,7 @@ display: block;
 }
 
 .my-page-category-container {
-  min-height: 400px;
+  min-height: 450px;
   min-width: 370px;
   max-height: 500px;
   border: 1px solid #ccc;
@@ -824,9 +826,17 @@ display: block;
 }
 
 .my-page-card-button-box .btn-edit{
-  background-color: #4CAF50 !important;
+  /* background-color: #4CAF50 !important; */
+  border: 1px solid #4CAF50;
+  color: gray;
+  /* color: white; */
+}
+.my-page-card-button-box .btn-delete{
+  /* background-color: ; */
   /* color greeen */
-  color: white;
+  color: gray;
+  border: 1px solid red;
+  /* color: white; */
 }
 .my-page-card-button-box .btn-edit:hover{
   opacity: .8;

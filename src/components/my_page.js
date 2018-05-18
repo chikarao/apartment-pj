@@ -58,7 +58,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-            <button className="btn btn-danger btn-sm">Delete</button>
+            <button className="btn btn-delete btn-sm">Delete</button>
             </div>
           </li>
         );
@@ -68,17 +68,6 @@ class MyPage extends Component {
     //end of if
   }
 
-  renderBookings() {
-    console.log('in mypage, renderBookings, this.props.bookingsByUser: ', this.props.bookingsByUser);
-      return (
-        <div>
-          <div className="my-page-category-title">Bookings</div>
-          <ul>
-            {this.renderEachBookingByUser()}
-          </ul>
-        </div>
-      );
-    }
 
   handleFlatCardClick(event) {
     console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
@@ -120,7 +109,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button className="btn btn-danger btn-sm">Delete</button>
+              <button className="btn btn-sm btn-delete">Delete</button>
               <button className="btn btn-sm btn-edit">Edit</button>
             </div>
           </li>
@@ -129,10 +118,22 @@ class MyPage extends Component {
     }
   }
 
+  renderBookings() {
+    console.log('in mypage, renderBookings, this.props.bookingsByUser: ', this.props.bookingsByUser);
+    return (
+      <div>
+      <div className="my-page-category-title">My Bookings</div>
+      <ul>
+      {this.renderEachBookingByUser()}
+      </ul>
+      </div>
+    );
+  }
+
   renderFlats() {
     return (
       <div>
-        <div className="my-page-category-title">Flats</div>
+        <div className="my-page-category-title">My Flats</div>
         <ul>
         {this.renderEachFlat()}
         </ul>
@@ -143,7 +144,7 @@ class MyPage extends Component {
   renderOwnBookings() {
     return (
       <div>
-        <div className="my-page-category-title">Bookings for Your Flats</div>
+        <div className="my-page-category-title">Bookings for My Flats</div>
         <ul>
         {this.renderEachOwnBookings()}
         </ul>
@@ -208,7 +209,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button className="btn btn-danger btn-sm">Delete</button>
+                  <button className="btn btn-delete btn-sm">Delete</button>
                 </div>
               </li>
             );
@@ -258,7 +259,7 @@ class MyPage extends Component {
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
         </div>
         </div>
-        <Link to="/createflat" className="btn-create-flat"><button className="btn btn-primary btn-lg btn-create-flat">List a New Flat!</button></Link>
+        <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
       </div>
     );
   }
