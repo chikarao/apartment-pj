@@ -19,7 +19,8 @@ const rootReducer = combineReducers({
   imageIndex: imageCountReducer,
   startUpCount: startUpIndexReducer,
   selectedBookingDates: bookingReducer,
-  bookingData: bookingReducer
+  bookingData: bookingReducer,
+  fetchBookingsByUserData: bookingReducer
   // can access mapbounds.east .west., etc
 });
 

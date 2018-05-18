@@ -17,6 +17,7 @@ import {
   SELECTED_DATES,
   REQUEST_BOOKING,
   FETCH_BOOKING,
+  FETCH_BOOKINGS_BY_USER,
   CREATE_FLAT,
   CREATE_IMAGE,
   GET_CURRENT_USER,
@@ -214,7 +215,7 @@ export function fetchMessage() {
 
   return function (dispatch) {
     axios.get(ROOT_URL, {
-      headers: { authorization: localStorage.getItem('token') }
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       dispatch({
@@ -250,7 +251,7 @@ export function selectedFlatFromParams(id) {
   console.log('in actions index, selectedFlatFromParams id: ', id);
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/flats/${id}`, {
-      headers: { authorization: localStorage.getItem('token') }
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('in actions index, response to selectedFlatFromParams: ', response.data.data.flat);
@@ -344,13 +345,31 @@ export function fetchBooking(id) {
 
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/bookings/${id}`, {
-      headers: { authorization: localStorage.getItem('token') }
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('response to fetchBooking: ', response.data.data.booking);
       dispatch({
         type: FETCH_BOOKING,
         payload: response.data.data.booking
+      });
+    });
+  };
+}
+//called when BookingConfirmation mounted; sent id from params
+export function fetchBookingsByUser(id) {
+  console.log('in actions index, fetchBookingsByUser: ', id);
+
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/users/bookings/`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchBookingsByUser, response: ', response);
+      console.log('response to fetchBookingsByUser, response.data.data.bookings: ', response.data.data.bookings);
+      dispatch({
+        type: FETCH_BOOKINGS_BY_USER,
+        payload: response.data.data.bookings
       });
     });
   };
