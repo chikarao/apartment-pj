@@ -120,12 +120,36 @@ class MyPage extends Component {
 
   sortBookings(bookings) {
     console.log('in mypage, sortBookings, bookings: ', bookings);
+    let bookingsArray = [];
+    // push each object into array then sort
+    _.each(bookings, (booking) => {
+      bookingsArray.push(booking);
+      console.log('in mypage, sortBookings, in each, bookingsArray: ', bookingsArray);
+    });
     // bookings.sort((a, b) => {
     // return parseFloat(a.date_start) - parseFloat(b.date_start);
     // });
-    return bookings;
-  }
 
+//     employees.sort(function(a, b){
+//     return a.age-b.age
+// })
+    const sortedBookingsArray = bookingsArray.sort((a, b) => {
+      // return new Date(b.date) - new Date(a.date);
+      // console.log('in mypage, sortBookings, in each, in sortedBookingsArray, new Date(a.date_start): ', new Date(a.date_start));
+      // console.log('in mypage, sortBookings, in each, in sortedBookingsArray, new Date(b.date_start): ', new Date(b.date_start));
+      return new Date(a.date_start) - new Date(b.date_start);
+    });
+    // put sorted array into object format that the app has been using
+    console.log('in mypage, sortBookings, in each, sortedBookingsArray: ', sortedBookingsArray);
+    const bookingsList = {};
+    _.each(sortedBookingsArray, (booking, index) => {
+      bookingsList[index] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat: booking.flat }
+    });
+    console.log('in mypage, sortBookings, in each, bookingsList: ', bookingsList);
+
+    return bookingsList;
+  }
+// ***********code for non-sorted bookings; keep for now***********************
   // renderEachOwnBookings() {
   //     const { flats } = this.props;
   //     const flatsEmpty = _.isEmpty(flats);
@@ -178,28 +202,18 @@ class MyPage extends Component {
   //     }
   // }
   renderEachOwnBookings() {
-    const bookings = this.createBookingObject((b) => this.sortBookings(b));
+    const preSortBookings = this.createBookingObject();
+    const bookings = this.sortBookings(preSortBookings);
+
+    // const bookings = this.createBookingObject((b) => this.sortBookings(b));
     // const sortedBookings = this.sortBookings(bookings);
-    console.log('in mypage, renderEachOwnBookings, bookings: ', bookings);
+    console.log('in mypage, renderEachOwnBookings, bookings, h: ', bookings);
 
         return _.map(bookings, (booking, index) => {
           console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
           const flat = booking.flat;
           console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
-          // return _.map(bookings, (booking, index) => {
-          //   console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
-            // console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
-            // var element = { quantity: quantity };
-            // cart[id] = element;
-            // This allows you to add multiple items to the cart like so:
-            //
-            // cart["1"] = { quantity: 5};
-            // cart["2"] = { quantity: 10};
-            //
-            // // Cart is now:
-            // // { "1": { quantity: 5 }, "2": { quantity: 10 } }
-            // bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
-            // console.log('in mypage, renderEachOwnBookings, bookingsList: ', bookingsList);
+
             return (
               <li key={index} className="my-page-each-card">
                 <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
@@ -228,10 +242,11 @@ class MyPage extends Component {
       // }
   }
 
-  createBookingObject(callback) {
+  createBookingObject() {
+    //reference: https://stackoverflow.com/questions/14234646/adding-elements-to-object
       const { flats } = this.props;
       const flatsEmpty = _.isEmpty(flats);
-      let bookingsObj = {};
+      // let bookingsObj = {};
       console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
       const bookingsList = {}
       if (!flatsEmpty) {
@@ -251,13 +266,13 @@ class MyPage extends Component {
             // // Cart is now:
             // // { "1": { quantity: 5 }, "2": { quantity: 10 } }
             bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
-            console.log('in mypage, renderEachOwnBookings, bookingsList: ', bookingsList);
+            console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
 
           });
           // end of second each
         });
         //end of first each
-        callback(bookingsList);
+        // callback(bookingsList);
         return bookingsList;
       }
   }

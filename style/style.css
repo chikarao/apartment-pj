@@ -855,7 +855,7 @@ display: block;
   /* justify-content: flex-start; */
   /* align-content: flex-start; */
   pointer-events: none;
-  font-size: 10px;
+  font-size: 11px;
 }
 .my-page-details ul li:first-child {
   font-weight: bold;
