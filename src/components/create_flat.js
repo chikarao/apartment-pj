@@ -87,7 +87,6 @@ class CreateFlat extends Component {
         console.log('Geocode was not successful for the following reason: ' + status);
       }
     });
-
   }
 
   handleCreateImages(flatId, files) {
@@ -126,6 +125,7 @@ class CreateFlat extends Component {
     console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
     console.log('in Upload, handleDrop, uploaders, formData file: ', formData.get('file'));
     console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
+    console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
 
     return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -156,7 +156,6 @@ createImageCallback(imagesArray, imageCount, flatId) {
   const count = imageCount + 1;
   if (count <= (imagesArray.length - 1)) {
     this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-
   } else {
     this.props.history.push(`/show/${flatId}`);
   }

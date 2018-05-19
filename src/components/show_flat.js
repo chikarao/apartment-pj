@@ -242,8 +242,8 @@ class ShowFlat extends Component {
       console.log('in show_flat, currentUser, this.props.auth.id: ', this.props.auth.id);
       console.log('in show_flat, currentUser, this.props.flat: ', this.props.flat.user_id);
       // return (this.props.auth.id === this.props.flat.user_id);
-      // return true;
-      return false;
+      return true;
+      // return false;
     }
   }
 

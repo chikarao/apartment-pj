@@ -187,8 +187,11 @@ class EditFlat extends Component {
 
   renderEditForm() {
     const { handleSubmit } = this.props;
+    const flatEmpty = _.isEmpty(this.props.flat);
+    console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
+    console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
 
-    if (this.props.flat) {
+    if (!flatEmpty) {
       console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
@@ -321,10 +324,10 @@ EditFlat = reduxForm({
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
   return {
-    flat: state.selectedFlatFromParams.selectedFlat,
+    flat: state.selectedFlatFromParams.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth,
-    initialValues: state.selectedFlatFromParams.selectedFlat
+    initialValues: state.selectedFlatFromParams.selectedFlatFromParams
   };
 }
 
