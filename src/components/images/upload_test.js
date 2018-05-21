@@ -79,20 +79,21 @@ class Upload extends Component {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     }).then(response => {
       // const data = response.data;
-      // const filePublicId = response.data.public_id;
+      const filePublicId = response.data.data.response.public_id;
       // You should store this URL for future references in your app
       // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
-      console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
-      // imagesArray.push(filePublicId);
+      console.log('in Upload, handleDrop, uploaders, .then, response ', response);
+      console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.data.response.public_id);
+      imagesArray.push(filePublicId);
       // call create image action, send images Array with flat id
     });
     //end of then
   });
   //end of uploaders
-  console.log('in Upload, handleDrop, uploaders: ', uploaders);
+  // console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
-    // console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
+    console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
     // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
     // CALL createImage and send public id, counter, callback with flat id

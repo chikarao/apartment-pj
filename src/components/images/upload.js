@@ -70,34 +70,35 @@ class Upload extends Component {
     // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
     console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
 
-    axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+    return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
     headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     // return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
     //   headers: { 'X-Requested-With': 'XMLHttpRequest' },
     }).then(response => {
       // const data = response.data;
-      // const filePublicId = response.data.public_id;
+      const filePublicId = response.data.data.response.public_id;
       // You should store this URL for future references in your app
       // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
       console.log('in Upload, handleDrop, uploaders, .then, response ', response);
-      // imagesArray.push(filePublicId);
+      console.log('in Upload, handleDrop, uploaders, .then, response.data.data.response.public_id ', response.data.data.response.public_id);
+      imagesArray.push(filePublicId);
       // call create image action, send images Array with flat id
     });
     //end of then
   });
   //end of uploaders
-  console.log('in Upload, handleDrop, uploaders: ', uploaders);
+  // console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
-    // console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
+    console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
     // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
     // CALL createImage and send public id, counter, callback with flat id
     //xport function createImage(imagesArray, imageCount, flatId, callback)
-    // const imageCount = 0;
-    // console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
-    // this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
-    document.location.reload();
+    const imageCount = 0;
+    console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
+    this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
+    // document.location.reload();
     // this.props.history.push(`/editflat/${this.props.flatId}`);
   });
 }

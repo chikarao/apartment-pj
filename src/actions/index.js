@@ -471,7 +471,7 @@ export function deleteFlat(id, callback) {
 }
 
 export function createImage(imagesArray, imageCount, flatId, callback) {
-  console.log('in actions index, createImage, imageArray: ', imagesArray);
+  console.log('in actions index, createImage, imagesArray: ', imagesArray);
   console.log('in actions index, createImage: localStorage.getItem, token: ', localStorage.getItem('token'));
   console.log('in actions index, createImage: imageCount: ', imageCount);
   console.log('in actions index, createImage: flatId: ', flatId);
