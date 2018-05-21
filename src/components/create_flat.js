@@ -130,15 +130,15 @@ class CreateFlat extends Component {
 
     // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
     // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
-    axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+    return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
     headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     // return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
     //   headers: { 'X-Requested-With': 'XMLHttpRequest' },
     }).then(response => {
       // const data = response.data;
-      const filePublicId = response.data.data.publicid;
+      console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+      const filePublicId = response.data.data.response.public_id;
       // You should store this URL for future references in your app
-      console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.data.publicid);
       imagesArray.push(filePublicId);
       // call create image action, send images Array with flat id
     });
