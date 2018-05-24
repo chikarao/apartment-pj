@@ -115,8 +115,6 @@ class CreateFlat extends Component {
     formData.append('file', file);
     formData.append('flatId', flatId);
     // formData.append('signature', signatureSha1);
-    // formData.append('tags', `chikarao, medium, gist`);
-    // formData.append('upload_preset', 'chikarao'); // Replace the preset name with your own
 
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
 

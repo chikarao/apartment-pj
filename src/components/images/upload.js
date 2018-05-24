@@ -54,8 +54,7 @@ class Upload extends Component {
     formData.append('flatId', this.props.flatId);
 
     // formData.append('signature', signatureSha1);
-    // formData.append('tags', `chikarao, medium, gist`);
-    // formData.append('upload_preset', 'chikarao'); // Replace the preset name with your own
+  
 
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
 

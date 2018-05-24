@@ -198,24 +198,25 @@ class EditFlat extends Component {
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Street Address:</label>
-            <Field name="address1" component="input" type="string" className="form-control" />
+            <div className="edit-flat-address">{this.props.flat.address1}</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">City:</label>
-            <Field name="city" component="input" type="string" className="form-control" />
+          <div className="edit-flat-address">{this.props.flat.city}</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">State:</label>
-            <Field name="state" component="input" type="string" className="form-control" />
+            <div className="edit-flat-address">{this.props.flat.state}</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Zip:</label>
-            <Field name="zip" component="input" type="string" className="form-control" />
+            <div className="edit-flat-address">{this.props.flat.zip}</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Country:</label>
-            <Field name="country" component="input" type="string" className="form-control" />
+            <div className="edit-flat-address">{this.props.flat.country}</div>
           </fieldset>
+          <span>* To edit address please delete flat and create a new one</span>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Description:</label>
             <Field name="description" component="input" type="string" className="form-control" />

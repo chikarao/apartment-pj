@@ -266,6 +266,76 @@ class ShowFlat extends Component {
       console.log('in show_flat, handleDeleteFlatClick, window.confirm, NO: ');
     }
   }
+
+  renderEachMessage() {
+    const { conversations } = this.props.flat;
+    console.log('in show_flat, renderEachMessage, conversations: ', conversations);
+    return (
+      <div>
+      </div>
+    );
+  }
+
+  renderMessages() {
+    return (
+      <div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div, and with a longlonglonglongword</div>
+          </div>
+        </div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message-user">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword</div>
+          </div>
+        </div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div</div>
+          </div>
+        </div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message-user">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword.</div>
+          </div>
+        </div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword.</div>
+          </div>
+        </div>
+        <div className="show-flat-each-message-box">
+          <div className="show-flat-each-message-user">
+            <div className="show-flat-each-message-date">Date</div>
+            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  handleMessageSendClick(event) {
+    console.log('in show_flat, handleMessageSendClick, clicked: ', event);
+    const messageText = document.getElementById('show-flat-messsage-textarea').value;
+    console.log('in show_flat, handleMessageSendClick, messageText: ', messageText);
+  }
+
+  renderMessaging() {
+    return (
+      <div className="show-flat-message-box-container">
+        <div className="show-flat-message-box">
+          <div className="show-flat-message-show-box">{this.renderMessages()}</div>
+          <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
+          <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
+        </div>
+      </div>
+    );
+  }
 // get boolean returned from currentUser and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
@@ -318,6 +388,9 @@ class ShowFlat extends Component {
         </div>
         <div className="container" id="map">
           {this.renderMap()}
+        </div>
+        <div>
+        {this.renderMessaging()}
         </div>
         <div>
           {this.renderButton()}

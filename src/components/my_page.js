@@ -66,7 +66,15 @@ class MyPage extends Component {
       });
       //end of map
     }
-    //end of if
+    // else {
+    //   return (
+    //     <div>
+    //       <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    //       <div className="spinner">Loading...</div>
+    //     </div>
+    //   );
+    // }
+    //end of else
   }
 
 
@@ -117,6 +125,14 @@ class MyPage extends Component {
         );
       });
     }
+    // else {
+    //   return (
+    //     <div>
+    //       <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    //       <div className="spinner">Loading...</div>
+    //     </div>
+    //   );
+    // }
   }
 
   renderBookings() {

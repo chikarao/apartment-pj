@@ -357,7 +357,115 @@ body > div:first-child {
   justify-content: center;
 }
 
+/* Messaging */
+.show-flat-message-box-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.show-flat-message-box {
+  width: 500px;
+  margin: 5px;
+  height: 550px;
+  /* border: 1px solid #ccc; */
+}
+.show-flat-message-show-box {
+  width: 100%;
+  height: 350px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.show-flat-message-input-box {
+  margin-top: 5px;
+  width: 100%;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 16px;
+}
+.show-flat-message-btn {
+  float: right;
+  margin: 5px;
+}
+
+.show-flat-each-message-box {
+  width: 100%;
+  display: block;
+  overflow: auto;
+  /* height: auto; */
+  margin: 1px;
+}
+/* .show-flat-each-message-box {
+  width: 100%;
+  display: block;
+  overflow: auto;
+  margin: 1px;
+} */
+.show-flat-each-message {
+  width: 270px;
+  height: 100px;
+  margin: 2px;
+  /* border-radius: 10px; */
+  /* border: 1px solid #ccc; */
+  /* overflow: hidden; */
+  height: auto;
+  /* display: block;
+  overflow: auto; */
+}
+
+.show-flat-each-message-user {
+  width: 250px;
+  height: 100px;
+  margin: 2px;
+  /* border-radius: 10px; */
+  /* border: 1px solid #ccc; */
+  float: right;
+  /* overflow: hidden; */
+  height: auto;
+  /* display: block;
+  overflow: auto; */
+}
+.show-flat-each-message-date {
+  /* border: 1px solid #ccc; */
+  font-size: 10px;
+  color: #ccc;
+  text-align: left;
+  margin-left: 5px;
+}
+
+.show-flat-each-message-content {
+  width: 100%;
+  border: 1px solid #ccc;
+  text-align: left;
+  border-radius: 10px;
+  font-size: 15px;
+  /* overflow-wrap: normal; */
+  /* display: block; */
+  /* overflow: auto; */
+  height: auto;
+  word-break: break-all;
+  padding: 5px;
+  /* padding: 1px; */
+  /* display: block; */
+  /* display: block;
+  overflow: auto; */
+  /* height: 100%;
+  display: block; */
+  /* min-height: 100% !important; */
+}
+
+
+
 /* ************Edit Flat******************* */
+
+.edit-flat-address {
+  width: 300px;
+  margin-left: 20px;
+  text-align: left;
+}
 
 .edit-flat-image-box {
   margin: 20px;
