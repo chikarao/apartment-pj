@@ -372,7 +372,7 @@ body > div:first-child {
 }
 .show-flat-message-show-box {
   width: 100%;
-  height: 350px;
+  height: 300px;
   border: 1px solid #ccc;
   border-radius: 2px;
   overflow: hidden;
@@ -393,6 +393,7 @@ body > div:first-child {
 
 .show-flat-each-message-box {
   width: 100%;
+  min-height: 70px;
   display: block;
   overflow: auto;
   /* height: auto; */
@@ -405,7 +406,7 @@ body > div:first-child {
   margin: 1px;
 } */
 .show-flat-each-message {
-  width: 270px;
+  max-width: 270px;
   height: 100px;
   margin: 2px;
   /* border-radius: 10px; */
@@ -417,7 +418,7 @@ body > div:first-child {
 }
 
 .show-flat-each-message-user {
-  width: 250px;
+  max-width: 250px;
   height: 100px;
   margin: 2px;
   /* border-radius: 10px; */
@@ -430,31 +431,49 @@ body > div:first-child {
 }
 .show-flat-each-message-date {
   /* border: 1px solid #ccc; */
+  width: auto;
+  font-size: 10px;
+  color: #ccc;
+  text-align: left;
+  margin-left: 5px;
+}
+.show-flat-each-message-read {
+  /* border: 1px solid #ccc; */
+  width: auto;
   font-size: 10px;
   color: #ccc;
   text-align: left;
   margin-left: 5px;
 }
 
-.show-flat-each-message-content {
-  width: 100%;
+.show-flat-each-message-content-user {
+  max-width: 100%;
+  min-width: 100px;
   border: 1px solid #ccc;
   text-align: left;
   border-radius: 10px;
   font-size: 15px;
-  /* overflow-wrap: normal; */
-  /* display: block; */
-  /* overflow: auto; */
   height: auto;
-  word-break: break-all;
+  /* word-break: break-all; */
   padding: 5px;
-  /* padding: 1px; */
-  /* display: block; */
-  /* display: block;
-  overflow: auto; */
-  /* height: 100%;
-  display: block; */
-  /* min-height: 100% !important; */
+  margin-right: 2px;
+  display: inline-block;
+  float: right;
+  background-color: lightgray;
+}
+
+.show-flat-each-message-content {
+  max-width: 100%;
+  min-width: 100px;
+  border: 1px solid #ccc;
+  text-align: left;
+  border-radius: 10px;
+  font-size: 15px;
+  height: auto;
+  /* word-break: break-all; */
+  padding: 5px;
+  display: inline-block;
+  float: left;
 }
 
 

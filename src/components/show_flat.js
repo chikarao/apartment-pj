@@ -24,6 +24,10 @@ class ShowFlat extends Component {
     this.props.getCurrentUser();
   }
 
+  componentDidUpdate() {
+    this.scrollLastMessageIntoView();
+  }
+
   renderImages(images) {
     console.log('in show_flat renderImages, images: ', images);
     const imagesEmpty = _.isEmpty(images);
@@ -267,54 +271,72 @@ class ShowFlat extends Component {
     }
   }
 
+  scrollLastMessageIntoView() {
+    const items = document.querySelectorAll('.show-flat-each-message-box');
+    console.log('in show_flat, scrollLastMessageIntoView, items: ', items);
+
+    const last = items[items.length - 1];
+    console.log('in show_flat, scrollLastMessageIntoView, last: ', last);
+    if (last) {
+      last.scrollIntoView();
+    }
+  }
+
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+}
+
   renderEachMessage() {
-    const { conversations } = this.props.flat;
-    console.log('in show_flat, renderEachMessage, conversations: ', conversations);
-    return (
-      <div>
-      </div>
-    );
+    if (this.props.flat) {
+      const { conversations } = this.props.flat;
+      const messages = conversations[1].messages;
+      console.log('in show_flat, renderEachMessage, messages: ', messages);
+
+      return _.map(messages, (message, i) => {
+        console.log('in show_flat, renderEachMessage, message: ', message);
+        const date = new Date(message.created_at)
+
+        if (!message.sent_by_user) {
+          console.log('in show_flat, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
+          console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
+          console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
+          console.log('in show_flat, renderEachMessage, date message.read: ', message.read);
+          console.log('in show_flat, renderEachMessage, date: ', date);
+          return (
+            <div key={message.id} className="show-flat-each-message-box">
+              <div className="show-flat-each-message-user">
+                <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
+                <div className="show-flat-each-message-content-user">{message.body}</div>
+                <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div key={message.id} className="show-flat-each-message-box">
+              <div className="show-flat-each-message">
+                <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
+                <div className="show-flat-each-message-content">{message.body}</div>
+                <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
+              </div>
+            </div>
+          );
+        }
+      });
+    }
   }
 
   renderMessages() {
     return (
       <div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div, and with a longlonglonglongword</div>
-          </div>
-        </div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message-user">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword</div>
-          </div>
-        </div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div</div>
-          </div>
-        </div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message-user">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword.</div>
-          </div>
-        </div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword.</div>
-          </div>
-        </div>
-        <div className="show-flat-each-message-box">
-          <div className="show-flat-each-message-user">
-            <div className="show-flat-each-message-date">Date</div>
-            <div className="show-flat-each-message-content">This is just test content that is used to test the wrapping of the div longlonglonglongword</div>
-          </div>
-        </div>
+        {this.renderEachMessage()}
       </div>
     );
   }
@@ -390,7 +412,7 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
-        {this.renderMessaging()}
+          {this.renderMessaging()}
         </div>
         <div>
           {this.renderButton()}
