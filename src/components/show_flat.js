@@ -9,6 +9,7 @@ import cloudinary from 'cloudinary-core';
 import * as actions from '../actions';
 // import Carousel from './carousel/carousel';
 import GoogleMap from './google_map';
+import Messaging from './messaging/messaging';
 
 import DatePicker from './date_picker/date_picker';
 
@@ -26,7 +27,7 @@ class ShowFlat extends Component {
   }
 
   componentDidUpdate() {
-    this.scrollLastMessageIntoView();
+    // this.scrollLastMessageIntoView();
   }
 
   renderImages(images) {
@@ -242,12 +243,12 @@ class ShowFlat extends Component {
     this.props.history.push(`/bookingconfirmation/${flatId}`);
   }
 
-  currentUser() {
+  currentUserIsOwner() {
     if (this.props.auth && this.props.flat) {
-      console.log('in show_flat, currentUser, this.props.auth.id: ', this.props.auth.id);
-      console.log('in show_flat, currentUser, this.props.flat: ', this.props.flat.user_id);
-      // return (this.props.auth.id === this.props.flat.user_id);
-      return true;
+      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+      return (this.props.auth.id === this.props.flat.user_id);
+      // return true;
       // return false;
     }
   }
@@ -272,112 +273,112 @@ class ShowFlat extends Component {
     }
   }
 
-  scrollLastMessageIntoView() {
-    const items = document.querySelectorAll('.show-flat-each-message-box');
-    console.log('in show_flat, scrollLastMessageIntoView, items: ', items);
-
-    const last = items[items.length - 1];
-    console.log('in show_flat, scrollLastMessageIntoView, last: ', last);
-    if (last) {
-      last.scrollIntoView();
-    }
-  }
-
-  formatDate(date) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
-    const strTime = `${hours}:${minutes}  ${ampm}`;
-    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
-}
-
-  renderEachMessage() {
-    if (this.props.conversation) {
-      const { conversation } = this.props;
-      // conversation is an array
-      const messages = conversation[0].messages;
-      console.log('in show_flat, renderEachMessage,this.props.conversation: ', this.props.conversation);
-
-      return _.map(messages, (message, i) => {
-        console.log('in show_flat, renderEachMessage, message: ', message);
-        const date = new Date(message.created_at)
-
-        if (!message.sent_by_user) {
-          console.log('in show_flat, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
-          console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
-          console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
-          console.log('in show_flat, renderEachMessage, date message.read: ', message.read);
-          console.log('in show_flat, renderEachMessage, date: ', date);
-          return (
-            <div key={message.id} className="show-flat-each-message-box">
-              <div className="show-flat-each-message-user">
-                <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
-                <div className="show-flat-each-message-content-user">{message.body}</div>
-                <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
-              </div>
-            </div>
-          );
-        } else {
-          return (
-            <div key={message.id} className="show-flat-each-message-box">
-              <div className="show-flat-each-message">
-                <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
-                <div className="show-flat-each-message-content">{message.body}</div>
-                <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
-              </div>
-            </div>
-          );
-        }
-      });
-    }
-  }
-
-  renderMessages() {
-    return (
-      <div>
-        {this.renderEachMessage()}
-      </div>
-    );
-  }
-
-  handleMessageSendClick(event) {
-    console.log('in show_flat, handleMessageSendClick, clicked: ', event);
-    const messageText = document.getElementById('show-flat-messsage-textarea');
-    console.log('in show_flat, handleMessageSendClick, messageText: ', messageText);
-  }
-
-  renderMessaging() {
-    if (this.props.flat) {
-      return (
-        <div className="show-flat-message-box-container">
-        <div className="show-flat-message-box">
-        <div className="show-flat-message-show-box">{this.renderMessages()}</div>
-        <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
-        <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
-        </div>
-        </div>
-      );
-    }
-  }
-// get boolean returned from currentUser and render or do not render an appropriate buttton
+//   scrollLastMessageIntoView() {
+//     const items = document.querySelectorAll('.show-flat-each-message-box');
+//     console.log('in show_flat, scrollLastMessageIntoView, items: ', items);
+//
+//     const last = items[items.length - 1];
+//     console.log('in show_flat, scrollLastMessageIntoView, last: ', last);
+//     if (last) {
+//       last.scrollIntoView();
+//     }
+//   }
+//
+//   formatDate(date) {
+//     let hours = date.getHours();
+//     let minutes = date.getMinutes();
+//     const ampm = hours >= 12 ? 'pm' : 'am';
+//     hours = hours % 12;
+//     hours = hours ? hours : 12; // the hour '0' should be '12'
+//     minutes = minutes < 10 ? `0${minutes}` : minutes;
+//     const strTime = `${hours}:${minutes}  ${ampm}`;
+//     return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+// }
+//
+//   renderEachMessage() {
+//     if (this.props.conversation) {
+//       const { conversation } = this.props;
+//       // conversation is an array
+//       const messages = conversation[0].messages;
+//       console.log('in show_flat, renderEachMessage,this.props.conversation: ', this.props.conversation);
+//
+//       return _.map(messages, (message, i) => {
+//         console.log('in show_flat, renderEachMessage, message: ', message);
+//         const date = new Date(message.created_at)
+//
+//         if (!message.sent_by_user) {
+//           console.log('in show_flat, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
+//           console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
+//           console.log('in show_flat, renderEachMessage, date message.created_at: ', message.created_at);
+//           console.log('in show_flat, renderEachMessage, date message.read: ', message.read);
+//           console.log('in show_flat, renderEachMessage, date: ', date);
+//           return (
+//             <div key={message.id} className="show-flat-each-message-box">
+//               <div className="show-flat-each-message-user">
+//                 <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
+//                 <div className="show-flat-each-message-content-user">{message.body}</div>
+//                 <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
+//               </div>
+//             </div>
+//           );
+//         } else {
+//           return (
+//             <div key={message.id} className="show-flat-each-message-box">
+//               <div className="show-flat-each-message">
+//                 <div className="show-flat-each-message-date">{this.formatDate(date)}</div>
+//                 <div className="show-flat-each-message-content">{message.body}</div>
+//                 <div className="show-flat-each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
+//               </div>
+//             </div>
+//           );
+//         }
+//       });
+//     }
+//   }
+//
+//   renderMessages() {
+//     return (
+//       <div>
+//         {this.renderEachMessage()}
+//       </div>
+//     );
+//   }
+//
+//   handleMessageSendClick(event) {
+//     console.log('in show_flat, handleMessageSendClick, clicked: ', event);
+//     const messageText = document.getElementById('show-flat-messsage-textarea');
+//     console.log('in show_flat, handleMessageSendClick, messageText: ', messageText);
+//   }
+//
+//   renderMessaging() {
+//     if (this.props.flat) {
+//       return (
+//         <div className="show-flat-message-box-container">
+//         <div className="show-flat-message-box">
+//         <div className="show-flat-message-show-box">{this.renderMessages()}</div>
+//         <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
+//         <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
+//         </div>
+//         </div>
+//       );
+//     }
+//   }
+// get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
   renderButton() {
-    console.log('in show_flat, currentUser: ', this.currentUser());
+    console.log('in show_flat, currentUserIsOwner: ', this.currentUserIsOwner());
     console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
-        if (!this.currentUser()) {
-          console.log('in show_flat, renderButton, if, not current user; I am not the currentUser: ', this.currentUser());
+        if (!this.currentUserIsOwner()) {
+          console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
               <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
             </div>
           );
         } else {
-          console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUser());
+          console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
@@ -416,7 +417,9 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
-          {this.renderMessaging()}
+          <Messaging
+            currentUserIsOwner={this.currentUserIsOwner()}
+          />
         </div>
         <div>
           {this.renderButton()}
@@ -427,12 +430,13 @@ class ShowFlat extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log('in show_flat render, mapStateToProps, state: ', state);
+  console.log('in show_flat, mapStateToProps, state: ', state);
   return {
     flat: state.flat.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth,
     conversation: state.conversation.conversationByFlatAndUser
+    // conversation: state.conversation.createMessage
   };
 }
 

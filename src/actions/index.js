@@ -28,7 +28,9 @@ import {
   EDIT_FLAT,
   DELETE_IMAGE,
   FETCH_CONVERSATION_BY_FLAT_AND_USER,
-  FETCH_MESSAGE
+  FETCH_MESSAGE,
+  CREATE_MESSAGE
+
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -438,6 +440,28 @@ export function createFlat(flatAttributes, callback) {
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.flat.id, flatAttributes.files);
+    });
+  };
+}
+
+export function createMessage(messageAttributes, callback) {
+  console.log('in actions index, createFlat, flatAttributes: ', messageAttributes);
+  console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/conversations/${messageAttributes.conversation_id}/messages`, { message: messageAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createMessage, response: ', response);
+      console.log('response to createMessage, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_MESSAGE,
+        payload: response.data.data.message.conversation
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback(messageAttributes.flat_id);
     });
   };
 }

@@ -25,3 +25,4 @@ export const EDIT_FLAT_LOAD = 'edit_flat_load';
 export const EDIT_FLAT = 'edit_flat';
 export const DELETE_IMAGE = 'delete_image';
 export const FETCH_CONVERSATION_BY_FLAT_AND_USER = 'fetch_conversation_by_flat_and_user';
+export const CREATE_MESSAGE = 'create_message';
