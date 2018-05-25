@@ -7,6 +7,7 @@ import mapReducer from './map_reducer';
 import imageCountReducer from './image_count_reducer';
 import startUpIndexReducer from './start_up_index_reducer';
 import bookingReducer from './booking_reducer';
+import conversationReducer from './conversation_reducer';
 
 const rootReducer = combineReducers({
   form,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   startUpCount: startUpIndexReducer,
   selectedBookingDates: bookingReducer,
   bookingData: bookingReducer,
-  fetchBookingsByUserData: bookingReducer
+  fetchBookingsByUserData: bookingReducer,
+  conversation: conversationReducer
   // can access mapbounds.east .west., etc
 });
 

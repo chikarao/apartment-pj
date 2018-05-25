@@ -27,6 +27,7 @@ import {
   EDIT_FLAT_LOAD,
   EDIT_FLAT,
   DELETE_IMAGE,
+  FETCH_CONVERSATION_BY_FLAT_AND_USER,
   FETCH_MESSAGE
 } from './types';
 
@@ -179,6 +180,25 @@ export function fetchFlatsByUser(id) {
       dispatch({
         type: FETCH_FLATS_BY_USER,
         payload: response.data.data.flats
+      });
+    });
+  };
+}
+export function fetchConversationByFlatAndUser(flatId) {
+  // const { north, south, east, west } = mapBounds;
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+  console.log('in action index, fetchConversationByFlatAndUser, flat_id: ', flatId);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/users/conversations/conversation_by_flat`, { conversation: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchConversationByFlatAndUser: ', response);
+      console.log('in action index, response to fetchConversationByFlatAndUser: ', response.data.data.conversation);
+      dispatch({
+        type: FETCH_CONVERSATION_BY_FLAT_AND_USER,
+        payload: response.data.data.conversation
       });
     });
   };

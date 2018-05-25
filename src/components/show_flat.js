@@ -22,6 +22,7 @@ class ShowFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
+    this.props.fetchConversationByFlatAndUser(this.props.match.params);
   }
 
   componentDidUpdate() {
@@ -294,10 +295,11 @@ class ShowFlat extends Component {
 }
 
   renderEachMessage() {
-    if (this.props.flat) {
-      const { conversations } = this.props.flat;
-      const messages = conversations[1].messages;
-      console.log('in show_flat, renderEachMessage, messages: ', messages);
+    if (this.props.conversation) {
+      const { conversation } = this.props;
+      // conversation is an array
+      const messages = conversation[0].messages;
+      console.log('in show_flat, renderEachMessage,this.props.conversation: ', this.props.conversation);
 
       return _.map(messages, (message, i) => {
         console.log('in show_flat, renderEachMessage, message: ', message);
@@ -343,20 +345,22 @@ class ShowFlat extends Component {
 
   handleMessageSendClick(event) {
     console.log('in show_flat, handleMessageSendClick, clicked: ', event);
-    const messageText = document.getElementById('show-flat-messsage-textarea').value;
+    const messageText = document.getElementById('show-flat-messsage-textarea');
     console.log('in show_flat, handleMessageSendClick, messageText: ', messageText);
   }
 
   renderMessaging() {
-    return (
-      <div className="show-flat-message-box-container">
+    if (this.props.flat) {
+      return (
+        <div className="show-flat-message-box-container">
         <div className="show-flat-message-box">
-          <div className="show-flat-message-show-box">{this.renderMessages()}</div>
-          <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
-          <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
+        <div className="show-flat-message-show-box">{this.renderMessages()}</div>
+        <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
+        <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
         </div>
-      </div>
-    );
+        </div>
+      );
+    }
   }
 // get boolean returned from currentUser and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
@@ -427,7 +431,8 @@ function mapStateToProps(state) {
   return {
     flat: state.flat.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
-    auth: state.auth
+    auth: state.auth,
+    conversation: state.conversation.conversationByFlatAndUser
   };
 }
 
