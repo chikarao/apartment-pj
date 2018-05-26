@@ -21,8 +21,10 @@ class ShowFlat extends Component {
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
+    // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
+    //fetchConversationByFlatAndUser is match.params, NOT match.params.id
     this.props.fetchConversationByFlatAndUser(this.props.match.params);
   }
 
@@ -402,6 +404,14 @@ class ShowFlat extends Component {
       }
   }
 
+  sendOwnerAMessageLink() {
+    return (
+      <div>
+        <h4>Send the Owner a Message</h4>
+      </div>
+    )
+  }
+
   render() {
     if (this.props.selectedDates) {
     }
@@ -417,8 +427,10 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
+          {this.sendOwnerAMessageLink()}
           <Messaging
             currentUserIsOwner={this.currentUserIsOwner()}
+            // noConversation={this.props.noConversation}
           />
         </div>
         <div>
@@ -435,7 +447,8 @@ function mapStateToProps(state) {
     flat: state.flat.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth,
-    conversation: state.conversation.conversationByFlatAndUser
+    conversation: state.conversation.conversationByFlatAndUser,
+    noConversation: state.conversation.noConversation
     // conversation: state.conversation.createMessage
   };
 }

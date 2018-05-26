@@ -29,8 +29,9 @@ import {
   DELETE_IMAGE,
   FETCH_CONVERSATION_BY_FLAT_AND_USER,
   FETCH_MESSAGE,
-  CREATE_MESSAGE
-
+  CREATE_MESSAGE,
+  NO_CONVERSATION,
+  CREATE_CONVERSATION
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -198,10 +199,49 @@ export function fetchConversationByFlatAndUser(flatId) {
     .then(response => {
       console.log('in action index, response to fetchConversationByFlatAndUser: ', response);
       console.log('in action index, response to fetchConversationByFlatAndUser: ', response.data.data.conversation);
+      const { conversation } = response.data.data;
+      if (conversation.length === 0) {
+        console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversation.length === 0);
+        dispatch({
+          type: NO_CONVERSATION
+        });
+      }
       dispatch({
         type: FETCH_CONVERSATION_BY_FLAT_AND_USER,
         payload: response.data.data.conversation
       });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to fetchConversationByFlatAndUser: ', error);
+    });
+  };
+}
+
+export function createConversation(conversationAttributes, messageAttributes, callback) {
+  console.log('in actions index, createConversation, conversationAttributes: ', conversationAttributes);
+  console.log('in actions index, createConversation: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/conversations`, { conversation: conversationAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createConversation, response: ', response);
+      console.log('response to createConversation, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_CONVERSATION,
+        payload: response.data.data.conversation
+      });
+      const conversationId = response.data.data.conversation.id;
+      const userId = response.data.data.conversation.user_id;
+      const newMessageAttributes = messageAttributes;
+      const convId = 'conversation_id';
+      const uId = 'user_id';
+
+      newMessageAttributes[convId] = conversationId;
+      newMessageAttributes[uId] = userId;
+      callback(newMessageAttributes);
     });
   };
 }
@@ -445,8 +485,8 @@ export function createFlat(flatAttributes, callback) {
 }
 
 export function createMessage(messageAttributes, callback) {
-  console.log('in actions index, createFlat, flatAttributes: ', messageAttributes);
-  console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, createMessage, messageAttributes: ', messageAttributes);
+  console.log('in actions index, createMessage: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {
@@ -461,7 +501,7 @@ export function createMessage(messageAttributes, callback) {
         payload: response.data.data.message.conversation
       });
       // sends back to createflat.js the flat_id and the images
-      callback(messageAttributes.flat_id);
+      callback(response.data.data.message.conversation.flat_id);
     });
   };
 }

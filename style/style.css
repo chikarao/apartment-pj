@@ -367,10 +367,10 @@ body > div:first-child {
 .show-flat-message-box {
   width: 500px;
   margin: 5px;
-  height: 550px;
+  height: 500px;
   /* border: 1px solid #ccc; */
 }
-.show-flat-message-show-box {
+#show-flat-message-show-box {
   width: 100%;
   height: 300px;
   border: 1px solid #ccc;
@@ -450,7 +450,7 @@ body > div:first-child {
   max-width: 100%;
   min-width: 100px;
   border: 1px solid #ccc;
-  text-align: left;
+  text-align: right;
   border-radius: 10px;
   font-size: 15px;
   height: auto;
