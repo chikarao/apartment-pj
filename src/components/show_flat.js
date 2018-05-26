@@ -249,7 +249,8 @@ class ShowFlat extends Component {
     if (this.props.auth && this.props.flat) {
       console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
       console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      return (this.props.auth.id === this.props.flat.user_id);
+      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+      return (this.props.auth.id == this.props.flat.user_id);
       // return true;
       // return false;
     }
@@ -404,12 +405,14 @@ class ShowFlat extends Component {
       }
   }
 
-  sendOwnerAMessageLink() {
-    return (
-      <div>
+  sendOwnerAMessage() {
+    if(!currentUserIsOwner) {
+      return (
+        <div>
         <h4>Send the Owner a Message</h4>
-      </div>
-    )
+        </div>
+      )
+    }
   }
 
   render() {
@@ -427,7 +430,7 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
-          {this.sendOwnerAMessageLink()}
+          {this.currentUserIsOwner() ? '' : <h4>Send the Owner a Message</h4>}
           <Messaging
             currentUserIsOwner={this.currentUserIsOwner()}
             // noConversation={this.props.noConversation}

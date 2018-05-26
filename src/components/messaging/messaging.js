@@ -180,9 +180,11 @@ class Messaging extends Component {
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
     console.log('in messaging, renderMessaging. this.props.conversation: ', this.props.conversation);
-    if (this.props.conversation) {
-      // const conversationIsEmpty = this.props.conversation.length < 1;
-      // if (!conversationIsEmpty) {
+    console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+    if(!this.props.currentUserIsOwner) {
+      if (this.props.conversation) {
+        // const conversationIsEmpty = this.props.conversation.length < 1;
+        // if (!conversationIsEmpty) {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
         console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
         return (
@@ -194,7 +196,8 @@ class Messaging extends Component {
           </div>
           </div>
         );
-      // }
+        // }
+      }
     }
   }
 
