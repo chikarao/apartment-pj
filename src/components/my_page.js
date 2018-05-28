@@ -15,7 +15,8 @@ class MyPage extends Component {
       // not being used
       sortByDate: false,
       showConversation: true,
-      conversationToShow: {}
+      conversationToShow: {},
+      yourFlat: false
     };
   }
   componentDidMount() {
@@ -199,7 +200,11 @@ class MyPage extends Component {
     console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
     const conversationToShow = this.getConversationToShow(elementVal);
     console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
-    this.setState({ showConversation: false, conversationToShow });
+    const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
+    this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+      console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+    }
+    );
     // this.renderEachMessage(conversationToShow);
   }
 
@@ -249,6 +254,7 @@ class MyPage extends Component {
         currentUserIsOwner={false}
         conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
+        yourFlat={this.state.yourFlat}
         // noConversation={this.props.noConversation}
       />
       </div>

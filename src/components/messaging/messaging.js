@@ -93,7 +93,7 @@ class Messaging extends Component {
     } else {
       const { user_id, flat_id, id } = this.props.conversation[0];
       console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
-      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: true }, (flatId) => this.createMessageCallback(flatId));
+      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.yourFlat }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
     messageText.value = '';
@@ -130,14 +130,16 @@ class Messaging extends Component {
       const { conversation } = this.props;
       // conversation is an array
       const messages = conversation[0].messages;
-      console.log('in messaging, renderEachMessage, after if, this.props.conversation: ', this.props.conversation[0]);
-      console.log('in messaging, renderEachMessage, after if, conversation.messages: ', messages);
+
+      console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
+      console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
       return _.map(messages, (message, i) => {
         console.log('in messaging, renderEachMessage, message: ', message);
         const date = new Date(message.created_at)
 
-        if (message.sent_by_user) {
+        //yourFlat passed as props
+        if (message.sent_by_user && !this.props.yourFlat) {
           console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
           console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
           console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
@@ -196,7 +198,6 @@ class Messaging extends Component {
             </div>
           <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
           <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
-
           </div>
         );
         // }
@@ -214,8 +215,9 @@ class Messaging extends Component {
 function mapStateToProps(state) {
   console.log('in messaging, mapStateToProps, state: ', state);
   return {
+    auth: state.auth,
     // conversation: state.conversation.conversationByFlat,
-    // noConversation: state.conversation.noConversation,
+    noConversation: state.conversation.noConversation,
     // flat: state.flat.selectedFlatFromParams
   };
 }
