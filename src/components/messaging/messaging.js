@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import * as actions from '../../actions';
 
-const INITIAL_STATE = { inMessaging: false };
+const INITIAL_STATE = { inMessaging: false, messagingToggle: false };
 
 class Messaging extends Component {
   constructor(props) {
@@ -109,6 +109,7 @@ class Messaging extends Component {
     // this.props.history.push(`/show/${id}`);
     // this.setState(this.state);
     // this.props.fetchConversationByFlatAndUser(id);
+    this.setState({ messagingToggle: !this.state.messagingToggle });
     this.scrollLastMessageIntoView();
   }
 
@@ -139,17 +140,25 @@ class Messaging extends Component {
         const date = new Date(message.created_at)
 
         //yourFlat passed as props
-        if (message.sent_by_user && !this.props.yourFlat) {
+        if (this.props.yourFlat) {
           console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
           console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
           console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
           console.log('in messaging, renderEachMessage, date message.read: ', message.read);
           console.log('in messaging, renderEachMessage, date: ', date);
-          // return (
+          if (message.sent_by_user) {
+            return this.renderLeftMessages(message, date);
+          } else {
             return this.renderRightMessages(message, date);
+          }
+          // return (
           // );
         } else {
-        return this.renderLeftMessages(message, date);
+          if (message.sent_by_user) {
+            return this.renderRightMessages(message, date);
+          } else {
+            return this.renderLeftMessages(message, date);
+          }
         }
       });
     // }
