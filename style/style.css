@@ -311,7 +311,7 @@ body > div:first-child {
   font-size: 20px;
 }
 
-.show-flat-desription {
+.show-flat-description {
   color: blue;
   font-weight: bold;
 }
@@ -357,20 +357,20 @@ body > div:first-child {
   justify-content: center;
 }
 
-/* Messaging */
-.show-flat-message-box-container {
+/* ******************* MESSAGING *************************** */
+.message-box-container {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 
-.show-flat-message-box {
+.message-box {
   width: 500px;
   margin: 5px;
   height: 500px;
   /* border: 1px solid #ccc; */
 }
-#show-flat-message-show-box {
+#message-show-box {
   width: 100%;
   height: 300px;
   border: 1px solid #ccc;
@@ -378,7 +378,7 @@ body > div:first-child {
   overflow: hidden;
   overflow-y: scroll;
 }
-.show-flat-message-input-box {
+.message-input-box {
   margin-top: 5px;
   width: 100%;
   height: 150px;
@@ -386,12 +386,12 @@ body > div:first-child {
   border-radius: 2px;
   font-size: 16px;
 }
-.show-flat-message-btn {
+.message-btn {
   float: right;
   margin: 5px;
 }
 
-.show-flat-each-message-box {
+.each-message-box {
   width: 100%;
   min-height: 70px;
   display: block;
@@ -399,13 +399,13 @@ body > div:first-child {
   /* height: auto; */
   margin: 1px;
 }
-/* .show-flat-each-message-box {
+/* .each-message-box {
   width: 100%;
   display: block;
   overflow: auto;
   margin: 1px;
 } */
-.show-flat-each-message {
+.each-message {
   max-width: 270px;
   height: 100px;
   margin: 2px;
@@ -417,7 +417,7 @@ body > div:first-child {
   overflow: auto; */
 }
 
-.show-flat-each-message-user {
+.each-message-user {
   max-width: 250px;
   height: 100px;
   margin: 2px;
@@ -429,7 +429,7 @@ body > div:first-child {
   /* display: block;
   overflow: auto; */
 }
-.show-flat-each-message-date {
+.each-message-date {
   /* border: 1px solid #ccc; */
   width: auto;
   font-size: 10px;
@@ -437,7 +437,7 @@ body > div:first-child {
   text-align: left;
   margin-left: 5px;
 }
-.show-flat-each-message-read {
+.each-message-read {
   /* border: 1px solid #ccc; */
   width: auto;
   font-size: 10px;
@@ -446,7 +446,7 @@ body > div:first-child {
   margin-left: 5px;
 }
 
-.show-flat-each-message-content-user {
+.each-message-content-user {
   max-width: 100%;
   min-width: 100px;
   border: 1px solid #ccc;
@@ -462,7 +462,7 @@ body > div:first-child {
   background-color: lightgray;
 }
 
-.show-flat-each-message-content {
+.each-message-content {
   max-width: 100%;
   min-width: 100px;
   border: 1px solid #ccc;
@@ -476,7 +476,23 @@ body > div:first-child {
   float: left;
 }
 
+.no-conversation-message {
+  color: gray;
+  font-size: 17px;
+}
 
+#messaging-hamburger {
+  float: left;
+  font-size: 22px;
+}
+
+/* MYPAGE MESSAGE */
+
+.mypaga-message-box {
+  width: 100%;
+  margin: 5px;
+  height: 75%;
+}
 
 /* ************Edit Flat******************* */
 
@@ -996,9 +1012,9 @@ display: block;
 }
 .my-page-details ul li:first-child {
   font-weight: bold;
-  color: darkblue;
+  font-size: 13px;
+  color: darkGray;
 }
-
 
 @media screen and (min-width: 800px) {
     /* body {

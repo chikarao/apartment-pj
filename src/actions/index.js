@@ -27,7 +27,8 @@ import {
   EDIT_FLAT_LOAD,
   EDIT_FLAT,
   DELETE_IMAGE,
-  FETCH_CONVERSATION_BY_FLAT_AND_USER,
+  FETCH_CONVERSATION_BY_USER_AND_FLAT,
+  FETCH_CONVERSATION_BY_FLAT,
   FETCH_MESSAGE,
   CREATE_MESSAGE,
   NO_CONVERSATION,
@@ -168,7 +169,7 @@ export function fetchFlats(mapBounds) {
     });
   };
 }
-export function fetchFlatsByUser(id) {
+export function fetchFlatsByUser(id, callback) {
   // const { north, south, east, west } = mapBounds;
   // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
   console.log('in action index, fetchFlatsByUser, id: ', id);
@@ -184,21 +185,30 @@ export function fetchFlatsByUser(id) {
         type: FETCH_FLATS_BY_USER,
         payload: response.data.data.flats
       });
+
+      const flatIdArray = [];
+      _.each(response.data.data.flats, (flat) => {
+        console.log('in action index, response to fetchFlatsByUser, each: ', flat);
+        flatIdArray.push(flat.id.toString());
+      });
+
+      console.log('in action index, response to fetchFlatsByUser, flatIdArray: ', flatIdArray);
+      callback(flatIdArray);
     });
   };
 }
-export function fetchConversationByFlatAndUser(flatId) {
-  // const { north, south, east, west } = mapBounds;
-  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
-  console.log('in action index, fetchConversationByFlatAndUser, flat_id: ', flatId);
+
+export function fetchConversationByFlat(flatId) {
+// flatId is an object {flat_id: id}, with id taken from match params
+  console.log('in action index, fetchConversationByFlat, flat_id: ', flatId);
 
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/users/conversations/conversation_by_flat`, { conversation: flatId }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('in action index, response to fetchConversationByFlatAndUser: ', response);
-      console.log('in action index, response to fetchConversationByFlatAndUser: ', response.data.data.conversation);
+      console.log('in action index, response to fetchConversationByFlat: ', response);
+      console.log('in action index, response to fetchConversationByFlat: ', response.data.data.conversation);
       const { conversation } = response.data.data;
       if (conversation.length === 0) {
         console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversation.length === 0);
@@ -207,12 +217,41 @@ export function fetchConversationByFlatAndUser(flatId) {
         });
       }
       dispatch({
-        type: FETCH_CONVERSATION_BY_FLAT_AND_USER,
+        type: FETCH_CONVERSATION_BY_FLAT,
         payload: response.data.data.conversation
       });
     })
     .catch(error => {
-      console.log('in action index, catch error to fetchConversationByFlatAndUser: ', error);
+      console.log('in action index, catch error to fetchConversationByFlat: ', error);
+    });
+  };
+}
+
+export function fetchConversationByUserAndFlat(flatIdArray) {
+  //flatIds is an array
+  console.log('in action index, fetchConversationByUserAndFlat, flatIdArray: ', flatIdArray);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/users/conversations/conversations_by_user_and_flat`, { conversation: { flat_id_array: flatIdArray } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchConversationByUserAndFlat: ', response);
+      console.log('in action index, response to fetchConversationByUserAndFlat: ', response.data.data.conversations);
+      const { conversations } = response.data.data;
+      if (conversations.length === 0) {
+        console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversations.length === 0);
+        dispatch({
+          type: NO_CONVERSATION
+        });
+      }
+      dispatch({
+        type: FETCH_CONVERSATION_BY_USER_AND_FLAT,
+        payload: response.data.data.conversations
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to fetchConversationByUserAndFlat: ', error);
     });
   };
 }

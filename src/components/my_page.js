@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { reduxForm, Field } from 'redux-form';
+// import { reduxForm, Field } from 'redux-form';
 import _ from 'lodash';
 
 import * as actions from '../actions';
+import Messaging from './messaging/messaging';
 
 
 class MyPage extends Component {
@@ -12,7 +13,9 @@ class MyPage extends Component {
     super(props);
     this.state = {
       // not being used
-      sortByDate: false
+      sortByDate: false,
+      showConversation: true,
+      conversationToShow: {}
     };
   }
   componentDidMount() {
@@ -22,8 +25,14 @@ class MyPage extends Component {
     //   this.props.editFlatLoad(this.props.flat);
     // }
     // this.props.fetchUserFlats(this.props.auth.id);
-    this.props.fetchFlatsByUser(this.props.auth.id);
+    this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.props.fetchBookingsByUser(this.props.auth.id);
+    // send fetchConversationByUserAndFlat an array of flats ids
+  }
+
+  fetchFlatsByUserCallback(flatIdArray) {
+    console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
+    this.props.fetchConversationByUserAndFlat(flatIdArray);
   }
 
  fetchData(id) {
@@ -169,6 +178,111 @@ class MyPage extends Component {
     );
   }
 
+  getConversationToShow(coversationId) {
+    console.log('in mypage, getConversationToShow, before each: ', coversationId);
+    const { conversations } = this.props;
+    console.log('in mypage, getConversationToShow, before each conversation: ', conversations);
+    const conversationArray = []
+    _.each(conversations, (conv) => {
+      console.log('in mypage, getConversationToShow, each: ', conv);
+      if (conv.id == coversationId) {
+        conversationArray.push(conv);
+      }
+    });
+    return conversationArray;
+  }
+
+  handleConversationCardClick(event) {
+    console.log('in mypage, handleConversationCardClick, event: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
+    const conversationToShow = this.getConversationToShow(elementVal);
+    console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
+    this.setState({ showConversation: false, conversationToShow });
+    // this.renderEachMessage(conversationToShow);
+  }
+
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+}
+
+  renderEachConversation() {
+    const { conversations } = this.props;
+    if(this.state.showConversation) {
+      return _.map(conversations, (conversation, index) => {
+        const lastMessageIndex = conversation.messages.length - 1;
+        console.log('in mypage, renderEachConversation, conversation: ', conversation);
+        const date = new Date(conversation.messages[lastMessageIndex].created_at);
+        //show only first 26 characters of text
+        const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
+        return (
+          <li key={index} className="my-page-each-card">
+            <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
+              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} />
+              <div className="my-page-details">
+                <ul>
+                  <li>{stringToShow}...</li>
+                  <li>{this.formatDate(date)}</li>
+                  <li>user id: {conversation.user.id}</li>
+                  <li>conversation id: {conversation.id}</li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        );
+      });
+    }
+  }
+
+  renderMessages() {
+    return (
+      <div className="my-page-message-box">
+      <Messaging
+        currentUserIsOwner={false}
+        conversation={this.state.conversationToShow}
+        noConversation={this.props.noConversation}
+        // noConversation={this.props.noConversation}
+      />
+      </div>
+    );
+  }
+
+  renderConversations() {
+    return (
+      <ul>
+      {this.renderEachConversation()}
+      </ul>
+    );
+  }
+
+  handleMessageHamburgerClick() {
+    this.setState({ showConversation: true });
+  }
+
+  // <div className="message-box-container">
+  //   <div className="message-box">
+
+  renderMessaging() {
+    console.log('in mypage, renderMessaging, this.state.showConversation: ', this.state.showConversation);
+    return (
+      <div>
+        <div className="my-page-category-title">
+          <span id="messaging-hamburger" className={this.state.showConversation ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span>
+          <span>My Messages</span>
+        </div>
+        {this.state.showConversation ? this.renderConversations() : this.renderMessages()}
+      </div>
+    );
+  }
+
   sortBookings(bookings) {
     //reference: https://stackoverflow.com/questions/10123953/sort-javascript-object-array-by-date
     console.log('in mypage, sortBookings, bookings: ', bookings);
@@ -291,6 +405,7 @@ class MyPage extends Component {
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
@@ -307,6 +422,8 @@ function mapStateToProps(state) {
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,
     auth: state.auth,
+    conversations: state.conversation.conversationByUserAndFlat,
+    noConversation: state.conversation.noConversation
   };
 }
 

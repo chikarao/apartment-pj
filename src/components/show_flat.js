@@ -25,7 +25,7 @@ class ShowFlat extends Component {
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
-    this.props.fetchConversationByFlatAndUser(this.props.match.params);
+    this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
   }
 
   componentDidUpdate() {
@@ -353,19 +353,22 @@ class ShowFlat extends Component {
 //     console.log('in show_flat, handleMessageSendClick, messageText: ', messageText);
 //   }
 //
-//   renderMessaging() {
-//     if (this.props.flat) {
-//       return (
-//         <div className="show-flat-message-box-container">
-//         <div className="show-flat-message-box">
-//         <div className="show-flat-message-show-box">{this.renderMessages()}</div>
-//         <textarea id="show-flat-messsage-textarea" className="show-flat-message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
-//         <button className="btn btn-primary btn-sm show-flat-message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
-//         </div>
-//         </div>
-//       );
-//     }
-//   }
+  renderMessaging() {
+    if (!this.currentUserIsOwner()) {
+      return (
+        <div className="message-box-container">
+        <div className="message-box">
+        <Messaging
+        currentUserIsOwner={this.currentUserIsOwner()}
+        conversation={this.props.conversation}
+        noConversation={this.props.noConversation}
+        // noConversation={this.props.noConversation}
+        />
+        </div>
+        </div>
+      );
+    }
+  }
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
@@ -405,16 +408,6 @@ class ShowFlat extends Component {
       }
   }
 
-  sendOwnerAMessage() {
-    if(!currentUserIsOwner) {
-      return (
-        <div>
-        <h4>Send the Owner a Message</h4>
-        </div>
-      )
-    }
-  }
-
   render() {
     if (this.props.selectedDates) {
     }
@@ -430,11 +423,8 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
-          {this.currentUserIsOwner() ? '' : <h4>Send the Owner a Message</h4>}
-          <Messaging
-            currentUserIsOwner={this.currentUserIsOwner()}
-            // noConversation={this.props.noConversation}
-          />
+          {this.currentUserIsOwner() ? <h4>You are the owner of this flat! <br/>Block out dates, edit or delete listing</h4> : <h4>Send the Owner a Message</h4>}
+          {this.renderMessaging()}
         </div>
         <div>
           {this.renderButton()}
@@ -450,7 +440,7 @@ function mapStateToProps(state) {
     flat: state.flat.selectedFlatFromParams,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth,
-    conversation: state.conversation.conversationByFlatAndUser,
+    conversation: state.conversation.conversationByFlat,
     noConversation: state.conversation.noConversation
     // conversation: state.conversation.createMessage
   };
