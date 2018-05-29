@@ -89,7 +89,9 @@ class Messaging extends Component {
     console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
 
     if (this.props.noConversation) {
-      this.props.createConversation({ flat_id: this.props.conversation.flat.id }, { body: messageText.value, flat_id: this.props.conversation.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
+      console.log('in messaging, handleMessageSendClick, if this.props.noConversation: ', this.props.noConversation);
+      console.log('in messaging, handleMessageSendClick, if this.props.noConversation: ', this.props.conversation);
+      this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     } else {
       const conversationToShowArray = this.conversationToShow();
       const { user_id, flat_id, id } = conversationToShowArray[0];
@@ -192,17 +194,23 @@ class Messaging extends Component {
   conversationToShow() {
     const { conversations } = this.props;
     const conversationToShowArray = [];
-    if(!this.props.fromShowPage) {
+    if (!this.props.fromShowPage) {
       _.each(conversations, (conversation) => {
         //for some reason === does not work
         if (conversation.id == this.props.conversationId) {
-          console.log('in messaging, renderMessaging. each conversation: ', conversation);
+          console.log('in messaging, conversationToShow. each conversation: ', conversation);
           conversationToShowArray.push(conversation);
         }
       });
+      console.log('in messaging, conversationToShow. if each then returned, conversationToShowArray : ', conversationToShowArray);
       return conversationToShowArray;
     } else {
-      return this.props.conversation;
+      console.log('in messaging, conversationToShow. if else returned this.props.conversation: ', this.props.conversation);
+      if (this.props.conversation.length < 1) {
+        return this.props.conversations;
+      } else {
+        return this.props.conversation;
+      }
     }
   }
 
@@ -213,6 +221,7 @@ class Messaging extends Component {
     console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
     if (this.props.conversations || this.props.conversation) {
       console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
+      console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
       if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
@@ -249,7 +258,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
-    // flat: state.flat.selectedFlatFromParams
+    flat: state.flat.selectedFlatFromParams
   };
 }
 

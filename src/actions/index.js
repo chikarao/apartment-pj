@@ -269,8 +269,8 @@ export function createConversation(conversationAttributes, messageAttributes, ca
       console.log('response to createConversation, response: ', response);
       console.log('response to createConversation, response.data.data: ', response.data.data);
       dispatch({
-        type: CREATE_CONVERSATION,
-        payload: response.data.data.conversation
+        type: CREATE_CONVERSATION
+        // payload: response.data.data.conversation
       });
       const conversationId = response.data.data.conversation.id;
       const userId = response.data.data.conversation.user_id;

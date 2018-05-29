@@ -360,11 +360,11 @@ class ShowFlat extends Component {
         <div className="message-box-container">
         <div className="message-box">
         <Messaging
-        currentUserIsOwner={this.currentUserIsOwner()}
-        conversation={this.props.conversation}
-        noConversation={this.props.noConversation}
-        // noConversation={this.props.noConversation}
-        fromShowPage
+          currentUserIsOwner={this.currentUserIsOwner()}
+          conversation={this.props.conversation}
+          noConversation={this.props.noConversation}
+          // noConversation={this.props.noConversation}
+          fromShowPage
         />
         </div>
         </div>
