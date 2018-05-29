@@ -355,6 +355,7 @@ class ShowFlat extends Component {
 //
   renderMessaging() {
     if (!this.currentUserIsOwner()) {
+      console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
       return (
         <div className="message-box-container">
         <div className="message-box">
@@ -363,6 +364,7 @@ class ShowFlat extends Component {
         conversation={this.props.conversation}
         noConversation={this.props.noConversation}
         // noConversation={this.props.noConversation}
+        fromShowPage
         />
         </div>
         </div>

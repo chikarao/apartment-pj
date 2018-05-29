@@ -16,7 +16,8 @@ class MyPage extends Component {
       sortByDate: false,
       showConversation: true,
       conversationToShow: {},
-      yourFlat: false
+      yourFlat: false,
+      conversationId: ''
     };
   }
   componentDidMount() {
@@ -198,14 +199,16 @@ class MyPage extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
-    const conversationToShow = this.getConversationToShow(elementVal);
+    let conversationToShow = this.getConversationToShow(elementVal);
     console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
-    this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+    this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
       console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+    // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+    //   console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+    this.renderMessages();
     }
     );
-    // this.renderEachMessage(conversationToShow);
   }
 
   formatDate(date) {
@@ -221,7 +224,7 @@ class MyPage extends Component {
 
   renderEachConversation() {
     const { conversations } = this.props;
-    if(this.state.showConversation) {
+    if (this.state.showConversation) {
       return _.map(conversations, (conversation, index) => {
         const lastMessageIndex = conversation.messages.length - 1;
         console.log('in mypage, renderEachConversation, conversation: ', conversation);
@@ -252,10 +255,10 @@ class MyPage extends Component {
       <div className="my-page-message-box">
       <Messaging
         currentUserIsOwner={false}
-        conversation={this.state.conversationToShow}
+        // conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
         yourFlat={this.state.yourFlat}
-        // noConversation={this.props.noConversation}
+        conversationId={this.state.conversationId}
       />
       </div>
     );

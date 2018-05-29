@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import * as actions from '../../actions';
 
-const INITIAL_STATE = { inMessaging: false, messagingToggle: false };
+const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
 
 class Messaging extends Component {
   constructor(props) {
@@ -91,7 +91,8 @@ class Messaging extends Component {
     if (this.props.noConversation) {
       this.props.createConversation({ flat_id: this.props.conversation.flat.id }, { body: messageText.value, flat_id: this.props.conversation.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     } else {
-      const { user_id, flat_id, id } = this.props.conversation[0];
+      const conversationToShowArray = this.conversationToShow();
+      const { user_id, flat_id, id } = conversationToShowArray[0];
       console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
       this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.yourFlat }, (flatId) => this.createMessageCallback(flatId));
     }
@@ -125,14 +126,15 @@ class Messaging extends Component {
     return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
 }
 
-  renderEachMessage() {
-    console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
+  renderEachMessage(conversationToShowArray) {
+    // console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
+    console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
     // if (this.props.conversation) {
-      const { conversation } = this.props;
+      // const { conversation } = this.props;
       // conversation is an array
-      const messages = conversation[0].messages;
+      const messages = conversationToShowArray[0].messages;
 
-      console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
+      // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
       console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
       return _.map(messages, (message, i) => {
@@ -187,23 +189,43 @@ class Messaging extends Component {
     );
   }
 
+  conversationToShow() {
+    const { conversations } = this.props;
+    const conversationToShowArray = [];
+    if(!this.props.fromShowPage) {
+      _.each(conversations, (conversation) => {
+        //for some reason === does not work
+        if (conversation.id == this.props.conversationId) {
+          console.log('in messaging, renderMessaging. each conversation: ', conversation);
+          conversationToShowArray.push(conversation);
+        }
+      });
+      return conversationToShowArray;
+    } else {
+      return this.props.conversation;
+    }
+  }
+
 
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
-    console.log('in messaging, renderMessaging. this.props.conversation: ', this.props.conversation);
     console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-    if(!this.props.currentUserIsOwner) {
-      if (this.props.conversation) {
+    console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
+    if (this.props.conversations || this.props.conversation) {
+      console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
+      if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
-        console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
+        const conversationToShowArray = this.conversationToShow();
+        console.log('in messaging, renderMessaging. this.p  rops.conversation, after if: ', this.props.conversation);
+        console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
         return (
         <div>
           <div id="message-show-box">
             {this.props.noConversation ? <div className="no-conversation-message">
             <br/><br/>You have not started a conversation...
-            <br/>Start one by sending a message! <br/> Make sure to introduce yourself and be specific</div> : this.renderEachMessage()}
+            <br/>Start one by sending a message! <br/> Make sure to introduce yourself and be specific</div> : this.renderEachMessage(conversationToShowArray)}
             </div>
           <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
           <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
@@ -225,7 +247,7 @@ function mapStateToProps(state) {
   console.log('in messaging, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
-    // conversation: state.conversation.conversationByFlat,
+    conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     // flat: state.flat.selectedFlatFromParams
   };
