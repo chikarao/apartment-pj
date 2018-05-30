@@ -18,7 +18,7 @@ export default function (state = { noConversation: false }, action) {
       return { ...state, conversationByFlat: action.payload };
     case FETCH_CONVERSATION_BY_USER_AND_FLAT:
       // console.log('in booking reducer, state: ', state);
-      return { ...state, conversationByUserAndFlat: action.payload };
+      return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
     case CREATE_MESSAGE:
       // console.log('in booking reducer, state: ', state);
       return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: [action.payload] };

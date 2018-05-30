@@ -19,9 +19,9 @@ class Messaging extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.inMessaging) {
+    // if (this.state.inMessaging) {
       this.scrollLastMessageIntoView();
-    }
+    // }
 
     // const messageBox = document.getElementById('message-show-box');
     // console.log('in messaging, componentDidUpdate, getElementById: ', messageBox);
@@ -139,7 +139,7 @@ class Messaging extends Component {
       // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
       console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
-      return _.map(messages, (message, i) => {
+      return _.map(messages, (message) => {
         console.log('in messaging, renderEachMessage, message: ', message);
         const date = new Date(message.created_at)
 
@@ -251,7 +251,10 @@ class Messaging extends Component {
     );
   }
 }
-
+// messaging is designed to be used on my page and show flat
+// takes booleans fromShowPage, currentUserIsOwner passed from show flat page and
+// Note that uses conversation (singular) passed as props from show flat and covnversations (plural) from app state
+// uses app state so that the component rerenders when a message is sent
 function mapStateToProps(state) {
   console.log('in messaging, mapStateToProps, state: ', state);
   return {

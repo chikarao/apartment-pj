@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
 import * as actions from '../actions';
 // import Carousel from './carousel/carousel';
-import GoogleMap from './google_map';
+import GoogleMap from './maps/google_map';
 import Messaging from './messaging/messaging';
 
 import DatePicker from './date_picker/date_picker';
@@ -16,8 +17,13 @@ import DatePicker from './date_picker/date_picker';
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
+const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 
 class ShowFlat extends Component {
+  constructor(props) {
+   super(props);
+   // this.state = { readyForMap: false };
+ }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
@@ -354,7 +360,7 @@ class ShowFlat extends Component {
 //   }
 //
   renderMessaging() {
-    if (!this.currentUserIsOwner()) {
+    if (!this.currentUserIsOwner() && this.props.conversation) {
       console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
       return (
         <div className="message-box-container">
@@ -410,9 +416,143 @@ class ShowFlat extends Component {
       }
   }
 
+  getPlaces(criterion) {
+    console.log('in show_flat, getPlaces, criterion: ', criterion);
+    console.log('in show_flat, getPlaces, this.props.flat.lat: ', this.props.flat.lat);
+    console.log('in show_flat, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
+    const radius = 5000;
+    // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
+    const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+    const flat = this.props.flat;
+
+    // axios.get(`https://maps.googleapis.com/maps/api/place/radarsearch/json?location=${this.props.flat.lat},${this.props.flat.lat}&radius=${radius}&type=${criterion}&key=${GOOGLEMAP_API_KEY}`)
+    //   .then(response => {
+    //     console.log('in show_flat, getPlaces, gmap request, response: ', response);
+    //   });
+    const infowindow = new google.maps.InfoWindow();
+    const mapShow = new google.maps.Map(document.getElementById('map'), {
+         center: location,
+         zoom: 14
+       });
+
+    const service = new google.maps.places.PlacesService(mapShow);
+    console.log('in show_flat, getPlaces, service: ', service);
+    service.nearbySearch({
+      location,
+      radius: 2000,
+      type: criterion
+    },   function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          console.log('in show_flat, getPlaces, Placeservice, results: ', results);
+          for (let i = 0; i < 5; i++) {
+            createMarker(results[i], mapShow);
+            console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
+            // console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
+          }
+          createFlatMarker(flat, mapShow)
+        }
+      });
+
+      function createFlatMarker(flat, map) {
+        // console.log('in show_flat, createFlatMarker, flatLocation: ', flatLocation);
+        console.log('in show_flat, createFlatMarker, flat: ', flat);
+        const markerLabel = 'Here is the Flat';
+        // Marker sizes are expressed as a Size of X,Y where the origin of the image
+        // (0,0) is located in the top left of the image.
+        const markerIcon = {
+          url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+          // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+          scaledSize: new google.maps.Size(40, 40),
+          origin: new google.maps.Point(0, 0),
+          //anchor starts at 0,0 at left corner of marker
+          anchor: new google.maps.Point(20, 40),
+          //label origin starts at 0, 0 somewhere above the marker
+          labelOrigin: new google.maps.Point(20, 60)
+        };
+
+        const marker = new google.maps.Marker({
+          key: flat.id,
+          position: {
+            lat: flat.lat,
+            lng: flat.lng
+          },
+          map,
+          flatId: flat.id,
+          icon: markerIcon,
+          label: {
+            text: markerLabel,
+            fontWeight: 'bold'
+            // color: 'gray'
+          }
+        });
+      }
+
+      function createMarker(place, mapShow) {
+        if (place) {
+          const placeLoc = place.geometry.location;
+          const marker = new google.maps.Marker({
+            map: mapShow,
+            position: place.geometry.location
+          });
+
+          google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(place.name);
+            infowindow.open(mapShow, this);
+          });
+        }
+      }
+  }
+
+
+  handlePlaceSearchClick(event) {
+    console.log('in show_flat, handlePlaceSearchClick, clicked: ', event);
+    const input = document.getElementById('map-interaction-input');
+    console.log('in show_flat, handlePlaceSearchClick, input: ', input.value);
+    this.getPlaces(input.value)
+    input.value = '';
+  }
+
+  handleSearchCriterionClick(event) {
+    console.log('in show_flat, handleSearchCriterionClick, clicked, event: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in show_flat, handleSearchCriterionClick, elementVal: ', elementVal);
+    this.getPlaces(elementVal)
+  }
+
+
+
+  renderMapInteractiion() {
+    // reference https://developers.google.com/places/web-service/supported_types
+    return (
+      <div className="map-interaction-container">
+        <div className="map-interaction-box">
+          <div className="map-interaction-title">Search Nearest</div>
+          <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Schools</div>
+          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Convenient Store</div>
+          <div value="hospital" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Hospital</div>
+          <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Train Station</div>
+          <div value="bus_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Bus Station</div>
+          <input id="map-interaction-input" className="map-interaction-input-area" type="string" maxLength="50" placeholder="Enter name or kind of place here..." />
+          <button className="btn btn-primary btn-sm message-btn" onClick={this.handlePlaceSearchClick.bind(this)}>Search</button>
+        </div>
+        <div className="map-interaction-box">
+          <div className="map-interaction-title">Top Search Results</div>
+          <ul>
+            <li className="map-interaction-search-result"><i className="fa fa-chevron-circle-right"></i>  Result of the place search that can be very long</li>
+            <li className="map-interaction-search-result">Result</li>
+            <li className="map-interaction-search-result">Result</li>
+            <li className="map-interaction-search-result">Result</li>
+            <li className="map-interaction-search-result">Result</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    if (this.props.selectedDates) {
-    }
+    // if (this.props.selectedDates) {
+    // }
     return (
       <div>
         <div>
@@ -425,7 +565,10 @@ class ShowFlat extends Component {
           {this.renderMap()}
         </div>
         <div>
-          {this.currentUserIsOwner() ? <h4>You are the owner of this flat! <br/>Block out dates, edit or delete listing</h4> : <h4>Send the Owner a Message</h4>}
+          {this.renderMapInteractiion()}
+        </div>
+        <div>
+          {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : <h4>Send the Owner a Message</h4>}
           {this.renderMessaging()}
         </div>
         <div>

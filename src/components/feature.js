@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../actions';
-import GoogleMap from './google_map';
+import GoogleMap from './maps/google_map';
 import Upload from './images/upload';
 import MainCards from './cards/main_cards';
 
@@ -21,8 +21,9 @@ class Feature extends Component {
   super();
   this.state = {
     currentPage: 1,
-    //******* Adjust how many to show per page here
-    cardsPerPage: 4
+    //******* Adjust how many to show per page here*****************
+    cardsPerPage: 3
+    //*************************************************************
   };
   // this.handleClick = this.handleClick.bind(this);
 }
@@ -62,13 +63,9 @@ class Feature extends Component {
     };
 
     this.props.startUpIndex();
-    //initial call of fetchFlats to get initial set of flats
+    //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
+    // fetchflats based on above bounds
     this.props.fetchFlats(mapBounds);
-    // if (this.props.flats) {
-    //   this.setState({ isFetching: false });
-    // }
-    // index = index + 1;
-    // console.log('in feature componentDidMount, index after running: ', index);
   }
 
   // componentWillReceiveProps() {
@@ -99,7 +96,6 @@ class Feature extends Component {
     const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     console.log('in feature renderMap, flats empty: ', flatsEmpty);
     console.log('in feature renderMap, mapDimensions empty: ', mapDimensionsEmpty);
-
 
     if (!flatsEmpty) {
       if (!mapDimensionsEmpty) {
@@ -265,11 +261,11 @@ class Feature extends Component {
       if (pageNumbersArray.length > 1) {
         return (
           <div>
-          <ul className="pagination">
-          <li onClick={this.handleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
-          {this.renderPageNumbers(pageNumbersArray)}
-          <li onClick={this.handleRightPageClick.bind(this)}><i className="fa fa-angle-double-right"></i></li>
-          </ul>
+            <ul className="pagination">
+              <li onClick={this.handleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
+                {this.renderPageNumbers(pageNumbersArray)}
+              <li onClick={this.handleRightPageClick.bind(this)}><i className="fa fa-angle-double-right"></i></li>
+            </ul>
           </div>
         );
       }
@@ -322,6 +318,7 @@ class Feature extends Component {
                   // key={flat.id.toString()}
                   flat={flat}
                   currency='$'
+                  showFlat={false}
                 />
               </div>
             );

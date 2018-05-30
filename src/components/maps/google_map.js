@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 
-import * as actions from '../actions';
+import * as actions from '../../actions';
 
-import Carousel from './carousel/carousel';
+import Carousel from '../carousel/carousel';
 
 // const INITIAL_POSITION = { lat: 37.7952,
 //   lng: -122.4029 };
@@ -32,6 +32,17 @@ class GoogleMap extends Component {
   // runs right after component is rendered to the screeen
   // flatsEmpty is prop passed in map render
   // and is true if there are no search results for the map area or criteria
+  this.renderMap();
+  }
+  //*********************************************************
+  //end of componentDidMount
+
+
+  componentWillReceiveProps(nextProps) {
+    console.log('in googlemaps componentWillReceiveProps: ', nextProps);
+  }
+
+  renderMap() {
     const initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
@@ -72,7 +83,7 @@ class GoogleMap extends Component {
     // required infowindowArray to close infowindow on map click
     const infowindowArray = [];
 
-      //flats is object from props in map render
+    //flats is object from props in map render
     _.each(this.props.flats, flat => {
       console.log('in googlemaps, each, flat: ', flat);
       const markerLabel = this.props.showFlat ? 'Here I am' : `$${parseFloat(flat.price_per_month).toFixed(0)}`;
@@ -87,7 +98,7 @@ class GoogleMap extends Component {
         anchor: new google.maps.Point(20, 40),
         //label origin starts at 0, 0 somewhere above the marker
         labelOrigin: new google.maps.Point(20, 60)
-        };
+      };
 
       const marker = new google.maps.Marker({
         key: flat.id,
@@ -110,10 +121,10 @@ class GoogleMap extends Component {
       });
 
       // if (!this.props.showFlat) {
-        const infowindow = new google.maps.InfoWindow({
-          maxWidth: 300,
-          key: flat.id
-        });
+      const infowindow = new google.maps.InfoWindow({
+        maxWidth: 300,
+        key: flat.id
+      });
       // }
 
       //infowindowArray for closing all open infowindows at map click
@@ -264,8 +275,8 @@ class GoogleMap extends Component {
           this.props.incrementImageIndex(indexAtMax, maxImageIndex);
           console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         }
-          console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
-          document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
+        console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
+        document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       });
 
       // opens up new tab when IW details clicked and passes flat id in params to the new tab
@@ -353,8 +364,7 @@ class GoogleMap extends Component {
       }
     }); //end addListener
   }
-  //*********************************************************
-  //end of componentDidMount
+
 
   //*********************************************************
   render() {
@@ -378,9 +388,11 @@ class GoogleMap extends Component {
 // }
 
 function mapStateToProps(state) {
+  console.log('GoogleMap, mapStateToProps, state: ', state);
   return {
     imageIndex: state.imageIndex,
-    mapBounds: state.mapBounds
+    mapBounds: state.mapBounds,
+    // flats: state.flats
   };
 }
 

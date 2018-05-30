@@ -60,7 +60,7 @@ navigationLinks() {
             <Link className="nav-link" to="/signout">Sign Out</Link>
            </li>
            <li className="nav-item">
-            <Link className="nav-link" to={'/mypage'}>My Page</Link>
+            <Link className="nav-link" to={'/mypage'} >My Page</Link>
            </li>
            <li className="nav-item">
             <p className="nav-link">Signed in as {this.props.email}</p>
