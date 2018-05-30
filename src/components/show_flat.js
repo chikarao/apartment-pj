@@ -19,10 +19,12 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 
+let placeResults = [];
+
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   // this.state = { readyForMap: false };
+   this.state = { placesResults: [] };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -444,12 +446,15 @@ class ShowFlat extends Component {
     },   function callback(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           console.log('in show_flat, getPlaces, Placeservice, results: ', results);
-          for (let i = 0; i < 5; i++) {
+          // console.log('in show_flat, getPlaces, Placeservice, this.props: ', this.props);
+          // this.setState({ placesResults: results });
+          for (let i = 0; i < results.length; i++) {
             createMarker(results[i], mapShow);
             console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
             // console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
           }
-          createFlatMarker(flat, mapShow)
+          // create marker for flat each time
+          createFlatMarker(flat, mapShow);
         }
       });
 
@@ -515,12 +520,128 @@ class ShowFlat extends Component {
   handleSearchCriterionClick(event) {
     console.log('in show_flat, handleSearchCriterionClick, clicked, event: ', event.target);
     const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
+    let elementVal = clickedElement.getAttribute('value');
     console.log('in show_flat, handleSearchCriterionClick, elementVal: ', elementVal);
+    // if (elementVal === 'train_station') {
+    //   elementVal = ['train_station', 'subway_station']
+    // }
     this.getPlaces(elementVal)
   }
 
+  renderSearchSelection() {
+    const searchTypeList = [
+      'accounting',
+      'airport',
+      'amusement_park',
+      'aquarium',
+      'art_gallery',
+      'atm',
+      'bakery',
+      'bank',
+      'bar',
+      'beauty_salon',
+      'bicycle_store',
+      'book_store',
+      'bowling_alley',
+      'bus_station',
+      'cafe',
+      'campground',
+      'car_dealer',
+      'car_rental',
+      'car_repair',
+      'car_wash',
+      'casino',
+      'cemetery',
+      'church',
+      'city_hall',
+      'clothing_store',
+      'convenience_store',
+      'courthouse',
+      'dentist',
+      'department_store',
+      'doctor',
+      'electrician',
+      'electronics_store',
+      'embassy',
+      'fire_station',
+      'florist',
+      'funeral_home',
+      'furniture_store',
+      'gas_station',
+      'gym',
+      'hair_care',
+      'hardware_store',
+      'hindu_temple',
+      'home_goods_store',
+      'hospital',
+      'insurance_agency',
+      'jewelry_store',
+      'laundry',
+      'lawyer',
+      'library',
+      'liquor_store',
+      'local_government_office',
+      'locksmith',
+      'lodging',
+      'meal_delivery',
+      'meal_takeaway',
+      'mosque',
+      'movie_rental',
+      'movie_theater',
+      'moving_company',
+      'museum',
+      'night_club',
+      'painter',
+      'park',
+      'parking',
+      'pet_store',
+      'pharmacy',
+      'physiotherapist',
+      'plumber',
+      'police',
+      'post_office',
+      'real_estate_agency',
+      'restaurant',
+      'roofing_contractor',
+      'rv_park',
+      'school',
+      'shoe_store',
+      'shopping_mall',
+      'spa',
+      'stadium',
+      'storage',
+      'store',
+      'subway_station',
+      'supermarket',
+      'synagogue',
+      'taxi_stand',
+      'train_station',
+      'transit_station',
+      'travel_agency',
+      'veterinary_care',
+      'zoo'];
 
+  return  _.map(searchTypeList, (item) => {
+      return <option key={item} value={item}>{item}</option>;
+    // })
+  });
+}
+
+  handleSearchTypeSelect() {
+    // console.log('in show_flat, handleSearchTypeChange, selected, obj: ', obj);
+    // const clickedElementVal = obj.options[obj.selectedIndex].value;
+    // // const clickedElementVal = obj.options[obj.selectedIndex];
+    // // let elementVal = clickedElement.getAttribute('value');
+    // console.log('in show_flat, handleSearchTypeSelect, clickedElementVal: ', clickedElementVal);
+    const selection = document.getElementById('typeSelection');
+    const type = selection.options[selection.selectedIndex].text;
+    console.log('in show_flat, handleSearchTypeSelect, type: ', type);
+    this.getPlaces(type)
+  }
+
+  renderSearchResultsList() {
+    // console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state.placesResults);
+  }
 
   renderMapInteractiion() {
     // reference https://developers.google.com/places/web-service/supported_types
@@ -530,15 +651,19 @@ class ShowFlat extends Component {
           <div className="map-interaction-title">Search Nearest</div>
           <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Schools</div>
           <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Convenient Store</div>
-          <div value="hospital" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Hospital</div>
+          <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Supermarket</div>
           <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Train Station</div>
-          <div value="bus_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Bus Station</div>
-          <input id="map-interaction-input" className="map-interaction-input-area" type="string" maxLength="50" placeholder="Enter name or kind of place here..." />
+          <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Subway Station</div>
+          <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+            {this.renderSearchSelection()}
+          </select>
+          <input id="map-interaction-input" className="map-interaction-input-area" type="string" maxLength="50" placeholder="Enter place name or address..." />
           <button className="btn btn-primary btn-sm message-btn" onClick={this.handlePlaceSearchClick.bind(this)}>Search</button>
         </div>
         <div className="map-interaction-box">
           <div className="map-interaction-title">Top Search Results</div>
           <ul>
+          {this.renderSearchResultsList()}
             <li className="map-interaction-search-result"><i className="fa fa-chevron-circle-right"></i>  Result of the place search that can be very long</li>
             <li className="map-interaction-search-result">Result</li>
             <li className="map-interaction-search-result">Result</li>

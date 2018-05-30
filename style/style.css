@@ -253,9 +253,17 @@ body > div:first-child {
 
 .map-interaction-box {
   width: 300px;
-  height: 300px;
+  height: 350px;
   border: 1px solid #ccc;
   margin: 10px;
+}
+
+.map-interaction-box select{
+  width: 270px;
+  height: 40px;
+  border: 1px solid #ccc;
+  margin: 10px;
+  float: left;
 }
 
 .place-search-btn {
@@ -263,11 +271,12 @@ body > div:first-child {
 }
 
 .map-interaction-box input {
-  width: 100%;
+  width: 95%;
   height: 40px;
   border: 1px solid #ccc;
   font-size: 17px;
   padding: 5px;
+  /* margin: 2px; */
 }
 .map-interaction-title {
   width: 100%;
