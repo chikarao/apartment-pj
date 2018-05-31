@@ -433,7 +433,7 @@ class ShowFlat extends Component {
     console.log('in show_flat, getPlaces, criterion: ', criterion);
     console.log('in show_flat, getPlaces, this.props.flat.lat: ', this.props.flat.lat);
     console.log('in show_flat, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
-    const radius = 5000;
+    const radius = 2000;
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
@@ -493,10 +493,24 @@ class ShowFlat extends Component {
 
   createMarker(place, mapShow, infowindow) {
     if (place) {
+      const markerIcon = {
+        // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+        // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+        url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
+        // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+        scaledSize: new google.maps.Size(40, 40),
+        origin: new google.maps.Point(0, 0),
+        //anchor starts at 0,0 at left corner of marker
+        anchor: new google.maps.Point(20, 40),
+        //label origin starts at 0, 0 somewhere above the marker
+        labelOrigin: new google.maps.Point(20, 60)
+      };
       const placeLoc = place.geometry.location;
       const marker = new google.maps.Marker({
         map: mapShow,
-        position: place.geometry.location
+        position: place.geometry.location,
+        icon: markerIcon,
+        label: ''
       });
 
       google.maps.event.addListener(marker, 'click', function() {
@@ -521,7 +535,7 @@ class ShowFlat extends Component {
       //anchor starts at 0,0 at left corner of marker
       anchor: new google.maps.Point(20, 40),
       //label origin starts at 0, 0 somewhere above the marker
-      labelOrigin: new google.maps.Point(20, 60)
+      labelOrigin: new google.maps.Point(20, 33)
     };
 
     const marker = new google.maps.Marker({
@@ -705,14 +719,41 @@ class ShowFlat extends Component {
         markersArray.push(pointA);
         console.log('in show_flat, createSelectedMarker, after if status, pointA: ', pointA);
         // const pointB = this.createMarker(flat, map);
+
+        const markerIcon = {
+          // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+          // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+          url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
+          // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+          scaledSize: new google.maps.Size(40, 40),
+          origin: new google.maps.Point(0, 0),
+          //anchor starts at 0,0 at left corner of marker
+          anchor: new google.maps.Point(20, 40),
+          //label origin starts at 0, 0 somewhere above the marker
+          labelOrigin: new google.maps.Point(20, 33)
+        };
+
         const pointB = new google.maps.Marker({
-          map,
+          // map,
           place: {
             placeId,
             location: result.geometry.location
+          },
+          icon: markerIcon,
+          label: {
+            text: 'Here is the search result',
+            fontWeight: 'bold'
           }
         });
-        markersArray.push(pointB);
+        const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
+        const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
+        const distance = this.getDistance(pointALatLng, pointBLatLng, pointB, map);
+        console.log('in show_flat, createSelectedMarker, after if status, distance: ', distance);
+        pointA.setMap(map)
+        // markersArray.push(pointB);
+        // _.each(markersArray, marker => {
+        //   marker.setMap(map)
+        // });
         console.log('in show_flat, createSelectedMarker, after if status, pointB: ', pointB);
         console.log('in show_flat, createSelectedMarker, after if status, markersArray: ', markersArray);
 
@@ -720,33 +761,71 @@ class ShowFlat extends Component {
           infowindow.setContent(result.name);
           infowindow.open(map, this);
         });
-        this.calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray);
+        // this.calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray, map);
       } // end of if status ok
     }); // end of callback
   } // end of createSelectedMarker
 
-  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray) {
-    console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
-    const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
-    const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
+//   calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray, map) {
+//     console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
+//     const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
+//     const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
+//
+//     console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
+//   directionsService.route({
+//     origin: pointALatLng,
+//     destination: pointBLatLng,
+//     travelMode: google.maps.TravelMode.WALKING,
+//     // preserveViewport: true
+//   }, (response, status) => {
+//     if (status === 'OK') {
+//       console.log('in show_flat, calculateAndDisplayRoute, after if status, response: ', response);
+//       _.each(markersArray, marker => {
+//         marker.setMap(null)
+//       });
+//       directionsDisplay.setDirections(response);
+//     } else {
+//       window.alert('Directions request failed due to ' + status);
+//     }
+//   });
+//   this.getDistance();
+// }
 
-    console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
-  directionsService.route({
-    origin: pointALatLng,
-    destination: pointBLatLng,
-    travelMode: google.maps.TravelMode.WALKING,
-    // preserveViewport: true
-  }, (response, status) => {
-    if (status == 'OK') {
-      console.log('in show_flat, calculateAndDisplayRoute, after if status, response: ', response);
-      _.each(markersArray, marker => {
-        marker.setMap(null)
-      });
-      directionsDisplay.setDirections(response);
-    } else {
-      window.alert('Directions request failed due to ' + status);
+getDistance(pointALatLng, pointBLatLng, pointB, map) {
+  const distanceService = new google.maps.DistanceMatrixService();
+  let distance = '';
+  distanceService.getDistanceMatrix(
+    {
+      origins: [pointALatLng],
+      destinations: [pointBLatLng],
+      travelMode: 'WALKING',
+    }, (response, status) => {
+      if (status === 'OK') {
+        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+        // See Parsing the Results for
+        // the basics of a callback function.
+        distance = { distance: response.rows[0].elements[0].distance.text };
+        const distanceText = response.rows[0].elements[0].distance.text;
+        const marker = pointB;
+        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService after if, marker: ', marker);
+        // marker.label.text = distance.text;
+        const markerLabel = marker.getLabel();
+        markerLabel.text = distanceText;
+        marker.setLabel(markerLabel);
+        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService after if, markerLabel.text: ', markerLabel);
+        marker.setMap(map)
+        // const distanceJSON = JSON.stringify(distance);
+        // console.log('in show_flat, calculateAndDisplayRoute, after if status, distance, : ', distance);
+        // map.data.loadGeoJson(distanceJSON);
+        // console.log('in show_flat, calculateAndDisplayRoute, after if status, map.data, : ', map.data.loadGeoJson);
+        //     map.data.setStyle({
+        //   icon: '//example.com/path/to/image.png',
+        //   fillColor: 'green'
+        // });
+      }
     }
-  });
+  );
+  return distance;
 }
 
   handlePlaceClick(event) {
