@@ -19,7 +19,9 @@ const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 
-let placeResults = [];
+// let placesResults = [];
+// let resultsReceived = false;
+// const resultsArray = []
 
 class ShowFlat extends Component {
   constructor(props) {
@@ -419,6 +421,7 @@ class ShowFlat extends Component {
   }
 
   getPlaces(criterion) {
+    console.log('in show_flat, getPlaces, at top thisthis: ', this);
     console.log('in show_flat, getPlaces, criterion: ', criterion);
     console.log('in show_flat, getPlaces, this.props.flat.lat: ', this.props.flat.lat);
     console.log('in show_flat, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
@@ -443,20 +446,34 @@ class ShowFlat extends Component {
       location,
       radius: 2000,
       type: criterion
-    },   function callback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+    }, (results, status) => {
+      // use () => to bind to this; gives access to this object
+      // if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (status === 'OK') {
           console.log('in show_flat, getPlaces, Placeservice, results: ', results);
+          // console.log('in show_flat, getPlaces, Placeservice, placesResults: ', placesResults);
+          // placesResults = results;
           // console.log('in show_flat, getPlaces, Placeservice, this.props: ', this.props);
           // this.setState({ placesResults: results });
+          console.log('in show_flat, getPlaces, after if thisthis?: ', this);
+
           for (let i = 0; i < results.length; i++) {
             createMarker(results[i], mapShow);
             console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
+            // resultsArray.push(results[i]);
             // console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
           }
           // create marker for flat each time
           createFlatMarker(flat, mapShow);
+          // if (resultsArray.length > 0) {
+          this.getPlacesCallback(results);
+            // console.log('in show_flat, getPlaces, Placeservice, resultsArray.length: ', resultsArray.length);
+            // console.log('in show_flat, getPlaces, Placeservice, resultsArray: ', resultsArray);
+          // }
+          // getResultsOfPlacesSearch(results);
+          // setStateWithResults(results);
         }
-      });
+      }); // end of callback {} and nearbySearch
 
       function createFlatMarker(flat, map) {
         // console.log('in show_flat, createFlatMarker, flatLocation: ', flatLocation);
@@ -490,7 +507,7 @@ class ShowFlat extends Component {
             // color: 'gray'
           }
         });
-      }
+      } //end of createFlatMarker
 
       function createMarker(place, mapShow) {
         if (place) {
@@ -505,16 +522,25 @@ class ShowFlat extends Component {
             infowindow.open(mapShow, this);
           });
         }
-      }
-  }
-
+      } // end of createMarker
+  } //end of getPlaces
 
   handlePlaceSearchClick(event) {
     console.log('in show_flat, handlePlaceSearchClick, clicked: ', event);
     const input = document.getElementById('map-interaction-input');
     console.log('in show_flat, handlePlaceSearchClick, input: ', input.value);
-    this.getPlaces(input.value)
+    console.log('in show_flat, handlePlaceSearchClick, thisthis: ', this);
+    this.getPlaces(input.value);
     input.value = '';
+  }
+
+  getPlacesCallback(results) {
+    const resultsArray = [];
+    console.log('in show_flat, getPlacesCallback, results ??: ', results);
+    // _.each(results, result => {
+    //   resultsArray.push(result.name);
+    // })
+    this.setState({ placesResults: results }, () => console.log('show flat, getPlacesCallback, setState callback, this.state: ', this.state))
   }
 
   handleSearchCriterionClick(event) {
@@ -525,104 +551,196 @@ class ShowFlat extends Component {
     // if (elementVal === 'train_station') {
     //   elementVal = ['train_station', 'subway_station']
     // }
-    this.getPlaces(elementVal)
+    this.getPlaces(elementVal);
   }
 
   renderSearchSelection() {
-    const searchTypeList = [
-      'accounting',
-      'airport',
-      'amusement_park',
-      'aquarium',
-      'art_gallery',
-      'atm',
-      'bakery',
-      'bank',
-      'bar',
-      'beauty_salon',
-      'bicycle_store',
-      'book_store',
-      'bowling_alley',
-      'bus_station',
-      'cafe',
-      'campground',
-      'car_dealer',
-      'car_rental',
-      'car_repair',
-      'car_wash',
-      'casino',
-      'cemetery',
-      'church',
-      'city_hall',
-      'clothing_store',
-      'convenience_store',
-      'courthouse',
-      'dentist',
-      'department_store',
-      'doctor',
-      'electrician',
-      'electronics_store',
-      'embassy',
-      'fire_station',
-      'florist',
-      'funeral_home',
-      'furniture_store',
-      'gas_station',
-      'gym',
-      'hair_care',
-      'hardware_store',
-      'hindu_temple',
-      'home_goods_store',
-      'hospital',
-      'insurance_agency',
-      'jewelry_store',
-      'laundry',
-      'lawyer',
-      'library',
-      'liquor_store',
-      'local_government_office',
-      'locksmith',
-      'lodging',
-      'meal_delivery',
-      'meal_takeaway',
-      'mosque',
-      'movie_rental',
-      'movie_theater',
-      'moving_company',
-      'museum',
-      'night_club',
-      'painter',
-      'park',
-      'parking',
-      'pet_store',
-      'pharmacy',
-      'physiotherapist',
-      'plumber',
-      'police',
-      'post_office',
-      'real_estate_agency',
-      'restaurant',
-      'roofing_contractor',
-      'rv_park',
-      'school',
-      'shoe_store',
-      'shopping_mall',
-      'spa',
-      'stadium',
-      'storage',
-      'store',
-      'subway_station',
-      'supermarket',
-      'synagogue',
-      'taxi_stand',
-      'train_station',
-      'transit_station',
-      'travel_agency',
-      'veterinary_care',
-      'zoo'];
+    const searchTypeList = {
+      accounting: 'Accounting',
+      airport: 'Airport',
+      amusement_park: 'Amusement Park',
+      aquarium: 'Aquarium',
+      art_gallery: 'Art Gallery',
+      atm: 'ATM',
+      bakery: 'Bakery',
+      bank: 'Bank',
+      bar: 'Bar',
+      beauty_salon: 'Beauty Salon',
+      bicycle_store: 'Bicycle Store',
+      book_store: 'Book Store',
+      bowling_alley: 'Bowling Alley',
+      bus_station: 'Bus Station',
+      cafe: 'Cafe',
+      campground: 'Campground',
+      car_dealer: 'Car Dealer',
+      car_rental: 'Car Rental',
+      car_repair: 'Car Repair',
+      car_wash: 'Car Wash',
+      casino: 'Casino',
+      cemetery: 'Cemetary',
+      church: 'Church',
+      city_hall: 'City Hall',
+      clothing_store: 'Clothing Store',
+      convenience_store: 'Convenience Store',
+      courthouse: 'Courthouse',
+      dentist: 'Dentist',
+      department_store: 'Department Store',
+      doctor: 'Doctor',
+      electrician: 'Electrician',
+      electronics_store: 'Electronics Store',
+      embassy: 'Embassy',
+      fire_station: 'Fire Station',
+      florist: 'Florist',
+      funeral_home: 'Funeral Home',
+      furniture_store: 'Furniture Store',
+      gas_station: 'Gas Station',
+      gym: 'Gym',
+      hair_care: 'Hair Care',
+      hardware_store: 'Hardware Store',
+      hindu_temple: 'Hindu Temple',
+      home_goods_store: 'Home Goods Store',
+      hospital: 'Hospital',
+      insurance_agency: 'Insurance Agency',
+      jewelry_store: 'Jewelry Store',
+      laundry: 'Laundry',
+      lawyer: 'Lawyer',
+      library: 'Library',
+      liquor_store: 'Liquor Store',
+      local_government_office: 'Local Government Office',
+      locksmith: 'Locksmith',
+      lodging: 'Lodging',
+      meal_delivery: 'Meal Delivery',
+      meal_takeaway: 'Meal Takeaway',
+      mosque: 'Mosque',
+      movie_rental: 'Movie Rental',
+      movie_theater: 'Movie Theater',
+      moving_company: 'Moving Company',
+      museum: 'Museum',
+      night_club: 'Night Club',
+      painter: 'Painter',
+      park: 'Park',
+      parking: 'Parking',
+      pet_store: 'Pet Store',
+      pharmacy: 'Pharmacy',
+      physiotherapist: 'Physiotherapist',
+      plumber: 'Plumber',
+      police: 'Police',
+      post_office: 'Post Office',
+      real_estate_agency: 'Real Estate Agency',
+      restaurant: 'Restaurant',
+      roofing_contractor: 'Roofing Contractor',
+      rv_park: 'RV Park',
+      school: 'School',
+      shoe_store: 'Shoe Store',
+      shopping_mall: 'Shopping Mall',
+      spa: 'Spa',
+      stadium: 'Stadium',
+      storage: 'Storage',
+      store: 'Store',
+      subway_station: 'Subway Station',
+      supermarket: 'Supermarket',
+      synagogue: 'Synagogue',
+      taxi_stand: 'Taxi Stand',
+      train_station: 'Train Station',
+      transit_station: 'Transit Station',
+      travel_agency: 'Travel Agency',
+      veterinary_care: 'Veterinary Care',
+      zoo: 'Zoo'
+    };
+    // const searchTypeList = [
+    //   'accounting',
+    //   'airport',
+    //   'amusement_park',
+    //   'aquarium',
+    //   'art_gallery',
+    //   'atm',
+    //   'bakery',
+    //   'bank',
+    //   'bar',
+    //   'beauty_salon',
+    //   'bicycle_store',
+    //   'book_store',
+    //   'bowling_alley',
+    //   'bus_station',
+    //   'cafe',
+    //   'campground',
+    //   'car_dealer',
+    //   'car_rental',
+    //   'car_repair',
+    //   'car_wash',
+    //   'casino',
+    //   'cemetery',
+    //   'church',
+    //   'city_hall',
+    //   'clothing_store',
+    //   'convenience_store',
+    //   'courthouse',
+    //   'dentist',
+    //   'department_store',
+    //   'doctor',
+    //   'electrician',
+    //   'electronics_store',
+    //   'embassy',
+    //   'fire_station',
+    //   'florist',
+    //   'funeral_home',
+    //   'furniture_store',
+    //   'gas_station',
+    //   'gym',
+    //   'hair_care',
+    //   'hardware_store',
+    //   'hindu_temple',
+    //   'home_goods_store',
+    //   'hospital',
+    //   'insurance_agency',
+    //   'jewelry_store',
+    //   'laundry',
+    //   'lawyer',
+    //   'library',
+    //   'liquor_store',
+    //   'local_government_office',
+    //   'locksmith',
+    //   'lodging',
+    //   'meal_delivery',
+    //   'meal_takeaway',
+    //   'mosque',
+    //   'movie_rental',
+    //   'movie_theater',
+    //   'moving_company',
+    //   'museum',
+    //   'night_club',
+    //   'painter',
+    //   'park',
+    //   'parking',
+    //   'pet_store',
+    //   'pharmacy',
+    //   'physiotherapist',
+    //   'plumber',
+    //   'police',
+    //   'post_office',
+    //   'real_estate_agency',
+    //   'restaurant',
+    //   'roofing_contractor',
+    //   'rv_park',
+    //   'school',
+    //   'shoe_store',
+    //   'shopping_mall',
+    //   'spa',
+    //   'stadium',
+    //   'storage',
+    //   'store',
+    //   'subway_station',
+    //   'supermarket',
+    //   'synagogue',
+    //   'taxi_stand',
+    //   'train_station',
+    //   'transit_station',
+    //   'travel_agency',
+    //   'veterinary_care',
+    //   'zoo'];
 
-  return  _.map(searchTypeList, (item) => {
-      return <option key={item} value={item}>{item}</option>;
+  return  _.map(searchTypeList, (v, k) => {
+      return <option key={k} value={k}>{v}</option>;
     // })
   });
 }
@@ -634,13 +752,27 @@ class ShowFlat extends Component {
     // // let elementVal = clickedElement.getAttribute('value');
     // console.log('in show_flat, handleSearchTypeSelect, clickedElementVal: ', clickedElementVal);
     const selection = document.getElementById('typeSelection');
-    const type = selection.options[selection.selectedIndex].text;
+    const type = selection.options[selection.selectedIndex].value;
     console.log('in show_flat, handleSearchTypeSelect, type: ', type);
-    this.getPlaces(type)
+    this.getPlaces(type, () => this.getPlacesCallback())
   }
 
   renderSearchResultsList() {
-    // console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state.placesResults);
+    console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state);
+    const { placesResults } = this.state;
+    const resultsArray = [];
+    //using placeResults, a state object directly in map gives a error,
+    //cannont use object as react child
+    _.each(placesResults, result => {
+      resultsArray.push(result);
+      console.log('in show_flat, renderSearchResultsList, each result.name: ', result);
+    });
+    console.log('in show_flat, renderSearchResultsList, resultsArray: ', resultsArray);
+
+    return _.map(resultsArray, (place) => {
+      console.log('in show_flat, renderSearchResultsList, map: ', place.name);
+      return <li className="map-interaction-search-result"><i className="fa fa-chevron-right"></i>  {place.name}</li>
+    });
   }
 
   renderMapInteractiion() {
@@ -648,27 +780,22 @@ class ShowFlat extends Component {
     return (
       <div className="map-interaction-container">
         <div className="map-interaction-box">
-          <div className="map-interaction-title">Search Nearest</div>
-          <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Schools</div>
-          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Convenient Store</div>
-          <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Supermarket</div>
-          <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Train Station</div>
-          <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}><i className="fa fa-question-circle"></i>  Subway Station</div>
+          <div className="map-interaction-title"><i className="fa fa-question-circle"></i>  Search for Nearest</div>
+          <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenient Stores</div>
+          <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+          <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+          <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
           <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
             {this.renderSearchSelection()}
           </select>
           <input id="map-interaction-input" className="map-interaction-input-area" type="string" maxLength="50" placeholder="Enter place name or address..." />
-          <button className="btn btn-primary btn-sm message-btn" onClick={this.handlePlaceSearchClick.bind(this)}>Search</button>
+          <button className="btn btn-primary btn-sm interaction-btn" onClick={this.handlePlaceSearchClick.bind(this)}>Search</button>
         </div>
         <div className="map-interaction-box">
-          <div className="map-interaction-title">Top Search Results</div>
+          <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
           <ul>
-          {this.renderSearchResultsList()}
-            <li className="map-interaction-search-result"><i className="fa fa-chevron-circle-right"></i>  Result of the place search that can be very long</li>
-            <li className="map-interaction-search-result">Result</li>
-            <li className="map-interaction-search-result">Result</li>
-            <li className="map-interaction-search-result">Result</li>
-            <li className="map-interaction-search-result">Result</li>
+            {this.renderSearchResultsList()}
           </ul>
         </div>
       </div>
