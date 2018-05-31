@@ -26,7 +26,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [] };
+   this.state = { placesResults: [], map: {} };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -420,6 +420,14 @@ class ShowFlat extends Component {
       }
   }
 
+  createMap(location) {
+    const map = new google.maps.Map(document.getElementById('map'), {
+      center: location,
+      zoom: 14
+    });
+    return map;
+  }
+
   getPlaces(criterion) {
     console.log('in show_flat, getPlaces, at top thisthis: ', this);
     console.log('in show_flat, getPlaces, criterion: ', criterion);
@@ -435,10 +443,11 @@ class ShowFlat extends Component {
     //     console.log('in show_flat, getPlaces, gmap request, response: ', response);
     //   });
     const infowindow = new google.maps.InfoWindow();
-    const mapShow = new google.maps.Map(document.getElementById('map'), {
-         center: location,
-         zoom: 14
-       });
+    // const mapShow = new google.maps.Map(document.getElementById('map'), {
+    //      center: location,
+    //      zoom: 14
+    //    });
+    const mapShow = this.createMap(location);
 
     const service = new google.maps.places.PlacesService(mapShow);
     console.log('in show_flat, getPlaces, service: ', service);
@@ -458,15 +467,17 @@ class ShowFlat extends Component {
           console.log('in show_flat, getPlaces, after if thisthis?: ', this);
 
           for (let i = 0; i < results.length; i++) {
-            createMarker(results[i], mapShow);
+            this.createMarker(results[i], mapShow, infowindow);
             console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
             // resultsArray.push(results[i]);
             // console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
           }
           // create marker for flat each time
-          createFlatMarker(flat, mapShow);
+          this.createFlatMarker(flat, mapShow);
           // if (resultsArray.length > 0) {
           this.getPlacesCallback(results);
+          // this.setState({ map: mapShow })
+
             // console.log('in show_flat, getPlaces, Placeservice, resultsArray.length: ', resultsArray.length);
             // console.log('in show_flat, getPlaces, Placeservice, resultsArray: ', resultsArray);
           // }
@@ -475,55 +486,56 @@ class ShowFlat extends Component {
         }
       }); // end of callback {} and nearbySearch
 
-      function createFlatMarker(flat, map) {
-        // console.log('in show_flat, createFlatMarker, flatLocation: ', flatLocation);
-        console.log('in show_flat, createFlatMarker, flat: ', flat);
-        const markerLabel = 'Here is the Flat';
-        // Marker sizes are expressed as a Size of X,Y where the origin of the image
-        // (0,0) is located in the top left of the image.
-        const markerIcon = {
-          url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
-          // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
-          scaledSize: new google.maps.Size(40, 40),
-          origin: new google.maps.Point(0, 0),
-          //anchor starts at 0,0 at left corner of marker
-          anchor: new google.maps.Point(20, 40),
-          //label origin starts at 0, 0 somewhere above the marker
-          labelOrigin: new google.maps.Point(20, 60)
-        };
-
-        const marker = new google.maps.Marker({
-          key: flat.id,
-          position: {
-            lat: flat.lat,
-            lng: flat.lng
-          },
-          map,
-          flatId: flat.id,
-          icon: markerIcon,
-          label: {
-            text: markerLabel,
-            fontWeight: 'bold'
-            // color: 'gray'
-          }
-        });
-      } //end of createFlatMarker
-
-      function createMarker(place, mapShow) {
-        if (place) {
-          const placeLoc = place.geometry.location;
-          const marker = new google.maps.Marker({
-            map: mapShow,
-            position: place.geometry.location
-          });
-
-          google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(place.name);
-            infowindow.open(mapShow, this);
-          });
-        }
-      } // end of createMarker
   } //end of getPlaces
+
+  createMarker(place, mapShow, infowindow) {
+    if (place) {
+      const placeLoc = place.geometry.location;
+      const marker = new google.maps.Marker({
+        map: mapShow,
+        position: place.geometry.location
+      });
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(mapShow, this);
+      });
+    }
+  } // end of createMarker
+
+  createFlatMarker(flat, map) {
+    // console.log('in show_flat, createFlatMarker, flatLocation: ', flatLocation);
+    console.log('in show_flat, createFlatMarker, flat: ', flat);
+    const markerLabel = 'Here is the Flat';
+    // Marker sizes are expressed as a Size of X,Y where the origin of the image
+    // (0,0) is located in the top left of the image.
+    const markerIcon = {
+      url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+      // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+      scaledSize: new google.maps.Size(40, 40),
+      origin: new google.maps.Point(0, 0),
+      //anchor starts at 0,0 at left corner of marker
+      anchor: new google.maps.Point(20, 40),
+      //label origin starts at 0, 0 somewhere above the marker
+      labelOrigin: new google.maps.Point(20, 60)
+    };
+
+    const marker = new google.maps.Marker({
+      key: flat.id,
+      position: {
+        lat: flat.lat,
+        lng: flat.lng
+      },
+      map,
+      flatId: flat.id,
+      icon: markerIcon,
+      label: {
+        text: markerLabel,
+        fontWeight: 'bold'
+        // color: 'gray'
+      }
+    });
+  } //end of createFlatMarker
 
   handlePlaceSearchClick(event) {
     console.log('in show_flat, handlePlaceSearchClick, clicked: ', event);
@@ -647,99 +659,8 @@ class ShowFlat extends Component {
       veterinary_care: 'Veterinary Care',
       zoo: 'Zoo'
     };
-    // const searchTypeList = [
-    //   'accounting',
-    //   'airport',
-    //   'amusement_park',
-    //   'aquarium',
-    //   'art_gallery',
-    //   'atm',
-    //   'bakery',
-    //   'bank',
-    //   'bar',
-    //   'beauty_salon',
-    //   'bicycle_store',
-    //   'book_store',
-    //   'bowling_alley',
-    //   'bus_station',
-    //   'cafe',
-    //   'campground',
-    //   'car_dealer',
-    //   'car_rental',
-    //   'car_repair',
-    //   'car_wash',
-    //   'casino',
-    //   'cemetery',
-    //   'church',
-    //   'city_hall',
-    //   'clothing_store',
-    //   'convenience_store',
-    //   'courthouse',
-    //   'dentist',
-    //   'department_store',
-    //   'doctor',
-    //   'electrician',
-    //   'electronics_store',
-    //   'embassy',
-    //   'fire_station',
-    //   'florist',
-    //   'funeral_home',
-    //   'furniture_store',
-    //   'gas_station',
-    //   'gym',
-    //   'hair_care',
-    //   'hardware_store',
-    //   'hindu_temple',
-    //   'home_goods_store',
-    //   'hospital',
-    //   'insurance_agency',
-    //   'jewelry_store',
-    //   'laundry',
-    //   'lawyer',
-    //   'library',
-    //   'liquor_store',
-    //   'local_government_office',
-    //   'locksmith',
-    //   'lodging',
-    //   'meal_delivery',
-    //   'meal_takeaway',
-    //   'mosque',
-    //   'movie_rental',
-    //   'movie_theater',
-    //   'moving_company',
-    //   'museum',
-    //   'night_club',
-    //   'painter',
-    //   'park',
-    //   'parking',
-    //   'pet_store',
-    //   'pharmacy',
-    //   'physiotherapist',
-    //   'plumber',
-    //   'police',
-    //   'post_office',
-    //   'real_estate_agency',
-    //   'restaurant',
-    //   'roofing_contractor',
-    //   'rv_park',
-    //   'school',
-    //   'shoe_store',
-    //   'shopping_mall',
-    //   'spa',
-    //   'stadium',
-    //   'storage',
-    //   'store',
-    //   'subway_station',
-    //   'supermarket',
-    //   'synagogue',
-    //   'taxi_stand',
-    //   'train_station',
-    //   'transit_station',
-    //   'travel_agency',
-    //   'veterinary_care',
-    //   'zoo'];
 
-  return  _.map(searchTypeList, (v, k) => {
+  return _.map(searchTypeList, (v, k) => {
       return <option key={k} value={k}>{v}</option>;
     // })
   });
@@ -757,6 +678,42 @@ class ShowFlat extends Component {
     this.getPlaces(type, () => this.getPlacesCallback())
   }
 
+  createSelectedMarker(placeId) {
+    console.log('in show_flat, createSelectedMarker, placeId: ', placeId);
+    const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+    const flat = this.props.flat;
+    const infowindow = new google.maps.InfoWindow();
+    const map = this.createMap(location)
+    const service = new google.maps.places.PlacesService(map);
+    service.getDetails({
+      placeId
+    }, (result, status) => {
+      if (status === 'OK') {
+        console.log('in show_flat, createSelectedMarker, after if status, result: ', status, result);
+        this.createFlatMarker(flat, map);
+        const marker = new google.maps.Marker({
+          map,
+          place: {
+            placeId,
+            location: result.geometry.location
+          }
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(result.name);
+          infowindow.open(map, this);
+        });
+      }
+  });
+  }
+
+  handlePlaceClick(event) {
+    console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
+    this.createSelectedMarker(elementVal);
+  }
+
   renderSearchResultsList() {
     console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state);
     const { placesResults } = this.state;
@@ -771,7 +728,7 @@ class ShowFlat extends Component {
 
     return _.map(resultsArray, (place) => {
       console.log('in show_flat, renderSearchResultsList, map: ', place.name);
-      return <li className="map-interaction-search-result"><i className="fa fa-chevron-right"></i>  {place.name}</li>
+      return <li key={place.place_id} value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>  {place.name}</li>
     });
   }
 
