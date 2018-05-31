@@ -454,7 +454,10 @@ class ShowFlat extends Component {
     service.nearbySearch({
       location,
       radius: 2000,
-      type: criterion
+      // if rank by distance, DO NOT use radius
+      type: criterion,
+      // rankBy: google.maps.places.RankBy.DISTANCE
+      // the propblem with rank by distance is in case of lots of results, give irrelevant results
     }, (results, status) => {
       // use () => to bind to this; gives access to this object
       // if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -500,6 +503,7 @@ class ShowFlat extends Component {
         infowindow.setContent(place.name);
         infowindow.open(mapShow, this);
       });
+      return marker;
     }
   } // end of createMarker
 
@@ -535,6 +539,7 @@ class ShowFlat extends Component {
         // color: 'gray'
       }
     });
+    return marker;
   } //end of createFlatMarker
 
   handlePlaceSearchClick(event) {
@@ -683,28 +688,66 @@ class ShowFlat extends Component {
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
     const infowindow = new google.maps.InfoWindow();
-    const map = this.createMap(location)
+    const directionsService = new google.maps.DirectionsService;
+    const directionsDisplay = new google.maps.DirectionsRenderer({
+      map
+    });
+    const map = this.createMap(location);
+    directionsDisplay.setMap(map);
     const service = new google.maps.places.PlacesService(map);
     service.getDetails({
       placeId
     }, (result, status) => {
       if (status === 'OK') {
+        const markersArray = []
         console.log('in show_flat, createSelectedMarker, after if status, result: ', status, result);
-        this.createFlatMarker(flat, map);
-        const marker = new google.maps.Marker({
+        const pointA = this.createFlatMarker(flat, map);
+        markersArray.push(pointA);
+        console.log('in show_flat, createSelectedMarker, after if status, pointA: ', pointA);
+        // const pointB = this.createMarker(flat, map);
+        const pointB = new google.maps.Marker({
           map,
           place: {
             placeId,
             location: result.geometry.location
           }
         });
-        google.maps.event.addListener(marker, 'click', function() {
+        markersArray.push(pointB);
+        console.log('in show_flat, createSelectedMarker, after if status, pointB: ', pointB);
+        console.log('in show_flat, createSelectedMarker, after if status, markersArray: ', markersArray);
+
+        google.maps.event.addListener(pointB, 'click', function () {
           infowindow.setContent(result.name);
           infowindow.open(map, this);
         });
-      }
+        this.calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray);
+      } // end of if status ok
+    }); // end of callback
+  } // end of createSelectedMarker
+
+  calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray) {
+    console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
+    const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
+    const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
+
+    console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
+  directionsService.route({
+    origin: pointALatLng,
+    destination: pointBLatLng,
+    travelMode: google.maps.TravelMode.WALKING,
+    // preserveViewport: true
+  }, (response, status) => {
+    if (status == 'OK') {
+      console.log('in show_flat, calculateAndDisplayRoute, after if status, response: ', response);
+      _.each(markersArray, marker => {
+        marker.setMap(null)
+      });
+      directionsDisplay.setDirections(response);
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
   });
-  }
+}
 
   handlePlaceClick(event) {
     console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
