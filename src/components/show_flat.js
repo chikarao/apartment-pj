@@ -26,7 +26,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {} };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {} };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -420,11 +420,13 @@ class ShowFlat extends Component {
       }
   }
 
-  createMap(location) {
+  createMap(location, zoom) {
+    console.log('in show_flat, createMap, location: ', location);
     const map = new google.maps.Map(document.getElementById('map'), {
       center: location,
-      zoom: 14
+      zoom
     });
+    this.setState({ map })
     return map;
   }
 
@@ -442,12 +444,11 @@ class ShowFlat extends Component {
     //   .then(response => {
     //     console.log('in show_flat, getPlaces, gmap request, response: ', response);
     //   });
-    const infowindow = new google.maps.InfoWindow();
     // const mapShow = new google.maps.Map(document.getElementById('map'), {
     //      center: location,
     //      zoom: 14
     //    });
-    const mapShow = this.createMap(location);
+    const mapShow = this.createMap(location, 14);
 
     const service = new google.maps.places.PlacesService(mapShow);
     console.log('in show_flat, getPlaces, service: ', service);
@@ -470,13 +471,16 @@ class ShowFlat extends Component {
           console.log('in show_flat, getPlaces, after if thisthis?: ', this);
 
           for (let i = 0; i < results.length; i++) {
-            this.createMarker(results[i], mapShow, infowindow);
+            const showLabel = false;
+            const marker = this.createMarker(results[i], mapShow, showLabel);
+            marker.setMap(mapShow)
             console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
             // resultsArray.push(results[i]);
             // console.log('in show_flat, getPlaces, Placeservice: ', results[i]);
           }
           // create marker for flat each time
-          this.createFlatMarker(flat, mapShow);
+          const flatMarker = this.createFlatMarker(flat, mapShow);
+          flatMarker.setMap(mapShow);
           // if (resultsArray.length > 0) {
           this.getPlacesCallback(results);
           // this.setState({ map: mapShow })
@@ -488,32 +492,33 @@ class ShowFlat extends Component {
           // setStateWithResults(results);
         }
       }); // end of callback {} and nearbySearch
-
   } //end of getPlaces
 
-  createMarker(place, mapShow, infowindow) {
+  createMarker(place, mapShow, showLabel) {
     if (place) {
+      const infowindow = new google.maps.InfoWindow();
       const markerIcon = {
         // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
-        // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
-        url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
-        // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
+        url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+        // url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
+        // url: 'https://image.flaticon.com/icons/svg/143/143964.svg',        // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
         scaledSize: new google.maps.Size(40, 40),
         origin: new google.maps.Point(0, 0),
         //anchor starts at 0,0 at left corner of marker
         anchor: new google.maps.Point(20, 40),
         //label origin starts at 0, 0 somewhere above the marker
-        labelOrigin: new google.maps.Point(20, 60)
+        labelOrigin: new google.maps.Point(20, 33)
       };
       const placeLoc = place.geometry.location;
+      // Don't need map; setMap is run in function where createMarker is called
       const marker = new google.maps.Marker({
-        map: mapShow,
+        // map: mapShow,
         position: place.geometry.location,
         icon: markerIcon,
-        label: ''
+        label: showLabel ? { text: '', fontWeight: 'bold' } : ''
       });
 
-      google.maps.event.addListener(marker, 'click', function() {
+      google.maps.event.addListener(marker, 'click', function () {
         infowindow.setContent(place.name);
         infowindow.open(mapShow, this);
       });
@@ -537,14 +542,14 @@ class ShowFlat extends Component {
       //label origin starts at 0, 0 somewhere above the marker
       labelOrigin: new google.maps.Point(20, 33)
     };
-
+    // Don't need map; setMap is run in function where createFlatMarker is called
     const marker = new google.maps.Marker({
       key: flat.id,
       position: {
         lat: flat.lat,
         lng: flat.lng
       },
-      map,
+      // map,
       flatId: flat.id,
       icon: markerIcon,
       label: {
@@ -565,12 +570,76 @@ class ShowFlat extends Component {
     input.value = '';
   }
 
+  handleSearchInput() {
+    // const map = this.state.map;
+    const mapCenter = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+    const latOffsetNorth = 0.06629999999999825;
+    const latOffsetSouth = -0.036700000000003286;
+    const lngOffsetWest = -0.14;
+    const lngOffsetEast = 0.2;
+    // const latOffsetNorth = 37.8615 - mapCenter.lat; //about .07
+    // const latOffsetSouth = 37.7585 - mapCenter.lat; // about -.04
+    // const lngOffsetWest = -122.28701 - mapCenter.lng; //about .12
+    // const lngOffsetEast = -122.5376 - mapCenter.lng; // about -.13
+
+    // console.log('in feature handleSearchInput, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
+    // offset the same as the big map
+    const defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(mapCenter.lat + latOffsetSouth, mapCenter.lng + lngOffsetWest), //more negative, less positive
+      new google.maps.LatLng(mapCenter.lat + latOffsetNorth, mapCenter.lng + lngOffsetEast)); //less negative, more positive
+
+
+      console.log('in show_flat, handleSearchInput, defaultBounds: ', defaultBounds);
+
+      const input = document.getElementById('map-interaction-input');
+      const options = {
+        bounds: defaultBounds
+        // types: ['establishment']
+      };
+
+      let autocomplete = new google.maps.places.Autocomplete(input, options);
+      autocomplete.addListener('place_changed', onPlaceChanged.bind(this));
+
+      console.log('in show_flat, handleSearchInput, this.state.autoCompletePlace: ', this.state.autoCompletePlace);
+
+
+      function onPlaceChanged() {
+        const place = autocomplete.getPlace();
+        console.log('in show_flat, handleSearchInput, place: ', place);
+        console.log('in show_flat, handleSearchInput, thisthis: ', this);
+        // console.log('in show_flat, handleSearchInput, thisthis: ', this);
+        // this.setState({ autoCompletePlace: place }, () => {
+          const location = { lat: this.props.flat.lat, lng: this.props.flat.lng }
+          const map = this.createMap(location, 12);
+          const showLabel = true;
+          let marker = this.createMarker(place, map, showLabel);
+          const locationB = { lat: marker.position.lat(), lng: marker.position.lng() }
+          const flatMarker = this.createFlatMarker(this.props.flat, map)
+          console.log('in show_flat, handleSearchInput, marker: ', marker);
+          console.log('in show_flat, handleSearchInput, map: ', map);
+          const distance = this.getDistance(location, locationB, marker, map);
+          console.log('in show_flat, handleSearchInput, distance: ', distance);
+          marker.setMap(map);
+          flatMarker.setMap(map);
+        // });
+        // if (place.geometry) {
+        //   // const marker = this.createMarker(place, map);
+        //   // console.log('in show_flat, handleSearchInput, map: ', map);
+        //   console.log('in show_flat, handleSearchInput, map: ', map);
+
+          // map.panTo(place.geometry.location);
+          // map.setZoom(15);
+          // search();
+        }
+        // else {
+        //   document.getElementById('autocomplete').placeholder = 'Enter a city';
+        // }
+      // }
+  }
+
   getPlacesCallback(results) {
-    const resultsArray = [];
     console.log('in show_flat, getPlacesCallback, results ??: ', results);
-    // _.each(results, result => {
-    //   resultsArray.push(result.name);
-    // })
+
     this.setState({ placesResults: results }, () => console.log('show flat, getPlacesCallback, setState callback, this.state: ', this.state))
   }
 
@@ -579,6 +648,7 @@ class ShowFlat extends Component {
     const clickedElement = event.target;
     let elementVal = clickedElement.getAttribute('value');
     console.log('in show_flat, handleSearchCriterionClick, elementVal: ', elementVal);
+    // clickedElement.style.color = 'gray';
     // if (elementVal === 'train_station') {
     //   elementVal = ['train_station', 'subway_station']
     // }
@@ -706,7 +776,8 @@ class ShowFlat extends Component {
     const directionsDisplay = new google.maps.DirectionsRenderer({
       map
     });
-    const map = this.createMap(location);
+    // need to pass zoom to craeteMap
+    const map = this.createMap(location, 14);
     directionsDisplay.setMap(map);
     const service = new google.maps.places.PlacesService(map);
     service.getDetails({
@@ -722,8 +793,9 @@ class ShowFlat extends Component {
 
         const markerIcon = {
           // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
-          // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
-          url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
+          url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+          // url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
+          // url: 'https://image.flaticon.com/icons/svg/143/143964.svg',
           // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
           scaledSize: new google.maps.Size(40, 40),
           origin: new google.maps.Point(0, 0),
@@ -792,6 +864,8 @@ class ShowFlat extends Component {
 // }
 
 getDistance(pointALatLng, pointBLatLng, pointB, map) {
+  console.log('in show_flat, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
+
   const distanceService = new google.maps.DistanceMatrixService();
   let distance = '';
   distanceService.getDistanceMatrix(
@@ -801,18 +875,20 @@ getDistance(pointALatLng, pointBLatLng, pointB, map) {
       travelMode: 'WALKING',
     }, (response, status) => {
       if (status === 'OK') {
-        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+        console.log('in show_flat, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
         // See Parsing the Results for
         // the basics of a callback function.
         distance = { distance: response.rows[0].elements[0].distance.text };
         const distanceText = response.rows[0].elements[0].distance.text;
         const marker = pointB;
-        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService after if, marker: ', marker);
+        console.log('in show_flat, getDistance, after if status, distanceService after if, marker: ', marker);
+        console.log('in show_flat, getDistance, after if status, distanceService after if, distanceText: ', distanceText);
         // marker.label.text = distance.text;
         const markerLabel = marker.getLabel();
+        console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel: ', markerLabel);
         markerLabel.text = distanceText;
         marker.setLabel(markerLabel);
-        console.log('in show_flat, calculateAndDisplayRoute, after if status, distanceService after if, markerLabel.text: ', markerLabel);
+        console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel.text: ', markerLabel.tet);
         marker.setMap(map)
         // const distanceJSON = JSON.stringify(distance);
         // console.log('in show_flat, calculateAndDisplayRoute, after if status, distance, : ', distance);
@@ -859,7 +935,7 @@ getDistance(pointALatLng, pointBLatLng, pointB, map) {
     return (
       <div className="map-interaction-container">
         <div className="map-interaction-box">
-          <div className="map-interaction-title"><i className="fa fa-question-circle"></i>  Search for Nearest</div>
+          <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
           <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
           <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenient Stores</div>
           <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
@@ -868,8 +944,7 @@ getDistance(pointALatLng, pointBLatLng, pointB, map) {
           <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
             {this.renderSearchSelection()}
           </select>
-          <input id="map-interaction-input" className="map-interaction-input-area" type="string" maxLength="50" placeholder="Enter place name or address..." />
-          <button className="btn btn-primary btn-sm interaction-btn" onClick={this.handlePlaceSearchClick.bind(this)}>Search</button>
+          <input id="map-interaction-input" onChange={this.handleSearchInput.bind(this)} className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
         </div>
         <div className="map-interaction-box">
           <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
