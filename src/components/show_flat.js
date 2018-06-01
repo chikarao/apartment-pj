@@ -26,7 +26,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {} };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -905,9 +905,15 @@ getDistance(pointALatLng, pointBLatLng, pointB, map) {
 }
 
   handlePlaceClick(event) {
+    _.each(this.state.clickedPlaceArray, place => {
+      const placeDiv = place;
+      placeDiv.style.color = 'black';
+    });
     console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
+    clickedElement.style.color = 'lightGray';
     const elementVal = clickedElement.getAttribute('value');
+    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
     this.createSelectedMarker(elementVal);
   }

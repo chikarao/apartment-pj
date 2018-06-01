@@ -320,6 +320,19 @@ body > div:first-child {
   margin: 10px;
 }
 
+#map-interaction-input {
+  font-size: 15px;
+  margin-top: 20px;
+}
+
+/* remove powered by google from autocomplete */
+.pac-container:after {
+    /* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
+
+    background-image: none !important;
+    height: 0px;
+}
+
 
 /* ***********PAGINATION*************** */
 
