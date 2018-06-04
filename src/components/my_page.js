@@ -57,7 +57,7 @@ class MyPage extends Component {
         console.log('in mypage, renderEachBookingByUser, in map, booking: ', booking);
         return (
           <li key={index} className="my-page-each-card">
-            <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
+            <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} />
               <div className="my-page-details">
                 <ul>

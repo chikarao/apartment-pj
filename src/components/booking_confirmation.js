@@ -15,8 +15,31 @@ class BookingConfirmation extends Component {
       console.log('in booking confirmation, componentWillUnmount');
     }
 
+    renderImage(images) {
+      const imagesEmpty = _.isEmpty(images);
+      if(!imagesEmpty) {
+        console.log('in show_flat renderImages, images: ', images);
+        return (
+          _.map(images, (image, index) => {
+            console.log('in show_flat renderImages, image: ', image.publicid);
+            return (
+              <div key={index} className="slide-show">
+                <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+              </div>
+            );
+          })
+        );
+      } else {
+        return (
+          <div className="no-results-message">Images are not available for this flat</div>
+        );
+      }
+    }
+
     renderBookingData() {
-      if (this.props.bookingData) {
+      const { bookingData } = this.props;
+
+      if (bookingData) {
         // const data = this.props.bookingData.id;
         // localStorage.setItem('data', data);
         // const localData = localStorage.getItem('data');
@@ -28,26 +51,29 @@ class BookingConfirmation extends Component {
               Thank you for your booking!
             </h2>
             <h3>
-              You can manage your bookings in My Page.
+              This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
             </h3>
+            <div id="carousel-show" className="booking-confirmation-image">
+              {this.renderImage(bookingData.flat.images)}
+            </div>
             <div className="booking-confirmation">
               <div>
-                Description: {this.props.bookingData.flat.description}
+                <strong>Description:</strong> {bookingData.flat.description}
               </div>
               <div>
-                Area: {this.props.bookingData.flat.area}
+                <strong>Area:</strong> {bookingData.flat.area}
               </div>
               <div>
-                Beds: {this.props.bookingData.flat.beds}
+                <strong>Beds:</strong> {bookingData.flat.beds}
               </div>
               <div>
-                Booking start: {this.props.bookingData.date_start}
+                <strong>Booking start:</strong> {bookingData.date_start}
               </div>
               <div>
-                Booking end: {this.props.bookingData.date_end}
+                <strong>Booking end:</strong> {bookingData.date_end}
               </div>
               <div>
-                Booking ID: {this.props.bookingData.id}
+                <strong>Booking ID:</strong> {bookingData.id}
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ class Messaging extends Component {
 
   componentDidUpdate() {
     // if (this.state.inMessaging) {
-      this.scrollLastMessageIntoView();
+      // this.scrollLastMessageIntoView();
     // }
 
     // const messageBox = document.getElementById('message-show-box');

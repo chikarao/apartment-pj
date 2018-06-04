@@ -146,9 +146,10 @@ class DatePicker extends Component {
  }
 
  handleDayClick(day) {
+   console.log('in date_picker, handleDayClick, day: ', day);
    const { from, to } = this.state;
    const isDayDisabled = this.isDayDisabled(day);
-   console.log('in date_picker, handleDayClick, this.isDayDisabled:', this.isDayDisabled(day));
+   // console.log('in date_picker, handleDayClick, this.isDayDisabled:', this.isDayDisabled(day));
   if (isDayDisabled) {
     this.handleResetClick();
     // return;
@@ -199,7 +200,7 @@ class DatePicker extends Component {
     }
    }
    //end of else, first if
- }
+ } // end of handleDayClick
 
  handleDayMouseEnter(day) {
    const { from, to } = this.state;

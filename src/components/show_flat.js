@@ -188,7 +188,8 @@ class ShowFlat extends Component {
     const firstOfMonthJustDate = firstOfMonth.toDateString();
     console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today just dates: ', firstOfMonthJustDate, todayJustDate);
     if (todayJustDate !== firstOfMonthJustDate) {
-      const firstOfMonthRange = { after: firstOfMonth, before: today }
+      console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today: ', new Date(firstOfMonth - 1), today);
+      const firstOfMonthRange = { after: new Date(firstOfMonth - 1), before: today }
       daysList.push(firstOfMonthRange);
       console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
     }
@@ -443,7 +444,7 @@ class ShowFlat extends Component {
     console.log('in show_flat, getPlaces, criterion: ', criterion);
     console.log('in show_flat, getPlaces, this.props.flat.lat: ', this.props.flat.lat);
     console.log('in show_flat, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
-    const radius = 2000;
+    const radius = 5000;
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
@@ -579,81 +580,7 @@ class ShowFlat extends Component {
   //   input.value = '';
   // }
 
-  handleSearchInput() {
-    // setting map center and bounds for autocomplete
-    // bounds focuses search results within the area
-    const mapCenter = { lat: this.props.flat.lat, lng: this.props.flat.lng };
-    const latOffsetNorth = 0.06629999999999825;
-    const latOffsetSouth = -0.036700000000003286;
-    const lngOffsetWest = -0.14;
-    const lngOffsetEast = 0.2;
 
-    // offset the same as the big map, so pans SF area and some of Oakland
-    const defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(mapCenter.lat + latOffsetSouth, mapCenter.lng + lngOffsetWest), //more negative, less positive
-      new google.maps.LatLng(mapCenter.lat + latOffsetNorth, mapCenter.lng + lngOffsetEast)
-    ); //less negative, more positive
-
-      //
-      // console.log('in show_flat, handleSearchInput, defaultBounds: ', defaultBounds);
-      // gets input for autocomplete focused on bounds from above
-      const input = document.getElementById('map-interaction-input');
-      const options = {
-        bounds: defaultBounds
-        // types: ['establishment']
-      };
-
-        // instantiate autocomplete and addlistener for when selection made
-        const autocomplete = new google.maps.places.Autocomplete(input, options);
-        autocomplete.addListener('place_changed', onPlaceChanged.bind(this));
-        console.log('in show_flat, handleSearchInput, autocomplete: ', autocomplete);
-
-        // console.log('in show_flat, handleSearchInput, this.state.autoCompletePlace: ', this.state.autoCompletePlace);
-
-        // called when place selected in autocomplete
-        function onPlaceChanged() {
-          // markers array needed to fit map to marker bounds
-          const markersArray = [];
-          const place = autocomplete.getPlace();
-          console.log('in show_flat, handleSearchInput, place: ', place);
-          // this is accessible as this function is bound to this(the class, not the function)
-          // console.log('in show_flat, handleSearchInput, thisthis: ', this);
-
-          // latlng for the flat
-          const location = { lat: this.props.flat.lat, lng: this.props.flat.lng }
-          // create map with flat lat lng and initial zoom, zoom will be overriden by bounds of markers below
-          const map = this.createMap(location, 14);
-
-          // boolean passed to create marker to decide whether to show label on marker
-          const showLabel = true;
-          // marker of place from autocomplete
-          const marker = this.createMarker(place, map, showLabel);
-          const locationB = { lat: marker.position.lat(), lng: marker.position.lng() };
-          const flatMarker = this.createFlatMarker(this.props.flat, map);
-
-          // pushes markers into array for map zooming to bounds of markers
-          markersArray.push(marker);
-          markersArray.push(flatMarker);
-
-          // gets distance from flat to searched autocomplete place,
-          // and draws marker with distance label and sets on map
-          this.getDistance(location, locationB, marker, map);
-
-          // marker.setMap(map);
-          flatMarker.setMap(map);
-
-          // zoom map to fit markers drawn
-          const bounds = new google.maps.LatLngBounds();
-          for (let i = 0; i < markersArray.length; i++) {
-            bounds.extend(markersArray[i].getPosition());
-          }
-          map.fitBounds(bounds);
-        }
-        // else {
-        //   document.getElementById('autocomplete').placeholder = 'Enter a city';
-        // }
-      // }
-  }
 
   getPlacesCallback(results) {
     console.log('in show_flat, getPlacesCallback, results ??: ', results);
@@ -786,13 +713,8 @@ class ShowFlat extends Component {
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
     const infowindow = new google.maps.InfoWindow();
-    const directionsService = new google.maps.DirectionsService;
-    const directionsDisplay = new google.maps.DirectionsRenderer({
-      map
-    });
     // need to pass zoom to craeteMap
     const map = this.createMap(location, 14);
-    directionsDisplay.setMap(map);
     const service = new google.maps.places.PlacesService(map);
     service.getDetails({
       placeId
@@ -831,6 +753,7 @@ class ShowFlat extends Component {
             fontWeight: 'bold'
           }
         });
+        markersArray.push(pointB);
         const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
         const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
         const distance = this.getDistance(pointALatLng, pointBLatLng, pointB, map);
@@ -844,74 +767,169 @@ class ShowFlat extends Component {
           infowindow.setContent(result.name);
           infowindow.open(map, this);
         });
-        // this.calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray, map);
+        const searchClick = true;
+        this.calculateAndDisplayRoute(pointA, pointB, markersArray, map, searchClick);
       } // end of if status ok
     }); // end of callback
   } // end of createSelectedMarker
 
-// FOR getting route from point A to B
-//   calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB, markersArray, map) {
-//     console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
-//     const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
-//     const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
-//
-//     console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
-//   directionsService.route({
-//     origin: pointALatLng,
-//     destination: pointBLatLng,
-//     travelMode: google.maps.TravelMode.WALKING,
-//     // preserveViewport: true
-//   }, (response, status) => {
-//     if (status === 'OK') {
-//       console.log('in show_flat, calculateAndDisplayRoute, after if status, response: ', response);
-//       _.each(markersArray, marker => {
-//         marker.setMap(null)
-//       });
-//       directionsDisplay.setDirections(response);
-//     } else {
-//       window.alert('Directions request failed due to ' + status);
-//     }
-//   });
-//   this.getDistance();
-// }
+  // FOR getting route from point A to B
 
-getDistance(pointALatLng, pointBLatLng, pointB, map) {
-  console.log('in show_flat, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
+  handleSearchInput() {
+    // setting map center and bounds for autocomplete
+    // bounds focuses search results within the area
+    const mapCenter = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+    const latOffsetNorth = 0.06629999999999825;
+    const latOffsetSouth = -0.036700000000003286;
+    const lngOffsetWest = -0.14;
+    const lngOffsetEast = 0.2;
 
-  const distanceService = new google.maps.DistanceMatrixService();
-  let distance = '';
-  distanceService.getDistanceMatrix(
-    {
-      origins: [pointALatLng],
-      destinations: [pointBLatLng],
-      travelMode: 'WALKING',
+    // offset the same as the big map, so pans SF area and some of Oakland
+    const defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(mapCenter.lat + latOffsetSouth, mapCenter.lng + lngOffsetWest), //more negative, less positive
+      new google.maps.LatLng(mapCenter.lat + latOffsetNorth, mapCenter.lng + lngOffsetEast)
+    ); //less negative, more positive
+
+      //
+      // console.log('in show_flat, handleSearchInput, defaultBounds: ', defaultBounds);
+      // gets input for autocomplete focused on bounds from above
+      const input = document.getElementById('map-interaction-input');
+      const options = {
+        bounds: defaultBounds
+        // types: ['establishment']
+      };
+
+        // instantiate autocomplete and addlistener for when selection made
+        const autocomplete = new google.maps.places.Autocomplete(input, options);
+        autocomplete.addListener('place_changed', onPlaceChanged.bind(this));
+        console.log('in show_flat, handleSearchInput, autocomplete: ', autocomplete);
+
+        // console.log('in show_flat, handleSearchInput, this.state.autoCompletePlace: ', this.state.autoCompletePlace);
+
+        // called when place selected in autocomplete
+        function onPlaceChanged() {
+          // markers array needed to fit map to marker bounds
+          const markersArray = [];
+          const place = autocomplete.getPlace();
+          console.log('in show_flat, handleSearchInput, place: ', place);
+          // this is accessible as this function is bound to this(the class, not the function)
+          // console.log('in show_flat, handleSearchInput, thisthis: ', this);
+
+          // latlng for the flat
+          const location = { lat: this.props.flat.lat, lng: this.props.flat.lng }
+          // create map with flat lat lng and initial zoom, zoom will be overriden by bounds of markers below
+          const map = this.createMap(location, 14);
+
+          // boolean passed to create marker to decide whether to show label on marker
+          const showLabel = true;
+          // marker of place from autocomplete
+          const marker = this.createMarker(place, map, showLabel);
+          const locationB = { lat: marker.position.lat(), lng: marker.position.lng() };
+          const flatMarker = this.createFlatMarker(this.props.flat, map);
+
+          // pushes markers into array for map zooming to bounds of markers
+          markersArray.push(marker);
+          markersArray.push(flatMarker);
+
+          //  location and location B are not places
+          const searchClick = false;
+          this.calculateAndDisplayRoute(flatMarker, marker, markersArray, map, searchClick)
+
+          // marker.setMap(map);
+          // marker for location B is set on map in getDistance
+          flatMarker.setMap(map);
+
+          // zoom map to fit markers drawn
+          const bounds = new google.maps.LatLngBounds();
+          for (let i = 0; i < markersArray.length; i++) {
+            bounds.extend(markersArray[i].getPosition());
+          }
+          map.fitBounds(bounds);
+          // gets distance from flat to searched autocomplete place,
+          // and draws marker with distance label and sets on map
+          this.getDistance(location, locationB, marker, map);
+        }
+        // else {
+        //   document.getElementById('autocomplete').placeholder = 'Enter a city';
+        // }
+      // }
+  }
+
+    calculateAndDisplayRoute(pointA, pointB, markersArray, map, searchClick) {
+      const directionsService = new google.maps.DirectionsService;
+      const directionsDisplay = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: true
+      });
+      console.log('in show_flat, calculateAndDisplayRoute, after if status, pointA, pointB: ', pointA, pointB);
+      directionsDisplay.setMap(map);
+      console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
+      // for some reason, better to send markers than lat lng when calling calculateAndDisplayRoute
+      const pointALatLng = searchClick ? { lat: pointA.position.lat(), lng: pointA.position.lng() } : { lat: pointA.position.lat(), lng: pointA.position.lng() }
+      const pointBLatLng = searchClick ? { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() } : { lat: pointB.position.lat(), lng: pointB.position.lng() }
+
+      console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
+    directionsService.route({
+      origin: pointALatLng,
+      destination: pointBLatLng,
+      travelMode: google.maps.TravelMode.WALKING,
+      // preserveViewport: true
     }, (response, status) => {
       if (status === 'OK') {
-        console.log('in show_flat, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
-
-        distance = { distance: response.rows[0].elements[0].distance.text };
-        const distanceText = response.rows[0].elements[0].distance.text;
-        const marker = pointB;
-        console.log('in show_flat, getDistance, after if status, distanceService after if, marker: ', marker);
-        console.log('in show_flat, getDistance, after if status, distanceService after if, distanceText: ', distanceText);
-        // marker.label.text = distance.text;
-        const markerLabel = marker.getLabel();
-        console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel: ', markerLabel);
-        markerLabel.text = distanceText;
-        marker.setLabel(markerLabel);
-        console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel.text: ', markerLabel.tet);
-        marker.setMap(map)
+        console.log('in show_flat, calculateAndDisplayRoute, after if status, response: ', response);
+        console.log('in show_flat, calculateAndDisplayRoute, after if status, markersArray: ', markersArray);
+        // _.each(markersArray, marker => {
+        //   marker.setMap(map)
+        // });
+        directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
       }
-    }
-  );
-  return distance;
-}
+    });
+    // this.getDistance();
+  }
 
-  handlePlaceClick(event) {
+  getDistance(pointALatLng, pointBLatLng, pointB, map) {
+    console.log('in show_flat, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
+
+    const distanceService = new google.maps.DistanceMatrixService();
+    let distance = '';
+    distanceService.getDistanceMatrix(
+      {
+        origins: [pointALatLng],
+        destinations: [pointBLatLng],
+        travelMode: 'WALKING',
+      }, (response, status) => {
+        if (status === 'OK') {
+          console.log('in show_flat, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+
+          distance = { distance: response.rows[0].elements[0].distance.text };
+          const distanceText = response.rows[0].elements[0].distance.text;
+          const marker = pointB;
+          console.log('in show_flat, getDistance, after if status, distanceService after if, marker: ', marker);
+          console.log('in show_flat, getDistance, after if status, distanceService after if, distanceText: ', distanceText);
+          // marker.label.text = distance.text;
+          const markerLabel = marker.getLabel();
+          console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel: ', markerLabel);
+          markerLabel.text = distanceText;
+          marker.setLabel(markerLabel);
+          console.log('in show_flat, getDistance, after if status, distanceService after if, markerLabel.text: ', markerLabel.tet);
+          marker.setMap(map)
+        }
+      }
+    );
+    return distance;
+  }
+
+  unhighlightClickedPlace() {
     _.each(this.state.clickedPlaceArray, place => {
       const placeDiv = place;
       placeDiv.style.color = 'black';
     });
+  }
+
+  handlePlaceClick(event) {
+    this.unhighlightClickedPlace();
     console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
     clickedElement.style.color = 'lightGray';
@@ -946,7 +964,7 @@ getDistance(pointALatLng, pointBLatLng, pointB, map) {
         <div className="map-interaction-box">
           <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
           <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenient Stores</div>
+          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
           <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
           <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
           <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
