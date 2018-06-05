@@ -641,7 +641,8 @@ export function deleteImage(id, imageCount, callback) {
     });
   };
 }
-
+// creates like by flat id and user id; user id is taken from the token in hte API
+// called in main_cards
 export function createLike(flatId, callback) {
   console.log('in actions index, createLike: localStorage.getItem, token: ', localStorage.getItem('token'));
   console.log('in actions index, createLike: flatId: ', flatId);
@@ -662,6 +663,8 @@ export function createLike(flatId, callback) {
     });
   };
 }
+// gets likes by user; API takes token and fetches likes by user.id
+// called in feature
 export function fetchLikesByUser() {
   console.log('in actions index, fetchLikesByUser: localStorage.getItem, token: ', localStorage.getItem('token'));
 
@@ -684,6 +687,7 @@ export function fetchLikesByUser() {
 }
 
 // deletes like for given user and flat; user id in API is taken from token
+// called in main_cards
 export function deleteLike(flatId, callback) {
   console.log('in actions index, deleteLike: like id: ', flatId);
 

@@ -982,13 +982,14 @@ display: block;
   position: absolute;
   top: 0;
   right: 40px; */
-  font-size: 45px;
+  font-size: 40px;
   /* z-index: 10; */
   /* opacity: 0; */
   background: transparent;
   color: lightgray;
   pointer-events: none;
 }
+
 
 /* #card-like-box {
   color: #ccc;

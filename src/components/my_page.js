@@ -30,6 +30,7 @@ class MyPage extends Component {
     this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
+    this.props.fetchLikesByUser();
   }
 
   fetchFlatsByUserCallback(flatIdArray) {
@@ -405,6 +406,65 @@ class MyPage extends Component {
       }
   }
 
+  handleUnlikeClick(event) {
+    console.log('in main cards, handleUnlikeClick, like clicked, event.target: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
+    this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
+  }
+
+  handleLikeClickCallback() {
+    this.props.fetchLikesByUser();
+  }
+
+  renderEachLike() {
+    console.log('in mypage, renderEachLike, likes: ', this.props.likes);
+    const { likes } = this.props;
+
+        return _.map(likes, (like, index) => {
+          console.log('in mypage, renderEachLike, in each, like: ', like);
+          const flat = like.flat;
+          console.log('in mypage, renderEachLike, in each, flat: ', flat);
+
+            return (
+              <li key={index} className="my-page-each-card">
+                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                  <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+                  <div className="my-page-details">
+                    <ul>
+                      <li>{flat.description}</li>
+                      <li>{flat.area}</li>
+                      <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
+                      <li>flat id: {flat.id}</li>
+                    </ul>
+
+                  </div>
+                </div>
+                <div className="my-page-card-button-box">
+                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleUnlikeClick.bind(this)}>Unlike</button>
+                </div>
+              </li>
+            );
+            // end of return
+          // });
+          // end of second each
+        });
+        //end of first each
+      // }
+  }
+
+  renderLikes() {
+    return (
+      <div>
+        <div className="my-page-category-title">My Likes</div>
+        <ul>
+        {this.renderEachLike()}
+        </ul>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -415,6 +475,7 @@ class MyPage extends Component {
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
@@ -432,7 +493,8 @@ function mapStateToProps(state) {
     bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
-    noConversation: state.conversation.noConversation
+    noConversation: state.conversation.noConversation,
+    likes: state.likes.userLikes
   };
 }
 
