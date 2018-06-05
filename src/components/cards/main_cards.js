@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
 
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
+import * as actions from '../../actions';
 
 // import Carousel from '../carousel/carousel';
 
@@ -85,6 +85,49 @@ class MainCards extends Component {
       console.log('in main cards, Right arrow clicked');
   }
 
+  handleLikeClick(event) {
+    console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
+    const likesArray = this.getLikesArray();
+      if (!likesArray.includes(this.props.flat.id)) {
+        this.props.createLike(elementVal, () => this.handleLikeClickCallback());
+      } else {
+        this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
+      }
+  }
+
+  handleLikeClickCallback() {
+    this.props.fetchLikesByUser();
+  }
+
+  getLikesArray() {
+    const likesArray = [];
+    _.each(this.props.likes, (like) => {
+      likesArray.push(like.flat_id);
+    })
+    return likesArray;
+  }
+
+  renderLikes() {
+    const likesArray = this.getLikesArray();
+    if (!likesArray.includes(this.props.flat.id)) {
+      console.log('in main cards, renderLikes, likesArray, flat.id: ', likesArray, this.props.flat.id);
+      return (
+        <div key={likesArray[0]} value={this.props.flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
+          <i key={this.props.flat.user_id} className="fa fa-heart" style={{ opacity: '.75' }}></i>
+        </div>
+      )
+    } else {
+      return (
+        <div key={likesArray[0]} value={this.props.flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
+          <i key={this.props.flat.user_id} className="fa fa-heart" style={{ color: 'pink' }}></i>
+        </div>
+      )
+    }
+  }
+
   renderCards() {
     // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
     return (
@@ -94,7 +137,9 @@ class MainCards extends Component {
           style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
         >
           <div className="card">
+              {this.renderLikes()}
             <div className="card-box">
+
               <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
                 <i className="fa fa-angle-left"></i>
               </div>

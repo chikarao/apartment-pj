@@ -66,6 +66,7 @@ class Feature extends Component {
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
     // fetchflats based on above bounds
     this.props.fetchFlats(mapBounds);
+    this.props.fetchLikesByUser();
   }
 
   // componentWillReceiveProps() {
@@ -317,6 +318,7 @@ class Feature extends Component {
                 <MainCards
                   // key={flat.id.toString()}
                   flat={flat}
+                  likes={this.props.likes}
                   currency='$'
                   showFlat={false}
                 />
@@ -339,10 +341,10 @@ class Feature extends Component {
 
 
   render() {
+    // {this.renderMap()}
     return (
       <div>
         <div className="container" id="map">
-          {this.renderMap()}
         </div>
 
         <div className="container main-card-container">
@@ -364,7 +366,8 @@ function mapStateToProps(state) {
     message: state.auth.message,
     flats: state.flats,
     startUpCount: state.startUpCount,
-    mapDimensions: state.mapDimensions
+    mapDimensions: state.mapDimensions,
+    likes: state.likes.userLikes
    };
 }
 

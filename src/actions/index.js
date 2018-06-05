@@ -32,7 +32,10 @@ import {
   FETCH_MESSAGE,
   CREATE_MESSAGE,
   NO_CONVERSATION,
-  CREATE_CONVERSATION
+  CREATE_CONVERSATION,
+  CREATE_LIKE,
+  DELETE_LIKE,
+  LIKES_BY_USER
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -635,6 +638,70 @@ export function deleteImage(id, imageCount, callback) {
         type: DELETE_IMAGE,
         payload: response.data.data.image
       });
+    });
+  };
+}
+
+export function createLike(flatId, callback) {
+  console.log('in actions index, createLike: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, createLike: flatId: ', flatId);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/likes/`, { flat_id: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createLike, response: ', response);
+      console.log('response to createLike, response.data.data.image: ', response.data.data.like);
+
+      dispatch({
+        type: CREATE_LIKE,
+        payload: response.data.data.like
+      });
+      callback();
+    });
+  };
+}
+export function fetchLikesByUser() {
+  console.log('in actions index, fetchLikesByUser: localStorage.getItem, token: ', localStorage.getItem('token'));
+
+  return function (dispatch) {
+    //for some reason, get works but post does not; with postman, post works with no params
+    axios.get(`${ROOT_URL}/api/v1/users/likes/likes_by_user`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchLikesByUser, response: ', response);
+      console.log('response to fetchLikesByUser, response.data.data.image: ', response.data.data.likes);
+
+      // callback();
+      dispatch({
+        type: LIKES_BY_USER,
+        payload: response.data.data.likes
+      });
+    });
+  };
+}
+
+// deletes like for given user and flat; user id in API is taken from token
+export function deleteLike(flatId, callback) {
+  console.log('in actions index, deleteLike: like id: ', flatId);
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/likes/${flatId}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteLike, response: ', response);
+      console.log('response to deleteLike, response.data.data.image: ', response.data.data);
+
+      // callback(imageCount);
+      dispatch({
+        type: DELETE_LIKE,
+        payload: response.data.data
+      });
+      callback();
     });
   };
 }

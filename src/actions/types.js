@@ -29,3 +29,6 @@ export const FETCH_CONVERSATION_BY_USER_AND_FLAT = 'fetch_conversation_by_user_a
 export const CREATE_MESSAGE = 'create_message';
 export const NO_CONVERSATION = 'no_conversation';
 export const CREATE_CONVERSATION = 'create_conversation';
+export const CREATE_LIKE = 'create_like';
+export const DELETE_LIKE = 'delete_like';
+export const LIKES_BY_USER = 'likes_by_user';

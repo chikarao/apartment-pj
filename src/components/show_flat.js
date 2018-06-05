@@ -36,6 +36,10 @@ class ShowFlat extends Component {
     this.props.getCurrentUser();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
     this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
+    if (this.props.flat) {
+
+      console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
+    }
   }
 
   componentDidUpdate() {
@@ -220,6 +224,8 @@ class ShowFlat extends Component {
 
   renderMap() {
     if (this.props.flat) {
+      //instantiates autocomplete as soon as flat is loaded in state then mapcenter can be set
+      this.handleSearchInput();
       console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
       const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
       const flatsEmpty = false;
@@ -504,7 +510,7 @@ class ShowFlat extends Component {
   } //end of getPlaces
 
   createMarker(place, mapShow, showLabel) {
-    if (place) {
+    if (typeof place.geometry !== 'undefined') {
       const infowindow = new google.maps.InfoWindow();
       const markerIcon = {
         // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
@@ -518,6 +524,7 @@ class ShowFlat extends Component {
         //label origin starts at 0, 0 somewhere above the marker
         labelOrigin: new google.maps.Point(20, 33)
       };
+      console.log('in show_flat, createMarker, place.geometry: ', place.geometry);
       const placeLoc = place.geometry.location;
       // Don't need map; setMap is run in function where createMarker is called
       const marker = new google.maps.Marker({
@@ -775,6 +782,8 @@ class ShowFlat extends Component {
 
   // FOR getting route from point A to B
 
+  // sets up search input by instantiating auto complete in renderMap as soon as this.props.flat
+  // is loaded in props
   handleSearchInput() {
     // setting map center and bounds for autocomplete
     // bounds focuses search results within the area
@@ -811,44 +820,48 @@ class ShowFlat extends Component {
           // markers array needed to fit map to marker bounds
           const markersArray = [];
           const place = autocomplete.getPlace();
-          console.log('in show_flat, handleSearchInput, place: ', place);
-          // this is accessible as this function is bound to this(the class, not the function)
-          // console.log('in show_flat, handleSearchInput, thisthis: ', this);
+          // check if place returned; in case return pushed without selection in search input
+          if (typeof place.geometry !== 'undefined') {
+            console.log('in show_flat, handleSearchInput, place: ', place);
+            // this is accessible as this function is bound to this(the class, not the function)
+            // console.log('in show_flat, handleSearchInput, thisthis: ', this);
 
-          // latlng for the flat
-          const location = { lat: this.props.flat.lat, lng: this.props.flat.lng }
-          // create map with flat lat lng and initial zoom, zoom will be overriden by bounds of markers below
-          const map = this.createMap(location, 14);
+            // latlng for the flat
+            const location = { lat: this.props.flat.lat, lng: this.props.flat.lng }
+            // create map with flat lat lng and initial zoom, zoom will be overriden by bounds of markers below
+            const map = this.createMap(location, 14);
 
-          // boolean passed to create marker to decide whether to show label on marker
-          const showLabel = true;
-          // marker of place from autocomplete
-          const marker = this.createMarker(place, map, showLabel);
-          const locationB = { lat: marker.position.lat(), lng: marker.position.lng() };
-          const flatMarker = this.createFlatMarker(this.props.flat, map);
+            // boolean passed to create marker to decide whether to show label on marker
+            const showLabel = true;
+            // marker of place from autocomplete
+            const marker = this.createMarker(place, map, showLabel);
+            const locationB = { lat: marker.position.lat(), lng: marker.position.lng() };
+            const flatMarker = this.createFlatMarker(this.props.flat, map);
 
-          // pushes markers into array for map zooming to bounds of markers
-          markersArray.push(marker);
-          markersArray.push(flatMarker);
+            // pushes markers into array for map zooming to bounds of markers
+            markersArray.push(marker);
+            markersArray.push(flatMarker);
 
-          //  location and location B are not places
-          const searchClick = false;
-          this.calculateAndDisplayRoute(flatMarker, marker, markersArray, map, searchClick)
+            //  location and location B are not places
+            const searchClick = false;
+            this.calculateAndDisplayRoute(flatMarker, marker, markersArray, map, searchClick)
 
-          // marker.setMap(map);
-          // marker for location B is set on map in getDistance
-          flatMarker.setMap(map);
+            // marker.setMap(map);
+            // marker for location B is set on map in getDistance
+            flatMarker.setMap(map);
 
-          // zoom map to fit markers drawn
-          const bounds = new google.maps.LatLngBounds();
-          for (let i = 0; i < markersArray.length; i++) {
-            bounds.extend(markersArray[i].getPosition());
-          }
-          map.fitBounds(bounds);
-          // gets distance from flat to searched autocomplete place,
-          // and draws marker with distance label and sets on map
-          this.getDistance(location, locationB, marker, map);
+            // zoom map to fit markers drawn
+            const bounds = new google.maps.LatLngBounds();
+            for (let i = 0; i < markersArray.length; i++) {
+              bounds.extend(markersArray[i].getPosition());
+            }
+            map.fitBounds(bounds);
+            // gets distance from flat to searched autocomplete place,
+            // and draws marker with distance label and sets on map
+            this.getDistance(location, locationB, marker, map);
+          } // end of if place !== 'undefined'
         }
+        // end of function function onPlaceChanged
         // else {
         //   document.getElementById('autocomplete').placeholder = 'Enter a city';
         // }
@@ -957,30 +970,38 @@ class ShowFlat extends Component {
     });
   }
 
+  handleGoToGMClick() {
+
+  }
+
   renderMapInteractiion() {
     // reference https://developers.google.com/places/web-service/supported_types
-    return (
-      <div className="map-interaction-container">
+    // a tag reference: https://stackoverflow.com/questions/1801732/how-do-i-link-to-google-maps-with-a-particular-longitude-and-latitude
+    if(this.props.flat) {
+      return (
+        <div className="map-interaction-container">
         <div className="map-interaction-box">
-          <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-          <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-          <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-          <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-          <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-          <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
-          <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-            {this.renderSearchSelection()}
-          </select>
-          <input id="map-interaction-input" onChange={this.handleSearchInput.bind(this)} className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
+        <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
+        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
+        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+        <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+        {this.renderSearchSelection()}
+        </select>
+        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
+        <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
         </div>
         <div className="map-interaction-box">
-          <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
-          <ul>
-            {this.renderSearchResultsList()}
-          </ul>
+        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
+        <ul>
+        {this.renderSearchResultsList()}
+        </ul>
         </div>
-      </div>
-    );
+        </div>
+      );
+    }
   }
 
   render() {

@@ -11,8 +11,8 @@ import * as actions from '../../actions';
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
-const API_KEY = process.env.CLOUDINARY_API_KEY;
-const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+// const API_KEY = process.env.CLOUDINARY_API_KEY;
+// const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 const ROOT_URL = 'http://localhost:3000';
 
@@ -54,7 +54,7 @@ class Upload extends Component {
     formData.append('flatId', this.props.flatId);
 
     // formData.append('signature', signatureSha1);
-  
+
 
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
 
