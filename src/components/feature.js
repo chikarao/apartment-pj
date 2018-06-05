@@ -321,6 +321,7 @@ class Feature extends Component {
                   likes={this.props.likes}
                   currency='$'
                   showFlat={false}
+                  authenticated={this.props.auth.authenticated}
                 />
               </div>
             );
@@ -341,10 +342,10 @@ class Feature extends Component {
 
 
   render() {
-    // {this.renderMap()}
     return (
       <div>
         <div className="container" id="map">
+          {this.renderMap()}
         </div>
 
         <div className="container main-card-container">
@@ -367,7 +368,8 @@ function mapStateToProps(state) {
     flats: state.flats,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions,
-    likes: state.likes.userLikes
+    likes: state.likes.userLikes,
+    auth: state.auth
    };
 }
 

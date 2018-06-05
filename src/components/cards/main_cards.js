@@ -86,16 +86,20 @@ class MainCards extends Component {
   }
 
   handleLikeClick(event) {
-    console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
-    const likesArray = this.getLikesArray();
+    if(this.props.authenticated) {
+      console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
+      const clickedElement = event.target;
+      const elementVal = clickedElement.getAttribute('value');
+      console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
+      const likesArray = this.getLikesArray();
       if (!likesArray.includes(this.props.flat.id)) {
         this.props.createLike(elementVal, () => this.handleLikeClickCallback());
       } else {
         this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
       }
+    } else {
+      this.props.history.push('/signin/');
+    }
   }
 
   handleLikeClickCallback() {
@@ -129,6 +133,8 @@ class MainCards extends Component {
   }
 
   renderCards() {
+    console.log('in main cards, renderCards, this.props.authenticated: ', this.props.authenticated);
+
     // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
     return (
       <div key={this.props.flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>

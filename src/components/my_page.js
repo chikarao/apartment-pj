@@ -353,7 +353,7 @@ class MyPage extends Component {
 
             return (
               <li key={index} className="my-page-each-card">
-                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
                   <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
                   <div className="my-page-details">
                     <ul>
@@ -406,6 +406,8 @@ class MyPage extends Component {
       }
   }
 
+  // **************************LIKES **************************************************
+
   handleUnlikeClick(event) {
     console.log('in main cards, handleUnlikeClick, like clicked, event.target: ', event.target);
     const clickedElement = event.target;
@@ -429,7 +431,7 @@ class MyPage extends Component {
 
             return (
               <li key={index} className="my-page-each-card">
-                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
                   <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
                   <div className="my-page-details">
                     <ul>
@@ -464,6 +466,7 @@ class MyPage extends Component {
       </div>
     );
   }
+  // **************************LIKES **************************************************
 
   render() {
     return (
@@ -471,11 +474,11 @@ class MyPage extends Component {
         <h2>My Page</h2>
         <div className="container my-page-container">
           <div className="row">
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
