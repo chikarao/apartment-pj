@@ -60,7 +60,7 @@ class SigninModal extends Component {
          <Link to="/resetpassword" className="reset-password">Reset Password</Link>
          <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Sign Up!</span>
          {this.renderAlert()}
-         <button action="submit" className="btn btn-primary">Sign in</button>
+         <button action="submit" className="btn btn-primary signin-btn">Sign in</button>
        </form>
          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
        </section>
@@ -76,6 +76,8 @@ SigninModal = reduxForm({
 })(SigninModal);
 
 function mapStateToProps(state) {
+  console.log('in signin modal, state: ', state);
+
   return {
     errorMessage: state.auth.error,
     authenticated: state.auth.authenticated };

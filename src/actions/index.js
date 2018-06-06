@@ -36,7 +36,8 @@ import {
   CREATE_LIKE,
   DELETE_LIKE,
   LIKES_BY_USER,
-  SHOW_SIGNIN_MODAL
+  SHOW_SIGNIN_MODAL,
+  SHOW_AUTH_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -85,8 +86,8 @@ console.log('in action, index, sign in, email and password: ', { email, password
           // take out error if hard coding error messages
           // if request is bad
           // show error to user
-          console.log('we are in signin .catch');
-          dispatch(authError(error.response.data.data.messages));
+          console.log('action index, sign in, catch, error.response.data.messages:', error.response.data.messages);
+          dispatch(authError(error.response.data.messages));
           // dispatch(authError('Bad login info...'));
         });
   };
@@ -112,8 +113,8 @@ export function signupUser({ email, password }, callback) {
       callback();
       // callback for this.props.history.push('/feature') from signup.js
     }).catch(error => {
-      console.log('error.response:', error);
-      dispatch(authError(error.response.data.data.messages));
+      console.log('action index, sign up, catch, error.response.data.messages:', error.response.data.messages);
+      dispatch(authError(error.response.data.messages));
       // dispatch(authError(error));
     });
     // .catch(response => dispatch(console.log(response.data)));
@@ -136,7 +137,7 @@ export function getCurrentUserForMyPage(callback) {
 }
 
 export function authError(error) {
-  console.log('in actions index, authError:');
+  console.log('in actions index, authError:', error);
   return {
     type: AUTH_ERROR,
     payload: error
@@ -155,11 +156,19 @@ export function signoutUser() {
 }
 
 export function showSigninModal() {
-  console.log('in actions index, signoutUser:');
+  console.log('in actions index, showSigninModal:');
 
   //flip authenticated to false
   // delete token from local storage
   return { type: SHOW_SIGNIN_MODAL };
+}
+
+export function showAuthModal() {
+  console.log('in actions index, showAuthModal:');
+
+  //flip authenticated to false
+  // delete token from local storage
+  return { type: SHOW_AUTH_MODAL };
 }
 
 // main fetchflats action for feature page;

@@ -34,7 +34,7 @@ class SignupModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
+          <strong>Ooops!  </strong> {this.props.errorMessage}
         </div>
       );
     }
@@ -48,9 +48,9 @@ class SignupModal extends Component {
   renderAuthForm() {
     const { handleSubmit, pristine, submitting, touched, fields: { email, password, passwordConfirm } } = this.props;
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-    console.log('in modal, render showHideClassName:', showHideClassName);
-    console.log('in modal, render this.props.show:', this.props.show);
-    console.log('in modal, render this.props:', this.props);
+    console.log('in signup modal, render showHideClassName:', showHideClassName);
+    console.log('in signupmodal, render this.props.show:', this.props.show);
+    console.log('in signup modal, render this.props:', this.props);
 
     return (
       <div className={showHideClassName}>
@@ -132,6 +132,7 @@ SignupModal = reduxForm({
 })(SignupModal);
 
 function mapStateToProps(state) {
+  console.log('in signup modal, state: ', state);
   return {
     errorMessage: state.auth.error
   };
