@@ -110,9 +110,6 @@ class Header extends Component {
          return [
            <ul key={'1'} className="header-list">
              <li className="nav-item">
-              <Link className="nav-link" to="/signout">Sign Out</Link>
-             </li>
-             <li className="nav-item">
               <Link className="nav-link" to={'/mypage'} >My Page</Link>
              </li>
              <li className="nav-item">

@@ -66,7 +66,9 @@ class Feature extends Component {
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
     // fetchflats based on above bounds
     this.props.fetchFlats(mapBounds);
-    this.props.fetchLikesByUser();
+    if (this.props.auth.authenticated) {
+      this.props.fetchLikesByUser();
+    }
   }
 
   // componentWillReceiveProps() {

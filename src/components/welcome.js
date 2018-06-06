@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import Upload from './images/upload_test';
 import SigninModal from './auth/signin_modal';
 import SignupModal from './auth/signup_modal';
+import * as actions from '../actions';
+
 
 class Welcome extends Component {
   constructor(props) {
@@ -14,11 +16,18 @@ class Welcome extends Component {
   }
 
   showModal = () => {
-     this.setState({ show: true }, () => console.log('in Welcome, showModal, this.state: ', this.state));
+     // this.setState({ show: true }, () => console.log('in Welcome, showModal, this.state: ', this.state));
+     // calls action craetor to set this.props.auth.showAuthModal to true
+     this.props.showAuthModal();
    };
 
    hideModal = () => {
-     this.setState({ show: false }, () => console.log('in Welcome, hideModal, this.state: ', this.state));
+     // this.setState({ show: false }, () => console.log('in Welcome, hideModal, this.state: ', this.state));
+     // calls action craetor to set this.props.auth.showAuthModal to false
+     this.props.showAuthModal();
+     if (this.props.auth.showSigninModal) {
+       this.props.showSigninModal();
+     }
    };
 
    renderModal() {
@@ -26,7 +35,7 @@ class Welcome extends Component {
        return (
          <div>
            <SigninModal
-           show={this.props.auth.authenticated ? false : this.state.show}
+           show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
            handleClose={this.hideModal}
            />
          </div>
@@ -35,7 +44,7 @@ class Welcome extends Component {
        return (
          <div>
            <SignupModal
-           show={this.props.auth.authenticated ? false : this.state.show}
+           show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
            handleClose={this.hideModal}
            />
          </div>
@@ -44,8 +53,8 @@ class Welcome extends Component {
    }
 
   render() {
-    console.log('in Welcome, render, this.state: ', this.state)
-    console.log('in Welcome, render, this.state.show: ', this.state.show)
+    // console.log('in Welcome, render, this.state: ', this.state)
+    // console.log('in Welcome, render, this.state.show: ', this.state.show)
     return (
       <div>
         {this.renderModal()}
@@ -66,4 +75,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Welcome);
+export default connect(mapStateToProps, actions)(Welcome);

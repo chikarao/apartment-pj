@@ -98,7 +98,7 @@ class MainCards extends Component {
         this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
       }
     } else {
-      this.props.history.push('/signin/');
+      this.props.showAuthModal();
     }
   }
 
