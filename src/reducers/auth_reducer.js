@@ -5,9 +5,10 @@ import {
   FETCH_MESSAGE,
   GET_CURRENT_USER,
   GET_CURRENT_USER_FOR_MY_PAGE,
+  SHOW_AUTH_MODAL
  } from '../actions/types';
 
-export default function (state = {}, action) {
+export default function (state = { showAuthModal: false }, action) {
   console.log('in auth reducer, action.payload: ', action.payload);
   switch (action.type) {
     case AUTH_USER:
@@ -28,6 +29,9 @@ export default function (state = {}, action) {
 
     case FETCH_MESSAGE:
       return { ...state, message: action.payload };
+
+    case SHOW_AUTH_MODAL:
+      return { ...state, showAuthModal: !state.showAuthModal };
 
     default:
       return state;

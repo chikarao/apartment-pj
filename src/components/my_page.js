@@ -444,7 +444,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleUnlikeClick.bind(this)}>Unlike</button>
+                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleUnlikeClick.bind(this)}>Remove</button>
                 </div>
               </li>
             );

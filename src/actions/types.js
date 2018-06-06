@@ -32,3 +32,4 @@ export const CREATE_CONVERSATION = 'create_conversation';
 export const CREATE_LIKE = 'create_like';
 export const DELETE_LIKE = 'delete_like';
 export const LIKES_BY_USER = 'likes_by_user';
+export const SHOW_AUTH_MODAL = 'show_auth_modal';

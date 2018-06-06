@@ -35,7 +35,8 @@ import {
   CREATE_CONVERSATION,
   CREATE_LIKE,
   DELETE_LIKE,
-  LIKES_BY_USER
+  LIKES_BY_USER,
+  SHOW_AUTH_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -151,6 +152,14 @@ export function signoutUser() {
   localStorage.removeItem('email');
   localStorage.removeItem('id');
   return { type: UNAUTH_USER };
+}
+
+export function showAuthModal() {
+  console.log('in actions index, signoutUser:');
+
+  //flip authenticated to false
+  // delete token from local storage
+  return { type: SHOW_AUTH_MODAL };
 }
 
 // main fetchflats action for feature page;
