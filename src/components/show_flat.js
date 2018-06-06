@@ -33,11 +33,12 @@ class ShowFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
-    this.props.getCurrentUser();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
-    this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
+    if (this.props.auth.authenticated) {
+      this.props.getCurrentUser();
+      this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
+    }
     if (this.props.flat) {
-
       console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
     }
   }
@@ -396,6 +397,10 @@ class ShowFlat extends Component {
       );
     }
   }
+
+  handleSignInClick() {
+    this.props.showAuthModal();
+  }
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
@@ -429,7 +434,7 @@ class ShowFlat extends Component {
       } else {
         return (
           <div>
-            <Link className="btn btn-primary btn-lg" to="/signin">Sign in to Book!</Link>
+            <button className="btn btn-primary btn-lg" onClick={this.handleSignInClick.bind(this)}>Sign in to Book!</button>
           </div>
         );
       }
@@ -1004,6 +1009,20 @@ class ShowFlat extends Component {
     }
   }
 
+  sendOwnerAMessage() {
+    if (!this.props.auth.authenticated) {
+      return (
+        <div className="send-owner-a-message-div" onClick={this.handleSignInClick.bind(this)}>
+        <h4>Sign in to Send the Owner a Message</h4>
+        </div>
+      );
+    } else {
+      <div className="send-owner-a-message-div-no-link">
+      <h4>Send the Owner a Message</h4>
+      </div>
+    }
+  }
+
   render() {
     // if (this.props.selectedDates) {
     // }
@@ -1022,7 +1041,7 @@ class ShowFlat extends Component {
           {this.renderMapInteractiion()}
         </div>
         <div>
-          {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : <h4>Send the Owner a Message</h4>}
+          {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
           {this.renderMessaging()}
         </div>
         <div>

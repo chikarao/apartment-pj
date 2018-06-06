@@ -604,6 +604,18 @@ body > div:first-child {
   font-size: 22px;
 }
 
+.send-owner-a-message-div {
+  margin: 25px 0 25px 0;
+}
+
+.send-owner-a-message-div:hover {
+  color: gray;
+  text-decoration: underline;
+}
+
+.send-owner-a-message-div-no-link {
+  margin: 25px 0 25px 0;
+}
 /* MYPAGE MESSAGE */
 
 .mypaga-message-box {
