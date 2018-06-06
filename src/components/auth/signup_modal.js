@@ -42,7 +42,7 @@ class SignupModal extends Component {
 
   handleSigninClick() {
     console.log('in modal, in handleSigninClick:');
-    this.props.showAuthModal();
+    this.props.showSigninModal();
   }
 
   renderAuthForm() {

@@ -22,7 +22,7 @@ class Welcome extends Component {
    };
 
    renderModal() {
-     if (this.props.auth.showAuthModal) {
+     if (this.props.auth.showSigninModal) {
        return (
          <div>
            <SigninModal

@@ -36,7 +36,7 @@ import {
   CREATE_LIKE,
   DELETE_LIKE,
   LIKES_BY_USER,
-  SHOW_AUTH_MODAL
+  SHOW_SIGNIN_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -154,12 +154,12 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
-export function showAuthModal() {
+export function showSigninModal() {
   console.log('in actions index, signoutUser:');
 
   //flip authenticated to false
   // delete token from local storage
-  return { type: SHOW_AUTH_MODAL };
+  return { type: SHOW_SIGNIN_MODAL };
 }
 
 // main fetchflats action for feature page;

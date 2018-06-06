@@ -5,7 +5,7 @@ import {
   FETCH_MESSAGE,
   GET_CURRENT_USER,
   GET_CURRENT_USER_FOR_MY_PAGE,
-  SHOW_AUTH_MODAL
+  SHOW_SIGNIN_MODAL
  } from '../actions/types';
 
 export default function (state = { showAuthModal: false }, action) {
@@ -30,8 +30,8 @@ export default function (state = { showAuthModal: false }, action) {
     case FETCH_MESSAGE:
       return { ...state, message: action.payload };
 
-    case SHOW_AUTH_MODAL:
-      return { ...state, showAuthModal: !state.showAuthModal };
+    case SHOW_SIGNIN_MODAL:
+      return { ...state, showSigninModal: !state.showSigninModal };
 
     default:
       return state;
