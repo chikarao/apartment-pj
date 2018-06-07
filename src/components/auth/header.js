@@ -8,6 +8,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 // import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
 import SigninModal from './signin_modal';
 import SignupModal from './signup_modal';
+import ResetPasswordModal from './reset_password_modal';
 
 import * as actions from '../../actions';
 
@@ -38,11 +39,16 @@ class Header extends Component {
     };
 
     hideModal = () => {
-      // this.setState({ show: false }, () => console.log('in Welcome, hideModal, this.state: ', this.state));
       // calls action craetor to set this.props.auth.showAuthModal to false
-      this.props.showAuthModal();
-      if(this.props.auth.showSigninModal) {
+      this.props.showAuthModal(); //switch off showAuthModal to hide all auth modals
+      if (this.props.auth.showSigninModal) {
+        // if signin opened, switch off showSigninModal to hide signin modal
         this.props.showSigninModal();
+      }
+      if (this.props.auth.showResetPasswordModal) {
+        // if reset password opened, switch off showResetPasswordModal to hide reset modal
+        // so if sign in clicked, sign in opens since showResetPasswordModal is false
+        this.props.showResetPasswordModal();
       }
     };
 
@@ -56,6 +62,15 @@ class Header extends Component {
             />
           </div>
         )
+      } else if (this.props.auth.showResetPasswordModal) {
+        return (
+          <div>
+            <ResetPasswordModal
+            show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
+            handleClose={this.hideModal}
+            />
+          </div>
+        );
       } else {
         return (
           <div>
@@ -183,78 +198,7 @@ class Header extends Component {
         {this.renderNavigation()}
       </div>
     );
-}
-  // render() {
-  //   return (
-  //     <nav className="navbar navbar-light">
-  //       <Link to="/" className="navbar-brand"> Redux Auth <br/><small>w/ react-router-dom</small></Link>
-  //       <ul className="nav navbar-nav">
-  //         {this.renderLinks()}
-  //       </ul>
-  //     </nav>
-  //   );
-  // }
-  // render() {
-  //   return (
-  //     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  //       <Link to="/" className="navbar-brand"> Redux Auth <br />
-  //       <small>w/ react-router-dom</small></Link>
-  //       <button
-  //         className="navbar-toggler"
-  //         type="button"
-  //         data-toggle="collapse"
-  //         data-target="#navbarNav"
-  //         aria-controls="navbarNav"
-  //         aria-expanded="false"
-  //         aria-label="Toggle navigation"
-  //       >
-  //          <span className="navbar-toggler-icon"></span>
-  //       </button>
-  //       <div className="navbar-collapse collapse" id="navbarNav">
-  //         <ul className="navbar-nav">
-  //           {this.renderLinks()}
-  //         </ul>
-  //       </div>
-  //     </nav>
-  //   );
-  // }
-//   render() {
-//     return (
-//       // <Navbar inverse collapseOnSelect>
-//       <Navbar>
-//         <Navbar.Header>
-//             <Navbar.Brand>
-//               <Link to="/" className="navbar-brand"> FLATS flats <br />
-//                <small>and more flats</small></Link>
-//             </Navbar.Brand>
-//             <Navbar.Toggle />
-//         </Navbar.Header>
-//         <Navbar.Collapse>
-//           <Nav pullRight>
-//             {this.renderLinks()}
-//           </Nav>
-//         </Navbar.Collapse>
-//
-//     </Navbar>
-// );
-// }
-//
-// render() {
-//   // let renderThis;
-//   if (this.state.screenIsbig) {
-//       console.log('this is the screensize: ', window.innerWidth);
-//         // renderThis = <h1>This is for big screens</h1>
-//   } else {
-//     // console.log('this is the screensize: ', window.innerWidth);
-//
-//       // renderThis = <h3>This is for small screens</h3>
-//   }
-//   // return (
-//   //     <div>
-//   //         {renderThis}
-//   //     </div>
-//   // )
-// }
+  }
 //end of render
 }
 // end of class

@@ -55,24 +55,25 @@ class SignupModal extends Component {
     return (
       <div className={showHideClassName}>
       <div className="modal-main">
-      <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-      <fieldset className="form-group">
-      <label className="auth-form-label">Email:</label>
-      <Field name="email" component="input" type="email" className="form-control" />
-      </fieldset>
-      <fieldset className="form-group">
-      <label className="auth-form-label">Password:</label>
-      <Field name="password" component="input" type="password" className="form-control" type="password" />
-      </fieldset>
-      <fieldset className="form-group">
-      <label className="auth-form-label">Confirm Password:</label>
-      <Field name="passwordConfirmation" component="input" className="form-control" type="password" />
-      </fieldset>
-      {this.renderAlert()}
-      <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Already signed up? Sign in</span>
-      <button action="submit" className="btn btn-primary btn-lg signup-btn">Sign Up!</button>
-      </form>
+        <h3 className="auth-modal-title">Sign up</h3>
+        <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <fieldset className="form-group">
+            <label className="auth-form-label">Email:</label>
+            <Field name="email" component="input" type="email" className="form-control" />
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="auth-form-label">Password:</label>
+            <Field name="password" component="input" type="password" className="form-control" type="password" />
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="auth-form-label">Confirm Password:</label>
+            <Field name="passwordConfirmation" component="input" className="form-control" type="password" />
+          </fieldset>
+          {this.renderAlert()}
+          <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Already signed up? Sign in</span>
+          <button action="submit" className="btn btn-primary btn-lg signup-btn">Sign Up!</button>
+        </form>
       </div>
       </div>
     );
@@ -82,10 +83,10 @@ class SignupModal extends Component {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     return (
       <div className={showHideClassName}>
-      <div className="modal-main">
-      <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-      <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email. <br/>Please confirm your sign up to starting using the service.</div>
-      </div>
+        <div className="modal-main">
+          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+          <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email. <br/>Please confirm your sign up in the email to starting using the service.</div>
+        </div>
       </div>
     )
   }
@@ -97,8 +98,7 @@ class SignupModal extends Component {
         {this.state.signUpCompleted ? this.renderPostSignUpMessage() : this.renderAuthForm()}
       </div>
     );
-  }
-  // end of render
+  } // end of render
 } // end of class
 
 
@@ -134,7 +134,8 @@ SignupModal = reduxForm({
 function mapStateToProps(state) {
   console.log('in signup modal, state: ', state);
   return {
-    errorMessage: state.auth.error
+    errorMessage: state.auth.error,
+    auth: state.auth
   };
 }
 // export default reduxForm({

@@ -397,8 +397,9 @@ class ShowFlat extends Component {
       );
     }
   }
-
+  // header has a check on showAuthModal to show modal or not; default show sign UP modal
   handleSignInClick() {
+    // calls showAuthModal action to toggle boolean;
     this.props.showAuthModal();
   }
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
@@ -434,7 +435,9 @@ class ShowFlat extends Component {
       } else {
         return (
           <div>
-            <button className="btn btn-primary btn-lg" onClick={this.handleSignInClick.bind(this)}>Sign in to Book!</button>
+          <div className="send-owner-a-message-div" onClick={this.handleSignInClick.bind(this)}>
+            <h4><i className="fa fa-book"></i>   Sign in to Book!</h4>
+          </div>
           </div>
         );
       }
@@ -948,12 +951,14 @@ class ShowFlat extends Component {
 
   handlePlaceClick(event) {
     this.unhighlightClickedPlace();
+
     console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
     clickedElement.style.color = 'lightGray';
     const elementVal = clickedElement.getAttribute('value');
-    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
+
+    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     this.createSelectedMarker(elementVal);
   }
 
@@ -985,25 +990,25 @@ class ShowFlat extends Component {
     if(this.props.flat) {
       return (
         <div className="map-interaction-container">
-        <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
-        <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-        {this.renderSearchSelection()}
-        </select>
-        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
-        <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
-        </div>
-        <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
-        <ul>
-        {this.renderSearchResultsList()}
-        </ul>
-        </div>
+          <div className="map-interaction-box">
+            <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
+            <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+            <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
+            <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+            <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+            <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+            <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+              {this.renderSearchSelection()}
+            </select>
+            <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
+            <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
+          </div>
+          <div className="map-interaction-box">
+            <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
+            <ul>
+            {this.renderSearchResultsList()}
+            </ul>
+          </div>
         </div>
       );
     }
@@ -1013,7 +1018,7 @@ class ShowFlat extends Component {
     if (!this.props.auth.authenticated) {
       return (
         <div className="send-owner-a-message-div" onClick={this.handleSignInClick.bind(this)}>
-        <h4>Sign in to Send the Owner a Message</h4>
+        <h4><i className="fa fa-envelope"></i>   Sign in to Send the Owner a Message</h4>
         </div>
       );
     } else {

@@ -33,9 +33,17 @@ class SigninModal extends Component {
     }
   }
 
-  handleSigninClick() {
-    console.log('in modal, in handleSigninClick:');
-    this.props.showSigninModal();
+  handleAuthClick(event) {
+    console.log('in modal, in handleAuthClick, event.target:', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    if (elementVal === 'reset-password') {
+      console.log('in modal, in handleAuthClick, if reset-password, true:');
+      this.props.showResetPasswordModal();
+      this.props.showSigninModal();
+    } else {
+      this.props.showSigninModal();
+    }
   }
 
   render() {
@@ -48,20 +56,21 @@ class SigninModal extends Component {
     return (
       <div className={showHideClassName}>
        <section className="modal-main">
-       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-         <fieldset className="form-group">
-           <label className="auth-form-label">Email:</label>
-           <Field name="email" component="input" type="email" className="form-control" />
-         </fieldset>
-         <fieldset className="form-group">
-           <label className="auth-form-label">Password:</label>
-           <Field name="password" component="input" type="password" className="form-control" />
-         </fieldset>
-         <Link to="/resetpassword" className="reset-password">Reset Password</Link>
-         <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Sign Up!</span>
-         {this.renderAlert()}
-         <button action="submit" className="btn btn-primary signin-btn">Sign in</button>
-       </form>
+         <h3 className="auth-modal-title">Sign in</h3>
+         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+           <fieldset className="form-group">
+             <label className="auth-form-label">Email:</label>
+             <Field name="email" component="input" type="email" className="form-control" />
+           </fieldset>
+           <fieldset className="form-group">
+             <label className="auth-form-label">Password:</label>
+             <Field name="password" component="input" type="password" className="form-control" />
+           </fieldset>
+           <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
+           <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>
+           {this.renderAlert()}
+           <button action="submit" className="btn btn-primary signin-btn">Sign in</button>
+         </form>
          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
        </section>
      </div>

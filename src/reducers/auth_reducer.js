@@ -6,10 +6,15 @@ import {
   GET_CURRENT_USER,
   GET_CURRENT_USER_FOR_MY_PAGE,
   SHOW_SIGNIN_MODAL,
-  SHOW_AUTH_MODAL
+  SHOW_AUTH_MODAL,
+  SHOW_RESET_PASSWORD_MODAL
  } from '../actions/types';
 
-export default function (state = { showAuthModal: false, showSigninModal: false }, action) {
+export default function (state = {
+  showAuthModal: false,
+  showSigninModal: false, 
+  showResetPasswordModal: false 
+}, action) {
   console.log('in auth reducer, action.payload: ', action.payload);
   switch (action.type) {
     case AUTH_USER:
@@ -41,6 +46,9 @@ export default function (state = { showAuthModal: false, showSigninModal: false 
 
     case SHOW_AUTH_MODAL:
       return { ...state, showAuthModal: !state.showAuthModal };
+
+    case SHOW_RESET_PASSWORD_MODAL:
+      return { ...state, showResetPasswordModal: !state.showResetPasswordModal };
 
     default:
       return state;

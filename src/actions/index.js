@@ -37,7 +37,8 @@ import {
   DELETE_LIKE,
   LIKES_BY_USER,
   SHOW_SIGNIN_MODAL,
-  SHOW_AUTH_MODAL
+  SHOW_AUTH_MODAL,
+  SHOW_RESET_PASSWORD_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -158,17 +159,23 @@ export function signoutUser() {
 export function showSigninModal() {
   console.log('in actions index, showSigninModal:');
 
-  //flip authenticated to false
-  // delete token from local storage
+  //flip showSigninModal
   return { type: SHOW_SIGNIN_MODAL };
 }
 
 export function showAuthModal() {
   console.log('in actions index, showAuthModal:');
 
-  //flip authenticated to false
-  // delete token from local storage
+  //flip showAuthModal
   return { type: SHOW_AUTH_MODAL };
+}
+
+export function showResetPasswordModal() {
+  console.log('in actions index, showResetPasswordModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_RESET_PASSWORD_MODAL
+ };
 }
 
 // main fetchflats action for feature page;

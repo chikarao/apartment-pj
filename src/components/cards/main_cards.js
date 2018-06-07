@@ -86,7 +86,9 @@ class MainCards extends Component {
   }
 
   handleLikeClick(event) {
-    if(this.props.authenticated) {
+    // if logged in, user can like a flat
+    // header has a check on showAuthModal to show modal or not; default show sign UP modal
+    if (this.props.authenticated) {
       console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
       const clickedElement = event.target;
       const elementVal = clickedElement.getAttribute('value');
@@ -98,6 +100,7 @@ class MainCards extends Component {
         this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
       }
     } else {
+      // header has a check on showAuthModal to show modal or not; default show sign UP modal
       this.props.showAuthModal();
     }
   }
