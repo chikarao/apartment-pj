@@ -274,6 +274,8 @@ class MyPage extends Component {
   }
 
   handleMessageHamburgerClick() {
+    // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
+    // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.setState({ showConversation: true });
   }
 

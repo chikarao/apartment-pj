@@ -3,6 +3,7 @@ import _ from 'lodash';
 // import { browserHistory } from 'react-router-dom';
 import {
   AUTH_USER,
+  SIGNED_UP_USER,
   AUTH_ERROR,
   UNAUTH_USER,
   FETCH_FLATS,
@@ -67,6 +68,7 @@ console.log('in action, index, sign in, email and password: ', { email, password
         // request is good
         // Update state to indicate user is authenticated
         // dispatch({ type: AUTH_USER, payload: email });
+        // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
         dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
         // save JWT token
@@ -103,12 +105,13 @@ export function signupUser({ email, password }, callback) {
     // signup for express server; sign_up for rails book review api
     .then(response => {
       console.log('in action, signup user, .then, response: ', response);
-      dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
+      // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
+      dispatch({ type: SIGNED_UP_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, message: response.data.messages } });
       console.log('in action, signup user, .then, response, auth token: ', response.data.data.user.authentication_token);
-      localStorage.setItem('token', response.data.data.user.authentication_token);
+      // localStorage.setItem('token', response.data.data.user.authentication_token);
       // localStorage.setItem('token', response.data.token);
-      localStorage.setItem('email', response.data.data.user.email);
-      localStorage.setItem('id', response.data.data.user.id);
+      // localStorage.setItem('email', response.data.data.user.email);
+      // localStorage.setItem('id', response.data.data.user.id);
 
       // browserHistory.push('/feature'); deprecated in router-dom v4
       callback();
@@ -565,10 +568,10 @@ export function createMessage(messageAttributes, callback) {
       console.log('response to createMessage, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_MESSAGE,
-        payload: response.data.data.message.conversation
+        payload: response.data.data.conversation
       });
       // sends back to createflat.js the flat_id and the images
-      callback(response.data.data.message.conversation.flat_id);
+      callback(response.data.data.conversation.flat_id);
     });
   };
 }

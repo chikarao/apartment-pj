@@ -1235,7 +1235,7 @@ form {
   font-size: 30px;
   border: 0;
   color: gray;
-  background-color: white;
+  background-color: transparent;
 }
 
 .signup-btn {
@@ -1267,6 +1267,11 @@ form {
 
 .auth-modal-title {
   color: gray;
+}
+
+.success-alert {
+  height: 80px;
+  width: auto;
 }
 /* IN PROGRESS */
 .in-progress {

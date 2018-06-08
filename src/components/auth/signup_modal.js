@@ -38,6 +38,13 @@ class SignupModal extends Component {
         </div>
       );
     }
+
+    if (this.props.successMessage) {
+      return (
+        <div className="alert alert-success success-alert">
+        </div>
+      );
+    }
   }
 
   handleSigninClick() {
@@ -85,12 +92,12 @@ class SignupModal extends Component {
       <div className={showHideClassName}>
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+          {this.renderAlert()}
           <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email. <br/>Please confirm your sign up in the email to starting using the service.</div>
         </div>
       </div>
     )
   }
-
 
   render() {
     return (
@@ -135,6 +142,7 @@ function mapStateToProps(state) {
   console.log('in signup modal, state: ', state);
   return {
     errorMessage: state.auth.error,
+    successMessage: state.auth.success,
     auth: state.auth
   };
 }

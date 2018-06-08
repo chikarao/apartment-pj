@@ -13,15 +13,15 @@ class Messaging extends Component {
    this.state = INITIAL_STATE;
  }
 
-  componentDidMount() {
-    // console.log('in show flat, componentDidMount, params', this.props.match.params);
-    // // gets flat id from params set in click of main_cards or infowindow detail click
-  }
-
-  componentDidUpdate() {
-    // if (this.state.inMessaging) {
-      // this.scrollLastMessageIntoView();
-    // }
+  // componentDidMount() {
+  //   // console.log('in show flat, componentDidMount, params', this.props.match.params);
+  //   // // gets flat id from params set in click of main_cards or infowindow detail click
+  // }
+  //
+  // componentDidUpdate() {
+  //   // if (this.state.inMessaging) {
+  //   this.scrollLastMessageIntoView();
+  // }
 
     // const messageBox = document.getElementById('message-show-box');
     // console.log('in messaging, componentDidUpdate, getElementById: ', messageBox);
@@ -40,35 +40,35 @@ class Messaging extends Component {
     //   }, false);
     // }
     // this.inViewPort();
-  }
+  // }
 
 
-  isInViewport(messageBox) {
-    // console.log('in messaging, isInViewport, messageBox: ', messageBox);
-    if (messageBox) {
-      const bounding = messageBox.getBoundingClientRect();
-      // console.log('in messaging, inViewPort, bounding: ', bounding);
-      if (
-        bounding.top >= 0 &&
-        bounding.left >= 0 &&
-        bounding.right <= (window.innerWidth || document.documentElement.clientWidth) &&
-        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-      ) {
-        // console.log('Boounding: In the viewport!');
-        return true;
-      } else {
-        // console.log('Bounding: Not in the viewport... whomp whomp');
-        return false;
-      }
-    }
-    // window.addEventListener('scroll', function (event) {
-    //    if (isInViewport(messageBox)) {
-    //        // image.innerHTML = '<img src="' + image.getAttribute('data-image') + '">';
-    //        console.log('in messaging, componentDidUpdate, in view port: ', items);
-    //       }
-    //     }, false);
-
-  }
+  // isInViewport(messageBox) {
+  //   // console.log('in messaging, isInViewport, messageBox: ', messageBox);
+  //   if (messageBox) {
+  //     const bounding = messageBox.getBoundingClientRect();
+  //     // console.log('in messaging, inViewPort, bounding: ', bounding);
+  //     if (
+  //       bounding.top >= 0 &&
+  //       bounding.left >= 0 &&
+  //       bounding.right <= (window.innerWidth || document.documentElement.clientWidth) &&
+  //       bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+  //     ) {
+  //       // console.log('Boounding: In the viewport!');
+  //       return true;
+  //     } else {
+  //       // console.log('Bounding: Not in the viewport... whomp whomp');
+  //       return false;
+  //     }
+  //   }
+  //   // window.addEventListener('scroll', function (event) {
+  //   //    if (isInViewport(messageBox)) {
+  //   //        // image.innerHTML = '<img src="' + image.getAttribute('data-image') + '">';
+  //   //        console.log('in messaging, componentDidUpdate, in view port: ', items);
+  //   //       }
+  //   //     }, false);
+  //
+  // }
 
   scrollLastMessageIntoView() {
     const items = document.querySelectorAll('.each-message-box');
@@ -77,7 +77,7 @@ class Messaging extends Component {
     const last = items[items.length - 1];
     console.log('in messaging, scrollLastMessageIntoView, last: ', last);
     if (last) {
-      last.scrollIntoView();
+      last.scrollIntoView({ behavior: 'smooth' });
     }
   }
 
@@ -139,10 +139,12 @@ class Messaging extends Component {
       // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
       console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
-      return _.map(messages, (message) => {
+      return _.map(messages, (message, index) => {
         console.log('in messaging, renderEachMessage, message: ', message);
         const date = new Date(message.created_at)
-
+        // if (index === messages.length - 1) {
+        //   this.scrollLastMessageIntoView();
+        // }
         //yourFlat passed as props
         if (this.props.yourFlat) {
           console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
@@ -227,17 +229,17 @@ class Messaging extends Component {
         // if (!conversationIsEmpty) {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
         const conversationToShowArray = this.conversationToShow();
-        console.log('in messaging, renderMessaging. this.p  rops.conversation, after if: ', this.props.conversation);
+        console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
         console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
         return (
-        <div>
-          <div id="message-show-box">
-            {this.props.noConversation ? <div className="no-conversation-message">
-            <br/><br/>You have not started a conversation...
-            <br/>Start one by sending a message! <br/> Make sure to introduce yourself and be specific</div> : this.renderEachMessage(conversationToShowArray)}
-            </div>
-          <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
-          <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
+          <div>
+            <div id="message-show-box">
+              {this.props.noConversation ? <div className="no-conversation-message">
+              <br/><br/>You have not started a conversation...
+              <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
+              </div>
+            <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
+            <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
           </div>
         );
         // }
