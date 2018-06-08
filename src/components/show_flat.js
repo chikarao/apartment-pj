@@ -45,6 +45,12 @@ class ShowFlat extends Component {
 
   componentDidUpdate() {
     // this.scrollLastMessageIntoView();
+    // to handle error InvalidValueError: not an instance of HTMLInputElement
+    // handleSearchInput was running before HTML was rendered
+    //so input ID map-interaction-input was not getting picked up
+    if (this.props.flat) {
+      this.handleSearchInput();
+    }
   }
 
   renderImages(images) {
@@ -226,7 +232,10 @@ class ShowFlat extends Component {
   renderMap() {
     if (this.props.flat) {
       //instantiates autocomplete as soon as flat is loaded in state then mapcenter can be set
-      this.handleSearchInput();
+      // this.handleSearchInput();
+      //calling this here gives error InvalidValueError: not an instance of HTMLInputElement
+      // so call in componentDidUpdate
+
       console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
       const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
       const flatsEmpty = false;

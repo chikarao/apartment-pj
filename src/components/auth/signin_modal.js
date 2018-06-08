@@ -21,6 +21,8 @@ class SigninModal extends Component {
 
   handleFormSubmitCallback() {
     showHideClassName = 'modal display-none';
+    this.props.showAuthModal();
+    this.props.showSigninModal();
   }
 
   renderAlert() {

@@ -93,7 +93,7 @@ class SignupModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email. <br/>Please confirm your sign up in the email to starting using the service.</div>
+          <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email to confirm. <br/>To start using the service, please confirm your sign up.</div>
         </div>
       </div>
     )
