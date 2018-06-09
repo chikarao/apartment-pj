@@ -8,7 +8,8 @@ import {
   GET_CURRENT_USER_FOR_MY_PAGE,
   SHOW_SIGNIN_MODAL,
   SHOW_AUTH_MODAL,
-  SHOW_RESET_PASSWORD_MODAL
+  SHOW_RESET_PASSWORD_MODAL,
+  FETCH_PROFILE_FOR_USER
  } from '../actions/types';
 
 export default function (state = {
@@ -53,6 +54,9 @@ export default function (state = {
 
     case SHOW_RESET_PASSWORD_MODAL:
       return { ...state, showResetPasswordModal: !state.showResetPasswordModal };
+
+    case FETCH_PROFILE_FOR_USER:
+      return { ...state, userProfile: action.payload };
 
     default:
       return state;

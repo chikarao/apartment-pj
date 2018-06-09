@@ -31,6 +31,7 @@ class MyPage extends Component {
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
+    this.props.fetchProfileForUser();
   }
 
   fetchFlatsByUserCallback(flatIdArray) {
@@ -469,6 +470,46 @@ class MyPage extends Component {
     );
   }
   // **************************LIKES **************************************************
+  // **************************PROFILE************************************
+  // renderEachProfileAttribute() {
+  //     const profileAttributes = { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region };
+  //     console.log('in mypage, renderEachProfileAttribute, username: ', username);
+  //     console.log('in mypage, renderEachProfileAttribute, this.props.auth.userProfile: ', this.props.auth.userProfile);
+  //     return _.map(profileAttributes, attr => {
+  //       return (
+  //         <li>{attr}</li>
+  //       );
+  //     });
+  //   }
+  // }
+  renderProfile() {
+    if (this.props.auth.userProfile) {
+      const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region } = this.props.auth.userProfile;
+      return (
+        <div>
+          <div className="my-page-category-title">
+            <span>My Profile</span>
+            <span id="my-page-profile-edit-link"><i className="fa fa-edit"></i></span>
+          </div>
+          <ul>
+            <li className="my-page-profile-attribute"><span>User Name:</span> <span>{username}</span></li>
+            <li className="my-page-profile-attribute"><span>User ID:</span> <span>{user_id}</span></li>
+            <li className="my-page-profile-attribute"><span>Title:</span> <span>{title}</span></li>
+            <li className="my-page-profile-attribute"><span>First Name:</span> <span>{first_name}</span></li>
+            <li className="my-page-profile-attribute"><span>Last Name:</span> <span>{last_name}</span></li>
+            <li className="my-page-profile-attribute"><span>Birthday:</span> <span>{birthday}</span></li>
+            <li className="my-page-profile-attribute"><span>Street Address:</span> <span>{address1}</span></li>
+            <li className="my-page-profile-attribute"><span>City:</span> <span>{city}</span></li>
+            <li className="my-page-profile-attribute"><span>State:</span> <span>{state}</span></li>
+            <li className="my-page-profile-attribute"><span>Zip:</span> <span>{zip}</span></li>
+            <li className="my-page-profile-attribute"><span>Country:</span> <span>{country}</span></li>
+            <li className="my-page-profile-attribute"><span>Self Intro:</span> <span>{country}</span></li>
+            <div className="my-page-profile-introduction">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+          </ul>
+        </div>
+      );
+    } //end of if
+  }
 
   render() {
     return (
@@ -481,6 +522,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>

@@ -39,7 +39,8 @@ import {
   LIKES_BY_USER,
   SHOW_SIGNIN_MODAL,
   SHOW_AUTH_MODAL,
-  SHOW_RESET_PASSWORD_MODAL
+  SHOW_RESET_PASSWORD_MODAL,
+  FETCH_PROFILE_FOR_USER
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -734,6 +735,24 @@ export function deleteLike(flatId, callback) {
         payload: response.data.data
       });
       callback();
+    });
+  };
+}
+
+export function fetchProfileForUser() {
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/users/profiles/profile_for_user?`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchProfileForUser, response: ', response);
+      console.log('response to fetchProfileForUser, response.data.data.profile: ', response.data.data.profile);
+      dispatch({
+        type: FETCH_PROFILE_FOR_USER,
+        payload: response.data.data.profile
+      });
     });
   };
 }

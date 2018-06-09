@@ -1188,6 +1188,47 @@ form {
   color: darkGray;
 }
 
+/* .my-page-profile-attribute-name {
+  float: left;
+  margin-right: 20px;
+} */
+
+.my-page-profile-attribute {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+}
+.my-page-profile-attribute span:first-child{
+  /* font-weight: bold; */
+  color: gray;
+}
+
+.my-page-profile-introduction {
+  width: 100%;
+  height: auto;
+  margin: 10px;
+  text-align: left;
+}
+
+.my-page-category-title {
+  position: relative;
+}
+
+.my-page-category-title span:first-child {
+  position: absolute;
+  top: 14px;
+  right: 132px;
+}
+
+#my-page-profile-edit-link {
+  float: right;
+  font-size: 25px;
+  color: blue;
+}
+#my-page-profile-edit-link:hover {
+  color: gray;
+}
+
 /* ***********MODAL****************** */
 
 .modal {
