@@ -37,3 +37,5 @@ export const SHOW_SIGNIN_MODAL = 'show_signin_modal';
 export const SHOW_AUTH_MODAL = 'show_auth_modal';
 export const SHOW_RESET_PASSWORD_MODAL = 'show_reset_password_modal';
 export const FETCH_PROFILE_FOR_USER = 'fetch_profile_for_user';
+export const SHOW_EDIT_PROFILE_MODAL = 'show_edit_profile_modal';
+export const EDIT_PROFILE = 'edit_profile';

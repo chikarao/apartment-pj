@@ -646,6 +646,7 @@ form {
 
 .submit-button {
   margin-left: 20px;
+  margin-bottom: 20px;
 }
 
 .confirm-change-and-button {
@@ -1248,6 +1249,7 @@ form {
   background: white;
   width: 80%;
   height: auto;
+  max-height: 600px;
   min-height: 350px;
   top:50%;
   left:50%;
@@ -1326,6 +1328,26 @@ form {
 
 .reset-password-btn {
   margin-bottom: 0;
+}
+
+/* *******************EDIT PROFILE********************* */
+
+.edit-profile-scroll-div {
+  height: 400px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.edit-profile-scroll-div form {
+  height: 100%;
+  /* overflow: hidden;
+  overflow-y: scroll; */
+}
+.edit-profile-scroll-div form .introduction textarea{
+  height: 200px;
+  text-align: left | top;
+  /* overflow: hidden;
+  overflow-y: scroll; */
 }
 
 @media screen and (min-width: 800px) {

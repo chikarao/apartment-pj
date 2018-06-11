@@ -40,7 +40,9 @@ import {
   SHOW_SIGNIN_MODAL,
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
-  FETCH_PROFILE_FOR_USER
+  FETCH_PROFILE_FOR_USER,
+  SHOW_EDIT_PROFILE_MODAL,
+  EDIT_PROFILE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -178,8 +180,14 @@ export function showResetPasswordModal() {
   console.log('in actions index, showResetPasswordModal:');
 
   //flip showResetPasswordModal
-  return { type: SHOW_RESET_PASSWORD_MODAL
- };
+  return { type: SHOW_RESET_PASSWORD_MODAL };
+}
+
+export function showEditProfileModal() {
+  console.log('in actions index, showEditProfileModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_EDIT_PROFILE_MODAL };
 }
 
 // main fetchflats action for feature page;
@@ -596,6 +604,28 @@ export function editFlat(flatAttributes, callback) {
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.flat.id, flatAttributes.files);
+    });
+  };
+}
+export function editProfile(profileAttributes, callback) {
+  const { id } = profileAttributes;
+  console.log('in actions index, editFlat, profileAttributes: ', profileAttributes);
+  console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/profiles/${id}`, { profile: profileAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editFlat, response: ', response);
+      console.log('response to editFlat, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_PROFILE,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
     });
   };
 }

@@ -9,6 +9,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import SigninModal from './signin_modal';
 import SignupModal from './signup_modal';
 import ResetPasswordModal from './reset_password_modal';
+import EditProfileModal from '../modals/profile_edit_modal';
 
 import * as actions from '../../actions';
 
@@ -40,15 +41,27 @@ class Header extends Component {
 
     hideModal = () => {
       // calls action craetor to set this.props.auth.showAuthModal to false
-      this.props.showAuthModal(); //switch off showAuthModal to hide all auth modals
+      // switch off showAuthModal only if it is true
+      if (this.props.auth.showAuthModal) {
+        this.props.showAuthModal(); //switch off showAuthModal to hide all auth modals
+      }
+
       if (this.props.auth.showSigninModal) {
         // if signin opened, switch off showSigninModal to hide signin modal
         this.props.showSigninModal();
       }
+
       if (this.props.auth.showResetPasswordModal) {
         // if reset password opened, switch off showResetPasswordModal to hide reset modal
         // so if sign in clicked, sign in opens since showResetPasswordModal is false
         this.props.showResetPasswordModal();
+      }
+
+      if (this.props.auth.showEditProfileModal) {
+        // if reset password opened, switch off showResetPasswordModal to hide reset modal
+        // so if sign in clicked, sign in opens since showResetPasswordModal is false
+        this.props.showEditProfileModal();
+        document.location.reload();
       }
     };
 
@@ -71,6 +84,15 @@ class Header extends Component {
             />
           </div>
         );
+      } else if (this.props.auth.showEditProfileModal){
+        return (
+          <div>
+          <EditProfileModal
+            show={this.props.auth.showEditProfileModal}
+            handleClose={this.hideModal}
+          />
+          </div>
+        )
       } else {
         return (
           <div>

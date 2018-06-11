@@ -54,7 +54,7 @@ class SigninModal extends Component {
     console.log('in modal, render showHideClassName:', showHideClassName);
     console.log('in modal, render this.props.show:', this.props.show);
     console.log('in modal, render this.props:', this.props);
-
+    //handleClose is a prop passed from header when SigninModal is called
     return (
       <div className={showHideClassName}>
        <section className="modal-main">

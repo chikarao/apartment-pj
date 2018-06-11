@@ -88,6 +88,7 @@ class SignupModal extends Component {
 
   renderPostSignUpMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+    //handleClose is a prop passed from header when SigninModal is called
     return (
       <div className={showHideClassName}>
         <div className="modal-main">

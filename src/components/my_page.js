@@ -482,29 +482,36 @@ class MyPage extends Component {
   //     });
   //   }
   // }
+
+  handleEditProfileClick() {
+    console.log('in header, handleEditProfileClick: ');
+    this.props.showEditProfileModal();
+  }
+
   renderProfile() {
     if (this.props.auth.userProfile) {
-      const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region } = this.props.auth.userProfile;
+      const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region, introduction } = this.props.auth.userProfile;
+      console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
           <div className="my-page-category-title">
             <span>My Profile</span>
-            <span id="my-page-profile-edit-link"><i className="fa fa-edit"></i></span>
+            <span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span>
           </div>
           <ul>
-            <li className="my-page-profile-attribute"><span>User Name:</span> <span>{username}</span></li>
-            <li className="my-page-profile-attribute"><span>User ID:</span> <span>{user_id}</span></li>
-            <li className="my-page-profile-attribute"><span>Title:</span> <span>{title}</span></li>
-            <li className="my-page-profile-attribute"><span>First Name:</span> <span>{first_name}</span></li>
-            <li className="my-page-profile-attribute"><span>Last Name:</span> <span>{last_name}</span></li>
-            <li className="my-page-profile-attribute"><span>Birthday:</span> <span>{birthday}</span></li>
-            <li className="my-page-profile-attribute"><span>Street Address:</span> <span>{address1}</span></li>
-            <li className="my-page-profile-attribute"><span>City:</span> <span>{city}</span></li>
-            <li className="my-page-profile-attribute"><span>State:</span> <span>{state}</span></li>
-            <li className="my-page-profile-attribute"><span>Zip:</span> <span>{zip}</span></li>
-            <li className="my-page-profile-attribute"><span>Country:</span> <span>{country}</span></li>
-            <li className="my-page-profile-attribute"><span>Self Intro:</span> <span>{country}</span></li>
-            <div className="my-page-profile-introduction">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</div>
+            <li value="username"className="my-page-profile-attribute"><span>User Name:</span> <span>{username}</span></li>
+            <li value="user_id"className="my-page-profile-attribute"><span>User ID:</span> <span>{user_id}</span></li>
+            <li value="title"className="my-page-profile-attribute"><span>Title:</span> <span>{title}</span></li>
+            <li value="first_name"className="my-page-profile-attribute"><span>First Name:</span> <span>{first_name}</span></li>
+            <li value="last_name"className="my-page-profile-attribute"><span>Last Name:</span> <span>{last_name}</span></li>
+            <li value="birthday"className="my-page-profile-attribute"><span>Birthday:</span> <span>{birthday}</span></li>
+            <li value="address1"className="my-page-profile-attribute"><span>Street Address:</span> <span>{address1}</span></li>
+            <li value="city"className="my-page-profile-attribute"><span>City:</span> <span>{city}</span></li>
+            <li value="state"className="my-page-profile-attribute"><span>State:</span> <span>{state}</span></li>
+            <li value="zip"className="my-page-profile-attribute"><span>Zip:</span> <span>{zip}</span></li>
+            <li value="country"className="my-page-profile-attribute"><span>Country:</span> <span>{country}</span></li>
+            <li value=""className="my-page-profile-attribute"><span>Self Intro:</span> <span></span></li>
+            <div value="introduction"className="my-page-profile-introduction">{introduction}</div>
           </ul>
         </div>
       );
