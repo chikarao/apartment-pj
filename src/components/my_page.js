@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 import Messaging from './messaging/messaging';
+import UploadForProfile from './images/upload_for_profile';
 
 
 class MyPage extends Component {
@@ -488,6 +489,39 @@ class MyPage extends Component {
     this.props.showEditProfileModal();
   }
 
+  handleImageUploadClick() {
+    console.log('in header, handleImageUploadClick: ');
+
+  }
+
+  handleRemoveProfileImage() {
+    this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
+  }
+
+  handleRemoveProfileImageCallback() {
+    console.log('in header, handleRemoveProfileImageCallback: ');
+  }
+
+  renderProfileImage() {
+    console.log('in header, renderProfileImage, this.props.auth.userProfile.image: ', this.props.auth.userProfile.image);
+    return (
+      <div className="my-page-profile-image-box">
+        <div className="my-page-profile-image-box-image">
+          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.userProfile.image + '.jpg'} alt="Profile Image" />
+        </div>
+          <div className="my-page-change-profile-picture-link">
+            <UploadForProfile
+              profileId={this.props.auth.userProfile.id}
+            />
+          </div>
+          {this.props.auth.userProfile.image === 'blank_profile_picture' ? '' :
+          <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
+            Remove Profile Picture
+          </div> }
+      </div>
+    );
+  }
+
   renderProfile() {
     if (this.props.auth.userProfile) {
       const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region, introduction } = this.props.auth.userProfile;
@@ -498,7 +532,8 @@ class MyPage extends Component {
             <span>My Profile</span>
             <span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span>
           </div>
-          <ul>
+            {this.renderProfileImage()}
+          <ul className="my-page-profile-ul">
             <li value="username"className="my-page-profile-attribute"><span>User Name:</span> <span>{username}</span></li>
             <li value="user_id"className="my-page-profile-attribute"><span>User ID:</span> <span>{user_id}</span></li>
             <li value="title"className="my-page-profile-attribute"><span>Title:</span> <span>{title}</span></li>

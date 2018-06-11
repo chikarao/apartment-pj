@@ -1194,6 +1194,64 @@ form {
   margin-right: 20px;
 } */
 
+.my-page-profile-image-box {
+  margin: 20px 0 20px 0;
+  width: 100%;
+  height: 100px;
+  /* border: 1px solid #ccc; */
+  position: relative;
+  /* float: left; */
+}
+
+.my-page-change-profile-picture-link {
+  float:right;
+  color: blue;
+  padding-right: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.my-page-change-profile-picture-link:hover {
+  color: gray;
+  text-decoration: underline;
+}
+
+.my-page-remove-profile-picture-link{
+  float:right;
+  color: blue;
+  padding-right: 10px;
+  position: absolute;
+  bottom: 35px;
+  right: 30px;
+}
+.my-page-remove-profile-picture-link:hover{
+  color: gray;
+  text-decoration: underline;
+}
+
+.my-page-profile-image-box img {
+  height: 110px;
+  width: 110px;
+  border-radius: 50%;
+  float: left;
+  border: 1px solid #ccc;
+}
+
+.profile-dropzone-area div:first-child {
+  width: 200px !important;
+  height: 25px !important;
+  border-color: transparent !important;
+  margin: 15px;
+  float: right;
+}
+
+
+
+.my-page-profile-ul {
+  height: 287px !important;
+}
+
 .my-page-profile-attribute {
   display: flex;
   justify-content: space-between;

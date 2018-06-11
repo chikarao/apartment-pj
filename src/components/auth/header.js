@@ -60,8 +60,11 @@ class Header extends Component {
       if (this.props.auth.showEditProfileModal) {
         // if reset password opened, switch off showResetPasswordModal to hide reset modal
         // so if sign in clicked, sign in opens since showResetPasswordModal is false
+        // switch off showEditProfileModal boolean
         this.props.showEditProfileModal();
-        document.location.reload();
+        // document.location.reload();
+        this.props.history.push(`/myPage`);
+
       }
     };
 

@@ -609,8 +609,8 @@ export function editFlat(flatAttributes, callback) {
 }
 export function editProfile(profileAttributes, callback) {
   const { id } = profileAttributes;
-  console.log('in actions index, editFlat, profileAttributes: ', profileAttributes);
-  console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, editProfile, profileAttributes: ', profileAttributes);
+  console.log('in actions index, editeditProfileFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {
@@ -618,11 +618,11 @@ export function editProfile(profileAttributes, callback) {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to editFlat, response: ', response);
-      console.log('response to editFlat, response.data.data: ', response.data.data);
+      console.log('response to editProfile, response: ', response);
+      console.log('response to editProfile, response.data.data: ', response.data.data.profile);
       dispatch({
         type: EDIT_PROFILE,
-        payload: response.data.data
+        payload: response.data.data.profile
       });
       // sends back to createflat.js the flat_id and the images
       callback();

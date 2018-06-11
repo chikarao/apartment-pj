@@ -52,18 +52,18 @@ class EditProfileModal extends Component {
 
   }
 
-  handleSubmitClick(event) {
-    // console.log('in modal, in handleAuthClick, event.target:', event.target);
-    // const clickedElement = event.target;
-    // const elementVal = clickedElement.getAttribute('value');
-    // if (elementVal === 'reset-password') {
-    //   console.log('in modal, in handleAuthClick, if reset-password, true:');
-    //   this.props.showResetPasswordModal();
-    //   this.props.showSigninModal();
-    // } else {
-    //   this.props.showSigninModal();
-    // }
-  }
+  // handleSubmitClick(event) {
+  //   // console.log('in modal, in handleAuthClick, event.target:', event.target);
+  //   // const clickedElement = event.target;
+  //   // const elementVal = clickedElement.getAttribute('value');
+  //   // if (elementVal === 'reset-password') {
+  //   //   console.log('in modal, in handleAuthClick, if reset-password, true:');
+  //   //   this.props.showResetPasswordModal();
+  //   //   this.props.showSigninModal();
+  //   // } else {
+  //   //   this.props.showSigninModal();
+  //   // }
+  // }
 
   renderEditProfileForm() {
     const { handleSubmit } = this.props;
