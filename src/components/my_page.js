@@ -528,7 +528,7 @@ class MyPage extends Component {
       console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
-          <div className="my-page-category-title">
+          <div className="my-page-category-title-profile">
             <span>My Profile</span>
             <span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span>
           </div>

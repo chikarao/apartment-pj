@@ -11,13 +11,16 @@ import {
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
   SHOW_EDIT_PROFILE_MODAL,
-  EDIT_PROFILE
+  EDIT_PROFILE,
+  SHOW_LOADING,
+  SHOW_LIGHTBOX
  } from '../actions/types';
 
 export default function (state = {
   showAuthModal: false,
   showSigninModal: false,
-  showResetPasswordModal: false
+  showResetPasswordModal: false,
+  showLoading: false
 }, action) {
   console.log('in auth reducer, action.payload: ', action.payload);
   switch (action.type) {
@@ -65,6 +68,12 @@ export default function (state = {
 
     case EDIT_PROFILE:
       return { ...state, userProfile: action.payload };
+
+    case SHOW_LOADING:
+      return { ...state, showLoading: !state.showLoading };
+
+    case SHOW_LIGHTBOX:
+      return { ...state, showLightbox: !state.showLightbox };
 
     default:
       return state;

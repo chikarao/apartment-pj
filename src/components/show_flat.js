@@ -13,6 +13,8 @@ import GoogleMap from './maps/google_map';
 import Messaging from './messaging/messaging';
 
 import DatePicker from './date_picker/date_picker';
+import Lightbox from './modals/lightbox';
+
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -26,7 +28,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], clickedImageId: {} };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -53,16 +55,29 @@ class ShowFlat extends Component {
     }
   }
 
+  handleImageClick(event) {
+    console.log('in show_flat handleImageClick, event.target: ', event.target);
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in show_flat handleImageClick, elementVal: ', elementVal);
+    this.setState({ clickedImageId: elementVal },
+      () => {
+        this.props.showLightbox();
+      });
+  }
+
   renderImages(images) {
     console.log('in show_flat renderImages, images: ', images);
     const imagesEmpty = _.isEmpty(images);
-    if(!imagesEmpty) {
+    if (!imagesEmpty) {
+      console.log('in show_flat renderImages, images: ', images[0].publicid);
+
       return (
         _.map(images, (image, index) => {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
+              <img value={image.id} src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
             </div>
           );
         })
@@ -989,9 +1004,9 @@ class ShowFlat extends Component {
     });
   }
 
-  handleGoToGMClick() {
-
-  }
+  // handleGoToGMClick() {
+  //
+  // }
 
   renderMapInteractiion() {
     // reference https://developers.google.com/places/web-service/supported_types
@@ -1037,11 +1052,29 @@ class ShowFlat extends Component {
     }
   }
 
+  renderLightboxScreen() {
+    if (this.props.flat) {
+      console.log('in header, renderLightboxScreen, ');
+      return (
+        <div>
+        <Lightbox
+          // this is where to tell if to show loading or not
+          // show={true}
+          show={this.props.auth.showLightbox}
+          images={this.props.flat.images}
+          imageId={this.state.clickedImageId}
+        />
+        </div>
+      );
+    }
+  }
+
   render() {
     // if (this.props.selectedDates) {
     // }
     return (
       <div>
+          {this.renderLightboxScreen()}
         <div>
           {this.renderFlat(this.props.match.params.id)}
         </div>

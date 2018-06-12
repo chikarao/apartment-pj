@@ -14,7 +14,7 @@ export default class App extends Component {
     //make initMap callback global
     window.initMap = this.loadedMap;
     const API_KEY = process.env.GOOGLEMAP_API_KEY;
-    // console.log('in app.js, compoenentWillMount, API_KEY: ', API_KEY)
+    console.log('in app.js, compoenentWillMount, API_KEY: ', API_KEY)
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
     // added async and defer to make sure gmap loads before component...

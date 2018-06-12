@@ -14,6 +14,7 @@ class SignupModal extends Component {
       signUpCompleted: false
     };
   }
+  
   componentDidMount() {
   }
 

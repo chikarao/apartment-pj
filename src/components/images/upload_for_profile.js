@@ -25,12 +25,16 @@ class UploadForProfile extends Component {
     // export function createImage(imagesArray, imageCount, flatId, callback)
 
       this.props.history.push('/myPage');
+      // switch off loading page
+      this.props.showLoading();
       // document.location.reload()
       console.log('in Upload, createImageCallback, create image completed');
 
   }
 
   handleDrop = files => {
+    // switch on show loading state prop
+    this.props.showLoading();
     const imagesArray = [];
   // Push all the axios request promise into a single array
     const uploaders = files.map((file) => {

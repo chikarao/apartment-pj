@@ -10,6 +10,8 @@ import SigninModal from './signin_modal';
 import SignupModal from './signup_modal';
 import ResetPasswordModal from './reset_password_modal';
 import EditProfileModal from '../modals/profile_edit_modal';
+import Loading from '../modals/loading';
+// import Lightbox from '../modals/lightbox';
 
 import * as actions from '../../actions';
 
@@ -32,6 +34,22 @@ class Header extends Component {
    componentWillUnmount() {
        window.removeEventListener('resize', this.handleResize.bind(this));
    }
+
+   // ***************LOADING****************
+   showLoading = () => {
+      // this.setState({ show: true }, () => console.log('in Welcome, showModal, this.state: ', this.state));
+      // calls action craetor to set this.props.auth.showAuthModal to true
+      this.props.showLoadingScreen();
+    };
+    // do not need this since there is no button, hide triggered by callback when process finished
+    hideLoading = () => {
+      // calls action craetor to set this.props.auth.showAuthModal to false
+      // switch off showAuthModal only if it is true
+      if (this.props.auth.showLoading) {
+        this.props.showLoadingScreen(); //switch off showAuthModal to hide all auth modals
+      }
+    };
+
    // *************MODAL section*************
    showModal = () => {
       // this.setState({ show: true }, () => console.log('in Welcome, showModal, this.state: ', this.state));
@@ -67,6 +85,32 @@ class Header extends Component {
 
       }
     };
+
+    renderLoadingScreen() {
+      console.log('in header, renderLoadingScreen, ');
+      return (
+        <div>
+          <Loading
+          // this is where to tell if to show loading or not
+            // show={true}
+            show={this.props.auth.showLoading}
+          />
+        </div>
+      );
+    }
+
+    // renderLightboxScreen() {
+    //   console.log('in header, renderLightboxScreen, ');
+    //   return (
+    //     <div>
+    //       <Lightbox
+    //         // this is where to tell if to show loading or not
+    //         // show={true}
+    //         show={this.props.auth.showLightbox}
+    //       />
+    //     </div>
+    //   );
+    // }
 
     renderModal() {
       if (this.props.auth.showSigninModal) {
@@ -216,6 +260,7 @@ class Header extends Component {
     return (
       <div className="nav_container">
         {this.renderModal()}
+        {this.renderLoadingScreen()}
         <div>
           <Link to="/" className="navbar-brand"> FLATS flats <br />
           <small>and more flats</small></Link>
@@ -233,7 +278,9 @@ function mapStateToProps(state) {
     auth: state.auth,
     authenticated: state.auth.authenticated,
     email: state.auth.email,
-    id: state.auth.id
+    id: state.auth.id,
+    showLoading: state.auth.showLoading,
+    showLightbox: state.auth.showLightbox
   };
 }
 

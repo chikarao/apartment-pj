@@ -1104,6 +1104,11 @@ form {
     padding: 10px;
 }
 
+/* Profile is the only category that is customized!!!!!!!!!!! */
+.my-page-category-title-profile {
+    padding: 10px;
+}
+
 .my-page-each-card {
   border: 1px solid #ccc;
   width: 100%;
@@ -1249,7 +1254,7 @@ form {
 
 
 .my-page-profile-ul {
-  height: 287px !important;
+  height: 277px !important;
 }
 
 .my-page-profile-attribute {
@@ -1273,10 +1278,11 @@ form {
   position: relative;
 }
 
-.my-page-category-title span:first-child {
+.my-page-category-title-profile span:first-child {
   position: absolute;
+  font-weight: bold;
   top: 14px;
-  right: 132px;
+  right: 145px;
 }
 
 #my-page-profile-edit-link {
@@ -1300,6 +1306,41 @@ form {
   /* https://github.com/mgcrea/angular-strap/issues/1234 */
   /* fixed blurriness */
   -webkit-transform: translate3d(0,0,0);
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  /* background: gray; */
+  z-index: 1;
+  /* https://github.com/mgcrea/angular-strap/issues/1234 */
+  /* fixed blurriness */
+}
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  /* background: gray; */
+  z-index: 1;
+  /* https://github.com/mgcrea/angular-strap/issues/1234 */
+  /* fixed blurriness */
+}
+
+.lightbox-content {
+  width: 100%;
+  height: 500px;
+  margin-top: 200px;
+}
+
+.loading-spinner {
+  margin: 200px;
 }
 
 .modal-main {
@@ -1408,15 +1449,20 @@ form {
   overflow-y: scroll; */
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (max-width: 700px) {
     /* body {
         background-color: lightgreen;
     } */
-    .form-control {
+    /* .form-control {
       width: 500px;
-    }
+    } */
 
     /* body > div:first-of-type {
       margin: 0px;
+    } */
+    /* .my-page-category-title span:first-child {
+      position: absolute;
+      top: 14px;
+      right: 225px;
     } */
 }

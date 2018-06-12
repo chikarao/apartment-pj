@@ -49,7 +49,6 @@ class EditProfileModal extends Component {
     //     </div>
     //   );
     // }
-
   }
 
   // handleSubmitClick(event) {

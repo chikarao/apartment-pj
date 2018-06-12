@@ -39,3 +39,5 @@ export const SHOW_RESET_PASSWORD_MODAL = 'show_reset_password_modal';
 export const FETCH_PROFILE_FOR_USER = 'fetch_profile_for_user';
 export const SHOW_EDIT_PROFILE_MODAL = 'show_edit_profile_modal';
 export const EDIT_PROFILE = 'edit_profile';
+export const SHOW_LOADING = 'show_loading';
+export const SHOW_LIGHTBOX = 'show_lightbox';

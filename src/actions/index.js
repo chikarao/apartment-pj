@@ -42,7 +42,9 @@ import {
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
   SHOW_EDIT_PROFILE_MODAL,
-  EDIT_PROFILE
+  EDIT_PROFILE,
+  SHOW_LOADING,
+  SHOW_LIGHTBOX
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -188,6 +190,20 @@ export function showEditProfileModal() {
 
   //flip showResetPasswordModal
   return { type: SHOW_EDIT_PROFILE_MODAL };
+}
+
+export function showLoading() {
+  console.log('in actions index, showLoading:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_LOADING };
+}
+
+export function showLightbox() {
+  console.log('in actions index, showLightbox:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_LIGHTBOX };
 }
 
 // main fetchflats action for feature page;
