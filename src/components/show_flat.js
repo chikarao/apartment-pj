@@ -28,7 +28,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], clickedImageId: {} };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], clickedImageId: {}, clickedImageIndex: {} };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -60,9 +60,10 @@ class ShowFlat extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value')
     console.log('in show_flat handleImageClick, elementVal: ', elementVal);
-    this.setState({ clickedImageId: elementVal },
+    this.setState({ clickedImageIndex: elementVal },
       () => {
         this.props.showLightbox();
+        console.log('in show_flat handleImageClick, this.state.clickedImageIndex: ', this.state.clickedImageIndex);
       });
   }
 
@@ -77,7 +78,7 @@ class ShowFlat extends Component {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
-              <img value={image.id} src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
             </div>
           );
         })
@@ -1054,7 +1055,7 @@ class ShowFlat extends Component {
 
   renderLightboxScreen() {
     if (this.props.flat) {
-      console.log('in header, renderLightboxScreen, ');
+      console.log('in show_flat, renderLightboxScreen, ');
       return (
         <div>
         <Lightbox
@@ -1062,7 +1063,8 @@ class ShowFlat extends Component {
           // show={true}
           show={this.props.auth.showLightbox}
           images={this.props.flat.images}
-          imageId={this.state.clickedImageId}
+          // imageId={this.state.clickedImageId}
+          imageIndex={this.state.clickedImageIndex}
         />
         </div>
       );
