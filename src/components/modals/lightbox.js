@@ -95,32 +95,37 @@ class Lightbox extends Component {
     }
   }
 
-  getClickedImageIndex(id) {
-    let index = 0;
-    // get count of number of images for flat
-    let imageCount = 0;
-    // get array index of image that was clicked on show flat
-    _.each(this.props.images, (image, i) => {
-      imageCount++;
-      if (image.id == id) {
-        console.log('in Lightbox, renderResponsiveImage each if image: ', image);
-        console.log('in Lightbox, renderResponsiveImage each if i: ', i);
-        // imageToRender.push(image);
-        // if (this.state.imageIndex !== i) {
-        //   this.setState(prevState => ({
-        //     imageIndex: {
-        //       ...prevState.imageIndex,
-        //       imageIndex: i
-        //     },
-        //   }));
-        // }
-        index = i;
+  renderImageBubbles() {
+    console.log('in Lightbox, renderImageBubbles: ');
+
+    return _.map(this.props.images, (image, i) => {
+      console.log('in Lightbox, renderImageBubbles i: ', i);
+      console.log('in Lightbox, renderImageBubbles this.state.imageIndex: ', this.state.imageIndex);
+      if (!this.state.arrowClicked) {
+        if (i == this.props.imageIndex) {
+          return (
+            <div className="lightbox-image-bubbles-each" style={{ backgroundColor: 'lightgray' }}></div>
+          );
+        } else {
+          return (
+            <div className="lightbox-image-bubbles-each"></div>
+          );
+        }
+      } else {
+        if (i == this.state.imageIndex) {
+          return (
+            <div className="lightbox-image-bubbles-each" style={{ backgroundColor: 'lightgray' }}></div>
+          );
+        } else {
+          return (
+            <div className="lightbox-image-bubbles-each"></div>
+          );
+        }
       }
-    });
-    return { index, imageCount };
+    })
   }
 
-  renderImage(clickedId, clickedIndex) {
+  renderImage(clickedIndex) {
     // console.log('in Lightbox, renderResponsiveImage, id: ', id);
     console.log('in Lightbox, renderResponsiveImage this.props.images: ', this.props.images);
     // const imageToRender = [];
@@ -128,13 +133,13 @@ class Lightbox extends Component {
     // const imagesEmpty = _.isEmpty(imageToRender);
     // console.log('in Lightbox, renderResponsiveImage imageToRender: ', imageToRender);
     // console.log('in Lightbox, renderResponsiveImage outside if imagesEmpty: ', imagesEmpty);
-    const imageIndexAndCount = this.getClickedImageIndex(clickedId);
+    const imageIndexAndCount = this.props.images.length;
     const imageIndex = !this.state.arrowClicked ? clickedIndex : this.state.imageIndex;
     // const imageIndexAndCount = { index: this.props.imageIndex, imageCount: this.props.images.length}
     // if (!imagesEmpty) {
       // console.log('in Lightbox, renderResponsiveImage inside if imagesEmpty: ', imagesEmpty);
       console.log('in Lightbox, renderResponsiveImage inside if imagesEmpty, index: ', clickedIndex);
-      console.log('in Lightbox, renderResponsiveImage inside if imagesEmpty, imageCount: ', imageIndexAndCount.imageCount);
+      // console.log('in Lightbox, renderResponsiveImage inside if imagesEmpty, imageCount: ', imageIndexAndCount.imageCount);
       let width;
 
       if (this.state.windowWidth <= 650) {
@@ -143,10 +148,10 @@ class Lightbox extends Component {
       } else {
         width = 568;
       }
-
+      // # of # save for when needed...
+      // <span style={{ width }} className="lightbox-numbers">{this.state.imageIndex + 1} of {imageIndexAndCount}</span>
       return (
         <div className="lightbox-content">
-        <span style={{ width }} className="lightbox-numbers">{this.state.imageIndex + 1} of {imageIndexAndCount.imageCount}</span>
         <div
           className="lightbox-image"
           style={{ background: `url(${this.createBackgroundImage(this.props.images[imageIndex].publicid, width)})`, width, height: width / WH_RATIO }}
@@ -154,6 +159,9 @@ class Lightbox extends Component {
           <div className="lightbox-arrow-box">
             <div value="left" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="left" className="fa fa-angle-left"></i></div>
             <div value="right" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="right" className="fa fa-angle-right"></i></div>
+          </div>
+          <div style={{ width }} className="lightbox-image-bubbles">
+            {this.renderImageBubbles()}
           </div>
         </div>
         </div>
@@ -179,7 +187,7 @@ class Lightbox extends Component {
       //handleClose is a prop passed from header when SigninModal is called
       return (
         <div className={showHideClassName} onClick={this.handleLightboxAreaClick.bind(this)}>
-          {this.renderImage(this.props.imageId, this.props.imageIndex)}
+          {this.renderImage(this.props.imageIndex)}
         <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
         </div>
       );
