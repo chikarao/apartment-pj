@@ -28,7 +28,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 class ShowFlat extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], clickedImageId: {}, clickedImageIndex: {} };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
  }
   componentDidMount() {
     console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -57,14 +57,17 @@ class ShowFlat extends Component {
 
   handleImageClick(event) {
     console.log('in show_flat handleImageClick, event.target: ', event.target);
+    //get image index from div
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value')
     console.log('in show_flat handleImageClick, elementVal: ', elementVal);
-    this.setState({ clickedImageIndex: elementVal },
-      () => {
-        this.props.showLightbox();
-        console.log('in show_flat handleImageClick, this.state.clickedImageIndex: ', this.state.clickedImageIndex);
-      });
+    // elementval is taken as string so convert to decimal (10) integer
+    // call action creator setImageIndex
+    //(note: setImageIndex is shared with infowidow carousel in googlemaps)
+    this.props.setImageIndex(parseInt(elementVal, 10));
+    // swith on showLightbox action creator and boolean in state to show the modal
+    //(showLightbox in part of auth state)
+    this.props.showLightbox();
   }
 
   renderImages(images) {
@@ -1055,17 +1058,17 @@ class ShowFlat extends Component {
 
   renderLightboxScreen() {
     if (this.props.flat) {
-      console.log('in show_flat, renderLightboxScreen, ');
+      // console.log('in show_flat, renderLightboxScreen, ');
       return (
         <div>
-        <Lightbox
-          // this is where to tell if to show loading or not
-          // show={true}
-          show={this.props.auth.showLightbox}
-          images={this.props.flat.images}
-          // imageId={this.state.clickedImageId}
-          imageIndex={this.state.clickedImageIndex}
-        />
+          <Lightbox
+            // this is where to tell if to show loading or not
+            // show={true}
+            show={this.props.auth.showLightbox}
+            images={this.props.flat.images}
+            // imageIndex is handled in app state using setImageIndex
+            // and increment decrement indexEmpty
+          />
         </div>
       );
     }

@@ -13,6 +13,7 @@ import {
   SELECTED_FLAT_FROM_PARAMS,
   INCREMENT_IMAGE_INDEX,
   DECREMENT_IMAGE_INDEX,
+  SET_IMAGE_INDEX,
   START_UP_INDEX,
   GET_PW_RESET_TOKEN,
   SELECTED_DATES,
@@ -422,8 +423,15 @@ export function selectedFlatFromParams(id) {
 }
 
 // Required for carousel in map infowindow and main cards
+export function setImageIndex(index) {
+  console.log('in actions setImageIndex', index);
+  return {
+    type: SET_IMAGE_INDEX,
+    payload: index
+  };
+}
 export function incrementImageIndex(indexAtMax, maxImageIndex) {
-  console.log('in actions incrementImageIndex');
+  console.log('in actions incrementImageIndex, indexAtMax, maxImageIndex', indexAtMax, maxImageIndex);
   if (indexAtMax) {
     return {
       type: INCREMENT_IMAGE_INDEX,
@@ -438,7 +446,7 @@ export function incrementImageIndex(indexAtMax, maxImageIndex) {
 
 // Required for carousel in map infowindow and main cards
 export function decrementImageIndex(indexAtZero, maxImageIndex) {
-  console.log('in actions decrementImageIndex');
+  console.log('in actions decrementImageIndex, indexAtZero, maxImageIndex', indexAtZero, maxImageIndex);
   if (indexAtZero) {
     return {
       type: DECREMENT_IMAGE_INDEX,
