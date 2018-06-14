@@ -191,6 +191,9 @@ class Header extends Component {
            </ul>
          ];
        } else {
+         //consider opedning mypage in new tab...
+         // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
+         // win.focus();
          return [
            <ul key={'1'} className="header-list">
              <li className="nav-item">

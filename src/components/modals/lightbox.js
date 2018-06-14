@@ -56,8 +56,19 @@ class Lightbox extends Component {
    }
   // componentDidMount() {
   // }
-  handleLightboxAreaClick() {
+  handleLightboxAreaClick(event) {
+    console.log('in lightbox, handleLightboxAreaClick, event.target: ', event.target);
+    const wasParentClicked = (event.target.className === 'lightbox display-block') || (event.target.className === 'lightbox-content');
+    console.log('in lightbox, handleLightboxAreaClick, wasParentClicked: ', wasParentClicked);
+    if (wasParentClicked) {
+      // this.props.selectedFlat(this.props.flat);
+      console.log('in lightbox, handleLightboxAreaClick, parent clicked clicked');
+      this.props.showLightbox();
+      this.props.setImageIndex(0);
+    }
     // this.props.showLightbox();
+    // console.log('in Lightbox, handleClose:');
+    // // this.setState({ imageIndex: 0, arrowClicked: false });
   }
 
   handleClose() {
@@ -208,11 +219,12 @@ class Lightbox extends Component {
       // console.log('in Lightbox, renderLightbox this.props.images[this.props.imageIndex]:', this.props.images[this.props.imageIndex].publicid);
       // console.log('in Lightbox, renderLightbox this.props.images[this.state.imageIndex]:', this.props.images[this.state.imageIndex].publicid);
       // const index = this.props.imageIndex;
-      //handleClose is a prop passed from header when SigninModal is called
+
+      // !!!!! close button not used; click on rest of area and close
+      <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
       return (
         <div className={showHideClassName} onClick={this.handleLightboxAreaClick.bind(this)}>
           {this.renderImage()}
-        <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
         </div>
       );
     }
