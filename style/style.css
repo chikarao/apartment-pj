@@ -409,8 +409,8 @@ body > div:first-child {
 }
 
 .slide-show img {
-  height: 300px;
-  width: 350px;
+  height: 266px;
+  width: 400px;
   padding-left: 10px;
 }
 
@@ -887,15 +887,16 @@ form {
 }
 
 .card-container {
-  height: 370px;
-  width: 300px;
+  height: 350px;
+  width: 350px;
   margin: 10px 10px 0px 0px;
   padding: 0;
   /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
 }
 .card-image {
-  height: 300px;
-  width: 300px;
+  height: 233px;
+  width: 350px;
+  border-radius: 4px;
   background-color: lightgray;
   padding: 0px;
   margin: 10px 10px 0px 0px;

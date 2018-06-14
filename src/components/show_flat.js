@@ -81,7 +81,7 @@ class ShowFlat extends Component {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
-              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_400,h_250,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
             </div>
           );
         })

@@ -12,7 +12,8 @@ const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 
 let showHideClassName;
-const WH_RATIO = 1.61803398875;
+// const WH_RATIO = 1.61803398875;
+const WH_RATIO = 1.5;
 
 class Lightbox extends Component {
   constructor(props) {
@@ -161,7 +162,7 @@ class Lightbox extends Component {
       let width;
 
       if (this.state.windowWidth <= 650) {
-        width = 400;
+        width = 350;
         // <img src={`http://res.cloudinary.com/chikarao/image/upload/w_${this.state.imageWidthWide},h_354/` + this.props.images[index].publicid + '.jpg'} alt="" />
       } else {
         width = 568;
@@ -169,19 +170,19 @@ class Lightbox extends Component {
       // # of # save for when needed...
       return (
         <div className="lightbox-content">
-        <span style={{ width }} className="lightbox-numbers">{imageNumber} of {imageCount}</span>
-        <div
-        className="lightbox-image"
-        style={{ background: `url(${this.createBackgroundImage(this.props.images[this.props.imageIndex].publicid, width)})`, width, height: width / WH_RATIO }}
-        >
-        <div className="lightbox-arrow-box">
-        <div value="left" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="left" className="fa fa-angle-left"></i></div>
-        <div value="right" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="right" className="fa fa-angle-right"></i></div>
-        </div>
-        <div style={{ width }} className="lightbox-image-bubbles">
-        {this.renderImageBubbles()}
-        </div>
-        </div>
+          <span style={{ width }} className="lightbox-numbers">{imageNumber} of {imageCount}</span>
+          <div
+            className="lightbox-image"
+            style={{ background: `url(${this.createBackgroundImage(this.props.images[this.props.imageIndex].publicid, width)})`, width, height: width / WH_RATIO }}
+          >
+          <div className="lightbox-arrow-box">
+            <div value="left" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="left" className="fa fa-angle-left"></i></div>
+            <div value="right" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="right" className="fa fa-angle-right"></i></div>
+          </div>
+          <div style={{ width }} className="lightbox-image-bubbles">
+            {this.renderImageBubbles()}
+          </div>
+          </div>
         </div>
       );
       // }

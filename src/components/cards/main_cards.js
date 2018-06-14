@@ -30,7 +30,7 @@ class MainCards extends Component {
   createBackgroundImage(image) {
     const width = 400;
     const t = new cloudinary.Transformation();
-    t.angle(0).crop('scale').width(width).aspectRatio('1:1');
+    t.angle(0).crop('scale').width(width).aspectRatio('1.5');
     return cloudinaryCore.url(image, t);
   }
 
