@@ -35,6 +35,7 @@ class EditFlat extends Component {
     console.log('in edit flat, handleFormSubmit, data: ', data);
     if (this.state.confirmChecked) {
       this.props.editFlat(data, (id) => this.editFlatCallback(id));
+      this.props.showLoading();
     } else {
       console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
       window.alert('Please check box to confirm your inputs then push submit')
@@ -46,6 +47,7 @@ class EditFlat extends Component {
     // this.props.history.push(`/editflat/${id}`);
     //for some reason, history.push does not update the default values in fields
     // reload page; fetches new flat data
+    this.props.showLoading();
     document.location.reload()
   }
 
@@ -116,10 +118,12 @@ class EditFlat extends Component {
     } else {
       this.props.history.push(`/editflat/${this.props.flat.id}`);
       deleteImageArray = [];
+      this.props.showLoading();
     }
   }
 
   deleteCheckedImages() {
+    this.props.showLoading();
     console.log('in edit flat, deleteCheckedImages, deleteImageArray: ', deleteImageArray);
     const imageArrayEmpty = _.isEmpty(deleteImageArray);
     if (imageArrayEmpty) {

@@ -21,32 +21,60 @@ const INITIAL_ZOOM = 12;
 let MAP_DIMENSIONS = {};
 
 class GoogleMap extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     imageIndex: 0
-  //   };
-  // }
-  // no constructor needed now
+  constructor(props) {
+    super(props);
+    this.state = {
+      map: {},
+      initialFlats: {},
+      markersArray: [],
+      initialRerenderMap: true
+    };
+  }
+
   componentDidMount() {
   // runs right after component is rendered to the screeen
   // flatsEmpty is prop passed in map render
   // and is true if there are no search results for the map area or criteria
   this.renderMap();
+  // this.createMarkers();
+
+  console.log('in googlemaps componentDidMount, this.props: ', this.props);
+  this.setState({ initialFlats: this.props.flats });
   }
   //*********************************************************
   //end of componentDidMount
 
-
   componentWillReceiveProps(nextProps) {
-    console.log('in googlemaps componentWillReceiveProps: ', nextProps);
+    // console.log('in googlemaps componentWillReceiveProps, nextProps: ', nextProps);
+    // console.log('in googlemaps componentWillReceiveProps, this.props: ', this.props);
+    // console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats: ', this.state.initialFlats);
+    // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
+    // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+    //   this.state.markersArray[i].setMap(null);
+    // }
+    const nextPropFlatNum = _.size(nextProps.flats);
+    const lastPropFlatNum = _.size(this.state.initialFlats);
+    console.log('in googlemaps componentWillReceiveProps, nextPropFlatNum, lastPropFlatNum : ', nextPropFlatNum, lastPropFlatNum);
+    console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats : ', this.state.initialFlats);
+    console.log('in googlemaps componentWillReceiveProps, nextProps.flats : ', nextProps.flats);
+    // console.log('in googlemaps componentWillReceiveProps, this.state.initialRerenderMap : ', this.state.initialRerenderMap);
+    // if (this.state.initialFlats !== nextProps.flats) {
+    //   console.log('in googlemaps componentWillReceiveProps, after if: ');
+    //   this.createMarkers();
+    //   // this.setState({ initialRerenderMap: false })
+    // }
+    // this.setState({ initialFlats: nextProps.flats });
   }
+
+  // componentDidUpdate() {
+  //   this.createMarkers();
+  // }
 
   renderMap() {
     const initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
-    console.log('in googlemap, componentDidMount, FLATS:', this.props.flats);
+    console.log('in googlemap, renderMap, FLATS:', this.props.flats);
 
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
@@ -77,11 +105,89 @@ class GoogleMap extends Component {
       //     ]
       //   }
       // ]
+    }); // end of const map = new google.maps.Map(....)
 
+    // store map in state and call createmarkers in callback when map is stored
+    this.setState({ map }, () => {
+      this.createMarkers();
     });
+        // Fired when map is moved; gets map dimensions
+        // and call action fetchflats to get flats within map bounds
+        // calls action updateMapDimensions for updating mapDimensions state
+        // mapDimensions is used to render map when flats search result is empty
+        google.maps.event.addListener(map, 'idle', () => {
+          console.log('in googlemap, map idle listener fired');
+          // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+          //   this.state.markersArray[i].setMap(null);
+          // }
 
+          const bounds = map.getBounds();
+          const mapCenter = map.getCenter();
+          const mapZoom = map.getZoom();
+          //leaving just to show how mapbounds works
+          // console.log('in googlemap, bounds: ', bounds);
+          // const ew = bounds.b; // LatLng of the north-east corner
+          // const ns = bounds.f; // LatLng of the south-west corder
+          // const east = ew.f;
+          // const west = ew.b;
+          // const north = ns.f;
+          // const south = ns.b;
+          // console.log('in googlemap, EW bounds: ', ew);
+          // console.log('in googlemap, NS bounds: ', ns);
+          // console.log('in googlemap, E bound lng: ', east);
+          // console.log('in googlemap, W bound lng: ', west);
+          // console.log('in googlemap, N bound lat: ', north);
+          // console.log('in googlemap, S bound lat: ', south);
+          // const mapBounds = {
+          //   east,
+          //   west,
+          //   north,
+          //   south
+          // };
+          // for fetchFlats within the coordinate bounds
+          const mapBounds = {
+            east: bounds.b.f,
+            west: bounds.b.b,
+            north: bounds.f.f,
+            south: bounds.f.b
+          };
+
+          MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
+
+          // console.log('in googlemap, mapBounds: ', mapBounds);
+          // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
+          // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
+          // console.log('in googlemap, mapZoom: ', mapZoom);
+          // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
+          // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
+          // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
+          // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
+
+          // updateMapBounds not available as app state obj but not currently used
+
+          // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
+
+          //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
+          if (!this.props.showFlat) {
+            console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+            this.props.updateMapDimensions(MAP_DIMENSIONS);
+            this.props.fetchFlats(mapBounds);
+          }
+          // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+          //   this.state.markersArray[i].setMap(null);
+          // }
+          // this.createMarkers();
+        });
+
+        // this.createMarkers();
+        // END of map initialization and map addlisterners
+  } // end of renderMap
+
+  createMarkers() {
     // required infowindowArray to close infowindow on map click
     const infowindowArray = [];
+    const markersArray = [];
+    const map = this.state.map;
 
     //flats is object from props in map render
     _.each(this.props.flats, flat => {
@@ -118,7 +224,8 @@ class GoogleMap extends Component {
         // labelAnchor: new google.maps.Point(20, 60),
         // labelClass: 'gm-marker-label', // your desired CSS class
         // labelInBackground: true
-      });
+      }); // end of marker new
+
 
       // if (!this.props.showFlat) {
       const infowindow = new google.maps.InfoWindow({
@@ -129,7 +236,6 @@ class GoogleMap extends Component {
 
       //infowindowArray for closing all open infowindows at map click
       infowindowArray.push(infowindow);
-
 
       // to open infowindows
       marker.addListener('click', () => {
@@ -230,7 +336,7 @@ class GoogleMap extends Component {
         //item number is index
         const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
         iwBackgroundShadow.style.display = 'none';
-      });
+      }); // end of addlistener
 
       // addDomListener for left arrow in IW image carousel
       // clicks increment image index in redux, passes to action creator, two arguments
@@ -255,7 +361,7 @@ class GoogleMap extends Component {
         //his.props.imageIndex', this.props.imageIndex);
         // infowindowClickHandler(flat);
         document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
-      });
+      }); // end of addListener
 
       google.maps.event.addDomListener(iwImageRightArrowDiv, 'click', (marker) => {
         let indexAtMax = false;
@@ -277,7 +383,7 @@ class GoogleMap extends Component {
         }
         console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
         document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
-      });
+      }); // end of addDomListener
 
       // opens up new tab when IW details clicked and passes flat id in params to the new tab
       google.maps.event.addDomListener(iwDetailDiv, 'click', function () {
@@ -287,71 +393,13 @@ class GoogleMap extends Component {
         const win = window.open(`/show/${marker.flatId}`, '_blank');
         win.focus();
       });
-    });
+      markersArray.push(marker);
+      console.log('in googlemap, createMarker, markersArray', markersArray);
+    });// end of each
+    // makes marker array element in state
+    this.setState({ markersArray });
     //****************************************
     //end of _.each flat create markers etc...
-
-    // Fired when map is moved; gets map dimensions
-    // and call action fetchflats to get flats within map bounds
-    // calls action updateMapDimensions for updating mapDimensions state
-    // mapDimensions is used to render map when flats search result is empty
-    google.maps.event.addListener(map, 'idle', () => {
-      console.log('in googlemap, map idle listener fired');
-      const bounds = map.getBounds();
-      const mapCenter = map.getCenter();
-      const mapZoom = map.getZoom();
-      //leaving just to show how mapbounds works
-      // console.log('in googlemap, bounds: ', bounds);
-      // const ew = bounds.b; // LatLng of the north-east corner
-      // const ns = bounds.f; // LatLng of the south-west corder
-      // const east = ew.f;
-      // const west = ew.b;
-      // const north = ns.f;
-      // const south = ns.b;
-      // console.log('in googlemap, EW bounds: ', ew);
-      // console.log('in googlemap, NS bounds: ', ns);
-      // console.log('in googlemap, E bound lng: ', east);
-      // console.log('in googlemap, W bound lng: ', west);
-      // console.log('in googlemap, N bound lat: ', north);
-      // console.log('in googlemap, S bound lat: ', south);
-      // const mapBounds = {
-      //   east,
-      //   west,
-      //   north,
-      //   south
-      // };
-      // for fetchFlats within the coordinate bounds
-      const mapBounds = {
-        east: bounds.b.f,
-        west: bounds.b.b,
-        north: bounds.f.f,
-        south: bounds.f.b
-      };
-
-      MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
-
-      // console.log('in googlemap, mapBounds: ', mapBounds);
-      // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
-      // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
-      // console.log('in googlemap, mapZoom: ', mapZoom);
-      // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
-      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
-      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
-      // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
-
-      // updateMapBounds not available as app state obj but not currently used
-
-      // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
-
-      //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
-      if (!this.props.showFlat) {
-        console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
-        this.props.updateMapDimensions(MAP_DIMENSIONS);
-        this.props.fetchFlats(mapBounds);
-      }
-    });
-
-
     google.maps.event.addListener(map, 'click', function (event) {
       const latitude = event.latLng.lat();
       const longitude = event.latLng.lng();
@@ -363,8 +411,7 @@ class GoogleMap extends Component {
         infowindowArray[i].close();
       }
     }); //end addListener
-  }
-
+  } // end of createMarker
 
   //*********************************************************
   render() {

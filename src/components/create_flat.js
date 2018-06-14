@@ -30,6 +30,8 @@ class CreateFlat extends Component {
 
   handleFormSubmit(data) {
     if (this.state.confirmChecked) {
+      //switch on loading modal in action creator
+      this.props.showLoading();
       const { address1, city, state, zip, country } = data;
       console.log('in createflat, handleFormSubmit, data: ', data);
       console.log('in createflat, handleFormSubmit, submit clicked');
@@ -161,6 +163,8 @@ createImageCallback(imagesArray, imageCount, flatId) {
     this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
   } else {
     this.props.history.push(`/show/${flatId}`);
+    //switch on loading modal in action creator
+    this.props.showLoading();
   }
 }
 

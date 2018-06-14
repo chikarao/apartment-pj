@@ -542,8 +542,8 @@ export function fetchBookingsByUser(id) {
 }
 
 export function deleteBooking(id, callback) {
-  console.log('in actions index, deleteFlat, id: ', id);
-  console.log('in actions index, deleteFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, deleteBooking, id: ', id);
+  console.log('in actions index, deleteBooking: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {

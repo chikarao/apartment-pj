@@ -322,12 +322,18 @@ class ShowFlat extends Component {
   handleDeleteFlatClick() {
     console.log('in show_flat, handleDeleteFlatClick: ');
     if (window.confirm('Are you sure you want to delete this listing?')) {
+      this.props.showLoading();
       console.log('in show_flat, handleDeleteFlatClick, window.confirm, YES, this.props.flat.id: ', this.props.flat.id);
       // call deleteFlat action creator
-      this.props.deleteFlat(this.props.flat.id, () => this.props.history.push('/mypage'));
+      this.props.deleteFlat(this.props.flat.id, () => this.deleteFlatClickCallBack());
     } else {
       console.log('in show_flat, handleDeleteFlatClick, window.confirm, NO: ');
     }
+  }
+
+  deleteFlatClickCallBack() {
+    this.props.history.push('/mypage');
+    this.props.showLoading();
   }
 
 //   scrollLastMessageIntoView() {

@@ -28,10 +28,12 @@ class Upload extends Component {
       this.props.history.push(`/editflat/${flatId}`);
       // document.location.reload()
       console.log('in Upload, createImageCallback, create image completed, flatId.', flatId);
+      this.props.showLoading();
     }
   }
 
   handleDrop = files => {
+    this.props.showLoading();
     const imagesArray = [];
   // Push all the axios request promise into a single array
     const uploaders = files.map((file) => {
