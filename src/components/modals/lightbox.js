@@ -221,10 +221,10 @@ class Lightbox extends Component {
       // const index = this.props.imageIndex;
 
       // !!!!! close button not used; click on rest of area and close
-      <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
       return (
         <div className={showHideClassName} onClick={this.handleLightboxAreaClick.bind(this)}>
           {this.renderImage()}
+          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
         </div>
       );
     }

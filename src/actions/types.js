@@ -42,3 +42,6 @@ export const SHOW_EDIT_PROFILE_MODAL = 'show_edit_profile_modal';
 export const EDIT_PROFILE = 'edit_profile';
 export const SHOW_LOADING = 'show_loading';
 export const SHOW_LIGHTBOX = 'show_lightbox';
+export const FETCH_REVIEW_FOR_BOOKING_BY_USER = 'fetch_review_for_booking_by_user';
+export const CREATE_REVIEW = 'create_review';
+export const UPDATE_REVIEW = 'update_review';

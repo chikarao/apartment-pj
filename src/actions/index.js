@@ -45,7 +45,10 @@ import {
   SHOW_EDIT_PROFILE_MODAL,
   EDIT_PROFILE,
   SHOW_LOADING,
-  SHOW_LIGHTBOX
+  SHOW_LIGHTBOX,
+  CREATE_REVIEW,
+  FETCH_REVIEW_FOR_BOOKING_BY_USER,
+  UPDATE_REVIEW
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -514,6 +517,7 @@ export function fetchBooking(id) {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
+      console.log('response to fetchBooking: ', response);
       console.log('response to fetchBooking: ', response.data.data.booking);
       dispatch({
         type: FETCH_BOOKING,
@@ -807,6 +811,65 @@ export function fetchProfileForUser() {
         type: FETCH_PROFILE_FOR_USER,
         payload: response.data.data.profile
       });
+    });
+  };
+}
+export function fetchReviewForBookingByUser(booking_id) {
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/reviews/review_for_booking_by_user?`, { review: { booking_id } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchReviewForBookingByUser, response: ', response);
+      console.log('response to fetchReviewForBookingByUser, response.data.data.profile: ', response.data.data.review);
+      dispatch({
+        type: FETCH_REVIEW_FOR_BOOKING_BY_USER,
+        payload: response.data.data.review
+      });
+    });
+  };
+}
+
+export function createReview(reviewAttributes, callback) {
+  console.log('in actions index, createReview, reviewAttributes: ', reviewAttributes);
+  console.log('in actions index, createReview: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/reviews`, { review: reviewAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createReview, response: ', response);
+      console.log('response to createReview, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_REVIEW
+      });
+      // sends back to createreview.js the review_id and the images
+      callback();
+    });
+  };
+}
+export function updateReview(reviewAttributes, callback) {
+  console.log('in actions index, createReview, reviewAttributes: ', reviewAttributes);
+  console.log('in actions index, createReview: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/reviews`, { review: reviewAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createReview, response: ', response);
+      console.log('response to createReview, response.data.data: ', response.data.data);
+      dispatch({
+        type: UPDATE_REVIEW,
+        payload: response.data.data.review
+      });
+      // sends back to createreview.js the review_id and the images
+      callback();
     });
   };
 }

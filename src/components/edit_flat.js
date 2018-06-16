@@ -220,7 +220,9 @@ class EditFlat extends Component {
             <label className="create-flat-form-label">Country:</label>
             <div className="edit-flat-address">{this.props.flat.country}</div>
           </fieldset>
-          <span>* To edit address please delete flat and create a new one</span>
+          <fieldset>
+          <div className="edit-flat-form-message">* If you need to edit the address, please delete flat and create a new one</div>
+          </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Description:</label>
             <Field name="description" component="input" type="string" className="form-control" />
@@ -235,7 +237,15 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Guests:</label>
-            <Field name="guests" component="input" type="integer" className="form-control" />
+            <Field name="guests" component="select" type="integer" className="form-control">
+              <option></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Sales Point:</label>
@@ -259,7 +269,7 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Intro:</label>
-            <Field name="intro" component="input" type="text" className="form-control" />
+            <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Cancellation:</label>

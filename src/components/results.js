@@ -20,6 +20,7 @@ class Results extends Component {
   constructor() {
   super();
   this.state = {
+    // initialized at page 1
     currentPage: 1,
     //******* Adjust how many to show per page here*****************
     cardsPerPage: 3
@@ -71,6 +72,10 @@ class Results extends Component {
     }
   }
 
+  componentDidUpdate() {
+    // this.setState({ componentUpdated: true });
+  }
+
   // componentWillReceiveProps() {
   // }
   calculateLatLngAve(flats) {
@@ -115,13 +120,13 @@ class Results extends Component {
 
       return (
         <div>
-          <GoogleMap
-            // key={'1'}
-            flatsEmpty={flatsEmpty}
-            flats={this.props.flats}
-            initialPosition={latLngAve || initialPosition}
-            currency='$'
-          />
+        <GoogleMap
+        // key={'1'}
+        flatsEmpty={flatsEmpty}
+        flats={this.props.flats}
+        initialPosition={latLngAve || initialPosition}
+        currency='$'
+        />
         </div>
       );
       // <div>{console.log('in div: ', flats)}</div>
@@ -133,23 +138,24 @@ class Results extends Component {
       };
       return (
         <div>
-          <GoogleMap
-           flatsEmpty={flatsEmpty}
-           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
-           // initialPosition={emptyMapLatLngCenter}
-           initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
-          />
+        <GoogleMap
+        flatsEmpty={flatsEmpty}
+        flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
+        // initialPosition={emptyMapLatLngCenter}
+        initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
+        />
         </div>
       );
     } else {
       return (
         <div>
-          <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-          <div className="spinner">Loading...</div>
+        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <div className="spinner">Loading...</div>
         </div>
       );
-    }
+    } // if not empty
   }
+
 
   removeCurrent() {
     const currentPageLi = document.getElementsByClassName('current');

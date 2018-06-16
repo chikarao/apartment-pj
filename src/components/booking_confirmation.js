@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import * as actions from '../actions';
 
@@ -7,8 +8,10 @@ import * as actions from '../actions';
 class BookingConfirmation extends Component {
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
-    this.props.fetchBooking(this.props.match.params.id);
+    const bookingId = parseInt(this.props.match.params.id, 10);
+    this.props.fetchBooking(bookingId);
     console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
+    this.props.fetchReviewForBookingByUser(bookingId);
   }
 
     componentWillUnmount() {
@@ -111,19 +114,107 @@ class BookingConfirmation extends Component {
       //   );
       // }
   }
-    // renderBookingData() {
-    //   if (this.props.flat && this.props.bookingData) {
+
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
+  }
+
+  renderStars() {
+    const { rating } = this.props.review;
+    const totalStars = 5;
+    const grayStarsNum = 5 - rating;
+    console.log('in booking confirmation, renderStars, grayStarsNum:', grayStarsNum);
+    //
+    // for (let i = 0; i < rating; i++) {
+    // }
+    return _.times(totalStars, (i) => {
+      if (i < rating) {
+        console.log('in booking confirmation, renderStars, in loop, if: ', i);
+        return <i key={i} className="fa fa-star gold-star"></i>;
+      } else {
+        console.log('in booking confirmation, renderStars, in loop, else:', i);
+        return <i key={i} className="fa fa-star gray-star"></i>
+      }
+    });
+    //
+    // if (grayStarsNum >= 0) {
+    //   for (let i = 0; i < grayStarsNum; i++) {
     //     return (
-    //       <div>
-    //         Booking Data
-    //       </div>
+    //       <i className="fa fa-star gray-star"></i>
     //     );
     //   }
     // }
+  }
+
+  handleEditReviewClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in booking confirmation, handleEditReviewClick, elementVal:', elementVal);
+    // this.props.updateReview(elementVal);
+  }
+
+  renderReview() {
+    const { review } = this.props;
+
+    const reviewEmpty = _.isEmpty(review);
+    if (!reviewEmpty) {
+      console.log('in booking confirmation, renderReview, this.props.review:', review.user.profile.image);
+      const date = new Date(review.created_at)
+      return (
+        <div className="review-container">
+          <div className="review-details">
+                <div className="review-top-box">
+
+                  <div className="review-user-box">
+                    <div className="review-avatar">
+                      <img src={'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.profile.image + '.jpg'} />
+                    </div>
+                    <div className="review-username">
+                      {review.user.profile.username}
+                    </div>
+                    </div>
+                  <div className="review-title">
+                    {review.title}
+                  </div>
+                </div>
+
+                <div className="review-comment-box">
+                  <p className="review-comment-text">
+                    {review.comment}
+                  </p>
+                </div>
+                <div className="review-bottom-box">
+                  <div className="review-bottom-details">
+                  posted: {this.formatDate(date)}
+                  </div>
+                  <div className="review-bottom-details">
+                   <div className="review-star-box">
+                    {this.renderStars()}
+                  </div>
+                  </div>
+                  <div value={review.id} className="review-bottom-details-edit" onClick={this.handleEditReviewClick.bind(this)}>
+                    Edit
+                  </div>
+
+                </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
         {this.renderBookingData()}
+        {this.renderReview()}
       </div>
     );
   }
@@ -132,7 +223,9 @@ class BookingConfirmation extends Component {
 function mapStateToProps(state) {
   console.log('in booking confirmation, mapStateToProps, state: ', state);
   return {
-    bookingData: state.bookingData.fetchBookingData
+    bookingData: state.bookingData.fetchBookingData,
+    review: state.reviews.reviewForBookingByUser
+
     // flat: state.flat.selectedFlat
   };
 }
