@@ -3,9 +3,16 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../actions';
+import ReviewEditModal from './modals/review_edit_modal';
 
 
 class BookingConfirmation extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     showReviewEditModal: false
+  //   };
+  // }
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
     const bookingId = parseInt(this.props.match.params.id, 10);
@@ -50,12 +57,12 @@ class BookingConfirmation extends Component {
 
         return (
           <div>
-            <h2>
-              Thank you for your booking!
-            </h2>
             <h3>
-              This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
+              Thank you for your booking!
             </h3>
+            <h4>
+              This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
+            </h4>
             <div id="carousel-show" className="booking-confirmation-image">
               {this.renderImage(bookingData.flat.images)}
             </div>
@@ -123,7 +130,7 @@ class BookingConfirmation extends Component {
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? `0${minutes}` : minutes;
     const strTime = `${hours}:${minutes}  ${ampm}`;
-    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear()
+    return date.getMonth() + 1 + '/' + date.getFullYear()
   }
 
   renderStars() {
@@ -136,10 +143,10 @@ class BookingConfirmation extends Component {
     // }
     return _.times(totalStars, (i) => {
       if (i < rating) {
-        console.log('in booking confirmation, renderStars, in loop, if: ', i);
+        // console.log('in booking confirmation, renderStars, in loop, if: ', i);
         return <i key={i} className="fa fa-star gold-star"></i>;
       } else {
-        console.log('in booking confirmation, renderStars, in loop, else:', i);
+        // console.log('in booking confirmation, renderStars, in loop, else:', i);
         return <i key={i} className="fa fa-star gray-star"></i>
       }
     });
@@ -158,6 +165,19 @@ class BookingConfirmation extends Component {
     const elementVal = clickedElement.getAttribute('value');
     console.log('in booking confirmation, handleEditReviewClick, elementVal:', elementVal);
     // this.props.updateReview(elementVal);
+    this.props.showEditReview();
+  }
+
+  renderReviewEditModal() {
+    console.log('in booking confirmation, renderReviewEditModal, this.props.showEditReview:', this.props.showEditReviewModal);
+    return (
+      <div>
+      <ReviewEditModal
+        show={this.props.showEditReviewModal}
+        review={this.props.review}
+      />
+      </div>
+    );
   }
 
   renderReview() {
@@ -169,6 +189,7 @@ class BookingConfirmation extends Component {
       const date = new Date(review.created_at)
       return (
         <div className="review-container">
+        <h4>Your Review</h4>
           <div className="review-details">
                 <div className="review-top-box">
 
@@ -213,6 +234,7 @@ class BookingConfirmation extends Component {
   render() {
     return (
       <div>
+        {this.renderReviewEditModal()}
         {this.renderBookingData()}
         {this.renderReview()}
       </div>
@@ -224,8 +246,8 @@ function mapStateToProps(state) {
   console.log('in booking confirmation, mapStateToProps, state: ', state);
   return {
     bookingData: state.bookingData.fetchBookingData,
-    review: state.reviews.reviewForBookingByUser
-
+    review: state.reviews.reviewForBookingByUser,
+    showEditReviewModal: state.modals.showEditReview
     // flat: state.flat.selectedFlat
   };
 }

@@ -17,7 +17,7 @@ export default function (state = {}, action) {
       return { ...state, reviewForBookingByUser: action.payload[0] };
 
     case UPDATE_REVIEW:
-      return { ...state, reviewForBookingByUser: action.payload[0] };
+      return { ...state, reviewForBookingByUser: action.payload };
 
     default:
       return state;

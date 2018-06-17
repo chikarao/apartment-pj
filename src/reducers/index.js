@@ -10,6 +10,7 @@ import bookingReducer from './booking_reducer';
 import conversationReducer from './conversation_reducer';
 import likesReducer from './likes_reducer';
 import reviewsReducer from './reviews_reducer';
+import modalsReducer from './modals_reducer';
 
 const rootReducer = combineReducers({
   form,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   fetchBookingsByUserData: bookingReducer,
   conversation: conversationReducer,
   likes: likesReducer,
-  reviews: reviewsReducer
+  reviews: reviewsReducer,
+  modals: modalsReducer
   // can access mapbounds.east .west., etc
 });
 

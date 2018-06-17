@@ -48,7 +48,8 @@ import {
   SHOW_LIGHTBOX,
   CREATE_REVIEW,
   FETCH_REVIEW_FOR_BOOKING_BY_USER,
-  UPDATE_REVIEW
+  UPDATE_REVIEW,
+  SHOW_EDIT_REVIEW_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -208,6 +209,12 @@ export function showLightbox() {
 
   //flip showResetPasswordModal
   return { type: SHOW_LIGHTBOX };
+}
+export function showEditReview() {
+  console.log('in actions index, showEditReview:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_EDIT_REVIEW_MODAL };
 }
 
 // main fetchflats action for feature page;
@@ -853,17 +860,17 @@ export function createReview(reviewAttributes, callback) {
   };
 }
 export function updateReview(reviewAttributes, callback) {
-  console.log('in actions index, createReview, reviewAttributes: ', reviewAttributes);
-  console.log('in actions index, createReview: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, updateReview, reviewAttributes: ', reviewAttributes);
+  console.log('in actions index, updateReview: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = reviewAttributes;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/reviews`, { review: reviewAttributes }, {
+    axios.patch(`${ROOT_URL}/api/v1/reviews/${reviewAttributes.id}`, { review: reviewAttributes }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to createReview, response: ', response);
-      console.log('response to createReview, response.data.data: ', response.data.data);
+      console.log('response to updateReview, response: ', response);
+      console.log('response to updateReview, response.data.data: ', response.data.data);
       dispatch({
         type: UPDATE_REVIEW,
         payload: response.data.data.review

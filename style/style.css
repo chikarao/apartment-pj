@@ -1534,7 +1534,7 @@ form {
   width: 100%;
   /* min-height: 150px; */
   /* height: 100px; */
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* fit content */
   display: block;
   overflow: auto;
@@ -1545,7 +1545,7 @@ form {
    margin-right: auto;
   width: 80%;
   height: 100%;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   flex-direction: column;
   display: flex;
   align-items: flex-start;
@@ -1553,7 +1553,7 @@ form {
 }
 
 .review-top-box {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   width: 100%;
   min-height: 50px;
   margin: 0 0 5px 0;
@@ -1572,7 +1572,7 @@ form {
 }
 
 .review-avatar {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -1586,7 +1586,7 @@ form {
 }
 
 .review-username {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   min-width: 200px;
   flex-grow: grow;
   height: 50px;
@@ -1603,7 +1603,7 @@ form {
   min-width: 200px;
   height: 50px;
   font-weight: bold;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   text-align: left;
   padding: 30px 0 5px 5px;
   font-size: 17px;
@@ -1611,7 +1611,7 @@ form {
 }
 
 .review-comment-box {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* float: left; */
   margin: 10px 5px 5px 5px;
   /* font-weight: bold; */
@@ -1619,7 +1619,7 @@ form {
 
 }
 .review-comment-text {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* float: left; */
   margin: 0;
   /* font-weight: bold; */
@@ -1636,7 +1636,7 @@ form {
 } */
 
 .review-bottom-box {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* float: left; */
   margin: 5px 0 5px 0;
   /* font-weight: bold; */
@@ -1646,14 +1646,14 @@ form {
 
 }
 .review-bottom-details {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* float: left; */
   margin: 5px 5px;
   font-weight: normal;
 }
 
 .review-bottom-details-edit {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   margin: 5px 5px;
 
 }
@@ -1667,6 +1667,26 @@ form {
 }
 .gray-star {
   color: lightgray;
+}
+
+.review-edit-star-box {
+  font-size: 30px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.gold-star-edit {
+  color: gold;
+  /* font-size: 100px; */
+}
+.gray-star-edit {
+  color: lightgray;
+  /* font-size: 100px; */
+}
+
+.review-comment-input {
+  min-height: 100px;
+  /* height: auto; */
 }
 
 @media screen and (max-width: 750px) {

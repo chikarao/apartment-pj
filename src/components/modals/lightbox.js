@@ -20,7 +20,7 @@ class Lightbox extends Component {
     super(props);
     this.state = {
       imageIndex: 0,
-      arrowClicked: false,
+      // arrowClicked: false,
       displayedFirst: false,
       windowWidth: window.innerWidth
     };
@@ -91,7 +91,7 @@ class Lightbox extends Component {
     console.log('in Lightbox, handleImageArrowClick, maxImagesIndex: ', maxImagesIndex);
 
     // if (!this.state.arrowClicked) {
-      this.setState({ arrowClicked: true })
+      // this.setState({ arrowClicked: true })
         // console.log('in Lightbox, handleImageArrowClick, setstate arrowclicked: ', this.state.arrowClicked);
       this.imageIncrementer(elementVal, maxImagesIndex);
     //   });
