@@ -11,10 +11,15 @@ export default function (state = {}, action) {
   switch (action.type) {
     //CREATE_LIKE is an object
     case CREATE_REVIEW:
-      return { ...state, createdReview: action.payload };
+      return { ...state, reviewForBookingByUser: action.payload };
     // LIKES_BY_USER is an object of objects
     case FETCH_REVIEW_FOR_BOOKING_BY_USER:
-      return { ...state, reviewForBookingByUser: action.payload[0] };
+      const reviewsEmpty = _.isEmpty(action.payload);
+      if (!reviewsEmpty) {
+        return { ...state, reviewForBookingByUser: action.payload[0] };
+      } else {
+        return { ...state, reviewForBookingByUser: [] };
+      }
 
     case UPDATE_REVIEW:
       return { ...state, reviewForBookingByUser: action.payload };

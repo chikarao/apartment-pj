@@ -30,7 +30,7 @@ class EditProfileModal extends Component {
   handleFormSubmitCallback() {
     console.log('in signin, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
-    this.setState({ editProfileCompleted: true })
+    this.setState({ editProfileCompleted: true });
   }
 
   renderAlert() {

@@ -64,7 +64,10 @@ class ReviewEditModal extends Component {
   }
 
   handleClose() {
+    // switch off showeditreview boolean in state to close modal
     this.props.showEditReview();
+    // switch off editReviewCompleted so when edit clicked again, it shows form not message
+    this.setState({ editReviewCompleted: false });
   }
 
   handleStarClick(event) {

@@ -282,8 +282,8 @@ class DatePicker extends Component {
  }
 }
 
-function handleClickCallAction(callback) {
-  callback();
-}
+// function handleClickCallAction(callback) {
+//   callback();
+// }
 
 export default connect(null, actions)(DatePicker);

@@ -830,7 +830,7 @@ export function fetchReviewForBookingByUser(booking_id) {
     })
     .then(response => {
       console.log('response to fetchReviewForBookingByUser, response: ', response);
-      console.log('response to fetchReviewForBookingByUser, response.data.data.profile: ', response.data.data.review);
+      console.log('response to fetchReviewForBookingByUser, response.data.data.review: ', response.data.data.review);
       dispatch({
         type: FETCH_REVIEW_FOR_BOOKING_BY_USER,
         payload: response.data.data.review
@@ -852,7 +852,8 @@ export function createReview(reviewAttributes, callback) {
       console.log('response to createReview, response: ', response);
       console.log('response to createReview, response.data.data: ', response.data.data);
       dispatch({
-        type: CREATE_REVIEW
+        type: CREATE_REVIEW,
+        payload: response.data.data.review
       });
       // sends back to createreview.js the review_id and the images
       callback();

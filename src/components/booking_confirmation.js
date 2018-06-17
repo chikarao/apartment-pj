@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { reduxForm, Field } from 'redux-form';
 
 import * as actions from '../actions';
 import ReviewEditModal from './modals/review_edit_modal';
+import ReviewCreateFrom from './forms/review_create';
 
 
 class BookingConfirmation extends Component {
@@ -89,37 +91,6 @@ class BookingConfirmation extends Component {
           </div>
         );
       }
-      // } else {
-      //   const data = localStorage.getItem('data')
-      //   return (
-      //     <div>
-      //     <h2>
-      //     Thank you for booking with us!
-      //     </h2>
-      //     <h3>
-      //     You can manage your bookings in My Page.
-      //     </h3>
-      //     <div className="booking-confirmation">
-      //     <div>
-      //     Description: {data.flat.description}
-      //     </div>
-      //     <div>
-      //     Area: {data.flat.area}
-      //     </div>
-      //     <div>
-      //     Beds: {data.flat.beds}
-      //     </div>
-      //     <div>
-      //     Booking start: {data.bookingData.date_start}
-      //     </div>
-      //     <div>
-      //     Booking end: {data.bookingData.date_end}
-      //     </div>
-      //     </div>
-      //     </div>
-      //
-      //   );
-      // }
   }
 
   formatDate(date) {
@@ -180,6 +151,14 @@ class BookingConfirmation extends Component {
     );
   }
 
+  // renderCreateReviewForm() {
+  //   return (
+  //       <div className="review-container">
+  //         <h4>Write a Review</h4>
+  //       </div>
+  //   );
+  // }
+
   renderReview() {
     const { review } = this.props;
 
@@ -228,6 +207,26 @@ class BookingConfirmation extends Component {
           </div>
         </div>
       );
+    } else {
+      if(this.props.bookingData) {
+        const today = new Date()
+        // console.log('in booking confirmation, renderReview, today:', today);
+        // console.log('in booking confirmation, renderReview, this.props.bookingData.date_end:', this.props.bookingData.date_end);
+        const bookingEnd = new Date(this.props.bookingData.date_end)
+        const pastBookingEnd = bookingEnd < today;
+        // console.log('in booking confirmation, renderReview, pastBookingEnd:', pastBookingEnd);
+        if (pastBookingEnd) {
+          return (
+            <div>
+            <ReviewCreateFrom
+              booking={this.props.bookingData}
+            />
+            </div>
+          );
+        }
+      }
+      // if(this.props.bookingData) {
+      // }
     }
   }
 
