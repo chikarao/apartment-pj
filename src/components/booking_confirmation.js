@@ -171,7 +171,6 @@ class BookingConfirmation extends Component {
         <h4>Your Review</h4>
           <div className="review-details">
                 <div className="review-top-box">
-
                   <div className="review-user-box">
                     <div className="review-avatar">
                       <img src={'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.profile.image + '.jpg'} />
@@ -179,7 +178,7 @@ class BookingConfirmation extends Component {
                     <div className="review-username">
                       {review.user.profile.username}
                     </div>
-                    </div>
+                  </div>
                   <div className="review-title">
                     {review.title}
                   </div>

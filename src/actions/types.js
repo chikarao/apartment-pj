@@ -46,3 +46,4 @@ export const FETCH_REVIEW_FOR_BOOKING_BY_USER = 'fetch_review_for_booking_by_use
 export const CREATE_REVIEW = 'create_review';
 export const UPDATE_REVIEW = 'update_review';
 export const SHOW_EDIT_REVIEW_MODAL = 'show_edit_review_modal';
+export const FETCH_REVIEWS_FOR_FLAT = 'fetch_reviews_for_flat';

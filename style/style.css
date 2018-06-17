@@ -482,6 +482,45 @@ body > div:first-child {
   justify-content: center;
 }
 
+.show-flat-review-container {
+  /* border: 1px solid #ccc; */
+  margin-bottom: 50px;
+}
+
+.show-flat-review-container h3 {
+  /* border: 1px solid #ccc; */
+  margin-bottom: 50px;
+}
+
+.show-flat-review-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.show-flat-review-details {
+  /* border: 1px solid #ccc; */
+  display: block;
+  overflow: auto;
+  /* height: 200px; */
+  width: 400px;
+  margin: 0 5px 5px 0;
+}
+
+.show-flat-review-title {
+  min-width: 200px;
+  height: 20px;
+  font-weight: bold;
+  font-size: 17px;
+  /* border: 1px solid #ccc; */
+  text-align: left;
+  padding: 10px 0 15px 5px;
+}
+
+.show-flat-comment-box {
+  height: 200px
+}
+
 /* ******************* MESSAGING *************************** */
 .message-box-container {
   width: 100%;
@@ -1539,10 +1578,11 @@ form {
   display: block;
   overflow: auto;
 }
+
 .review-details {
   margin: 10px 30px 10px 30px;
   margin-left: auto;
-   margin-right: auto;
+  margin-right: auto;
   width: 80%;
   height: 100%;
   /* border: 1px solid #ccc; */
@@ -1579,8 +1619,8 @@ form {
 }
 
 .review-avatar img {
-  /* border: 1px solid #ccc;
-  width: 50px;
+  /* border: 1px solid #ccc; */
+  /* width: 50px;
   height: 50px; */
   border-radius: 50%;
 }
@@ -1658,7 +1698,6 @@ form {
 
 }
 .review-bottom-details-edit:hover {
-
   text-decoration: underline;
 }
 
@@ -1712,7 +1751,7 @@ form {
       min-width: 200px;
       height: 20px;
       font-weight: bold;
-      border: 1px solid #ccc;
+      /* border: 1px solid #ccc; */
       text-align: left;
       padding: 10px 0 20px 5px;
     }

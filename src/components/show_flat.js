@@ -43,6 +43,8 @@ class ShowFlat extends Component {
     if (this.props.flat) {
       console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
     }
+
+    this.props.fetchReviewsForFlat(this.props.match.params.id);
   }
 
   componentDidUpdate() {
@@ -1080,6 +1082,53 @@ class ShowFlat extends Component {
     }
   }
 
+  renderEachReview() {
+    const { reviews } = this.props;
+    // all review classnames and styles are shared with booking confirmation reviewsEmpty
+    // unless they start with "show-flat"
+    return _.map(reviews, review => {
+      return (
+        <div key={review.id} className="show-flat-review-details col-xs-12 col-md-6">
+        <div className="review-top-box">
+
+        <div className="review-user-box">
+        <div className="review-avatar">
+        <img src={'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.profile.image + '.jpg'} alt="" />
+        </div>
+        <div className="review-username">
+          {review.user.profile.username}
+        </div>
+        </div>
+        <div className="show-flat-review-title">
+          {review.title}
+        </div>
+        </div>
+
+        <div className="review-comment-box">
+        <p className="review-comment-text">
+          {review.comment}
+        </p>
+        </div>
+        </div>
+      );
+    })
+  }
+
+  renderReviews() {
+    const reviewsEmpty = _.isEmpty(this.props.reviews)
+    if (!reviewsEmpty) {
+      console.log('in show_flat, renderReviews, : ', this.props.reviews);
+      return (
+        <div className="container show-flat-review-container">
+        <h3 className="review-section-heading">Reviews</h3>
+          <div className="row show-flat-review-row">
+           {this.renderEachReview()}
+          </div>
+        </div>
+      );
+    }
+  }
+
   render() {
     // if (this.props.selectedDates) {
     // }
@@ -1103,6 +1152,9 @@ class ShowFlat extends Component {
           {this.renderMessaging()}
         </div>
         <div>
+          {this.renderReviews()}
+        </div>
+        <div>
           {this.renderButton()}
         </div>
       </div>
@@ -1117,7 +1169,8 @@ function mapStateToProps(state) {
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     auth: state.auth,
     conversation: state.conversation.conversationByFlat,
-    noConversation: state.conversation.noConversation
+    noConversation: state.conversation.noConversation,
+    reviews: state.reviews
     // conversation: state.conversation.createMessage
   };
 }

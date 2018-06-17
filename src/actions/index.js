@@ -49,7 +49,8 @@ import {
   CREATE_REVIEW,
   FETCH_REVIEW_FOR_BOOKING_BY_USER,
   UPDATE_REVIEW,
-  SHOW_EDIT_REVIEW_MODAL
+  SHOW_EDIT_REVIEW_MODAL,
+  FETCH_REVIEWS_FOR_FLAT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -261,6 +262,26 @@ export function fetchFlatsByUser(id, callback) {
 
       console.log('in action index, response to fetchFlatsByUser, flatIdArray: ', flatIdArray);
       callback(flatIdArray);
+    });
+  };
+}
+
+export function fetchReviewsForFlat(id) {
+  // const { north, south, east, west } = mapBounds;
+  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+  console.log('in action index, fetchReviewsForFlat, id: ', id);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/reviews/reviews_for_flat`, { review: { flat_id: id } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchReviewsForFlat: ', response);
+      console.log('in action index, response to fetchReviewsForFlat: ', response.data.data.reviews);
+      dispatch({
+        type: FETCH_REVIEWS_FOR_FLAT,
+        payload: response.data.data.reviews
+      });
     });
   };
 }
