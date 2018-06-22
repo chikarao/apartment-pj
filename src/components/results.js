@@ -314,7 +314,7 @@ class Results extends Component {
           this.decrementPagingIndex();
           // the currentPage is has turn to 1 when click on leff arrow at 2
           // firstPageInArray is still 2
-        } else if (this.state.currentPage === 1 && firstPageInArray === 2) {
+        } else if (firstPageInArray === 2) {
           console.log('in results handleLeftPageClick, else if this.state.currentPage: ', this.state.currentPage);
           this.setState({
             firstPagingIndex: (this.state.firstPagingIndex - 1),
