@@ -209,8 +209,22 @@ class Results extends Component {
     // console.log('in results, handlePageClick, currentPageLi: ', currentPageLi);
     // set clicked page as currentPage in component state
     this.setState({
-      currentPage: Number(event.target.id)
+      currentPage: Number(event.target.id),
     }, () => {
+      if (this.state.currentPage !== 1 || this.state.currentPage !== 9) {
+        const lastPageIndex = displayedPagesArray.indexOf(this.state.currentPage);
+        const pageBeforeDots = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 3)];
+        this.setState({
+          // -2 to adjust to index and to set back index by one
+          lastPageIndex,
+          pageBeforeDots
+          // lastPageIndex: ((this.state.currentPage - 2) < 0) ? 0 : this.state.currentPage - 2
+        }, () => {
+          console.log('in results handlePageClick, after setState, lpi, this.state.lastPageIndex: ', this.state.lastPageIndex)
+          console.log('in results handlePageClick, after setState, this.state: ', this.state)
+          console.log('in results handlePageClick, after setState, displayedPagesArray: ', displayedPagesArray)
+        });
+      }
       // if the clicked button is the last page, set first and last of array
       // as index last page minus number of buttons and last as last
       console.log('in results handlePageClick, before if lastPage, this.state.currentPage: ', this.state.currentPage)
@@ -222,8 +236,7 @@ class Results extends Component {
           console.log('in results handlePageClick, before if lastPage, displayedPagesArray: ', displayedPagesArray)
         })
         }
-      }
-    );
+      }); // end of first setState
   }
   // decrement index and change the current paging array
   decrementPagingIndex() {
@@ -386,13 +399,15 @@ class Results extends Component {
         // function to do currentLi.classList.add('current');
         // ***************key logic for advancing pages one by one or moving array
         // if pagebefore dots in this pages array is less than last set of pages
+        // !!!!!!!!!!The issue is its checking for pageBeforeDots < 4 (in last 9 case)
         if (this.state.pageBeforeDots < (lastPage - (MAX_NUM_PAGE_NUMBERS))) {
           console.log('in results handleRightPageClick, < if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
+          console.log('in results handleRightPageClick, < if this.state: ', this.state);
           // console.log('in results handleRightPageClick, if (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)): ', (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)));
           // as long as not in the last set and last page index was is 2 or increment array
           if ((this.state.lastPageIndex) === (MAX_NUM_PAGE_NUMBERS - 3)) {
-            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpage === pbd: ', this.state.pageBeforeDots);
-            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpage === lpi: ', this.state.lastPageIndex);
+            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === pbd: ', this.state.pageBeforeDots);
+            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === lpi: ', this.state.lastPageIndex);
             const atPageBeforeDots = false;
             this.incrementPagingIndex(atPageBeforeDots);
           } else {
@@ -403,12 +418,15 @@ class Results extends Component {
           }
           // else if pagebefore dots in this array of pages
           // equals the first in the last set of pages
-        } else if (this.state.pageBeforeDots === (lastPage - MAX_NUM_PAGE_NUMBERS)) {
-          console.log('in results handleRightPageClick, else if === this.state.pageBeforeDots: ', this.state.pageBeforeDots);
+        } else if ((this.state.pageBeforeDots === (lastPage - MAX_NUM_PAGE_NUMBERS)) && (this.state.pageBeforeDots === this.state.currentPage - 1)) {
+          // if pageBeforeDots is last one before last set AND
+          //before clicked, currentPage was at pageBeforeDots
+          console.log('in results handleRightPageClick, else pageBeforeDots <, first else if lastpage === pbd: ', this.state.pageBeforeDots);
+          console.log('in results handleRightPageClick, else if === this.state: ', this.state);
           const atPageBeforeDots = true;
           this.incrementPagingIndex(atPageBeforeDots);
         } else {
-          console.log('in results handleRightPageClick, in else this.state.pageBeforeDots: ', this.state.pageBeforeDots);
+          console.log('in results handleRightPageClick, in else this.state: ', this.state);
           this.addCurrent();
         }
         // **********************
@@ -495,7 +513,7 @@ class Results extends Component {
   }
 
   renderDoubleLeftArrow() {
-    if (this.state.currentPage >= (lastPage - (MAX_NUM_PAGE_NUMBERS - 1))) {
+    if (this.state.currentPage >= (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)) && (lastPage > MAX_NUM_PAGE_NUMBERS)) {
       return (
         <li onClick={this.handleDoubleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
       );
