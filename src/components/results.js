@@ -35,7 +35,7 @@ class Results extends Component {
     firstPagingIndex: 0,
     // lastPagingIndex is how many paging buttons appear
     lastPagingIndex: MAX_NUM_PAGE_NUMBERS,
-    // check if right arrow has been clicked then 'current style is not applied on index 0'
+    // check if right arrow has been clicked then 'current class is not applied on index 0'
     rightArrowClicked: false,
     // where the current page was before click of arrows
     lastPageIndex: 0,
@@ -89,9 +89,9 @@ class Results extends Component {
     }
   }
 
-  componentDidUpdate() {
-    // this.setState({ componentUpdated: true });
-  }
+  // componentDidUpdate() {
+  //   // this.setState({ componentUpdated: true });
+  // }
 
   // componentWillReceiveProps() {
   // }
@@ -177,32 +177,33 @@ class Results extends Component {
   //*********************PAGINATION****************************************
   // THIS IS THE SAME CODE AS SRC/COMPONENTS/PAGINATION/PAGINATION AS OF 6/22/2018
   // PAGINATION.JS CAN BE USED IF CURRENT PAGE IS SET IN APP STATE
+  // removes class 'current' from previously hightlighted button
   removeCurrent() {
+    // find element with class current
     const currentPageLi = document.getElementsByClassName('current');
+    //if exists, remove current from class
     if (currentPageLi[0]) {
       // console.log('in results, removeCurrent, currentPageLi[0]: ', currentPageLi[0]);
       currentPageLi[0].classList.remove('current');
     }
   }
 
+  // finds element with id of current page and adds 'current' to class
   addCurrent() {
-    // refator from hnadle right and left click
     const currentLi = document.getElementById(this.state.currentPage);
-    console.log('in results addCurrent, currentLi: ', currentLi);
+    // console.log('in results addCurrent, currentLi: ', currentLi);
     currentLi.classList.add('current');
   }
 
   handlePageClick(event) {
-    // const currentPageLi = document.getElementsByClassName('current');
-    // if (currentPageLi[0]) {
-    //   console.log('in results handlePageClick, currentPageLi[0]: ', currentPageLi[0]);
-    //   currentPageLi[0].classList.remove('current');
-    // }
-    // remove current style from last selected page
+    // Basic concept: when page clicked, add current to class of button;
+    // then setState currentPage to id of clicked button
+    // Set other state for smooth incrementing of current buttons
+    // remove current class from last selected page
     this.removeCurrent();
 
-    console.log('in results renderPageNumbers, handlePageClick, event.target: ', event.target);
-    // add current style to clicked button
+    // console.log('in results renderPageNumbers, handlePageClick, event.target: ', event.target);
+    // add current class to clicked button
     const clickedPages = event.target.classList.add('current');
     // clickedPagesArray.push(clickedPages);
     // console.log('in results, handlePageClick, event: ', event.target.classList);
@@ -211,7 +212,8 @@ class Results extends Component {
     this.setState({
       currentPage: Number(event.target.id),
     }, () => {
-      if (this.state.currentPage !== 1 || this.state.currentPage !== 9) {
+      // set state if click is not on 1 or lastPage (no real meaning but keep)
+      if (this.state.currentPage !== 1 || this.state.currentPage !== lastPage) {
         const lastPageIndex = displayedPagesArray.indexOf(this.state.currentPage);
         const pageBeforeDots = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 3)];
         this.setState({
@@ -220,14 +222,16 @@ class Results extends Component {
           pageBeforeDots
           // lastPageIndex: ((this.state.currentPage - 2) < 0) ? 0 : this.state.currentPage - 2
         }, () => {
-          console.log('in results handlePageClick, after setState, lpi, this.state.lastPageIndex: ', this.state.lastPageIndex)
-          console.log('in results handlePageClick, after setState, this.state: ', this.state)
-          console.log('in results handlePageClick, after setState, displayedPagesArray: ', displayedPagesArray)
+          // console.log('in results handlePageClick, after setState, lpi, this.state.lastPageIndex: ', this.state.lastPageIndex)
+          // console.log('in results handlePageClick, after setState, this.state: ', this.state)
+          // console.log('in results handlePageClick, after setState, displayedPagesArray: ', displayedPagesArray)
         });
       }
       // if the clicked button is the last page, set first and last of array
       // as index last page minus number of buttons and last as last
-      console.log('in results handlePageClick, before if lastPage, this.state.currentPage: ', this.state.currentPage)
+      // console.log('in results handlePageClick, before if lastPage, this.state.currentPage: ', this.state.currentPage)
+      // if lastPage is clicked, skip displayedPagesArray to MAX_NUM_PAGE_NUMBERS and lastPage
+      // last page is taken from i in for loop in renderPaginatino
       if (this.state.currentPage === lastPage) {
         this.setState({
           firstPagingIndex: (lastPage - (MAX_NUM_PAGE_NUMBERS)),
@@ -240,11 +244,12 @@ class Results extends Component {
   }
   // decrement index and change the current paging array
   decrementPagingIndex() {
-    // lastPage is num, MAX_NUM_PAGE_NUMBERS is num, -1 to comvert to index
-    // first check if curren page fits on last set of buttons with no ...
+    // purpose of function is to shift displayedPagesArray under certain conditions
+    // lastPage is num, MAX_NUM_PAGE_NUMBERS is num, -1 to convert to index
+    // first check if current page (already decremented by one) fits on last set of buttons with no ...
     console.log('in results decrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
     if (this.state.currentPage < (lastPage - (MAX_NUM_PAGE_NUMBERS - 1))) {
-      // if not let current page be the last button before ...
+      // and current page is the first before ..., specify that position
       console.log('in results decrementPagingIndex, first if cp fpi lpi <, : ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
       if (this.state.currentPage === lastPage - MAX_NUM_PAGE_NUMBERS) {
         console.log('in results decrementPagingIndex, second if this.state.currentPage ===, lastPagingIndex: ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
@@ -260,6 +265,7 @@ class Results extends Component {
         });
        // end of second if
      } else {
+       // if not the first before ..., then simply decrement by one
        this.setState({
          firstPagingIndex: (this.state.firstPagingIndex - 1),
          lastPagingIndex: (this.state.lastPagingIndex - 1),
@@ -273,12 +279,16 @@ class Results extends Component {
       // this.removeCurrent();
     } else {
       // end of first if
+      // if currentPage fits in last set of pages and not the last in set then just addCurrent
+      // to the already decremented paging button
       console.log('in results decrementPagingIndex, first else, cp: ', this.state.currentPage);
       this.addCurrent();
     }
   }
 
-  // decrement index and change the current paging array
+  // increment index and change the current paging array
+  // purpose of function is to shift displayedPagesArray under certain conditions
+  // atPageBeforeDots is a misnomer, it means it is right before the last set of buttons
   incrementPagingIndex(atPageBeforeDots) {
     if (!atPageBeforeDots) {
       //if at page button right before the dots..., increment paging index to get new array
@@ -292,7 +302,8 @@ class Results extends Component {
         this.addCurrent();
       });
     } else {
-      // if at before the ..., get a new array
+      // if at before the ..., get a new array in the last set of paging buttons
+      // Needs to shift by MAX_NUM_PAGE_NUMBERS - 2 to present full last set
       console.log('in results incrementPagingIndex, else displayedPagesArray[0]: ', displayedPagesArray[0]);
       this.setState({
         firstPagingIndex: (this.state.firstPagingIndex + (MAX_NUM_PAGE_NUMBERS - 2)),
@@ -311,35 +322,39 @@ class Results extends Component {
       });
     }
   }
-
+  // executes when single left arrow clicked
   handleLeftPageClick() {
     //if page at two or greater then reduce currentPage by 1
-    console.log('in results handleLeftPageClick, displayedPagesArray: ', displayedPagesArray);
+    // console.log('in results handleLeftPageClick, displayedPagesArray: ', displayedPagesArray);
     const firstPageInArray = displayedPagesArray[0];
-    console.log('in results handleLeftPageClick, firstPageInArray: ', firstPageInArray);
-
+    // console.log('in results handleLeftPageClick, firstPageInArray: ', firstPageInArray);
+    // does nothing if currentPage is 1
     if (this.state.currentPage >= 2) {
       this.removeCurrent();
+      // decrements currentPageIndex
       this.setState({
         currentPage: (this.state.currentPage - 1)
-        // firstPagingIndex: (this.state.firstPagingIndex - 1),
-        // lastPagingIndex: (this.state.lastPagingIndex - 1)
       }, () => {
-        console.log('in results handleLeftPageClick, this.state.firstPagingIndex, lastPagingIndex: ', this.state.firstPagingIndex, this.state.lastPagingIndex);
-        console.log('in results handleLeftPageClick, lastPage: ', lastPage);
-        console.log('in results handleLeftPageClick, setState callback this.state.currentPage: ', this.state.currentPage);
-        // const currentLi = document.getElementById(this.state.currentPage);
-        // currentLi.classList.add('current');
-        // addCurrent needs to be called after state is async set in decrementPagingIndex
-        // if (this.state.currentPage >= (MAX_NUM_PAGE_NUMBERS - 2)) {
+        // console.log('in results handleLeftPageClick, this.state.firstPagingIndex, lastPagingIndex: ', this.state.firstPagingIndex, this.state.lastPagingIndex);
+        // console.log('in results handleLeftPageClick, lastPage: ', lastPage);
+        // console.log('in results handleLeftPageClick, setState callback this.state.currentPage: ', this.state.currentPage);
+
+        // if first element in array (number not index) greater than equal to 2,
+        // if MAX_NUM_PAGE_NUMBERS is 5
+        // possible double checking, but MAX_NUM_PAGE_NUMBERS make it flexible
+        // addCurrent needs to be called after setState as is async; set in decrementPagingIndex
         if (firstPageInArray >= (MAX_NUM_PAGE_NUMBERS - 3)) {
+          // if currentPage is not yet at firstPageInArray,
+          // just add current to already incremented currentPage
           if (this.state.currentPage >= firstPageInArray) {
             this.addCurrent();
           } else {
+            // else shift array
             console.log('in results handleLeftPageClick, if cp >= mnpn -1, cp: ', this.state.currentPage);
             this.decrementPagingIndex();
           }
         } else if (firstPageInArray === 2) {
+          // else if for second if
           console.log('in results handleLeftPageClick, else if this.state.currentPage: ', this.state.currentPage);
           this.setState({
             firstPagingIndex: (this.state.firstPagingIndex - 1),
@@ -351,17 +366,6 @@ class Results extends Component {
         } else {
           this.addCurrent();
         }
-
-        // if ((this.state.currentPage === 2) && (this.state.firstPageInArray === 2)) {
-        //   this.setState({
-        //     firstPagingIndex: this.state.firstPagingIndex - 1,
-        //     lastPagingIndex: this.state.lastPagingIndex - 1
-        //   }, () => {
-        //     this.addCurrent();
-        //   });
-        // } else {
-        //   this.addCurrent();
-        // }
       });// end of first setState
     } // end of first if
   }
@@ -377,7 +381,7 @@ class Results extends Component {
     // console.log('in results handleRightPageClick, before set state displayedPagesArray: ', displayedPagesArray);
 
     if (this.state.currentPage < lastPage) {
-      // removes style 'current'
+      // removes class 'current'
       this.removeCurrent();
       // key moves current page by one (not index), lastpage index is
       this.setState({
@@ -398,8 +402,7 @@ class Results extends Component {
         // const currentLi = document.getElementById(this.state.currentPage);
         // function to do currentLi.classList.add('current');
         // ***************key logic for advancing pages one by one or moving array
-        // if pagebefore dots in this pages array is less than last set of pages
-        // !!!!!!!!!!The issue is its checking for pageBeforeDots < 4 (in last 9 case)
+        // if pagebefore dots in this pages array is before last set of pages
         if (this.state.pageBeforeDots < (lastPage - (MAX_NUM_PAGE_NUMBERS))) {
           console.log('in results handleRightPageClick, < if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
           console.log('in results handleRightPageClick, < if this.state: ', this.state);
@@ -420,7 +423,7 @@ class Results extends Component {
           // equals the first in the last set of pages
         } else if ((this.state.pageBeforeDots === (lastPage - MAX_NUM_PAGE_NUMBERS)) && (this.state.pageBeforeDots === this.state.currentPage - 1)) {
           // if pageBeforeDots is last one before last set AND
-          //before clicked, currentPage was at pageBeforeDots
+          // before clicked, currentPage was at pageBeforeDots
           console.log('in results handleRightPageClick, else pageBeforeDots <, first else if lastpage === pbd: ', this.state.pageBeforeDots);
           console.log('in results handleRightPageClick, else if === this.state: ', this.state);
           const atPageBeforeDots = true;
@@ -450,13 +453,13 @@ class Results extends Component {
         return displayedPagesArray.map((pageNumber, index) => {
           console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
           if (index === 0) {
-            //if right arrow has been clicked, don't automatically assign current to style
+            //if right arrow has been clicked, don't automatically assign current to class
             if (this.state.rightArrowClicked) {
               return (
                 <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
               );
             }
-            // if fresh page and right arrow has not been clicked, assign current to style
+            // if fresh page and right arrow has not been clicked, assign current to class
             return (
               <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
             );
@@ -498,8 +501,6 @@ class Results extends Component {
         });
       }
   }
-
-
 
   handleDoubleLeftPageClick() {
     this.removeCurrent();
