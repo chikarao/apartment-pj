@@ -6,18 +6,18 @@ import * as actions from '../actions';
 import GoogleMap from './maps/google_map';
 import Upload from './images/upload';
 import MainCards from './cards/main_cards';
-import Pagination from './pagination/pagination';
-
-// const publicId = ['RPP9419_mp7xjn', 'redbrick_bklymp', 'dewhirst_electric_co_lofts-01_oxgife', 'flat_image-1523948892-1', 'flat_image-1523948892-0'];
 
 const initialPosition = {
   lat: 37.7952,
   lng: -122.4029
 };
 
+// Can not avoid these global variables
 // lastPage set as global since setState cannot be run in renderfunctions
 let lastPage = 1;
 let displayedPagesArray = [];
+// SET NUMBER OF PAGE BUTTONS
+// WORKS WITH 4 OR 5 BUT NOT 6!!!!!!!!!!!!!
 const MAX_NUM_PAGE_NUMBERS = 5;
 // let displayedPagesArray;
 
@@ -37,7 +37,7 @@ class Results extends Component {
     lastPagingIndex: MAX_NUM_PAGE_NUMBERS,
     // check if right arrow has been clicked then 'current style is not applied on index 0'
     rightArrowClicked: false,
-    // where the current page was before click
+    // where the current page was before click of arrows
     lastPageIndex: 0,
     lastPageInArray: 0,
     firstPageInArray: 0,
@@ -225,12 +225,14 @@ class Results extends Component {
       }
     );
   }
-
+  // decrement index and change the current paging array
   decrementPagingIndex() {
     // lastPage is num, MAX_NUM_PAGE_NUMBERS is num, -1 to comvert to index
     // first check if curren page fits on last set of buttons with no ...
+    console.log('in results decrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
     if (this.state.currentPage < (lastPage - (MAX_NUM_PAGE_NUMBERS - 1))) {
       // if not let current page be the last button before ...
+      console.log('in results decrementPagingIndex, first if cp fpi lpi <, : ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
       if (this.state.currentPage === lastPage - MAX_NUM_PAGE_NUMBERS) {
         console.log('in results decrementPagingIndex, second if this.state.currentPage ===, lastPagingIndex: ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
         console.log('in results decrementPagingIndex, second if lastPage, MAX_NUM_PAGE_NUMBERS: ', lastPage, MAX_NUM_PAGE_NUMBERS);
@@ -258,10 +260,12 @@ class Results extends Component {
       // this.removeCurrent();
     } else {
       // end of first if
+      console.log('in results decrementPagingIndex, first else, cp: ', this.state.currentPage);
       this.addCurrent();
     }
   }
 
+  // decrement index and change the current paging array
   incrementPagingIndex(atPageBeforeDots) {
     if (!atPageBeforeDots) {
       //if at page button right before the dots..., increment paging index to get new array
@@ -314,10 +318,14 @@ class Results extends Component {
         // const currentLi = document.getElementById(this.state.currentPage);
         // currentLi.classList.add('current');
         // addCurrent needs to be called after state is async set in decrementPagingIndex
-        if (this.state.currentPage >= (MAX_NUM_PAGE_NUMBERS - 2)) {
-          this.decrementPagingIndex();
-          // the currentPage is has turn to 1 when click on leff arrow at 2
-          // firstPageInArray is still 2
+        // if (this.state.currentPage >= (MAX_NUM_PAGE_NUMBERS - 2)) {
+        if (firstPageInArray >= (MAX_NUM_PAGE_NUMBERS - 3)) {
+          if (this.state.currentPage >= firstPageInArray) {
+            this.addCurrent();
+          } else {
+            console.log('in results handleLeftPageClick, if cp >= mnpn -1, cp: ', this.state.currentPage);
+            this.decrementPagingIndex();
+          }
         } else if (firstPageInArray === 2) {
           console.log('in results handleLeftPageClick, else if this.state.currentPage: ', this.state.currentPage);
           this.setState({
@@ -342,12 +350,10 @@ class Results extends Component {
         //   this.addCurrent();
         // }
       });// end of first setState
-    }
+    } // end of first if
   }
 
   handleRightPageClick() {
-     // console.log('in results handleRightPageClick, this.state.currentPage: ', this.state.currentPage);
-     // console.log('in results handleRightPageClick, lastpage: ', lastPage);
      // if currentPage is less than last page, right click does nothing
      // displayedPagesArray is a global variable
     const lastPageIndex = displayedPagesArray.indexOf(this.state.currentPage);
@@ -355,11 +361,12 @@ class Results extends Component {
     const lastPageInArray = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 1)];
     const pageBeforeDots = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 3)];
     console.log('in results handleRightPageClick, currentPageIndex: ', lastPageIndex);
+    // console.log('in results handleRightPageClick, before set state displayedPagesArray: ', displayedPagesArray);
 
     if (this.state.currentPage < lastPage) {
       // removes style 'current'
       this.removeCurrent();
-      //
+      // key moves current page by one (not index), lastpage index is
       this.setState({
         currentPage: (this.state.currentPage + 1),
         lastPageIndex,
@@ -374,20 +381,37 @@ class Results extends Component {
         // in callback of setState
         // const firstInLastSet = lastPage - (MAX_NUM_PAGE_NUMBERS - 1);
         console.log('in results handleRightPageClick, this.state: ', this.state);
-        console.log('in results handleRightPageClick, displayedPagesArray: ', displayedPagesArray);
+        console.log('in results handleRightPageClick, after setState, displayedPagesArray: ', displayedPagesArray);
         // const currentLi = document.getElementById(this.state.currentPage);
         // function to do currentLi.classList.add('current');
+        // ***************key logic for advancing pages one by one or moving array
+        // if pagebefore dots in this pages array is less than last set of pages
         if (this.state.pageBeforeDots < (lastPage - (MAX_NUM_PAGE_NUMBERS))) {
-          console.log('in results handleRightPageClick, if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
-          const atPageBeforeDots = false;
-          this.incrementPagingIndex(atPageBeforeDots);
+          console.log('in results handleRightPageClick, < if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
+          // console.log('in results handleRightPageClick, if (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)): ', (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)));
+          // as long as not in the last set and last page index was is 2 or increment array
+          if ((this.state.lastPageIndex) === (MAX_NUM_PAGE_NUMBERS - 3)) {
+            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpage === pbd: ', this.state.pageBeforeDots);
+            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpage === lpi: ', this.state.lastPageIndex);
+            const atPageBeforeDots = false;
+            this.incrementPagingIndex(atPageBeforeDots);
+          } else {
+            // otherwise, add current
+            console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === lpi: ', this.state.lastPageIndex);
+            console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === pbd: ', this.state.pageBeforeDots);
+            this.addCurrent();
+          }
+          // else if pagebefore dots in this array of pages
+          // equals the first in the last set of pages
         } else if (this.state.pageBeforeDots === (lastPage - MAX_NUM_PAGE_NUMBERS)) {
+          console.log('in results handleRightPageClick, else if === this.state.pageBeforeDots: ', this.state.pageBeforeDots);
           const atPageBeforeDots = true;
           this.incrementPagingIndex(atPageBeforeDots);
         } else {
           console.log('in results handleRightPageClick, in else this.state.pageBeforeDots: ', this.state.pageBeforeDots);
           this.addCurrent();
         }
+        // **********************
       }); // end of setState
     }
   }
@@ -600,9 +624,6 @@ class Results extends Component {
 
 
   render() {
-    // <Pagination
-    // flats={this.props.flats}
-    // />
     return (
       <div>
         <div className="container" id="map">
