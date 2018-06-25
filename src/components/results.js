@@ -14,18 +14,20 @@ const initialPosition = {
 
 // Can not avoid these global variables
 // lastPage set as global since setState cannot be run in renderfunctions
+// ******Pagination
 let lastPage = 1;
 let displayedPagesArray = [];
 // SET NUMBER OF PAGE BUTTONS
 // WORKS WITH 4 OR 5 BUT NOT 6!!!!!!!!!!!!!
 const MAX_NUM_PAGE_NUMBERS = 5;
-// let displayedPagesArray;
+// ******Pagination
 
 class Results extends Component {
   constructor() {
   super();
   this.state = {
     // initialized at page 1
+    // *********Pagination
     currentPage: 1,
     //******* Adjust how many to show per page here*****************
     cardsPerPage: 1,
@@ -42,6 +44,7 @@ class Results extends Component {
     lastPageInArray: 0,
     firstPageInArray: 0,
     pageBeforeDots: 0
+    // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
 }
@@ -173,8 +176,8 @@ class Results extends Component {
     } // if not empty
   }
 
-  //*******************************************************************************
   //*********************PAGINATION****************************************
+  //*******************************************************************************
   // THIS IS THE SAME CODE AS SRC/COMPONENTS/PAGINATION/PAGINATION AS OF 6/22/2018
   // PAGINATION.JS CAN BE USED IF CURRENT PAGE IS SET IN APP STATE
   // removes class 'current' from previously hightlighted button
@@ -501,7 +504,8 @@ class Results extends Component {
         });
       }
   }
-
+  // When double left arrow is clicked, move current page to 1 and the displayed array
+  // to the first of the original array and the last index to MAX_NUM_PAGE_NUMBERS
   handleDoubleLeftPageClick() {
     this.removeCurrent();
     this.setState({
@@ -514,7 +518,9 @@ class Results extends Component {
   }
 
   renderDoubleLeftArrow() {
-    if (this.state.currentPage >= (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)) && (lastPage > MAX_NUM_PAGE_NUMBERS)) {
+    // if (this.state.currentPage >= (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)) && (lastPage > MAX_NUM_PAGE_NUMBERS)) {
+    // Double left appears only in flexible pagination with ... and when current page is 3 or more
+    if (this.state.currentPage >= 3 && (lastPage > MAX_NUM_PAGE_NUMBERS)) {
       return (
         <li onClick={this.handleDoubleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
       );
