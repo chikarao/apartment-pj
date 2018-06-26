@@ -30,7 +30,7 @@ class Results extends Component {
     // *********Pagination
     currentPage: 1,
     //******* Adjust how many to show per page here*****************
-    cardsPerPage: 1,
+    cardsPerPage: 3,
     //*************************************************************
     // for flexible paging with ... skipping middle pages
     //firstPagingIndex is the first button

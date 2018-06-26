@@ -121,7 +121,7 @@ body > div:first-child {
 
 .flat-intro-input {
   max-width: 500px;
-  height: 100px !important;
+  height: 150px !important;
   margin-left: 20px;
 }
 
@@ -415,8 +415,8 @@ body > div:first-child {
 }
 
 .slide-show img {
-  height: 266px;
-  width: 400px;
+  height: 233px;
+  width: 350px;
   padding-left: 10px;
   /* border-radius: 4px; */
 }
@@ -519,6 +519,28 @@ body > div:first-child {
 
 .show-flat-comment-box {
   height: 200px
+}
+
+.show-flat-amenity-show-each {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-width: 200px;
+  height: 40px;
+  margin: 5px 5px 5px 15px;
+  text-align: center;
+  padding: 0;
+  /* position: relative; */
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+
+}
+
+.amenity-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* ******************* MESSAGING *************************** */
@@ -806,17 +828,24 @@ form {
 }
 
 .amenity-input-box {
-  width: 95%;
+  width: 100%;
   height: auto;
+  margin: 20px 0 20px 0;
   /* border: 2px solid #ccc; */
   /* display: flex;
-  justify-content: center; */
+  justify-content: center;
+  align-items: center; */
+}
+
+.row {
+  width: auto !important;
 }
 
 .amenity-input-each {
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
   border: 1px solid #ccc;
   border-radius: 4px;
+  max-width: 200px;
   height: 40px;
   margin: 5px 5px 5px 15px;
   text-align: left;
@@ -830,7 +859,7 @@ form {
   right: 0;
   height: 25px;
   width: 25px;
- cursor: pointer;
+  cursor: pointer;
  /* -webkit-appearance: none; */
  /* appearance: none; */
 }
@@ -869,8 +898,8 @@ form {
   position: relative;
 }
 .slide-show-edit-flat img {
-  width: 150px;
-  height: 150px;
+  width: 165px;
+  height: 110px;
   position: relative;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -962,7 +991,9 @@ form {
   margin: 0 15px 10px 0;
 }
 
-
+.back-to-show-btn {
+  margin: 20px auto 20px auto;
+}
 
 /* **********Booking Confirmation *************** */
 

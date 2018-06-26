@@ -223,6 +223,9 @@ class EditFlat extends Component {
     })
   }
 
+  handleBackToShowButton() {
+    this.props.history.push(`/show/${this.props.match.params.id}`);
+  }
 
   renderEditForm() {
     const { handleSubmit } = this.props;
@@ -280,6 +283,10 @@ class EditFlat extends Component {
               <option value="4">4</option>
               <option value="5">5</option>
               <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
@@ -310,7 +317,14 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Flat Type:</label>
-            <Field name="flat_type" component="input" type="string" className="form-control" />
+            <Field name="flat_type" component="select" type="string" className="form-control">
+              <option></option>
+              <option value="flat_in_building">Flat in building</option>
+              <option value="single_house">House</option>
+              <option value="room_in_house_or_flat">Room in house or flat</option>
+              <option value="share_house">Share house</option>
+              <option value="mobile_home">Mobile home</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Bath:</label>
@@ -357,7 +371,7 @@ class EditFlat extends Component {
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
           </div>
         </form>
-
+        <h4>Add or Delete Photos</h4>
         <div className="edit-flat-image-box">
           <div id="carousel-show-edit-flat">
             {this.renderImages(this.props.flat.images)}
@@ -372,6 +386,9 @@ class EditFlat extends Component {
             flatId={this.props.flat.id}
           />
         </div>
+          <div className="back-button">
+            <button className="btn btn-primary btn-lg back-to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>Back to Show</button>
+          </div>
         </div>
       );
     }

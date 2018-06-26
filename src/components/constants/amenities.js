@@ -5,7 +5,7 @@ const Amenities = {
     security_system: 'Security System',
     lockbox: 'Lock box',
     fire_extinguisher: 'Fire Extinguisher',
-    wifi: 'WIFI',
+    wifi: 'Wifi',
     pocket_wifi: 'Pocket Wifi',
     ac: 'A/C',
     heater: 'Heater',

@@ -274,7 +274,19 @@ class CreateFlat extends Component {
         </fieldset>
         <fieldset key={'guests'} className="form-group">
           <label className="create-flat-form-label">Guests:</label>
-          <Field name="guests" component="input" type="integer" className="form-control" />
+          <Field name="guests" component="select" type="integer" className="form-control">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </Field>
         </fieldset>
         <fieldset key={'sales_point'} className="form-group">
           <label className="create-flat-form-label">Sales Point:</label>
@@ -282,19 +294,47 @@ class CreateFlat extends Component {
         </fieldset>
         <fieldset key={'rooms'} className="form-group">
           <label className="create-flat-form-label">Rooms:</label>
-          <Field name="rooms" component="input" type="float" className="form-control" />
+          <Field name="rooms" component="select" type="float" className="form-control">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4 or more</option>
+          </Field>
         </fieldset>
         <fieldset key={'beds'} className="form-group">
           <label className="create-flat-form-label">Beds:</label>
-          <Field name="beds" component="input" type="integer" className="form-control" />
+          <Field name="beds" component="select" type="integer" className="form-control">
+          <option></option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="4">5</option>
+          <option value="4">6 or more</option>
+          </Field>
         </fieldset>
         <fieldset key={'flat_type'} className="form-group">
           <label className="create-flat-form-label">Flat Type:</label>
-          <Field name="flat_type" component="input" type="string" className="form-control" />
+          <Field name="flat_type" component="select" type="string" className="form-control">
+            <option></option>
+            <option value="flat_in_building">Flat in building</option>
+            <option value="single_house">House</option>
+            <option value="room_in_house_or_flat">Room in house or flat</option>
+            <option value="share_house">Share house</option>
+            <option value="mobile_home">Mobile home</option>
+          </Field>
         </fieldset>
         <fieldset key={'bath'} className="form-group">
           <label className="create-flat-form-label">Bath:</label>
-          <Field name="bath" component="input" type="float" className="form-control" />
+          <Field name="bath" component="select" type="float" className="form-control">
+            <option></option>
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3">3 or more</option>
+          </Field>
         </fieldset>
         <fieldset key={'intro'} className="form-group">
           <label className="create-flat-form-label">Intro:</label>
@@ -302,14 +342,22 @@ class CreateFlat extends Component {
         </fieldset>
         <fieldset key={'cancellation'} className="form-group">
           <label className="create-flat-form-label">Cancellation:</label>
-          <Field name="cancellation" component="input" type="string" className="form-control" />
+          <Field name="cancellation" component="select" type="boolean" className="form-control">
+            <option></option>
+            <option value={true}>Yes -- see policies for details</option>
+            <option value={false}>No</option>
+          </Field>
         </fieldset>
         <fieldset key={'smoking'} className="form-group">
           <label className="create-flat-form-label">Smoking:</label>
-          <Field name="smoking" component="input" type="boolean" className="form-control" />
+          <Field name="smoking" component="select" type="boolean" className="form-control">
+            <option></option>
+            <option value={true}>Yes</option>
+            <option value={false}>No</option>
+          </Field>
         </fieldset>
         <div className="container amenity-input-box">
-          <div className="row">
+          <div className="row amenity-row">
             {this.renderAmenityInput()}
           </div>
         </div>

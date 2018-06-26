@@ -88,7 +88,7 @@ class ShowFlat extends Component {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
-              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_400,h_250,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
             </div>
           );
         })
@@ -110,8 +110,8 @@ class ShowFlat extends Component {
         if (amenity[key] === true) {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
-            <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-            <div className="amenity-radio">{AMENTIES[key]}</div>
+            <div className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
+              <div className="amenity-radio">{AMENTIES[key]}</div>
             </div>
           );
         }
@@ -162,9 +162,9 @@ class ShowFlat extends Component {
                 <small>flat id: {this.props.match.params.id}</small>
               </div>
             </div>
-            <h5>Available Amenities</h5>
+            <h4>Available Amenities</h4>
             <div className="container amenity-input-box">
-              <div className="row">
+              <div className="amenity-row row">
                 {this.renderAmenities()}
               </div>
             </div>
@@ -263,7 +263,7 @@ class ShowFlat extends Component {
       console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
       return (
         <div className="date-picker-container">
-        <p>Please select a range of dates:</p>
+        <h4>Please select a range of dates:</h4>
         <DatePicker
           // initialMonth={new Date(2017, 4)}
           daysToDisable={this.disabledDays(this.props.flat.bookings)}

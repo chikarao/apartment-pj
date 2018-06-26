@@ -61,7 +61,7 @@ class MyPage extends Component {
         return (
           <li key={index} className="my-page-each-card">
             <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} />
+              <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_66,c_crop/" + booking.flat.images[0].publicid + '.jpg'} />
               <div className="my-page-details">
                 <ul>
                   <li>{booking.flat.description}</li>
