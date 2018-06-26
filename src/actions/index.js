@@ -642,13 +642,14 @@ export function createMessage(messageAttributes, callback) {
 }
 
 export function editFlat(flatAttributes, callback) {
-  const { id } = flatAttributes;
+  const { flat_id } = flatAttributes.flat;
   console.log('in actions index, editFlat, flatAttributes: ', flatAttributes);
+  console.log('in actions index, editFlat, flat_id: ', flat_id);
   console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/flats/${id}`, { flat: flatAttributes }, {
+    axios.patch(`${ROOT_URL}/api/v1/flats/${flat_id}`, { flat: flatAttributes.flat, amenity: flatAttributes.amenity }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

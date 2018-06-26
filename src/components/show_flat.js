@@ -101,28 +101,22 @@ class ShowFlat extends Component {
   }
 
   renderAmenities() {
-    console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
-    console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
-    const { amenity } = this.props.flat;
+    if (this.props.flat.amenity) {
+      console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
+      console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
+      const { amenity } = this.props.flat;
 
-    return _.map(Object.keys(amenity), key => {
-      if (amenity[key] === true) {
-        // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
-        return (
-          <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+      return _.map(Object.keys(amenity), key => {
+        if (amenity[key] === true) {
+          // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
+          return (
+            <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
             <div className="amenity-radio">{AMENTIES[key]}</div>
-          </div>
-        );
-      }
-    });
-    // return _.map(Object.keys(AMENITIES), amenity => {
-    //   return (
-    //     <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-    //       <label className="amenity-radio">{AMENITIES[amenity]}</label>
-    //       <Field name={amenity} component="input" type="checkbox" value="true" className="createFlatAmenityCheckBox" />
-    //     </fieldset>
-    //   );
-    // })
+            </div>
+          );
+        }
+      });
+    }
   }
 
   renderFlat() {

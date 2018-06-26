@@ -19,8 +19,9 @@ import RenderDropzoneInput from './images/render_dropzone_input';
 
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = 'http://localhost:3000';
-
+// Amenities imported from /constants
 const AMENITIES = Amenities;
+
 class CreateFlat extends Component {
   constructor(props) {
     super(props);
@@ -75,12 +76,12 @@ class CreateFlat extends Component {
         dataSeparated.files = files;
       }
 
-      console.log('in createflat, handleFormSubmit, separateFlatAndAmenities,:', this.separateFlatAndAmenities(data));
-      console.log('in createflat, handleFormSubmit, dataSeparated,:', dataSeparated);
-
-      console.log('in createflat, handleFormSubmit, dataWithBasic:', dataWithBasic);
-      console.log('in createflat, handleFormSubmit, addressString:', addressString);
-      console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
+      // console.log('in createflat, handleFormSubmit, separateFlatAndAmenities,:', this.separateFlatAndAmenities(data));
+      // console.log('in createflat, handleFormSubmit, dataSeparated,:', dataSeparated);
+      //
+      // console.log('in createflat, handleFormSubmit, dataWithBasic:', dataWithBasic);
+      // console.log('in createflat, handleFormSubmit, addressString:', addressString);
+      // console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
 
       // !!!! this one below is it!!!!
       this.handleGeocode(addressString, dataSeparated, () => this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files)));

@@ -5,8 +5,10 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 import Upload from './images/upload';
+import Amenities from './constants/amenities'
 
 let deleteImageArray = [];
+const AMENITIES = Amenities;
 
 class EditFlat extends Component {
   constructor(props) {
@@ -31,10 +33,29 @@ class EditFlat extends Component {
     // }
   }
 
+  separateFlatAndAmenities(data) {
+    const amenityObj = { flat: {}, amenity: {} }
+    console.log('in createflat, separateFlatAndAmenities, data : ', data);
+     _.each(Object.keys(data), (key) => {
+    // return _.map(AMENITIES, (amenity) => {
+      if (AMENITIES[key]) {
+        console.log('in createflat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
+        console.log('in createflat, separateFlatAndAmenities, key : ', key);
+        // console.log('in createflat, separateFlatAndAmenities, key : ', key);
+        amenityObj.amenity[key] = data[key];
+      } else {
+        amenityObj.flat[key] = data[key];
+      }
+    });
+    // console.log('in createflat, separateFlatAndAmenities, amenityObj : ', amenityObj);
+    return amenityObj;
+  }
+
   handleFormSubmit(data) {
     console.log('in edit flat, handleFormSubmit, data: ', data);
     if (this.state.confirmChecked) {
-      this.props.editFlat(data, (id) => this.editFlatCallback(id));
+      const dataSeparated = this.separateFlatAndAmenities(data);
+      this.props.editFlat(dataSeparated, (id) => this.editFlatCallback(id));
       this.props.showLoading();
     } else {
       console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
@@ -188,6 +209,20 @@ class EditFlat extends Component {
     this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in edit flat, myfunction, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
   }
 
+  renderAmenityInput() {
+    // <span className="checkmark"></span>
+    // <input type="checkbox" className="createFlatAmenityCheckBox"/><i className="fa fa-check fa-lg"></i>
+    // get amenities object values of keys
+    return _.map(Object.keys(AMENITIES), amenity => {
+      return (
+        <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+          <label className="amenity-radio">{AMENITIES[amenity]}</label>
+          <Field name={amenity} component="input" type="checkbox" value="true" className="createFlatAmenityCheckBox" />
+        </fieldset>
+      );
+    })
+  }
+
 
   renderEditForm() {
     const { handleSubmit } = this.props;
@@ -253,11 +288,25 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Rooms:</label>
-            <Field name="rooms" component="input" type="float" className="form-control" />
+            <Field name="rooms" component="select" type="float" className="form-control">
+              <option></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4 or more</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Beds:</label>
-            <Field name="beds" component="input" type="integer" className="form-control" />
+            <Field name="beds" component="select" type="integer" className="form-control">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="4">5</option>
+            <option value="4">6 or more</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Flat Type:</label>
@@ -265,7 +314,14 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Bath:</label>
-            <Field name="bath" component="input" type="float" className="form-control" />
+            <Field name="bath" component="select" type="float" className="form-control">
+              <option></option>
+              <option value="1">1</option>
+              <option value="1.5">1.5</option>
+              <option value="2">2</option>
+              <option value="2.5">2.5</option>
+              <option value="3">3 or more</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Intro:</label>
@@ -273,12 +329,25 @@ class EditFlat extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Cancellation:</label>
-            <Field name="cancellation" component="input" type="string" className="form-control" />
+            <Field name="cancellation" component="select" type="boolean" className="form-control">
+              <option></option>
+              <option value={true}>Yes -- see policies for details</option>
+              <option value={false}>No</option>
+            </Field>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Smoking:</label>
-            <Field name="smoking" component="input" type="boolean" className="form-control" />
+            <Field name="smoking" component="select" type="boolean" className="form-control">
+              <option></option>
+              <option value={true}>Yes</option>
+              <option value={false}>No</option>
+            </Field>
           </fieldset>
+          <div className="container amenity-input-box">
+            <div className="row">
+              {this.renderAmenityInput()}
+            </div>
+          </div>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
             <label className="confirm-radio"><i className="fa fa-check fa-lg"></i>  Check to confirm changes then submit
@@ -335,15 +404,56 @@ EditFlat = reduxForm({
   // ]
 })(EditFlat);
 
+// !!!!!!!!!! REQUIRES SPECIAL mapStateToProps TO ADDRESS AMENITIES!!!!!!!!!!
+// need initialValues object with flat attributes and amenty attributes on the same level
+// so iterate through flat object and if amenity, then put into initialValueObj
+// and return
+function getInitialValueObject(flat) {
+  const initialValueObj = {};
+  // console.log('in edit_flat, getInitialValueObject: ', flat);
+  _.each(Object.keys(flat), key => {
+    if (key === 'amenity') {
+      // console.log('in edit_flat, getInitialValueObject, if key === amenity, flat[key]: ', flat[key]);
+      const amenities = flat[key];
+      _.each(Object.keys(amenities), k => {
+        // console.log('in edit_flat, getInitialValueObject, if key === amenity, each amenities[k]: ', amenities[k]);
+        initialValueObj[k] = amenities[k];
+      });
+    } else {
+      // console.log('in edit_flat, getInitialValueObject, else, flat[key]: ', flat[key]);
+      // console.log('in edit_flat, getInitialValueObject, else, key: ', key);
+      initialValueObj[key] = flat[key];
+    }
+  });
+  // console.log('in edit_flat, getInitialValueObject, initialValueObj: ', initialValueObj);
+  return initialValueObj;
+}
+
 // !!!!!! initialValues required for redux form to prepopulate fields
+// need to have flat and amenity props for initialvalues to work
+// BUT when calling for flat ovject, .amenity is called on undefined obj
+// unless call it conditionally when there is flat
+// mapStateToProps needs an object returned even without flat, so return empty {}
 function mapStateToProps(state) {
-  console.log('in show_flat, mapStateToProps, state: ', state);
-  return {
-    flat: state.selectedFlatFromParams.selectedFlatFromParams,
-    selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
-    auth: state.auth,
-    initialValues: state.selectedFlatFromParams.selectedFlatFromParams
-  };
+  const flat = state.selectedFlatFromParams.selectedFlatFromParams;
+  let initialValues = {};
+  if (flat) {
+    initialValues = getInitialValueObject(flat)
+    console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
+    console.log('in edit_flat, mapStateToProps, flat: ', flat);
+    console.log('in edit_flat, mapStateToProps, flat: ', flat);
+    console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
+    return {
+      flat: state.selectedFlatFromParams.selectedFlatFromParams,
+      // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
+      amenity: state.selectedFlatFromParams.selectedFlatFromParams.amenity,
+      auth: state.auth,
+      // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
+      initialValues
+    };
+  } else {
+    return {};
+  }
 }
 
 export default connect(mapStateToProps, actions)(EditFlat);
