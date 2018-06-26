@@ -805,6 +805,45 @@ form {
   transform: rotate(45deg);
 }
 
+.amenity-input-box {
+  width: 95%;
+  height: auto;
+  /* border: 2px solid #ccc; */
+  /* display: flex;
+  justify-content: center; */
+}
+
+.amenity-input-each {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 40px;
+  margin: 5px 5px 5px 15px;
+  text-align: left;
+  padding: 0;
+  position: relative;
+}
+.amenity-input-each input {
+  border: 2px solid #ccc;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 25px;
+  width: 25px;
+ cursor: pointer;
+ /* -webkit-appearance: none; */
+ /* appearance: none; */
+}
+
+
+
+.amenity-radio {
+  /* text-align: left; */
+  padding: 10px;
+  margin: 0;
+  float:left;
+}
+
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {

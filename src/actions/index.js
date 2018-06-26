@@ -604,7 +604,7 @@ export function createFlat(flatAttributes, callback) {
 
   // const { } = flatAttributes;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/flats`, { flat: flatAttributes }, {
+    axios.post(`${ROOT_URL}/api/v1/flats`, { flat: flatAttributes.flat, amenity: flatAttributes.amenity }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

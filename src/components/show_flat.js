@@ -15,6 +15,9 @@ import Messaging from './messaging/messaging';
 import DatePicker from './date_picker/date_picker';
 import Lightbox from './modals/lightbox';
 
+import Amenities from './constants/amenities'
+import SearchTypeList from './constants/search_type_list'
+
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -24,6 +27,8 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 // let placesResults = [];
 // let resultsReceived = false;
 // const resultsArray = []
+
+const AMENTIES = Amenities;
 
 class ShowFlat extends Component {
   constructor(props) {
@@ -95,18 +100,40 @@ class ShowFlat extends Component {
     }
   }
 
+  renderAmenities() {
+    console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
+    console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
+    const { amenity } = this.props.flat;
 
-  renderFlat(flatId) {
-    console.log('in show flat, flatId: ', flatId);
-    console.log('in show flat, flat: ', this.props.flat);
+    return _.map(Object.keys(amenity), key => {
+      if (amenity[key] === true) {
+        // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
+        return (
+          <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+            <div className="amenity-radio">{AMENTIES[key]}</div>
+          </div>
+        );
+      }
+    });
+    // return _.map(Object.keys(AMENITIES), amenity => {
+    //   return (
+    //     <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+    //       <label className="amenity-radio">{AMENITIES[amenity]}</label>
+    //       <Field name={amenity} component="input" type="checkbox" value="true" className="createFlatAmenityCheckBox" />
+    //     </fieldset>
+    //   );
+    // })
+  }
+
+  renderFlat() {
+    // console.log('in show flat, flatId: ', flatId);
+    // console.log('in show flat, flat: ', this.props.flat);
     // const flat = _.find(this.props.flats, (f) => {
     //   return f.id === flatId;
     // });
     // console.log('in show flat, flat: ', flat.description);
     const flatEmpty = _.isEmpty(this.props.flat);
-    console.log('in show_flat renderFlat, flat empty: ', flatEmpty);
-
-
+    // console.log('in show_flat renderFlat, flat empty: ', flatEmpty);
       if (!flatEmpty) {
         const { description, area, beds, sales_point, price_per_month, images } = this.props.flat;
         console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
@@ -140,9 +167,13 @@ class ShowFlat extends Component {
               <div className="show-flat-id">
                 <small>flat id: {this.props.match.params.id}</small>
               </div>
-
             </div>
-
+            <h5>Available Amenities</h5>
+            <div className="container amenity-input-box">
+              <div className="row">
+                {this.renderAmenities()}
+              </div>
+            </div>
           </div>
         );
       } else {
@@ -650,103 +681,11 @@ class ShowFlat extends Component {
 
   renderSearchSelection() {
     // consider moving this somewhere else
-    const searchTypeList = {
-      accounting: 'Accounting',
-      airport: 'Airport',
-      amusement_park: 'Amusement Park',
-      aquarium: 'Aquarium',
-      art_gallery: 'Art Gallery',
-      atm: 'ATM',
-      bakery: 'Bakery',
-      bank: 'Bank',
-      bar: 'Bar',
-      beauty_salon: 'Beauty Salon',
-      bicycle_store: 'Bicycle Store',
-      book_store: 'Book Store',
-      bowling_alley: 'Bowling Alley',
-      bus_station: 'Bus Station',
-      cafe: 'Cafe',
-      campground: 'Campground',
-      car_dealer: 'Car Dealer',
-      car_rental: 'Car Rental',
-      car_repair: 'Car Repair',
-      car_wash: 'Car Wash',
-      casino: 'Casino',
-      cemetery: 'Cemetary',
-      church: 'Church',
-      city_hall: 'City Hall',
-      clothing_store: 'Clothing Store',
-      convenience_store: 'Convenience Store',
-      courthouse: 'Courthouse',
-      dentist: 'Dentist',
-      department_store: 'Department Store',
-      doctor: 'Doctor',
-      electrician: 'Electrician',
-      electronics_store: 'Electronics Store',
-      embassy: 'Embassy',
-      fire_station: 'Fire Station',
-      florist: 'Florist',
-      funeral_home: 'Funeral Home',
-      furniture_store: 'Furniture Store',
-      gas_station: 'Gas Station',
-      gym: 'Gym',
-      hair_care: 'Hair Care',
-      hardware_store: 'Hardware Store',
-      hindu_temple: 'Hindu Temple',
-      home_goods_store: 'Home Goods Store',
-      hospital: 'Hospital',
-      insurance_agency: 'Insurance Agency',
-      jewelry_store: 'Jewelry Store',
-      laundry: 'Laundry',
-      lawyer: 'Lawyer',
-      library: 'Library',
-      liquor_store: 'Liquor Store',
-      local_government_office: 'Local Government Office',
-      locksmith: 'Locksmith',
-      lodging: 'Lodging',
-      meal_delivery: 'Meal Delivery',
-      meal_takeaway: 'Meal Takeaway',
-      mosque: 'Mosque',
-      movie_rental: 'Movie Rental',
-      movie_theater: 'Movie Theater',
-      moving_company: 'Moving Company',
-      museum: 'Museum',
-      night_club: 'Night Club',
-      painter: 'Painter',
-      park: 'Park',
-      parking: 'Parking',
-      pet_store: 'Pet Store',
-      pharmacy: 'Pharmacy',
-      physiotherapist: 'Physiotherapist',
-      plumber: 'Plumber',
-      police: 'Police',
-      post_office: 'Post Office',
-      real_estate_agency: 'Real Estate Agency',
-      restaurant: 'Restaurant',
-      roofing_contractor: 'Roofing Contractor',
-      rv_park: 'RV Park',
-      school: 'School',
-      shoe_store: 'Shoe Store',
-      shopping_mall: 'Shopping Mall',
-      spa: 'Spa',
-      stadium: 'Stadium',
-      storage: 'Storage',
-      store: 'Store',
-      subway_station: 'Subway Station',
-      supermarket: 'Supermarket',
-      synagogue: 'Synagogue',
-      taxi_stand: 'Taxi Stand',
-      train_station: 'Train Station',
-      transit_station: 'Transit Station',
-      travel_agency: 'Travel Agency',
-      veterinary_care: 'Veterinary Care',
-      zoo: 'Zoo'
-    };
-
-  return _.map(searchTypeList, (v, k) => {
-      return <option key={k} value={k}>{v}</option>;
-    // })
-  });
+    const searchTypeList = SearchTypeList;
+    return _.map(searchTypeList, (v, k) => {
+        return <option key={k} value={k}>{v}</option>;
+      // })
+    });
 }
 
   handleSearchTypeSelect() {
