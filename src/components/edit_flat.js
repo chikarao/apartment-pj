@@ -237,6 +237,7 @@ class EditFlat extends Component {
       console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
+        <h2>Edit Your Listing</h2>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Street Address:</label>
@@ -316,6 +317,19 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
+            <label className="create-flat-form-label">King or Queen Beds:</label>
+            <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
+            <option></option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="4">5</option>
+            <option value="4">6 or more</option>
+            </Field>
+          </fieldset>
+          <fieldset className="form-group">
             <label className="create-flat-form-label">Flat Type:</label>
             <Field name="flat_type" component="select" type="string" className="form-control">
               <option></option>
@@ -358,7 +372,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <div className="container amenity-input-box">
-            <div className="row">
+            <div className="row amenity-row">
               {this.renderAmenityInput()}
             </div>
           </div>
@@ -387,7 +401,7 @@ class EditFlat extends Component {
           />
         </div>
           <div className="back-button">
-            <button className="btn btn-primary btn-lg back-to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>Back to Show</button>
+            <button className="btn btn-primary btn-lg back-to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
           </div>
         </div>
       );
@@ -428,22 +442,24 @@ EditFlat = reduxForm({
 function getInitialValueObject(flat) {
   const initialValueObj = {};
   // console.log('in edit_flat, getInitialValueObject: ', flat);
-  _.each(Object.keys(flat), key => {
-    if (key === 'amenity') {
-      // console.log('in edit_flat, getInitialValueObject, if key === amenity, flat[key]: ', flat[key]);
-      const amenities = flat[key];
-      _.each(Object.keys(amenities), k => {
-        // console.log('in edit_flat, getInitialValueObject, if key === amenity, each amenities[k]: ', amenities[k]);
-        initialValueObj[k] = amenities[k];
-      });
-    } else {
-      // console.log('in edit_flat, getInitialValueObject, else, flat[key]: ', flat[key]);
-      // console.log('in edit_flat, getInitialValueObject, else, key: ', key);
-      initialValueObj[key] = flat[key];
-    }
-  });
-  // console.log('in edit_flat, getInitialValueObject, initialValueObj: ', initialValueObj);
-  return initialValueObj;
+  if (flat.amenity) {
+    _.each(Object.keys(flat), key => {
+      if (key === 'amenity') {
+        // console.log('in edit_flat, getInitialValueObject, if key === amenity, flat[key]: ', flat[key]);
+        const amenities = flat[key];
+        _.each(Object.keys(amenities), k => {
+          // console.log('in edit_flat, getInitialValueObject, if key === amenity, each amenities[k]: ', amenities[k]);
+          initialValueObj[k] = amenities[k];
+        });
+      } else {
+        // console.log('in edit_flat, getInitialValueObject, else, flat[key]: ', flat[key]);
+        // console.log('in edit_flat, getInitialValueObject, else, key: ', key);
+        initialValueObj[key] = flat[key];
+      }
+    });
+    // console.log('in edit_flat, getInitialValueObject, initialValueObj: ', initialValueObj);
+    return initialValueObj;
+  }
 }
 
 // !!!!!! initialValues required for redux form to prepopulate fields

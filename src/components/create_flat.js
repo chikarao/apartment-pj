@@ -314,6 +314,18 @@ class CreateFlat extends Component {
           <option value="4">6 or more</option>
           </Field>
         </fieldset>
+        <fieldset className="form-group">
+          <label className="create-flat-form-label">King or Queen Beds:</label>
+          <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
+          <option></option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="4">5</option>
+          <option value="4">6 or more</option>
+          </Field>
+        </fieldset>
         <fieldset key={'flat_type'} className="form-group">
           <label className="create-flat-form-label">Flat Type:</label>
           <Field name="flat_type" component="select" type="string" className="form-control">
@@ -383,6 +395,7 @@ class CreateFlat extends Component {
   render() {
     return (
       <div>
+        <h2 style={{ marginBottom: '40px' }}>Create a Listing</h2>
         {this.renderFields()}
       </div>
     );

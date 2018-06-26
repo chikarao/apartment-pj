@@ -133,7 +133,7 @@ class MyPage extends Component {
             </div>
             <div className="my-page-card-button-box">
               <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
-              <button className="btn btn-sm btn-edit">Edit</button>
+              <button value={flat.id} className="btn btn-sm btn-edit" onClick={this.handleEditClick.bind(this)}>Edit</button>
             </div>
           </li>
         );
@@ -338,6 +338,12 @@ class MyPage extends Component {
       console.log('in mypage, handleDeleteClick, if statement, delete flat: ', elementType);
       this.props.deleteFlat(elementVal, () => this.props.history.push('/mypage'));
     }
+  }
+
+  handleEditClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.props.history.push(`/editflat/${elementVal}`);
   }
 
   renderEachOwnBookings() {

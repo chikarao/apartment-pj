@@ -39,20 +39,6 @@ class ReviewEditModal extends Component {
     this.setState({ editReviewCompleted: true });
   }
 
-  renderPostEditMessage() {
-    showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-    //handleClose is a prop passed from header when SigninModal is called
-    return (
-      <div className={showHideClassName}>
-        <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-          {this.renderAlert()}
-          <div className="post-signup-message">Your review has been updated.</div>
-        </div>
-      </div>
-    );
-  }
-
   renderAlert() {
     if (this.props.errorMessage) {
       return (
@@ -130,7 +116,7 @@ class ReviewEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-              <h3 className="auth-modal-title">Edit Profile</h3>
+              <h3 className="auth-modal-title">Edit Review</h3>
               {this.renderAlert()}
                 <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                   <fieldset className="form-group">
@@ -167,6 +153,20 @@ class ReviewEditModal extends Component {
       </div>
     )
   }
+
+  // renderPostEditMessage() {
+  //   showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+  //   //handleClose is a prop passed from header when SigninModal is called
+  //   return (
+  //     <div className={showHideClassName}>
+  //       <div className="modal-main">
+  //         <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+  //         {this.renderAlert()}
+  //         <div className="post-signup-message">Your review has been updated.</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   render() {
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;

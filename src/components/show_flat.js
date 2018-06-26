@@ -88,7 +88,7 @@ class ShowFlat extends Component {
           console.log('in show_flat renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
-              <img value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
             </div>
           );
         })
@@ -110,7 +110,7 @@ class ShowFlat extends Component {
         if (amenity[key] === true) {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
-            <div className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
+            <div key={key} className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
               <div className="amenity-radio">{AMENTIES[key]}</div>
             </div>
           );
@@ -129,37 +129,40 @@ class ShowFlat extends Component {
     const flatEmpty = _.isEmpty(this.props.flat);
     // console.log('in show_flat renderFlat, flat empty: ', flatEmpty);
       if (!flatEmpty) {
-        const { description, area, beds, sales_point, price_per_month, images } = this.props.flat;
+        const { description, area, beds, sales_point, price_per_month, images, king_or_queen_bed, intro } = this.props.flat;
         console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
         return (
           <div>
-            <div className="show-flat-image-box">
-              <div id="carousel-show">
+            <div key={1234} className="show-flat-image-box">
+              <div key={12345} id="carousel-show">
                 {this.renderImages(images)}
               </div>
             </div>
             <div className="show-flat-container">
-              <div className="show-flat-desription">
+              <div key={description} className="show-flat-desription">
                 { description }
               </div>
 
-              <div className="show-flat-area">
+              <div key={area} className="show-flat-area">
                 { area }
               </div>
 
-              <div className="show-flat-beds">
-                Beds: { beds }
+              <div key={beds} className="show-flat-beds">
+                Beds: { beds } <small>{(beds >= 1 && king_or_queen_bed > 0) ? `(${king_or_queen_bed} king or queen sized)` : ''}</small>
               </div>
 
-              <div className="show-flat-sales_point">
+              <div key={sales_point} className="show-flat-sales_point">
                 { sales_point }
               </div>
 
-              <div className="show-flat-price">
+              <div key={price_per_month} className="show-flat-price">
                 ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
-              <div className="show-flat-id">
-                <small>flat id: {this.props.match.params.id}</small>
+              <div key={this.props.match.params.id} className="show-flat-id">
+              <small>flat id: {this.props.match.params.id}</small>
+              </div>
+              <div key={intro} className="show-flat-intro">
+                { intro }
               </div>
             </div>
             <h4>Available Amenities</h4>
