@@ -7,6 +7,7 @@ const Amenities = {
     fire_extinguisher: 'Fire Extinguisher',
     wifi: 'Wifi',
     pocket_wifi: 'Pocket Wifi',
+    wheelchair_accessible: 'Wheelchair Accessible',
     ac: 'A/C',
     heater: 'Heater',
     bath_essentials: 'Bath Essentials',
