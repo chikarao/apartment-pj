@@ -52,11 +52,11 @@ class GoogleMap extends Component {
     // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
     //   this.state.markersArray[i].setMap(null);
     // }
-    const nextPropFlatNum = _.size(nextProps.flats);
-    const lastPropFlatNum = _.size(this.state.initialFlats);
-    console.log('in googlemaps componentWillReceiveProps, nextPropFlatNum, lastPropFlatNum : ', nextPropFlatNum, lastPropFlatNum);
-    console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats : ', this.state.initialFlats);
-    console.log('in googlemaps componentWillReceiveProps, nextProps.flats : ', nextProps.flats);
+      const nextPropFlatNum = _.size(nextProps.flats);
+      const lastPropFlatNum = _.size(this.state.initialFlats);
+      console.log('in googlemaps componentWillReceiveProps, nextPropFlatNum, lastPropFlatNum : ', nextPropFlatNum, lastPropFlatNum);
+      console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats : ', this.state.initialFlats);
+      console.log('in googlemaps componentWillReceiveProps, nextProps.flats : ', nextProps.flats);
     // console.log('in googlemaps componentWillReceiveProps, this.state.initialRerenderMap : ', this.state.initialRerenderMap);
     // if (this.state.initialFlats !== nextProps.flats) {
     //   console.log('in googlemaps componentWillReceiveProps, after if: ');
@@ -71,7 +71,13 @@ class GoogleMap extends Component {
   // }
 
   renderMap() {
-    const initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
+    let initialZoom;
+    // check if map is for showflat
+    if (this.props.showFlat) {
+      initialZoom = 14;
+    } else {
+      initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
+    }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
     console.log('in googlemap, renderMap, FLATS:', this.props.flats);
@@ -109,7 +115,11 @@ class GoogleMap extends Component {
 
     // store map in state and call createmarkers in callback when map is stored
     this.setState({ map }, () => {
-      this.createMarkers();
+      if (this.props.showFlat){
+        this.createCircle()
+      } else {
+        this.createMarkers();
+      }
     });
         // Fired when map is moved; gets map dimensions
         // and call action fetchflats to get flats within map bounds
@@ -182,6 +192,22 @@ class GoogleMap extends Component {
         // this.createMarkers();
         // END of map initialization and map addlisterners
   } // end of renderMap
+
+  createCircle() {
+    const circle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: this.state.map,
+      center: {
+        lat: this.props.initialPosition.lat,
+        lng: this.props.initialPosition.lng
+      },
+      radius: 300
+    });
+  }
 
   createMarkers() {
     // required infowindowArray to close infowindow on map click

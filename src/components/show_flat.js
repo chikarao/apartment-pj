@@ -88,7 +88,7 @@ class ShowFlat extends Component {
             console.log('in show_flat renderImages, image: ', image.publicid);
             return (
               <div key={index} className="slide-show">
-              <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
               </div>
             );
           }
@@ -196,6 +196,8 @@ class ShowFlat extends Component {
       // calls action craetor and sends callback to action to go to the booking confiramtion page
       // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
       this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+    } else {
+      console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
     }
   }
 
@@ -267,7 +269,7 @@ class ShowFlat extends Component {
       console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
       return (
         <div className="date-picker-container">
-        <h4>Please select a range of dates:</h4>
+        <h4>Select a range of dates you want:</h4>
         <DatePicker
           // initialMonth={new Date(2017, 4)}
           daysToDisable={this.disabledDays(this.props.flat.bookings)}
@@ -478,7 +480,7 @@ class ShowFlat extends Component {
           console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
-              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Now!</button>
+              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Reservation</button>
             </div>
           );
         } else {
@@ -486,13 +488,13 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
-                <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg">Block Dates</button>
-              </div>
-              <div className="show-flat-button-box">
                 <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg">Edit</button>
               </div>
               <div className="show-flat-button-box">
                 <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">Delete</button>
+              </div>
+              <div className="show-flat-button-box">
+              <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg">Block Dates</button>
               </div>
             </div>
           );
@@ -801,6 +803,9 @@ class ShowFlat extends Component {
           // markers array needed to fit map to marker bounds
           const markersArray = [];
           const place = autocomplete.getPlace();
+          // List in 'Top Search Resutls'; put place in array first for getPlacesCallback to handle
+          const placeForResultsList = [place];
+          this.getPlacesCallback(placeForResultsList);
           // check if place returned; in case return pushed without selection in search input
           if (typeof place.geometry !== 'undefined') {
             console.log('in show_flat, handleSearchInput, place: ', place);
@@ -935,6 +940,15 @@ class ShowFlat extends Component {
     this.createSelectedMarker(elementVal);
   }
 
+  handleResultCheck(event) {
+    const clickedElement = event.target;
+    console.log('in show_flat, handleResultCheck, event.target, clickedElement: ', clickedElement);
+    const elementVal = clickedElement.getAttribute('value');
+    const elementName = clickedElement.getAttribute('name');
+    console.log('in show_flat, handleResultCheck, elementVal: ', elementVal);
+    console.log('in show_flat, handleResultCheck, elementVal: ', elementName);
+  }
+
   renderSearchResultsList() {
     console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state);
     const { placesResults } = this.state;
@@ -948,8 +962,15 @@ class ShowFlat extends Component {
     console.log('in show_flat, renderSearchResultsList, resultsArray: ', resultsArray);
 
     return _.map(resultsArray, (place) => {
-      console.log('in show_flat, renderSearchResultsList, map: ', place.name);
-      return <li key={place.place_id} value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>  {place.name}</li>
+      console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
+      return (
+        <div key={place.place_id}>
+          <li  value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          {place.name}
+          </li>
+          <div className="search-result-list-radio-label">Add to map <input value={place.place_id} name={place.name} type="checkbox" onChange={this.handleResultCheck.bind(this)} /></div>
+        </div>
+      )
     });
   }
 
@@ -980,6 +1001,11 @@ class ShowFlat extends Component {
             <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
             <ul>
             {this.renderSearchResultsList()}
+            </ul>
+          </div>
+          <div className="map-interaction-box">
+            <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Places on Map</div>
+            <ul>
             </ul>
           </div>
         </div>
@@ -1091,9 +1117,9 @@ class ShowFlat extends Component {
         <div>
           {this.renderReviews()}
         </div>
-        <div>
+        <footer className="show-flat-footer">
           {this.renderButton()}
-        </div>
+        </footer>
       </div>
     );
   }

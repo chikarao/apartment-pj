@@ -381,7 +381,7 @@ class EditFlat extends Component {
           </div>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
-            <label className="confirm-radio"><i className="fa fa-check fa-lg"></i>  Check to confirm changes then submit
+            <label className="confirm-radio"><i className="fa fa-check fa-lg"></i>  Confirm above changes then submit
               <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
               <span className="checkmark"></span>
             </label>

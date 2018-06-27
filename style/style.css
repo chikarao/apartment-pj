@@ -12,6 +12,10 @@ html, body {
   text-align:center;
 }
 
+/* .container { */
+  /* min-height: calc(100vh - 70px); */
+/* } */
+
 
 /* to show map */
 body > div:first-child {
@@ -344,6 +348,21 @@ body > div:first-child {
   margin-top: 10px;
 }
 
+.search-result-list-radio-label {
+  margin: 0 20px 0 20px;
+  font-size: 13px;
+  position: relative;
+}
+.search-result-list-radio-label input {
+  width: 30px;
+  height: 20px;
+  padding: 20px 0 0 0;
+  position: absolute;
+  top: -3px;
+  right: 130px;
+  /* margin: 5px; */
+}
+
 /* remove powered by google from autocomplete */
 .pac-container:after {
     /* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
@@ -473,7 +492,7 @@ body > div:first-child {
 }
 
 .show-flat-button-box {
-  margin: 30px;
+  margin: 10px 20px 15px 30px;
 }
 .show-flat-button-box:hover {
   opacity: .6;
@@ -546,6 +565,17 @@ body > div:first-child {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.show-flat-footer {
+  position:fixed;
+  left:0px;
+  bottom:0px;
+  height:60px;
+  width:100%;
+  /* display: block; */
+  /* background:#ccc; */
+  background: white;
 }
 
 /* ******************* MESSAGING *************************** */

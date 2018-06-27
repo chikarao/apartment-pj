@@ -239,6 +239,19 @@ class DatePicker extends Component {
    const selectedDays = [from, { from, to: enteredTo }];
    return (
      <div>
+       <h5>
+       {!from && !to && 'Please select the first day.'}
+       {from && !to && 'Please select the last day.'}
+       {from && to &&
+         `Selected from ${from.toLocaleDateString()} to
+         ${to.toLocaleDateString()}`}{' '}
+         {from &&
+           to && (
+             <button className="btn btn-primary btn-small data-picker-reset-btn" onClick={this.handleResetClick}>
+             Reset
+             </button>
+           )}
+        </h5>
        <DayPicker
          className="Range"
          numberOfMonths={3}
@@ -251,19 +264,6 @@ class DatePicker extends Component {
          onDayClick={this.handleDayClick}
          onDayMouseEnter={this.handleDayMouseEnter}
        />
-       <div>
-         {!from && !to && 'Please select the first day.'}
-         {from && !to && 'Please select the last day.'}
-         {from && to &&
-           `Selected from ${from.toLocaleDateString()} to
-               ${to.toLocaleDateString()}`}{' '}
-         {from &&
-           to && (
-             <button className="link" onClick={this.handleResetClick}>
-               Reset
-             </button>
-           )}
-       </div>
 
        <Helmet>
 
