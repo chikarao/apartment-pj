@@ -332,12 +332,18 @@ class MyPage extends Component {
     console.log('in mypage, handleDeleteClick, elementType: ', elementType);
     if (elementType === 'ownBooking' && window.confirm('Are you sure you want to delete this booking?')) {
       console.log('in mypage, handleDeleteClick, if statement, delete own booking: ', elementType);
-      this.props.deleteBooking(elementVal, () => this.props.history.push('/mypage'));
+      this.props.showLoading();
+      this.props.deleteBooking(elementVal, () => this.props.deleteBookingCallback());
     }
     if (elementType === 'flat' && window.confirm('Are you sure you want to delete this flat?')) {
       console.log('in mypage, handleDeleteClick, if statement, delete flat: ', elementType);
       this.props.deleteFlat(elementVal, () => this.props.history.push('/mypage'));
     }
+  }
+
+  deleteBookingCallback() {
+    this.props.showLoading();
+    this.props.history.push('/mypage');
   }
 
   handleEditClick(event) {

@@ -30,7 +30,9 @@ class CreateFlat extends Component {
       confirmChecked: false
     };
   }
-
+  // get form input ready for params
+  // iterate throughh data from  form submit and separate amanity attributes and flat
+  // if object key in data is in AMENTIES object, then add to amenityObj and vice versa
   separateFlatAndAmenities(data) {
     const amenityObj = { flat: {}, amenity: {} }
     console.log('in createflat, separateFlatAndAmenities, data : ', data);
@@ -45,6 +47,9 @@ class CreateFlat extends Component {
         amenityObj.flat[key] = data[key];
       }
     });
+    // have basic: true in amenity params so to avoid empty params error
+    // basic amenity does not show up in amenity list or input
+    amenityObj.amenity.basic = true;
     // console.log('in createflat, separateFlatAndAmenities, amenityObj : ', amenityObj);
     return amenityObj;
   }
@@ -64,9 +69,7 @@ class CreateFlat extends Component {
         addressString += addressHash[i] + ", ";
       }
       // add basic = true to data so that amenity params does not become null
-      //in case user does not check any boxes
-      const dataWithBasic = data;
-      dataWithBasic.basic = true;
+      //in case user does not check any boxes 
       const dataSeparated = this.separateFlatAndAmenities(data);
       // for case when user does not select any images
       if (data.files) {
