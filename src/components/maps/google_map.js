@@ -268,8 +268,13 @@ class GoogleMap extends Component {
       const iwImageDiv = document.createElement('div');
       iwImageDiv.id = 'infowindow-box-image-box';
       iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
-      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
 
+      // !!!!if no image is available for the flat
+      if (flat.images[this.props.imageIndex.count]) {
+        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
+      } else {
+        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/no_image_placeholder_5.jpg)`);
+      }
       // divs to contain the arrows, clicks on this will move carousel, addDomListener is assigned
       // increments image index in redux
       const iwImageLeftArrowDiv = document.createElement('div');

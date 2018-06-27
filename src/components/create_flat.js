@@ -182,11 +182,13 @@ class CreateFlat extends Component {
   axios.all(uploaders).then(() => {
     // ... perform after upload is successful operation
     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+    // if there are no images, call do not create images and just call createImageCallback
     if (imagesArray.length === 0) {
-      imagesArray.push('no_image_placeholder');
+      this.createImageCallback(imagesArray, 0, flatId);
+    } else {
+      const imageCount = 0;
+      this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
     }
-    const imageCount = 0;
-    this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
   });
 }
 

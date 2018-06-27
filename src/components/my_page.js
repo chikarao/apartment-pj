@@ -61,7 +61,7 @@ class MyPage extends Component {
         return (
           <li key={index} className="my-page-each-card">
             <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_66,c_crop/" + booking.flat.images[0].publicid + '.jpg'} />
+              {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
                   <li>{booking.flat.description}</li>
@@ -120,7 +120,7 @@ class MyPage extends Component {
         return (
           <li key={index} className="my-page-each-card">
             <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+              {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
                   <li>{flat.description}</li>
@@ -237,7 +237,7 @@ class MyPage extends Component {
         return (
           <li key={index} className="my-page-each-card">
             <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} />
+            {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
                   <li>{stringToShow}...</li>
@@ -364,7 +364,7 @@ class MyPage extends Component {
             return (
               <li key={index} className="my-page-each-card">
                 <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-                  <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+                  {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
                   <div className="my-page-details">
                     <ul>
                       <li>{flat.description}</li>
@@ -442,7 +442,7 @@ class MyPage extends Component {
             return (
               <li key={index} className="my-page-each-card">
                 <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
-                  <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} />
+                  {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
                   <div className="my-page-details">
                     <ul>
                       <li>{flat.description}</li>

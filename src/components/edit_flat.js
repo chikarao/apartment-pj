@@ -180,24 +180,26 @@ class EditFlat extends Component {
     console.log('in edit flat, renderImages, images: ', images);
     // reference: https://stackoverflow.com/questions/8877807/how-can-i-display-the-checkbox-over-the-images-for-selection
     const imagesEmpty = _.isEmpty(images);
-    if(!imagesEmpty) {
+    if (!imagesEmpty) {
       return (
         _.map(images, (image) => {
-          console.log('in show_flat renderImages, image: ', image.publicid);
-          return (
-            <div key={image.id} className="slide-show-edit-flat">
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
-                <label className="delete-image-radio">
-                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+          if (image) {
+            console.log('in show_flat renderImages, image: ', image.publicid);
+            return (
+              <div key={image.id} className="slide-show-edit-flat">
+              <img src={"http://res.cloudinary.com/chikarao/image/upload/w_165,h_110/" + image.publicid + '.jpg'} />
+              <label className="delete-image-radio">
+              <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
               <span className="checkmarkDeleteImage"></span>
               </label>
-            </div>
-          );
+              </div>
+            );
+          }
         })
       );
     } else {
       return (
-        <div className="no-results-message">Images are not available for this flat</div>
+        <div className="no-results-message">No image is available for this flat</div>
       );
     }
   }
@@ -237,7 +239,7 @@ class EditFlat extends Component {
       console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
-        <h2>Edit Your Listing</h2>
+        <h2 style={{ marginBottom: '30px' }}>Edit Your Listing</h2>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Street Address:</label>
@@ -301,7 +303,8 @@ class EditFlat extends Component {
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
-              <option value="4">4 or more</option>
+              <option value="4">4</option>
+              <option value="5">5 or more</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
@@ -312,8 +315,8 @@ class EditFlat extends Component {
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
-            <option value="4">5</option>
-            <option value="4">6 or more</option>
+            <option value="5">5</option>
+            <option value="6">6 or more</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
@@ -325,8 +328,8 @@ class EditFlat extends Component {
             <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
-            <option value="4">5</option>
-            <option value="4">6 or more</option>
+            <option value="5">5</option>
+            <option value="6">6 or more</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
@@ -401,7 +404,7 @@ class EditFlat extends Component {
           />
         </div>
           <div className="back-button">
-            <button className="btn btn-primary btn-lg back-to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
+            <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
           </div>
         </div>
       );

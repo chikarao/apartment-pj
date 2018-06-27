@@ -28,6 +28,7 @@ class MainCards extends Component {
   }
 
   createBackgroundImage(image) {
+    console.log('in main_cards, createBackgroundImage, image: ', image);
     const width = 400;
     const t = new cloudinary.Transformation();
     t.angle(0).crop('scale').width(width).aspectRatio('1.5');
@@ -143,12 +144,11 @@ class MainCards extends Component {
       <div key={this.props.flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
         <div
           className="card-image"
-          style={{ background: `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` }}
+          style={{ background: this.props.flat.images[this.state.imageIndex] ? `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` : `url(${this.createBackgroundImage('no_image_placeholder_5')}` }}
         >
           <div className="card">
               {this.renderLikes()}
             <div className="card-box">
-
               <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
                 <i className="fa fa-angle-left"></i>
               </div>

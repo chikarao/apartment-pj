@@ -82,15 +82,16 @@ class ShowFlat extends Component {
     const imagesEmpty = _.isEmpty(images);
     if (!imagesEmpty) {
       console.log('in show_flat renderImages, images: ', images[0].publicid);
-
       return (
         _.map(images, (image, index) => {
-          console.log('in show_flat renderImages, image: ', image.publicid);
-          return (
-            <div key={index} className="slide-show">
+          if (image) {
+            console.log('in show_flat renderImages, image: ', image.publicid);
+            return (
+              <div key={index} className="slide-show">
               <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200,c_crop/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
-            </div>
-          );
+              </div>
+            );
+          }
         })
       );
     } else {
