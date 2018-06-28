@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { Main } from '../main';
 import Header from './auth/header';
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +14,7 @@ export default class App extends Component {
 
   componentWillMount() {
     //make initMap callback global
+    // console.log('in app.js, componentWillMount,  this.props.language: ', this.props.language);
     window.initMap = this.loadedMap;
     const API_KEY = process.env.GOOGLEMAP_API_KEY;
     console.log('in app.js, compoenentWillMount, API_KEY: ', API_KEY)
@@ -24,6 +27,10 @@ export default class App extends Component {
     script.defer = true;
     document.head.append(script);
   }
+
+  // componentDidUpdate() {
+  //   console.log('in app.js, componentDidUpdate,  this.props.language: ', this.props.language);
+  // }
 
   loadedMap = () => {
       this.setState({ gmapLoaded: true });
@@ -60,3 +67,14 @@ export default class App extends Component {
   //   );
   // }
 }
+//
+// function mapStateToProps(state) {
+//   console.log('in app.js, mapStateToProps, state: ', state);
+//   return {
+//     language: state.places.placeSearchLanguage
+//     // conversation: state.conversation.createMessage
+//   };
+// }
+
+// export default connect(mapStateToProps)(App);
+export default App;

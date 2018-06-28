@@ -53,7 +53,8 @@ import {
   FETCH_REVIEWS_FOR_FLAT,
   FETCH_PLACES,
   CREATE_PLACE,
-  DELETE_PLACE
+  DELETE_PLACE,
+  PLACE_SEARCH_LANGUAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -971,4 +972,9 @@ export function deletePlace(flatId, id, callback) {
       callback();
     });
   };
+}
+
+export function placeSearchLanguage(language) {
+  console.log('in actions index, placeSearchLanguage:', language);
+  return { type: PLACE_SEARCH_LANGUAGE, payload: language };
 }

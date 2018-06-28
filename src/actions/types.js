@@ -50,3 +50,4 @@ export const SHOW_EDIT_REVIEW_MODAL = 'show_edit_review_modal';
 export const FETCH_PLACES = 'fetch_places';
 export const CREATE_PLACE = 'create_place';
 export const DELETE_PLACE = 'delete_place';
+export const PLACE_SEARCH_LANGUAGE = 'place_search_language';

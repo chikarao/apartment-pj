@@ -548,7 +548,7 @@ class ShowFlat extends Component {
       location,
       radius: 2000,
       // if rank by distance, DO NOT use radius
-      type: criterion,
+      type: criterion
       // rankBy: google.maps.places.RankBy.DISTANCE
       // the propblem with rank by distance is in case of lots of results, give irrelevant results
     }, (results, status) => {
@@ -608,6 +608,7 @@ class ShowFlat extends Component {
         // map: mapShow,
         position: place.geometry.location,
         icon: markerIcon,
+        marker: true,
         label: showLabel ? { text: '', fontWeight: 'bold' } : ''
       });
 
@@ -636,21 +637,43 @@ class ShowFlat extends Component {
       labelOrigin: new google.maps.Point(20, 33)
     };
     // Don't need map; setMap is run in function where createFlatMarker is called
-    const marker = new google.maps.Marker({
-      key: flat.id,
-      position: {
-        lat: flat.lat,
-        lng: flat.lng
-      },
-      // map,
-      flatId: flat.id,
-      icon: markerIcon,
-      label: {
-        text: markerLabel,
-        fontWeight: 'bold'
-        // color: 'gray'
-      }
-    });
+    // Use marker to make it easier to shift between marker and circle
+    // using position does not work need center in pontA latlng
+      const marker = new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        // position: {
+        //   lat: flat.lat,
+        //   lng: flat.lng
+        // },
+        marker: false,
+        center: {
+          lat: flat.lat,
+          lng: flat.lng
+        },
+        radius: 300
+      });
+      console.log('in show_flat, createFlatMarker, marker (circle): ', marker);
+    // ****marker
+    // const marker = new google.maps.Marker({
+    //   key: flat.id,
+    //   position: {
+    //     lat: flat.lat,
+    //     lng: flat.lng
+    //   },
+    //   // map,
+    //   flatId: flat.id,
+    //   icon: markerIcon,
+    //   label: {
+    //     text: markerLabel,
+    //     fontWeight: 'bold'
+    //     // color: 'gray'
+    //   }
+    // });
+    // *****Marker
     return marker;
   } //end of createFlatMarker
 
@@ -673,6 +696,7 @@ class ShowFlat extends Component {
   }
 
   handleSearchCriterionClick(event) {
+    this.unhighlightClickedPlace();
     console.log('in show_flat, handleSearchCriterionClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     let elementVal = clickedElement.getAttribute('value');
@@ -746,7 +770,9 @@ class ShowFlat extends Component {
           }
         });
         markersArray.push(pointB);
-        const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
+        // use position if use marker not circle (use center)
+        // const pointALatLng = { lat: pointA.position.lat(), lng: pointA.position.lng() }
+        const pointALatLng = { lat: pointA.center.lat(), lng: pointA.center.lng() }
         const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
         const distance = this.getDistance(pointALatLng, pointBLatLng, pointB, map);
         console.log('in show_flat, createSelectedMarker, after if status, distance: ', distance);
@@ -761,7 +787,9 @@ class ShowFlat extends Component {
         });
         const searchClick = true;
         this.calculateAndDisplayRoute(pointA, pointB, markersArray, map, searchClick);
-      } // end of if status ok
+      } else {
+        console.log('in show_flat, createSelectedMarker, else status: ', status);
+      } // end of if status if else
     }); // end of callback
   } // end of createSelectedMarker
 
@@ -840,8 +868,17 @@ class ShowFlat extends Component {
 
             // zoom map to fit markers drawn
             const bounds = new google.maps.LatLngBounds();
+            console.log('in show_flat, handleSearchInput, bounds: ', bounds);
+            console.log('in show_flat, handleSearchInput, markersArray: ', markersArray);
+
             for (let i = 0; i < markersArray.length; i++) {
-              bounds.extend(markersArray[i].getPosition());
+              if (!markersArray[i].marker) {
+                console.log('in show_flat, handleSearchInput, markersArray[i]: ', markersArray[i]);
+                bounds.extend(markersArray[i].getCenter());
+              } else {
+                console.log('in show_flat, handleSearchInput, markersArray[i]: ', markersArray[i]);
+                bounds.extend(markersArray[i].getPosition());
+              }
             }
             map.fitBounds(bounds);
             // gets distance from flat to searched autocomplete place,
@@ -866,7 +903,9 @@ class ShowFlat extends Component {
       directionsDisplay.setMap(map);
       console.log('in show_flat, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
       // for some reason, better to send markers than lat lng when calling calculateAndDisplayRoute
-      const pointALatLng = searchClick ? { lat: pointA.position.lat(), lng: pointA.position.lng() } : { lat: pointA.position.lat(), lng: pointA.position.lng() }
+      // !!!!! Use position if use marker not circle (use center)
+      // const pointALatLng = searchClick ? { lat: pointA.position.lat(), lng: pointA.position.lng() } : { lat: pointA.position.lat(), lng: pointA.position.lng() }
+      const pointALatLng = searchClick ? { lat: pointA.center.lat(), lng: pointA.center.lng() } : { lat: pointA.center.lat(), lng: pointA.center.lng() }
       const pointBLatLng = searchClick ? { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() } : { lat: pointB.position.lat(), lng: pointB.position.lng() }
 
       console.log('in show_flat, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
@@ -882,6 +921,7 @@ class ShowFlat extends Component {
         // _.each(markersArray, marker => {
         //   marker.setMap(map)
         // });
+        // !!!!! Direction lines; Don't call directionsDisplay if don't want lines
         directionsDisplay.setDirections(response);
       } else {
         window.alert('Directions request failed due to ' + status);
@@ -938,11 +978,15 @@ class ShowFlat extends Component {
     const elementVal = clickedElement.getAttribute('value');
     console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
 
-    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
+    // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
+    // Don't know why but this works
+    this.state.clickedPlaceArray.push(clickedElement);
     this.createSelectedMarker(elementVal);
   }
 
   handleResultAddClick(event) {
+    this.props.showLoading();
+    this.unhighlightClickedPlace();
     const clickedElement = event.target;
     console.log('in show_flat, handleResultAddClick, event.target, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
@@ -954,6 +998,7 @@ class ShowFlat extends Component {
   }
 
   resultAddDeleteClickCallback() {
+    this.props.showLoading();
     this.props.history.push(`/show/${this.props.flat.id}`);
   }
 
@@ -974,7 +1019,7 @@ class ShowFlat extends Component {
       console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
       return (
         <div key={place.place_id}>
-          <li  value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
           &nbsp;{place.name}
           </li>
           <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.place_id} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
@@ -984,6 +1029,7 @@ class ShowFlat extends Component {
   }
 
   handleResultDeleteClick(event) {
+    this.props.showLoading();
     const clickedElement = event.target;
     console.log('in show_flat, handleResultDeleteClick, event.target, clickedElement: ', clickedElement);
     const placeId = clickedElement.getAttribute('value');
@@ -994,13 +1040,16 @@ class ShowFlat extends Component {
   handleSelectedPlaceClick(event) {
     this.unhighlightClickedPlace();
 
-    console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
+    console.log('in show_flat, handleSelectedPlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
     clickedElement.style.color = 'lightGray';
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
+    console.log('in show_flat, handleSelectedPlaceClick, elementVal: ', elementVal);
 
-    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
+    // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
+    // Don't know why but this works
+    this.state.clickedPlaceArray.push(clickedElement);
+
     this.createSelectedMarker(elementVal);
   }
 
@@ -1009,7 +1058,7 @@ class ShowFlat extends Component {
     if (places) {
       console.log('in show_flat, renderSelectedResultsList, places: ', places);
       return _.map(places, (place) => {
-        console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
+        console.log('in show_flat, renderSelectedResultsList, .map, place: ', place);
         return (
           <div key={place.id}>
           <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
@@ -1022,9 +1071,24 @@ class ShowFlat extends Component {
     }
   }
 
+  handleSearchLanguageSelect() {
+    const selection = document.getElementById('mapInteractionLanguageSelect');
+    const language = selection.value;
+    console.log('in show_flat, handleSearchLanguageSelect, language: ', language);
+    // this.getPlaces(type, () => this.getPlacesCallback())
+    this.props.placeSearchLanguage(language);
+  }
+
   renderMapInteractiion() {
     // reference https://developers.google.com/places/web-service/supported_types
     // a tag reference: https://stackoverflow.com/questions/1801732/how-do-i-link-to-google-maps-with-a-particular-longitude-and-latitude
+    // <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
+    // !!!!!!Language selection for search results
+    // <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
+    // <option>Select Search Output Language</option>
+    // <option value="en">English</option>
+    // <option value="jp">Japanese</option>
+    // </ select>
     if(this.props.flat) {
       return (
         <div className="map-interaction-container">
@@ -1039,7 +1103,6 @@ class ShowFlat extends Component {
               {this.renderSearchSelection()}
             </select>
             <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
-            <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
           </div>
           <div className="map-interaction-box">
             <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
@@ -1179,7 +1242,8 @@ function mapStateToProps(state) {
     conversation: state.conversation.conversationByFlat,
     noConversation: state.conversation.noConversation,
     reviews: state.reviews,
-    places: state.places.places
+    places: state.places.places,
+    language: state.places.placeSearchLanguage
     // conversation: state.conversation.createMessage
   };
 }
