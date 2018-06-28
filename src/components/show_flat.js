@@ -29,6 +29,7 @@ const GOOGLEMAP_API_KEY = process.env.GOOGLEMAP_API_KEY;
 // const resultsArray = []
 
 const AMENTIES = Amenities;
+let RESULTS_ARRAY = []
 
 class ShowFlat extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class ShowFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
+    this.props.fetchPlaces(this.props.match.params.id);
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
     if (this.props.auth.authenticated) {
       this.props.getCurrentUser();
@@ -940,17 +942,24 @@ class ShowFlat extends Component {
     this.createSelectedMarker(elementVal);
   }
 
-  handleResultCheck(event) {
+  handleResultAddClick(event) {
     const clickedElement = event.target;
-    console.log('in show_flat, handleResultCheck, event.target, clickedElement: ', clickedElement);
+    console.log('in show_flat, handleResultAddClick, event.target, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    console.log('in show_flat, handleResultCheck, elementVal: ', elementVal);
-    console.log('in show_flat, handleResultCheck, elementVal: ', elementName);
+    console.log('in show_flat, handleResultAddClick, elementVal: ', elementVal);
+    console.log('in show_flat, handleResultAddClick, elementVal: ', elementName);
+    console.log('in show_flat, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
+    this.props.createPlace(this.props.flat.id, elementVal, elementName, () => this.resultAddDeleteClickCallback());
+  }
+
+  resultAddDeleteClickCallback() {
+    this.props.history.push(`/show/${this.props.flat.id}`);
   }
 
   renderSearchResultsList() {
-    console.log('in show_flat, renderSearchResultsList, placesResults: ', this.state);
+    // <div className="search-result-list-radio-label">Add to map <input value={place.place_id} name={place.name} type="checkbox" onChange={this.handleResultAddClick.bind(this)} /></div>
+    console.log('in show_flat, renderSearchResultsList, this.state, placesResults: ', this.state);
     const { placesResults } = this.state;
     const resultsArray = [];
     //using placeResults, a state object directly in map gives a error,
@@ -966,17 +975,52 @@ class ShowFlat extends Component {
       return (
         <div key={place.place_id}>
           <li  value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
-          {place.name}
+          &nbsp;{place.name}
           </li>
-          <div className="search-result-list-radio-label">Add to map <input value={place.place_id} name={place.name} type="checkbox" onChange={this.handleResultCheck.bind(this)} /></div>
+          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.place_id} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
         </div>
       )
     });
   }
 
-  // handleGoToGMClick() {
-  //
-  // }
+  handleResultDeleteClick(event) {
+    const clickedElement = event.target;
+    console.log('in show_flat, handleResultDeleteClick, event.target, clickedElement: ', clickedElement);
+    const placeId = clickedElement.getAttribute('value');
+    console.log('in show_flat, handleResultDeleteClick, placeId: ', placeId);
+    this.props.deletePlace(this.props.flat.id, placeId, () => this.resultAddDeleteClickCallback())
+  }
+
+  handleSelectedPlaceClick(event) {
+    this.unhighlightClickedPlace();
+
+    console.log('in show_flat, handlePlaceClick, event.target: ', event.target);
+    const clickedElement = event.target;
+    clickedElement.style.color = 'lightGray';
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in show_flat, handlePlaceClick, elementVal: ', elementVal);
+
+    this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
+    this.createSelectedMarker(elementVal);
+  }
+
+  renderSelectedResultsList() {
+    const { places } = this.props;
+    if (places) {
+      console.log('in show_flat, renderSelectedResultsList, places: ', places);
+      return _.map(places, (place) => {
+        console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
+        return (
+          <div key={place.id}>
+          <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          &nbsp;{place.place_name}
+          </li>
+          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>
+          </div>
+        );
+      });
+    }
+  }
 
   renderMapInteractiion() {
     // reference https://developers.google.com/places/web-service/supported_types
@@ -1000,12 +1044,13 @@ class ShowFlat extends Component {
           <div className="map-interaction-box">
             <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
             <ul>
-            {this.renderSearchResultsList()}
+              {this.renderSearchResultsList()}
             </ul>
           </div>
           <div className="map-interaction-box">
             <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Places on Map</div>
             <ul>
+              {this.renderSelectedResultsList()}
             </ul>
           </div>
         </div>
@@ -1133,7 +1178,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversation: state.conversation.conversationByFlat,
     noConversation: state.conversation.noConversation,
-    reviews: state.reviews
+    reviews: state.reviews,
+    places: state.places.places
     // conversation: state.conversation.createMessage
   };
 }

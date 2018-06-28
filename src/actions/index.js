@@ -50,7 +50,10 @@ import {
   FETCH_REVIEW_FOR_BOOKING_BY_USER,
   UPDATE_REVIEW,
   SHOW_EDIT_REVIEW_MODAL,
-  FETCH_REVIEWS_FOR_FLAT
+  FETCH_REVIEWS_FOR_FLAT,
+  FETCH_PLACES,
+  CREATE_PLACE,
+  DELETE_PLACE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -899,6 +902,72 @@ export function updateReview(reviewAttributes, callback) {
         payload: response.data.data.review
       });
       // sends back to createreview.js the review_id and the images
+      callback();
+    });
+  };
+}
+
+export function createPlace(flatId, placeid, place_name, callback) {
+  console.log('in actions index, createPlace: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, createPlace: flatId: ', flatId);
+  console.log('in actions index, createPlace: placeid: ', placeid);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/places`, { place: { placeid, place_name } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createPlace, response: ', response);
+      console.log('response to createPlace, response.data.data.image: ', response.data.data.places);
+      // the response is a new array of places
+      dispatch({
+        type: CREATE_PLACE,
+        payload: response.data.data.places
+      });
+      callback();
+    });
+  };
+}
+
+export function fetchPlaces(flatId) {
+  console.log('in actions index, fetchPlaces: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, fetchPlaces: flatId: ', flatId);
+  // console.log('in actions index, fetchPlaces: id: ', id);
+
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/flats/${flatId}/places`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchPlaces, response: ', response);
+      console.log('response to fetchPlaces, response.data.data.places: ', response.data.data.places);
+      dispatch({
+        type: FETCH_PLACES,
+        payload: response.data.data.places
+      });
+      // callback();
+    });
+  };
+}
+
+export function deletePlace(flatId, id, callback) {
+  console.log('in actions index, deletePlace: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, deletePlace: flatId: ', flatId);
+  console.log('in actions index, deletePlace: id: ', id);
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/flats/${flatId}/places/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deletePlace, response: ', response);
+      console.log('response to deletePlace, response.data.data.place: ', response.data.data.places);
+
+      // the response is a new array of places
+      dispatch({
+        type: DELETE_PLACE,
+        payload: response.data.data.places
+      });
       callback();
     });
   };

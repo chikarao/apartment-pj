@@ -6,7 +6,7 @@ import { CREATE_LIKE, DELETE_LIKE, LIKES_BY_USER } from '../actions/types';
 // };
 
 export default function (state = {}, action) {
-  console.log('in image count reducer, state.count:', state);
+  console.log('in likes reducer, state.count:', state);
 
   switch (action.type) {
     //CREATE_LIKE is an object
