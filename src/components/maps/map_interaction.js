@@ -603,7 +603,7 @@ class MapInteraction extends Component {
       });
     }
   }
-
+  // Need to work o this... Cannot set language preference in app.js script after componentWillMount
   handleSearchLanguageSelect() {
     const selection = document.getElementById('mapInteractionLanguageSelect');
     const language = selection.value;
@@ -626,9 +626,10 @@ class MapInteraction extends Component {
       <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
       <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
       <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+      <option key={12345} value="acqarium">Select type of place nearby</option>
       {this.renderSearchSelection()}
       </select>
-      <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Enter place name or address..." />
+      <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
       <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
       <option>Select Search Output Language</option>
       <option value="en">English</option>

@@ -5,7 +5,9 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 import Upload from './images/upload';
-import Amenities from './constants/amenities'
+import Amenities from './constants/amenities';
+import GoogleMap from './maps/google_map';
+import MapInteraction from './maps/map_interaction';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -26,6 +28,8 @@ class EditFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
+    this.props.fetchPlaces(this.props.match.params.id);
+
     console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
     //   console.log('in edit flat, componentDidMount, editFlatLoad called');
@@ -229,6 +233,35 @@ class EditFlat extends Component {
     this.props.history.push(`/show/${this.props.match.params.id}`);
   }
 
+  renderMap() {
+    if (this.props.flat) {
+      //instantiates autocomplete as soon as flat is loaded in state then mapcenter can be set
+      // this.handleSearchInput();
+      //calling this here gives error InvalidValueError: not an instance of HTMLInputElement
+      // so call in componentDidUpdate
+
+      console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
+      const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
+      const flatsEmpty = false;
+      const flatArray = [this.props.flat];
+      const flatArrayMapped = _.mapKeys(flatArray, 'id');
+
+      console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+
+      return (
+        <div>
+          <GoogleMap
+            showFlat
+            flatsEmpty={flatsEmpty}
+            flats={flatArrayMapped}
+            initialPosition={initialPosition}
+          />
+        </div>
+      );
+    }
+  }
+
   renderEditForm() {
     const { handleSubmit } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -240,6 +273,7 @@ class EditFlat extends Component {
       return (
         <div>
         <h2 style={{ marginBottom: '30px' }}>Edit Your Listing</h2>
+        <h4>Edit Basic Information and Amenities</h4>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Street Address:</label>
@@ -397,11 +431,20 @@ class EditFlat extends Component {
             {this.renderDeleteImageButtons()}
           </div>
         </div>
-
         <div>
           <Upload
             flatId={this.props.flat.id}
           />
+        </div>
+        <h4>Add or Delete Convenient Places Near Your Flat</h4>
+        <div>
+            <div className="container" id="map">
+              {this.renderMap()}
+            </div>
+              <MapInteraction
+              flat={this.props.flat}
+              places={this.props.places}
+              />
         </div>
           <div className="back-button">
             <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
@@ -487,6 +530,7 @@ function mapStateToProps(state) {
       // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
       amenity: state.selectedFlatFromParams.selectedFlatFromParams.amenity,
       auth: state.auth,
+      places: state.places.places,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };
