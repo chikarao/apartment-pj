@@ -7,13 +7,14 @@ import SearchTypeList from '../constants/search_type_list'
 
 import * as actions from '../../actions';
 
+const NEARBY_SEARCH_RADIUS = 3000;
 // this compoenent is for creating and managing places on show and editflat
 // on show, takes showFlat prop and shows only the places selected for flat
 // on edit flat page, user can select and add places with flat id associated
 class MapInteraction extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
+   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], placeSearched: false };
  }
   componentDidMount() {
     // console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -77,7 +78,7 @@ class MapInteraction extends Component {
     console.log('in show_flat, getPlaces, service: ', service);
     service.nearbySearch({
       location,
-      radius: 2000,
+      radius: NEARBY_SEARCH_RADIUS,
       // if rank by distance, DO NOT use radius
       type: criterion
       // rankBy: google.maps.places.RankBy.DISTANCE
@@ -104,22 +105,39 @@ class MapInteraction extends Component {
           // create marker for flat each time
           const flatMarker = this.createFlatMarker(flat, mapShow);
           flatMarker.setMap(mapShow);
-          // if (resultsArray.length > 0) {
-          this.getPlacesCallback(results);
-          // this.setState({ map: mapShow })
 
-            // console.log('in show_flat, getPlaces, Placeservice, resultsArray.length: ', resultsArray.length);
-            // console.log('in show_flat, getPlaces, Placeservice, resultsArray: ', resultsArray);
-          // }
-          // getResultsOfPlacesSearch(results);
-          // setStateWithResults(results);
+          this.getPlacesCallback(results);
+
+          //
+          const bounds = new google.maps.LatLngBounds();
+          console.log('in show_flat, getPlaces, bounds: ', bounds);
+          // console.log('in show_flat, getPlaces, results: ', results);
+
+          for (let i = 0; i < results.length; i++) {
+              console.log('in show_flat, getPlaces, results[i]: ', results[i]);
+              const lat = results[i].geometry.location.lat();
+              const lng = results[i].geometry.location.lng();
+              const position = { lat, lng }
+              bounds.extend(position);
+            }
+          mapShow.fitBounds(bounds);
+
+        } else {
+          // else there are no results from get places; place flat marker on map anyways
+          console.log('in show_flat, getPlaces, Placeservice, else, results: ', results);
+          const flatMarker = this.createFlatMarker(flat, mapShow);
+          flatMarker.setMap(mapShow);
+          this.getPlacesCallback(results);
         }
       }); // end of callback {} and nearbySearch
   } //end of getPlaces
 
   createMarker(place, mapShow, showLabel) {
+    const infowindowArray = [];
     if (typeof place.geometry !== 'undefined') {
       const infowindow = new google.maps.InfoWindow();
+      // push infowidow into array to enable close by clicking on map see addListener below
+      infowindowArray.push(infowindow);
       const markerIcon = {
         // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
         url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
@@ -147,6 +165,19 @@ class MapInteraction extends Component {
         infowindow.setContent(place.name);
         infowindow.open(mapShow, this);
       });
+
+      // close infowindow by clicking on map outside of infowindow
+      google.maps.event.addListener(mapShow, 'click', function (event) {
+        // const latitude = event.latLng.lat();
+        // const longitude = event.latLng.lng();
+        // console.log('in googlemaps clicked latitude: ', latitude);
+        // console.log('in googlemaps clicked longitude: ', longitude);
+        //close open infowindows
+        for (let i = 0; i < infowindowArray.length; i++) {
+          infowindowArray[i].close();
+        }
+      }); //end addListener
+
       return marker;
     }
   } // end of createMarker
@@ -222,12 +253,15 @@ class MapInteraction extends Component {
 
   getPlacesCallback(results) {
     console.log('in show_flat, getPlacesCallback, results ??: ', results);
-
-    this.setState({ placesResults: results }, () => console.log('show flat, getPlacesCallback, setState callback, this.state: ', this.state))
+    // first, clear out place results then set state with results
+    this.setState({ placesResults: results });
   }
 
   handleSearchCriterionClick(event) {
+    // unhightlight previously highlighted places in list
     this.unhighlightClickedPlace();
+    // set placeSearched to true so that the search list box renders different message
+    this.setState({ placeSearched: true });
     console.log('in show_flat, handleSearchCriterionClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     let elementVal = clickedElement.getAttribute('value');
@@ -246,6 +280,7 @@ class MapInteraction extends Component {
 }
 
   handleSearchTypeSelect() {
+    this.setState({ placeSearched: true });
     const selection = document.getElementById('typeSelection');
     const type = selection.options[selection.selectedIndex].value;
     console.log('in show_flat, handleSearchTypeSelect, type: ', type);
@@ -362,6 +397,8 @@ class MapInteraction extends Component {
         // called when place selected in autocomplete
         function onPlaceChanged() {
           // markers array needed to fit map to marker bounds
+          this.setState({ placeSearched: true });
+
           const markersArray = [];
           const place = autocomplete.getPlace();
           // List in 'Top Search Resutls'; put place in array first for getPlacesCallback to handle
@@ -538,6 +575,7 @@ class MapInteraction extends Component {
     console.log('in show_flat, renderSearchResultsList, this.state, placesResults: ', this.state);
     const { placesResults } = this.state;
     const resultsArray = [];
+    const nearbySearchRadiusKM = NEARBY_SEARCH_RADIUS / 1000
     //using placeResults, a state object directly in map gives a error,
     //cannont use object as react child
     _.each(placesResults, result => {
@@ -545,18 +583,25 @@ class MapInteraction extends Component {
       console.log('in show_flat, renderSearchResultsList, each result.name: ', result);
     });
     console.log('in show_flat, renderSearchResultsList, resultsArray: ', resultsArray);
-
-    return _.map(resultsArray, (place) => {
-      console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
-      return (
-        <div key={place.place_id}>
+    if (resultsArray.length < 1) {
+      if (this.state.placeSearched) {
+        return <div style={{ padding: '20px' }}>No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
+      } else {
+        return <div style={{ padding: '20px' }}>To get nearby places, click on criteria under "Search for Nearest.".</div>;
+      };
+    } else {
+      return _.map(resultsArray, (place) => {
+        console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
+        return (
+          <div key={place.place_id}>
           <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
           &nbsp;{place.name}
           </li>
           <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.place_id} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
-        </div>
-      )
-    });
+          </div>
+        )
+      });
+    }
   }
 
   handleResultDeleteClick(event) {
@@ -617,24 +662,25 @@ class MapInteraction extends Component {
   }
 
   renderSearchBox() {
+    // keep for when there is solution for language selection;
+    // <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
+    // <option>Select Search Output Language</option>
+    // <option value="en">English</option>
+    // <option value="jp">Japanese</option>
+    // </ select>
     return (
       <div className="map-interaction-box">
-      <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-      <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-      <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-      <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-      <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-      <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
-      <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-      <option key={12345} value="acqarium">Select type of place nearby</option>
-      {this.renderSearchSelection()}
-      </select>
-      <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
-      <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
-      <option>Select Search Output Language</option>
-      <option value="en">English</option>
-      <option value="jp">Japanese</option>
-      </ select>
+        <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
+        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
+        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+        <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+          <option key={12345} value="acqarium">Select type of place nearby</option>
+          {this.renderSearchSelection()}
+        </select>
+        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
       </div>
     );
   }
