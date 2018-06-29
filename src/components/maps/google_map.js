@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import ReactDOMServer from 'react-dom/server';
+// ReactDOMServer tried but did not work for infowindow
+// elements not activated
+// import ReactDOMServer from 'react-dom/server';
 
 import * as actions from '../../actions';
 
-import Carousel from '../carousel/carousel';
+// carousel could not be used for infowindow for some reason
+// import Carousel from '../carousel/carousel';
 
 // const INITIAL_POSITION = { lat: 37.7952,
 //   lng: -122.4029 };
@@ -20,6 +23,9 @@ const INITIAL_ZOOM = 12;
 
 let MAP_DIMENSIONS = {};
 
+// This component used for results page and showflat page;
+// Takes prop showFlat, flatEmpty in case map pans to location with no flat,
+// initialposition coming from show flat
 class GoogleMap extends Component {
   constructor(props) {
     super(props);

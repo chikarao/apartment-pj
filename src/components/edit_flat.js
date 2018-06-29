@@ -413,7 +413,9 @@ class EditFlat extends Component {
 
   render() {
     return (
-      <div>{this.renderEditForm()}</div>
+      <div>
+      {this.renderEditForm()}
+      </div>
     );
   }
 }
@@ -445,6 +447,7 @@ EditFlat = reduxForm({
 function getInitialValueObject(flat) {
   const initialValueObj = {};
   // console.log('in edit_flat, getInitialValueObject: ', flat);
+  // Need to have amenity for flat to get initial value
   if (flat.amenity) {
     _.each(Object.keys(flat), key => {
       if (key === 'amenity') {

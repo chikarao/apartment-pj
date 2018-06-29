@@ -974,7 +974,10 @@ export function deletePlace(flatId, id, callback) {
   };
 }
 
-export function placeSearchLanguage(language) {
+export function placeSearchLanguage(language, callback) {
   console.log('in actions index, placeSearchLanguage:', language);
-  return { type: PLACE_SEARCH_LANGUAGE, payload: language };
+  return function (dispatch) {
+    dispatch({ type: PLACE_SEARCH_LANGUAGE, payload: language });
+    callback();
+  };
 }
