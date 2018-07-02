@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import _ from 'lodash';
 
 // import DayPicker from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -29,7 +30,15 @@ class Header extends Component {
   componentDidMount() {
        window.addEventListener('resize', this.handleResize.bind(this));
        this.props.getCurrentUser();
+       // don't need to do anymore since this screws up flats in results and other pages
+       // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
+       this.props.fetchConversationsByUser();
    }
+
+   // fetchFlatsByUserCallback(flatIdArray) {
+   //   console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
+   //   // this.props.fetchConversationByUserAndFlat(flatIdArray);
+   // }
 
    componentWillUnmount() {
        window.removeEventListener('resize', this.handleResize.bind(this));
@@ -170,12 +179,31 @@ class Header extends Component {
      }
    }
 
+  newMessagesOrNot() {
+    if (this.props.conversations) {
+      const { conversations } = this.props;
+      let newMessages = false;
+      console.log('in header, newMessagesOrNot, conversations: ', conversations);
+      _.each(conversations, conversation => {
+        _.each(conversation.messages, message => {
+          if (message.read === false) {
+            newMessages = true;
+          }
+        });
+      });
+
+      console.log('in header, newMessagesOrNot, newMessages: ', newMessages);
+      return newMessages;
+    }
+  }
+
   navigationLinks() {
     console.log('in header, navigationLinks, this.props.location: ', this.props.location);
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
     const onMyPage = this.props.location.pathname === '/mypage';
     console.log('in header, navigationLinks, onMyPage: ', onMyPage);
+
 
     if (this.props.authenticated) {
        // show link to signout and signed in as...
@@ -194,16 +222,29 @@ class Header extends Component {
          //consider opedning mypage in new tab...
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
-         return [
-           <ul key={'1'} className="header-list">
-             <li className="nav-item">
-              <Link className="nav-link" to={'/mypage'} >My Page</Link>
-             </li>
-             <li className="nav-item">
-              <p className="nav-link">Signed in as {this.props.email}</p>
-             </li>
-           </ul>
-         ];
+         // if (this.props.conversations) {
+           const newMessages = this.newMessagesOrNot();
+           console.log('in header, navigationLinks, newMessages: ', newMessages);
+           return [
+             <ul key={'1'} className="header-list">
+               <li className="nav-item">
+                <Link className="nav-link" to={'/mypage'} >My Page</Link>
+               </li>
+               <li className="nav-item">
+                <p className="nav-link">Signed in as {this.props.email}</p>
+               </li>
+               { this.props.conversations ?
+                 <li className="nav-item header-mail-li">
+                 <div className="header-mail-box">
+                 {newMessages ? <div className="header-mail-number"></div> : ''}
+                 <i className="fa fa-envelope"></i>
+                 </div>
+                 </li> :
+                 ''
+               }
+             </ul>
+           ];
+         // } // end of if this.props.conversations
        }
        //end of second if
     } else {
@@ -283,7 +324,8 @@ function mapStateToProps(state) {
     email: state.auth.email,
     id: state.auth.id,
     showLoading: state.auth.showLoading,
-    showLightbox: state.auth.showLightbox
+    showLightbox: state.auth.showLightbox,
+    conversations: state.conversation.conversationsByUser
   };
 }
 

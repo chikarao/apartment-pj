@@ -155,7 +155,33 @@ body > div:first-child {
   /* margin-bottom: 20px; */
 }
 
+.header-mail-li {
+  margin: 0;
+  padding: 12px 20px 0 0;
+}
 
+.header-mail-box {
+  position: relative;
+}
+.header-mail-box i {
+  font-size: 30px;
+  top: 0;
+  right: 0;
+}
+
+.header-mail-number {
+  position: absolute;
+  top: -2px;
+  right: -5px;
+  /* background-color: red; */
+  background-color: #7CFC00	;
+  color: white;
+  font-size: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  /* padding: 5px; */
+}
 
 /* CREATE FLAT Form */
 

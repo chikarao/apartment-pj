@@ -397,12 +397,17 @@ class MapInteraction extends Component {
         // called when place selected in autocomplete
         function onPlaceChanged() {
           // markers array needed to fit map to marker bounds
+          // placeSearched state to indicate search has been done so can show appropriate message
+          // at load and after no search results in search results show box
           this.setState({ placeSearched: true });
 
           const markersArray = [];
+          // getPlace is an google maps autocomplete function
           const place = autocomplete.getPlace();
+          console.log('in show_flat, handleSearchInput, onPlaceChanged, place: ', place);
           // List in 'Top Search Resutls'; put place in array first for getPlacesCallback to handle
           const placeForResultsList = [place];
+          // sets results in this.state
           this.getPlacesCallback(placeForResultsList);
           // check if place returned; in case return pushed without selection in search input
           if (typeof place.geometry !== 'undefined') {
@@ -424,6 +429,7 @@ class MapInteraction extends Component {
 
             // pushes markers into array for map zooming to bounds of markers
             markersArray.push(marker);
+            // flatMarker is actually a circle for simplicity
             markersArray.push(flatMarker);
 
             //  location and location B are not places
@@ -439,6 +445,8 @@ class MapInteraction extends Component {
             console.log('in show_flat, handleSearchInput, bounds: ', bounds);
             console.log('in show_flat, handleSearchInput, markersArray: ', markersArray);
 
+            // handle cases when marker is a circle or a real marker
+            // used variable name marker for circle for simplicity
             for (let i = 0; i < markersArray.length; i++) {
               if (!markersArray[i].marker) {
                 console.log('in show_flat, handleSearchInput, markersArray[i]: ', markersArray[i]);
@@ -585,9 +593,9 @@ class MapInteraction extends Component {
     console.log('in show_flat, renderSearchResultsList, resultsArray: ', resultsArray);
     if (resultsArray.length < 1) {
       if (this.state.placeSearched) {
-        return <div style={{ padding: '20px' }}>No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
+        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-exclamation-triangle"></i>&nbsp;No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
       } else {
-        return <div style={{ padding: '20px' }}>To get nearby places, click on criteria under "Search for Nearest.".</div>;
+        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;To get nearby places, click on criteria under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
       };
     } else {
       return _.map(resultsArray, (place) => {

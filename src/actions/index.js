@@ -30,6 +30,7 @@ import {
   EDIT_FLAT,
   DELETE_IMAGE,
   FETCH_CONVERSATION_BY_USER_AND_FLAT,
+  FETCH_CONVERSATIONS_BY_USER,
   FETCH_CONVERSATION_BY_FLAT,
   FETCH_MESSAGE,
   CREATE_MESSAGE,
@@ -54,7 +55,8 @@ import {
   FETCH_PLACES,
   CREATE_PLACE,
   DELETE_PLACE,
-  PLACE_SEARCH_LANGUAGE
+  PLACE_SEARCH_LANGUAGE,
+  MARK_MESSAGES_READ
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -344,6 +346,34 @@ export function fetchConversationByUserAndFlat(flatIdArray) {
     })
     .catch(error => {
       console.log('in action index, catch error to fetchConversationByUserAndFlat: ', error);
+    });
+  };
+}
+export function fetchConversationsByUser() {
+  // better way to do this thn fetchConversationByUserAndFlat
+  // gets @user to get conversation where user_id is @user.id and @flats where user id is user_id
+  console.log('in actions index, fetchConversationsByUser: localStorage.getItem, token; ', localStorage.getItem('token'));
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1//users/conversations/conversations_by_user`, { conversation: '' }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchConversationsByUser: ', response);
+      console.log('in action index, response to fetchConversationsByUser: ', response.data.data.conversations);
+      // const { conversations } = response.data.data;
+      // if (conversations.length === 0) {
+      //   console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversations.length === 0);
+      //   dispatch({
+      //     type: NO_CONVERSATION
+      //   });
+      // }
+      dispatch({
+        type: FETCH_CONVERSATIONS_BY_USER,
+        payload: response.data.data.conversations
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to fetchConversationsByUser: ', error);
     });
   };
 }
@@ -979,5 +1009,27 @@ export function placeSearchLanguage(language, callback) {
   return function (dispatch) {
     dispatch({ type: PLACE_SEARCH_LANGUAGE, payload: language });
     callback();
+  };
+}
+
+export function markMessagesRead(id) {
+  console.log('in actions index, markMessagesRead, id: ', id);
+  console.log('in actions index, markMessagesRead: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/conversations/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to markMessagesRead, response: ', response);
+      console.log('response to markMessagesRead, response.data.data: ', response.data.data);
+      dispatch({
+        type: MARK_MESSAGES_READ,
+        payload: response.data.data.conversation
+      });
+      // sends back to createreview.js the review_id and the images
+      // callback();
+    });
   };
 }

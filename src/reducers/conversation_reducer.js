@@ -1,18 +1,19 @@
 import _ from 'lodash';
 import {
-  FETCH_CONVERSATION_BY_FLAT_AND_USER,
   CREATE_MESSAGE,
   CREATE_CONVERSATION,
   NO_CONVERSATION,
   FETCH_CONVERSATION_BY_USER_AND_FLAT,
-  FETCH_CONVERSATION_BY_FLAT
+  FETCH_CONVERSATIONS_BY_USER,
+  FETCH_CONVERSATION_BY_FLAT,
+  MARK_MESSAGES_READ
 } from '../actions/types';
 
 export default function (state = { noConversation: false }, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
+  const conversationArray = [];
 
   switch (action.type) {
-
     case FETCH_CONVERSATION_BY_FLAT:
       // console.log('in booking reducer, state: ', state);
       return { ...state, conversationByFlat: action.payload };
@@ -20,13 +21,16 @@ export default function (state = { noConversation: false }, action) {
       // console.log('in booking reducer, state: ', state);
       return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
 
+    case FETCH_CONVERSATIONS_BY_USER:
+      // console.log('in booking reducer, state: ', state);
+      return { ...state, conversationsByUser: action.payload, noConversation: false };
+
     case CREATE_MESSAGE:
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
       // with old conversation with old message;
       // Fixes bug in mypage where after message created and
       // toggle back to conversations, only the old conversation remains and it did not have
       // flat in the conversation object so threw and error
-      const conversationArray = [];
       _.each(state.conversationByUserAndFlat, conversation => {
         if (conversation.id !== action.payload.id) {
           conversationArray.push(conversation);
@@ -44,6 +48,19 @@ export default function (state = { noConversation: false }, action) {
     case NO_CONVERSATION:
       console.log('in conversation reducer, NO_CONVERSATION action.payload: ', action.payload);
       return { ...state, noConversation: true };
+
+    case MARK_MESSAGES_READ:
+      console.log('in conversation reducer, MARK_MESSAGES_READ action.payload: ', action.payload);
+      // return { ...state, noConversation: true };
+      // const conversationArray = [];
+      _.each(state.conversationByUserAndFlat, conversation => {
+        if (conversation.id !== action.payload.id) {
+          conversationArray.push(conversation);
+        } else {
+          conversationArray.push(action.payload);
+        }
+      })
+      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray };
 
     default:
       return state;

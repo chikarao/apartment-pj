@@ -202,6 +202,9 @@ class MyPage extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
+
+    // call action creator to mark messages for conversation with that id as read
+    this.props.markMessagesRead(elementVal);
     let conversationToShow = this.getConversationToShow(elementVal);
     console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
@@ -228,9 +231,21 @@ class MyPage extends Component {
   renderEachConversation() {
     const { conversations } = this.props;
     if (this.state.showConversation) {
+      // iterate through each conversation
       return _.map(conversations, (conversation, index) => {
         const lastMessageIndex = conversation.messages.length - 1;
         console.log('in mypage, renderEachConversation, conversation: ', conversation);
+        // check for unread messages and increment counter if message.read = false
+        // if there are unread messages, the healine chnages in style of li
+        let unreadMessages = 0;
+        _.each(conversation.messages, (message) => {
+          if (message.read === false) {
+            console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
+            console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
+            unreadMessages++;
+          }
+        });
+        console.log('in mypage, renderEachConversation, unreadMessages: ', unreadMessages);
         const date = new Date(conversation.messages[lastMessageIndex].created_at);
         //show only first 26 characters of text
         const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
@@ -240,7 +255,7 @@ class MyPage extends Component {
             {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
-                  <li>{stringToShow}...</li>
+                  <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="mypage-conversation-headline">{stringToShow}...</li>
                   <li>{this.formatDate(date)}</li>
                   <li>user id: {conversation.user.id}</li>
                   <li>conversation id: {conversation.id}</li>
@@ -589,7 +604,7 @@ function mapStateToProps(state) {
   console.log('in mypage, mapStateToProps, state: ', state);
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
-    flats: state.flats,
+    flats: state.flats.flatsByUser,
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,
     auth: state.auth,

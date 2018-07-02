@@ -672,7 +672,7 @@ function mapStateToProps(state) {
   console.log('in results mapStateToProps: ', state);
   return {
     message: state.auth.message,
-    flats: state.flats,
+    flats: state.flats.flatsResults,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions,
     likes: state.likes.userLikes,

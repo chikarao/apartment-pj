@@ -6,10 +6,10 @@ export default function (state = {}, action) {
 
   switch (action.type) {
     case FETCH_FLATS:
-      return _.mapKeys(action.payload, 'id');
+      return { ...state, flatsResults: _.mapKeys(action.payload, 'id') };
 
     case FETCH_FLATS_BY_USER:
-      return _.mapKeys(action.payload, 'id');
+      return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };
 
     case SELECTED_FLAT:
       return { ...state, selectedFlat: action.payload };

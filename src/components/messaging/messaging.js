@@ -135,7 +135,6 @@ class Messaging extends Component {
       // const { conversation } = this.props;
       // conversation is an array
       const messages = conversationToShowArray[0].messages;
-
       // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
       console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
