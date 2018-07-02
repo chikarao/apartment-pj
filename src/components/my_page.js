@@ -205,6 +205,8 @@ class MyPage extends Component {
 
     // call action creator to mark messages for conversation with that id as read
     this.props.markMessagesRead(elementVal);
+    // this.props.newMessages(false);
+    // this.props.fetchConversationsByUser();
     let conversationToShow = this.getConversationToShow(elementVal);
     console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
@@ -229,23 +231,42 @@ class MyPage extends Component {
 }
 
   renderEachConversation() {
-    const { conversations } = this.props;
+    const { conversations, flats } = this.props;
     if (this.state.showConversation) {
+      // get flat id in array to check if meesage was sent by owner
+      // const flatIdArray = [];
+      // _.each(flats, (flat) => {
+      //   flatIdArray.push(flat.id);
+      // });
       // iterate through each conversation
       return _.map(conversations, (conversation, index) => {
         const lastMessageIndex = conversation.messages.length - 1;
-        console.log('in mypage, renderEachConversation, conversation: ', conversation);
+        // console.log('in mypage, renderEachConversation, conversation: ', conversation);
         // check for unread messages and increment counter if message.read = false
         // if there are unread messages, the healine chnages in style of li
+        const notOwnFlatConversation = this.props.auth.id == conversation.user_id;
+        // console.log('in mypage, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
+        // console.log('in mypage, renderEachConversation, conversation.user_id: ', conversation.user_id);
+        // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
         let unreadMessages = 0;
         _.each(conversation.messages, (message) => {
-          if (message.read === false) {
-            console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
-            console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
-            unreadMessages++;
+          if (notOwnFlatConversation) {
+            // console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
+            // console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
+            if (message.read === false && message.sent_by_user) {
+              // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+              // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
+              unreadMessages++;
+            }
+          } else {
+            if (message.read === false && !message.sent_by_user) {
+              // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+              // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
+              unreadMessages++;
+            }
           }
+          // console.log('in mypage, renderEachConversation, unreadMessages: ', unreadMessages);
         });
-        console.log('in mypage, renderEachConversation, unreadMessages: ', unreadMessages);
         const date = new Date(conversation.messages[lastMessageIndex].created_at);
         //show only first 26 characters of text
         const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);

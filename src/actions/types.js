@@ -53,3 +53,4 @@ export const CREATE_PLACE = 'create_place';
 export const DELETE_PLACE = 'delete_place';
 export const PLACE_SEARCH_LANGUAGE = 'place_search_language';
 export const MARK_MESSAGES_READ = 'mark_messages_read';
+export const SET_NEW_MESSAGES = 'set_new_messages';

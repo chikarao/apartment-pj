@@ -56,7 +56,8 @@ import {
   CREATE_PLACE,
   DELETE_PLACE,
   PLACE_SEARCH_LANGUAGE,
-  MARK_MESSAGES_READ
+  MARK_MESSAGES_READ,
+  SET_NEW_MESSAGES
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -354,7 +355,7 @@ export function fetchConversationsByUser() {
   // gets @user to get conversation where user_id is @user.id and @flats where user id is user_id
   console.log('in actions index, fetchConversationsByUser: localStorage.getItem, token; ', localStorage.getItem('token'));
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1//users/conversations/conversations_by_user`, { conversation: '' }, {
+    axios.get(`${ROOT_URL}/api/v1//users/conversations/conversations_by_user`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
@@ -375,6 +376,14 @@ export function fetchConversationsByUser() {
     .catch(error => {
       console.log('in action index, catch error to fetchConversationsByUser: ', error);
     });
+  };
+}
+
+export function setNewMessages(trueOrFalse) {
+  console.log('in actions index, setNewMessages ');
+  return {
+    type: SET_NEW_MESSAGES,
+    payload: trueOrFalse
   };
 }
 
@@ -618,10 +627,10 @@ export function deleteBooking(id, callback) {
     })
     .then(response => {
       console.log('response to deleteBooking, response: ', response);
-      console.log('response to deleteBooking, response.data.data: ', response.data.data);
+      console.log('response to deleteBooking, response.data.data: ', response.data.data.booking);
       dispatch({
-        type: DELETE_FLAT,
-        payload: response.data.data
+        type: DELETE_BOOKING,
+        payload: response.data.data.booking
       });
       // redirects to mypage
       callback();
@@ -1018,7 +1027,7 @@ export function markMessagesRead(id) {
 
   // const { } = reviewAttributes;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/conversations/${id}`, {
+    axios.patch(`${ROOT_URL}/api/v1/conversations/${id}`, { conversation: '' }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

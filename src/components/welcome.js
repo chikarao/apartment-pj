@@ -15,6 +15,10 @@ class Welcome extends Component {
     };
   }
 
+  componenetDidMount() {
+     this.props.fetchConversationsByUser();
+  }
+
   showModal = () => {
      // this.setState({ show: true }, () => console.log('in Welcome, showModal, this.state: ', this.state));
      // calls action craetor to set this.props.auth.showAuthModal to true

@@ -33,13 +33,16 @@ class Header extends Component {
        // don't need to do anymore since this screws up flats in results and other pages
        // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
        this.props.fetchConversationsByUser();
+       this.props.fetchFlatsByUser(this.props.auth.id, () => {})
    }
 
    // fetchFlatsByUserCallback(flatIdArray) {
    //   console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
    //   // this.props.fetchConversationByUserAndFlat(flatIdArray);
    // }
-
+   // componentDidUpdate() {
+   //
+   // }
    componentWillUnmount() {
        window.removeEventListener('resize', this.handleResize.bind(this));
    }
@@ -179,21 +182,31 @@ class Header extends Component {
      }
    }
 
-  newMessagesOrNot() {
+  newMessages() {
     if (this.props.conversations) {
-      const { conversations } = this.props;
+      const { conversations, flats } = this.props;
+      const flatIdArray = [];
+      _.each(flats, (flat) => {
+        flatIdArray.push(flat.id);
+      });
+
       let newMessages = false;
       console.log('in header, newMessagesOrNot, conversations: ', conversations);
       _.each(conversations, conversation => {
+        const ownFlatConversation = flatIdArray.includes(conversation.flat_id);
         _.each(conversation.messages, message => {
-          if (message.read === false) {
-            newMessages = true;
+          if (ownFlatConversation && message.sent_by_user) {
+            if (message.read === false) {
+              newMessages = true;
+              // this.props.newMessagesOrNot(true);
+            }
           }
         });
       });
-
       console.log('in header, newMessagesOrNot, newMessages: ', newMessages);
-      return newMessages;
+      if (newMessages) {
+        this.props.setNewMessages(true);
+      }
     }
   }
 
@@ -206,8 +219,13 @@ class Header extends Component {
 
 
     if (this.props.authenticated) {
+      console.log('in header, navigationLinks, this.props.newMessages: ', this.props.newMessages);
        // show link to signout and signed in as...
+       // const newMessages = this.newMessagesOrNot();
+
        if (onMyPage) {
+         console.log('in header, navigationLinks, if on mypage, newMessages: ', this.props.newMessages);
+         console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
          return [
            <ul key={'1'} className="header-list">
              <li className="nav-item">
@@ -216,6 +234,15 @@ class Header extends Component {
              <li className="nav-item">
               <p className="nav-link">Signed in as {this.props.email}</p>
              </li>
+             { this.props.conversations ?
+               <li className="nav-item header-mail-li">
+               <div className="header-mail-box">
+               {this.props.newMessages ? <div className="header-mail-number"></div> : ''}
+               <i className="fa fa-envelope"></i>
+               </div>
+               </li> :
+               ''
+             }
            </ul>
          ];
        } else {
@@ -223,8 +250,8 @@ class Header extends Component {
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
          // if (this.props.conversations) {
-           const newMessages = this.newMessagesOrNot();
-           console.log('in header, navigationLinks, newMessages: ', newMessages);
+           console.log('in header, navigationLinks, else mypage, newMessages: ', this.props.newMessages);
+           console.log('in header, navigationLinks, else mypage, this.props.conversations: ', this.props.conversations);
            return [
              <ul key={'1'} className="header-list">
                <li className="nav-item">
@@ -236,7 +263,7 @@ class Header extends Component {
                { this.props.conversations ?
                  <li className="nav-item header-mail-li">
                  <div className="header-mail-box">
-                 {newMessages ? <div className="header-mail-number"></div> : ''}
+                 {this.props.newMessages ? <div className="header-mail-number"></div> : ''}
                  <i className="fa fa-envelope"></i>
                  </div>
                  </li> :
@@ -325,7 +352,9 @@ function mapStateToProps(state) {
     id: state.auth.id,
     showLoading: state.auth.showLoading,
     showLightbox: state.auth.showLightbox,
-    conversations: state.conversation.conversationsByUser
+    conversations: state.conversation.conversationsByUser,
+    newMessages: state.conversation.newMessages,
+    flats: state.flats.flatsByUser
   };
 }
 
