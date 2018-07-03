@@ -752,8 +752,22 @@ body > div:first-child {
 }
 
 #messaging-hamburger {
-  float: left;
-  font-size: 22px;
+  /* float: left; */
+  font-size: 20px;
+}
+#messaging-hamburger:hover {
+  font-size: 20px;
+  color: gray;
+}
+
+#messaging-refresh {
+  /* float: right; */
+  font-size: 20px;
+}
+#messaging-refresh:hover {
+  /* float: right; */
+  font-size: 20px;
+  color: gray;
 }
 
 .send-owner-a-message-div {
@@ -1317,11 +1331,20 @@ form {
 
 .my-page-category-title {
     padding: 10px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Profile is the only category that is customized!!!!!!!!!!! */
-.my-page-category-title-profile {
-    padding: 10px;
+.my-page-category-left {
+  height: auto;
+  width: 30px;
+}
+
+.my-page-category-right {
+  height: auto;
+  width: 30px;
 }
 
 .my-page-each-card {
@@ -1501,7 +1524,7 @@ form {
 }
 
 #my-page-profile-edit-link {
-  float: right;
+  /* float: right; */
   font-size: 25px;
   color: blue;
 }

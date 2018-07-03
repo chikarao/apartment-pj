@@ -315,12 +315,12 @@ class Header extends Component {
     if (this.state.windowWidth <= 800) {
       return [
         <div key={'3'} className="mobile_nav">
-          <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}>
+          <div className="header-hamburger" onClick={this.handleNavClick.bind(this)}>
             <div className="header-hamburger-box">
               <i className="fa fa-bars"></i>
               { (this.props.conversations && this.props.newMessages && this.state.showNewMessageBadge) ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
             </div>
-          </p>
+          </div>
           {this.renderMobileNav()}
         </div>
       ];

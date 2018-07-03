@@ -28,7 +28,9 @@ class MyPage extends Component {
     //   this.props.editFlatLoad(this.props.flat);
     // }
     // this.props.fetchUserFlats(this.props.auth.id);
-    this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
+    // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
+    this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+    this.props.fetchConversationsByUser();
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
@@ -153,7 +155,11 @@ class MyPage extends Component {
     console.log('in mypage, renderBookings, this.props.bookingsByUser: ', this.props.bookingsByUser);
     return (
       <div>
-      <div className="my-page-category-title">My Bookings</div>
+      <div className="my-page-category-title">
+        <span className="my-page-category-left"></span>
+        <span>My Bookings</span>
+        <span className="my-page-category-right"></span>
+      </div>
       <ul>
       {this.renderEachBookingByUser()}
       </ul>
@@ -164,7 +170,11 @@ class MyPage extends Component {
   renderFlats() {
     return (
       <div>
-        <div className="my-page-category-title">My Flats</div>
+        <div className="my-page-category-title">
+          <span className="my-page-category-left"></span>
+          <span>My Flats</span>
+          <span className="my-page-category-right"></span>
+        </div>
         <ul>
         {this.renderEachFlat()}
         </ul>
@@ -175,7 +185,11 @@ class MyPage extends Component {
   renderOwnBookings() {
     return (
       <div>
-        <div className="my-page-category-title">Bookings for My Flats</div>
+        <div className="my-page-category-title">
+          <span className="my-page-category-left"></span>
+          <span>Bookings For My Flats</span>
+          <span className="my-page-category-right"></span>
+        </div>
         <ul>
         {this.renderEachOwnBookings()}
         </ul>
@@ -241,7 +255,7 @@ class MyPage extends Component {
       // iterate through each conversation
       return _.map(conversations, (conversation, index) => {
         const lastMessageIndex = conversation.messages.length - 1;
-        // console.log('in mypage, renderEachConversation, conversation: ', conversation);
+        console.log('in mypage, renderEachConversation, conversation: ', conversation);
         // check for unread messages and increment counter if message.read = false
         // if there are unread messages, the healine chnages in style of li
         const notOwnFlatConversation = this.props.auth.id == conversation.user_id;
@@ -306,7 +320,7 @@ class MyPage extends Component {
   renderConversations() {
     return (
       <ul>
-      {this.renderEachConversation()}
+        {this.renderEachConversation()}
       </ul>
     );
   }
@@ -317,16 +331,19 @@ class MyPage extends Component {
     this.setState({ showConversation: true });
   }
 
-  // <div className="message-box-container">
-  //   <div className="message-box">
+handleMessageRefreshClick() {
+  console.log('in mypage, handleMessageRefreshClick: ');
+  this.props.fetchConversationsByUser();
+}
 
   renderMessaging() {
     console.log('in mypage, renderMessaging, this.state.showConversation: ', this.state.showConversation);
     return (
       <div>
         <div className="my-page-category-title">
-          <span id="messaging-hamburger" className={this.state.showConversation ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span>
+          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.state.showConversation ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
           <span>My Messages</span>
+          <span className="my-page-category-right"><span id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
         </div>
         {this.state.showConversation ? this.renderConversations() : this.renderMessages()}
       </div>
@@ -511,7 +528,11 @@ class MyPage extends Component {
   renderLikes() {
     return (
       <div>
-        <div className="my-page-category-title">My Likes</div>
+        <div className="my-page-category-title">
+          <span className="my-page-category-left"></span>
+          <span>My Likes</span>
+          <span className="my-page-category-right"></span>
+        </div>
         <ul>
         {this.renderEachLike()}
         </ul>
@@ -576,9 +597,10 @@ class MyPage extends Component {
       console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
-          <div className="my-page-category-title-profile">
-            <span>My Profile</span>
-            <span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span>
+          <div className="my-page-category-title">
+          <span className="my-page-category-left"></span>
+          <span>My Profile</span>
+          <span className="my-page-category-right"><span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span></span>
           </div>
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">

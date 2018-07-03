@@ -55,7 +55,7 @@ export default function (state = { noConversation: false, newMessages: 0 }, acti
         });
       });
       // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, newMessages: ', newMessagesBool);
-      return { ...state, conversationsByUser: action.payload, noConversation: false, newMessages: newMessagesNum };
+      return { ...state, conversationByUserAndFlat: action.payload, conversationsByUser: action.payload, noConversation: false, newMessages: newMessagesNum };
 
     case CREATE_MESSAGE:
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
