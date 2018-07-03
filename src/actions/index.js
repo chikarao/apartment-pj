@@ -947,13 +947,15 @@ export function updateReview(reviewAttributes, callback) {
   };
 }
 
-export function createPlace(flatId, placeid, place_name, callback) {
+export function createPlace(flatId, placeid, lat, lng, place_name, callback) {
   console.log('in actions index, createPlace: localStorage.getItem, token: ', localStorage.getItem('token'));
   console.log('in actions index, createPlace: flatId: ', flatId);
   console.log('in actions index, createPlace: placeid: ', placeid);
+  console.log('in actions index, createPlace: lat: ', lat);
+  console.log('in actions index, createPlace: lng: ', lng);
 
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/places`, { place: { placeid, place_name } }, {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/places`, { place: { placeid, place_name, lat, lng } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

@@ -568,14 +568,29 @@ class MapInteraction extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
     console.log('in show_flat, handleResultAddClick, elementVal: ', elementVal);
+    const elementValArray = elementVal.split(',');
+    const placeId = elementValArray[0];
+    const lat = elementValArray[1];
+    const lng = elementValArray[2];
     console.log('in show_flat, handleResultAddClick, elementVal: ', elementName);
     console.log('in show_flat, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
-    this.props.createPlace(this.props.flat.id, elementVal, elementName, () => this.resultAddDeleteClickCallback());
+    this.props.createPlace(this.props.flat.id, placeId, lat, lng, elementName, () => this.resultAddDeleteClickCallback());
+    //ChIJIenHT9eAhYARiop0hvjNTzU
+    //"9060163472ab6d69548873f75aba48278980c0ea"
   }
 
   resultAddDeleteClickCallback() {
     this.props.showLoading();
     // this.props.history.push(`/show/${this.props.flat.id}`);
+  }
+
+  createPlaceValueString(place) {
+    console.log('in show_flat, createPlaceValueString, places: ', place);
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+    const id = place.place_id;
+    console.log('in show_flat, createPlaceValueString, id lat lng: ', id + ',' + lat + ',' + lng);
+    return id + ',' + lat + ',' + lng;
   }
 
   renderSearchResultsList() {
@@ -599,13 +614,17 @@ class MapInteraction extends Component {
       };
     } else {
       return _.map(resultsArray, (place) => {
+        const placeValueString = this.createPlaceValueString(place);
+        // const array = placeValueString.split(',');
+        console.log('in show_flat, renderSearchResultsList, .map placeValueString: ', placeValueString);
+        // console.log('in show_flat, renderSearchResultsList, .map array: ', array);
         console.log('in show_flat, renderSearchResultsList, .map, place: ', place);
         return (
           <div key={place.place_id}>
           <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
           &nbsp;{place.name}
           </li>
-          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.place_id} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
+          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
           </div>
         )
       });
