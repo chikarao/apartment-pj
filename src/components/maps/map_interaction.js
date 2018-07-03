@@ -572,9 +572,10 @@ class MapInteraction extends Component {
     const placeId = elementValArray[0];
     const lat = elementValArray[1];
     const lng = elementValArray[2];
+    const flatId = this.props.flat.id
     console.log('in show_flat, handleResultAddClick, elementVal: ', elementName);
     console.log('in show_flat, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
-    this.props.createPlace(this.props.flat.id, placeId, lat, lng, elementName, () => this.resultAddDeleteClickCallback());
+    this.props.createPlace(flatId, placeId, lat, lng, elementName, () => this.resultAddDeleteClickCallback());
     //ChIJIenHT9eAhYARiop0hvjNTzU
     //"9060163472ab6d69548873f75aba48278980c0ea"
   }

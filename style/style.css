@@ -78,9 +78,21 @@ body > div:first-child {
   font-size: 30px;
   text-align: center;
 }
-.header-hamburger {
-  padding: 10px;
+
+.header-hamburger-box {
+  position: relative;
+  width: auto;
+  height: auto;
 }
+
+.header-mail-hamburger-number-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+/* .header-hamburger {
+  padding: 10px;
+} */
 
 .navbar-brand {
   text-decoration: none;

@@ -186,7 +186,6 @@ class Messaging extends Component {
       <div className="each-message">
       <div className="each-message-date">{this.formatDate(date)}</div>
       <div className="each-message-content">{message.body}</div>
-      <div className="each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
       </div>
       </div>
     );

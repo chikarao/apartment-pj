@@ -23,7 +23,8 @@ class Header extends Component {
        this.state = {
             windowWidth: window.innerWidth,
             mobileNavVisible: false,
-            show: false // for auth modal
+            show: false, // for auth modal
+            showNewMessageBadge: true,
        };
    }
 
@@ -299,9 +300,9 @@ class Header extends Component {
 
   handleNavClick() {
     if (!this.state.mobileNavVisible) {
-      this.setState({ mobileNavVisible: true });
+      this.setState({ mobileNavVisible: true, showNewMessageBadge: false });
     } else {
-      this.setState({ mobileNavVisible: false });
+      this.setState({ mobileNavVisible: false, showNewMessageBadge: true });
     }
   }
   renderMobileNav() {
@@ -314,7 +315,12 @@ class Header extends Component {
     if (this.state.windowWidth <= 800) {
       return [
         <div key={'3'} className="mobile_nav">
-          <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}><i className="fa fa-bars"></i></p>
+          <p className="header-hamburger" onClick={this.handleNavClick.bind(this)}>
+            <div className="header-hamburger-box">
+              <i className="fa fa-bars"></i>
+              { (this.props.conversations && this.props.newMessages && this.state.showNewMessageBadge) ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+            </div>
+          </p>
           {this.renderMobileNav()}
         </div>
       ];

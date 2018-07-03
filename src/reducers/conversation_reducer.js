@@ -85,6 +85,7 @@ export default function (state = { noConversation: false, newMessages: 0 }, acti
       return { ...state, newMessages: action.payload };
 
     case MARK_MESSAGES_READ:
+    console.log('in conversation reducer, MARK_MESSAGES_READ: ');
       let newMessages = 0;
       // go through old conversationByUserAndFlat and replace with new conversation with messages marked read
       _.each(state.conversationByUserAndFlat, conversation => {
