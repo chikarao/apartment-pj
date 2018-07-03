@@ -237,7 +237,7 @@ class Header extends Component {
              { this.props.conversations ?
                <li className="nav-item header-mail-li">
                <div className="header-mail-box">
-               {this.props.newMessages ? <div className="header-mail-number"></div> : ''}
+               {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                <i className="fa fa-envelope"></i>
                </div>
                </li> :
@@ -263,7 +263,7 @@ class Header extends Component {
                { this.props.conversations ?
                  <li className="nav-item header-mail-li">
                  <div className="header-mail-box">
-                 {this.props.newMessages ? <div className="header-mail-number"></div> : ''}
+                 {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                  <i className="fa fa-envelope"></i>
                  </div>
                  </li> :

@@ -10,7 +10,7 @@ import {
   SET_NEW_MESSAGES
 } from '../actions/types';
 
-export default function (state = { noConversation: false, newMessages: false }, action) {
+export default function (state = { noConversation: false, newMessages: 0 }, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
@@ -27,9 +27,14 @@ export default function (state = { noConversation: false, newMessages: false }, 
     case FETCH_CONVERSATIONS_BY_USER:
       console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
       const currentUserId = localStorage.getItem('id');
-      let newMessagesBool = false;
+      let newMessagesNum = 0;
       _.each(action.payload, conversation => {
-        const userNotOwner = conversation.user_id === currentUserId
+        // somehow needs to be == not ====
+        const userNotOwner = conversation.user_id == currentUserId
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.user_id: ', conversation.user_id);
         // if (conversation.id !== action.payload.id) {
         //   conversationArray.push(conversation);
         // } else {
@@ -37,18 +42,20 @@ export default function (state = { noConversation: false, newMessages: false }, 
         // }
         _.each(conversation.messages, message => {
           if (userNotOwner) {
-            if (message.read === false && message.sent_by_user) {
-              newMessagesBool = true;
+            if ((message.read === false) && message.sent_by_user) {
+              newMessagesNum++;
+              console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
             }
           } else {
-            if (message.read === false && !message.sent_by_user) {
-              newMessagesBool = true;
+            if ((message.read === false) && !message.sent_by_user) {
+              newMessagesNum++;
+              console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
             }
           }
         });
       });
       // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, newMessages: ', newMessagesBool);
-      return { ...state, conversationsByUser: action.payload, noConversation: false, newMessages: newMessagesBool };
+      return { ...state, conversationsByUser: action.payload, noConversation: false, newMessages: newMessagesNum };
 
     case CREATE_MESSAGE:
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
@@ -78,7 +85,7 @@ export default function (state = { noConversation: false, newMessages: false }, 
       return { ...state, newMessages: action.payload };
 
     case MARK_MESSAGES_READ:
-      let newMessages = false;
+      let newMessages = 0;
       // go through old conversationByUserAndFlat and replace with new conversation with messages marked read
       _.each(state.conversationByUserAndFlat, conversation => {
         if (conversation.id !== action.payload.id) {
@@ -94,11 +101,11 @@ export default function (state = { noConversation: false, newMessages: false }, 
         _.each(conversation.messages, message => {
           if (userNotOwner) {
             if (message.read === false && message.sent_by_user) {
-              newMessages = true;
+              newMessages++;
             }
           } else {
             if (message.read === false && !message.sent_by_user) {
-              newMessages = true;
+              newMessages++;
             }
           }
         });
