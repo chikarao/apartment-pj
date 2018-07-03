@@ -42,12 +42,12 @@ export default function (state = { noConversation: false, newMessages: 0 }, acti
         // }
         _.each(conversation.messages, message => {
           if (userNotOwner) {
-            if ((message.read === false) && message.sent_by_user) {
+            if ((message.read === false) && !message.sent_by_user) {
               newMessagesNum++;
               console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
             }
           } else {
-            if ((message.read === false) && !message.sent_by_user) {
+            if ((message.read === false) && message.sent_by_user) {
               newMessagesNum++;
               console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
             }
@@ -100,11 +100,11 @@ export default function (state = { noConversation: false, newMessages: 0 }, acti
         const userNotOwner = conversation.user_id == currentUserId2;
         _.each(conversation.messages, message => {
           if (userNotOwner) {
-            if (message.read === false && message.sent_by_user) {
+            if (message.read === false && !message.sent_by_user) {
               newMessages++;
             }
           } else {
-            if (message.read === false && !message.sent_by_user) {
+            if (message.read === false && message.sent_by_user) {
               newMessages++;
             }
           }

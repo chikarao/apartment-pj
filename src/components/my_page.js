@@ -253,13 +253,13 @@ class MyPage extends Component {
           if (notOwnFlatConversation) {
             // console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
             // console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
-            if (message.read === false && message.sent_by_user) {
+            if (message.read === false && !message.sent_by_user) {
               // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
               // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
               unreadMessages++;
             }
           } else {
-            if (message.read === false && !message.sent_by_user) {
+            if (message.read === false && message.sent_by_user) {
               // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
               // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
               unreadMessages++;
