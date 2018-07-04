@@ -37,6 +37,7 @@ import {
   NO_CONVERSATION,
   CREATE_CONVERSATION,
   CREATE_LIKE,
+  CREATE_VIEW,
   DELETE_LIKE,
   LIKES_BY_USER,
   SHOW_SIGNIN_MODAL,
@@ -350,7 +351,7 @@ export function fetchConversationByUserAndFlat(flatIdArray) {
     });
   };
 }
-export function fetchConversationsByUser() {
+export function fetchConversationsByUser(callback) {
   // better way to do this thn fetchConversationByUserAndFlat
   // gets @user to get conversation where user_id is @user.id and @flats where user id is user_id
   console.log('in actions index, fetchConversationsByUser: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -372,6 +373,7 @@ export function fetchConversationsByUser() {
         type: FETCH_CONVERSATIONS_BY_USER,
         payload: response.data.data.conversations
       });
+      callback();
     })
     .catch(error => {
       console.log('in action index, catch error to fetchConversationsByUser: ', error);
@@ -819,6 +821,25 @@ export function createLike(flatId, callback) {
         payload: response.data.data.like
       });
       callback();
+    });
+  };
+}
+export function createView(flatId) {
+  console.log('in actions index, createView: localStorage.getItem, token: ', localStorage.getItem('token'));
+  console.log('in actions index, createView: flatId: ', flatId);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/views/`, { flat_id: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createView, response: ', response);
+      console.log('response to createView, response.data.data.image: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_VIEW,
+        payload: response.data.data.flat
+      });
     });
   };
 }

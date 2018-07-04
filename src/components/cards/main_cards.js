@@ -43,6 +43,7 @@ class MainCards extends Component {
     if (wasParentClicked) {
       // this.props.selectedFlat(this.props.flat);
       console.log('in main_cards, handleCardClick, Card clicked');
+      this.props.createView(this.props.flat.id);
       const win = window.open(`/show/${this.props.flat.id}`, '_blank');
       win.focus();
     }
@@ -119,32 +120,33 @@ class MainCards extends Component {
   }
 
   renderLikes() {
+    const { flat } = this.props;
     const likesArray = this.getLikesArray();
-    if (!likesArray.includes(this.props.flat.id)) {
-      console.log('in main cards, renderLikes, likesArray, flat.id: ', likesArray, this.props.flat.id);
+    if (!likesArray.includes(flat.id)) {
+      console.log('in main cards, renderLikes, likesArray, flat.id: ', likesArray, flat.id);
       return (
-        <div key={likesArray[0]} value={this.props.flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
-          <i key={this.props.flat.user_id} className="fa fa-heart" style={{ opacity: '.75' }}></i>
+        <div key={likesArray[0]} value={flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
+          <i key={flat.user_id} className="fa fa-heart" style={{ opacity: '.75' }}></i>
         </div>
       )
     } else {
       return (
-        <div key={likesArray[0]} value={this.props.flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
-          <i key={this.props.flat.user_id} className="fa fa-heart" style={{ color: 'pink' }}></i>
+        <div key={likesArray[0]} value={flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
+          <i key={flat.user_id} className="fa fa-heart" style={{ color: 'pink' }}></i>
         </div>
       )
     }
   }
 
   renderCards() {
-    console.log('in main cards, renderCards, this.props.authenticated: ', this.props.authenticated);
-
-    // console.log('in main_cards, renderCards, this.props.flat.images: ', this.props.flat.images[0]);
+    const { flat, currency, authenticated } = this.props;
+    console.log('in main cards, renderCards, authenticated: ', authenticated);
+    // console.log('in main_cards, renderCards, flat.images: ', flat.images[0]);
     return (
-      <div key={this.props.flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
+      <div key={flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
         <div
           className="card-image"
-          style={{ background: this.props.flat.images[this.state.imageIndex] ? `url(${this.createBackgroundImage(this.props.flat.images[this.state.imageIndex].publicid)})` : `url(${this.createBackgroundImage('no_image_placeholder_5')}` }}
+          style={{ background: flat.images[this.state.imageIndex] ? `url(${this.createBackgroundImage(flat.images[this.state.imageIndex].publicid)})` : `url(${this.createBackgroundImage('no_image_placeholder_5')}` }}
         >
           <div className="card">
               {this.renderLikes()}
@@ -153,24 +155,28 @@ class MainCards extends Component {
                 <i className="fa fa-angle-left"></i>
               </div>
               <div className="card-cover">
-                {this.props.flat.sales_point}
+                {flat.sales_point}
               </div>
               <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
                 <i className="fa fa-angle-right"></i>
               </div>
             </div>
           </div>
-          <div key={this.props.flat.id.toString()} className="card-details">
+          <div key={flat.id.toString()} className="card-details">
             <div className="card-flat-caption">
-              {this.props.flat.description}
+              {flat.description}
             </div>
             <div className="card-flat-price">
-              {this.props.currency} {parseFloat(this.props.flat.price_per_month).toFixed(0)}
+              {currency} {parseFloat(flat.price_per_month).toFixed(0)} /month
             </div>
             <div className="card-flat-amenities">
               <i className="fa fa-wifi"></i>
               <i className="fa fa-bath"></i>
               <i className="fa fa-utensils"></i>
+            </div>
+            <div className="card-flat-likes-and-views">
+              {flat.likes.length > 0 ? <span>Likes {flat.likes.length}&nbsp;&nbsp;</span> : ''}
+              {flat.views.length > 0 ? <span>Views {flat.views.length}</span> : ''}
             </div>
           </div>
         </div>

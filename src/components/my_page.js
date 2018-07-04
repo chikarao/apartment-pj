@@ -30,7 +30,7 @@ class MyPage extends Component {
     // this.props.fetchUserFlats(this.props.auth.id);
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.props.fetchFlatsByUser(this.props.auth.id, () => {})
-    this.props.fetchConversationsByUser();
+    this.props.fetchConversationsByUser(() => {});
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
@@ -333,7 +333,12 @@ class MyPage extends Component {
 
 handleMessageRefreshClick() {
   console.log('in mypage, handleMessageRefreshClick: ');
-  this.props.fetchConversationsByUser();
+  this.props.showLoading();
+  this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
+}
+
+loadingCallback() {
+  this.props.showLoading();
 }
 
   renderMessaging() {
@@ -343,7 +348,7 @@ handleMessageRefreshClick() {
         <div className="my-page-category-title">
           <span className="my-page-category-left"><span id="messaging-hamburger" className={this.state.showConversation ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
           <span>My Messages</span>
-          <span className="my-page-category-right"><span id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
+          <span className="my-page-category-right"><span className="btn" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
         </div>
         {this.state.showConversation ? this.renderConversations() : this.renderMessages()}
       </div>
@@ -653,7 +658,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
-    likes: state.likes.userLikes
+    // likes: state.likes.userLikes
+    likes: state.flats.userLikes
   };
 }
 

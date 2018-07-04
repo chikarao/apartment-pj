@@ -179,6 +179,7 @@ body > div:first-child {
   font-size: 30px;
   top: 0;
   right: 0;
+  color: #ccc;
 }
 
 .header-mail-number-box {
@@ -1214,6 +1215,14 @@ form {
   padding-right: 5px;
 }
 
+.card-flat-likes-and-views {
+  color: #ccc;
+}
+
+.card-flat-likes-and-views span {
+  float: left;
+}
+
 /* card box is postion: relative */
 
 
@@ -1438,7 +1447,7 @@ form {
 } */
 
 .my-page-profile-image-box {
-  margin: 20px 0 20px 0;
+  margin: 0 0 20px 0;
   width: 100%;
   height: 100px;
   /* border: 1px solid #ccc; */

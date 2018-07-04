@@ -611,7 +611,7 @@ class MapInteraction extends Component {
       if (this.state.placeSearched) {
         return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-exclamation-triangle"></i>&nbsp;No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
       } else {
-        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;To get nearby places, click on criteria under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
+        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;To get nearby places, click on criterion under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
       };
     } else {
       return _.map(resultsArray, (place) => {

@@ -1,9 +1,22 @@
 import _ from 'lodash';
-import { FETCH_FLATS, FETCH_FLATS_BY_USER, SELECTED_FLAT, SELECTED_FLAT_FROM_PARAMS, CREATE_FLAT, EDIT_FLAT_LOAD, EDIT_FLAT } from '../actions/types';
+import {
+  FETCH_FLATS,
+  FETCH_FLATS_BY_USER,
+  SELECTED_FLAT,
+  SELECTED_FLAT_FROM_PARAMS,
+  CREATE_FLAT,
+  EDIT_FLAT_LOAD,
+  EDIT_FLAT,
+  CREATE_VIEW,
+  CREATE_LIKE,
+  LIKES_BY_USER,
+  DELETE_LIKE
+} from '../actions/types';
 
 export default function (state = {}, action) {
   console.log('in flats reducer, action.payload: ', action.payload);
 
+  const flatsArray = [];
   switch (action.type) {
     case FETCH_FLATS:
       return { ...state, flatsResults: _.mapKeys(action.payload, 'id') };
@@ -26,6 +39,44 @@ export default function (state = {}, action) {
 
     case EDIT_FLAT:
       return { ...state, editFlatData: action.payload };
+
+    // updates flatsResults upon createView response of flat from API
+    case CREATE_VIEW:
+      _.each(state.flatsResults, flat => {
+        if (flat.id !== action.payload.id) {
+          flatsArray.push(flat);
+        } else {
+          flatsArray.push(action.payload);
+        }
+      });
+      return { ...state, flatsResults: _.mapKeys(flatsArray, 'id')  };
+
+      // updates flatsResults upon createLike response of flat from API
+    case CREATE_LIKE:
+    _.each(state.flatsResults, flat => {
+        if (flat.id !== action.payload.flat.id) {
+          flatsArray.push(flat);
+        } else {
+          flatsArray.push(action.payload.flat);
+        }
+      });
+      return { ...state, createdLike: action.payload.like, flatsResults: _.mapKeys(flatsArray, 'id') };
+    // LIKES_BY_USER is an object of objects
+
+    case LIKES_BY_USER:
+      return { ...state, userLikes: _.mapKeys(action.payload, 'id') };
+
+      // updates flatsResults upon deleteLike response of flat from API
+    case DELETE_LIKE:
+      _.each(state.flatsResults, flat => {
+        if (flat.id !== action.payload.flat.id) {
+          flatsArray.push(flat);
+        } else {
+          flatsArray.push(action.payload.flat);
+        }
+      });
+      return { ...state, deletedLikeFlat: action.payload, flatsResults: _.mapKeys(flatsArray, 'id') };
+
 
     default:
       return state;

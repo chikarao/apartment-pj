@@ -8,7 +8,7 @@ import imageCountReducer from './image_count_reducer';
 import startUpIndexReducer from './start_up_index_reducer';
 import bookingReducer from './booking_reducer';
 import conversationReducer from './conversation_reducer';
-import likesReducer from './likes_reducer';
+// import likesReducer from './likes_reducer';
 import reviewsReducer from './reviews_reducer';
 import modalsReducer from './modals_reducer';
 import placesReducer from './places_reducer';
@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
   bookingData: bookingReducer,
   fetchBookingsByUserData: bookingReducer,
   conversation: conversationReducer,
-  likes: likesReducer,
+  // likes: likesReducer,
   reviews: reviewsReducer,
   modals: modalsReducer,
   places: placesReducer

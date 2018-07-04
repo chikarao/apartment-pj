@@ -675,7 +675,8 @@ function mapStateToProps(state) {
     flats: state.flats.flatsResults,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions,
-    likes: state.likes.userLikes,
+    // likes: state.likes.userLikes,
+    likes: state.flats.userLikes,
     auth: state.auth
    };
 }
