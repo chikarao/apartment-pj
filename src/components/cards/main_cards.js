@@ -138,50 +138,86 @@ class MainCards extends Component {
     }
   }
 
+  getRating(reviews) {
+    let totalRating = 0;
+    let count = 0;
+    const totalPossibleRating = 5;
+    _.each(reviews, review =>{
+      totalRating += review.rating
+      count++;
+    });
+    const averageRating = totalRating / count;
+      return _.times(totalPossibleRating, (i) => {
+        if (i < averageRating) {
+          if ((i + 1) < averageRating) {
+            console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+            // return <i key={i} className="fa fa-star gold-star-main-cards"></i>;
+            return <i key={i} className="fa fa-star gold-star-main-cards"></i>;
+          } else {
+            return <i key={i} className="fa fa-star-half-full gold-star-main-cards"></i>;
+          }
+        } else {
+          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          return <i key={i} className="fa fa-star gray-star-main-cards"></i>
+        }
+      });
+  }
+
   renderCards() {
-    const { flat, currency, authenticated } = this.props;
-    console.log('in main cards, renderCards, authenticated: ', authenticated);
+    // <i className="fa fa-wifi"></i>
+    // <i className="fa fa-bath"></i>
+    // <i className="fa fa-utensils"></i>
+    const { flat, currency, authenticated, reviews } = this.props;
+    // const reviewsEmpty = _.isEmpty(reviews);
+
+    // if (!reviewsEmpty) {
+      console.log('in main cards, renderCards, reviews: ', Object.keys(reviews).length);
+      console.log('in main cards, renderCards, reviews: ', reviews);
+      const flatAverageRating = this.getRating(reviews);
     // console.log('in main_cards, renderCards, flat.images: ', flat.images[0]);
-    return (
-      <div key={flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
-        <div
-          className="card-image"
-          style={{ background: flat.images[this.state.imageIndex] ? `url(${this.createBackgroundImage(flat.images[this.state.imageIndex].publicid)})` : `url(${this.createBackgroundImage('no_image_placeholder_5')}` }}
-        >
-          <div className="card">
-              {this.renderLikes()}
-            <div className="card-box">
-              <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
-                <i className="fa fa-angle-left"></i>
+      return (
+        <div key={flat.id.toString()} className="card-container col-xs-12 col-sm-3" onClick={(event) => this.handleCardClick(event)}>
+          <div
+            className="card-image"
+            style={{ background: flat.images[this.state.imageIndex] ? `url(${this.createBackgroundImage(flat.images[this.state.imageIndex].publicid)})` : `url(${this.createBackgroundImage('no_image_placeholder_5')}` }}
+          >
+            <div className="card">
+                {this.renderLikes()}
+              <div className="card-box">
+                <div className="card-arrow-box" onClick={this.handleLeftArrowClick.bind(this)}>
+                  <i className="fa fa-angle-left"></i>
+                </div>
+                <div className="card-cover">
+                  {flat.sales_point}
+                </div>
+                <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
+                  <i className="fa fa-angle-right"></i>
+                </div>
               </div>
-              <div className="card-cover">
-                {flat.sales_point}
+            </div>
+            <div key={flat.id.toString()} className="card-details">
+              <div className="card-flat-caption">
+                {flat.description}
               </div>
-              <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
-                <i className="fa fa-angle-right"></i>
+              <div className="card-flat-area">
+                {flat.area}
               </div>
-            </div>
-          </div>
-          <div key={flat.id.toString()} className="card-details">
-            <div className="card-flat-caption">
-              {flat.description}
-            </div>
-            <div className="card-flat-price">
-              {currency} {parseFloat(flat.price_per_month).toFixed(0)} /month
-            </div>
-            <div className="card-flat-amenities">
-              <i className="fa fa-wifi"></i>
-              <i className="fa fa-bath"></i>
-              <i className="fa fa-utensils"></i>
-            </div>
-            <div className="card-flat-likes-and-views">
-              {flat.likes.length > 0 ? <span>Likes {flat.likes.length}&nbsp;&nbsp;</span> : ''}
-              {flat.views.length > 0 ? <span>Views {flat.views.length}</span> : ''}
+              <div className="card-flat-price">
+                {currency} {parseFloat(flat.price_per_month).toFixed(0)} /month
+              </div>
+              <div className="card-flat-amenities">
+                {flat.beds} {flat.beds > 1 ? 'beds' : 'bed'}
+              </div>
+              <div className="card-flat-likes-and-views">
+                {flat.likes.length > 0 ? <span><i className="fa fa-heart"></i> {flat.likes.length}&nbsp;&nbsp;</span> : ''}
+                {flat.views.length > 0 ? <span><i className="fa fa-eye"></i> {flat.views.length}</span> : ''}
+                {Object.keys(reviews).length > 0 ? <span>&nbsp;&nbsp;{flatAverageRating}&nbsp; {Object.keys(reviews).length}</span> : ''}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    // } // end of if reviewsEmpty
   }
 
   // renderTimesCards() {

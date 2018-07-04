@@ -1204,6 +1204,12 @@ form {
   font-weight: bold;
 }
 
+.card-flat-area {
+  text-align: left;
+  color: darkblue;
+  font-weight: bold;
+}
+
 .card-flat-price {
   text-align: left;
 }
@@ -1252,6 +1258,14 @@ form {
   background: transparent;
   color: lightgray;
   pointer-events: none;
+}
+
+.gold-star-main-cards {
+  color: gold;
+}
+
+.gray-star-main-cards {
+  color: lightgray;
 }
 
 

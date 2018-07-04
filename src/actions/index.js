@@ -237,10 +237,10 @@ export function fetchFlats(mapBounds) {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to fetchFlats: ', response.data.data.flats);
+      console.log('response to fetchFlats: ', response.data.data);
       dispatch({
         type: FETCH_FLATS,
-        payload: response.data.data.flats
+        payload: response.data.data
       });
     });
   };

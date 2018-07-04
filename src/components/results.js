@@ -579,6 +579,15 @@ class Results extends Component {
   }
   //*******************************************************************************
   //*********************PAGINATION****************************************
+  getReviewsForFlat(flat) {
+    const reviewsArray = [];
+    _.each(this.props.reviews, review => {
+      if (flat.id == review.flat_id) {
+        reviewsArray.push(review);
+      }
+    })
+    return reviewsArray;
+  }
 
   renderFlats() {
     let index = 1;
@@ -619,12 +628,14 @@ class Results extends Component {
         console.log('in results renderFlats, slicedCards, this.props.flats: ', this.props.flats);
 
         return _.map(flats, (flat) => {
+            const reviewsArray = this.getReviewsForFlat(flat);
+            const reviews = _.mapKeys(reviewsArray, 'id');
             return (
-
               <div key={flat.id.toString()}>
                 <MainCards
                   // key={flat.id.toString()}
                   flat={flat}
+                  reviews={reviews}
                   likes={this.props.likes}
                   currency='$'
                   showFlat={false}
@@ -677,7 +688,8 @@ function mapStateToProps(state) {
     mapDimensions: state.mapDimensions,
     // likes: state.likes.userLikes,
     likes: state.flats.userLikes,
-    auth: state.auth
+    auth: state.auth,
+    reviews: state.flats.reviewsForFlatResults
    };
 }
 

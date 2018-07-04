@@ -19,7 +19,7 @@ export default function (state = {}, action) {
   const flatsArray = [];
   switch (action.type) {
     case FETCH_FLATS:
-      return { ...state, flatsResults: _.mapKeys(action.payload, 'id') };
+      return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
 
     case FETCH_FLATS_BY_USER:
       return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };
@@ -39,6 +39,10 @@ export default function (state = {}, action) {
 
     case EDIT_FLAT:
       return { ...state, editFlatData: action.payload };
+
+    // Views and likes moved to flats reducer so that
+    // they can be automatically updated when flats update
+    // Reviews kept separate since reviews are not updatad on results page
 
     // updates flatsResults upon createView response of flat from API
     case CREATE_VIEW:
