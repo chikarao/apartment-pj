@@ -100,7 +100,8 @@ class UploadForProfile extends Component {
     // const imageCount = 0;
     // console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
     // this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
-    this.props.editProfile({ id: this.props.profileId, image: imagesArray[0] }, () => this.createImageCallback())
+    // this.props.editProfile({ id: this.props.profileId, image: imagesArray[0] }, () => this.createImageCallback())
+    this.props.updateUser({ image: imagesArray[0] }, () => this.createImageCallback())
     // document.location.reload();
     // this.props.history.push(`/editflat/${this.props.flatId}`);
   });

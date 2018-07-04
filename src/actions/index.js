@@ -3,6 +3,7 @@ import _ from 'lodash';
 // import { browserHistory } from 'react-router-dom';
 import {
   AUTH_USER,
+  UPDATE_USER,
   SIGNED_UP_USER,
   AUTH_ERROR,
   UNAUTH_USER,
@@ -88,7 +89,7 @@ console.log('in action, index, sign in, email and password: ', { email, password
         // Update state to indicate user is authenticated
         // dispatch({ type: AUTH_USER, payload: email });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
-        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
+        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image } });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
         // save JWT token
         // localStorage.setItem('token', response.data.token);
@@ -99,6 +100,7 @@ console.log('in action, index, sign in, email and password: ', { email, password
         localStorage.setItem('token', response.data.data.user.authentication_token);
         localStorage.setItem('email', response.data.data.user.email);
         localStorage.setItem('id', response.data.data.user.id);
+        localStorage.setItem('image', response.data.data.user.image);
         // authentication_token for rails book review api
         // browserHistory.push('/feature');
         callback();
@@ -112,6 +114,29 @@ console.log('in action, index, sign in, email and password: ', { email, password
           dispatch(authError(error.response.data.messages));
           // dispatch(authError('Bad login info...'));
         });
+  };
+}
+
+export function updateUser(image, callback) {
+  console.log('in actions index, updateUser, reviewAttributes: ', image);
+  console.log('in actions index, updateUser: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/update_user`, { user: image }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to updateUser, response: ', response);
+      console.log('response to updateUser, response.data.data: ', response.data.data.user);
+      localStorage.setItem('image', response.data.data.user.image);
+      dispatch({
+        type: UPDATE_USER,
+        payload: response.data.data.user
+      });
+      // sends back to createreview.js the review_id and the images
+      callback();
+    });
   };
 }
 
@@ -148,15 +173,17 @@ export function getCurrentUser() {
   console.log('in actions index, getCurrentUser:');
   const id = localStorage.getItem('id');
   const email = localStorage.getItem('email');
-  return { type: GET_CURRENT_USER, payload: { email, id } };
+  const image = localStorage.getItem('image');
+  return { type: GET_CURRENT_USER, payload: { email, id, image } };
 }
 
 export function getCurrentUserForMyPage(callback) {
   console.log('in actions index, getCurrentUserforMyPage:');
   const id = localStorage.getItem('id');
   const email = localStorage.getItem('email');
+  const image = localStorage.getItem('image');
   callback(id);
-  return { type: GET_CURRENT_USER_FOR_MY_PAGE, payload: { email, id } };
+  return { type: GET_CURRENT_USER_FOR_MY_PAGE, payload: { email, id, image } };
 }
 
 export function authError(error) {

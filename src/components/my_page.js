@@ -233,6 +233,18 @@ class MyPage extends Component {
     );
   }
 
+  renderConversationUserImage(notOwnFlatConversation, conversation) {
+    console.log('in mypage, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
+    console.log('in mypage, renderConversationUserImage, conversation', conversation.user_id);
+    console.log('in mypage, renderConversationUserImage, auth.id', this.props.auth.id);
+    // if (notOwnFlatConversation) {
+    //   return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+    // } else {
+    //   return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+    // }
+    return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  }
+
   formatDate(date) {
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -287,7 +299,10 @@ class MyPage extends Component {
         return (
           <li key={index} className="my-page-each-card">
             <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
-            {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+              <div className="my-page-messaging-image-box">
+                {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
+              </div>
               <div className="my-page-details">
                 <ul>
                   <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="mypage-conversation-headline">{stringToShow}...</li>
@@ -565,11 +580,11 @@ loadingCallback() {
 
   handleImageUploadClick() {
     console.log('in header, handleImageUploadClick: ');
-
   }
 
   handleRemoveProfileImage() {
-    this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
+    // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
+    this.props.updateUser({ image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
   }
 
   handleRemoveProfileImageCallback() {
@@ -581,14 +596,14 @@ loadingCallback() {
     return (
       <div className="my-page-profile-image-box">
         <div className="my-page-profile-image-box-image">
-          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.userProfile.image + '.jpg'} alt="Profile Image" />
+          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.image + '.jpg'} alt="Profile Image" />
         </div>
           <div className="my-page-change-profile-picture-link">
             <UploadForProfile
-              profileId={this.props.auth.userProfile.id}
+              // profileId={this.props.auth.userProfile.id}
             />
           </div>
-          {this.props.auth.userProfile.image === 'blank_profile_picture' ? '' :
+          {this.props.auth.image === 'blank_profile_picture' ? '' :
           <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
             Remove Profile Picture
           </div> }

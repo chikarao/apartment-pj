@@ -1,5 +1,6 @@
 import {
   AUTH_USER,
+  UPDATE_USER,
   UNAUTH_USER,
   AUTH_ERROR,
   SIGNED_UP_USER,
@@ -30,8 +31,13 @@ export default function (state = {
         error: '',
         authenticated: true,
         email: action.payload.email,
-        id: action.payload.id
+        id: action.payload.id,
+        image: action.payload.image
       };
+
+    case UPDATE_USER:
+      return { ...state, image: action.payload.image };
+
     case SIGNED_UP_USER:
       return { ...state, success: action.payload.message };
 
@@ -39,10 +45,10 @@ export default function (state = {
       return { ...state, authenticated: false };
 
     case GET_CURRENT_USER:
-      return { ...state, email: action.payload.email, id: action.payload.id };
+      return { ...state, email: action.payload.email, id: action.payload.id, image: action.payload.image };
 
     case GET_CURRENT_USER_FOR_MY_PAGE:
-      return { ...state, email: action.payload.email, id: action.payload.id };
+      return { ...state, email: action.payload.email, id: action.payload.id, image: action.payload.image };
 
     case AUTH_ERROR:
     // console.log('in reducer:', action.payload);
