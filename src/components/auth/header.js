@@ -16,6 +16,8 @@ import Loading from '../modals/loading';
 
 import * as actions from '../../actions';
 
+const RESIZE_BREAK_POINT = 800;
+
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
   constructor() {
@@ -228,7 +230,7 @@ class Header extends Component {
          console.log('in header, navigationLinks, if on mypage, newMessages: ', this.props.newMessages);
          console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
          return [
-           <ul key={'1'} className="header-list">
+           <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
               <Link className="nav-link" to="/signout">Sign Out</Link>
              </li>
@@ -251,10 +253,10 @@ class Header extends Component {
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
          // if (this.props.conversations) {
-           console.log('in header, navigationLinks, else mypage, newMessages: ', this.props.newMessages);
-           console.log('in header, navigationLinks, else mypage, this.props.conversations: ', this.props.conversations);
+           // console.log('in header, navigationLinks, else mypage, newMessages: ', this.props.newMessages);
+           // console.log('in header, navigationLinks, else mypage, this.props.conversations: ', this.props.conversations);
            return [
-             <ul key={'1'} className="header-list">
+             <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
                 <Link className="nav-link" to={'/mypage'} >My Page</Link>
                </li>
@@ -298,21 +300,46 @@ class Header extends Component {
     // ];
   }
 
+    resizeHeader(larger) {
+      const header = document.getElementById('nav_container');
+      console.log('in header, resizeHeader, header: ', header);
+      if (header) {
+        if (larger) {
+          header.setAttribute('style', 'height: 200px !important');
+        } else {
+          header.setAttribute('style', 'height: 80px !important');
+        }
+      }
+    }
+
   handleNavClick() {
     if (!this.state.mobileNavVisible) {
+      const larger = true;
+      this.resizeHeader(larger);
       this.setState({ mobileNavVisible: true, showNewMessageBadge: false });
     } else {
+      const larger = false;
+      this.resizeHeader(larger);
       this.setState({ mobileNavVisible: false, showNewMessageBadge: true });
     }
   }
+
   renderMobileNav() {
     if (this.state.mobileNavVisible) {
-      return this.navigationLinks();
+      return (
+        <div className="mobile-header">
+          {this.navigationLinks()}
+        </div>
+      );
     }
   }
 
   renderNavigation() {
-    if (this.state.windowWidth <= 800) {
+    if (this.state.windowWidth <= RESIZE_BREAK_POINT) {
+      if (this.state.mobileNavVisible) {
+        const larger = true;
+        this.resizeHeader(larger);
+      }
       return [
         <div key={'3'} className="mobile_nav">
           <div className="header-hamburger" onClick={this.handleNavClick.bind(this)}>
@@ -325,8 +352,10 @@ class Header extends Component {
         </div>
       ];
     } else {
+      const larger = false;
+      this.resizeHeader(larger);
       return [
-        <div key={'4'} className="nav_menu">
+        <div key={'4'} className="nav_menu header">
           {this.navigationLinks()}
         </div>
       ];
@@ -335,14 +364,16 @@ class Header extends Component {
 
   render() {
     return (
-      <div className="nav_container">
-        {this.renderModal()}
-        {this.renderLoadingScreen()}
+      <div>
+      {this.renderModal()}
+      {this.renderLoadingScreen()}
+      <div id="nav_container">
         <div>
           <Link to="/" className="navbar-brand"> FLATS flats <br />
           <small>and more flats</small></Link>
         </div>
         {this.renderNavigation()}
+      </div>
       </div>
     );
   }

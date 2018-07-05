@@ -225,7 +225,7 @@ class MyPage extends Component {
     console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
     this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-      console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+    console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
     // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
     //   console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
     this.renderMessages();
@@ -237,12 +237,14 @@ class MyPage extends Component {
     console.log('in mypage, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
     console.log('in mypage, renderConversationUserImage, conversation', conversation.user_id);
     console.log('in mypage, renderConversationUserImage, auth.id', this.props.auth.id);
-    // if (notOwnFlatConversation) {
-    //   return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
-    // } else {
-    //   return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
-    // }
-    return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+    // const ownImage = localStorage.getItem('image');
+    if (notOwnFlatConversation) {
+      // w_100,h_100,c_crop,g_face,r_max
+      return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+    } else {
+      return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+    }
+    // return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
   }
 
   formatDate(date) {
