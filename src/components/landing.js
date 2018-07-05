@@ -41,10 +41,26 @@ class Landing extends Component {
   }
 
   renderBanner() {
+    // <h1>Flats, flats & more flats</h1>
     console.log('in landing, renderBanner, this.state.windowWidth: ', this.state.windowWidth);
+    // <option value="Seattle" />
+    // <option value="New York" />
+    // <option value="Los Angeles" />
+    // <option value="Chicago" />
+    // <option value="Austin" />
+    // <option value="Portland" />
+    // <option value="Pittsburgh" />
     return (
       <div className="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
         <div className="banner-content">
+          <div className="banner-search-box">
+            <label><input list="areas" className="banner-search-input" type="string" placeholder="Search for flats in a city..." /></label>
+              <datalist id="areas">
+                <option value="San Francisco" />
+              </ datalist>
+            <button className="banner-search-button">Search</button>
+          </div>
+          <p>Freedom and simplicity in where you live</p>
         </div>
       </div>
     );

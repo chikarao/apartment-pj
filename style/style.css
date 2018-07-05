@@ -40,6 +40,60 @@ body > div:first-child {
 
 }
 
+.banner-content {
+  /* position: relative; */
+  width: 100%;
+  height: 100%
+}
+/*
+.banner-content h1 {
+  padding: 10%;
+  font-size: 100px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+} */
+
+.banner-content p {
+  padding: 0 20% 0 20%;
+  /* font-size: 60px; */
+  font-size: 5em;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+.banner-content input {
+  height: 40px;
+  width: 250px;
+  margin: 50% auto 5% auto;
+
+  /* position: absolute;
+  top: 30%;
+  right: 30%; */
+  /* padding-top: 20px; */
+  border-radius: 5px;
+  padding: 0 0 0 5px;
+}
+
+.banner-content input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+/* input::-webkit-calendar-picker-indicator {
+  display: none;
+} */
+
+.banner-search-button {
+  margin-left: 20px;
+  border-radius: 5px;
+  height: 36px;
+  color: white;
+  background-color: gray;
+  padding: 0 5px 0 5px;
+
+}
+
 /* **************HEADER************* */
 
 /* take out border lines for the header box */
@@ -2036,6 +2090,15 @@ form {
     }
 }
 @media screen and (max-width: 450px) {
+
+  .banner-content p {
+    padding: 20%;
+    /* font-size: 60px; */
+    font-size: 2.5em;
+    /* font-weight: bold; */
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+  }
     /* .header {
       margin-bottom: 100px !important;
       padding-bottom: 100px !important;

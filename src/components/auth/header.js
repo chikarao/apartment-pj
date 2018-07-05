@@ -336,6 +336,8 @@ class Header extends Component {
 
   renderNavigation() {
     if (this.state.windowWidth <= RESIZE_BREAK_POINT) {
+      //resize the header larger if mobileNavVisible is true; can happen if true and
+      // window resized to large but return to smaller window
       if (this.state.mobileNavVisible) {
         const larger = true;
         this.resizeHeader(larger);
