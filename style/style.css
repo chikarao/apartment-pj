@@ -43,7 +43,9 @@ body > div:first-child {
 .banner-content {
   /* position: relative; */
   width: 100%;
-  height: 100%
+  height: 100%;
+  margin: 0;
+  padding-top: 10%;
 }
 /*
 .banner-content h1 {
@@ -60,13 +62,29 @@ body > div:first-child {
   font-size: 5em;
   font-weight: normal;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 20px;
+  margin: 7% 0 20px 0;
+}
+
+.banner-search-box {
+  width: 300px;
+  height: auto;
+  margin: 0 auto 0 auto;
+  /* padding: 10% 0 0 0;   */
+}
+
+.banner-search-input-and-button {
+  width: auto;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
 }
 
 .banner-content input {
   height: 40px;
   width: 250px;
-  margin: 50% auto 5% auto;
+  /* margin: 50% auto 5% auto; */
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 
   /* position: absolute;
   top: 30%;
@@ -76,6 +94,21 @@ body > div:first-child {
   padding: 0 0 0 5px;
 }
 
+/* .banner-datalist {
+  overflow-y: auto !important;
+  height: 100px !important;
+  max-height: 80px !important;
+  display: block !important;
+} */
+
+.banner-search-datalist-div {
+  overflow-x: hidden;
+  overflow: scroll;
+  width: 100%;
+  height: 50px;
+}
+
+/* takes carrow off input box */
 .banner-content input::-webkit-calendar-picker-indicator {
   display: none;
 }
@@ -84,14 +117,32 @@ body > div:first-child {
   display: none;
 } */
 
+.cities-list-ul {
+  display: block;
+  background-color: white;
+  text-align: left;
+  width: 245px;
+  margin-left: 2px;
+  max-height: 150px;
+  padding: 0 0 0 10px;
+  border-radius: 0 0 5px 5px;
+  list-style-type: none;
+  overflow: hidden;
+  overflow-y: scroll;
+  /* display: none; */
+}
+.cities-list-ul li {
+  padding: 0 0 0 5px;
+}
+
 .banner-search-button {
   margin-left: 20px;
   border-radius: 5px;
-  height: 36px;
+  height: 38px;
   color: white;
   background-color: gray;
   padding: 0 5px 0 5px;
-
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
 
 /* **************HEADER************* */
