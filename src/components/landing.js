@@ -18,7 +18,7 @@ class Landing extends Component {
     super(props);
     this.state = {
       windowWidth: window.innerWidth,
-      // searchInput: ''
+      searchInput: '',
       searchInputHasValue: false,
       displayCitiesList: false,
       citiesSubsetArray: [],
@@ -70,11 +70,31 @@ class Landing extends Component {
   //     </div>
   //   );
   // }
+
+  handleCityClick(event) {
+    const clickedElement = event.target;
+    const mainInput = document.getElementById('banner-input');
+    const liArray = document.getElementsByTagName('LI');
+    _.each(liArray, li => {
+      console.log('in landing, handleCityClick, li: ', li);
+      const liToBeChanged = li;
+      liToBeChanged.style.backgroundColor = 'white'
+      });
+
+    clickedElement.style.backgroundColor = 'lightgray';
+
+    this.setState({ searchInput: '', selectedCity: event.target.getAttribute('value') }, () => {
+      mainInput.value = this.state.selectedCity;
+      // console.log('in landing, handleCityClick, activeLi: ', activeLi);
+    });
+    // this.scrollList();
+  }
+
   renderCitiesList() {
     const cities = this.state.citiesSubsetArray;
     return _.map(cities, city => {
       return (
-        <li key={city.name} value={city.name}>{city.name}</li>
+        <li key={city.name} value={city.name} onClick={this.handleCityClick.bind(this)}>{city.name}</li>
       );
     });
   }
@@ -126,6 +146,9 @@ class Landing extends Component {
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
              active.style.backgroundColor = 'white ';
              mainInput.focus();
+             // if (!this.state.searchInputHasValue) {
+             this.setState({ displayCitiesList: false, searchInput: '', citiesSubsetArray: [] });
+             // }
              break;
            } else {
              active.style.backgroundColor = 'white ';
@@ -141,9 +164,13 @@ class Landing extends Component {
          // console.log('in landing, scrollList, DOWN clicked, document.activeElement, first.firstChild: ', document.activeElement, list.firstChild);
          // console.log('in landing, scrollList, DOWN clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
            if (document.activeElement == mainInput) {
+             active.style.backgroundColor = 'white ';
              active = list.firstChild;
              list.firstChild.style.backgroundColor = 'lightgray';
              document.activeElement.blur();
+             // if (!this.state.searchInputHasValue) {
+             this.setState({ searchInput: '' });
+             // }
            } else {
              // document.activeElement.nextSibling.firstChild.setActive();
              if(active.nextSibling) {
@@ -165,7 +192,7 @@ class Landing extends Component {
          if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
            console.log('in landing, scrollList, ENTER clicked, mainInput or first: ');
          } else {
-           this.setState({ displayCitiesList: false })
+           this.setState({ displayCitiesList: false, citiesSubsetArray: [] })
          }
          break;
        }
