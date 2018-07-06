@@ -3,6 +3,8 @@ export const UPDATE_USER = 'update_user';
 export const SIGNED_UP_USER = 'signed_up_user';
 export const UNAUTH_USER = 'unauth_user';
 export const AUTH_ERROR = 'auth_error';
+
+export const SEARCH_FLAT_PARAMENTERS = 'search_flat_parameters';
 export const FETCH_FLATS = 'fetch_flats';
 export const FETCH_FLATS_BY_USER = 'fetch_flats_by_user';
 export const FETCH_MESSAGE = 'fetch_message';

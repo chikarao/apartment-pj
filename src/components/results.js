@@ -7,10 +7,10 @@ import GoogleMap from './maps/google_map';
 import Upload from './images/upload';
 import MainCards from './cards/main_cards';
 
-const initialPosition = {
-  lat: 37.7952,
-  lng: -122.4029
-};
+// const initialPosition = {
+//   lat: 37.7952,
+//   lng: -122.4029
+// };
 
 // Can not avoid these global variables
 // lastPage set as global since setState cannot be run in renderfunctions
@@ -75,13 +75,43 @@ class Results extends Component {
     // const lngOffsetEast = -122.5376 - initialPosition.lng; // about -.13
 
     console.log('in results componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
+    console.log('in results componentDidMount, this.props.searchFlatParams: ', this.props.searchFlatParams);
 
-    const mapBounds = {
-      east: (initialPosition.lng + lngOffsetEast),
-      west: (initialPosition.lng + lngOffsetWest),
-      north: (initialPosition.lat + latOffsetNorth),
-      south: (initialPosition.lat + latOffsetSouth)
-    };
+    // const mapBounds = {
+    //   east: (initialPosition.lng + lngOffsetEast),
+    //   west: (initialPosition.lng + lngOffsetWest),
+    //   north: (initialPosition.lat + latOffsetNorth),
+    //   south: (initialPosition.lat + latOffsetSouth)
+    // };
+    // if (this.props.searchFlatParams) {
+    // }
+
+    let mapBounds = {};
+
+    if (this.props.searchFlatParams) {
+      const { lat, lng } = this.props.searchFlatParams;
+      localStorage.setItem('lat', lat);
+      localStorage.setItem('lng', lng);
+      console.log('in results componentDidMount, lat, lng: ', lat, lng);
+      mapBounds = {
+        east: (lng + lngOffsetEast),
+        west: (lng + lngOffsetWest),
+        north: (lat + latOffsetNorth),
+        south: (lat + latOffsetSouth)
+      };
+      console.log('in results componentDidMount, mapBounds: ', mapBounds);
+    } else {
+      const storedLat = parseFloat(localStorage.getItem('lat'));
+      const storedLng = parseFloat(localStorage.getItem('lng'));
+      console.log('in results componentDidMount, storedLat, storedLng: ', storedLat, storedLng);
+      mapBounds = {
+        east: (storedLng + lngOffsetEast),
+        west: (storedLng + lngOffsetWest),
+        north: (storedLat + latOffsetNorth),
+        south: (storedLat + latOffsetSouth)
+      };
+      console.log('in results componentDidMount, mapBounds: ', mapBounds);
+    }
 
     // this.props.startUpIndex();
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
@@ -131,12 +161,18 @@ class Results extends Component {
         console.log('in results, this.props.mapDimensions, mapCenter.lat: ', this.props.mapDimensions.mapDimensions.mapCenter.lat());
         console.log('in results, this.props.mapDimensions, mapCenter.lng: ', this.props.mapDimensions.mapDimensions.mapCenter.lng());
         console.log('in results, this.props.mapDimensions, mapZoom: ', this.props.mapDimensions.mapDimensions.mapZoom);
+        console.log('in results, renderMap, this.props.searchFlatParams: ', this.props.searchFlatParams);
       }
       // const { id } = this.props.flats[0];
       // console.log('in results renderFlats, id: ', id);
       console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       console.log('here is latLngAve: ', latLngAve);
+
+      const storedLat = localStorage.getItem('lat');
+      const storedLng = localStorage.getItem('lng');
+      const initialPosition = this.props.searchFlatParams ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+      console.log('results, renderMap, initialPosition: ', initialPosition);
 
       return (
         <div>
@@ -689,7 +725,8 @@ function mapStateToProps(state) {
     // likes: state.likes.userLikes,
     likes: state.flats.userLikes,
     auth: state.auth,
-    reviews: state.flats.reviewsForFlatResults
+    reviews: state.flats.reviewsForFlatResults,
+    searchFlatParams: state.flats.searchflatParameters
    };
 }
 

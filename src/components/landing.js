@@ -47,13 +47,26 @@ class Landing extends Component {
     return cloudinaryCore.url(image, t);
   }
 
+  getCityObject(callback) {
+    let cityToSearch = {};
+    console.log('in landing, getCityObject, this.state.selectedCity: ', this.state.selectedCity);
+    _.each(citiesList, city => {
+      if (city.name == this.state.selectedCity) {
+        cityToSearch = city
+      }
+    });
+    console.log('in landing, getCityObject, cityToSearch: ', cityToSearch);
+    callback(cityToSearch);
+  }
+
   handleBannerSearchClick() {
-    // console.log('in landing, handleBannerSearchClick, event.target: ', event.target);
-    // const clickedElement = event.target;
-    // const elementVal = clickedElement.getAttribute('value')
-    // console.log('in landing, handleBannerSearchClick, elementVal: ', elementVal);
-    console.log('in landing, handleSearchInputChange, this.state.selectedCity: ', this.state.selectedCity);
-    // this.props.history.push('/results');
+  // console.log('in landing, handleBannerSearchClick, event.target: ', event.target);
+  // const clickedElement = event.target;
+  // const elementVal = clickedElement.getAttribute('value')
+  // console.log('in landing, handleBannerSearchClick, elementVal: ', elementVal);
+  // console.log('in landing, handleBannerSearchClick, cityToSearch: ', cityToSearch);
+
+  this.props.history.push('/results');
   }
 
   // renderDataListOptions() {
@@ -75,6 +88,9 @@ class Landing extends Component {
     const clickedElement = event.target;
     const mainInput = document.getElementById('banner-input');
     const liArray = document.getElementsByTagName('LI');
+    const body = document.getElementsByTagName('BODY');
+     body[0].classList.add('stop-scrolling');
+    console.log('in landing, handleCityClick, body: ', body);
     _.each(liArray, li => {
       console.log('in landing, handleCityClick, li: ', li);
       const liToBeChanged = li;
@@ -83,9 +99,10 @@ class Landing extends Component {
 
     clickedElement.style.backgroundColor = 'lightgray';
 
-    this.setState({ searchInput: '', selectedCity: event.target.getAttribute('value') }, () => {
+    this.setState({ displayCitiesList: false, citiesSubsetArray: [], searchInput: '', selectedCity: event.target.getAttribute('value') }, () => {
       mainInput.value = this.state.selectedCity;
       // console.log('in landing, handleCityClick, activeLi: ', activeLi);
+      this.getCityObject((city) => this.props.searchFlatParameters(city));
     });
     // this.scrollList();
   }
@@ -119,7 +136,6 @@ class Landing extends Component {
       this.setState({ searchInputHasValue: true, searchInput, citiesSubsetArray, displayCitiesList: true }, () => {
         // console.log('in landing, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
         // console.log('in landing, handleSearchInputChange, this.state.searchInput: ', this.state.searchInput);
-
       });
       this.scrollList();
     } else {
@@ -136,6 +152,8 @@ class Landing extends Component {
     console.log('in landing, scrollList, first, list: ', first, list);
     const mainInput = document.getElementById('banner-input');
     console.log('in landing, scrollList, mainInput: ', mainInput);
+    const body = document.getElementsByTagName('BODY');
+     body[0].classList.add('stop-scrolling');
 
     document.onkeydown = (e) => { // listen to keyboard events
        switch (e.keyCode) {
@@ -157,6 +175,7 @@ class Landing extends Component {
              const selectedCity = active.getAttribute('value');
              this.setState({ selectedCity }, () => {
               mainInput.value = this.state.selectedCity;
+              this.getCityObject((city) => this.props.searchFlatParameters(city));
              })
            } // select the element before the current, and focus it
            break;
@@ -180,6 +199,7 @@ class Landing extends Component {
                const selectedCity = active.getAttribute('value');
                this.setState({ selectedCity }, () => {
                  mainInput.value = this.state.selectedCity;
+                this.getCityObject((city) => this.props.searchFlatParameters(city));
                  console.log('in landing, scrollList, DOWN clicked, this.state.selectedCity: ', this.state.selectedCity);
                })
              } else {

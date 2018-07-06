@@ -1,8 +1,8 @@
-import React from 'react';
+// import React from 'react';
 
 const CitiesList =
   [
-    { name: 'San Francisco', lat: 0, lng: 0 },
+    { name: 'San Francisco', lat: 37.7952, lng: -122.4029 },
     { name: 'Seattle', lat: 0, lng: 0 },
     { name: 'New York', lat: 0, lng: 0 },
     { name: 'Los Angeles', lat: 0, lng: 0 },

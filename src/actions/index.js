@@ -59,7 +59,8 @@ import {
   DELETE_PLACE,
   PLACE_SEARCH_LANGUAGE,
   MARK_MESSAGES_READ,
-  SET_NEW_MESSAGES
+  SET_NEW_MESSAGES,
+  SEARCH_FLAT_PARAMENTERS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -202,6 +203,7 @@ export function signoutUser() {
   localStorage.removeItem('token');
   localStorage.removeItem('email');
   localStorage.removeItem('id');
+  localStorage.removeItem('image');
   return { type: UNAUTH_USER };
 }
 
@@ -253,18 +255,28 @@ export function showEditReview() {
   return { type: SHOW_EDIT_REVIEW_MODAL };
 }
 
+export function searchFlatParameters(parameters) {
+  console.log('in actions searchFlatParameters, parameters:', parameters);
+  //flip showResetPasswordModal
+  return {
+    type: SEARCH_FLAT_PARAMENTERS,
+    payload: parameters
+   };
+}
+
 // main fetchflats action for feature page;
 // gets mapbounds from gmap adn sends to api which sends back query results
 export function fetchFlats(mapBounds) {
   const { north, south, east, west } = mapBounds;
-  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
+  console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
 
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to fetchFlats: ', response.data.data);
+      console.log('response to fetchFlats, response: ', response);
+      console.log('response to fetchFlats, response.data.data: ', response.data.data);
       dispatch({
         type: FETCH_FLATS,
         payload: response.data.data

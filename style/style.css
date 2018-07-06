@@ -12,6 +12,11 @@ html, body {
   text-align:center;
 }
 
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* .container { */
   /* min-height: calc(100vh - 70px); */
 /* } */

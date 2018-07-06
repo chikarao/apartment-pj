@@ -10,7 +10,8 @@ import {
   CREATE_VIEW,
   CREATE_LIKE,
   LIKES_BY_USER,
-  DELETE_LIKE
+  DELETE_LIKE,
+  SEARCH_FLAT_PARAMENTERS
 } from '../actions/types';
 
 export default function (state = {}, action) {
@@ -39,6 +40,9 @@ export default function (state = {}, action) {
 
     case EDIT_FLAT:
       return { ...state, editFlatData: action.payload };
+
+    case SEARCH_FLAT_PARAMENTERS:
+      return { ...state, searchflatParameters: action.payload };
 
     // Views and likes moved to flats reducer so that
     // they can be automatically updated when flats update
