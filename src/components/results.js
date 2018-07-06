@@ -92,6 +92,7 @@ class Results extends Component {
       const { lat, lng } = this.props.searchFlatParams;
       localStorage.setItem('lat', lat);
       localStorage.setItem('lng', lng);
+      localStorage.setItem('searchParams', this.props.searchFlatParams)
       console.log('in results componentDidMount, lat, lng: ', lat, lng);
       mapBounds = {
         east: (lng + lngOffsetEast),
@@ -103,7 +104,8 @@ class Results extends Component {
     } else {
       const storedLat = parseFloat(localStorage.getItem('lat'));
       const storedLng = parseFloat(localStorage.getItem('lng'));
-      console.log('in results componentDidMount, storedLat, storedLng: ', storedLat, storedLng);
+      const searchParams = parseFloat(localStorage.getItem('searchParams'));
+      console.log('in results componentDidMount, storedLat, storedLng, searchParams: ', storedLat, storedLng, searchParams);
       mapBounds = {
         east: (storedLng + lngOffsetEast),
         west: (storedLng + lngOffsetWest),
