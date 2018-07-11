@@ -697,12 +697,24 @@ class Results extends Component {
       }
   }
 
+  renderSearchArea() {
+    return (
+      <div>
+        Search Area
+      </div>
+    );
+  }
+
 
   render() {
     return (
       <div>
         <div className="container" id="map">
-          {this.renderMap()}
+        {this.renderMap()}
+        </div>
+
+        <div className="results-search-box">
+          {this.renderSearchArea()}
         </div>
 
         <div className="container main-card-container">
