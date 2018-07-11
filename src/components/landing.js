@@ -144,6 +144,8 @@ class Landing extends Component {
       this.scrollList();
     } else {
       // if input is empty set state so that drop down does not show and the subArray is empty
+      const body = document.getElementsByTagName('BODY');
+      body[0].classList.remove('stop-scrolling');
       this.setState({ searchInputHasValue: false, citiesSubsetArray, displayCitiesList: false }, () => {
         // console.log('in landing, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
       });
@@ -172,17 +174,24 @@ class Landing extends Component {
          // console.log('in landing, scrollList, UP clicked, document.activeElement: ', document.activeElement);
          // console.log('in landing, scrollList, UP clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
          console.log('in landing, scrollList, UP clicked, active.getAttribute, first.getAttribute: ', active.getAttribute('value'), first.getAttribute('value'));
+          // if cursor is in main input or the active variable is assign the first li
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
+             // make active with white background
              active.style.backgroundColor = 'white ';
+             // move cursor to the banner input
              mainInput.focus();
              // if (!this.state.searchInputHasValue) {
              this.setState({ displayCitiesList: false, searchInput: '', citiesSubsetArray: [] });
              // }
              break;
            } else {
+             // if cursor not in main and not on first li either, make active li (one with gray background) with white background
              active.style.backgroundColor = 'white ';
+             // assign the previous li sibling to active variable
              active = active.previousSibling;
+             // make background color on active
              active.style.backgroundColor = 'lightgray';
+             // get attrible value to assign to selected City to set state so that city object with name and lat isolated
              const selectedCity = active.getAttribute('value');
              this.setState({ selectedCity }, () => {
               mainInput.value = this.state.selectedCity;
@@ -221,8 +230,13 @@ class Landing extends Component {
          break;
          // 13: enter key
          case 13:
+          // if press enter key, and active element is not first li or the banner input
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
              console.log('in landing, scrollList, ENTER clicked, mainInput or first: ');
+             // stop scrolling taken off
+             body[0].classList.remove('stop-scrolling');
+             // do not show city dropdown list and empty out the cities array so that user cannot continue to presss up and down keys to select
+              this.setState({ displayCitiesList: false, citiesSubsetArray: [] });
            } else {
              this.setState({ displayCitiesList: false, citiesSubsetArray: [] }, () => {
                // reference: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
@@ -230,7 +244,7 @@ class Landing extends Component {
            });
          }
          break;
-         // focus (bring cursur to input) if press RIGHT or LEFT arrows
+         // focus (bring cursur to input) if press RIGHT 39 or LEFT 37 arrows
          case 39:
           mainInput.focus();
           break;
@@ -262,7 +276,7 @@ class Landing extends Component {
               {this.renderCitiesList()}
             </ul>
           </div>
-          <p>Freedom and simplicity in where you live</p>
+          <p>Freedom to live anywhere you want</p>
         </div>
       </div>
     );

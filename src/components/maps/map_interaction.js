@@ -556,7 +556,12 @@ class MapInteraction extends Component {
 
     // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     // Don't know why but this works
-    this.state.clickedPlaceArray.push(clickedElement);
+    // this.state.clickedPlaceArray.push(clickedElement);
+    // Here is the recommented code for pushing into state array
+    this.setState(prevState => ({
+      clickedPlaceArray: [...prevState.clickedPlaceArray, clickedElement]
+    }));
+
     this.createSelectedMarker(elementVal);
   }
 
@@ -652,7 +657,10 @@ class MapInteraction extends Component {
 
     // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     // Don't know why but this works
-    this.state.clickedPlaceArray.push(clickedElement);
+    // this.state.clickedPlacseArray.push(clickedElement);
+    this.setState(prevState => ({
+      clickedPlaceArray: [...prevState.clickedPlaceArray, clickedElement]
+    }));
 
     this.createSelectedMarker(elementVal);
   }

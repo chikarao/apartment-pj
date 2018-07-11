@@ -235,8 +235,8 @@ export function showEditProfileModal() {
   return { type: SHOW_EDIT_PROFILE_MODAL };
 }
 
-export function showLoading() {
-  console.log('in actions index, showLoading:');
+export function showLoading(fromWhere) {
+  console.log('in actions index, showLoading:', fromWhere);
 
   //flip showResetPasswordModal
   return { type: SHOW_LOADING };
@@ -266,7 +266,8 @@ export function searchFlatParameters(parameters) {
 
 // main fetchflats action for feature page;
 // gets mapbounds from gmap adn sends to api which sends back query results
-export function fetchFlats(mapBounds) {
+export function fetchFlats(mapBounds, callback) {
+  // showLoading();
   const { north, south, east, west } = mapBounds;
   console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
 
@@ -281,6 +282,8 @@ export function fetchFlats(mapBounds) {
         type: FETCH_FLATS,
         payload: response.data.data
       });
+      // showLoading('fetchflats');
+      callback();
     });
   };
 }

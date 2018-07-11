@@ -69,7 +69,7 @@ class CreateFlat extends Component {
         addressString += addressHash[i] + ", ";
       }
       // add basic = true to data so that amenity params does not become null
-      //in case user does not check any boxes 
+      //in case user does not check any boxes
       const dataSeparated = this.separateFlatAndAmenities(data);
       // for case when user does not select any images
       if (data.files) {
@@ -111,11 +111,12 @@ class CreateFlat extends Component {
         //   map: resultsMap,
         //   position: results[0].geometry.location
         // });
-        data.flat.lat = results[0].geometry.location.lat();
-        data.flat.lng = results[0].geometry.location.lng();
-        console.log('in createflat, in geocoder, in status ok, data:', data);
+        const dataToPass = data;
+        dataToPass.flat.lat = results[0].geometry.location.lat();
+        dataToPass.flat.lng = results[0].geometry.location.lng();
+        console.log('in createflat, in geocoder, in status ok, data:', dataToPass);
         // console.log('in createflat, in geocoder, in status ok, this.props:', this.props);
-        callback(data);
+        callback(dataToPass);
         // return data;
       } else {
         // alert('Geocode was not successful for the following reason: ' + status);

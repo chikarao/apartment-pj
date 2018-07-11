@@ -22,6 +22,8 @@ import * as actions from '../../actions';
 const INITIAL_ZOOM = 12;
 
 let MAP_DIMENSIONS = {};
+// const markersArray = [];
+const flatsArray = [];
 
 // This component used for results page and showflat page;
 // Takes prop showFlat, flatEmpty in case map pans to location with no flat,
@@ -35,48 +37,334 @@ class GoogleMap extends Component {
       markersArray: [],
       initialRerenderMap: true
     };
+
+    // this.createMarkers = this.createMarkers.bind(this);
   }
 
   componentDidMount() {
-  // runs right after component is rendered to the screeen
-  // flatsEmpty is prop passed in map render
-  // and is true if there are no search results for the map area or criteria
-  this.renderMap();
-  // this.createMarkers();
+    // runs right after component is rendered to the screeen
+    // flatsEmpty is prop passed in map render
+    // and is true if there are no search results for the map area or criteria
+    this.renderMap(this.props.flats);
+    // this.createMarkers();
 
-  console.log('in googlemaps componentDidMount, this.props: ', this.props);
-  this.setState({ initialFlats: this.props.flats });
+    console.log('in googlemaps componentDidMount, this.props: ', this.props);
+    this.setState({ initialFlats: this.props.flats });
   }
   //*********************************************************
   //end of componentDidMount
 
-  componentWillReceiveProps(nextProps) {
-    // console.log('in googlemaps componentWillReceiveProps, nextProps: ', nextProps);
-    // console.log('in googlemaps componentWillReceiveProps, this.props: ', this.props);
-    // console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats: ', this.state.initialFlats);
-    // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
-    // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
-    //   this.state.markersArray[i].setMap(null);
+  componentDidUpdate(prevProps, prevState) {
+    // if (this.state.map) {
+    //   this.createMarkers(this.props.flats, []);
     // }
-      const nextPropFlatNum = _.size(nextProps.flats);
-      const lastPropFlatNum = _.size(this.state.initialFlats);
-      console.log('in googlemaps componentWillReceiveProps, nextPropFlatNum, lastPropFlatNum : ', nextPropFlatNum, lastPropFlatNum);
-      console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats : ', this.state.initialFlats);
-      console.log('in googlemaps componentWillReceiveProps, nextProps.flats : ', nextProps.flats);
-    // console.log('in googlemaps componentWillReceiveProps, this.state.initialRerenderMap : ', this.state.initialRerenderMap);
-    // if (this.state.initialFlats !== nextProps.flats) {
-    //   console.log('in googlemaps componentWillReceiveProps, after if: ');
-    //   this.createMarkers();
-    //   // this.setState({ initialRerenderMap: false })
-    // }
-    // this.setState({ initialFlats: nextProps.flats });
+    console.log('in googlemaps componentDidUpdate, prevProps.flats, this.props.flats, prevState, this.state: ', prevProps.flats, this.props.flats, prevState, this.state);
+    console.log('in googlemaps componentDidUpdate, this.state.markersArray: ', this.state.markersArray);
+    const markersArrayIds = [];
+    _.each(this.state.markersArray, marker => {
+        markersArrayIds.push(marker.flatId);
+    });
+
+    const prevPropsIdArray = [];
+    _.each(prevProps.flats, flat => {
+      prevPropsIdArray.push(flat.id);
+    });
+
+    const currentPropsIdArray = [];
+    const currentPropsFlatArray = [];
+    _.each(this.props.flats, flat => {
+      currentPropsIdArray.push(flat.id);
+      // since this.props.flats is an object of objects
+      currentPropsFlatArray.push(flat);
+    });
+
+    const newMarkersIdArray = [];
+    const newMarkersArray = [];
+    // const commonMarkerIdArray = [];
+    // const commonMarkerArray = [];
+    _.each(this.props.flats, (flat) => {
+       if (prevPropsIdArray.length > 0) {
+           // console.log('in googlemaps componentWillReceiveProps, markersArrayIds.length > 0: ', markersArrayIds.length > 0);
+           // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
+         if (!prevPropsIdArray.includes(flat.id)) {
+           newMarkersIdArray.push(flat.id);
+           newMarkersArray.push(flat);
+           // console.log('in googlemaps componentDidUpdate, markersArrayIds newMarkerArray: ', markersArrayIds, newMarkerArray);
+         }
+       } else {
+         newMarkersIdArray.push(flat.id);
+         newMarkersArray.push(flat);
+       }
+     });
+
+
+     const oldMarkerIdArray = [];
+     _.each(markersArrayIds, markerId => {
+       // console.log('in googlemaps componentWillReceiveProps, oldMarkerIdArray each, markerId: ', markerId);
+       if (!currentPropsIdArray.includes(markerId)) {
+         oldMarkerIdArray.push(markerId);
+       }
+     });
+
+     const oldMarkersArray = [];
+     console.log('in googlemaps componentDidUpdate, oldMarkerIdArray: ', oldMarkerIdArray);
+     console.log('in googlemaps componentDidUpdate, oldMarkersArray: ', oldMarkersArray);
+
+     // _.each(oldMarkerIdArray, markerId => {
+     //   _.each(this.state.markersArray, marker => {
+     //     // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray, marker, markerId: ', marker, markerId);
+     //     if (marker && (markerId == marker.flatId)) {
+     //       // if (!oldMarkersArray.includes(marker)) {
+     //         oldMarkersArray.push(marker);
+     //       // }
+     //     }
+     //   })
+     // })
+     _.each(oldMarkerIdArray, markerId => {
+        const marker = this.state.markersArray.filter(obj => {
+
+         return obj.flatId === markerId
+       })
+       oldMarkersArray.push(marker[0])
+     })
+
+     _.each(oldMarkersArray, marker => {
+       marker.setMap(null);
+       // clearMarkers(marker);
+     })
+
+     this.createMarkers(newMarkersArray, oldMarkersArray);
+             // this.createMarkers(newMarkerArray, oldMarkersArray);
+
+               // const array = [...this.state.markersArray]; // make a separate copy of the array
+               // _.each(oldMarkersArray, marker => {
+               //   if (marker) {
+               //     marker.setMap(null);
+               //     // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+               //     _.each(this.state.markersArray, each => {
+               //       if (each && (each.flatId == marker.flatId)) {
+               //         // console.log('in googlemaps componentWillReceiveProps oldMarkersArray, array each and marker: ', each.flatId, marker.flatId);
+               //         // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+               //         const index = array.indexOf(each);
+               //         // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+               //         // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, each, index: ', index);
+               //         array.splice(index, 1);
+               //         console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, each, array: ', array);
+               //       }
+               //     })
+               //   }
+               // });
+               // if (array.length > 0) {
+               //   this.setState({ markersArray: array }, () => {
+               //     console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, setState, this.state.markersArray: ', this.state.markersArray);
+               //   });
+               // }
+
+         console.log('in googlemaps componentDidUpdate, currentPropsIdArray, currentPropsFlatArray : ', currentPropsIdArray, currentPropsFlatArray);
+         console.log('in googlemaps componentDidUpdate, markersArrayIds: ', markersArrayIds);
+         console.log('in googlemaps componentDidUpdate, newMarkersIdArray newMarkersArray: ', newMarkersIdArray, newMarkersArray);
+         console.log('in googlemaps componentDidUpdate, this.props.flats: ', this.props.flats);
+         console.log('in googlemaps componentDidUpdate, oldMarkerIdArray: ', oldMarkerIdArray);
+         console.log('in googlemaps componentDidUpdate, oldMarkersArray: ', oldMarkersArray);
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, at top, this.state.markersArray: ', this.state.markersArray);
+  //   const markersArrayIds = [];
+  //   _.each(this.state.markersArray, marker => {
+  //     // if (marker) {
+  //       markersArrayIds.push(marker.flatId);
+  //       // if (marker.flatId == (46)) {
+  //       //   marker.setMap(null);
+  //       // }
+  //     // }
+  //   });
+  //
+  //   const nextPropsIdArray = [];
+  //   _.each(nextProps.flats, flat => {
+  //     nextPropsIdArray.push(flat.id);
+  //   });
+  //
+  //   const newMarkerIdArray = [];
+  //   const newMarkerArray = [];
+  //   const commonMarkerIdArray = [];
+  //   const commonMarkerArray = [];
+  //   _.each(nextProps.flats, (flat) => {
+  //     if (markersArrayIds.length > 0) {
+  //         // console.log('in googlemaps componentWillReceiveProps, markersArrayIds.length > 0: ', markersArrayIds.length > 0);
+  //         // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
+  //       if (!markersArrayIds.includes(flat.id)) {
+  //         newMarkerIdArray.push(flat.id);
+  //         newMarkerArray.push(flat);
+  //         console.log('in googlemaps componentWillReceiveProps, markersArrayIds newMarkerArray: ', markersArrayIds, newMarkerArray);
+  //       } else {
+  //         commonMarkerIdArray.push(flat.id);
+  //         commonMarkerArray.push(flat);
+  //       }
+  //     }
+  //   });
+  //
+  //   this.createMarkers(newMarkerArray);
+  //
+  //   // const newAndCommonIdArray = newMarkerIdArray.concat(commonMarkerIdArray);
+  //   // const newAndCommonArray = newMarkerArray.concat(commonMarkerArray);
+  //
+  //   // this.setState({ markersArray:  }, () => {
+  //   //   console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
+  //   // });
+  //
+  //   const oldMarkerIdArray = [];
+  //   _.each(markersArrayIds, markerId => {
+  //     // console.log('in googlemaps componentWillReceiveProps, oldMarkerIdArray each, markerId: ', markerId);
+  //     if (!nextPropsIdArray.includes(markerId)) {
+  //       oldMarkerIdArray.push(markerId);
+  //     }
+  //   });
+  //   const oldMarkersArray = [];
+  //
+  //   _.each(oldMarkerIdArray, markerId => {
+  //     _.each(this.state.markersArray, marker => {
+  //       // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray, marker, markerId: ', marker, markerId);
+  //       if (marker && (markerId == marker.flatId)) {
+  //         // if (!oldMarkersArray.includes(marker)) {
+  //           oldMarkersArray.push(marker);
+  //         // }
+  //       }
+  //     })
+  //   })
+  //
+  //   const array = [...this.state.markersArray]; // make a separate copy of the array
+  //   _.each(oldMarkersArray, marker => {
+  //     if (marker) {
+  //       marker.setMap(null);
+  //       // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+  //       _.each(this.state.markersArray, each => {
+  //         if (each && (each.flatId == marker.flatId)) {
+  //           // console.log('in googlemaps componentWillReceiveProps oldMarkersArray, array each and marker: ', each.flatId, marker.flatId);
+  //           // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+  //           const index = array.indexOf(each);
+  //           // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, array: ', array);
+  //           // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, each, index: ', index);
+  //           array.splice(index, 1);
+  //           // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, each, array: ', array);
+  //         }
+  //       })
+  //     }
+  //   });
+  //   this.setState({ markersArray: array }, () => {
+  //     // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray, setState, this.state.markersArray: ', this.state.markersArray);
+  //   });
+  //   // console.log('in googlemaps componentWillReceiveProps, nextProps.flats: ', nextProps.flats);
+  //   // console.log('in googlemaps componentWillReceiveProps, markersArrayIds: ', markersArrayIds);
+  //   // console.log('in googlemaps componentWillReceiveProps, nextPropsIdArray: ', nextPropsIdArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, newMarkerIdArray: ', newMarkerIdArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, commonMarkerIdArray: ', commonMarkerIdArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, newAndCommonIdArray: ', newAndCommonIdArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, newAndCommonArray: ', newAndCommonArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, oldMarkerIdArray: ', oldMarkerIdArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, oldMarkersArray: ', oldMarkersArray);
+  //   // console.log('in googlemaps componentWillReceiveProps, nextProps: ', nextProps);
+  //   // console.log('in googlemaps componentWillReceiveProps, this.props: ', this.props);
+  //   // console.log('in googlemaps componentWillReceiveProps, nextProps: ', nextProps);
+  //   // // console.log('in googlemaps componentWillReceiveProps, this.state.initialFlats: ', this.state.initialFlats);
+  //   // // console.log('in googlemaps componentWillReceiveProps, this.state.markersArray: ', this.state.markersArray);
+  //   // // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+  //   // //   this.state.markersArray[i].setMap(null);
+  //   // // }
+  //   //   // const nextPropFlatNum = _.size(nextProps.flats);
+  //   //   // const lastPropFlatNum = _.size(this.state.initialFlats);
+  //   //   // console.log('in googlemaps componentWillReceiveProps, nextPropFlatNum, lastPropFlatNum : ', nextPropFlatNum, lastPropFlatNum);
+  //   //   // console.log('in googlemaps componentWillReceiveProps, this.state : ', this.state);
+  //   //   // console.log('in googlemaps componentWillReceiveProps, nextProps : ', nextProps);
+  //   //   // console.log('in googlemaps componentWillReceiveProps, markersArray : ', markersArray);
+  //   //   // console.log('in googlemaps componentWillReceiveProps, outside each, this : ', this);
+  //   //   const commonArray = [];
+  //   //   console.log('in googlemaps componentWillReceiveProps, nextProps.flats: ', nextProps.flats);
+  //   //   _.each(nextProps.flats, flat => {
+  //   //     // _.each(nextProps.flats, nextFlat => {
+  //   //       // console.log('in googlemaps componentWillReceiveProps, each each, marker : ', marker);
+  //   //       // console.log('in googlemaps componentWillReceiveProps, each each, flat : ', flat.id);
+  //   //       console.log('in googlemaps componentWillReceiveProps, flatsArray.includes(flat), nextProps.flats, flatsArray: ', flatsArray.includes(flat.id), nextProps.flats, flatsArray);
+  //   //       if (flatsArray.includes(flat.id)) {
+  //   //         commonArray.push(flat.id)
+  //   //         // marker.setMap(null);
+  //   //         // const index = markersArray.indexOf(marker);
+  //   //         // if (index > -1) {
+  //   //         //   markersArray.splice(index, 1);
+  //   //         // }
+  //   //         // console.log('in googlemaps componentWillReceiveProps, inside eachs and if flatids equal this : ', this);
+  //   //         // this.createMarkers({ flat });
+  //   //       } // end of if
+  //   //     // }) // end of second each
+  //   //   }) // enf of first each
+  //   //   console.log('in googlemaps componentWillReceiveProps, flatsArray: ', flatsArray);
+  //   //   console.log('in googlemaps componentWillReceiveProps, inside eachs and if flatids equal commonArray: ', commonArray);
+  //   //
+  //   //   // this gets the new flats that are not common
+  //   //   const newFlatArray = [];
+  //   //   _.each(nextProps.flats, flat => {
+  //   //     if (!commonArray.includes(flat.id)) {
+  //   //       newFlatArray.push(flat.id);
+  //   //     }
+  //   //   })
+  //   //
+  //   //   console.log('in googlemaps componentWillReceiveProps, newFlatArray: ', newFlatArray);
+  //   //   // _.each(newFlatArray, flat => {
+  //   //   //   this.createMarkers({ flat });
+  //   //   // })
+  //   //
+  //   //   const oldMarkerArray = [];
+  //   //   _.each(markersArray, marker => {
+  //   //     _.each(commonArray, commonFlat => {
+  //   //       if (marker && (commonFlat.id !== marker.flatId)) {
+  //   //         // console.log('in googlemaps componentWillReceiveProps, oldmarker test, commonFlat.id, marker.flatId: ', commonFlat.id, marker.flatId);
+  //   //         // console.log('in googlemaps componentWillReceiveProps, oldmarker test, marker.flatId: ', marker.flatId);
+  //   //         if (!oldMarkerArray.includes(marker)) {
+  //   //           // console.log('in googlemaps componentWillReceiveProps, oldmarker test, !oldMarkerArray.includes(marker): ', !oldMarkerArray.includes(marker));
+  //   //           // const index = markersArray.indexOf(marker);
+  //   //           // if (index > -1) {
+  //   //           //   markersArray.splice(index, 1);
+  //   //           // }
+  //   //           oldMarkerArray.push(marker);
+  //   //         }
+  //   //         // marker.setMap(null);
+  //   //       }
+  //   //     })
+  //   //   })
+  //   //   //
+  //   //   // _.each(oldMarkerArray, marker => {
+  //   //   //   marker.setMap(null);
+  //   //   // })
+  //   //   console.log('in googlemaps componentWillReceiveProps, oldMarkerArray: ', oldMarkerArray);
+  //
+  //     // console.log('in googlemaps componentWillReceiveProps, inside eachs and if flatids newFlatArray: ', newFlatArray);
+  //     // _.each(nextProps.flats, flat => {
+  //     //   console.log('in googlemaps componentWillReceiveProps, in each, flat : ', flat);
+  //     //   _.each(this.state.markersArray, marker => {
+  //     //     if (marker.flatId == flat.id) {
+  //     //       console.log('in googlemaps componentWillReceiveProps, in each, marker : ', marker);
+  //     //       this.createMarkers({ flat });
+  //     //     }
+  //     //     marker.setMap(null);
+  //     //   });
+  //     //   // marker.setMap(null);
+  //     // });
+  //
+  //     // this.createMarker(nextProps.flats);
+  //   // console.log('in googlemaps componentWillReceiveProps, this.state.initialRerenderMap : ', this.state.initialRerenderMap);
+  //   // if (this.state.initialFlats !== nextProps.flats) {
+  //   //   console.log('in googlemaps componentWillReceiveProps, after if: ');
+  //   //   this.createMarkers();
+  //   //   // this.setState({ initialRerenderMap: false })
+  //   // }
+  //   // this.setState({ initialFlats: nextProps.flats });
+  // }
 
   // componentDidUpdate() {
   //   this.createMarkers();
   // }
 
-  renderMap() {
+  renderMap(flats) {
     let initialZoom;
     // check if map is for showflat
     if (this.props.showFlat) {
@@ -124,7 +412,7 @@ class GoogleMap extends Component {
       if (this.props.showFlat){
         this.createCircle()
       } else {
-        this.createMarkers();
+        this.createMarkers(flats, []);
       }
     });
         // Fired when map is moved; gets map dimensions
@@ -132,6 +420,7 @@ class GoogleMap extends Component {
         // calls action updateMapDimensions for updating mapDimensions state
         // mapDimensions is used to render map when flats search result is empty
         google.maps.event.addListener(map, 'idle', () => {
+          this.props.showLoading('google maps');
           console.log('in googlemap, map idle listener fired');
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
           //   this.state.markersArray[i].setMap(null);
@@ -186,8 +475,9 @@ class GoogleMap extends Component {
           //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
           if (!this.props.showFlat) {
             console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+            console.log('in googlemap, fetchFlats call, this:', this);
             this.props.updateMapDimensions(MAP_DIMENSIONS);
-            this.props.fetchFlats(mapBounds);
+            this.props.fetchFlats(mapBounds, () => this.fetchFlatsCallback('google maps'));
           }
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
           //   this.state.markersArray[i].setMap(null);
@@ -198,6 +488,11 @@ class GoogleMap extends Component {
         // this.createMarkers();
         // END of map initialization and map addlisterners
   } // end of renderMap
+
+  fetchFlatsCallback(fromWhere) {
+    console.log('in googlemap, fetchFlatsCallback:', fromWhere);
+    this.props.showLoading(fromWhere);
+  }
 
   createCircle() {
     const circle = new google.maps.Circle({
@@ -213,16 +508,18 @@ class GoogleMap extends Component {
       },
       radius: 300
     });
+
+    return circle;
   }
 
-  createMarkers() {
+  createMarkers(flats, oldMarkersArray) {
     // required infowindowArray to close infowindow on map click
     const infowindowArray = [];
-    const markersArray = [];
+    // const markersArray = [];
     const map = this.state.map;
 
     //flats is object from props in map render
-    _.each(this.props.flats, flat => {
+    _.each(flats, (flat) => {
       console.log('in googlemaps, each, flat: ', flat);
       const markerLabel = this.props.showFlat ? 'Here I am' : `$${parseFloat(flat.price_per_month).toFixed(0)}`;
       // Marker sizes are expressed as a Size of X,Y where the origin of the image
@@ -257,7 +554,43 @@ class GoogleMap extends Component {
         // labelClass: 'gm-marker-label', // your desired CSS class
         // labelInBackground: true
       }); // end of marker new
+      // markersArray.push(marker);
+      // If (length < 1) {
+      //   // reference: https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-reactjs
+      //   this.setState(prevState => ({
+      //     markersArray: [...prevState.markersArray, marker]
+      //   }), () => {
+      //     console.log('in googlemaps, createMarkers, this.state.markersArray.length with prev array: ', this.state.markersArray.length);
+      //     console.log('in googlemaps, createMarkers, this.state: ', this.state);
+      //     console.log('in googlemaps, createMarkers, marker: ', marker);
+      //   }
+      // ); // end of setSate
+      // // }
+      // _.each(this.state.markersArray, m => {
+      //   console.log('in googlemaps, createMarkers, this.state.markersArray: ', this.state.markersArray);
+      //   console.log('in googlemaps, createMarkers, m: ', m);
+      //   if (m.flatId !== marker.flatId) {
+      //     // this.state.markersArray.push(marker, () => {
+      //       this.setState(prevState => ({
+      //         markersArray: [...prevState.markersArray, marker]
+      //       }
+      //     )); // end of setSate
+      //     // });
+      //   }
+      //  });
+      // if (markersArray.length > 0) {
+      //   _.each(markersArray, m => {
+      //     if (marker.flatId == m.flatId ) {
+      //       m.setMap(null);
+      //     }
+      //   }); // end of each
+      // } else {
+      // }
 
+      flatsArray.push(flat.id);
+      // console.log('in googlemaps, createMarkers, markersArray: ', markersArray);
+      // console.log('in googlemaps, createMarkers, marker: ', marker);
+      // console.log('in googlemaps, createMarkers, this: ', this);
 
       // if (!this.props.showFlat) {
       const infowindow = new google.maps.InfoWindow({
@@ -430,11 +763,22 @@ class GoogleMap extends Component {
         const win = window.open(`/show/${marker.flatId}`, '_blank');
         win.focus();
       });
-      markersArray.push(marker);
-      console.log('in googlemap, createMarker, markersArray', markersArray);
+      // adds new marker to steate
+      this.setState(prevState => ({
+        markersArray: [...prevState.markersArray, marker]
+      }));
     });// end of each
+    // deletes old markers that went off the map from state
+    if (oldMarkersArray.length > 0) {
+      _.each(oldMarkersArray, oldMarker => {
+        const newArray = [...this.state.markersArray]; // make a separate copy of the array
+        const index = newArray.indexOf(oldMarker);
+        newArray.splice(index, 1);
+        this.setState({ markersArray: newArray });
+      });
+    }
     // makes marker array element in state
-    this.setState({ markersArray });
+    // this.setState({ markersArray });
     //****************************************
     //end of _.each flat create markers etc...
     google.maps.event.addListener(map, 'click', function (event) {

@@ -118,7 +118,7 @@ class Results extends Component {
     // this.props.startUpIndex();
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
     // fetchflats based on above bounds
-    this.props.fetchFlats(mapBounds);
+    this.props.fetchFlats(mapBounds, () => {});
     if (this.props.auth.authenticated) {
       this.props.fetchLikesByUser();
     }
@@ -179,11 +179,11 @@ class Results extends Component {
       return (
         <div>
         <GoogleMap
-        // key={'1'}
-        flatsEmpty={flatsEmpty}
-        flats={this.props.flats}
-        initialPosition={latLngAve || initialPosition}
-        currency='$'
+          // key={'1'}
+          flatsEmpty={flatsEmpty}
+          flats={this.props.flats}
+          initialPosition={latLngAve || initialPosition}
+          currency='$'
         />
         </div>
       );
@@ -197,18 +197,18 @@ class Results extends Component {
       return (
         <div>
         <GoogleMap
-        flatsEmpty={flatsEmpty}
-        flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
-        // initialPosition={emptyMapLatLngCenter}
-        initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
+          flatsEmpty={flatsEmpty}
+          flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
+          // initialPosition={emptyMapLatLngCenter}
+          initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
         />
         </div>
       );
     } else {
       return (
         <div>
-        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-        <div className="spinner">Loading...</div>
+          <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <div className="spinner">Loading...</div>
         </div>
       );
     } // if not empty
@@ -687,10 +687,11 @@ class Results extends Component {
       } else if (this.props.startUpCount.startUpCount !== 0) {
         return <div className="no-results-message">No flats in that area or with that criteria. <br/>Please search again!</div>;
       } else {
+        // <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        // <div className="spinner">Loading flats...</div>
         return (
           <div>
-            <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-            <div className="spinner">Loading flats...</div>
+            There are no flats in that area.
           </div>
         );
       }
