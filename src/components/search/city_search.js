@@ -37,20 +37,20 @@ class CitySearch extends Component {
     callback(cityToSearch);
   }
 
-  handleBannerSearchClick() {
-    // console.log('in CitySearch, handleBannerSearchClick, event.target: ', event.target);
+  handleBannerSearchBtnClick() {
+    // console.log('in CitySearch, handleBannerSearchBtnClick, event.target: ', event.target);
     // const clickedElement = event.target;
     // const elementVal = clickedElement.getAttribute('value')
-    // console.log('in CitySearch, handleBannerSearchClick, elementVal: ', elementVal);
-    // console.log('in CitySearch, handleBannerSearchClick, cityToSearch: ', cityToSearch);
+    // console.log('in CitySearch, handleBannerSearchBtnClick, elementVal: ', elementVal);
+    // console.log('in CitySearch, handleBannerSearchBtnClick, cityToSearch: ', cityToSearch);
     if (this.props.resultsPage && this.props.searchFlatParams) {
       const body = document.getElementsByTagName('BODY');
       body[0].classList.remove('stop-scrolling');
-      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
-      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
-      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
-      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
-      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
+      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
+      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
+      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
+      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
+      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
       const mapBounds = {
         east: this.props.searchFlatParams.lng + latLngOffset.lngOffsetEast,
         west: this.props.searchFlatParams.lng + latLngOffset.lngOffsetWest,
@@ -60,7 +60,7 @@ class CitySearch extends Component {
       // make mapCenter.lat and lng a function to make consistent with Google maps way of getting lat and lng
       const mapCenter = { lat: () => { return this.props.searchFlatParams.lat; }, lng: () => { return this.props.searchFlatParams.lng; } };
       const mapDimensions = { mapBounds, mapCenter, mapZoom: 12 };
-   //    // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams: ', mapDimensions);
+   //    // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams: ', mapDimensions);
      //  const mapOptions = {
      //   center: new google.maps.LatLng(0, 0),
      //   zoom: 12,
@@ -68,15 +68,18 @@ class CitySearch extends Component {
      // };
      //  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
       const map = this.props.map;
-      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, map: ', map);
+      console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, map: ', map);
       const center = new google.maps.LatLng(mapCenter.lat(), mapCenter.lng());
-      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
-      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
+      console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
+      console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
    //  // using global variable:
       map.panTo(center);
       this.props.fetchFlats(mapBounds, () => {});
       // this.props.history.push('/results');
       this.props.updateMapDimensions(mapDimensions);
+      this.setState({ displayCitiesList: false });
+      localStorage.setItem('lat', mapCenter.lat());
+      localStorage.setItem('lng', mapCenter.lng());
     }
 
     if (this.props.landingPage) {
@@ -279,13 +282,20 @@ class CitySearch extends Component {
   } // end of scrollList function
 
 
+handleRefineSearchLink() {
+  console.log('in CitySearch, handleRefineSearchLink:');
+}
+
   renderCitySearch() {
+    // <div className={this.props.resultsPage ? 'results-refine-search-link' : 'hide'} onClick={this.handleRefineSearchLink.bind(this)}>
+    // Refine Search
+    // </div>
     console.log('in CitySearch, render this.props:', this.props);
     return (
       <div>
         <div className="banner-search-input-and-button">
-          <label><input list="areas" value={this.state.selctedCity} className="banner-search-input" id="banner-input" type="string" onChange={event => this.handleSearchInputChange(event.target.value)} placeholder="Find flats in a city!" /></label>
-          <button className="banner-search-button" onClick={this.handleBannerSearchClick.bind(this)}>Search</button>
+          <label><input list="areas" value={this.state.selctedCity} className="banner-search-input" id="banner-input" type="string" onChange={event => this.handleSearchInputChange(event.target.value)} placeholder={this.props.resultsPage ? 'Search another city...' : 'Find flats in a city!'} /></label>
+          <button className="banner-search-button" onClick={this.handleBannerSearchBtnClick.bind(this)}>Search</button>
         </div>
         <ul className="cities-list-ul" id="banner-search-cities-list"style={this.state.displayCitiesList ? { display: 'block' } : { display: 'none' }} >
           <li key={1} value="">--</li>

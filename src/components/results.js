@@ -46,7 +46,8 @@ class Results extends Component {
     lastPageIndex: 0,
     lastPageInArray: 0,
     firstPageInArray: 0,
-    pageBeforeDots: 0
+    pageBeforeDots: 0,
+    showRefineSearch: false
     // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
@@ -228,7 +229,7 @@ class Results extends Component {
             flatsEmpty={flatsEmpty}
             flats={this.props.flats}
             initialPosition={initialPosition}
-            initialZoom={11}
+            // initialZoom={12}
           />
           </div>
         );
@@ -719,21 +720,48 @@ class Results extends Component {
         // <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
         // <div className="spinner">Loading flats...</div>
         return (
-          <div>
-            There are no flats in that area.
+          <div className="results-no-flat-message">
+            There are no flats in that area. <br/><br/> Please search another area.
           </div>
         );
       }
   }
 
-  renderSearchArea() {
+  handleRefineSearchLinkClick() {
+    this.setState({ showRefineSearch: !this.state.showRefineSearch }, () => {
+      console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
+    })
+  }
+
+  renderRefineSearchCriteria() {
     return (
       <div>
-        <div className="banner-search-box">
-          <CitySearch
-           resultsPage
-          />
-        </div>
+        <ul>
+         <li>Criteria</li>
+         <li>Criteria</li>
+         <li>Criteria</li>
+         <li>Criteria</li>
+         <li>Criteria</li>
+         <li>Criteria</li>
+        </ul>
+
+      </div>
+    );
+  }
+
+  renderSearchArea() {
+    // props of
+    return (
+      <div className="results-search-box">
+          <div className="results-search-box-sub">
+            <CitySearch
+              resultsPage
+            />
+            <div className={this.state.showRefineSearch ? 'hide' : 'results-refine-search-link' } onClick={this.handleRefineSearchLinkClick.bind(this)}>
+              Refine Search
+            </div>
+          </div>
+
       </div>
     );
   }
@@ -746,8 +774,12 @@ class Results extends Component {
         {this.renderMap()}
         </div>
 
-        <div className="results-search-box">
+        <div>
           {this.renderSearchArea()}
+          <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
+            <div onClick={this.handleRefineSearchLinkClick.bind(this)}>Close</div>
+            {this.renderRefineSearchCriteria()}
+          </div>
         </div>
 
         <div className="container main-card-container">
