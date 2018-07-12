@@ -55,7 +55,9 @@ class Landing extends Component {
       <div className="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
         <div className="banner-content">
           <div className="banner-search-box">
-            <CitySearch />
+            <CitySearch
+              landingPage
+            />
           </div>
           <p>Freedom to live anywhere you want</p>
         </div>

@@ -150,7 +150,8 @@ class GoogleMap extends Component {
     if (this.props.showFlat) {
       initialZoom = 14;
     } else {
-      initialZoom = this.props.flatsEmpty ? 11 : INITIAL_ZOOM;
+      // this is where initial zoom is set after city search and jump to results page
+      initialZoom = this.props.flatsEmpty ? 12 : INITIAL_ZOOM;
     }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
@@ -189,6 +190,7 @@ class GoogleMap extends Component {
 
     // store map in state and call createmarkers in callback when map is stored
     this.setState({ map }, () => {
+      this.props.setMap(map);
       if (this.props.showFlat){
         this.createCircle()
       } else {

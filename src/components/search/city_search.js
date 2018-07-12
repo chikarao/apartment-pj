@@ -5,7 +5,8 @@ import { withRouter } from 'react-router-dom';
 
 import * as actions from '../../actions';
 
-import citiesList from '../constants/cities_list'
+import citiesList from '../constants/cities_list';
+import latLngOffset from '../constants/lat_lng_offset';
 
 
 class CitySearch extends Component {
@@ -26,24 +27,63 @@ class CitySearch extends Component {
 
   getCityObject(callback) {
     let cityToSearch = {};
-    console.log('in landing, getCityObject, this.state.selectedCity: ', this.state.selectedCity);
+    console.log('in CitySearch, getCityObject, this.state.selectedCity: ', this.state.selectedCity);
     _.each(citiesList, city => {
       if (city.name == this.state.selectedCity) {
         cityToSearch = city
       }
     });
-    console.log('in landing, getCityObject, cityToSearch: ', cityToSearch);
+    console.log('in CitySearch, getCityObject, cityToSearch: ', cityToSearch);
     callback(cityToSearch);
   }
 
   handleBannerSearchClick() {
-  // console.log('in landing, handleBannerSearchClick, event.target: ', event.target);
-  // const clickedElement = event.target;
-  // const elementVal = clickedElement.getAttribute('value')
-  // console.log('in landing, handleBannerSearchClick, elementVal: ', elementVal);
-  // console.log('in landing, handleBannerSearchClick, cityToSearch: ', cityToSearch);
+    // console.log('in CitySearch, handleBannerSearchClick, event.target: ', event.target);
+    // const clickedElement = event.target;
+    // const elementVal = clickedElement.getAttribute('value')
+    // console.log('in CitySearch, handleBannerSearchClick, elementVal: ', elementVal);
+    // console.log('in CitySearch, handleBannerSearchClick, cityToSearch: ', cityToSearch);
+    if (this.props.resultsPage && this.props.searchFlatParams) {
+      const body = document.getElementsByTagName('BODY');
+      body[0].classList.remove('stop-scrolling');
+      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
+      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
+      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
+      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
+      // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
+      const mapBounds = {
+        east: this.props.searchFlatParams.lng + latLngOffset.lngOffsetEast,
+        west: this.props.searchFlatParams.lng + latLngOffset.lngOffsetWest,
+        north: this.props.searchFlatParams.lat + latLngOffset.latOffsetNorth,
+        south: this.props.searchFlatParams.lat + latLngOffset.latOffsetSouth
+      };
+      // make mapCenter.lat and lng a function to make consistent with Google maps way of getting lat and lng
+      const mapCenter = { lat: () => { return this.props.searchFlatParams.lat; }, lng: () => { return this.props.searchFlatParams.lng; } };
+      const mapDimensions = { mapBounds, mapCenter, mapZoom: 12 };
+   //    // console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams: ', mapDimensions);
+     //  const mapOptions = {
+     //   center: new google.maps.LatLng(0, 0),
+     //   zoom: 12,
+     //   mapTypeId: google.maps.MapTypeId.ROADMAP
+     // };
+     //  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      const map = this.props.map;
+      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, map: ', map);
+      const center = new google.maps.LatLng(mapCenter.lat(), mapCenter.lng());
+      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
+      console.log('in CitySearch, handleBannerSearchClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
+   //  // using global variable:
+      map.panTo(center);
+      this.props.fetchFlats(mapBounds, () => {});
+      // this.props.history.push('/results');
+      this.props.updateMapDimensions(mapDimensions);
+    }
 
-  this.props.history.push('/results');
+    if (this.props.landingPage) {
+      this.props.history.push('/results');
+      this.props.clearFlats();
+      this.props.updateMapDimensions({});
+    }
   }
 
   // renderDataListOptions() {
@@ -67,9 +107,9 @@ class CitySearch extends Component {
     const liArray = document.getElementsByTagName('LI');
     const body = document.getElementsByTagName('BODY');
     // body[0].classList.add('stop-scrolling');
-    console.log('in landing, handleCityClick, body: ', body);
+    console.log('in CitySearch, handleCityClick, body: ', body);
     _.each(liArray, li => {
-      console.log('in landing, handleCityClick, li: ', li);
+      console.log('in CitySearch, handleCityClick, li: ', li);
       const liToBeChanged = li;
       liToBeChanged.style.backgroundColor = 'white'
       });
@@ -78,8 +118,10 @@ class CitySearch extends Component {
 
     this.setState({ displayCitiesList: false, citiesSubsetArray: [], searchInput: '', selectedCity: event.target.getAttribute('value') }, () => {
       mainInput.value = this.state.selectedCity;
-      // console.log('in landing, handleCityClick, activeLi: ', activeLi);
+      // console.log('in CitySearch, handleCityClick, activeLi: ', activeLi);
       this.getCityObject((city) => this.props.searchFlatParameters(city));
+      // this.props.clearFlats();
+      // this.props.updateMapDimensions({});
     });
     // this.scrollList();
   }
@@ -110,12 +152,12 @@ class CitySearch extends Component {
   handleSearchInputChange(searchInput) {
     //take input and get a subset of cities that contain the search input
     const citiesSubsetArray = this.getCitiesSubsetArray(searchInput);
-    console.log('in landing, handleSearchInputChange, citiesSubsetArray: ', citiesSubsetArray);
+    console.log('in CitySearch, handleSearchInputChange, citiesSubsetArray: ', citiesSubsetArray);
     // if search input is NOT empty set state so that dropdown shows and array is populated in state
     if (searchInput !== '') {
       this.setState({ searchInputHasValue: true, searchInput, citiesSubsetArray, displayCitiesList: true }, () => {
-        // console.log('in landing, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
-        // console.log('in landing, handleSearchInputChange, this.state.searchInput: ', this.state.searchInput);
+        // console.log('in CitySearch, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
+        // console.log('in CitySearch, handleSearchInputChange, this.state.searchInput: ', this.state.searchInput);
       });
       // call to activeate the scrolllist and respond to user down up and enter input
       this.scrollList();
@@ -124,7 +166,7 @@ class CitySearch extends Component {
       const body = document.getElementsByTagName('BODY');
       body[0].classList.remove('stop-scrolling');
       this.setState({ searchInputHasValue: false, citiesSubsetArray, displayCitiesList: false }, () => {
-        // console.log('in landing, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
+        // console.log('in CitySearch, handleSearchInputChange, this.state.searchInputHasValue: ', this.state.searchInputHasValue);
       });
     }
   }
@@ -137,10 +179,10 @@ class CitySearch extends Component {
     const first = list.firstChild;
     // the first 'active' or hightlighted li is the first one when the user clicks on DOWN
     let active = first;
-    // console.log('in landing, scrollList, first, list: ', first, list);
+    // console.log('in CitySearch, scrollList, first, list: ', first, list);
     // mainInput is the input tag, the one in the center of the bannner
     const mainInput = document.getElementById('banner-input');
-    // console.log('in landing, scrollList, mainInput: ', mainInput);
+    // console.log('in CitySearch, scrollList, mainInput: ', mainInput);
     // Stop scrolling the entire page when user presses UP or DOWN key
     const body = document.getElementsByTagName('BODY');
     body[0].classList.add('stop-scrolling');
@@ -148,9 +190,9 @@ class CitySearch extends Component {
     document.onkeydown = (event) => { // listen to keyboard events
        switch (event.keyCode) {
          case 38: // if the UP key is pressed
-         // console.log('in landing, scrollList, UP clicked, document.activeElement: ', document.activeElement);
-         // console.log('in landing, scrollList, UP clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
-         console.log('in landing, scrollList, UP clicked, active.getAttribute, first.getAttribute: ', active.getAttribute('value'), first.getAttribute('value'));
+         // console.log('in CitySearch, scrollList, UP clicked, document.activeElement: ', document.activeElement);
+         // console.log('in CitySearch, scrollList, UP clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
+         console.log('in CitySearch, scrollList, UP clicked, active.getAttribute, first.getAttribute: ', active.getAttribute('value'), first.getAttribute('value'));
           // if cursor is in main input or the active variable is assign the first li
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
              // make active with white background
@@ -173,13 +215,15 @@ class CitySearch extends Component {
              this.setState({ selectedCity }, () => {
               mainInput.value = this.state.selectedCity;
               this.getCityObject((city) => this.props.searchFlatParameters(city));
+              // this.props.clearFlats();
+              // this.props.updateMapDimensions({});
              })
            } // select the element before the current, and focus it
            break;
 
          case 40: // if the DOWN key is pressed
-         // console.log('in landing, scrollList, DOWN clicked, document.activeElement, first.firstChild: ', document.activeElement, list.firstChild);
-         // console.log('in landing, scrollList, DOWN clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
+         // console.log('in CitySearch, scrollList, DOWN clicked, document.activeElement, first.firstChild: ', document.activeElement, list.firstChild);
+         // console.log('in CitySearch, scrollList, DOWN clicked, document.activeElement.nextSibling: ', document.activeElement.nextSibling);
            if (document.activeElement == mainInput) {
              active.style.backgroundColor = 'white ';
              active = list.firstChild;
@@ -198,7 +242,9 @@ class CitySearch extends Component {
                this.setState({ selectedCity }, () => {
                  mainInput.value = this.state.selectedCity;
                 this.getCityObject((city) => this.props.searchFlatParameters(city));
-                 console.log('in landing, scrollList, DOWN clicked, this.state.selectedCity: ', this.state.selectedCity);
+                 console.log('in CitySearch, scrollList, DOWN clicked, this.state.selectedCity: ', this.state.selectedCity);
+                 // this.props.clearFlats();
+                 // this.props.updateMapDimensions({});
                })
              } else {
                break;
@@ -209,7 +255,7 @@ class CitySearch extends Component {
          case 13:
           // if press enter key, and active element is not first li or the banner input
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
-             console.log('in landing, scrollList, ENTER clicked, mainInput or first: ');
+             console.log('in CitySearch, scrollList, ENTER clicked, mainInput or first: ');
              // stop scrolling taken off
              body[0].classList.remove('stop-scrolling');
              // do not show city dropdown list and empty out the cities array so that user cannot continue to presss up and down keys to select
@@ -264,6 +310,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
+    searchFlatParams: state.flats.searchflatParameters,
+    map: state.mapDimensions.map
   };
 }
 

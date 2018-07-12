@@ -60,7 +60,10 @@ import {
   PLACE_SEARCH_LANGUAGE,
   MARK_MESSAGES_READ,
   SET_NEW_MESSAGES,
-  SEARCH_FLAT_PARAMENTERS
+  SEARCH_FLAT_PARAMENTERS,
+  CLEAR_FLATS,
+  CLEAR_MAPDIMENSIONS,
+  SET_MAP
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -287,6 +290,8 @@ export function fetchFlats(mapBounds, callback) {
     });
   };
 }
+
+
 export function fetchFlatsByUser(id, callback) {
   // const { north, south, east, west } = mapBounds;
   // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
@@ -510,6 +515,20 @@ export function updateMapDimensions(mapDimensions) {
   return {
     type: UPDATE_MAP_DIMENSIONS,
     payload: mapDimensions
+  };
+}
+
+export function clearFlats() {
+  console.log('in actions index, clearFlats: ');
+  return {
+    type: CLEAR_FLATS
+  };
+}
+export function setMap(map) {
+  console.log('in actions index, setMap: ', map);
+  return {
+    type: SET_MAP,
+    payload: map
   };
 }
 // selectedFlat has been commented out in feature since show flat can be rendered with only params

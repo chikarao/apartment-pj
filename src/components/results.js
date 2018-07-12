@@ -6,6 +6,9 @@ import * as actions from '../actions';
 import GoogleMap from './maps/google_map';
 import Upload from './images/upload';
 import MainCards from './cards/main_cards';
+import CitySearch from './search/city_search';
+
+import latLngOffset from './constants/lat_lng_offset';
 
 // const initialPosition = {
 //   lat: 37.7952,
@@ -65,10 +68,14 @@ class Results extends Component {
     // const lngOffsetWest = -0.13469999999999516;
     // const lngOffsetEast = 0.11589000000000738;
     // wider offsets; reaches Oakland
-    const latOffsetNorth = 0.06629999999999825;
-    const latOffsetSouth = -0.036700000000003286;
-    const lngOffsetWest = -0.14;
-    const lngOffsetEast = 0.2;
+    // const latOffsetNorth = 0.06629999999999825;
+    // const latOffsetSouth = -0.036700000000003286;
+    // const lngOffsetWest = -0.14;
+    // const lngOffsetEast = 0.2;
+    const latOffsetNorth = latLngOffset.latOffsetNorth;
+    const latOffsetSouth = latLngOffset.latOffsetSouth;
+    const lngOffsetWest = latLngOffset.lngOffsetWest;
+    const lngOffsetEast = latLngOffset.lngOffsetEast;
     // const latOffsetNorth = 37.8615 - initialPosition.lat; //about .07
     // const latOffsetSouth = 37.7585 - initialPosition.lat; // about -.04
     // const lngOffsetWest = -122.28701 - initialPosition.lng; //about .12
@@ -114,10 +121,10 @@ class Results extends Component {
       };
       console.log('in results componentDidMount, mapBounds: ', mapBounds);
     }
-
     // this.props.startUpIndex();
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
     // fetchflats based on above bounds
+
     this.props.fetchFlats(mapBounds, () => {});
     if (this.props.auth.authenticated) {
       this.props.fetchLikesByUser();
@@ -156,15 +163,16 @@ class Results extends Component {
     const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     console.log('in results renderMap, flats empty: ', flatsEmpty);
     console.log('in results renderMap, mapDimensions empty: ', mapDimensionsEmpty);
+    console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
 
     if (!flatsEmpty) {
-      if (!mapDimensionsEmpty) {
-        console.log('in results, renderMap this.props.mapDimensions, mapBounds: ', this.props.mapDimensions.mapDimensions.mapBounds);
-        console.log('in results, this.props.mapDimensions, mapCenter.lat: ', this.props.mapDimensions.mapDimensions.mapCenter.lat());
-        console.log('in results, this.props.mapDimensions, mapCenter.lng: ', this.props.mapDimensions.mapDimensions.mapCenter.lng());
-        console.log('in results, this.props.mapDimensions, mapZoom: ', this.props.mapDimensions.mapDimensions.mapZoom);
-        console.log('in results, renderMap, this.props.searchFlatParams: ', this.props.searchFlatParams);
-      }
+      // if (!mapDimensionsEmpty) {
+      //   console.log('in results, renderMap this.props.mapDimensions, mapBounds: ', this.props.mapDimensions.mapBounds);
+      //   console.log('in results, this.props.mapDimensions, mapCenter.lat: ', this.props.mapDimensions.mapCenter.lat());
+      //   console.log('in results, this.props.mapDimensions, mapCenter.lng: ', this.props.mapDimensions.mapCenter.lng());
+      //   console.log('in results, this.props.mapDimensions, mapZoom: ', this.props.mapDimensions.mapZoom);
+      //   console.log('in results, renderMap, this.props.searchFlatParams: ', this.props.searchFlatParams);
+      // }
       // const { id } = this.props.flats[0];
       // console.log('in results renderFlats, id: ', id);
       console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
@@ -183,6 +191,7 @@ class Results extends Component {
           flatsEmpty={flatsEmpty}
           flats={this.props.flats}
           initialPosition={latLngAve || initialPosition}
+          // initialZoom={11}
           currency='$'
         />
         </div>
@@ -191,26 +200,46 @@ class Results extends Component {
     } else if (!mapDimensionsEmpty) {
       // return <div>Map Goes Here</div>;
       const emptyMapLatLngCenter = {
-        lat: this.props.mapDimensions.mapDimensions.mapCenter.lat(),
-        lng: this.props.mapDimensions.mapDimensions.mapCenter.lng()
+        lat: this.props.mapDimensions.mapCenter.lat(),
+        lng: this.props.mapDimensions.mapCenter.lng()
       };
+      console.log('results, renderMap, else if !mapDimensionsEmpty: ', emptyMapLatLngCenter);
+      console.log('results, renderMap, else if this.props.mapDimensions: ', this.props.mapDimensions.mapCenter.lng());
       return (
         <div>
         <GoogleMap
           flatsEmpty={flatsEmpty}
           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
-          // initialPosition={emptyMapLatLngCenter}
-          initialZoom={this.props.mapDimensions.mapDimensions.mapZoom}
+          initialPosition={emptyMapLatLngCenter}
+          initialZoom={this.props.mapDimensions.mapZoom}
         />
         </div>
       );
     } else {
-      return (
-        <div>
-          <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-          <div className="spinner">Loading...</div>
-        </div>
-      );
+      // if (this.props.searchFlatParams) {
+        const storedLat = parseFloat(localStorage.getItem('lat'));
+        const storedLng = parseFloat(localStorage.getItem('lng'));
+        const initialPosition = this.props.searchFlatParams ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+        console.log('results, renderMap, else if emptyFlat: ', initialPosition);
+        // const initialPosition = { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
+        return (
+          <div>
+          <GoogleMap
+            flatsEmpty={flatsEmpty}
+            flats={this.props.flats}
+            initialPosition={initialPosition}
+            initialZoom={11}
+          />
+          </div>
+        );
+      // }
+      // if flatsEmpty
+      // return (
+      //   <div>
+      //     <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+      //     <div className="spinner">Loading...</div>
+      //   </div>
+      // );
     } // if not empty
   }
 
@@ -700,7 +729,11 @@ class Results extends Component {
   renderSearchArea() {
     return (
       <div>
-        Search Area
+        <div className="banner-search-box">
+          <CitySearch
+           resultsPage
+          />
+        </div>
       </div>
     );
   }
@@ -736,7 +769,7 @@ function mapStateToProps(state) {
     message: state.auth.message,
     flats: state.flats.flatsResults,
     startUpCount: state.startUpCount,
-    mapDimensions: state.mapDimensions,
+    mapDimensions: state.mapDimensions.mapDimensions,
     // likes: state.likes.userLikes,
     likes: state.flats.userLikes,
     auth: state.auth,

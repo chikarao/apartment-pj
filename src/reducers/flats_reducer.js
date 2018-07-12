@@ -11,7 +11,8 @@ import {
   CREATE_LIKE,
   LIKES_BY_USER,
   DELETE_LIKE,
-  SEARCH_FLAT_PARAMENTERS
+  SEARCH_FLAT_PARAMENTERS,
+  CLEAR_FLATS
 } from '../actions/types';
 
 export default function (state = {}, action) {
@@ -21,6 +22,9 @@ export default function (state = {}, action) {
   switch (action.type) {
     case FETCH_FLATS:
       return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
+
+    case CLEAR_FLATS:
+      return { ...state, flatsResults: {} };
 
     case FETCH_FLATS_BY_USER:
       return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };
