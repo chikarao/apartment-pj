@@ -753,7 +753,7 @@ class Results extends Component {
     // props of
     return (
       <div className="results-search-box">
-          <div className="results-search-box-sub">
+          <div className="results-search-box-sub-main">
             <CitySearch
               resultsPage
             />
@@ -761,7 +761,21 @@ class Results extends Component {
               Refine Search
             </div>
           </div>
-
+          <div className="results-search-box-sub">
+            <div className="results-search-box-sub-tab">
+              Area
+            </div>
+          </div>
+          <div className="results-search-box-sub">
+            <div className="results-search-box-sub-tab">
+              Bedrooms
+            </div>
+          </div>
+          <div className="results-search-box-sub">
+            <div className="results-search-box-sub-tab">
+              From station
+            </div>
+          </div>
       </div>
     );
   }
@@ -777,7 +791,7 @@ class Results extends Component {
         <div>
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
-            <div onClick={this.handleRefineSearchLinkClick.bind(this)}>Close</div>
+            <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>Close</div>
             {this.renderRefineSearchCriteria()}
           </div>
         </div>
