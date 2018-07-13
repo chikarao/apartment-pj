@@ -371,8 +371,8 @@ class Header extends Component {
       {this.renderLoadingScreen()}
       <div id="nav_container">
         <div>
-          <Link to="/" className="navbar-brand"> FLATS flats <br />
-          <small>and more flats</small></Link>
+          <Link to="/" className="navbar-brand"> <large style={{ color: 'blue' }}>RENT</large><large style={{ color: 'gray' }}>places</large> <br />
+          <small>direct</small></Link>
         </div>
         {this.renderNavigation()}
       </div>

@@ -50,7 +50,9 @@ class Results extends Component {
     showRefineSearch: false,
     criterionName: '',
     showCriterionBox: false,
-    criterionValue: 0
+    criterionValue: 0,
+    floorSpaceMin: 50,
+    floorSpaceMax: 100
     // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
@@ -747,16 +749,92 @@ class Results extends Component {
          <li>Criteria</li>
          <li>Criteria</li>
         </ul>
-
       </div>
     );
   }
 
+  incrementSearchInput(event) {
+    const { floorSpaceMin, floorSpaceMax } = this.state;
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    const elementVal = clickedElement.getAttribute('value')
+    // const results-search-box-sub-tab
+    console.log('in results handleSearchTabClick clickedElement: ', clickedElement);
+    console.log('in results handleSearchTabClick elementVal: ', elementVal);
+    console.log('in results handleSearchTabClickm elementName: ', elementName);
+
+    if (elementName === 'moreThan') {
+      if (elementVal === 'up') {
+        if (floorSpaceMin < floorSpaceMax - 10) {
+          this.setState({ floorSpaceMin: floorSpaceMin + 10 })
+        }
+      } else {
+        if (floorSpaceMin > 0) {
+          this.setState({ floorSpaceMin: floorSpaceMin - 10 })
+        }
+      }
+    } else {
+      if (elementVal === 'up') {
+        if (floorSpaceMin < 1000) {
+          this.setState({ floorSpaceMax: floorSpaceMax + 10 })
+        }
+      } else {
+        if (floorSpaceMax - 10 > floorSpaceMin) {
+          this.setState({ floorSpaceMax: floorSpaceMax - 10 })
+        }
+      }
+    }
+  }
+
   renderSizeCriterionDetails() {
     return (
-      <div>Size</div>
+      <div>
+        <div className="search-criteria-details-each-box">
+          <div className="search-criteria-details-each-label">More than <small>(sq m)</small></div>
+          <div className="search-criteria-details-each-input-box">
+              <div className="search-criteria-details-input-increment"><i value="down" name="moreThan" className="fa fa-angle-down" onClick={this.incrementSearchInput.bind(this)}></i></div>
+              <div className="search-criteria-details-input-display">{this.state.floorSpaceMin}</div>
+              <div className="search-criteria-details-input-increment"><i value="up" name="moreThan" className="fa fa-angle-up" onClick={this.incrementSearchInput.bind(this)}></i></div>
+          </div>
+        </div>
+        <div className="search-criteria-details-each-box">
+          <div className="search-criteria-details-each-label">Less than</div>
+          <div className="search-criteria-details-each-input-box">
+            <div className="search-criteria-details-input-increment"><i value="down" className="fa fa-angle-down" onClick={this.incrementSearchInput.bind(this)}></i></div>
+            <div className="search-criteria-details-input-display">{this.state.floorSpaceMax}</div>
+            <div className="search-criteria-details-input-increment"><i value="up" className="fa fa-angle-up" onClick={this.incrementSearchInput.bind(this)}></i></div>
+          </div>
+        </div>
+      </div>
     );
   }
+  // renderSizeCriterionDetails() {
+  //   return (
+  //     <div>
+  //       <div className="search-criteria-details-each-box">
+  //         <div className="search-criteria-details-each-label">20 to 50 sq m</div>
+  //         <div className="search-criteria-details-each-input">in</div>
+  //       </div>
+  //       <div className="search-criteria-details-each-box">
+  //         <div className="search-criteria-details-each-label">50 to 70 sq m</div>
+  //         <div className="search-criteria-details-each-input">in</div>
+  //       </div>
+  //       <div className="search-criteria-details-each-box">
+  //         <div className="search-criteria-details-each-label">70 to 100 sq m</div>
+  //         <div className="search-criteria-details-each-input">in</div>
+  //       </div>
+  //       <div className="search-criteria-details-each-box">
+  //         <div className="search-criteria-details-each-label">100 to 120 sq m</div>
+  //         <div className="search-criteria-details-each-input">in</div>
+  //       </div>
+  //       <div className="search-criteria-details-each-box">
+  //         <div className="search-criteria-details-each-label">more than 120 sq m</div>
+  //         <div className="search-criteria-details-each-input">in</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   renderBedroomCriterionDetails() {
     return (
       <div>Bedroom</div>
@@ -793,16 +871,29 @@ class Results extends Component {
   //   );
   // }
 
+  unHighlightTab() {
+    const searchTabs = document.getElementsByClassName('results-search-box-sub-tab');
+    console.log('in results unHighlightTab elementVal: ', searchTabs);
+    _.each(searchTabs, tab => {
+      tab.setAttribute('style', 'background-color: white; color: black')
+    })
+
+  }
+
   handleSearchTabClick(event) {
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
+    // const results-search-box-sub-tab
     console.log('in results handleSearchTabClick elementVal: ', elementVal);
     console.log('in results handleSearchTabClickm elementName: ', elementName);
     if (!this.state.showCriterionBox) {
+      clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
       this.setState({ criterionName: elementName, criterionValue: elementVal, showCriterionBox: true }, () => {
       })
     } else if (this.state.showCriterionBox && elementVal !== this.state.criterionName) {
+        this.unHighlightTab();
+        clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
         this.setState({ criterionName: elementName, criterionValue: elementVal })
     } else {
       this.setState({ criterionName: '', criterionValue: 0, showCriterionBox: false })
@@ -811,6 +902,7 @@ class Results extends Component {
 
   handleSearchCriterionBoxClose() {
     this.setState({ showCriterionBox: false });
+    this.unHighlightTab();
   }
 
   showCriterionBox() {
@@ -845,13 +937,19 @@ class Results extends Component {
           <div className="results-search-box-sub-box col-xs-12 col-sm-6 col-md-6">
           {this.showCriterionBox()}
             <div className="results-search-box-sub">
-              <div value={1} name={'Size'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={1} name={'Floor Space'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Size
+              </div>
+              <div className="results-search-box-sub-display">
+                70 sq m ~ 120 sq m
               </div>
             </div>
             <div className="results-search-box-sub" >
               <div value={2} name={'Bedrooms'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Bedrooms
+              </div>
+              <div className="results-search-box-sub-display">
+               1 ~ 2
               </div>
 
             </div>
@@ -859,11 +957,17 @@ class Results extends Component {
               <div value={3} name={'Distance from Station'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Station
               </div>
+              <div className="results-search-box-sub-display">
+                5 mins ~ 7 mins
+              </div>
 
             </div>
             <div className="results-search-box-sub">
               <div value={4} name={'Price'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Price
+              </div>
+              <div className="results-search-box-sub-display">
+                $1500 ~ $3000
               </div>
 
             </div>
