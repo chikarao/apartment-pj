@@ -598,38 +598,59 @@ body > div:first-child {
   margin: 20px auto 20px auto;
   padding: 0 30px 0 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+.results-search-box-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .results-search-box-sub-main {
   /* border: 1px solid #ccc; */
   min-height: 75px;
   max-height: auto;
-
+  margin: 0 0 10px 0;
   width: 350px;
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+
+.results-search-box-sub-box {
+  border: 1px solid #ccc;
+  min-height: 75px;
+  max-height: auto;
+  min-width: 350px;
+  margin: 0 0 0 10px;
+  display: flex;
+  justify-content: center;
+  /* position: relative; */
   position: relative;
 }
 .results-search-box-sub {
   border: 1px solid #ccc;
   min-height: 75px;
   max-height: auto;
-
-  width: 100px;
+  margin: 0 0 0 10px;
+  padding: 0px;
+  width: 75px;
   /* display: flex;
-  justify-content: center;
-  position: relative; */
+  justify-content: center; */
+
 }
 
 .results-search-box-sub-tab {
   border: 1px solid #ccc;
-  height: 50%;
+  height: 30px;
   width: 100%;
   border-radius: 10px;
-  font-size: 12px;
-  padding: 10px;
+  font-size: 10px;
+  padding: 7px;
   font-weight: bold;
+  margin: 3px 0 0 0;
 
 }
 
@@ -696,6 +717,48 @@ body > div:first-child {
   width: auto;
   height: 40px;
 } */
+
+.search-criterion-box {
+  position: absolute;
+  top: 55%;
+  right: 7.4%;
+  width: 300px;
+  height: 200px;
+  z-index: 10;
+  /* background-color: #ccc; */
+  background-color: white;
+  border-radius: 3px;
+  /* transform: translate(-50%, -50%); */
+  -webkit-transform: translateZ(0);
+  /* opacity: .7; */
+  border: 1px solid #ccc;
+
+}
+
+.search-criterion-box-title {
+  margin-top: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-criterion-close {
+  float: right;
+  width: 17px;
+  height: 17px;
+  /* padding: 2px 5px 5px 0; */
+  margin: -2px 5px 5px 0;
+  color: gray;
+  font-size: 17px;
+}
+
+.criterion-box-details-box {
+  border: 1px solid #ccc;
+  width: 95%;
+  height: 160px;
+  padding: 5px;
+  margin: 5px auto 0 auto !important;
+}
 
 /* ***********PAGINATION*************** */
 
@@ -1882,7 +1945,7 @@ form {
   height: 100%;
   background: rgba(255, 255, 255, 0.7);
   /* background: gray; */
-  z-index: 5;
+  z-index: 100;
   /* https://github.com/mgcrea/angular-strap/issues/1234 */
   /* fixed blurriness */
 }

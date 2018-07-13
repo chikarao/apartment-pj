@@ -47,7 +47,10 @@ class Results extends Component {
     lastPageInArray: 0,
     firstPageInArray: 0,
     pageBeforeDots: 0,
-    showRefineSearch: false
+    showRefineSearch: false,
+    criterionName: '',
+    showCriterionBox: false,
+    criterionValue: 0
     // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
@@ -749,11 +752,89 @@ class Results extends Component {
     );
   }
 
+  renderSizeCriterionDetails() {
+    return (
+      <div>Size</div>
+    );
+  }
+  renderBedroomCriterionDetails() {
+    return (
+      <div>Bedroom</div>
+    );
+  }
+  renderStationCriterionDetails() {
+    return (
+      <div>Station</div>
+    );
+  }
+  renderPriceCriterionDetails() {
+    return (
+      <div>Price</div>
+    );
+  }
+
+  renderCriterionBoxDetails() {
+    console.log('in results renderCriterionBoxDetails, this.state.criterionValue, this.state.criterionName: ', this.state.criterionValue, this.state.criterionName);
+    switch (parseInt(this.state.criterionValue)) {
+      case 1: return <div className="criterion-box-details-box">{this.renderSizeCriterionDetails()}</div>;
+      case 2: return <div className="criterion-box-details-box">{this.renderBedroomCriterionDetails()}</div>;
+      case 3: return <div className="criterion-box-details-box">{this.renderStationCriterionDetails()}</div>;
+      case 4: return <div className="criterion-box-details-box">{this.renderPriceCriterionDetails()}</div>;
+      default: return <div className="criterion-box-details-box">No selection</div>;
+    }
+  }
+
+  // renderCriterionBoxDetails() {
+  //   console.log('in results renderCriterionBoxDetails: ');
+  //   return (
+  //     <div className="criterion-box-details-box">
+  //       {this.renderCriterionDetails()}
+  //     </div>
+  //   );
+  // }
+
+  handleSearchTabClick(event) {
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in results handleSearchTabClick elementVal: ', elementVal);
+    console.log('in results handleSearchTabClickm elementName: ', elementName);
+    if (!this.state.showCriterionBox) {
+      this.setState({ criterionName: elementName, criterionValue: elementVal, showCriterionBox: true }, () => {
+      })
+    } else if (this.state.showCriterionBox && elementVal !== this.state.criterionName) {
+        this.setState({ criterionName: elementName, criterionValue: elementVal })
+    } else {
+      this.setState({ criterionName: '', criterionValue: 0, showCriterionBox: false })
+    }
+  }
+
+  handleSearchCriterionBoxClose() {
+    this.setState({ showCriterionBox: false });
+  }
+
+  showCriterionBox() {
+    console.log('in results handleSearchTabClick: ');
+    if (this.state.showCriterionBox) {
+      return (
+        <div className="search-criterion-box">
+          <div className="search-criterion-box-title">
+            <span className="search-criterion-close"></span>
+            {this.state.criterionName}
+            <span className="search-criterion-close" onClick={this.handleSearchCriterionBoxClose.bind(this)}><i className="fa fa-window-close" aria-hidden="true"></i></span>
+          </div>
+          {this.renderCriterionBoxDetails()}
+        </div>
+      );
+    }
+  }
+
   renderSearchArea() {
     // props of
     return (
-      <div className="results-search-box">
-          <div className="results-search-box-sub-main">
+      <div className="results-search-box container">
+      <div className="results-search-box-row row">
+          <div className="results-search-box-sub-main col-xs-12 col-sm-6 col-md-6">
             <CitySearch
               resultsPage
             />
@@ -761,21 +842,33 @@ class Results extends Component {
               Refine Search
             </div>
           </div>
-          <div className="results-search-box-sub">
-            <div className="results-search-box-sub-tab">
-              Area
+          <div className="results-search-box-sub-box col-xs-12 col-sm-6 col-md-6">
+          {this.showCriterionBox()}
+            <div className="results-search-box-sub">
+              <div value={1} name={'Size'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+                Size
+              </div>
+            </div>
+            <div className="results-search-box-sub" >
+              <div value={2} name={'Bedrooms'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+                Bedrooms
+              </div>
+
+            </div>
+            <div className="results-search-box-sub">
+              <div value={3} name={'Distance from Station'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+                Station
+              </div>
+
+            </div>
+            <div className="results-search-box-sub">
+              <div value={4} name={'Price'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+                Price
+              </div>
+
             </div>
           </div>
-          <div className="results-search-box-sub">
-            <div className="results-search-box-sub-tab">
-              Bedrooms
-            </div>
-          </div>
-          <div className="results-search-box-sub">
-            <div className="results-search-box-sub-tab">
-              From station
-            </div>
-          </div>
+        </div>
       </div>
     );
   }
