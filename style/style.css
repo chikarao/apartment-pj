@@ -592,7 +592,6 @@ body > div:first-child {
 /* Height set to auto to fit dropdown when searching */
 .results-search-box {
   max-width: 800px;
-  /* border: 1px solid #ccc; */
   width: 95%;
   height: auto !important;
   margin: 20px auto 20px auto;
@@ -621,14 +620,49 @@ body > div:first-child {
 
 .results-search-box-sub-box {
   /* border: 1px solid #ccc; */
-  min-height: 75px;
   max-height: auto;
-  min-width: 350px;
+  width: auto;
   margin: 0 0 0 10px;
+}
+
+.search-criteria-increment-box {
+  max-height: 25px;
+  width: auto;
+  margin: 0 auto 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* position: relative; */
+}
+
+.search-criteria-increment-min-max {
+  border: 1px solid #ccc;
+  width: 60px;
+  /* height:  */
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 10px;
+  height: 30px;
+  margin: 0 3px 0 3px;
+  padding: 5px;
+}
+
+.search-criteria-increment {
+  font-size: 30px;
+}
+.search-criteria-increment i {
+  color: gray;
+  margin: 5px;
+}
+
+.results-search-box-sub-box-box {
+  min-height: 75px;
+  min-width: 350px;
   display: flex;
   justify-content: center;
   /* position: relative; */
   position: relative;
+
 }
 .results-search-box-sub {
   /* border: 1px solid #ccc; */
@@ -746,6 +780,7 @@ body > div:first-child {
 
 .search-criterion-box-title {
   margin-top: 10px;
+  font-size: 17px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -762,7 +797,7 @@ body > div:first-child {
 }
 
 .criterion-box-details-box {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   width: 95%;
   height: 160px;
   padding: 5px;
@@ -2410,6 +2445,17 @@ form {
 
   #nav_container {
     height: 60px !important;
+  }
+
+  .results-search-box input {
+    height: 30px;
+    width: 230px;
+  }
+
+  .banner-search-button {
+    margin-left: 10px;
+    border-radius: 3px;
+    height: 30px;
   }
 
     /* .header {

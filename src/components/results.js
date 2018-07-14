@@ -10,6 +10,8 @@ import CitySearch from './search/city_search';
 
 import latLngOffset from './constants/lat_lng_offset';
 
+import searchCriteria from './constants/search_criteria';
+
 // const initialPosition = {
 //   lat: 37.7952,
 //   lng: -122.4029
@@ -25,9 +27,15 @@ let displayedPagesArray = [];
 const MAX_NUM_PAGE_NUMBERS = 5;
 // ******Pagination
 
+// const valueNameObject = {
+//   1: { name: 'size', title: '' }, 2: { name: 'bedrooms', title: 'Bedrooms' }, 3: { name: 'station', title: 'Distance from Station' }, 4: { name: 'price', title: 'Price' }
+// };
+
 class Results extends Component {
   constructor() {
   super();
+  console.log('in results constructor, searchCriteria.startMin : ', searchCriteria[1]);
+
   this.state = {
     // initialized at page 1
     // *********Pagination
@@ -49,10 +57,20 @@ class Results extends Component {
     pageBeforeDots: 0,
     showRefineSearch: false,
     criterionName: '',
-    showCriterionBox: false,
     criterionValue: 0,
-    floorSpaceMin: 50,
-    floorSpaceMax: 100
+    searchDisplayValueMin: '',
+    searchDisplayValueMax: '',
+    showCriterionBox: false,
+    floorSpaceMin: searchCriteria[0].startMin,
+    floorSpaceMax: searchCriteria[0].startMax,
+    bedroomsMin: searchCriteria[1].startMin,
+    bedroomsMax: searchCriteria[1].startMax,
+    stationMin: searchCriteria[2].startMin,
+    stationMax: searchCriteria[2].startMax,
+    priceMin: searchCriteria[3].startMin,
+    priceMax: searchCriteria[3].startMax,
+    incrementMin: false,
+    incrementMax: true
     // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
@@ -753,56 +771,223 @@ class Results extends Component {
     );
   }
 
-  incrementSearchInput(event) {
-    const { floorSpaceMin, floorSpaceMax } = this.state;
-    const clickedElement = event.target;
-    const elementName = clickedElement.getAttribute('name')
-    const elementVal = clickedElement.getAttribute('value')
-    // const results-search-box-sub-tab
-    console.log('in results handleSearchTabClick clickedElement: ', clickedElement);
-    console.log('in results handleSearchTabClick elementVal: ', elementVal);
-    console.log('in results handleSearchTabClickm elementName: ', elementName);
+  // getStateCriteria(min) {
+  //   switch(parseInt(this.state.criterionValue)) {
+  //     case 1: {
+  //       if (min) {
+  //         return this.state.floorSpaceMin;
+  //       } else {
+  //         return this.state.floorSpaceMax;
+  //       }
+  //     }
+  //     case 2: {
+  //
+  //     }
+  //     case 3: {
+  //
+  //     }
+  //     case 4: {
+  //
+  //     }
+  //   }
+  // }
+  incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue }) {
 
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
     if (elementName === 'moreThan') {
       if (elementVal === 'up') {
-        if (floorSpaceMin < floorSpaceMax - 10) {
-          this.setState({ floorSpaceMin: floorSpaceMin + 10 })
+        if (floorSpaceMin < floorSpaceMax - searchCriteria[criterionValue].increment) {
+          this.setState({ floorSpaceMin: floorSpaceMin + increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+          });
         }
       } else {
-        if (floorSpaceMin > 0) {
-          this.setState({ floorSpaceMin: floorSpaceMin - 10 })
+        if (floorSpaceMin > moreThanLimit) {
+          this.setState({ floorSpaceMin: floorSpaceMin - increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+          });
         }
       }
     } else {
       if (elementVal === 'up') {
-        if (floorSpaceMin < 1000) {
-          this.setState({ floorSpaceMax: floorSpaceMax + 10 })
+        if (floorSpaceMax < lessThanLimit) {
+          this.setState({ floorSpaceMax: floorSpaceMax + increment }, () => {
+              this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+          });
         }
       } else {
-        if (floorSpaceMax - 10 > floorSpaceMin) {
-          this.setState({ floorSpaceMax: floorSpaceMax - 10 })
+        if (floorSpaceMax - increment > floorSpaceMin) {
+          this.setState({ floorSpaceMax: floorSpaceMax - increment }, () => {
+            this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+          });
         }
       }
     }
   }
 
-  renderSizeCriterionDetails() {
+  incrementSecondCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue }) {
+
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+    if (elementName === 'moreThan') {
+      if (elementVal === 'up') {
+        if (bedroomsMin < bedroomsMax - searchCriteria[criterionValue].increment) {
+          this.setState({ bedroomsMin: bedroomsMin + increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+          });
+        }
+      } else {
+        if (bedroomsMin > moreThanLimit) {
+          this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+          });
+        }
+      }
+    } else {
+      if (elementVal === 'up') {
+        if (bedroomsMax < lessThanLimit) {
+          this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
+              this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+          });
+        }
+      } else {
+        if (bedroomsMax - increment > bedroomsMin) {
+          this.setState({ bedroomsMax: bedroomsMax - increment }, () => {
+            this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+          });
+        }
+      }
+    }
+  }
+
+  incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue }) {
+    console.log('in results v increment: ', increment);
+
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+    if (elementName === 'moreThan') {
+      if (elementVal === 'up') {
+        if (priceMin < priceMax - searchCriteria[criterionValue].increment) {
+          this.setState({ priceMin: priceMin + increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.priceMin });
+          });
+        }
+      } else {
+        if (priceMin > moreThanLimit) {
+          this.setState({ priceMin: priceMin - increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.priceMin });
+          });
+        }
+      }
+    } else {
+      if (elementVal === 'up') {
+        if (priceMax < lessThanLimit) {
+          this.setState({ priceMax: priceMax + increment }, () => {
+              this.setState({ searchDisplayValueMax: this.state.priceMax });
+          });
+        }
+      } else {
+        if (priceMax - increment > priceMin) {
+          this.setState({ priceMax: priceMax - increment }, () => {
+            this.setState({ searchDisplayValueMax: this.state.priceMax });
+          });
+        }
+      }
+    }
+  }
+  incrementFourthCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue }) {
+    console.log('in results v increment: ', increment);
+
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+    if (elementName === 'moreThan') {
+      if (elementVal === 'up') {
+        if (stationMin < stationMax - searchCriteria[criterionValue].increment) {
+          this.setState({ stationMin: stationMin + increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.stationMin });
+          });
+        }
+      } else {
+        if (stationMin > moreThanLimit) {
+          this.setState({ stationMin: stationMin - increment }, () => {
+            this.setState({ searchDisplayValueMin: this.state.stationMin });
+          });
+        }
+      }
+    } else {
+      if (elementVal === 'up') {
+        if (stationMax < lessThanLimit) {
+          this.setState({ stationMax: stationMax + increment }, () => {
+              this.setState({ searchDisplayValueMax: this.state.stationMax });
+          });
+        }
+      } else {
+        if (stationMax - increment > stationMin) {
+          this.setState({ stationMax: stationMax - increment }, () => {
+            this.setState({ searchDisplayValueMax: this.state.stationMax });
+          });
+        }
+      }
+    }
+  }
+
+  incrementSearchSpaceInput(event) {
+    // const { space, bedrooms, station, price } = searchCriteria;
+
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+    const { criterionValue } = this.state;
+    const increment = searchCriteria[criterionValue].increment;
+    // console.log('in results incrementSearchSpaceInput increment: ', increment);
+    const moreThanLimit = searchCriteria[criterionValue].moreThanLimit;
+    const lessThanLimit = searchCriteria[criterionValue].lessThanLimit;
+    // console.log('in results incrementSearchSpaceInput moreThanLimit: ', moreThanLimit);
+    // console.log('in results incrementSearchSpaceInput lessThanLimit: ', lessThanLimit);
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    const elementVal = clickedElement.getAttribute('value')
+    // const stateCriteria = this.getStateCriteria(min);
+    // const results-search-box-sub-tab
+    // console.log('in results incrementSearchSpaceInput clickedElement: ', clickedElement);
+    // console.log('in results incrementSearchSpaceInput elementVal: ', elementVal);
+    // console.log('in results incrementSearchSpaceInput elementName: ', elementName);
+    // console.log('in results incrementSearchSpaceInput searchCriteria[0]: ', searchCriteria[0].lowerState);
+
+    if (this.state.criterionValue == 0) {
+      this.incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue });
+    } else if (this.state.criterionValue == 1) {
+      this.incrementSecondCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue });
+    } else if (this.state.criterionValue == 2) {
+      this.incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue });
+    }  else if (this.state.criterionValue == 3) {
+      this.incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue });
+    }
+  }
+
+  // const searchCriteriaObject = {
+  //   space: {lowerLabel: 'More than', upperLabel: 'Less than', units: '(sq m)', increment: 10, lessThanLimit: 0, moreThanLimit: 1000, maxMinAdjustment: 10, startMin: 20, startMax: 70 },
+  //   bedrooms: {lowerLabel: 'More than', upperLabel: 'Fewer than', units: 'rooms', increment: 1, lessThanLimit: 0, moreThanLimit: 10, maxMinAdjustment: 0, startMin: 0, startMax: 1 },
+  //   station: {lowerLabel: 'More than', upperLabel: 'Less than', units: 'mins', increment: 1, lessThanLimit: 0, moreThanLimit: 20, maxMinAdjustment: 10, startMin: 5, startMax: 7 },
+  //   price: {lowerLabel: 'More than', upperLabel: 'Less than', units: '$', increment: 500, lessThanLimit: 0, moreThanLimit: 10000, maxMinAdjustment: 100, startMin: 1000, startMax: 2000 }
+  // }
+
+
+  renderCriterionDetails() {
+    // const { space, bedrooms, station, price } = searchCriteria;
+    const { criterionValue } = this.state;
+    // searchCriteria imported above from search_criteria.js
     return (
-      <div>
+      <div className="criterion-box-details-box">
         <div className="search-criteria-details-each-box">
-          <div className="search-criteria-details-each-label">More than <small>(sq m)</small></div>
+          <div className="search-criteria-details-each-label">{searchCriteria[criterionValue].lowerLabel} <small>{searchCriteria[criterionValue].units}</small></div>
           <div className="search-criteria-details-each-input-box">
-              <div className="search-criteria-details-input-increment"><i value="down" name="moreThan" className="fa fa-angle-down" onClick={this.incrementSearchInput.bind(this)}></i></div>
-              <div className="search-criteria-details-input-display">{this.state.floorSpaceMin}</div>
-              <div className="search-criteria-details-input-increment"><i value="up" name="moreThan" className="fa fa-angle-up" onClick={this.incrementSearchInput.bind(this)}></i></div>
+              <div className="search-criteria-details-input-increment"><i value="down" name="moreThan" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+              <div className="search-criteria-details-input-display">{this.state.searchDisplayValueMin}</div>
+              <div className="search-criteria-details-input-increment"><i value="up" name="moreThan" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
           </div>
         </div>
         <div className="search-criteria-details-each-box">
-          <div className="search-criteria-details-each-label">Less than</div>
+          <div className="search-criteria-details-each-label">{searchCriteria[criterionValue].upperLabel}</div>
           <div className="search-criteria-details-each-input-box">
-            <div className="search-criteria-details-input-increment"><i value="down" className="fa fa-angle-down" onClick={this.incrementSearchInput.bind(this)}></i></div>
-            <div className="search-criteria-details-input-display">{this.state.floorSpaceMax}</div>
-            <div className="search-criteria-details-input-increment"><i value="up" className="fa fa-angle-up" onClick={this.incrementSearchInput.bind(this)}></i></div>
+            <div className="search-criteria-details-input-increment"><i value="down" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+            <div className="search-criteria-details-input-display">{this.state.searchDisplayValueMax}</div>
+            <div className="search-criteria-details-input-increment"><i value="up" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
           </div>
         </div>
       </div>
@@ -851,16 +1036,25 @@ class Results extends Component {
     );
   }
 
-  renderCriterionBoxDetails() {
-    console.log('in results renderCriterionBoxDetails, this.state.criterionValue, this.state.criterionName: ', this.state.criterionValue, this.state.criterionName);
-    switch (parseInt(this.state.criterionValue)) {
-      case 1: return <div className="criterion-box-details-box">{this.renderSizeCriterionDetails()}</div>;
-      case 2: return <div className="criterion-box-details-box">{this.renderBedroomCriterionDetails()}</div>;
-      case 3: return <div className="criterion-box-details-box">{this.renderStationCriterionDetails()}</div>;
-      case 4: return <div className="criterion-box-details-box">{this.renderPriceCriterionDetails()}</div>;
-      default: return <div className="criterion-box-details-box">No selection</div>;
-    }
-  }
+  // renderCriterionBoxDetails() {
+  //
+  //   console.log('in results renderCriterionBoxDetails, this.state.criterionValue, this.state.criterionName: ', this.state.criterionValue, this.state.criterionName);
+  //   switch (parseInt(this.state.criterionValue)) {
+  //     case 0: {
+  //       return <div className="criterion-box-details-box">{this.renderSizeCriterionDetails()}</div>;
+  //     }
+  //     case 1: {
+  //       return <div className="criterion-box-details-box">{this.renderBedroomCriterionDetails()}</div>;
+  //     }
+  //     case 2: {
+  //       return <div className="criterion-box-details-box">{this.renderStationCriterionDetails()}</div>;
+  //     }
+  //     case 3: {
+  //       return <div className="criterion-box-details-box">{this.renderPriceCriterionDetails()}</div>;
+  //     }
+  //     default: return <div className="criterion-box-details-box">No selection</div>;
+  //   }
+  // }
 
   // renderCriterionBoxDetails() {
   //   console.log('in results renderCriterionBoxDetails: ');
@@ -871,13 +1065,48 @@ class Results extends Component {
   //   );
   // }
 
-  unHighlightTab() {
-    const searchTabs = document.getElementsByClassName('results-search-box-sub-tab');
+  unHighlightTab(name) {
+    const searchTabs = document.getElementsByClassName(name);
     console.log('in results unHighlightTab elementVal: ', searchTabs);
     _.each(searchTabs, tab => {
       tab.setAttribute('style', 'background-color: white; color: black')
     })
+  }
 
+  setStartingDisplayValues(min) {
+    console.log('in results setStartingDisplayValues, this.state.criterionValue : ', this.state.criterionValue);
+    console.log('in results setStartingDisplayValues, this.state.floorSpaceMin : ', this.state.floorSpaceMin);
+    switch (parseInt(this.state.criterionValue)) {
+      case 0: {
+        if (min) {
+          return this.state.floorSpaceMin;
+        } else {
+          return this.state.floorSpaceMax;
+        }
+      }
+      case 1: {
+        if (min) {
+          return this.state.bedroomsMin;
+        } else {
+          return this.state.bedroomsMax;
+        }
+      }
+      case 2: {
+        if (min) {
+          return this.state.stationMin;
+        } else {
+          return this.state.stationMax;
+        }
+      }
+      case 3: {
+        if (min) {
+          return this.state.priceMin;
+        } else {
+          return this.state.priceMax;
+        }
+      }
+      default: return;
+    }
   }
 
   handleSearchTabClick(event) {
@@ -887,16 +1116,30 @@ class Results extends Component {
     // const results-search-box-sub-tab
     console.log('in results handleSearchTabClick elementVal: ', elementVal);
     console.log('in results handleSearchTabClickm elementName: ', elementName);
+
     if (!this.state.showCriterionBox) {
       clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
       this.setState({ criterionName: elementName, criterionValue: elementVal, showCriterionBox: true }, () => {
+        // this.unHighlightTab();
+        let min = true;
+        const searchDisplayValueMin = this.setStartingDisplayValues(min);
+        min = false;
+        const searchDisplayValueMax = this.setStartingDisplayValues(min);
+        this.setState({ searchDisplayValueMin, searchDisplayValueMax })
       })
-    } else if (this.state.showCriterionBox && elementVal !== this.state.criterionName) {
-        this.unHighlightTab();
+    } else if (this.state.showCriterionBox && (elementName !== this.state.criterionName)) {
+        this.unHighlightTab('results-search-box-sub-tab');
         clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
-        this.setState({ criterionName: elementName, criterionValue: elementVal })
+        this.setState({ criterionName: elementName, criterionValue: elementVal }, () => {
+          let min = true;
+          const searchDisplayValueMin = this.setStartingDisplayValues(min);
+          min = false;
+          const searchDisplayValueMax = this.setStartingDisplayValues(min);
+          this.setState({ searchDisplayValueMin, searchDisplayValueMax });
+        })
     } else {
-      this.setState({ criterionName: '', criterionValue: 0, showCriterionBox: false })
+      this.unHighlightTab('results-search-box-sub-tab');
+      this.setState({ criterionName: '', criterionValue: 0, showCriterionBox: false, searchDisplayValueMin: 0, searchDisplayValueMax: 0 });
     }
   }
 
@@ -906,8 +1149,9 @@ class Results extends Component {
   }
 
   showCriterionBox() {
+    // two criterion-close class divs for centering the title
     console.log('in results handleSearchTabClick: ');
-    if (this.state.showCriterionBox) {
+    // if (this.state.showCriterionBox) {
       return (
         <div className="search-criterion-box">
           <div className="search-criterion-box-title">
@@ -915,14 +1159,46 @@ class Results extends Component {
             {this.state.criterionName}
             <span className="search-criterion-close" onClick={this.handleSearchCriterionBoxClose.bind(this)}><i className="fa fa-window-close" aria-hidden="true"></i></span>
           </div>
-          {this.renderCriterionBoxDetails()}
+          {this.renderCriterionDetails()}
         </div>
       );
+    // }
+  }
+
+  handleMinMaxClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in results handleMinMaxClick: ', elementVal);
+
+    if (elementVal == 'min') {
+      if (this.state.incrementMax) {
+        this.unHighlightTab('search-criteria-increment-min-max')
+        this.setState({ incrementMin: true }, () => {
+          clickedElement.setAttribute('style', 'background-color: gray; color: white;');
+        });
+      }
+    } else {
+      if (this.state.incrementMin) {
+        this.unHighlightTab('search-criteria-increment-min-max')
+        this.setState({ incrementMax: true }, () => {
+
+          clickedElement.setAttribute('style', 'background-color: gray; color: white;');
+        })
+      }
     }
   }
 
   renderSearchArea() {
     // props of
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+
+    // bedroomsMin: searchCriteria[1].startMin,
+    // bedroomsMax: searchCriteria[1].startMax,
+    // stationMin: searchCriteria[2].startMin,
+    // stationMax: searchCriteria[2].startMax,
+    // priceMin: searchCriteria[3].startMin,
+    // priceMax: searchCriteria[3].startMax
+    // {this.state.showCriterionBox ? this.showCriterionBox() : ''}
     return (
       <div className="results-search-box container">
       <div className="results-search-box-row row">
@@ -935,48 +1211,54 @@ class Results extends Component {
             </div>
           </div>
           <div className="results-search-box-sub-box col-xs-12 col-sm-6 col-md-6">
-          {this.showCriterionBox()}
+          <div className="results-search-box-sub-box-box">
             <div className="results-search-box-sub">
-              <div value={1} name={'Floor Space'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={0} name={searchCriteria[0].title} style={{ backgroundColor: 'gray', color: 'white' }}className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Size
               </div>
               <div className="results-search-box-sub-display">
-                70 sq m ~ 120 sq m
+                {floorSpaceMin} sq m ~ {floorSpaceMax} sq m
               </div>
             </div>
             <div className="results-search-box-sub" >
-              <div value={2} name={'Bedrooms'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={1} name={searchCriteria[1].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
                 Bedrooms
               </div>
               <div className="results-search-box-sub-display">
-               1 ~ 2
+                {bedroomsMin} ~ {bedroomsMax}
               </div>
 
             </div>
             <div className="results-search-box-sub">
-              <div value={3} name={'Distance from Station'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Station
-              </div>
-              <div className="results-search-box-sub-display">
-                5 mins ~ 7 mins
-              </div>
+            <div value={2} name={searchCriteria[2].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+            Station
+            </div>
+            <div className="results-search-box-sub-display">
+            {stationMin} mins ~ {stationMax} mins
+            </div>
 
             </div>
             <div className="results-search-box-sub">
-              <div value={4} name={'Price'} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Price
-              </div>
-              <div className="results-search-box-sub-display">
-                $1500 ~ $3000
-              </div>
+            <div value={3} name={searchCriteria[3].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+            Price
+            </div>
+            <div className="results-search-box-sub-display">
+            ${priceMin} ~ ${priceMax}
+            </div>
 
+            </div>
+          </div>
+            <div className="search-criteria-increment-box">
+              <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick.bind(this)}>Min</div>
+              <div className="search-criteria-increment"><i value="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+              <div className="search-criteria-increment"><i value="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+              <div value='max' className="search-criteria-increment-min-max" style={this.state.incrementMax ? { backgroundColor: 'gray', color: 'white' } : { backgroundColor: 'white' }} onClick={this.handleMinMaxClick.bind(this)}>Max</div>
             </div>
           </div>
         </div>
       </div>
     );
   }
-
 
   render() {
     return (
