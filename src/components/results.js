@@ -843,18 +843,24 @@ class Results extends Component {
         // Allow max and min to be equal
         if (bedroomsMin < bedroomsMax) {
           this.setState({ bedroomsMin: bedroomsMin + increment }, () => {
-            // if (bedroomsMin == bedroomsMax) {
-            //   this.setState({ bedroomsExact: this.state.bedroomsMin });
-            //
-            // } else {
-            //   this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+            if (this.state.bedroomsMin == bedroomsMax) {
+              this.setState({ bedroomsExact: this.state.bedroomsMin });
+
+            }
+            // else {
+            //   // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
             // }
           });
-        }
+        } // end of bedroommMin < bedroom max
       } else {
         if (bedroomsMin > moreThanLimit) {
           this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
-            this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+            // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+          });
+        }
+        if (bedroomsMin == bedroomsMax) {
+          this.setState({ bedroomsMin: bedroomsMin - increment, bedroomsExact: null }, () => {
+            // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
           });
         }
       }// end of second if
@@ -862,7 +868,12 @@ class Results extends Component {
       if (elementName === 'up') {
         if (bedroomsMax < lessThanLimit) {
           this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
-              this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+              // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+          });
+        }
+        if (bedroomsMin == bedroomsMax) {
+          this.setState({ bedroomsMax: bedroomsMax + increment, bedroomsExact: null }, () => {
+            // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
           });
         }
       } else {
@@ -871,7 +882,10 @@ class Results extends Component {
         if (bedroomsMax > bedroomsMin) {
         // if (bedroomsMax - increment > bedroomsMin) {
           this.setState({ bedroomsMax: bedroomsMax - increment }, () => {
-            this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+            if (this.state.bedroomsMin == this.state.bedroomsMax) {
+              this.setState({ bedroomsExact: this.state.bedroomsMax });
+            }
+            // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
           });
         }
       }// end of innner if else
