@@ -649,6 +649,7 @@ body > div:first-child {
 
 .search-criteria-clear-all, .search-criteria-apply {
   border: 1px solid #ccc;
+  /* box-shadow: inset 0 1px 1px #ccc; */
   width: auto;
   /* height:  */
   font-weight: bold;
@@ -657,6 +658,20 @@ body > div:first-child {
   height: 30px;
   margin: 0 15px 0 15px;
   padding: 5px;
+}
+
+.search-criteria-apply-highlight {
+  border: 1px solid blue;
+  /* box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
+  width: auto;
+  /* height:  */
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 10px;
+  height: 30px;
+  margin: 0 15px 0 15px;
+  padding: 5px;
+
 }
 
 /* .search-criteria-apply {
