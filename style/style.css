@@ -637,7 +637,7 @@ body > div:first-child {
 
 .search-criteria-increment-min-max {
   border: 1px solid #ccc;
-  width: 60px;
+  width: 40px;
   /* height:  */
   font-weight: bold;
   font-size: 12px;
@@ -646,6 +646,29 @@ body > div:first-child {
   margin: 0 3px 0 3px;
   padding: 5px;
 }
+
+.search-criteria-clear-all, .search-criteria-apply {
+  border: 1px solid #ccc;
+  width: auto;
+  /* height:  */
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 10px;
+  height: 30px;
+  margin: 0 15px 0 15px;
+  padding: 5px;
+}
+
+/* .search-criteria-apply {
+  color: gray;
+  margin: 0 0 0 15px;
+}
+
+.search-criteria-apply:hover {
+  color: blue;
+  text-decoration: underline;
+} */
+
 
 .search-criteria-increment {
   font-size: 30px;
@@ -691,9 +714,9 @@ body > div:first-child {
   /* border: 1px solid #ccc; */
   height: 50px;
   width: 100%;
-  font-size: 10px;
+  font-size: 11.5px;
   padding: 5px;
-  font-weight: normal;
+  font-weight: bold;
   margin: 0 0 0 0;
 }
 
