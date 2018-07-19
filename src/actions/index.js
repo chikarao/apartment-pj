@@ -258,24 +258,27 @@ export function showEditReview() {
   return { type: SHOW_EDIT_REVIEW_MODAL };
 }
 
-export function searchFlatParameters(parameters) {
-  console.log('in actions searchFlatParameters, parameters:', parameters);
+export function searchFlatParameters(searchParameters) {
+  console.log('in actions searchFlatParameters, searchParameters:', searchParameters);
   //flip showResetPasswordModal
   return {
     type: SEARCH_FLAT_PARAMENTERS,
-    payload: parameters
+    payload: searchParameters
    };
 }
 
 // main fetchflats action for feature page;
 // gets mapbounds from gmap adn sends to api which sends back query results
-export function fetchFlats(mapBounds, callback) {
+export function fetchFlats(mapBounds, searchAttributes, callback) {
   // showLoading();
   const { north, south, east, west } = mapBounds;
+  const { price_max, price_min } = searchAttributes;
   console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
+  console.log('in actions index, fetchFlats searchAttributes: ', searchAttributes);
 
   return function (dispatch) {
-    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
+    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min } }, {
+    // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

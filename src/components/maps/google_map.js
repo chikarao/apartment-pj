@@ -258,7 +258,8 @@ class GoogleMap extends Component {
             console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
             console.log('in googlemap, fetchFlats call, this:', this);
             this.props.updateMapDimensions(MAP_DIMENSIONS);
-            this.props.fetchFlats(mapBounds, () => this.fetchFlatsCallback('google maps'));
+            const searchAttributes = { price_max: 10000000, price_min: 0 };
+            this.props.fetchFlats(mapBounds, searchAttributes, () => this.fetchFlatsCallback('google maps'));
             this.props.showLoading('google maps');
           }
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {

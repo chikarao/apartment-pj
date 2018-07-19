@@ -12,13 +12,15 @@ import {
   LIKES_BY_USER,
   DELETE_LIKE,
   SEARCH_FLAT_PARAMENTERS,
-  CLEAR_FLATS
+  CLEAR_FLATS,
+  UPDATE_SEARCH_FLAT_CRITERIA
 } from '../actions/types';
 
-export default function (state = {}, action) {
+export default function (state = { searchFlatParameters: {} }, action) {
   console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
+  
   switch (action.type) {
     case FETCH_FLATS:
       return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
@@ -46,7 +48,12 @@ export default function (state = {}, action) {
       return { ...state, editFlatData: action.payload };
 
     case SEARCH_FLAT_PARAMENTERS:
-      return { ...state, searchflatParameters: action.payload };
+      const searchFlatParameters = state.searchFlatParameters;
+      _.each(Object.keys(action.payload), (key) => {
+        searchFlatParameters[key] = action.payload[key];
+        console.log('in flats reducer, SEARCH_FLAT_PARAMENTERS, key: ', key);
+      });
+      return { ...state, searchFlatParameters };
 
     // Views and likes moved to flats reducer so that
     // they can be automatically updated when flats update

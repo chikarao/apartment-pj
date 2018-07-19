@@ -76,6 +76,7 @@ class Results extends Component {
     tabSelected: false,
     searchCriteriaInpuStarted: false,
     selectedTabArray: []
+    // searchAttributes: {}
     // *********Pagination
   };
   // this.handleClick = this.handleClick.bind(this);
@@ -153,8 +154,21 @@ class Results extends Component {
     // this.props.startUpIndex();
     //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
     // fetchflats based on above bounds
+    const searchAttributes = {
+      price_max: this.state.priceMax,
+      price_min: this.state.priceMin,
+      size_min: this.state.floorSpaceMin,
+      size_max: this.state.floorSpaceMax,
+      bedrooms_min: this.state.bedroomsMin,
+      bedrooms_max: this.state.bedroomsMax,
+      bedrooms_exact: this.state.bedroomsExact,
+      station_min: this.state.stationMin,
+      station_max: this.state.stationMax,
+    };
 
-    this.props.fetchFlats(mapBounds, () => {});
+    this.props.searchFlatParameters(searchAttributes);
+
+    this.props.fetchFlats(mapBounds, searchAttributes, () => {});
     if (this.props.auth.authenticated) {
       this.props.fetchLikesByUser();
     }
@@ -800,7 +814,7 @@ class Results extends Component {
   // Each increment function for each tab, size, bedroom, station, price;
   // could not refactor to one function since cannot use a variable to specify key of state object!!!!!
   incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
-
+    // const { searchFlatParameters } = this.props.
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
     if (!incrementMax) {
       if (elementName === 'up') {
@@ -808,12 +822,14 @@ class Results extends Component {
           this.setState({ floorSpaceMin: floorSpaceMin + increment }, () => {
             // only need if display window is used, but now onhold
             // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+            this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
           });
         }
       } else {
         if (floorSpaceMin > moreThanLimit) {
           this.setState({ floorSpaceMin: floorSpaceMin - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+            this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
           });
         }
       }
@@ -822,12 +838,14 @@ class Results extends Component {
         if (floorSpaceMax < lessThanLimit) {
           this.setState({ floorSpaceMax: floorSpaceMax + increment }, () => {
               // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+              this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
           });
         }
       } else {
         if (floorSpaceMax - increment > floorSpaceMin) {
           this.setState({ floorSpaceMax: floorSpaceMax - increment }, () => {
             // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+            this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
           });
         }
       }
@@ -844,8 +862,9 @@ class Results extends Component {
         if (bedroomsMin < bedroomsMax) {
           this.setState({ bedroomsMin: bedroomsMin + increment }, () => {
             if (this.state.bedroomsMin == bedroomsMax) {
-              this.setState({ bedroomsExact: this.state.bedroomsMin });
-
+              this.setState({ bedroomsExact: this.state.bedroomsMin }, () => {
+                this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsExact });
+              });
             }
             // else {
             //   // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
@@ -856,11 +875,13 @@ class Results extends Component {
         if (bedroomsMin > moreThanLimit) {
           this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
           });
         }
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMin: bedroomsMin - increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
           });
         }
       }// end of second if
@@ -869,11 +890,13 @@ class Results extends Component {
         if (bedroomsMax < lessThanLimit) {
           this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
               // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
+              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
           });
         }
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMax: bedroomsMax + increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
+            this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
           });
         }
       } else {
@@ -883,7 +906,9 @@ class Results extends Component {
         // if (bedroomsMax - increment > bedroomsMin) {
           this.setState({ bedroomsMax: bedroomsMax - increment }, () => {
             if (this.state.bedroomsMin == this.state.bedroomsMax) {
-              this.setState({ bedroomsExact: this.state.bedroomsMax });
+              this.setState({ bedroomsExact: this.state.bedroomsMax }, () => {
+                this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsExact });
+              });
             }
             // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
           });
@@ -899,13 +924,15 @@ class Results extends Component {
       if (elementName === 'up') {
         if (stationMin < stationMax - searchCriteria[criterionValue].increment) {
           this.setState({ stationMin: stationMin + increment }, () => {
-            this.setState({ searchDisplayValueMin: this.state.stationMin });
+            // this.setState({ searchDisplayValueMin: this.state.stationMin });
+            this.props.searchFlatParameters({ station_min: this.state.stationMin });
           });
         }
       } else {
         if (stationMin > moreThanLimit) {
           this.setState({ stationMin: stationMin - increment }, () => {
-            this.setState({ searchDisplayValueMin: this.state.stationMin });
+            // this.setState({ searchDisplayValueMin: this.state.stationMin });
+            this.props.searchFlatParameters({ station_min: this.state.stationMin });
           });
         }
       }
@@ -913,13 +940,15 @@ class Results extends Component {
       if (elementName === 'up') {
         if (stationMax < lessThanLimit) {
           this.setState({ stationMax: stationMax + increment }, () => {
-              this.setState({ searchDisplayValueMax: this.state.stationMax });
+              // this.setState({ searchDisplayValueMax: this.state.stationMax });
+              this.props.searchFlatParameters({ station_max: this.state.stationMax });
           });
         }
       } else {
         if (stationMax - increment > stationMin) {
           this.setState({ stationMax: stationMax - increment }, () => {
-            this.setState({ searchDisplayValueMax: this.state.stationMax });
+            // this.setState({ searchDisplayValueMax: this.state.stationMax });
+            this.props.searchFlatParameters({ station_max: this.state.stationMax });
           });
         }
       }
@@ -932,13 +961,15 @@ class Results extends Component {
       if (elementName === 'up') {
         if (priceMin < priceMax - searchCriteria[criterionValue].increment) {
           this.setState({ priceMin: priceMin + increment }, () => {
-            this.setState({ searchDisplayValueMin: this.state.priceMin });
+            // this.setState({ searchDisplayValueMin: this.state.priceMin });
+            this.props.searchFlatParameters({ price_min: this.state.priceMin });
           });
         }
       } else {
         if (priceMin > moreThanLimit) {
           this.setState({ priceMin: priceMin - increment }, () => {
-            this.setState({ searchDisplayValueMin: this.state.priceMin });
+            // this.setState({ searchDisplayValueMin: this.state.priceMin });
+            this.props.searchFlatParameters({ price_min: this.state.priceMin });
           });
         }
       }
@@ -946,13 +977,15 @@ class Results extends Component {
       if (elementName === 'up') {
         if (priceMax < lessThanLimit) {
           this.setState({ priceMax: priceMax + increment }, () => {
-              this.setState({ searchDisplayValueMax: this.state.priceMax });
+              // this.setState({ searchDisplayValueMax: this.state.priceMax });
+              this.props.searchFlatParameters({ price_max: this.state.priceMax });
           });
         }
       } else {
         if (priceMax - increment > priceMin) {
           this.setState({ priceMax: priceMax - increment }, () => {
-            this.setState({ searchDisplayValueMax: this.state.priceMax });
+            // this.setState({ searchDisplayValueMax: this.state.priceMax });
+            this.props.searchFlatParameters({ price_max: this.state.priceMax });
           });
         }
       }
@@ -1209,28 +1242,36 @@ class Results extends Component {
       case 0:
       // console.log('in results userInputStarted 0: ', this.state.criterionValue);
       if (tabCount[0] < 2) {
-        this.setState({ floorSpaceMax: searchCriteria[0].startMax });
+        this.setState({ floorSpaceMax: searchCriteria[0].startMax }, () => {
+          this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+        });
       }
 
       break;
       case 1:
       // console.log('in results userInputStarted 1: ', this.state.criterionValue);
       if (tabCount[1] < 2) {
-        this.setState({ bedroomsMax: searchCriteria[1].startMax });
+        this.setState({ bedroomsMax: searchCriteria[1].startMax }, () => {
+          this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+        });
       }
       break;
 
       case 2:
       // console.log('in results userInputStarted 2: ', this.state.criterionValue);
       if (tabCount[2] < 2) {
-        this.setState({ stationMax: searchCriteria[2].startMax });
+        this.setState({ stationMax: searchCriteria[2].startMax }, () => {
+          this.props.searchFlatParameters({ station_max: this.state.stationMax });
+        });
       }
       break;
 
       case 3:
       // console.log('in results userInputStarted 3: ', this.state.criterionValue);
       if (!tabCount[3] < 2) {
-        this.setState({ priceMax: searchCriteria[3].startMax });
+        this.setState({ priceMax: searchCriteria[3].startMax }, () => {
+          this.props.searchFlatParameters({ price_max: this.state.priceMax });
+        });
       }
       break;
     }
@@ -1293,7 +1334,9 @@ class Results extends Component {
       stationMax: searchCriteria[2].startBigMax,
       priceMin: 0,
       priceMax: searchCriteria[3].startBigMax
-
+    }, () => {
+      const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax  } = this.state;
+      this.props.searchFlatParameters({ size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax });
     });
   }
 
@@ -1301,7 +1344,8 @@ class Results extends Component {
     console.log('in results handleSearchApplyClick: ');
     const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
-
+    const searchAttributes = { price_min: priceMin, price_max: priceMax };
+    this.props.fetchFlats(this.props.mapDimensions.mapBounds, searchAttributes, () => {});
   }
 
   renderSearchArea() {
