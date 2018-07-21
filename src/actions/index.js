@@ -273,12 +273,12 @@ export function searchFlatParameters(searchParameters) {
 export function fetchFlats(mapBounds, searchAttributes, callback) {
   // showLoading();
   const { north, south, east, west } = mapBounds;
-  const { price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact } = searchAttributes;
+  const { price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max } = searchAttributes;
   console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
   console.log('in actions index, fetchFlats searchAttributes: ', searchAttributes);
 
   return function (dispatch) {
-    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact } }, {
+    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max } }, {
     // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
