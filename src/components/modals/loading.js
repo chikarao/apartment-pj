@@ -15,11 +15,12 @@ class Loading extends Component {
   //   };
   // }
 
-  componentDidMount() {
-  }
+  // componentDidMount() {
+  // }
 
   renderLoading() {
     showHideClassName = this.props.show ? 'loading display-block' : 'loading display-none';
+    // showHideClassName = 'loading display-block'
     console.log('in modal, render showHideClassName:', showHideClassName);
     console.log('in modal, render this.props.show:', this.props.show);
     console.log('in modal, render this.props:', this.props);

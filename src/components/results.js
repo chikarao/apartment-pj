@@ -1043,6 +1043,15 @@ class Results extends Component {
     // console.log('in results incrementSearchSpaceInput moreThanLimit: ', moreThanLimit);
     // console.log('in results incrementSearchSpaceInput lessThanLimit: ', lessThanLimit);
     const clickedElement = event.target;
+    console.log('in results incrementSearchSpaceInput clickedElement: ', clickedElement);
+
+    // take off gray from plus minus button and put back
+    clickedElement.style.color = 'white';
+    setTimeout(() => {
+      clickedElement.style.color = 'gray';
+      // console.log('in results incrementSearchSpaceInput in setTimeout clickedElement: ', clickedElement);
+    }, 50);
+
     const elementName = clickedElement.getAttribute('name');
     const elementVal = clickedElement.getAttribute('value');
     // incrementMax is a boolean to tell if to increment the
@@ -1357,6 +1366,15 @@ class Results extends Component {
     console.log('in results handleSearchClearClick: ', elementVal);
     this.unHighlightTab('results-search-box-sub-tab');
 
+    // take off gray from plus minus button and put back
+    clickedElement.style.color = 'white';
+    // setTimeout(`${this.setColorBack(clickedElement)}`, 1000);
+    // setTimeout(this.setColorBack(clickedElement), 10000);
+    setTimeout(() => {
+      clickedElement.style.color = 'black';
+      // console.log('in results incrementSearchSpaceInput in setTimeout clickedElement: ', clickedElement);
+    }, 50);
+
     this.setState({
       searchCriteriaInpuStarted: false,
       selectedTabArray: [],
@@ -1376,6 +1394,7 @@ class Results extends Component {
   }
 
   handleSearchApplyClick() {
+    this.props.showLoading();
     console.log('in results handleSearchApplyClick: ');
     const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
@@ -1385,11 +1404,14 @@ class Results extends Component {
 
     console.log('in results handleSearchApplyClick, searchAttributes: ', searchAttributes);
     console.log('in results handleSearchApplyClick, this.props.searchFlatParams: ', this.props.searchFlatParams);
-    this.props.fetchFlats(this.props.mapDimensions.mapBounds, this.props.searchFlatParams, () => {});
+    this.props.fetchFlats(this.props.mapDimensions.mapBounds, this.props.searchFlatParams, () => { this.searchApplyCallback(); });
+  }
+
+  searchApplyCallback() {
+    this.props.showLoading();
   }
 
   renderSearchArea() {
-
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
     // <div className="search-criteria-clear" onClick={this.handleSearchClearClick.bind(this)}>Clear</div>
     // props of

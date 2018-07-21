@@ -1748,6 +1748,10 @@ form {
 .spinner {
   padding-top: 20px;
   font-size: 18px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ***************FILE UPLOAD************** */
@@ -2170,7 +2174,11 @@ form {
 }
 
 .loading-spinner {
-  margin: 200px;
+  margin-top: 200px;
+  text-align: center;
+  /* display: flex;
+  justify-content: center;
+  align-content: center; */
 }
 
 .modal-main {
