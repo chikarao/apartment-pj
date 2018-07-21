@@ -261,6 +261,7 @@ export function showEditReview() {
 export function searchFlatParameters(searchParameters) {
   console.log('in actions searchFlatParameters, searchParameters:', searchParameters);
   //flip showResetPasswordModal
+  // callback();
   return {
     type: SEARCH_FLAT_PARAMENTERS,
     payload: searchParameters
@@ -272,12 +273,12 @@ export function searchFlatParameters(searchParameters) {
 export function fetchFlats(mapBounds, searchAttributes, callback) {
   // showLoading();
   const { north, south, east, west } = mapBounds;
-  const { price_max, price_min } = searchAttributes;
+  const { price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact } = searchAttributes;
   console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
   console.log('in actions index, fetchFlats searchAttributes: ', searchAttributes);
 
   return function (dispatch) {
-    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min } }, {
+    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact } }, {
     // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
@@ -514,7 +515,7 @@ export function fetchMessage() {
 // Gets map dimansions (lat, lng, zoom and center);
 // Requred to render map when there are no flats in the panned area
 export function updateMapDimensions(mapDimensions) {
-  console.log('in actions index, updateMapBounds: ', mapDimensions);
+  console.log('in actions index, updateMapDimensions: ', mapDimensions);
   return {
     type: UPDATE_MAP_DIMENSIONS,
     payload: mapDimensions

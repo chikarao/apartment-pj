@@ -202,7 +202,8 @@ class GoogleMap extends Component {
         // calls action updateMapDimensions for updating mapDimensions state
         // mapDimensions is used to render map when flats search result is empty
         google.maps.event.addListener(map, 'idle', () => {
-          console.log('in googlemap, map idle listener fired');
+          console.log('in googlemap, map idle listener fired, map', map);
+          console.log('in googlemap, map idle listener fired, map.getBounds()', map.getBounds());
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
           //   this.state.markersArray[i].setMap(null);
           // }
@@ -258,8 +259,8 @@ class GoogleMap extends Component {
             console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
             console.log('in googlemap, fetchFlats call, this:', this);
             this.props.updateMapDimensions(MAP_DIMENSIONS);
-            const searchAttributes = { price_max: 10000000, price_min: 0 };
-            this.props.fetchFlats(mapBounds, searchAttributes, () => this.fetchFlatsCallback('google maps'));
+            const searchAttributes = { price_max: 10000000, price_min: 0, bedrooms_max: 100, bedrooms_min: 0, bedrooms_exact: null };
+            this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
             this.props.showLoading('google maps');
           }
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
@@ -568,6 +569,7 @@ function mapStateToProps(state) {
   return {
     imageIndex: state.imageIndex,
     mapBounds: state.mapBounds,
+    searchFlatParams: state.flats.searchFlatParameters
     // flats: state.flats
   };
 }

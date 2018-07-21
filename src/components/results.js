@@ -112,7 +112,7 @@ class Results extends Component {
     // const lngOffsetEast = -122.5376 - initialPosition.lng; // about -.13
 
     console.log('in results componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
-    console.log('in results componentDidMount, this.props.searchFlatParams: ', this.props.searchFlatParams);
+    // console.log('in results componentDidMount, this.props.searchFlatParams: ', this.props.searchFlatParams);
 
     // const mapBounds = {
     //   east: (initialPosition.lng + lngOffsetEast),
@@ -124,51 +124,79 @@ class Results extends Component {
     // }
 
     let mapBounds = {};
+    const object = this.props.searchFlatParams;
+    const searchEmpty = _.isEmpty(this.props.searchFlatParams);
 
-    if (this.props.searchFlatParams) {
-      const { lat, lng } = this.props.searchFlatParams;
-      localStorage.setItem('lat', lat);
-      localStorage.setItem('lng', lng);
-      localStorage.setItem('searchParams', this.props.searchFlatParams)
-      console.log('in results componentDidMount, lat, lng: ', lat, lng);
-      mapBounds = {
-        east: (lng + lngOffsetEast),
-        west: (lng + lngOffsetWest),
-        north: (lat + latOffsetNorth),
-        south: (lat + latOffsetSouth)
+    const testBool = 'lat' in object;
+    console.log('in results componentDidMount, testBool: ', testBool);
+    console.log('in results componentDidMount, object: ', object);
+    // if (object!== undefined) {
+    // if (!searchEmpty) {
+      if (!searchEmpty && ('lat' in object)) {
+        const { lat, lng } = this.props.searchFlatParams;
+        const storedLat = parseFloat(localStorage.getItem('lat'));
+        const storedLng = parseFloat(localStorage.getItem('lng'));
+        // store lat lng for when page is reloaded
+        localStorage.setItem('lat', lat);
+        localStorage.setItem('lng', lng);
+
+        console.log('in results componentDidMount, lat, lng: ', lat, lng);
+        console.log('in results componentDidMount, if this.props.searchFlatParams: ', this.props.searchFlatParams);
+        console.log('in results componentDidMount, if this.props.mapDimensions: ', this.props.mapDimensions);
+        // console.log('in results componentDidMount, storedLat, in if storedLng: ', storedLat, storedLng);
+        // set map bounds on offsets defined above
+        mapBounds = {
+          east: (lng + lngOffsetEast),
+          west: (lng + lngOffsetWest),
+          north: (lat + latOffsetNorth),
+          south: (lat + latOffsetSouth)
+        };
+        console.log('in results componentDidMount, in if mapBounds: ', mapBounds);
+      } else {
+        // retrieve lat lng when reloaded
+        const storedLat = parseFloat(localStorage.getItem('lat'));
+        const storedLng = parseFloat(localStorage.getItem('lng'));
+        // const mapZoom = parseFloat(localStorage.getItem('mapZoom'));
+        // const searchParams = parseFloat(localStorage.getItem('searchParams'));
+        console.log('in results componentDidMount, else this.props.searchFlatParams: ', this.props.searchFlatParams);
+        console.log('in results componentDidMount, storedLat, storedLng, mapZoom: ', storedLat, storedLng);
+        mapBounds = {
+          east: (storedLng + lngOffsetEast),
+          west: (storedLng + lngOffsetWest),
+          north: (storedLat + latOffsetNorth),
+          south: (storedLat + latOffsetSouth)
+        };
+        console.log('in results componentDidMount, in else with stored latlng mapBounds: ', mapBounds);
+      }
+      // this.props.startUpIndex();
+      // initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
+      // fetchflats based on above bounds
+      const searchAttributes = {
+        price_max: this.state.priceMax,
+        price_min: this.state.priceMin,
+        size_min: this.state.floorSpaceMin,
+        size_max: this.state.floorSpaceMax,
+        bedrooms_min: this.state.bedroomsMin,
+        bedrooms_max: this.state.bedroomsMax,
+        bedrooms_exact: this.state.bedroomsExact,
+        // bedrooms_exact: 1,
+        station_min: this.state.stationMin,
+        station_max: this.state.stationMax
       };
-      console.log('in results componentDidMount, mapBounds: ', mapBounds);
-    } else {
-      const storedLat = parseFloat(localStorage.getItem('lat'));
-      const storedLng = parseFloat(localStorage.getItem('lng'));
-      const searchParams = parseFloat(localStorage.getItem('searchParams'));
-      console.log('in results componentDidMount, storedLat, storedLng, searchParams: ', storedLat, storedLng, searchParams);
-      mapBounds = {
-        east: (storedLng + lngOffsetEast),
-        west: (storedLng + lngOffsetWest),
-        north: (storedLat + latOffsetNorth),
-        south: (storedLat + latOffsetSouth)
-      };
-      console.log('in results componentDidMount, mapBounds: ', mapBounds);
-    }
-    // this.props.startUpIndex();
-    //initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
-    // fetchflats based on above bounds
-    const searchAttributes = {
-      price_max: this.state.priceMax,
-      price_min: this.state.priceMin,
-      size_min: this.state.floorSpaceMin,
-      size_max: this.state.floorSpaceMax,
-      bedrooms_min: this.state.bedroomsMin,
-      bedrooms_max: this.state.bedroomsMax,
-      bedrooms_exact: this.state.bedroomsExact,
-      station_min: this.state.stationMin,
-      station_max: this.state.stationMax,
-    };
 
-    this.props.searchFlatParameters(searchAttributes);
+      console.log('in results componentDidMount, searchAttributes: ', searchAttributes);
+      console.log('in results componentDidMount, before fetchflats mapBounds: ', mapBounds);
+      console.log('in results componentDidMount, before fetchflats, this.props.searchFlatParams : ',  this.props.searchFlatParams);
+      // set app state for search parameter with serch attributes with initial values from construction
+      this.props.searchFlatParameters(searchAttributes);
+      // fetch flats
+      if (this.props.searchFlatParams) {
+      // if (!searchEmpty) {
+      this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => {
+        console.log('in results componentDidMount, fetchFlats: ');
+      });
+      }
 
-    this.props.fetchFlats(mapBounds, searchAttributes, () => {});
     if (this.props.auth.authenticated) {
       this.props.fetchLikesByUser();
     }
@@ -221,10 +249,12 @@ class Results extends Component {
       console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       console.log('here is latLngAve: ', latLngAve);
+      // console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
 
       const storedLat = localStorage.getItem('lat');
       const storedLng = localStorage.getItem('lng');
-      const initialPosition = this.props.searchFlatParams ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+      // const initialPosition = { lat: storedLat, lng: storedLng }
+      const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
       console.log('results, renderMap, initialPosition: ', initialPosition);
 
       return (
@@ -262,7 +292,8 @@ class Results extends Component {
       // if (this.props.searchFlatParams) {
         const storedLat = parseFloat(localStorage.getItem('lat'));
         const storedLng = parseFloat(localStorage.getItem('lng'));
-        const initialPosition = this.props.searchFlatParams ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+        const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+        // const initialPosition = { lat: storedLat, lng: storedLng }
         console.log('results, renderMap, else if emptyFlat: ', initialPosition);
         // const initialPosition = { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
         return (
@@ -875,13 +906,13 @@ class Results extends Component {
         if (bedroomsMin > moreThanLimit) {
           this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedroomsExact: null });
           });
         }
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMin: bedroomsMin - increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedroomsExact: null });
           });
         }
       }// end of second if
@@ -890,13 +921,13 @@ class Results extends Component {
         if (bedroomsMax < lessThanLimit) {
           this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
               // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
-              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax, bedroomsExact: null });
           });
         }
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMax: bedroomsMax + increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+            this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax, bedroomsExact: null });
           });
         }
       } else {
@@ -907,8 +938,10 @@ class Results extends Component {
           this.setState({ bedroomsMax: bedroomsMax - increment }, () => {
             if (this.state.bedroomsMin == this.state.bedroomsMax) {
               this.setState({ bedroomsExact: this.state.bedroomsMax }, () => {
-                this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsExact });
+                this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsMax });
               });
+            } else {
+              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
             }
             // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
           });
@@ -1267,8 +1300,10 @@ class Results extends Component {
       break;
 
       case 3:
-      // console.log('in results userInputStarted 3: ', this.state.criterionValue);
-      if (!tabCount[3] < 2) {
+      // console.log('in results setStateMaxToNormal 3: ', this.state.criterionValue);
+      // console.log('in results setStateMaxToNormal 3, selectedTabArray: ', selectedTabArray);
+      // console.log('in results setStateMaxToNormal 3, tabCount: ', tabCount);
+      if (tabCount[3] < 2) {
         this.setState({ priceMax: searchCriteria[3].startMax }, () => {
           this.props.searchFlatParameters({ price_max: this.state.priceMax });
         });
@@ -1344,8 +1379,13 @@ class Results extends Component {
     console.log('in results handleSearchApplyClick: ');
     const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
-    const searchAttributes = { price_min: priceMin, price_max: priceMax };
-    this.props.fetchFlats(this.props.mapDimensions.mapBounds, searchAttributes, () => {});
+    const searchAttributes = bedroomsExact ?
+    { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax } :
+    { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, station_min: stationMin, station_max: stationMax };
+
+    console.log('in results handleSearchApplyClick, searchAttributes: ', searchAttributes);
+    console.log('in results handleSearchApplyClick, this.props.searchFlatParams: ', this.props.searchFlatParams);
+    this.props.fetchFlats(this.props.mapDimensions.mapBounds, this.props.searchFlatParams, () => {});
   }
 
   renderSearchArea() {
@@ -1465,7 +1505,7 @@ function mapStateToProps(state) {
     likes: state.flats.userLikes,
     auth: state.auth,
     reviews: state.flats.reviewsForFlatResults,
-    searchFlatParams: state.flats.searchflatParameters
+    searchFlatParams: state.flats.searchFlatParameters
    };
 }
 

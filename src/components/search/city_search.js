@@ -22,8 +22,8 @@ class CitySearch extends Component {
     };
   }
 
-  componentDidMount() {
-  }
+  // componentDidMount() {
+  // }
 
   getCityObject(callback) {
     let cityToSearch = {};
@@ -74,7 +74,8 @@ class CitySearch extends Component {
       console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
    //  // using global variable:
       map.panTo(center);
-      this.props.fetchFlats(mapBounds, () => {});
+      const searchAttributes = {};
+      this.props.fetchFlats(mapBounds, searchAttributes, () => {});
       // this.props.history.push('/results');
       this.props.updateMapDimensions(mapDimensions);
       this.setState({ displayCitiesList: false });
@@ -320,7 +321,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
-    searchFlatParams: state.flats.searchflatParameters,
+    searchFlatParams: state.flats.searchFlatParameters,
     map: state.mapDimensions.map
   };
 }
