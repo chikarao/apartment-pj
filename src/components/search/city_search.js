@@ -109,8 +109,10 @@ class CitySearch extends Component {
     const clickedElement = event.target;
     const mainInput = document.getElementById('banner-input');
     const liArray = document.getElementsByTagName('LI');
+    
     const body = document.getElementsByTagName('BODY');
-    // body[0].classList.add('stop-scrolling');
+    body[0].classList.remove('stop-scrolling');
+
     console.log('in CitySearch, handleCityClick, body: ', body);
     _.each(liArray, li => {
       console.log('in CitySearch, handleCityClick, li: ', li);

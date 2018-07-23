@@ -11,6 +11,7 @@ import CitySearch from './search/city_search';
 import latLngOffset from './constants/lat_lng_offset';
 
 import searchCriteria from './constants/search_criteria';
+import amenities from './constants/amenities';
 
 // const initialPosition = {
 //   lat: 37.7952,
@@ -71,6 +72,7 @@ class Results extends Component {
     stationMax: searchCriteria[2].startBigMax,
     priceMin: searchCriteria[3].startMin,
     priceMax: searchCriteria[3].startBigMax,
+    amenitySearchArray: [],
     incrementMin: false,
     incrementMax: true,
     tabSelected: false,
@@ -800,27 +802,6 @@ class Results extends Component {
       }
   }
 
-  handleRefineSearchLinkClick() {
-    this.setState({ showRefineSearch: !this.state.showRefineSearch }, () => {
-      console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
-    })
-  }
-
-  renderRefineSearchCriteria() {
-    return (
-      <div>
-        <ul>
-         <li>Criteria</li>
-         <li>Criteria</li>
-         <li>Criteria</li>
-         <li>Criteria</li>
-         <li>Criteria</li>
-         <li>Criteria</li>
-        </ul>
-      </div>
-    );
-  }
-
   // getStateCriteria(min) {
   //   switch(parseInt(this.state.criterionValue)) {
   //     case 1: {
@@ -1043,10 +1024,10 @@ class Results extends Component {
     // console.log('in results incrementSearchSpaceInput moreThanLimit: ', moreThanLimit);
     // console.log('in results incrementSearchSpaceInput lessThanLimit: ', lessThanLimit);
     const clickedElement = event.target;
-    console.log('in results incrementSearchSpaceInput clickedElement: ', clickedElement);
+    // console.log('in results incrementSearchSpaceInput clickedElement: ', clickedElement);
 
     // take off gray from plus minus button and put back
-    clickedElement.style.color = 'white';
+    clickedElement.style.color = 'lightgray';
     setTimeout(() => {
       clickedElement.style.color = 'gray';
       // console.log('in results incrementSearchSpaceInput in setTimeout clickedElement: ', clickedElement);
@@ -1329,8 +1310,11 @@ class Results extends Component {
     if (!this.state.searchCriteriaInpuStarted) {
       this.setState({
         searchCriteriaInpuStarted: true,
+      }, () => {
+
+        console.log('in results userInputStarted, this.state: ', this.state);
+        // console.log('in results userInputStarted outside of switch: ', this.state.criterionValue);
       });
-    // console.log('in results userInputStarted outside of switch: ', this.state.criterionValue);
     }
   }
 
@@ -1367,7 +1351,7 @@ class Results extends Component {
     this.unHighlightTab('results-search-box-sub-tab');
 
     // take off gray from plus minus button and put back
-    clickedElement.style.color = 'white';
+    clickedElement.style.color = 'lightgray';
     // setTimeout(`${this.setColorBack(clickedElement)}`, 1000);
     // setTimeout(this.setColorBack(clickedElement), 10000);
     setTimeout(() => {
@@ -1377,6 +1361,7 @@ class Results extends Component {
 
     this.setState({
       searchCriteriaInpuStarted: false,
+      criterionValue: 0,
       selectedTabArray: [],
       floorSpaceMin: 0,
       floorSpaceMax: searchCriteria[0].startBigMax,
@@ -1390,6 +1375,7 @@ class Results extends Component {
     }, () => {
       const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax  } = this.state;
       this.props.searchFlatParameters({ size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax });
+      console.log('in results handleSearchClearClick, this.state: ', this.state);
     });
   }
 
@@ -1398,11 +1384,11 @@ class Results extends Component {
     console.log('in results handleSearchApplyClick: ');
     const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
-    const searchAttributes = bedroomsExact ?
-    { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax } :
-    { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, station_min: stationMin, station_max: stationMax };
+    // const searchAttributes = bedroomsExact ?
+    // { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax } :
+    // { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, station_min: stationMin, station_max: stationMax };
 
-    console.log('in results handleSearchApplyClick, searchAttributes: ', searchAttributes);
+    // console.log('in results handleSearchApplyClick, searchAttributes: ', searchAttributes);
     console.log('in results handleSearchApplyClick, this.props.searchFlatParams: ', this.props.searchFlatParams);
     this.props.fetchFlats(this.props.mapDimensions.mapBounds, this.props.searchFlatParams, () => { this.searchApplyCallback(); });
   }
@@ -1410,6 +1396,97 @@ class Results extends Component {
   searchApplyCallback() {
     this.props.showLoading();
   }
+
+  handleRefineSearchLinkClick() {
+    this.setState({ showRefineSearch: !this.state.showRefineSearch, amenitySearchArray: [] }, () => {
+      console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
+    })
+  }
+
+  handleAmenityCheck(event) {
+    const checkedElement = event.target;
+    const elementVal = checkedElement.getAttribute('value');
+    console.log('in results handleAmenityCheck, elementVal: ', elementVal);
+    // add value of checked amenity (name of amenity same as api amenity table column name)
+    const { amenitySearchArray } = this.state;
+
+    // if checked element (amenity) is included in the state amenitySearchArray, take it out
+    // and create a new state array with out the unchecked array
+    if (amenitySearchArray.includes(elementVal)) {
+        const newArray = [...amenitySearchArray]; // make a separate copy of the array
+        _.each(amenitySearchArray, amenity => { // iterate throught he existing array
+          if (amenity == elementVal) { // if amenity in existing array is equal to the checked amenity
+            const index = newArray.indexOf(elementVal); // get the index of the element
+            newArray.splice(index, 1); // remove one element at index
+          }
+        });
+        this.setState({ amenitySearchArray: newArray }, () => {
+        // const key = elementVal
+        // const obj = {};
+        this.props.searchFlatParameters({ [elementVal]: false });
+          console.log('in results handleAmenityCheck, amnenitySearchArray if includes: ', this.state.amenitySearchArray);
+        });
+
+    } else {
+      // if not included, add the amenity (elementVal) to the array
+      this.setState(prevState => ({
+        amenitySearchArray: [...prevState.amenitySearchArray, elementVal]
+      }), () => {
+        console.log('in results handleAmenityCheck, amnenitySearchArray if else: ', this.state.amenitySearchArray);
+      this.props.searchFlatParameters({ [elementVal]: true });
+      }); // end of setState
+    }
+  }
+
+  renderEachAmenityCriteria() {
+    const whichAmenityToList = ['parking', 'wifi', 'kitchen', 'ac'];
+    return _.map(Object.keys(amenities), (amenity) => {
+      console.log('in results renderEachAmenityCriteria, amenity: ', amenity);
+      return _.map(whichAmenityToList, a => {
+        console.log('in results renderEachAmenityCriteria, a: ', a);
+        if (amenity == a) {
+          console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
+          return (
+            <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+              <label className="amenity-radio">{amenities[amenity]}</label>
+              <input value={amenity} type="checkbox" className="createFlatAmenityCheckBox" onChange={this.handleAmenityCheck.bind(this)} />
+            </div>
+          );
+        }
+      });
+    });
+  }
+
+  renderRefineSearchCriteria() {
+    return (
+      <div className="row refine-search-row">
+        {this.renderEachAmenityCriteria()}
+      </div>
+    );
+  }
+  // renderRefineSearchCriteria() {
+  //   return (
+  //     <div className="row refine-search-row">
+  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+  //         <label className="amenity-radio">Parking</label>
+  //         <input value={this.state.parking} type="checkbox" className="createFlatAmenityCheckBox" />
+  //       </div>
+  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+  //         <label className="amenity-radio">Kitchen</label>
+  //         <input value={this.state.kitchen} type="checkbox" className="createFlatAmenityCheckBox" />
+  //       </div>
+  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+  //         <label className="amenity-radio">Wifi</label>
+  //         <input value={this.state.wifi} type="checkbox" className="createFlatAmenityCheckBox" />
+  //       </div>
+  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+  //         <label className="amenity-radio">Bath</label>
+  //         <input value={this.state.bath} type="checkbox" className="createFlatAmenityCheckBox" />
+  //       </div>
+  //
+  //     </div>
+  //   );
+  // }
 
   renderSearchArea() {
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
@@ -1475,7 +1552,7 @@ class Results extends Component {
             </div>
           </div>
             <div className="search-criteria-increment-box">
-            <div value='all' className="search-criteria-clear-all" onClick={this.handleSearchClearClick.bind(this)}>Clear All</div>
+            <div value='all' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>Clear All</div>
               <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick.bind(this)}>Min</div>
               <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
@@ -1489,6 +1566,7 @@ class Results extends Component {
   }
 
   render() {
+    // <div className={'refine-search-box container'}>
     return (
       <div>
         <div className="container" id="map">
@@ -1499,7 +1577,7 @@ class Results extends Component {
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
             <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>Close</div>
-            {this.renderRefineSearchCriteria()}
+            {this.state.showRefineSearch ? this.renderRefineSearchCriteria() : ''}
           </div>
         </div>
 

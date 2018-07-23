@@ -648,7 +648,7 @@ body > div:first-child {
 }
 
 .search-criteria-clear-all, .search-criteria-apply {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   /* box-shadow: inset 0 1px 1px #ccc; */
   width: auto;
   /* height:  */
@@ -660,19 +660,24 @@ body > div:first-child {
   padding: 5px;
 }
 
-.search-criteria-apply-highlight {
+.search-criteria-apply-highlight, .search-criteria-clear-all-highlight {
   /* border: 2px solid #98fb98 ; */
-  border: 2px solid blue;
+  /* border: 2px solid blue; */
   /* box-shadow: inset 0 1px 1px rgba(0,0,0,.075); */
   width: auto;
   /* height:  */
   font-weight: bold;
   font-size: 12px;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   height: 30px;
   margin: 0 15px 0 15px;
   padding: 4px;
+  color: blue !important;
 
+}
+.search-criteria-apply-highlight:hover, .search-criteria-clear-all-highlight:hover {
+   color: gray !important;
+   text-decoration: underline;
 }
 
 /* .search-criteria-apply {
@@ -776,10 +781,14 @@ body > div:first-child {
 }
 
 .refine-search-box {
+  border: 1px solid #ccc;
+
   width: 100%;
   height: 200px;
 }
 .refine-search-box ul {
+  border: 1px solid #ccc;
+
   list-style-type: none;
 }
 
@@ -800,7 +809,13 @@ body > div:first-child {
   height: 40px;
 } */
 
+.refine-search-row {
+  display: flex;
+  justify-content: center;
+}
+
 .search-criterion-box {
+  border: 1px solid #ccc;
   position: absolute;
   top: 55%;
   right: 7.4%;
@@ -1421,7 +1436,7 @@ form {
 .amenity-input-each input {
   border: 2px solid #ccc;
   position: absolute;
-  top: 0;
+  top: 3px;
   right: 0;
   height: 25px;
   width: 25px;
@@ -1434,6 +1449,7 @@ form {
 
 .amenity-radio {
   /* text-align: left; */
+  /* font-size: 12px; */
   padding: 10px;
   margin: 0;
   float:left;
@@ -2475,7 +2491,8 @@ form {
       padding: 10px 0 20px 5px;
     }
 }
-@media screen and (max-width: 450px) {
+
+@media screen and (max-width: 500px) {
 
   .banner-content p {
     padding: 20%;
@@ -2505,6 +2522,30 @@ form {
     height: 30px;
   }
 
+  .amenity-input-each {
+    /* font-size: 13 !important; */
+    max-width: 155px;
+    height: 25px;
+  }
+
+  .amenity-input-each .amenity-radio {
+    font-size: 11px;
+    padding: 5px;
+  }
+
+  .amenity-input-each input {
+    padding: 5px;
+    /* margin-top: 7px; */
+    position: absolute;
+    top: -7px;
+    right: 0;
+    margin-top: 7px !important;
+  }
+
+/* .createFlatAmenityCheckBox {
+  padding: 5px;
+
+} */
     /* .header {
       margin-bottom: 100px !important;
       padding-bottom: 100px !important;
