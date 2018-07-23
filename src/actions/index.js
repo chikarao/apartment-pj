@@ -272,13 +272,16 @@ export function searchFlatParameters(searchParameters) {
 // gets mapbounds from gmap adn sends to api which sends back query results
 export function fetchFlats(mapBounds, searchAttributes, callback) {
   // showLoading();
-  const { north, south, east, west } = mapBounds;
-  const { price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max } = searchAttributes;
-  console.log('in actions index, fetchFlats north, south, east west: ', north, south, east, west);
-  console.log('in actions index, fetchFlats searchAttributes: ', searchAttributes);
+  // const { north, south, east, west } = mapBounds;
+  // const { price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max, ac, wifi, wheelchair_accessible, parking, kitchen } = searchAttributes;
+  // Object assign combines two objects
+  const allSearchAttributes = Object.assign(mapBounds, searchAttributes);
+  // console.log('in actions index, fetchFlats north, south, east west: ', mapBounds);
+  console.log('in actions index, fetchFlats allSearchAttributes: ', allSearchAttributes);
 
   return function (dispatch) {
-    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max } }, {
+    // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max, ac, wifi, wheelchair_accessible, parking, kitchen } }, {
+    axios.get(`${ROOT_URL}/api/v1/flats?`, { params: allSearchAttributes }, {
     // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })

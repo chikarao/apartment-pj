@@ -77,7 +77,9 @@ class Results extends Component {
     incrementMax: true,
     tabSelected: false,
     searchCriteriaInpuStarted: false,
-    selectedTabArray: []
+    selectedTabArray: [],
+    amenitySearchStarted: false
+
     // searchAttributes: {}
     // *********Pagination
   };
@@ -1398,7 +1400,7 @@ class Results extends Component {
   }
 
   handleRefineSearchLinkClick() {
-    this.setState({ showRefineSearch: !this.state.showRefineSearch, amenitySearchArray: [] }, () => {
+    this.setState({ showRefineSearch: !this.state.showRefineSearch }, () => {
       console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
     })
   }
@@ -1408,18 +1410,20 @@ class Results extends Component {
     const elementVal = checkedElement.getAttribute('value');
     console.log('in results handleAmenityCheck, elementVal: ', elementVal);
     // add value of checked amenity (name of amenity same as api amenity table column name)
-    const { amenitySearchArray } = this.state;
+    const { amenitySearchArray, amenitySearchStarted } = this.state;
+
+    this.setState({ amenitySearchStarted: true });
 
     // if checked element (amenity) is included in the state amenitySearchArray, take it out
     // and create a new state array with out the unchecked array
     if (amenitySearchArray.includes(elementVal)) {
         const newArray = [...amenitySearchArray]; // make a separate copy of the array
-        _.each(amenitySearchArray, amenity => { // iterate throught he existing array
-          if (amenity == elementVal) { // if amenity in existing array is equal to the checked amenity
+        // _.each(amenitySearchArray, amenity => { // iterate throught he existing array
+          // if (amenity == elementVal) { // if amenity in existing array is equal to the checked amenity
             const index = newArray.indexOf(elementVal); // get the index of the element
             newArray.splice(index, 1); // remove one element at index
-          }
-        });
+          // }
+        // });
         this.setState({ amenitySearchArray: newArray }, () => {
         // const key = elementVal
         // const obj = {};
@@ -1439,28 +1443,32 @@ class Results extends Component {
   }
 
   renderEachAmenityCriteria() {
-    const whichAmenityToList = ['parking', 'wifi', 'kitchen', 'ac'];
-    return _.map(Object.keys(amenities), (amenity) => {
-      console.log('in results renderEachAmenityCriteria, amenity: ', amenity);
+    // const whichAmenityToList = ['parking', 'wifi', 'kitchen', 'ac', 'wheelchair_accessible'];
+    const whichAmenityToList = Object.keys(amenities);
+    // return _.map(Object.keys(amenities), (amenity) => {
+      // console.log('in results renderEachAmenityCriteria, amenity: ', amenity);
       return _.map(whichAmenityToList, a => {
         console.log('in results renderEachAmenityCriteria, a: ', a);
-        if (amenity == a) {
-          console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
+        // if (amenity == a) {
+          // console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
           return (
             <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-              <label className="amenity-radio">{amenities[amenity]}</label>
-              <input value={amenity} type="checkbox" className="createFlatAmenityCheckBox" onChange={this.handleAmenityCheck.bind(this)} />
+              <label className="amenity-radio">{amenities[a]}</label>
+              <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck.bind(this)} />
             </div>
           );
-        }
+        // }
       });
-    });
+    // });
   }
 
   renderRefineSearchCriteria() {
     return (
-      <div className="row refine-search-row">
+      <div>
+      <div className={this.state.amenitySearchStarted ? 'refine-search-apply-link-highlight' : 'refine-search-apply-link'} onClick={this.handleSearchApplyClick.bind(this)}>{this.state.amenitySearchStarted ? 'Apply' : ''}</div>
+        <div className="row refine-search-row">
         {this.renderEachAmenityCriteria()}
+        </div>
       </div>
     );
   }
