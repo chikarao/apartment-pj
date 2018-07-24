@@ -1155,7 +1155,7 @@ body > div:first-child {
 }
 #message-show-box {
   width: 100%;
-  height: 300px;
+  /* height: 300px; */
   border: 1px solid #ccc;
   border-radius: 2px;
   overflow: hidden;
@@ -1164,12 +1164,22 @@ body > div:first-child {
 .message-input-box {
   margin-top: 5px;
   width: 100%;
-  /* height: 150px; */
-  height: 35%;
+  /* height: 150px !important; */
+  /* height: 35%; */
   border: 1px solid #ccc;
   border-radius: 2px;
   font-size: 16px;
 }
+.message-input-box-main {
+  margin-top: 5px;
+  width: 100%;
+  height: 150px !important;
+  /* height: 35%; */
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 16px;
+}
+
 .message-btn {
   float: right;
   margin: 5px;
@@ -1307,10 +1317,10 @@ body > div:first-child {
 /* ************Main Messaging*********** */
 
 .messaging-main-container {
-  width: 90%;
+  width: 100%;
   height: 100%;
   min-height: 600px;
-  border: 2px solid #ccc;
+  /* border: 2px solid #ccc; */
   margin: 0 auto 0 auto;
   display: flex;
   justify-content: center;
@@ -1325,11 +1335,12 @@ body > div:first-child {
 
 } */
 .messaging-main-conversation-box {
-  border: 2px solid #ccc;
-  width: 370px;
+  border: 1px solid #ccc;
+  max-width: 350px;
+  min-width: 270px !important;
   border-radius: 3px;
   margin: 5px 5px 0 0;
-  padding: 0;
+  padding: 3px;
   /* height: 100% */
 }
 .messaging-main-conversation-box ul {
@@ -1340,9 +1351,12 @@ body > div:first-child {
   overflow-y: scroll;
 }
 .messaging-main-messages-box {
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 3px;
   margin: 5px 5px 0 0;
+  min-width: 300px;
+  max-width: 550px;
+  padding: 3px;
   /* height: 100% */
 }
 

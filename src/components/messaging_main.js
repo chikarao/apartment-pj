@@ -65,6 +65,7 @@ class MessagingMain extends Component {
         // yourFlat={this.state.yourFlat}
         conversationId={this.props.conversationId}
         onMessagingMain
+        largeTextBox
         // conversationId={this.state.conversationId}
       />
       </div>

@@ -21,7 +21,9 @@ class Messaging extends Component {
 
   componentDidUpdate() {
     // if (this.state.inMessaging) {
-    this.scrollLastMessageIntoView();
+    if (!this.props.fromShowPage) {
+      this.scrollLastMessageIntoView();
+    }
   }
 
     // const messageBox = document.getElementById('message-show-box');
@@ -241,7 +243,7 @@ class Messaging extends Component {
               <br/><br/>You have not started a conversation...
               <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
               </div>
-            <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." style={this.props.onMessagingMain ? { height: '50%  ' } : { height: '35%' }} />
+            <textarea id="messsage-textarea" className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder="Enter your message here..." />
             <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
           </div>
         );
