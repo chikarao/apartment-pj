@@ -194,11 +194,14 @@ class Messaging extends Component {
   conversationToShow() {
     const { conversations } = this.props;
     const conversationToShowArray = [];
+    console.log('in messaging, conversationToShow. conversationId: ', this.props.conversationId);
+    // const conversationIdFromStorage = localStorage.getItem('conversationId');
+    // console.log('in messaging, conversationToShow. conversationIdFromStorage: ', conversationIdFromStorage);
+
     if (!this.props.fromShowPage) {
       _.each(conversations, (conversation) => {
         //for some reason === does not work
         if (conversation.id == this.props.conversationId) {
-          console.log('in messaging, conversationToShow. each conversation: ', conversation);
           conversationToShowArray.push(conversation);
         }
       });

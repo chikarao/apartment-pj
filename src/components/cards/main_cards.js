@@ -43,6 +43,7 @@ class MainCards extends Component {
     if (wasParentClicked) {
       // this.props.selectedFlat(this.props.flat);
       console.log('in main_cards, handleCardClick, Card clicked');
+      // for each click of card, a view is persisited in the database
       this.props.createView(this.props.flat.id);
       const win = window.open(`/show/${this.props.flat.id}`, '_blank');
       win.focus();

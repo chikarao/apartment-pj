@@ -37,6 +37,8 @@ import {
   CREATE_MESSAGE,
   NO_CONVERSATION,
   CREATE_CONVERSATION,
+  CONVERSATION_TO_SHOW,
+  SHOW_CONVERSATIONS,
   CREATE_LIKE,
   CREATE_VIEW,
   DELETE_LIKE,
@@ -522,6 +524,24 @@ export function updateMapDimensions(mapDimensions) {
   return {
     type: UPDATE_MAP_DIMENSIONS,
     payload: mapDimensions
+  };
+}
+
+export function conversationToShow(conversationId) {
+  console.log('in actions index, conversationToShow: ', conversationToShow);
+  localStorage.setItem('conversationToShow', conversationId);
+  
+  return {
+    type: CONVERSATION_TO_SHOW,
+    payload: conversationId
+  };
+}
+
+export function showConversations() {
+  console.log('in actions index, showConversations: ');
+  return {
+    type: SHOW_CONVERSATIONS,
+    // payload: conversationId
   };
 }
 

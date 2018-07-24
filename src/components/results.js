@@ -1373,7 +1373,8 @@ class Results extends Component {
       stationMin: 0,
       stationMax: searchCriteria[2].startBigMax,
       priceMin: 0,
-      priceMax: searchCriteria[3].startBigMax
+      priceMax: searchCriteria[3].startBigMax,
+      amenitySearchArray: []
     }, () => {
       const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax  } = this.state;
       this.props.searchFlatParameters({ size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax });
@@ -1560,7 +1561,7 @@ class Results extends Component {
             </div>
           </div>
             <div className="search-criteria-increment-box">
-            <div value='all' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>Clear All</div>
+            <div value='all' className={this.state.searchCriteriaInpuStarted || this.state.amenitySearchArray.length > 0 ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>Clear All</div>
               <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick.bind(this)}>Min</div>
               <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>

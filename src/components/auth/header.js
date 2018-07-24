@@ -213,12 +213,20 @@ class Header extends Component {
     }
   }
 
+  handleMailBoxClick() {
+    // this.props.history.push(`/messagingmain/${this.props.auth.id}`);
+    const win = window.open(`/messagingmain/${this.props.auth.id}`, '_blank');
+    win.focus();
+    console.log('in header, handleMailBoxClick: ');
+  }
+
   navigationLinks() {
     console.log('in header, navigationLinks, this.props.location: ', this.props.location);
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
     const onMyPage = this.props.location.pathname === '/mypage';
-    console.log('in header, navigationLinks, onMyPage: ', onMyPage);
+    const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
+    console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
 
 
     if (this.props.authenticated) {
@@ -238,14 +246,25 @@ class Header extends Component {
               <p className="nav-link">Signed in as {this.props.email}</p>
              </li>
              { this.props.conversations ?
-               <li className="nav-item header-mail-li">
-               <div className="header-mail-box">
-               {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
-               <i className="fa fa-envelope"></i>
+               <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>
+                 <div className="header-mail-box">
+                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+                 <i className="fa fa-envelope"></i>
                </div>
                </li> :
                ''
              }
+           </ul>
+         ];
+       } else if (onMessagingMainPage) {
+         return [
+           <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
+             <li className="nav-item">
+              <Link className="nav-link" to={'/mypage'} >My Page</Link>
+             </li>
+             <li className="nav-item">
+              <p className="nav-link">Signed in as {this.props.email}</p>
+             </li>
            </ul>
          ];
        } else {
@@ -264,7 +283,7 @@ class Header extends Component {
                 <p className="nav-link">Signed in as {this.props.email}</p>
                </li>
                { this.props.conversations ?
-                 <li className="nav-item header-mail-li">
+                 <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>
                  <div className="header-mail-box">
                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                  <i className="fa fa-envelope"></i>

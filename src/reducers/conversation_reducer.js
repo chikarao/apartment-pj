@@ -7,10 +7,12 @@ import {
   FETCH_CONVERSATIONS_BY_USER,
   FETCH_CONVERSATION_BY_FLAT,
   MARK_MESSAGES_READ,
-  SET_NEW_MESSAGES
+  SET_NEW_MESSAGES,
+  CONVERSATION_TO_SHOW,
+  SHOW_CONVERSATIONS
 } from '../actions/types';
 
-export default function (state = { noConversation: false, newMessages: 0 }, action) {
+export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true }, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
@@ -83,6 +85,12 @@ export default function (state = { noConversation: false, newMessages: 0 }, acti
 
     case SET_NEW_MESSAGES:
       return { ...state, newMessages: action.payload };
+
+    case CONVERSATION_TO_SHOW:
+      return { ...state, conversationToShow: action.payload };
+
+    case SHOW_CONVERSATIONS:
+      return { ...state, showConversations: !state.showConversations };
 
     case MARK_MESSAGES_READ:
     console.log('in conversation reducer, MARK_MESSAGES_READ: ');

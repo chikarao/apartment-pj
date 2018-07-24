@@ -12,6 +12,7 @@ import MyPage from './components/my_page';
 import BookingConfirmation from './components/booking_confirmation';
 import CreateFlat from './components/create_flat';
 import EditFlat from './components/edit_flat';
+import MessagingMain from './components/messaging_main';
 
 import RequireAuth from './components/auth/require_auth';
 
@@ -21,7 +22,7 @@ export const Main = () => (
     <Switch>
       <Route exact path='/' component={Landing} />
       // <Route path='/signin' component={Signin} />
-      // <Route path='/signout' component={Signout} />
+      <Route path='/signout' component={Signout} />
       // <Route path='/signup' component={Signup} />
       // <Route path='/resetpassword' component={ResetPassword} />
       <Route path='/show/:id' component={ShowFlat} />
@@ -30,6 +31,7 @@ export const Main = () => (
       <Route path='/editflat/:id' component={RequireAuth(EditFlat)} />
       <Route path='/bookingconfirmation/:id' component={RequireAuth(BookingConfirmation)} />
       <Route path='/createflat' component={RequireAuth(CreateFlat)} />
+      <Route path='/messagingmain' component={RequireAuth(MessagingMain)} />
     </Switch>
   </main>
 );

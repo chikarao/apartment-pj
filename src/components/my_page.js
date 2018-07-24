@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 import Messaging from './messaging/messaging';
+import Conversations from './messaging/conversations';
 import UploadForProfile from './images/upload_for_profile';
 
 
@@ -197,55 +198,54 @@ class MyPage extends Component {
     );
   }
 
-  getConversationToShow(coversationId) {
-    console.log('in mypage, getConversationToShow, before each: ', coversationId);
-    const { conversations } = this.props;
-    console.log('in mypage, getConversationToShow, before each conversation: ', conversations);
-    const conversationArray = []
-    _.each(conversations, (conv) => {
-      console.log('in mypage, getConversationToShow, each: ', conv);
-      if (conv.id == coversationId) {
-        conversationArray.push(conv);
-      }
-    });
-    return conversationArray;
-  }
+  // getConversationToShow(coversationId) {
+  //   console.log('in mypage, getConversationToShow, before each: ', coversationId);
+  //   const { conversations } = this.props;
+  //   console.log('in mypage, getConversationToShow, before each conversation: ', conversations);
+  //   const conversationArray = []
+  //   _.each(conversations, (conv) => {
+  //     console.log('in mypage, getConversationToShow, each: ', conv);
+  //     if (conv.id == coversationId) {
+  //       conversationArray.push(conv);
+  //     }
+  //   });
+  //   return conversationArray;
+  // }
 
-  handleConversationCardClick(event) {
-    console.log('in mypage, handleConversationCardClick, event: ', event.target);
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
+  // handleConversationCardClick(event) {
+  //   console.log('in mypage, handleConversationCardClick, event: ', event.target);
+  //   const clickedElement = event.target;
+  //   const elementVal = clickedElement.getAttribute('value');
+  //   console.log('in mypage, handleConversationCardClick, elementVal: ', elementVal);
+  //
+  //   // call action creator to mark messages for conversation with that id as read
+  //   this.props.markMessagesRead(elementVal);
+  //   // this.props.newMessages(false);
+  //   // this.props.fetchConversationsByUser();
+  //   const conversationToShow = this.getConversationToShow(elementVal);
+  //   console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
+  //   const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
+  //   this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
+  //   console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+  //   // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+  //   //   console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
+  //   // this.renderMessages();
+  //   });
+  // }
 
-    // call action creator to mark messages for conversation with that id as read
-    this.props.markMessagesRead(elementVal);
-    // this.props.newMessages(false);
-    // this.props.fetchConversationsByUser();
-    let conversationToShow = this.getConversationToShow(elementVal);
-    console.log('in mypage, handleConversationCardClick, conversationToShow: ', conversationToShow);
-    const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
-    this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-    console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
-    // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
-    //   console.log('in mypage, handleConversationCardClick, this.state: ', this.state);
-    this.renderMessages();
-    }
-    );
-  }
-
-  renderConversationUserImage(notOwnFlatConversation, conversation) {
-    console.log('in mypage, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
-    console.log('in mypage, renderConversationUserImage, conversation', conversation.user_id);
-    console.log('in mypage, renderConversationUserImage, auth.id', this.props.auth.id);
-    // const ownImage = localStorage.getItem('image');
-    if (notOwnFlatConversation) {
-      // w_100,h_100,c_crop,g_face,r_max
-      return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
-    } else {
-      return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
-    }
-    // return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
-  }
+  // renderConversationUserImage(notOwnFlatConversation, conversation) {
+  //   console.log('in mypage, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
+  //   console.log('in mypage, renderConversationUserImage, conversation', conversation.user_id);
+  //   console.log('in mypage, renderConversationUserImage, auth.id', this.props.auth.id);
+  //   // const ownImage = localStorage.getItem('image');
+  //   if (notOwnFlatConversation) {
+  //     // w_100,h_100,c_crop,g_face,r_max
+  //     return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  //   } else {
+  //     return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  //   }
+  //   // return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  // }
 
   formatDate(date) {
     let hours = date.getHours();
@@ -258,69 +258,70 @@ class MyPage extends Component {
     return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
 }
 
-  renderEachConversation() {
-    const { conversations, flats } = this.props;
-    if (this.state.showConversation) {
-      // get flat id in array to check if meesage was sent by owner
-      // const flatIdArray = [];
-      // _.each(flats, (flat) => {
-      //   flatIdArray.push(flat.id);
-      // });
-      // iterate through each conversation
-      return _.map(conversations, (conversation, index) => {
-        const lastMessageIndex = conversation.messages.length - 1;
-        console.log('in mypage, renderEachConversation, conversation: ', conversation);
-        // check for unread messages and increment counter if message.read = false
-        // if there are unread messages, the healine chnages in style of li
-        const notOwnFlatConversation = this.props.auth.id == conversation.user_id;
-        // console.log('in mypage, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
-        // console.log('in mypage, renderEachConversation, conversation.user_id: ', conversation.user_id);
-        // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-        let unreadMessages = 0;
-        _.each(conversation.messages, (message) => {
-          if (notOwnFlatConversation) {
-            // console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
-            // console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
-            if (message.read === false && !message.sent_by_user) {
-              // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-              // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
-              unreadMessages++;
-            }
-          } else {
-            if (message.read === false && message.sent_by_user) {
-              // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-              // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
-              unreadMessages++;
-            }
-          }
-          // console.log('in mypage, renderEachConversation, unreadMessages: ', unreadMessages);
-        });
-        const date = new Date(conversation.messages[lastMessageIndex].created_at);
-        //show only first 26 characters of text
-        const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
-        return (
-          <li key={index} className="my-page-each-card">
-            <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
-              <div className="my-page-messaging-image-box">
-                {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-                {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
-              </div>
-              <div className="my-page-details">
-                <ul>
-                  <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="mypage-conversation-headline">{stringToShow}...</li>
-                  <li>{this.formatDate(date)}</li>
-                  <li>user id: {conversation.user.id}</li>
-                  <li>conversation id: {conversation.id}</li>
-                </ul>
-              </div>
-            </div>
-          </li>
-        );
-      });
-    }
-  }
+  // renderEachConversation() {
+  //   const { conversations, flats } = this.props;
+  //   if (this.state.showConversation) {
+  //     // get flat id in array to check if meesage was sent by owner
+  //     // const flatIdArray = [];
+  //     // _.each(flats, (flat) => {
+  //     //   flatIdArray.push(flat.id);
+  //     // });
+  //     // iterate through each conversation
+  //     return _.map(conversations, (conversation, index) => {
+  //       const lastMessageIndex = conversation.messages.length - 1;
+  //       console.log('in mypage, renderEachConversation, conversation: ', conversation);
+  //       // check for unread messages and increment counter if message.read = false
+  //       // if there are unread messages, the healine chnages in style of li
+  //       const notOwnFlatConversation = this.props.auth.id == conversation.user_id;
+  //       // console.log('in mypage, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
+  //       // console.log('in mypage, renderEachConversation, conversation.user_id: ', conversation.user_id);
+  //       // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+  //       let unreadMessages = 0;
+  //       _.each(conversation.messages, (message) => {
+  //         if (notOwnFlatConversation) {
+  //           // console.log('in mypage, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
+  //           // console.log('in mypage, renderEachConversation, message.conversation_id: ', message.conversation_id);
+  //           if (message.read === false && !message.sent_by_user) {
+  //             // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+  //             // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
+  //             unreadMessages++;
+  //           }
+  //         } else {
+  //           if (message.read === false && message.sent_by_user) {
+  //             // console.log('in mypage, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+  //             // console.log('in mypage, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
+  //             unreadMessages++;
+  //           }
+  //         }
+  //         // console.log('in mypage, renderEachConversation, unreadMessages: ', unreadMessages);
+  //       });
+  //       const date = new Date(conversation.messages[lastMessageIndex].created_at);
+  //       //show only first 26 characters of text
+  //       const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
+  //       return (
+  //         <li key={index} className="my-page-each-card">
+  //           <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
+  //             <div className="my-page-messaging-image-box">
+  //               {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+  //               {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
+  //             </div>
+  //             <div className="my-page-details">
+  //               <ul>
+  //                 <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="mypage-conversation-headline">{stringToShow}...</li>
+  //                 <li>{this.formatDate(date)}</li>
+  //                 <li>user id: {conversation.user.id}</li>
+  //                 <li>conversation id: {conversation.id}</li>
+  //               </ul>
+  //             </div>
+  //           </div>
+  //         </li>
+  //       );
+  //     });
+  //   }
+  // }
 
   renderMessages() {
+    console.log('in mypage, renderMessages: this.props.conversationId', this.props.conversationId);
     return (
       <div className="my-page-message-box">
       <Messaging
@@ -328,16 +329,20 @@ class MyPage extends Component {
         // conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
         yourFlat={this.state.yourFlat}
-        conversationId={this.state.conversationId}
+        conversationId={this.props.conversationId}
+        // conversationId={this.state.conversationId}
       />
       </div>
     );
   }
 
   renderConversations() {
+    // {this.renderEachConversation()}
     return (
       <ul>
-        {this.renderEachConversation()}
+        <Conversations
+          conversations={this.props.conversations}
+        />
       </ul>
     );
   }
@@ -346,28 +351,30 @@ class MyPage extends Component {
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.setState({ showConversation: true });
+    this.props.showConversations();
   }
 
-handleMessageRefreshClick() {
-  console.log('in mypage, handleMessageRefreshClick: ');
-  this.props.showLoading();
-  this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
-}
+  handleMessageRefreshClick() {
+    console.log('in mypage, handleMessageRefreshClick: ');
+    this.props.showLoading();
+    this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
+  }
 
-loadingCallback() {
-  this.props.showLoading();
-}
+  loadingCallback() {
+    this.props.showLoading();
+  }
 
   renderMessaging() {
     console.log('in mypage, renderMessaging, this.state.showConversation: ', this.state.showConversation);
+    console.log('in mypage, renderMessaging, this.props.showConversations: ', this.props.showConversationCards);
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.state.showConversation ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
+          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
           <span>My Messages</span>
           <span className="my-page-category-right"><span className="btn" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
         </div>
-        {this.state.showConversation ? this.renderConversations() : this.renderMessages()}
+        {this.props.showConversationCards ? this.renderConversations() : this.renderMessages()}
       </div>
     );
   }
@@ -675,6 +682,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
+    conversationId: state.conversation.conversationToShow,
+    showConversationCards: state.conversation.showConversations,
     // likes: state.likes.userLikes
     likes: state.flats.userLikes
   };
