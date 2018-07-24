@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 
 import * as actions from '../actions';
 
+import Messaging from './messaging/messaging';
+import Conversations from './messaging/conversations';
+
 //
 // const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 // const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -33,13 +36,49 @@ class MessagingMain extends Component {
     });
   }
 
+  renderConversations() {
+    // {this.renderEachConversation()}
+    return (
+      <div className="messaging-main-conversation-box col-md-4">
+        <ul>
+          <Conversations
+            conversations={this.props.conversations}
+            onMessagingMain
+          />
+          </ul>
+      </div>
+    );
+  }
+
+  // renderMessages() {
+  //   return <div className="messaging-main-messages-box col-md-8">Messages</div>;
+  // }
+
+  renderMessages() {
+    console.log('in mypage, renderMessages: this.props.conversationId', this.props.conversationId);
+    return (
+      <div className="messaging-main-messages-box col-md-8">
+      <Messaging
+        currentUserIsOwner={false}
+        // conversation={this.state.conversationToShow}
+        noConversation={this.props.noConversation}
+        // yourFlat={this.state.yourFlat}
+        conversationId={this.props.conversationId}
+        onMessagingMain
+        // conversationId={this.state.conversationId}
+      />
+      </div>
+    );
+  }
+
   render() {
     console.log('in messagingMain, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     return (
-      <div>
-        Messaging Main
+      <div className="messaging-main-container container">
+        {this.renderConversations()}
+        {this.renderMessages()}
       </div>
     );
   }
@@ -56,6 +95,7 @@ function mapStateToProps(state) {
     // auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
+    conversationId: state.conversation.conversationToShow
   };
 }
 

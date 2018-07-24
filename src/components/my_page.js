@@ -18,7 +18,7 @@ class MyPage extends Component {
       sortByDate: false,
       showConversation: true,
       conversationToShow: {},
-      yourFlat: false,
+      // yourFlat: false,
       conversationId: ''
     };
   }
@@ -328,7 +328,7 @@ class MyPage extends Component {
         currentUserIsOwner={false}
         // conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
-        yourFlat={this.state.yourFlat}
+        // yourFlat={this.props.yourFlat}
         conversationId={this.props.conversationId}
         // conversationId={this.state.conversationId}
       />

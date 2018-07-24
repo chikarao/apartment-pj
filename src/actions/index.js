@@ -36,6 +36,7 @@ import {
   FETCH_MESSAGE,
   CREATE_MESSAGE,
   NO_CONVERSATION,
+  YOUR_FLAT,
   CREATE_CONVERSATION,
   CONVERSATION_TO_SHOW,
   SHOW_CONVERSATIONS,
@@ -445,6 +446,14 @@ export function setNewMessages(trueOrFalse) {
   };
 }
 
+export function yourFlat(yours) {
+  console.log('in actions index, yourFlat: ', yours);
+  return {
+    type: YOUR_FLAT,
+    payload: yours
+  };
+}
+
 export function createConversation(conversationAttributes, messageAttributes, callback) {
   console.log('in actions index, createConversation, conversationAttributes: ', conversationAttributes);
   console.log('in actions index, createConversation: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -530,7 +539,7 @@ export function updateMapDimensions(mapDimensions) {
 export function conversationToShow(conversationId) {
   console.log('in actions index, conversationToShow: ', conversationToShow);
   localStorage.setItem('conversationToShow', conversationId);
-  
+
   return {
     type: CONVERSATION_TO_SHOW,
     payload: conversationId

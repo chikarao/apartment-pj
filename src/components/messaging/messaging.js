@@ -13,15 +13,16 @@ class Messaging extends Component {
    this.state = INITIAL_STATE;
  }
 
-  // componentDidMount() {
-  //   // console.log('in show flat, componentDidMount, params', this.props.match.params);
-  //   // // gets flat id from params set in click of main_cards or infowindow detail click
-  // }
-  //
-  // componentDidUpdate() {
-  //   // if (this.state.inMessaging) {
-  //   this.scrollLastMessageIntoView();
-  // }
+  componentDidMount() {
+    // console.log('in show flat, componentDidMount, params', this.props.match.params);
+    // // gets flat id from params set in click of main_cards or infowindow detail click
+      // this.scrollLastMessageIntoView();
+  }
+
+  componentDidUpdate() {
+    // if (this.state.inMessaging) {
+    this.scrollLastMessageIntoView();
+  }
 
     // const messageBox = document.getElementById('message-show-box');
     // console.log('in messaging, componentDidUpdate, getElementById: ', messageBox);
@@ -96,7 +97,7 @@ class Messaging extends Component {
       const conversationToShowArray = this.conversationToShow();
       const { user_id, flat_id, id } = conversationToShowArray[0];
       console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
-      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.yourFlat }, (flatId) => this.createMessageCallback(flatId));
+      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.thisIsYourFlat }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
     messageText.value = '';
@@ -130,27 +131,28 @@ class Messaging extends Component {
 
   renderEachMessage(conversationToShowArray) {
     // console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
-    console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
+    // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
     // if (this.props.conversation) {
       // const { conversation } = this.props;
       // conversation is an array
       const messages = conversationToShowArray[0].messages;
       // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
-      console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
+      // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
+      console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
       return _.map(messages, (message, index) => {
-        console.log('in messaging, renderEachMessage, message: ', message);
+        // console.log('in messaging, renderEachMessage, message: ', message);
         const date = new Date(message.created_at)
         // if (index === messages.length - 1) {
         //   this.scrollLastMessageIntoView();
         // }
         //yourFlat passed as props
-        if (this.props.yourFlat) {
-          console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
-          console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-          console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-          console.log('in messaging, renderEachMessage, date message.read: ', message.read);
-          console.log('in messaging, renderEachMessage, date: ', date);
+        if (this.props.thisIsYourFlat) {
+          // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
+          // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
+          // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
+          // console.log('in messaging, renderEachMessage, date message.read: ', message.read);
+          // console.log('in messaging, renderEachMessage, date: ', date);
           if (message.sent_by_user) {
             return this.renderLeftMessages(message, date);
           } else {
@@ -234,12 +236,12 @@ class Messaging extends Component {
         console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
         return (
           <div>
-            <div id="message-show-box">
+            <div id={'message-show-box'} style={this.props.onMessagingMain ? { height: '500px' } : { height: '300px' }}>
               {this.props.noConversation ? <div className="no-conversation-message">
               <br/><br/>You have not started a conversation...
               <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
               </div>
-            <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." />
+            <textarea id="messsage-textarea" className="message-input-box wideInput" type="text" maxLength="200" placeholder="Enter your message here..." style={this.props.onMessagingMain ? { height: '50%  ' } : { height: '35%' }} />
             <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
           </div>
         );
@@ -264,7 +266,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
-    flat: state.flat.selectedFlatFromParams
+    flat: state.flat.selectedFlatFromParams,
+    thisIsYourFlat: state.conversation.yourFlat
   };
 }
 

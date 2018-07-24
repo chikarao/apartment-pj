@@ -6,7 +6,8 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
 // const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
-const INITIAL_STATE = { showConversation: true, conversationId: '', yourFlat: false };
+const INITIAL_STATE = { showConversation: true, conversationId: '' };
+// const INITIAL_STATE = { showConversation: true, conversationId: '', yourFlat: false };
 
 class Conversations extends Component {
   constructor(props) {
@@ -15,12 +16,12 @@ class Conversations extends Component {
  }
 
  getConversationToShow(coversationId) {
-   console.log('in conversations, getConversationToShow, before each: ', coversationId);
+   // console.log('in conversations, getConversationToShow, before each: ', coversationId);
    const { conversations } = this.props;
-   console.log('in conversations, getConversationToShow, before each conversation: ', conversations);
+   // console.log('in conversations, getConversationToShow, before each conversation: ', conversations);
    const conversationArray = []
    _.each(conversations, (conv) => {
-     console.log('in conversations, getConversationToShow, each: ', conv);
+     // console.log('in conversations, getConversationToShow, each: ', conv);
      if (conv.id == coversationId) {
        conversationArray.push(conv);
      }
@@ -29,34 +30,39 @@ class Conversations extends Component {
  }
 
  handleConversationCardClick(event) {
-   console.log('in conversations, handleConversationCardClick, event: ', event.target);
+   // console.log('in conversations, handleConversationCardClick, event: ', event.target);
    const clickedElement = event.target;
    const elementVal = clickedElement.getAttribute('value');
-   console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
+   // console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
 
    // call action creator to mark messages for conversation with that id as read
    this.props.markMessagesRead(elementVal);
    // this.props.newMessages(false);
    // this.props.fetchConversationsByUser();
    let conversationToShow = this.getConversationToShow(elementVal);
-   console.log('in conversations, handleConversationCardClick, conversationToShow: ', conversationToShow);
    const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
-   this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-   // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
-   //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-   // this.renderMessages();
+   // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
+   this.props.yourFlat(yourFlat);
+   // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
+   // this.setState({ conversationId: elementVal, yourFlat }, () => {
+   this.setState({ conversationId: elementVal}, () => {
+     // console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
+     // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+     //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
+     // this.renderMessages();
    });
+   // action creator to switch on and off show conversation in mypage
+   if (!this.props.onMessagingMain) {
+     this.props.showConversations();
+   }
    // action creator to set conversation id for props in messaging.js
    this.props.conversationToShow(parseInt(elementVal));
-   // action creator to switch on and off show conversation in mypage
-   this.props.showConversations();
  }
 
  renderConversationUserImage(notOwnFlatConversation, conversation) {
-   console.log('in conversations, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
-   console.log('in conversations, renderConversationUserImage, conversation', conversation.user_id);
-   console.log('in conversations, renderConversationUserImage, auth.id', this.props.auth.id);
+   // console.log('in conversations, renderConversationUserImage, notOwnFlatConversation: ', notOwnFlatConversation);
+   // console.log('in conversations, renderConversationUserImage, conversation', conversation.user_id);
+   // console.log('in conversations, renderConversationUserImage, auth.id', this.props.auth.id);
    // const ownImage = localStorage.getItem('image');
    if (notOwnFlatConversation) {
      // w_100,h_100,c_crop,g_face,r_max
@@ -91,28 +97,31 @@ class Conversations extends Component {
      // iterate through each conversation
      return _.map(conversations, (conversation, index) => {
        const lastMessageIndex = conversation.messages.length - 1;
-       console.log('in conversations, renderEachConversation, conversation: ', conversation);
+       // console.log('in conversations, renderEachConversation, conversation: ', conversation);
        // check for unread messages and increment counter if message.read = false
        // if there are unread messages, the healine chnages in style of li
-       const notOwnFlatConversation = this.props.auth.id == conversation.user_id;
+       const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
        // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
        // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
        // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+       // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
+       // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
        let unreadMessages = 0;
        _.each(conversation.messages, (message) => {
          if (notOwnFlatConversation) {
            // console.log('in conversations, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
            // console.log('in conversations, renderEachConversation, message.conversation_id: ', message.conversation_id);
-           if (message.read === false && !message.sent_by_user) {
+           if ((message.read === false) && (!message.sent_by_user)) {
              // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-             // console.log('in conversations, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
              unreadMessages++;
+             // console.log('in conversations, renderEachConversation, notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages);
            }
          } else {
-           if (message.read === false && message.sent_by_user) {
+           if ((message.read === false) && (message.sent_by_user)) {
              // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
              // console.log('in conversations, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
              unreadMessages++;
+             // console.log('in conversations, renderEachConversation, notOwnFlatConversation message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, message.sent_by_user, conversation.id, unreadMessages);
            }
          }
          // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);

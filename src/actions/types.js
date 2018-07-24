@@ -62,4 +62,5 @@ export const CLEAR_FLATS = 'clear_flats';
 export const SET_MAP = 'set_map';
 export const CONVERSATION_TO_SHOW = 'conversation_to_show';
 export const SHOW_CONVERSATIONS = 'show_conversations';
+export const YOUR_FLAT = 'your_flat';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

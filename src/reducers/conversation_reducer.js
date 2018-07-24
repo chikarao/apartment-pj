@@ -9,7 +9,8 @@ import {
   MARK_MESSAGES_READ,
   SET_NEW_MESSAGES,
   CONVERSATION_TO_SHOW,
-  SHOW_CONVERSATIONS
+  SHOW_CONVERSATIONS,
+  YOUR_FLAT
 } from '../actions/types';
 
 export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true }, action) {
@@ -91,6 +92,9 @@ export default function (state = { noConversation: false, newMessages: 0, conver
 
     case SHOW_CONVERSATIONS:
       return { ...state, showConversations: !state.showConversations };
+
+    case YOUR_FLAT:
+      return { ...state, yourFlat: action.payload };
 
     case MARK_MESSAGES_READ:
     console.log('in conversation reducer, MARK_MESSAGES_READ: ');
