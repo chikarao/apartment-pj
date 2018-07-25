@@ -40,6 +40,8 @@ import {
   CREATE_CONVERSATION,
   CONVERSATION_TO_SHOW,
   SHOW_CONVERSATIONS,
+  CHECKED_CONVERSATIONS,
+  UPDATE_CONVERSATION,
   CREATE_LIKE,
   CREATE_VIEW,
   DELETE_LIKE,
@@ -448,9 +450,17 @@ export function setNewMessages(trueOrFalse) {
 
 export function yourFlat(yours) {
   console.log('in actions index, yourFlat: ', yours);
+  // yours is a boolean
   return {
     type: YOUR_FLAT,
     payload: yours
+  };
+}
+export function checkedConversations(array) {
+  console.log('in actions index, checkedConversations array: ', array);
+  return {
+    type: CHECKED_CONVERSATIONS,
+    payload: array
   };
 }
 
@@ -1155,6 +1165,28 @@ export function markMessagesRead(id) {
       console.log('response to markMessagesRead, response.data.data: ', response.data.data);
       dispatch({
         type: MARK_MESSAGES_READ,
+        payload: response.data.data.conversation
+      });
+      // sends back to createreview.js the review_id and the images
+      // callback();
+    });
+  };
+}
+export function updateConversation(idArray, conversationAttributes) {
+  console.log('in actions index, updateConversation, id: ', idArray);
+  console.log('in actions index, updateConversation, conversationAttributes: ', conversationAttributes);
+  console.log('in actions index, updateConversation: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/update_conversation`, { conversation: conversationAttributes, conversation_id_array: idArray }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to updateConversation, response: ', response);
+      console.log('response to updateConversation, response.data.data: ', response.data.data);
+      dispatch({
+        type: UPDATE_CONVERSATION,
         payload: response.data.data.conversation
       });
       // sends back to createreview.js the review_id and the images

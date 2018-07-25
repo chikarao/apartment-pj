@@ -10,10 +10,11 @@ import {
   SET_NEW_MESSAGES,
   CONVERSATION_TO_SHOW,
   SHOW_CONVERSATIONS,
-  YOUR_FLAT
+  YOUR_FLAT,
+  CHECKED_CONVERSATIONS
 } from '../actions/types';
 
-export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true }, action) {
+export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true, checkedConversationsArray: [] }, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
@@ -92,6 +93,9 @@ export default function (state = { noConversation: false, newMessages: 0, conver
 
     case SHOW_CONVERSATIONS:
       return { ...state, showConversations: !state.showConversations };
+
+    case CHECKED_CONVERSATIONS:
+      return { ...state, checkedConversationsArray: action.payload };
 
     case YOUR_FLAT:
       return { ...state, yourFlat: action.payload };

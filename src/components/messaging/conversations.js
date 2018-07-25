@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
 // const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
-const INITIAL_STATE = { showConversation: true, conversationId: '' };
+const INITIAL_STATE = { showConversation: true, conversationId: '', checkedConversationsArray: [] };
 // const INITIAL_STATE = { showConversation: true, conversationId: '', yourFlat: false };
 
 class Conversations extends Component {
@@ -39,24 +39,26 @@ class Conversations extends Component {
    this.props.markMessagesRead(elementVal);
    // this.props.newMessages(false);
    // this.props.fetchConversationsByUser();
-   let conversationToShow = this.getConversationToShow(elementVal);
-   const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
-   // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
-   this.props.yourFlat(yourFlat);
-   // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-   // this.setState({ conversationId: elementVal, yourFlat }, () => {
-   this.setState({ conversationId: elementVal}, () => {
-     // console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-     // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
-     //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-     // this.renderMessages();
-   });
-   // action creator to switch on and off show conversation in mypage
-   if (!this.props.onMessagingMain) {
-     this.props.showConversations();
+   const conversationToShow = this.getConversationToShow(elementVal);
+   if (conversationToShow.length > 0) {
+     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
+     // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
+     this.props.yourFlat(yourFlat);
+     // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
+     // this.setState({ conversationId: elementVal, yourFlat }, () => {
+     this.setState({ conversationId: elementVal }, () => {
+       // console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
+       // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
+       //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
+       // this.renderMessages();
+     });
+     // action creator to switch on and off show conversation in mypage
+     if (!this.props.onMessagingMain) {
+       this.props.showConversations();
+     }
+     // action creator to set conversation id for props in messaging.js
+     this.props.conversationToShow(parseInt(elementVal));
    }
-   // action creator to set conversation id for props in messaging.js
-   this.props.conversationToShow(parseInt(elementVal));
  }
 
  renderConversationUserImage(notOwnFlatConversation, conversation) {
@@ -82,6 +84,31 @@ class Conversations extends Component {
    minutes = minutes < 10 ? `0${minutes}` : minutes;
    const strTime = `${hours}:${minutes}  ${ampm}`;
    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+}
+
+handleConversationCheck(event) {
+  const checkedElement = event.target;
+  const elementVal = parseInt(checkedElement.getAttribute('value'));
+  console.log('in conversations, handleConversationCheck, checkedElement', checkedElement);
+  console.log('in conversations, handleConversationCheck, elementVal', elementVal);
+
+  if (this.state.checkedConversationsArray.includes(elementVal)) {
+    const newArray = [...this.state.checkedConversationsArray]; // make a separate copy of the array
+    const index = newArray.indexOf(elementVal); // get the index of the element
+    newArray.splice(index, 1); // remove one element at index
+
+    this.setState({ checkedConversationsArray: newArray }, () => {
+      console.log('in results handleConversationCheck, checkedConversationsArray if includes: ', this.state.checkedConversationsArray);
+      this.props.checkedConversations(this.state.checkedConversationsArray);
+    });
+  } else {
+    this.setState(prevState => ({
+      checkedConversationsArray: [...prevState.checkedConversationsArray, elementVal]
+    }), () => {
+      console.log('in results handleConversationCheck, checkedConversationsArray if else: ', this.state.checkedConversationsArray);
+      this.props.checkedConversations(this.state.checkedConversationsArray);
+    }); // end of setState
+  }
 }
 
  renderEachConversation() {
@@ -143,6 +170,9 @@ class Conversations extends Component {
                  <li>user id: {conversation.user.id}</li>
                  <li>conversation id: {conversation.id}</li>
                </ul>
+             </div>
+             <div className="my-page-conversation-input">
+               <input value={conversation.id} type="checkbox" onChange={this.handleConversationCheck.bind(this)} />
              </div>
            </div>
          </li>

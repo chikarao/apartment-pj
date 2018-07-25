@@ -1421,8 +1421,8 @@ class Results extends Component {
         const newArray = [...amenitySearchArray]; // make a separate copy of the array
         // _.each(amenitySearchArray, amenity => { // iterate throught he existing array
           // if (amenity == elementVal) { // if amenity in existing array is equal to the checked amenity
-            const index = newArray.indexOf(elementVal); // get the index of the element
-            newArray.splice(index, 1); // remove one element at index
+        const index = newArray.indexOf(elementVal); // get the index of the element
+        newArray.splice(index, 1); // remove one element at index
           // }
         // });
         this.setState({ amenitySearchArray: newArray }, () => {

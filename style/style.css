@@ -1287,6 +1287,7 @@ body > div:first-child {
 #messaging-refresh {
   /* float: right; */
   font-size: 20px;
+  color: gray;
 }
 #messaging-refresh:hover {
   /* float: right; */
@@ -1316,15 +1317,46 @@ body > div:first-child {
 
 /* ************Main Messaging*********** */
 
+.messaging-main-main-container {
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto 0 auto;
+  border: 2px solid #ccc;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+
+}
+
 .messaging-main-container {
   width: 100%;
-  height: 100%;
-  min-height: 600px;
+  /* height: 90%; */
+  min-height: 550px;
   /* border: 2px solid #ccc; */
   margin: 0 auto 0 auto;
   display: flex;
   justify-content: center;
 
+}
+
+.messaging-main-controls-container {
+  border: 2px solid #ccc;
+  max-width: 900px;
+  width: 900px;
+  height: 50px;
+  margin: 0 auto 0 auto;
+}
+
+.messaging-main-controls-left {
+  margin: 0 0 3px 0;
+  border: 1px solid #ccc;
+  /* width: 350px; */
+  width: 100%;
+  /* min-width: 270px !important; */
+  float: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* .messaging-main-container-row {
@@ -1335,9 +1367,9 @@ body > div:first-child {
 
 } */
 .messaging-main-conversation-box {
-  border: 1px solid #ccc;
   max-width: 350px;
   min-width: 270px !important;
+  border: 1px solid #ccc;
   border-radius: 3px;
   margin: 5px 5px 0 0;
   padding: 3px;
@@ -1351,7 +1383,6 @@ body > div:first-child {
   overflow-y: scroll;
 }
 .messaging-main-messages-box {
-  border: 1px solid #ccc;
   border-radius: 3px;
   margin: 5px 5px 0 0;
   min-width: 300px;
@@ -1360,6 +1391,33 @@ body > div:first-child {
   /* height: 100% */
 }
 
+.messaging-main-large-refresh {
+  float: right;
+  /* border: 1px solid #ccc; */
+  border: 1px solid #ccc;
+  margin: 1px;
+}
+
+.messaging-main-large-trash {
+  float: right;
+  border: 1px solid #ccc;
+  margin: 1px;
+}
+.messaging-main-large-trash i:hover {
+  /* background-color: lightgray; */
+  /* color: blue; */
+}
+
+.fa-trash-o:before {
+  font-size: 23px;
+  color: gray;
+}
+
+.messaging-main-large-archive {
+  font-size: 13px;
+  color: blue;
+  font-weight: bold;
+}
 
 /* ************Edit Flat******************* */
 
@@ -2004,6 +2062,7 @@ form {
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  position: relative;
 }
 
 .my-page-card-button-box {
@@ -2066,6 +2125,25 @@ form {
   font-weight: bold;
   font-size: 13px;
   color: darkGray;
+}
+
+.my-page-conversation-input {
+  /* border: 1px solid #ccc; */
+  width: 20px;
+  margin: 5px;
+  /* float: right; */
+  position: absolute;
+  top: 20%;
+  right:0;
+  /* pointer-events: none; */
+}
+
+.my-page-conversation-input input[type="checkbox"]{
+  width: 50px; /*Desired width*/
+  height: 50px; /*Desired height*/
+  /* cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none; */
 }
 
 /* .my-page-profile-attribute-name {

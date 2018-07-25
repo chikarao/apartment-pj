@@ -137,39 +137,41 @@ class Messaging extends Component {
     // if (this.props.conversation) {
       // const { conversation } = this.props;
       // conversation is an array
-      const messages = conversationToShowArray[0].messages;
-      // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
-      // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
+      if (conversationToShowArray.length > 0) {
+        const messages = conversationToShowArray[0].messages;
+        // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
+        // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
-      console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
-      return _.map(messages, (message, index) => {
-        // console.log('in messaging, renderEachMessage, message: ', message);
-        const date = new Date(message.created_at)
-        // if (index === messages.length - 1) {
-        //   this.scrollLastMessageIntoView();
-        // }
-        //yourFlat passed as props
-        if (this.props.thisIsYourFlat) {
-          // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
-          // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-          // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-          // console.log('in messaging, renderEachMessage, date message.read: ', message.read);
-          // console.log('in messaging, renderEachMessage, date: ', date);
-          if (message.sent_by_user) {
-            return this.renderLeftMessages(message, date);
+        console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
+        return _.map(messages, (message, index) => {
+          // console.log('in messaging, renderEachMessage, message: ', message);
+          const date = new Date(message.created_at)
+          // if (index === messages.length - 1) {
+          //   this.scrollLastMessageIntoView();
+          // }
+          //yourFlat passed as props
+          if (this.props.thisIsYourFlat) {
+            // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
+            // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
+            // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
+            // console.log('in messaging, renderEachMessage, date message.read: ', message.read);
+            // console.log('in messaging, renderEachMessage, date: ', date);
+            if (message.sent_by_user) {
+              return this.renderLeftMessages(message, date);
+            } else {
+              return this.renderRightMessages(message, date);
+            }
+            // return (
+            // );
           } else {
-            return this.renderRightMessages(message, date);
+            if (message.sent_by_user) {
+              return this.renderRightMessages(message, date);
+            } else {
+              return this.renderLeftMessages(message, date);
+            }
           }
-          // return (
-          // );
-        } else {
-          if (message.sent_by_user) {
-            return this.renderRightMessages(message, date);
-          } else {
-            return this.renderLeftMessages(message, date);
-          }
-        }
-      });
+        });
+      }
     // }
   }
 

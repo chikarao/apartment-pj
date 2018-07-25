@@ -36,10 +36,49 @@ class MessagingMain extends Component {
     });
   }
 
+renderMainControls() {
+  return (
+    <div className="messaging-main-controls-left">
+      <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</span>
+      <span value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</span>
+      <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
+    </div>
+  );
+}
+
+handleMessageEditClick(event) {
+  const clickedElement = event.target;
+  const elementVal = clickedElement.getAttribute('value');
+  console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
+  console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
+  console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+  if (elementVal == 'archive') {
+    const conversationAttributes = { archived: true };
+    this.props.updateConversation(this.props.checkedConversationsArray, conversationAttributes);
+  }
+
+  if (elementVal == 'trash') {
+    const conversationAttributes = { trashed: true };
+    this.props.updateConversation(this.props.checkedConversationsArray, conversationAttributes);
+  }
+}
+
+renderEditControls() {
+  return (
+    <div className="messaging-main-controls-left">
+      <span value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Move to Archives</span>
+      <span className="btn messaging-main-large-archive"></span>
+      <span value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></span>
+    </div>
+  );
+}
+
+
   renderConversations() {
     // {this.renderEachConversation()}
     return (
       <div className="messaging-main-conversation-box col-md-4">
+        {this.props.checkedConversationsArray.length > 0 ? this.renderEditControls() : this.renderMainControls()}
         <ul>
           <Conversations
             conversations={this.props.conversations}
@@ -72,14 +111,32 @@ class MessagingMain extends Component {
     );
   }
 
+  // renderMessagingControls() {
+  //   return (
+  //   );
+  // }
+
+  handleMessageRefreshClick() {
+    console.log('in mypage, handleMessageRefreshClick: ');
+    this.props.showLoading();
+    this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
+  }
+
+  loadingCallback() {
+    this.props.showLoading();
+  }
+
   render() {
     console.log('in messagingMain, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
+    // <div className="messaging-main-controls-container">{this.renderMessagingControls()}</div>
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     return (
-      <div className="messaging-main-container container">
-        {this.renderConversations()}
-        {this.renderMessages()}
+      <div className="messaging-main-main-container">
+        <div className="messaging-main-container container">
+          {this.renderConversations()}
+          {this.renderMessages()}
+        </div>
       </div>
     );
   }
@@ -96,7 +153,8 @@ function mapStateToProps(state) {
     // auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
-    conversationId: state.conversation.conversationToShow
+    conversationId: state.conversation.conversationToShow,
+    checkedConversationsArray: state.conversation.checkedConversationsArray
   };
 }
 
