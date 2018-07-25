@@ -16,7 +16,11 @@ class MessagingMain extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      showTrashBin: false,
+      showArchiveBin: false,
+      showAllConversations: true,
+      filteredConversationsArray: []
     };
   }
 
@@ -28,6 +32,12 @@ class MessagingMain extends Component {
       this.props.fetchConversationsByUser(() => {});
       this.props.fetchProfileForUser();
   }
+
+  // componentDidUpdate() {
+  //   if (this.props.conversations) {
+  //     this.filterConversations();
+  //   }
+  // }
 
   handleResize() {
     // console.log('in messagingMain, createBackghandleResizeroundImage: ', this.state.windowWidth);
@@ -52,14 +62,29 @@ handleMessageEditClick(event) {
   console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
   console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
   console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+
   if (elementVal == 'archive') {
     const conversationAttributes = { archived: true };
-    this.props.updateConversation(this.props.checkedConversationsArray, conversationAttributes);
+    this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes);
   }
 
   if (elementVal == 'trash') {
     const conversationAttributes = { trashed: true };
-    this.props.updateConversation(this.props.checkedConversationsArray, conversationAttributes);
+    this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes);
+  }
+
+  if (elementVal == 'trashbin') {
+    this.setState({ showTrashBin: true, showArchiveBin: false, showAllConversations: false, filteredConversationsArray: [] }, () => {
+      console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+      this.filterConversations();
+    })
+  }
+
+  if (elementVal == 'archivebin') {
+    this.setState({ showArchiveBin: true, showTrashBin: false, showAllConversations: false, filteredConversationsArray: [] }, () => {
+    console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+    this.filterConversations();
+    })
   }
 }
 
@@ -73,6 +98,53 @@ renderEditControls() {
   );
 }
 
+updateFilteredConversationsArray() {
+
+}
+
+initialFilteredConversations() {
+  const filteredConversationsArray = [];
+  if (this.state.showAllConversations) {
+    // filteredConversationsArray = this.props.conversations
+    _.each(this.props.conversations, conv => {
+      if (!conv.trashed && !conv.archived) {
+        filteredConversationsArray.push(conv);
+      }
+    });
+  }
+  return filteredConversationsArray;
+}
+
+filterConversations() {
+  if (this.props.conversations) {
+    const filteredConversationsArray = [];
+    console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
+
+    if (this.state.showTrashBin) {
+      _.each(this.props.conversations, conv => {
+        console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
+        if (conv.trashed) {
+          filteredConversationsArray.push(conv);
+        }
+      });
+      this.setState({ filteredConversationsArray });
+    }
+
+    if (this.state.showArchiveBin) {
+      _.each(this.props.conversations, conv => {
+        console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
+        if (conv.archived) {
+          filteredConversationsArray.push(conv);
+        }
+      });
+      this.setState({ filteredConversationsArray });
+    }
+  }
+
+  // console.log('in messagingMain, filterConversations, filteredConversationsArray  : ', filteredConversationsArray);
+  // return filteredConversationsArray;
+}
+
 
   renderConversations() {
     // {this.renderEachConversation()}
@@ -81,7 +153,7 @@ renderEditControls() {
         {this.props.checkedConversationsArray.length > 0 ? this.renderEditControls() : this.renderMainControls()}
         <ul>
           <Conversations
-            conversations={this.props.conversations}
+            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
             onMessagingMain
           />
           </ul>

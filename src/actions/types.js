@@ -64,5 +64,5 @@ export const CONVERSATION_TO_SHOW = 'conversation_to_show';
 export const SHOW_CONVERSATIONS = 'show_conversations';
 export const YOUR_FLAT = 'your_flat';
 export const CHECKED_CONVERSATIONS = 'checked_conversations';
-export const UPDATE_CONVERSATION = 'update_conversation';
+export const UPDATE_CONVERSATIONS = 'update_conversations';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

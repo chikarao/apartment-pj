@@ -11,7 +11,8 @@ import {
   CONVERSATION_TO_SHOW,
   SHOW_CONVERSATIONS,
   YOUR_FLAT,
-  CHECKED_CONVERSATIONS
+  CHECKED_CONVERSATIONS,
+  UPDATE_CONVERSATIONS
 } from '../actions/types';
 
 export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true, checkedConversationsArray: [] }, action) {
@@ -96,6 +97,9 @@ export default function (state = { noConversation: false, newMessages: 0, conver
 
     case CHECKED_CONVERSATIONS:
       return { ...state, checkedConversationsArray: action.payload };
+
+    case UPDATE_CONVERSATIONS:
+      return { ...state, conversationByUserAndFlat: action.payload };
 
     case YOUR_FLAT:
       return { ...state, yourFlat: action.payload };

@@ -41,7 +41,7 @@ import {
   CONVERSATION_TO_SHOW,
   SHOW_CONVERSATIONS,
   CHECKED_CONVERSATIONS,
-  UPDATE_CONVERSATION,
+  UPDATE_CONVERSATIONS,
   CREATE_LIKE,
   CREATE_VIEW,
   DELETE_LIKE,
@@ -1172,7 +1172,7 @@ export function markMessagesRead(id) {
     });
   };
 }
-export function updateConversation(idArray, conversationAttributes) {
+export function updateConversations(idArray, conversationAttributes) {
   console.log('in actions index, updateConversation, id: ', idArray);
   console.log('in actions index, updateConversation, conversationAttributes: ', conversationAttributes);
   console.log('in actions index, updateConversation: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -1186,7 +1186,7 @@ export function updateConversation(idArray, conversationAttributes) {
       console.log('response to updateConversation, response: ', response);
       console.log('response to updateConversation, response.data.data: ', response.data.data);
       dispatch({
-        type: UPDATE_CONVERSATION,
+        type: UPDATE_CONVERSATIONS,
         payload: response.data.data.conversation
       });
       // sends back to createreview.js the review_id and the images
