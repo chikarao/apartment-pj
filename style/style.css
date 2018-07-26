@@ -1418,6 +1418,11 @@ body > div:first-child {
   color: blue;
   font-weight: bold;
 }
+.messaging-main-large-archive i {
+  font-size: 25px;
+  color: blue;
+  font-weight: bold;
+}
 
 /* ************Edit Flat******************* */
 

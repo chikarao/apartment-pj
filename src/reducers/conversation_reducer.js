@@ -96,10 +96,82 @@ export default function (state = { noConversation: false, newMessages: 0, conver
       return { ...state, showConversations: !state.showConversations };
 
     case CHECKED_CONVERSATIONS:
-      return { ...state, checkedConversationsArray: action.payload };
+      const newArray = state.checkedConversationsArray;
+      const removeFromIndexArray = [];
+      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
+      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, action.payload: ', action.payload);
+      // iterate through action.payload to get index of conversations in existing state;
+      _.each(action.payload, conversationId => {
+        console.log('in conversation reducer, CHECKED_CONVERSATIONS, before if includes newArray, conversationId: ', newArray, conversationId);
+        if (newArray.includes(conversationId)) {
+          // console.log('in conversation reducer, CHECKED_CONVERSATIONS, if includes before splice newArray: ', newArray);
+          const index = newArray.indexOf(conversationId); // get the index of the element
+          // add index of ids and push them into array for later
+          removeFromIndexArray.push(index);
+          // console.log('in conversation reducer, CHECKED_CONVERSATIONS, if includes conversationId: ', conversationId);
+          // console.log('in conversation reducer, CHECKED_CONVERSATIONS, if includes after splice newArray: ', newArray);
+        } else {
+          // console.log('in conversation reducer, CHECKED_CONVERSATIONS, else newArray, conversationId: ', newArray, conversationId);
+          // if the id is not in state array, push it into the array
+          newArray.push(conversationId);
+        }
+      });
+      console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray, removeFromIndexArray: ', newArray, removeFromIndexArray);
+      // iterate in reverse order so the first elements in newArray are not removed, then update state with newArray
+      for (let i = removeFromIndexArray.length - 1; i >= 0; i--) {
+        newArray.splice(removeFromIndexArray[i], 1);
+      }
+      console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray: ', newArray);
+
+      return { ...state, checkedConversationsArray: newArray };
+
+    // case CHECKED_CONVERSATIONS:
+    //   return { ...state, checkedConversationsArray: action.payload };
 
     case UPDATE_CONVERSATIONS:
-      return { ...state, conversationByUserAndFlat: action.payload };
+      const conversationUpdateArray = [];
+      const conversationUpdateIdArray = [];
+      console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
+      _.each(state.conversationByUserAndFlat, conversation => {
+        conversationUpdateIdArray.push(conversation.id);
+        conversationUpdateArray.push(conversation);
+      });
+
+      _.each(action.payload, conv => {
+        const index = conversationUpdateIdArray.indexOf(conv.id); // get the index of the element
+        conversationUpdateIdArray.splice(index, 1); // remove one element at index
+        conversationUpdateArray.splice(index, 1); // remove one element at index
+        conversationUpdateArray.push(conv);
+      });
+      console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateArray: ', conversationUpdateArray);
+      console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
+
+      return { ...state, conversationByUserAndFlat: conversationUpdateArray };
+    // case UPDATE_CONVERSATIONS:
+    //   const conversationUpdateArray = [];
+    //   const conversationUpdateIdArray = [];
+    //   console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
+    //   _.each(state.conversationByUserAndFlat, conversation => {
+    //     _.each(action.payload, conv => {
+    //       if (conversation.id !== conv.id) {
+    //         if (!conversationUpdateIdArray.includes(conversation.id)) {
+    //           console.log('in conversation reducer, UPDATE_CONVERSATIONS, if != conversation.id, conv.id: ', conversation.id, conv.id);
+    //           conversationUpdateIdArray.push(conversation.id);
+    //           conversationUpdateArray.push(conversation);
+    //         }
+    //       } else {
+    //         if (!conversationUpdateIdArray.includes(conv.id)) {
+    //           console.log('in conversation reducer, UPDATE_CONVERSATIONS, else != conversation.id, conv.id: ', conversation.id, conv.id);
+    //           conversationUpdateIdArray.push(conv.id);
+    //           conversationUpdateArray.push(conv);
+    //         }
+    //       }
+    //     });
+    //   });
+    //   console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateArray: ', conversationUpdateArray);
+    //   console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
+    //
+    //   return { ...state, conversationByUserAndFlat: conversationUpdateArray };
 
     case YOUR_FLAT:
       return { ...state, yourFlat: action.payload };

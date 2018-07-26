@@ -88,27 +88,12 @@ class Conversations extends Component {
 
 handleConversationCheck(event) {
   const checkedElement = event.target;
-  const elementVal = parseInt(checkedElement.getAttribute('value'));
+  const elementVal = checkedElement.getAttribute('value');
   console.log('in conversations, handleConversationCheck, checkedElement', checkedElement);
   console.log('in conversations, handleConversationCheck, elementVal', elementVal);
 
-  if (this.state.checkedConversationsArray.includes(elementVal)) {
-    const newArray = [...this.state.checkedConversationsArray]; // make a separate copy of the array
-    const index = newArray.indexOf(elementVal); // get the index of the element
-    newArray.splice(index, 1); // remove one element at index
-
-    this.setState({ checkedConversationsArray: newArray }, () => {
-      console.log('in results handleConversationCheck, checkedConversationsArray if includes: ', this.state.checkedConversationsArray);
-      this.props.checkedConversations(this.state.checkedConversationsArray);
-    });
-  } else {
-    this.setState(prevState => ({
-      checkedConversationsArray: [...prevState.checkedConversationsArray, elementVal]
-    }), () => {
-      console.log('in results handleConversationCheck, checkedConversationsArray if else: ', this.state.checkedConversationsArray);
-      this.props.checkedConversations(this.state.checkedConversationsArray);
-    }); // end of setState
-  }
+  this.props.checkedConversations([parseInt(elementVal, 10)]);
+  console.log('in results handleConversationCheck, checkedConversationsArray: ', this.state.checkedConversationsArray);
 }
 
  renderEachConversation() {
@@ -124,7 +109,7 @@ handleConversationCheck(event) {
      // iterate through each conversation
      return _.map(conversations, (conversation, index) => {
        const lastMessageIndex = conversation.messages.length - 1;
-       // console.log('in conversations, renderEachConversation, conversation: ', conversation);
+       console.log('in conversations, renderEachConversation, conversation: ', conversation);
        // check for unread messages and increment counter if message.read = false
        // if there are unread messages, the healine chnages in style of li
        const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
@@ -156,6 +141,9 @@ handleConversationCheck(event) {
        const date = new Date(conversation.messages[lastMessageIndex].created_at);
        //show only first 26 characters of text
        const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
+
+       // const checkboxes = document.getElementsByClassName('conversations-input-checkbox')
+
        return (
          <li key={index} className="my-page-each-card">
            <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
@@ -172,7 +160,7 @@ handleConversationCheck(event) {
                </ul>
              </div>
              <div className="my-page-conversation-input">
-               <input value={conversation.id} type="checkbox" onChange={this.handleConversationCheck.bind(this)} />
+               <input value={conversation.id} className="conversations-input-checkbox" type="checkbox" onChange={this.handleConversationCheck.bind(this)} />
              </div>
            </div>
          </li>

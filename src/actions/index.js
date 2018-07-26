@@ -458,6 +458,7 @@ export function yourFlat(yours) {
 }
 export function checkedConversations(array) {
   console.log('in actions index, checkedConversations array: ', array);
+  // callback();
   return {
     type: CHECKED_CONVERSATIONS,
     payload: array
@@ -1172,7 +1173,7 @@ export function markMessagesRead(id) {
     });
   };
 }
-export function updateConversations(idArray, conversationAttributes) {
+export function updateConversations(idArray, conversationAttributes, callback) {
   console.log('in actions index, updateConversation, id: ', idArray);
   console.log('in actions index, updateConversation, conversationAttributes: ', conversationAttributes);
   console.log('in actions index, updateConversation: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -1185,6 +1186,9 @@ export function updateConversations(idArray, conversationAttributes) {
     .then(response => {
       console.log('response to updateConversation, response: ', response);
       console.log('response to updateConversation, response.data.data: ', response.data.data);
+
+      callback();
+
       dispatch({
         type: UPDATE_CONVERSATIONS,
         payload: response.data.data.conversation
