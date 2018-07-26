@@ -131,7 +131,7 @@ class MessagingMain extends Component {
     }
 
     if (elementVal == 'trash') {
-      const conversationAttributes = { trashed: true, archived: false };
+      const conversationAttributes = { trashed: true };
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           console.log('in messagingMain, handleMessageEditClick, if elementVal == trash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
           this.props.checkedConversations(this.props.checkedConversationsArray);
@@ -213,25 +213,27 @@ class MessagingMain extends Component {
       if (this.state.showTrashBin) {
         _.each(this.props.conversations, conv => {
           console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
-          if (conv.trashed) {
+          // trashed can either be archived or not, so when untrashed, goes back to archives
+          if (conv.trashed && (conv.archived || !conv.archived)) {
             filteredConversationsArray.push(conv);
           }
         });
-        this.setState({ filteredConversationsArray }, () => {
-          console.log('in messagingMain, filterConversations, if showTrashBin conv, setState callback this.state.filteredConversationsArray: ', this.state.filteredConversationsArray);
-        });
+        // this.setState({ filteredConversationsArray }, () => {
+        //   console.log('in messagingMain, filterConversations, if showTrashBin conv, setState callback this.state.filteredConversationsArray: ', this.state.filteredConversationsArray);
+        // });
       }
 
       if (this.state.showArchiveBin) {
         _.each(this.props.conversations, conv => {
           console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
-          if (conv.archived) {
+          // archived cannot be trashed
+          if (conv.archived && !conv.trashed) {
             filteredConversationsArray.push(conv);
           }
         });
-        this.setState({ filteredConversationsArray });
+        // this.setState({ filteredConversationsArray });
       }
-      // return filteredConversationsArray;
+      return filteredConversationsArray;
     } // end of first if
     // console.log('in messagingMain, filterConversations, filteredConversationsArray  : ', filteredConversationsArray);
     // return filteredConversationsArray;
@@ -258,8 +260,8 @@ class MessagingMain extends Component {
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderMainControls()}
         <ul>
           <Conversations
-            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
-            // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations() }
+            // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
+            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations() }
             onMessagingMain
           />
           </ul>
