@@ -274,7 +274,7 @@ class MessagingMain extends Component {
   // }
 
   renderMessages() {
-    console.log('in mypage, renderMessages: this.props.conversationId', this.props.conversationId);
+    console.log('in messagingMain, renderMessages: this.props.conversationId', this.props.conversationId);
     return (
       <div className="messaging-main-messages-box col-md-8">
       <Messaging
@@ -297,7 +297,7 @@ class MessagingMain extends Component {
   // }
 
   handleMessageRefreshClick() {
-    console.log('in mypage, handleMessageRefreshClick: ');
+    console.log('in messagingMain, handleMessageRefreshClick: ');
     this.props.showLoading();
     this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
   }

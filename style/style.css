@@ -684,7 +684,6 @@ body > div:first-child {
   color: gray;
   margin: 0 0 0 15px;
 }
-
 .search-criteria-apply:hover {
   color: blue;
   text-decoration: underline;
@@ -1355,7 +1354,7 @@ body > div:first-child {
   /* min-width: 270px !important; */
   float: left;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 
@@ -1364,7 +1363,6 @@ body > div:first-child {
   height: 100%;
   border: 2px solid #ccc;
   height: 100%;
-
 } */
 .messaging-main-conversation-box {
   max-width: 350px;
@@ -2143,7 +2141,7 @@ form {
   /* pointer-events: none; */
 }
 
-.my-page-conversation-input input[type="checkbox"]{
+.my-page-conversation-input input {
   width: 50px; /*Desired width*/
   height: 50px; /*Desired height*/
   /* cursor: pointer;
@@ -2715,12 +2713,10 @@ form {
 
 /* .createFlatAmenityCheckBox {
   padding: 5px;
-
 } */
     /* .header {
       margin-bottom: 100px !important;
       padding-bottom: 100px !important;
-
     } */
     /* body {
         background-color: lightgreen;

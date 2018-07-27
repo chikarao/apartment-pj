@@ -132,9 +132,11 @@ class Messaging extends Component {
 }
 
   renderEachMessage(conversationToShowArray) {
-    // console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
-    // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
-    // if (this.props.conversation) {
+    // if (this.props.checkedConversationsArray && this.props.checkedConversationsArray.length < 1) {
+      console.log('in messaging, renderEachMessage, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+      // console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
+      // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
+      // if (this.props.conversation) {
       // const { conversation } = this.props;
       // conversation is an array
       if (conversationToShowArray.length > 0) {
@@ -172,6 +174,7 @@ class Messaging extends Component {
           }
         });
       }
+      // }
     // }
   }
 
@@ -228,7 +231,7 @@ class Messaging extends Component {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
     console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
     console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
-    if (this.props.conversations || this.props.conversation) {
+    if (this.props.conversations) {
       console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
       console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
       if (!this.props.currentUserIsOwner) {

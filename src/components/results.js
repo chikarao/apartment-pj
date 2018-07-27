@@ -1377,13 +1377,16 @@ class Results extends Component {
       amenitySearchArray: []
     }, () => {
       const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax  } = this.state;
-      const searchParameterObject = { size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax }
+      const searchParamsObject = { size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax }
+      // go through each amenity and if there is a key value pair in saerchFlatParams,
+      // turn it false in searchParamsObject and send to searchFlatParameters action to update in reducer
       _.each(Object.keys(amenities), key => {
         if (this.props.searchFlatParams[key]) {
-          searchParameterObject[key] = false;
+          searchParamsObject[key] = false;
         }
       });
-      this.props.searchFlatParameters(searchParameterObject);
+      
+      this.props.searchFlatParameters(searchParamsObject);
       console.log('in results handleSearchClearClick, this.state: ', this.state);
     });
   }

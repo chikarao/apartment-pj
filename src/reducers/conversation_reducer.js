@@ -98,11 +98,12 @@ export default function (state = { noConversation: false, newMessages: 0, conver
     case CHECKED_CONVERSATIONS:
       const newArray = state.checkedConversationsArray;
       const removeFromIndexArray = [];
+      console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, action.payload: ', action.payload);
       // iterate through action.payload to get index of conversations in existing state;
       _.each(action.payload, conversationId => {
-        console.log('in conversation reducer, CHECKED_CONVERSATIONS, before if includes newArray, conversationId: ', newArray, conversationId);
+        // console.log('in conversation reducer, CHECKED_CONVERSATIONS, before if includes newArray, conversationId: ', newArray, conversationId);
         if (newArray.includes(conversationId)) {
           // console.log('in conversation reducer, CHECKED_CONVERSATIONS, if includes before splice newArray: ', newArray);
           const index = newArray.indexOf(conversationId); // get the index of the element

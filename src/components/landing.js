@@ -59,7 +59,7 @@ class Landing extends Component {
               landingPage
             />
           </div>
-          <p>Freedom to live anywhere you want</p>
+          <p>Live where you want</p>
         </div>
       </div>
     );

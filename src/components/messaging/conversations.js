@@ -6,7 +6,8 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
 // const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
-const INITIAL_STATE = { showConversation: true, conversationId: '', checkedConversationsArray: [] };
+// const INITIAL_STATE = { showConversation: true, conversationId: '', checkedConversationsArray: [] };
+const INITIAL_STATE = { showConversation: true, checkedConversationsArray: [] };
 // const INITIAL_STATE = { showConversation: true, conversationId: '', yourFlat: false };
 
 class Conversations extends Component {
@@ -30,35 +31,62 @@ class Conversations extends Component {
  }
 
  handleConversationCardClick(event) {
-   // console.log('in conversations, handleConversationCardClick, event: ', event.target);
+   console.log('in conversations, handleConversationCardClick, event: ', event.target);
    const clickedElement = event.target;
    const elementVal = clickedElement.getAttribute('value');
-   // console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
 
-   // call action creator to mark messages for conversation with that id as read
-   this.props.markMessagesRead(elementVal);
-   // this.props.newMessages(false);
-   // this.props.fetchConversationsByUser();
-   const conversationToShow = this.getConversationToShow(elementVal);
-   if (conversationToShow.length > 0) {
-     const yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
-     // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
-     this.props.yourFlat(yourFlat);
-     // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-     // this.setState({ conversationId: elementVal, yourFlat }, () => {
-     this.setState({ conversationId: elementVal }, () => {
+   const wasCheckBoxClicked = event.target.className === 'my-page-conversation-input' ||
+   event.target.className === 'conversations-input-checkbox';
+   console.log('in conversations, handleConversationCardClick, wasCheckBoxClicked', wasCheckBoxClicked);
+
+   // if (!wasCheckBoxClicked) {
+     // console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
+
+     // call action creator to mark messages for conversation with that id as read
+     this.props.markMessagesRead(elementVal);
+     // this.props.newMessages(false);
+     // this.props.fetchConversationsByUser();
+     let conversationToShow = this.getConversationToShow(elementVal);
+     console.log('in conversations, handleConversationCardClick, conversationToShow.length', conversationToShow.length);
+     if (conversationToShow.length > 0) {
+       let yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
+       // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
+       this.props.yourFlat(yourFlat);
+       // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
+       // this.setState({ conversationId: elementVal, yourFlat }, () => {
+       // this.setState({ conversationId: elementVal }, () => {
        // console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
        // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
        //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
        // this.renderMessages();
-     });
-     // action creator to switch on and off show conversation in mypage
-     if (!this.props.onMessagingMain) {
-       this.props.showConversations();
+       // });
+       // action creator to switch on and off show conversation in mypage
+       if (!this.props.onMessagingMain && !wasCheckBoxClicked) {
+         this.props.showConversations();
+       }
+
+       if (!wasCheckBoxClicked) {
+         this.props.conversationToShow(parseInt(elementVal));
+         // this.props.showConversations();
+       } else {
+         // check if conversationId is already assgined in app state
+         // if not get conversationToShow from the elementVal (clicked value)
+          if (!this.props.conversationId) {
+            conversationToShow = this.getConversationToShow(elementVal);
+          } else {
+            // otherwise, get converation to show from existing conversationId (what was clicked before this click)
+            conversationToShow = this.getConversationToShow(this.props.conversationId);
+          }
+          // find out if the conversationId is for your own flat
+          yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
+          // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
+          // call actions to specify its for your own flat and which conversation to show or keep showing
+          this.props.yourFlat(yourFlat);
+          this.props.conversationToShow(this.props.conversationId);
+       }
+       // action creator to set conversation id for props in messaging.js
      }
-     // action creator to set conversation id for props in messaging.js
-     this.props.conversationToShow(parseInt(elementVal));
-   }
+   // }
  }
 
  renderConversationUserImage(notOwnFlatConversation, conversation) {
@@ -94,6 +122,7 @@ handleConversationCheck(event) {
 
   this.props.checkedConversations([parseInt(elementVal, 10)]);
   console.log('in results handleConversationCheck, checkedConversationsArray: ', this.state.checkedConversationsArray);
+  // this.props.conversationToShow(parseInt(elementVal));
 }
 
  renderEachConversation() {
@@ -193,7 +222,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     // conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
-    flat: state.flat.selectedFlatFromParams
+    flat: state.flat.selectedFlatFromParams,
+    conversationId: state.conversation.conversationToShow
   };
 }
 

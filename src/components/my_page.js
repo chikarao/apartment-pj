@@ -16,7 +16,9 @@ class MyPage extends Component {
     this.state = {
       // not being used
       sortByDate: false,
-      showConversation: true,
+      // showConversation done in app state action this.props.showConversation
+      // and props this.props.showConversationCards
+      // showConversation: true,
       conversationToShow: {},
       // yourFlat: false,
       conversationId: ''
@@ -350,7 +352,7 @@ class MyPage extends Component {
   handleMessageHamburgerClick() {
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
-    this.setState({ showConversation: true });
+    // this.setState({ showConversation: true });
     this.props.showConversations();
   }
 
