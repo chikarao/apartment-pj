@@ -1377,7 +1377,13 @@ class Results extends Component {
       amenitySearchArray: []
     }, () => {
       const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax  } = this.state;
-      this.props.searchFlatParameters({ size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax });
+      const searchParameterObject = { size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax, price_min: priceMin, price_max: priceMax }
+      _.each(Object.keys(amenities), key => {
+        if (this.props.searchFlatParams[key]) {
+          searchParameterObject[key] = false;
+        }
+      });
+      this.props.searchFlatParameters(searchParameterObject);
       console.log('in results handleSearchClearClick, this.state: ', this.state);
     });
   }

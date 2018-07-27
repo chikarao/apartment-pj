@@ -88,7 +88,7 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="archivebin" className="btn messaging-main-large-archive">Archived Messages</span>
+          <span value="archivebin" className="messaging-main-large-archive">Archived Messages</span>
           <span value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>Unarchive</span>
           <span value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></span>
         </div>
@@ -99,7 +99,7 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="trashbin" className="btn messaging-main-large-archive">Trash Bin</span>
+          <span value="trashbin" className="messaging-main-large-archive">Trash Bin</span>
           <span value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Untrash</span>
         </div>
       );
