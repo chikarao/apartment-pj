@@ -332,6 +332,7 @@ class MyPage extends Component {
         noConversation={this.props.noConversation}
         // yourFlat={this.props.yourFlat}
         conversationId={this.props.conversationId}
+        mobileView
         // conversationId={this.state.conversationId}
       />
       </div>

@@ -243,7 +243,7 @@ class Messaging extends Component {
         console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
         return (
           <div>
-            <div id={'message-show-box'} style={this.props.onMessagingMain ? { height: '500px' } : { height: '300px' }}>
+            <div id={'message-show-box'} style={this.props.mobileView ?  { height: '300px' } : { height: '500px' }}>
               {this.props.noConversation ? <div className="no-conversation-message">
               <br/><br/>You have not started a conversation...
               <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}

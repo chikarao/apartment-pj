@@ -67,7 +67,9 @@ class Conversations extends Component {
 
        if (!wasCheckBoxClicked) {
          this.props.conversationToShow(parseInt(elementVal));
-         // this.props.showConversations();
+         if (this.props.onMessageMainMobile) {
+           this.props.showConversations();
+         }
        } else {
          // check if conversationId is already assgined in app state
          // if not get conversationToShow from the elementVal (clicked value)

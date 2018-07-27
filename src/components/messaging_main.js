@@ -11,6 +11,7 @@ import Conversations from './messaging/conversations';
 //
 // const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 // const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
+const RESIZE_BREAK_POINT = 800;
 
 class MessagingMain extends Component {
   constructor(props) {
@@ -256,13 +257,15 @@ class MessagingMain extends Component {
       // }
     }
     return (
-      <div className="messaging-main-conversation-box col-md-4">
+      // <div className="messaging-main-conversation-box col-md-4">
+      <div className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : ''}>
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderMainControls()}
         <ul>
           <Conversations
             // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
             conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations() }
             onMessagingMain
+            onMessageMainMobile={this.state.windowWidth < RESIZE_BREAK_POINT}
           />
           </ul>
       </div>
@@ -274,9 +277,10 @@ class MessagingMain extends Component {
   // }
 
   renderMessages() {
+    // <div className="messaging-main-messages-box col-md-8">
     console.log('in messagingMain, renderMessages: this.props.conversationId', this.props.conversationId);
     return (
-      <div className="messaging-main-messages-box col-md-8">
+      <div className={this.state.windowWidth < RESIZE_BREAK_POINT ? 'my-page-message-box' : 'messaging-main-messages-box col-md-8' }>
       <Messaging
         currentUserIsOwner={false}
         // conversation={this.state.conversationToShow}
@@ -284,7 +288,8 @@ class MessagingMain extends Component {
         // yourFlat={this.state.yourFlat}
         conversationId={this.props.conversationId}
         onMessagingMain
-        largeTextBox
+        mobileView={this.state.windowWidth < RESIZE_BREAK_POINT}
+        largeTextBox={this.state.windowWidth > RESIZE_BREAK_POINT}
         // conversationId={this.state.conversationId}
       />
       </div>
@@ -306,17 +311,49 @@ class MessagingMain extends Component {
     this.props.showLoading();
   }
 
+  handleMessageHamburgerClick() {
+    this.props.showConversations();
+  }
+
+  renderMobileMessaging() {
+    return (
+      <div>
+        <div className="my-page-category-title">
+          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
+          <span>My Messages</span>
+          <span className="my-page-category-right"></span>
+        </div>
+        {this.props.showConversationCards ? this.renderConversations() : this.renderMessages()}
+      </div>
+    );
+  }
+
   render() {
     console.log('in messagingMain, render this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
     // console.log('in Welcome, render, this.state: ', this.state)
     // <div className="messaging-main-controls-container">{this.renderMessagingControls()}</div>
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
+
+    // if (this.state.windowWidth < RESIZE_BREAK_POINT) {
+    //     return (
+    //       <div>
+    //         {this.renderMobileMessaging()}
+    //       </div>
+    //     );
+    // }
+
     return (
       <div className="messaging-main-main-container">
-        <div className="messaging-main-container container">
-          {this.renderConversations()}
-          {this.renderMessages()}
-        </div>
+       {this.state.windowWidth > RESIZE_BREAK_POINT ?
+         <div className="messaging-main-container container">
+         {this.renderConversations()}
+         {this.renderMessages()}
+         </div>
+         :
+         <div className="my-page-category-container">
+         {this.renderMobileMessaging()}
+         </div>
+       }
       </div>
     );
   }
@@ -334,7 +371,8 @@ function mapStateToProps(state) {
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     conversationId: state.conversation.conversationToShow,
-    checkedConversationsArray: state.conversation.checkedConversationsArray
+    checkedConversationsArray: state.conversation.checkedConversationsArray,
+    showConversationCards: state.conversation.showConversations,
   };
 }
 
