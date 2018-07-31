@@ -32,31 +32,32 @@ class MessagingMain extends Component {
       this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
       this.props.fetchConversationsByUser(() => {});
       this.props.fetchProfileForUser();
+      this.conversationSlideIn();
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   // console.log('in messagingMain, componentDidUpdate, prevProps, prevState: ', prevProps, prevState);
-  //   console.log('in messagingMain, componentDidUpdate, prevProps.conversations, this.props.conversations: ', prevProps.conversations, this.props.conversations);
-  //   // if (this.state.showTrashBin) {
-  //   //   _.each(this.props.conversations, conv => {
-  //   //     if (conv.trashed) {
-  //   //       this.filterConversations();
-  //   //     }
-  //   //   })
-  //   // }
-  //   //
-  //   // if (this.state.showArchiveBin) {
-  //   //   _.each(this.props.conversations, conv => {
-  //   //     if (conv.archived) {
-  //   //       this.filterConversations();
-  //   //     }
-  //   //   })
-  //   // }
-  //   // if (this.props.conversations) {
-  //   //   this.filterConversations();
-  //   // }
-  //     // this.filterConversations();
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    // console.log('in messagingMain, componentDidUpdate, prevProps, prevState: ', prevProps, prevState);
+    console.log('in messagingMain, componentDidUpdate : ',);
+    // if (this.state.showTrashBin) {
+    //   _.each(this.props.conversations, conv => {
+    //     if (conv.trashed) {
+    //       this.filterConversations();
+    //     }
+    //   })
+    // }
+    //
+    // if (this.state.showArchiveBin) {
+    //   _.each(this.props.conversations, conv => {
+    //     if (conv.archived) {
+    //       this.filterConversations();
+    //     }
+    //   })
+    // }
+    // if (this.props.conversations) {
+    //   this.filterConversations();
+    // }
+      // this.filterConversations();
+  }
 
   handleResize() {
     // console.log('in messagingMain, createBackghandleResizeroundImage: ', this.state.windowWidth);
@@ -114,7 +115,7 @@ class MessagingMain extends Component {
       </div>
     );
   }
-
+  // after conversation checkbox checked, handles what to do with the conversations;
   handleMessageEditClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
@@ -122,6 +123,8 @@ class MessagingMain extends Component {
     console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
     console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
 
+    // eleementVal is the conversation id
+    // calls action to update conversation in api to mark them archived = true
     if (elementVal == 'archive') {
       const conversationAttributes = { archived: true };
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
@@ -131,6 +134,7 @@ class MessagingMain extends Component {
       this.setState({ showAllConversations: true });
     }
 
+    // calls action to update conversation in api to mark them trashed = true
     if (elementVal == 'trash') {
       const conversationAttributes = { trashed: true };
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
@@ -141,8 +145,9 @@ class MessagingMain extends Component {
         });
       // this.setState({ checkedConversationsArray: [] });
       console.log('in messagingMain, handleMessageEditClick, this.state: ', this.state);
-
     }
+
+    // calls action to update conversation in api to mark them trashed = false
     if (elementVal == 'untrash') {
       const conversationAttributes = { trashed: false };
       console.log('in messagingMain, handleMessageEditClick, if elementVal == untrash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
@@ -155,6 +160,8 @@ class MessagingMain extends Component {
       // this.setState({ checkedConversationsArray: [] });
       // console.log('in messagingMain, handleMessageEditClick, this.state: ', this.state);
     }
+
+    // calls action to update conversation in api to mark them archive = false
     if (elementVal == 'unarchive') {
       const conversationAttributes = { archived: false };
       console.log('in messagingMain, handleMessageEditClick, if elementVal == unarchive, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
@@ -168,6 +175,7 @@ class MessagingMain extends Component {
       // console.log('in messagingMain, handleMessageEditClick, this.state: ', this.state);
     }
 
+    // if user clicks on trash bin link, set state to show trash bin view
     if (elementVal == 'trashbin') {
       this.setState({ showTrashBin: true, showArchiveBin: false, showAllConversations: false, filteredConversationsArray: [] }, () => {
         console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
@@ -175,6 +183,7 @@ class MessagingMain extends Component {
       })
     }
 
+    // if user clicks on archive bin link, set state to show archive bin view
     if (elementVal == 'archivebin') {
       this.setState({ showArchiveBin: true, showTrashBin: false, showAllConversations: false, filteredConversationsArray: [] }, () => {
         console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
@@ -183,6 +192,7 @@ class MessagingMain extends Component {
     }
   }
 
+  // Called when conversation checkboxes checked; shos archive and trash box links
   renderEditControls() {
     return (
       <div className="messaging-main-controls-left">
@@ -193,6 +203,7 @@ class MessagingMain extends Component {
     );
   }
 
+  // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
     const filteredConversationsArray = [];
     if (this.state.showAllConversations) {
@@ -205,7 +216,9 @@ class MessagingMain extends Component {
     }
     return filteredConversationsArray;
   }
-
+  // filters conversation based on attributes of conversations, trashed or archived
+  // and passes to conversation.js
+  // called in renderConversations
   filterConversations() {
     if (this.props.conversations) {
       const filteredConversationsArray = [];
@@ -240,10 +253,13 @@ class MessagingMain extends Component {
     // return filteredConversationsArray;
   }
 
-
+  // Calls conversation.js and passes conversations to show based on which box (trash, archive)
+  // the user has selected
   renderConversations() {
     // console.log('in messagingMain, renderConversations, document.getElementsByTagName  : ', document.getElementsByTagName('input'));
-    console.log('in messagingMain, renderConversations, document.getElementsByClassName  : ', document.getElementsByClassName('conversations-input-checkbox'));
+    // console.log('in messagingMain, renderConversations, document.getElementsByClassName  : ', document.getElementsByClassName('conversations-input-checkbox'));
+    const moveElemment = document.getElementById('conversation-main-ul');
+    console.log('in messagingMain, renderConversations, moveElemment: ', moveElemment);
     // uncheck any checkboxes on conversations; Somehow, when conversation input checked and trashed,
     // the first conversation input that is subsequently rendered is rendered checked. This code does not work in the covnersations.js
     // the propblem seems to be that conversations are rendered before input attributes are updated
@@ -258,27 +274,26 @@ class MessagingMain extends Component {
     }
     return (
       // <div className="messaging-main-conversation-box col-md-4">
-      <div className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : ''}>
-        {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderMainControls()}
-        <ul>
+      <div className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : 'messaging-main-mobile-conversation-box'}>
+        {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderEachMainControl()}
           <Conversations
             // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
             conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations() }
             onMessagingMain
             onMessageMainMobile={this.state.windowWidth < RESIZE_BREAK_POINT}
           />
-          </ul>
       </div>
     );
   }
 
-  // renderMessages() {
-  //   return <div className="messaging-main-messages-box col-md-8">Messages</div>;
-  // }
-
+  // Class wrapping messaging switches based on window size
+  // passes props onMessagingMain and mobileView based on window size
+  // noConversation is for messages on showFlat; if noConversation for flat with user,
+  // show message to send message if needed
+  // conversatinoId passed to specify messages to show for which conversation
   renderMessages() {
     // <div className="messaging-main-messages-box col-md-8">
-    console.log('in messagingMain, renderMessages: this.props.conversationId', this.props.conversationId);
+    // console.log('in messagingMain, renderMessages: this.props.conversationId', this.props.conversationId);
     return (
       <div className={this.state.windowWidth < RESIZE_BREAK_POINT ? 'my-page-message-box' : 'messaging-main-messages-box col-md-8' }>
       <Messaging
@@ -296,31 +311,91 @@ class MessagingMain extends Component {
     );
   }
 
-  // renderMessagingControls() {
-  //   return (
-  //   );
-  // }
-
   handleMessageRefreshClick() {
-    console.log('in messagingMain, handleMessageRefreshClick: ');
+    // console.log('in messagingMain, handleMessageRefreshClick: ');
     this.props.showLoading();
     this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
   }
 
+  // called to turn off loading modal after conversations are refreshed
   loadingCallback() {
     this.props.showLoading();
   }
 
-  handleMessageHamburgerClick() {
-    this.props.showConversations();
+  // conversationSlideIn() {
+  //     const moveElemment = document.getElementById('conversation-main-ul');
+  //     // console.log('in messagingMain, conversationRollIn, moveElemment: ', moveElemment);
+  //     let pos = -100;
+  //     if (moveElemment) {
+  //       // moveElemment.style.left = '-100% !important';
+  //       // moveElemment.setAttribute('style', 'left: -100%;');
+  //
+  //       // console.log('in messagingMain, conversationRollIn, getAttribute style: ', moveElemment.getAttribute('style'));
+  //       // console.log('in messagingMain, conversationRollIn, inside if moveElemment, pos: ', moveElemment, pos);
+  //       // const id = setInterval(frame, 10);
+  //       let id = '';
+  //       frame();
+  //       function frame() {
+  //         // console.log('in messagingMain, conversationRollIn, inside function frame, pos: ', moveElemment, pos);
+  //         if (pos == 0) {
+  //           // clearInterval(id);
+  //           window.cancelAnimationFrame(id);
+  //         } else {
+  //           console.log('in messagingMain, conversationRollIn, inside if pos: ', pos);
+  //           pos = pos + 1;
+  //           id = window.requestAnimationFrame(frame);
+  //           // moveElemment.style.top = pos + 'px';
+  //           // moveElemment.style.left = pos + 'px';
+  //           // moveElemment.style.left = `${pos} % !important`;
+  //           moveElemment.setAttribute('style', `left: ${pos}%`);
+  //         }
+  //       }
+  //     }
+  // }
+
+  conversationSlideIn() {
+      const moveElemment = document.getElementById('conversation-main-ul');
+      // console.log('in messagingMain, conversationRollIn, moveElemment: ', moveElemment);
+      let pos = -100;
+      if (moveElemment) {
+        // moveElemment.style.left = '-100% !important';
+        // moveElemment.setAttribute('style', 'left: -100%;');
+
+        // console.log('in messagingMain, conversationRollIn, getAttribute style: ', moveElemment.getAttribute('style'));
+        // console.log('in messagingMain, conversationRollIn, inside if moveElemment, pos: ', moveElemment, pos);
+        const id = setInterval(frame, 10);
+        function frame() {
+          // console.log('in messagingMain, conversationRollIn, inside function frame, pos: ', moveElemment, pos);
+          if (pos == 0) {
+            clearInterval(id);
+          } else {
+            console.log('in messagingMain, conversationRollIn, inside if pos: ', pos);
+            pos = pos + 5;
+            // moveElemment.style.top = pos + 'px';
+            // moveElemment.style.left = pos + 'px';
+            // moveElemment.style.left = `${pos} % !important`;
+            moveElemment.setAttribute('style', `left: ${pos}%`);
+          }
+        }
+      }
   }
 
+  // When messages are being rendered, click hamburger toggle back to conversations view
+  handleMessageHamburgerClick() {
+    this.props.showConversations();
+    // this.conversationRollIn();
+    this.props.checkedConversations(this.props.checkedConversationsArray);
+    const moveElemment = document.getElementById('conversation-main-ul');
+    console.log('in messagingMain, handleMessageHamburgerClick, moveElemment: ', moveElemment);
+  }
+// mobile version of messaging; showConversation is a boolean set in
+// Conversation handleConversationCardClick; when conversation is clicked, shows messages
   renderMobileMessaging() {
     return (
       <div>
         <div className="my-page-category-title">
           <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
-          <span>My Messages</span>
+          <span>Mail Box</span>
           <span className="my-page-category-right"></span>
         </div>
         {this.props.showConversationCards ? this.renderConversations() : this.renderMessages()}
@@ -328,6 +403,9 @@ class MessagingMain extends Component {
     );
   }
 
+  // renders mobile version and regular web version based on window size, RESIZE_BREAK_POINT
+  // my-page classes to simplify; my page messaging will be gone but keeping it for now;
+  // conversation and messaging come from component/messaging/conversation.js and messaging.js
   render() {
     console.log('in messagingMain, render this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
     // console.log('in Welcome, render, this.state: ', this.state)

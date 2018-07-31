@@ -84,6 +84,7 @@ class CitySearch extends Component {
     }
 
     if (this.props.landingPage) {
+      console.log('in CitySearch, handleBannerSearchBtnClick if this.props.landingPage: ', this.props.landingPage);
       this.props.history.push('/results');
       this.props.clearFlats();
       this.props.updateMapDimensions({});
@@ -109,7 +110,7 @@ class CitySearch extends Component {
     const clickedElement = event.target;
     const mainInput = document.getElementById('banner-input');
     const liArray = document.getElementsByTagName('LI');
-    
+
     const body = document.getElementsByTagName('BODY');
     body[0].classList.remove('stop-scrolling');
 
@@ -240,14 +241,14 @@ class CitySearch extends Component {
              // }
            } else {
              // document.activeElement.nextSibling.firstChild.setActive();
-             if(active.nextSibling) {
+             if (active.nextSibling) {
                active.style.backgroundColor = 'white ';
                active = active.nextSibling;
                active.style.backgroundColor = 'lightgray';
                const selectedCity = active.getAttribute('value');
                this.setState({ selectedCity }, () => {
                  mainInput.value = this.state.selectedCity;
-                this.getCityObject((city) => this.props.searchFlatParameters(city));
+                 this.getCityObject((city) => this.props.searchFlatParameters(city));
                  console.log('in CitySearch, scrollList, DOWN clicked, this.state.selectedCity: ', this.state.selectedCity);
                  // this.props.clearFlats();
                  // this.props.updateMapDimensions({});
@@ -259,9 +260,16 @@ class CitySearch extends Component {
          break;
          // 13: enter key
          case 13:
+         console.log('in CitySearch, scrollList, ENTER clicked, this.state.selectedCity: ', this.state.selectedCity);
           // if press enter key, and active element is not first li or the banner input
+            // Below code for searching with ENTER, but the city is not updated  on the second search after going back to search for some reason...
+            // if (this.state.selectedCity && (document.activeElement !== mainInput) && (this.state.displayCitiesList == false)) {
+            //   console.log('in CitySearch, scrollList, ENTER clicked, document.activeElement == mainInput: ', document.activeElement == mainInput);
+            //   console.log('in CitySearch, scrollList, ENTER clicked, this.state.selectedCity: ', this.state.selectedCity);
+            //   this.handleBannerSearchBtnClick();
+            // }
            if (document.activeElement == mainInput || (active.getAttribute('value') == first.getAttribute('value'))) {
-             console.log('in CitySearch, scrollList, ENTER clicked, mainInput or first: ');
+             // console.log('in CitySearch, scrollList, ENTER clicked, mainInput or first: ');
              // stop scrolling taken off
              body[0].classList.remove('stop-scrolling');
              // do not show city dropdown list and empty out the cities array so that user cannot continue to presss up and down keys to select
@@ -269,9 +277,10 @@ class CitySearch extends Component {
            } else {
              this.setState({ displayCitiesList: false, citiesSubsetArray: [] }, () => {
                // reference: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
-               body[0].classList.remove('stop-scrolling');
+             body[0].classList.remove('stop-scrolling');
            });
          }
+
          break;
          // focus (bring cursur to input) if press RIGHT 39 or LEFT 37 arrows
          case 39:
@@ -285,9 +294,9 @@ class CitySearch extends Component {
   } // end of scrollList function
 
 
-handleRefineSearchLink() {
-  console.log('in CitySearch, handleRefineSearchLink:');
-}
+  handleRefineSearchLink() {
+    console.log('in CitySearch, handleRefineSearchLink:');
+  }
 
   renderCitySearch() {
     // <div className={this.props.resultsPage ? 'results-refine-search-link' : 'hide'} onClick={this.handleRefineSearchLink.bind(this)}>

@@ -114,7 +114,7 @@ class ShowFlat extends Component {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
             <div key={key} className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
-              <div className="amenity-radio">{AMENTIES[key]}</div>
+              <div className="amenity-radio-show-page">{AMENTIES[key]}</div>
             </div>
           );
         }

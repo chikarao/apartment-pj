@@ -65,13 +65,24 @@ class Landing extends Component {
     );
   }
 
+  renderFooter() {
+    return (
+      <footer className="landing-footer">
+        <div className="footer-left-box">© CO & Company 2018</div>
+      </footer>
+    );
+  }
+
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     return (
       <div>
-       {this.renderBanner()}
+        <div className="landing-main">
+          {this.renderBanner()}
+        </div>
+          {this.renderFooter()}
       </div>
     );
   }

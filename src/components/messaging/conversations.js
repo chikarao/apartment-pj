@@ -43,33 +43,34 @@ class Conversations extends Component {
      // console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
 
      // call action creator to mark messages for conversation with that id as read
-     this.props.markMessagesRead(elementVal);
      // this.props.newMessages(false);
      // this.props.fetchConversationsByUser();
+     // let conversationToShow;
      let conversationToShow = this.getConversationToShow(elementVal);
      console.log('in conversations, handleConversationCardClick, conversationToShow.length', conversationToShow.length);
      if (conversationToShow.length > 0) {
        let yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
        // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
        this.props.yourFlat(yourFlat);
-       // this.setState({ showConversation: false, conversationId: elementVal, yourFlat }, () => {
-       // this.setState({ conversationId: elementVal, yourFlat }, () => {
-       // this.setState({ conversationId: elementVal }, () => {
-       // console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-       // this.setState({ showConversation: false, conversationToShow, yourFlat }, () => {
-       //   console.log('in conversations, handleConversationCardClick, this.state: ', this.state);
-       // this.renderMessages();
-       // });
+
+      // !!!!!! For seme reason, unless markMessagesRead is called even when checkbox checked,
+      // there is no rerender!!!!!
+       this.props.markMessagesRead(elementVal);
+
        // action creator to switch on and off show conversation in mypage
        if (!this.props.onMessagingMain && !wasCheckBoxClicked) {
          this.props.showConversations();
        }
-
+       console.log('in conversations, handleConversationCardClick, before if conversation card was clicked, elementVal: ', elementVal);
+       // if card was clicked
        if (!wasCheckBoxClicked) {
+         console.log('in conversations, handleConversationCardClick, if conversation card was clicked, elementVal: ', elementVal);
+         // console.log('in conversations, handleConversationCardClick, if conversation card was clicked, elementVal: ', elementVal);
          this.props.conversationToShow(parseInt(elementVal));
          if (this.props.onMessageMainMobile) {
            this.props.showConversations();
          }
+         // else if checkbox clicked...
        } else {
          // check if conversationId is already assgined in app state
          // if not get conversationToShow from the elementVal (clicked value)
@@ -84,9 +85,9 @@ class Conversations extends Component {
           // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
           // call actions to specify its for your own flat and which conversation to show or keep showing
           this.props.yourFlat(yourFlat);
+          // action creator to set conversation id for props in messaging.js
           this.props.conversationToShow(this.props.conversationId);
        }
-       // action creator to set conversation id for props in messaging.js
      }
    // }
  }
@@ -140,7 +141,7 @@ handleConversationCheck(event) {
      // iterate through each conversation
      return _.map(conversations, (conversation, index) => {
        const lastMessageIndex = conversation.messages.length - 1;
-       console.log('in conversations, renderEachConversation, conversation: ', conversation);
+       // console.log('in conversations, renderEachConversation, conversation: ', conversation);
        // check for unread messages and increment counter if message.read = false
        // if there are unread messages, the healine chnages in style of li
        const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
@@ -200,9 +201,27 @@ handleConversationCheck(event) {
    }
  }
 
+ // conversationRollIn() {
+ //     const moveElemment = document.getElementById('conversation-main-ul');
+ //     console.log('in conversations, conversationRollIn, moveElemment: ', moveElemment);
+ //     let pos = -100;
+ //     const id = setInterval(frame, 5);
+ //     function frame() {
+ //         if (pos == 0) {
+ //             clearInterval(id);
+ //         } else {
+ //           console.log('in conversations, conversationRollIn, pos: ', pos);
+ //             pos++;
+ //             // moveElemment.style.top = pos + 'px';
+ //             // moveElemment.style.left = pos + 'px';
+ //             moveElemment.style.left = `${pos} px`;
+ //         }
+ //     }
+ // }
+
  renderConversations() {
    return (
-     <ul>
+     <ul id="conversation-main-ul">
        {this.renderEachConversation()}
      </ul>
    );
@@ -210,7 +229,7 @@ handleConversationCheck(event) {
 
   render() {
     return (
-      <div>{this.renderConversations()}</div>
+      <div className="conversation-main-div">{this.renderConversations()}</div>
     );
   }
 }
