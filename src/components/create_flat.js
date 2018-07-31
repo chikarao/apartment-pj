@@ -366,6 +366,23 @@ class CreateFlat extends Component {
             <option value={false}>No</option>
           </Field>
         </fieldset>
+        <fieldset className="form-group">
+        <fieldset key={'station'} className="form-group">
+          <label className="create-flat-form-label">Nearest Station:</label>
+          <Field name="station" component="input" type="string" className="form-control" />
+        </fieldset>
+        <label className="create-flat-form-label">Minutes to Station:</label>
+        <Field name="minutes_to_station" component="select" type="integer" className="form-control">
+          <option></option>
+          <option value="1">1 minute or less</option>
+          <option value="3">Under 3 minutes</option>
+          <option value="5">Under 5 minutes</option>
+          <option value="7">Under 7 minutes</option>
+          <option value="10">Under 10 minutes</option>
+          <option value="15">Under 15 minutes</option>
+          <option value="16">Over 15 minutes</option>
+        </Field>
+        </fieldset>
         <fieldset key={'smoking'} className="form-group">
           <label className="create-flat-form-label">Smoking:</label>
           <Field name="smoking" component="select" type="boolean" className="form-control">

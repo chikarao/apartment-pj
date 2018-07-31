@@ -2013,7 +2013,7 @@ form {
 }
 .dropzone-area p {
   color: gray !important;
-  font-size: 20px;
+  font-size: 17px;
 }
 .dropzone-area i {
   color: gray !important;
@@ -2033,6 +2033,7 @@ form {
   /* display: flex;
   justify-content: flex-start;
   flex-direction: row; */
+  width: auto;
   max-width: 70%;
 }
 
@@ -2041,6 +2042,7 @@ form {
   justify-content: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
+  width: auto;
   min-width: 300px;
   margin: 20px auto 20px auto;
   /* max-width: 50%; */
@@ -2826,8 +2828,8 @@ form {
   }
 
   .dropzone-area > div:first-child {
-    width: 110px !important;
-    height: 110px !important;
+    width: 120px !important;
+    height: 120px !important;
     border-style: dashed;
     border-color: blue !important;
     display: flex;
