@@ -58,10 +58,10 @@ export default (field) => {
         <Dropzone
           name={field.name}
           onDrop={(filesToUpload, e) => field.input.onChange(filesToUpload)}
-          maxSize={5000000} // 5MB max
+          maxSize={globalConstants.maxFileSize} // 8MB max
           accept="image/*"
         >
-          <p>Drop your images or <br/>click here <br/>to upload <br/><small><small>(max: 5MB per file, {MAX_NUM_FILES} files )</small></small></p>
+          <p>Drop your images or <br/>click here <br/>to upload <br/><small><small>(max: {globalConstants.maxFileSize / 10000000}MB per file, {MAX_NUM_FILES} files )</small></small></p>
             <i className="fa fa-image"></i>
         </Dropzone>
           {field.meta.touched &&

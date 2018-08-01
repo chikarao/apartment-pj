@@ -375,6 +375,8 @@ class MessagingMain extends Component {
             // moveElemment.style.left = pos + 'px';
             // moveElemment.style.left = `${pos} % !important`;
             moveElemment.setAttribute('style', `left: ${pos}%`);
+
+            moveElemment.classList.add('in');
           }
         }
       }

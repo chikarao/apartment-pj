@@ -798,7 +798,7 @@ class Results extends Component {
         // <div className="spinner">Loading flats...</div>
         return (
           <div className="results-no-flat-message">
-            There are no flats in that area. <br/><br/> Please search another area.
+            There are no flats in that area. <br/><br/> Please search another.
           </div>
         );
       }
@@ -1385,7 +1385,7 @@ class Results extends Component {
           searchParamsObject[key] = false;
         }
       });
-      
+
       this.props.searchFlatParameters(searchParamsObject);
       console.log('in results handleSearchClearClick, this.state: ', this.state);
     });

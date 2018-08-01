@@ -247,24 +247,27 @@ class CreateFlat extends Component {
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset key={'address1'} className="form-group">
-          <label className="create-flat-form-label">Street Address:</label>
+          <label className="create-flat-form-label">Street Address<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="address1" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'city'} className="form-group">
-          <label className="create-flat-form-label">City:</label>
+          <label className="create-flat-form-label">City<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="city" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'state'} className="form-group">
-          <label className="create-flat-form-label">State:</label>
+          <label className="create-flat-form-label">State<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="state" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'zip'} className="form-group">
-          <label className="create-flat-form-label">Zip:</label>
+          <label className="create-flat-form-label">Zip<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="zip" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'country'} className="form-group">
-          <label className="create-flat-form-label">Country:</label>
+          <label className="create-flat-form-label">Country<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="country" component="input" type="string" className="form-control" />
+        </fieldset>
+        <fieldset className="form-group">
+          <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span> Required fields -- other fields can be filled-in on the edit page</div>
         </fieldset>
         <fieldset key={'description'} className="form-group">
           <label className="create-flat-form-label">Description:</label>

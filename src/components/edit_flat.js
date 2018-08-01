@@ -300,7 +300,7 @@ class EditFlat extends Component {
             <div className="edit-flat-address">{this.props.flat.country}</div>
           </fieldset>
           <fieldset>
-          <div className="edit-flat-form-message">* If you need to edit the address, please delete flat and create a new one</div>
+          <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> If you need to edit the address, please delete the listing and create a new one</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Description:</label>
@@ -396,6 +396,23 @@ class EditFlat extends Component {
             <label className="create-flat-form-label">Intro:</label>
             <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
           </fieldset>
+          <fieldset key={'station'} className="form-group">
+            <label className="create-flat-form-label">Nearest Station:</label>
+            <Field name="station" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">Minutes to Station:</label>
+            <Field name="minutes_to_station" component="select" type="integer" className="form-control">
+              <option></option>
+              <option value="1">1 minute or less</option>
+              <option value="3">Under 3 minutes</option>
+              <option value="5">Under 5 minutes</option>
+              <option value="7">Under 7 minutes</option>
+              <option value="10">Under 10 minutes</option>
+              <option value="15">Under 15 minutes</option>
+              <option value="16">Under 15 minutes</option>
+            </Field>
+          </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Cancellation:</label>
             <Field name="cancellation" component="select" type="boolean" className="form-control">
@@ -412,6 +429,10 @@ class EditFlat extends Component {
               <option value={false}>No</option>
             </Field>
           </fieldset>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">Listing ID: </label>
+            <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
+          </fieldset>
           <div className="container amenity-input-box">
             <div className="row amenity-row">
               {this.renderAmenityInput()}
@@ -426,7 +447,7 @@ class EditFlat extends Component {
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
           </div>
         </form>
-        <h4>Add or Delete Photos  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES} {this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
+        <h4>Add or Delete Photos  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
         <div className="edit-flat-image-box">
           <div id="carousel-show-edit-flat">
             {this.renderImages(this.props.flat.images)}

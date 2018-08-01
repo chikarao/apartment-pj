@@ -23,9 +23,17 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-    console.log('in landing, componentDidMount');
       window.addEventListener('resize', this.handleResize.bind(this));
   }
+
+  componentDidUpdate() {
+    const banner = document.getElementById('banner');
+
+    console.log('in landing, componentDidUpdate', banner);
+    banner.focus();
+  }
+
+
 
   handleResize() {
     // console.log('in landing, createBackghandleResizeroundImage: ', this.state.windowWidth);
@@ -52,7 +60,7 @@ class Landing extends Component {
     // {this.state.searchInputHasValue ? this.renderDataListOptions() : ''}
     // </ datalist>
     return (
-      <div className="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
+      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
         <div className="banner-content">
           <div className="banner-search-box">
             <CitySearch
@@ -68,7 +76,7 @@ class Landing extends Component {
   renderFooter() {
     return (
       <footer className="landing-footer">
-        <div className="footer-left-box">© CO & Company 2018</div>
+        <div className="footer-left-box">© 2018 CO & Company and its affiliates</div>
       </footer>
     );
   }
@@ -79,8 +87,8 @@ class Landing extends Component {
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     return (
       <div>
+        {this.renderBanner()}
         <div className="landing-main">
-          {this.renderBanner()}
         </div>
           {this.renderFooter()}
       </div>

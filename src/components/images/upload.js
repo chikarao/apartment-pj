@@ -40,15 +40,15 @@ class Upload extends Component {
   handleDrop = files => {
     this.props.showLoading();
     const imagesArray = [];
-    console.log('in Upload, handleDrop, uploaders, files: ', files);
-    console.log('in Upload, handleDrop, uploaders, this.props.flat.images: ', this.props.flat.images);
+    // console.log('in Upload, handleDrop, uploaders, files: ', files);
+    // console.log('in Upload, handleDrop, uploaders, this.props.flat.images: ', this.props.flat.images);
     const numExistingImages = this.props.flat.images.length;
     const numNewImagesAllowed = MAX_NUM_FILES - numExistingImages;
-    console.log('in Upload, handleDrop, uploaders, numNewImagesAllowed: ', numNewImagesAllowed);
+    // console.log('in Upload, handleDrop, uploaders, numNewImagesAllowed: ', numNewImagesAllowed);
     const numDisallowed = files.length - numNewImagesAllowed;
-    console.log('in Upload, handleDrop, uploaders, numDisallowed: ', numDisallowed);
+    // console.log('in Upload, handleDrop, uploaders, numDisallowed: ', numDisallowed);
     files.splice(-1, numDisallowed)
-    console.log('in Upload, handleDrop, uploaders, after splice files: ', files);
+    // console.log('in Upload, handleDrop, uploaders, after splice files: ', files);
   // Push all the axios request promise into a single array
     const uploaders = files.map((file) => {
     // console.log('in Upload, handleDrop, uploaders, file: ', file);
@@ -125,10 +125,11 @@ class Upload extends Component {
               onDrop={this.handleDrop}
               multiple
               accept="image/*"
+              maxSize={globalConstants.maxFileSize}// 8MB max
               // className="dropzone"
             // style={styles.dropzone}
             >
-              <p>Drop your files or <br/>click here <br/>to upload</p>
+              <p>Drop your files or <br/>click here <br/>to upload <br/><small> (max: {globalConstants.maxFileSize / 10000000}MB per file)</small></p>
               <i className="fa fa-image"></i>
             </Dropzone>
           </div>
