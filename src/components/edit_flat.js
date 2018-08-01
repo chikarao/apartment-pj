@@ -9,8 +9,12 @@ import Amenities from './constants/amenities';
 import GoogleMap from './maps/google_map';
 import MapInteraction from './maps/map_interaction';
 
+import globalConstants from './constants/global_constants';
+
 let deleteImageArray = [];
 const AMENITIES = Amenities;
+const MAX_NUM_FILES = globalConstants.maxNumImages;
+
 
 class EditFlat extends Component {
   constructor(props) {
@@ -422,7 +426,7 @@ class EditFlat extends Component {
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
           </div>
         </form>
-        <h4>Add or Delete Photos</h4>
+        <h4>Add or Delete Photos  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES} {this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
         <div className="edit-flat-image-box">
           <div id="carousel-show-edit-flat">
             {this.renderImages(this.props.flat.images)}
@@ -432,9 +436,13 @@ class EditFlat extends Component {
           </div>
         </div>
         <div>
-          <Upload
+          {this.props.flat.images.length < MAX_NUM_FILES ?
+            <Upload
             flatId={this.props.flat.id}
-          />
+            flat={this.props.flat}
+            /> :
+            ''
+          }
         </div>
         <h4>Add or Delete Convenient Places Near Your Flat</h4>
         <div>

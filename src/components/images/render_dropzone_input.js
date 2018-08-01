@@ -2,10 +2,13 @@ import React, { Component, PropTypes, } from 'react';
 import Dropzone from 'react-dropzone';
 import { reduxForm, Field } from 'redux-form';
 
+import globalConstants from '../constants/global_constants';
+
 
 // const FILE_FIELD_NAME = 'files';
 // number of files user can upload in create flat
-const MAX_NUM_FILES = 20;
+const MAX_NUM_FILES = globalConstants.maxNumImages;
+let imageCount = 0;
 
 export default (field) => {
   const files = field.input.value;
@@ -14,13 +17,23 @@ export default (field) => {
   // define array to push in index of files exceeding limit MAX_NUM_FILES
   const filesToDelete = [];
   // called to delete from field files exceeding limit
+
   function deleteFiles() {
     // iterate backwards to take out index from the back so as not to disturb the order in front
-    for (let i = filesToDelete.length - 1; i >= 0; i--) {
-      // delete from field array one at index i
-      field.input.value.splice(filesToDelete[i], 1);
+    if (filesToDelete.length > 0) {
+      let count = 0;
+      for (let i = filesToDelete.length - 1; i >= 0; i--) {
+        // delete from field array one at index i
+        field.input.value.splice(filesToDelete[i], 1);
+        count++;
+      }
+
+      console.log('in render_dropzone_input.js, field.input.value: ', field.input.value);
+      console.log('in render_dropzone_input.js, count: ', count);
+      if (count > 0) {
+        window.alert(`There ${count > 1 ? 'are' : 'is'} ${count} too many file${count > 1 ? 's' : ''} to upload. The max is ${MAX_NUM_FILES}. Please keep in mind that you can always add or delete images on the edit page.`)
+      }
     }
-    console.log('in render_dropzone_input.js, field.input.value: ', field.input.value);
   }
 
   // will not rerender so cannot delete!!!!!!
@@ -46,8 +59,9 @@ export default (field) => {
           name={field.name}
           onDrop={(filesToUpload, e) => field.input.onChange(filesToUpload)}
           maxSize={5000000} // 5MB max
+          accept="image/*"
         >
-          <p>Drop your images or <br/>click here <br/>to upload <br/><small><small>(max: 5MB per file, 20 files )</small></small></p>
+          <p>Drop your images or <br/>click here <br/>to upload <br/><small><small>(max: 5MB per file, {MAX_NUM_FILES} files )</small></small></p>
             <i className="fa fa-image"></i>
         </Dropzone>
           {field.meta.touched &&
@@ -58,6 +72,8 @@ export default (field) => {
            <div className="image-upload-preview-ul-row row">
             { files.map((file, i) => {
               if (i < MAX_NUM_FILES) {
+                imageCount++;
+                console.log('in render_dropzone_input.js, inside map if imageCount: ', imageCount);
                 return (
                   <div key={i}
                   className="rdz-dropzone-preview col-xs-2 col-sm-3 col-md-3"
@@ -76,6 +92,7 @@ export default (field) => {
             )}
             {deleteFiles()}
             </div>
+            <div style={{ fontWeight: 'bold' }}>Upload Preview ({imageCount} image{imageCount > 1 ? 's' : ''})</div>
           </div>
         )}
       </div>

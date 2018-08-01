@@ -9,12 +9,17 @@ import sha1 from 'sha1';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
+import globalConstants from '../constants/global_constants';
+
+
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 // const API_KEY = process.env.CLOUDINARY_API_KEY;
 // const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 const ROOT_URL = 'http://localhost:3000';
+
+const MAX_NUM_FILES = globalConstants.maxNumImages;
 
 class Upload extends Component {
   createImageCallback(imagesArray, imageCount, flatId) {
@@ -35,9 +40,18 @@ class Upload extends Component {
   handleDrop = files => {
     this.props.showLoading();
     const imagesArray = [];
+    console.log('in Upload, handleDrop, uploaders, files: ', files);
+    console.log('in Upload, handleDrop, uploaders, this.props.flat.images: ', this.props.flat.images);
+    const numExistingImages = this.props.flat.images.length;
+    const numNewImagesAllowed = MAX_NUM_FILES - numExistingImages;
+    console.log('in Upload, handleDrop, uploaders, numNewImagesAllowed: ', numNewImagesAllowed);
+    const numDisallowed = files.length - numNewImagesAllowed;
+    console.log('in Upload, handleDrop, uploaders, numDisallowed: ', numDisallowed);
+    files.splice(-1, numDisallowed)
+    console.log('in Upload, handleDrop, uploaders, after splice files: ', files);
   // Push all the axios request promise into a single array
     const uploaders = files.map((file) => {
-    console.log('in Upload, handleDrop, uploaders, file: ', file);
+    // console.log('in Upload, handleDrop, uploaders, file: ', file);
     // Initial FormData
     const formData = new FormData();
     // const apiSecret = API_SECRET;
@@ -65,11 +79,11 @@ class Upload extends Component {
     // console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
     // console.log('formData api_key: ', formData.get('api_key'));
     // console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
-    console.log('in Upload, handleDrop, uploaders, formData file: ', formData.get('file'));
-    console.log('in Upload, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
+    // console.log('in Upload, handleDrop, uploaders, formData file: ', formData.get('file'));
+    // console.log('in Upload, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
 
     // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
-    console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
+    // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
 
     return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
     headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -80,24 +94,22 @@ class Upload extends Component {
       const filePublicId = response.data.data.response.public_id;
       // You should store this URL for future references in your app
       // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
-      console.log('in Upload, handleDrop, uploaders, .then, response ', response);
-      console.log('in Upload, handleDrop, uploaders, .then, response.data.data.response.public_id ', response.data.data.response.public_id);
+      // console.log('in Upload, handleDrop, uploaders, .then, response ', response);
+      // console.log('in Upload, handleDrop, uploaders, .then, response.data.data.response.public_id ', response.data.data.response.public_id);
       imagesArray.push(filePublicId);
       // call create image action, send images Array with flat id
-    });
-    //end of then
-  });
-  //end of uploaders
+    }); //end of then
+  }); //end of uploaders
   // console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
-    console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
+    // console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
     // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
     // CALL createImage and send public id, counter, callback with flat id
     //xport function createImage(imagesArray, imageCount, flatId, callback)
     const imageCount = 0;
-    console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
+    // console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
     this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
     // document.location.reload();
     // this.props.history.push(`/editflat/${this.props.flatId}`);
