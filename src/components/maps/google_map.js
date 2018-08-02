@@ -446,6 +446,7 @@ class GoogleMap extends Component {
         // gets infowindow element, returns array of HTML so get the first element in array
         const gmStyleIw = document.getElementsByClassName('gm-style-iw');
         const iwBackground = gmStyleIw[0].previousSibling;
+        const nextSibling = gmStyleIw[0].nextSibling;
         //gets the element with the white background and assign style of display none
         const iwBackgroundWhite = iwBackground.lastChild;
         iwBackgroundWhite.style.display = 'none';
@@ -453,6 +454,12 @@ class GoogleMap extends Component {
         //item number is index
         const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
         iwBackgroundShadow.style.display = 'none';
+
+        // name class so that .gm-style-iw styling does not clash with others
+        gmStyleIw[0].setAttribute('class', 'google-map-gm-style-iw');
+        // for taking out close button img that is standard with google map
+        nextSibling.setAttribute('class', 'google-map-gm-style-iw-next');
+
       }); // end of addlistener
 
       // addDomListener for left arrow in IW image carousel

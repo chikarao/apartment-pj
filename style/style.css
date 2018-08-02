@@ -424,10 +424,19 @@ body > div:first-child {
   padding: 20px;
 }
 
-.gm-style-iw {
+/* .gm-style-iw {
   width: 350px !important;
   top: 18px !important;
   left: 0px !important;
+} */
+/* rename .gm-style-iw so it does not clash with others */
+.google-map-gm-style-iw {
+  width: 350px !important;
+  top: 18px !important;
+  left: 0px !important;
+}
+.google-map-gm-style-iw-next img {
+  display: none;
 }
 
 .gm-style-iw + div {
@@ -605,6 +614,63 @@ body > div:first-child {
   background-image: none !important;
   height: 0px;
 }
+
+/* map-interaction marker map */
+.map-interaction-iw-div-parent-main {
+  background-color: white;
+  border-radius: 5px;
+  margin: 0 auto 0 auto !important;
+  /* padding-left: 50px; */
+}
+.map-interaction-iw-div-parent {
+  background-color: white;
+  border-radius: 5px;
+  margin: 0 auto 0 auto !important;
+  /* padding-left: 50px; */
+  position: absolute;
+  top: 0px;
+}
+
+.btn-iw-add-place {
+  background-color: blue;
+  margin: 5px;
+
+}
+
+.map-interaction-iw-place {
+  font-weight: bold;
+  font-size: 15px;
+  padding: 5px;
+}
+/* background to iw parent */
+/* .iwBackground {
+  display: flex !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: auto !important;
+
+} */
+/* .map-interaction-iw-div-parent-parent {
+  display: none;
+
+} */
+
+.map-interaction-gmStyleIw {
+  /* position: absolute; */
+  width: auto !important;
+  min-width: 300px !important;
+  top: 18px !important;
+  left: 24px !important;
+}
+
+.map-interaction-gmStyleIw-next img {
+  display: none;
+}
+
+.map-interaction-gmStyleIw :nth-child(2) a {
+  display: none;
+}
+
 
 /* ########## Removes all of google logo and copyright etc... But doing so will violate google's terms of use */
 /* a[href^="http://maps.google.com/maps"]{display:none !important}

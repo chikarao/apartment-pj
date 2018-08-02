@@ -56,6 +56,34 @@ class MapInteraction extends Component {
     return map;
   }
 
+  createInfoWindowContent(place, main) {
+    const iwDivParent = document.createElement('div');
+    const iwDivPlaceName = document.createElement('div');
+    const iwDivAddButton = document.createElement('div');
+
+    iwDivPlaceName.innerHTML = `<div>${place.name}</div>`;
+
+    iwDivPlaceName.setAttribute('class', 'map-interaction-iw-place');
+    iwDivAddButton.setAttribute('class', 'btn btn-primary btn-small btn-iw-add-place');
+    iwDivParent.appendChild(iwDivPlaceName);
+    if (main) {
+      // if on main search box marker click
+      iwDivParent.setAttribute('class', 'map-interaction-iw-div-parent-main');
+      iwDivAddButton.innerHTML = `<div>Add to Nearby Places</div>`;
+      const placeValueString = this.createPlaceValueString(place);
+      iwDivAddButton.setAttribute('value', placeValueString);
+      iwDivParent.appendChild(iwDivAddButton);
+    } else {
+      // if on selectedMarker search box marker click style differently
+      iwDivParent.setAttribute('class', 'map-interaction-iw-div-parent');
+    }
+
+    iwDivAddButton.setAttribute('name', place.name);
+    // iwDivAddButton.setAttribute('onClick', () => this.handleResultAddClick);
+
+    return { iwDivParent, iwDivAddButton };
+  }
+
   getPlaces(criterion) {
     // console.log('in map_interaction, getPlaces, at top thisthis: ', this);
     // console.log('in map_interaction, getPlaces, criterion: ', criterion);
@@ -65,16 +93,6 @@ class MapInteraction extends Component {
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
-
-    // axios.get(`https://maps.googleapis.com/maps/api/place/radarsearch/json?location=${this.props.flat.lat},${this.props.flat.lat}&radius=${radius}&type=${criterion}&key=${GOOGLEMAP_API_KEY}`)
-    //   .then(response => {
-    //     console.log('in map_interaction, getPlaces, gmap request, response: ', response);
-    //   });
-    // const mapShow = new google.maps.Map(document.getElementById('map'), {
-    //      center: location,
-    //      zoom: 14
-    //    });
-    // console.log('in map_interaction, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
 
     // setState placeCategory to use when creatingplace
     this.setState({ placeCategory: criterion }, () => {
@@ -171,9 +189,65 @@ class MapInteraction extends Component {
         label: showLabel ? { text: '', fontWeight: 'bold' } : ''
       });
 
+      // INFOWINDOW CODE !!!!!!!!!!!!!!1
+      // create divs inside info window; one for name and one for button
+      console.log('in map_interaction, createMarker, place: ', place);
+      // const placeValueString = this.createPlaceValueString(place);
+      //
+      // const iwDivParent = document.createElement('div');
+      // const iwDivPlaceName = document.createElement('div');
+      // const iwDivAddButton = document.createElement('div');
+      //
+      // iwDivPlaceName.innerHTML = `<div>${place.name}</div>`;
+      // iwDivAddButton.innerHTML = `<div>Add to Nearby Places</div>`;
+      //
+      // iwDivParent.setAttribute('class', 'map-interaction-iw-div-parent');
+      // iwDivPlaceName.setAttribute('class', 'map-interaction-iw-place');
+      // iwDivAddButton.setAttribute('class', 'btn btn-primary btn-small btn-iw-add-place');
+      // iwDivAddButton.setAttribute('value', placeValueString);
+      // iwDivAddButton.setAttribute('name', place.name);
+      // // iwDivAddButton.setAttribute('onClick', () => this.handleResultAddClick);
+      //
+      // iwDivParent.appendChild(iwDivPlaceName);
+      // iwDivParent.appendChild(iwDivAddButton);
+      const main = true;
+      const iwContent = this.createInfoWindowContent(place, main);
+      infowindow.setContent(iwContent.iwDivParent);
+      // take out the background info window
+      // repeated in createSelectedMarker; Could not avoid duplication
+      google.maps.event.addListener(infowindow, 'domready', () => {
+        // this addDomListener takes display nones some divs in google maps
+        // so that gm-style-iw can be styled enable image to be panned across IW
+        // gets infowindow element, returns array of HTML so get the first element in array
+        const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+        const iwBackground = gmStyleIw[0].previousSibling;
+        const nextSibling = gmStyleIw[0].nextSibling;
+        // const iwBackgroundBackground = iwBackground.parentElement;
+        // const iwDivParentParent = iwDivParent.parentElement;
+        // iwDivParentParent.setAttribute('class', 'map-interaction-iw-div-parent-parent');
+        // console.log('in map_interaction, createMarker, iwBackgroundBackground: ', iwBackgroundBackground);
+        //gets the element with the white background and assign style of display none
+        const iwBackgroundWhite = iwBackground.lastChild;
+        iwBackgroundWhite.style.display = 'none';
+        // get element with shadow behind the IW and assign style of display none;
+        //item number is index
+        const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
+        iwBackgroundShadow.style.display = 'none';
+        // rename gmStyleIw so that it doesn't clash with the main google maps styling
+        gmStyleIw[0].setAttribute('class', 'map-interaction-gmStyleIw');
+        nextSibling.setAttribute('class', 'map-interaction-gmStyleIw-next');
+      }); // end of addlistener
+
       google.maps.event.addListener(marker, 'click', function () {
-        infowindow.setContent(place.name);
         infowindow.open(mapShow, this);
+      });
+
+      google.maps.event.addDomListener(iwContent.iwDivAddButton, 'click', () => {
+        console.log('in map-interaction, map iwDivAddButton clicked, button .value', iwDivAddButton.getAttribute('value'));
+        console.log('in map-interaction, map iwDivAddButton clicked, button', marker.flatId);
+        // infowindowClickHandler(flat);
+        const customEvent = { target: iwDivAddButton };
+        this.handleResultAddClick(customEvent);
       });
 
       // close infowindow by clicking on map outside of infowindow
@@ -301,7 +375,7 @@ class MapInteraction extends Component {
     // IMPORTANT creates marker based on placeID, not place as createMarker does
     // handlePlaceSearchClick gets value of the li which is a place id not the object place
     // so need to get a marker with the place id
-    console.log('in map_interaction, createSelectedMarker, placeId: ', placeId);
+    // console.log('in map_interaction, createSelectedMarker, placeId: ', placeId);
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
     const infowindow = new google.maps.InfoWindow();
@@ -316,7 +390,7 @@ class MapInteraction extends Component {
         console.log('in map_interaction, createSelectedMarker, after if status, result: ', status, result);
         const pointA = this.createFlatMarker(flat, map);
         markersArray.push(pointA);
-        console.log('in map_interaction, createSelectedMarker, after if status, pointA: ', pointA);
+        // console.log('in map_interaction, createSelectedMarker, after if status, pointA: ', pointA);
         // const pointB = this.createMarker(flat, map);
 
         const markerIcon = {
@@ -356,9 +430,36 @@ class MapInteraction extends Component {
 
         console.log('in map_interaction, createSelectedMarker, after if status, pointB: ', pointB);
         console.log('in map_interaction, createSelectedMarker, after if status, markersArray: ', markersArray);
+        // INFOWINDOW CODE
+        const main = false;
+        const iwContent = this.createInfoWindowContent(result, main);
+        infowindow.setContent(iwContent.iwDivParent);
+        // !!!!!!!!!!!!! duplicate addDomListener with createmarker
+        // repeated in createSelectedMarker; Could not avoid duplication
+        google.maps.event.addListener(infowindow, 'domready', () => {
+          // this addDomListener takes display nones some divs in google maps
+          // so that gm-style-iw can be styled enable image to be panned across IW
+          // gets infowindow element, returns array of HTML so get the first element in array
+          const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+          const iwBackground = gmStyleIw[0].previousSibling;
+          const nextSibling = gmStyleIw[0].nextSibling;
+          // const iwBackgroundBackground = iwBackground.parentElement;
+          // const iwDivParentParent = iwDivParent.parentElement;
+          // iwDivParentParent.setAttribute('class', 'map-interaction-iw-div-parent-parent');
+          // console.log('in map_interaction, createMarker, iwBackgroundBackground: ', iwBackgroundBackground);
+          //gets the element with the white background and assign style of display none
+          const iwBackgroundWhite = iwBackground.lastChild;
+          iwBackgroundWhite.style.display = 'none';
+          // get element with shadow behind the IW and assign style of display none;
+          //item number is index
+          const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
+          iwBackgroundShadow.style.display = 'none';
+          // rename gmStyleIw so that it doesn't clash with the main google maps styling
+          gmStyleIw[0].setAttribute('class', 'map-interaction-gmStyleIw');
+          nextSibling.setAttribute('class', 'map-interaction-gmStyleIw-next');
+        }); // end of addlistener
 
         google.maps.event.addListener(pointB, 'click', function () {
-          infowindow.setContent(result.name);
           infowindow.open(map, this);
         });
         const searchClick = true;
@@ -637,10 +738,10 @@ class MapInteraction extends Component {
         console.log('in map_interaction, renderSearchResultsList, .map, place: ', place);
         return (
           <div key={place.place_id}>
-          <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          <li key={place.place_name} value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
           &nbsp;{place.name}
           </li>
-          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
+          <div key={place.lat} className="search-result-list-radio-label"><button key={place.lng} className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
           </div>
         )
       });
@@ -692,7 +793,7 @@ class MapInteraction extends Component {
         console.log('in map_interaction, renderSelectedResultsList, .map, category: ', category);
         return (
           <div key={place.id}>
-          <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          <li key ={place.place_name} value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
           &nbsp;{place.place_name}
           </li>
           {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
@@ -751,16 +852,16 @@ class MapInteraction extends Component {
     return (
       <div className="map-interaction-box">
         <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
-        <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-          <option key={12345} value="acqarium">Select type of place nearby</option>
+        <div key={1} value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+        <div key={2} value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
+        <div key={3} value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+        <div key={4} value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+        <div key={5} value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+        <select key={6} id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+          <option key={12345} value="acquarium">Select type of place nearby</option>
           {this.renderSearchSelection()}
         </select>
-        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
+        <input key={7} id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
       </div>
     );
   }
