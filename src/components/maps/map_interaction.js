@@ -89,7 +89,7 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, getPlaces, criterion: ', criterion);
     // console.log('in map_interaction, getPlaces, this.props.flat.lat: ', this.props.flat.lat);
     // console.log('in map_interaction, getPlaces, this.props.flat.lng: ', this.props.flat.lng);
-    const radius = 5000;
+    // const radius = 5000;
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
     const location = { lat: this.props.flat.lat, lng: this.props.flat.lng };
     const flat = this.props.flat;
@@ -243,10 +243,11 @@ class MapInteraction extends Component {
       });
 
       google.maps.event.addDomListener(iwContent.iwDivAddButton, 'click', () => {
-        console.log('in map-interaction, map iwDivAddButton clicked, button .value', iwDivAddButton.getAttribute('value'));
-        console.log('in map-interaction, map iwDivAddButton clicked, button', marker.flatId);
+        // console.log('in map-interaction, map iwDivAddButton clicked, button .value', iwDivAddButton.getAttribute('value'));
+        // console.log('in map-interaction, map iwDivAddButton clicked, button', marker.flatId);
         // infowindowClickHandler(flat);
-        const customEvent = { target: iwDivAddButton };
+        const customEvent = { target: iwContent.iwDivAddButton };
+        // send a handleResultAddClick a custom event so event.target can be handled
         this.handleResultAddClick(customEvent);
       });
 
@@ -493,6 +494,9 @@ class MapInteraction extends Component {
       // console.log('in map_interaction, handleSearchInput, defaultBounds: ', defaultBounds);
       // gets input for autocomplete focused on bounds from above
       const input = document.getElementById('map-interaction-input');
+
+      // this.setState({ placeCategory: 'Other' });
+
       const options = {
         bounds: defaultBounds
         // types: ['establishment']
@@ -510,19 +514,21 @@ class MapInteraction extends Component {
           // markers array needed to fit map to marker bounds
           // placeSearched state to indicate search has been done so can show appropriate message
           // at load and after no search results in search results show box
-          this.setState({ placeSearched: true });
 
           const markersArray = [];
           // getPlace is an google maps autocomplete function
           const place = autocomplete.getPlace();
-          console.log('in map_interaction, handleSearchInput, onPlaceChanged, place: ', place);
+
+          //https://developers.google.com/places/supported_types
+          this.setState({ placeSearched: true, placeCategory: place.types[0] });
+          console.log('in map_interaction, handleSearchInput, onPlaceChanged, place: ', place.types[0]);
           // List in 'Top Search Resutls'; put place in array first for getPlacesCallback to handle
           const placeForResultsList = [place];
           // sets results in this.state
           this.getPlacesCallback(placeForResultsList);
           // check if place returned; in case return pushed without selection in search input
           if (typeof place.geometry !== 'undefined') {
-            console.log('in map_interaction, handleSearchInput, place: ', place);
+            // console.log('in map_interaction, handleSearchInput, place: ', place);
             // this is accessible as this function is bound to this(the class, not the function)
             // console.log('in map_interaction, handleSearchInput, thisthis: ', this);
 
@@ -737,11 +743,11 @@ class MapInteraction extends Component {
         // console.log('in map_interaction, renderSearchResultsList, .map array: ', array);
         console.log('in map_interaction, renderSearchResultsList, .map, place: ', place);
         return (
-          <div key={place.place_id}>
-          <li key={place.place_name} value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
-          &nbsp;{place.name}
-          </li>
-          <div key={place.lat} className="search-result-list-radio-label"><button key={place.lng} className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
+          <div key={place.place_id.toString()}>
+            <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+            &nbsp;{place.name}
+            </li>
+          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
           </div>
         )
       });
@@ -787,18 +793,41 @@ class MapInteraction extends Component {
   }
 
   renderEachResult(places, category) {
-    return _.map(places, (place) => {
+    return _.map(places, (place, i) => {
       if (place.category == category) {
-        console.log('in map_interaction, renderSelectedResultsList, .map, place: ', place);
-        console.log('in map_interaction, renderSelectedResultsList, .map, category: ', category);
+        console.log('in map_interaction, renderEachResult, .map, place: ', place);
+        console.log('in map_interaction, renderEachResult, .map, category: ', category);
         return (
-          <div key={place.id}>
-          <li key ={place.place_name} value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
+          <div value={category} key={place.id.toString()} className="map-interaction-nearby-result-div hide">
+          <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
           &nbsp;{place.place_name}
           </li>
           {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
           </div>
         );
+      }
+    });
+  }
+
+  handleCategoryHeadingClick(event) {
+    // toggles open and closed the categories in nearby places
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementVal);
+    const categoryHeadings = document.getElementsByClassName('map-interaction-nearby-result-div')
+    // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementToOpen);
+    // gets category value from div and checks each div with above class if it matches
+    // the clicked div value and if so takes off hide if it has hide as a class and
+    // adds hide if it does not
+    _.each(categoryHeadings, element => {
+      // console.log('in map_interaction, handleCategoryHeadingClick element value: ', element.getAttribute('value'));
+      const clickedElementVal = element.getAttribute('value')
+      if (elementVal == clickedElementVal) {
+        if (element.classList.contains('hide')) {
+          element.classList.remove('hide');
+        } else {
+          element.classList.add('hide');
+        }
       }
     });
   }
@@ -819,8 +848,8 @@ class MapInteraction extends Component {
         // const cat = category;
         console.log('in map_interaction, renderSelectedResultsList,  SearchTypeList[category]: ', SearchTypeList[category]);
         return (
-          <div>
-            <div className="search-result-category-heading">
+          <div key={category}>
+            <div value={category} className="search-result-category-heading" onClick={this.handleCategoryHeadingClick.bind(this)}>
             {SearchTypeList[category]}
             </div>
             {this.renderEachResult(places, category)}
@@ -852,16 +881,16 @@ class MapInteraction extends Component {
     return (
       <div className="map-interaction-box">
         <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-        <div key={1} value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-        <div key={2} value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-        <div key={3} value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-        <div key={4} value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-        <div key={5} value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
-        <select key={6} id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-          <option key={12345} value="acquarium">Select type of place nearby</option>
+        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
+        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
+        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
+        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
+        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+        <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
+          <option value="acquarium">Select type of place nearby</option>
           {this.renderSearchSelection()}
         </select>
-        <input key={7} id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
+        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
       </div>
     );
   }

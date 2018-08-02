@@ -410,7 +410,24 @@ class EditFlat extends Component {
               <option value="7">Under 7 minutes</option>
               <option value="10">Under 10 minutes</option>
               <option value="15">Under 15 minutes</option>
-              <option value="16">Under 15 minutes</option>
+              <option value="16">Over 15 minutes</option>
+            </Field>
+          </fieldset>
+          <fieldset key={'station1'} className="form-group">
+            <label className="create-flat-form-label">Second nearest Station:</label>
+            <Field name="station1" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">Minutes to Station:</label>
+            <Field name="minutes_to_station1" component="select" type="integer" className="form-control">
+              <option></option>
+              <option value="1">1 minute or less</option>
+              <option value="3">Under 3 minutes</option>
+              <option value="5">Under 5 minutes</option>
+              <option value="7">Under 7 minutes</option>
+              <option value="10">Under 10 minutes</option>
+              <option value="15">Under 15 minutes</option>
+              <option value="16">Over 15 minutes</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
