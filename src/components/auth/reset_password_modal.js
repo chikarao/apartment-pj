@@ -122,31 +122,31 @@ const InputField = ({
 const MIN_PW_LENGTH = globalConstants.minPWLength;
 
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
-function validate(formProps) {
+function validate(values) {
   const errors = {};
-    console.log('in signup modal, validate formProps: ', formProps);
-  // console.log(formProps);
-  if (!formProps.email){
+    console.log('in signup modal, validate values: ', values);
+  // console.log(values);
+  if (!values.email) {
     errors.email = 'Please enter an email'
-  } else if (!/^.+@.+$/i.test(formProps.email)) {
+  } else if (!/^.+@.+$/i.test(values.email)) {
   // console.log('email is invalid');
     errors.email = 'Invalid email address';
   }
 
-  if (!formProps.token){
+  if (!values.token) {
       errors.token = 'Please enter your token'
   }
 
-  if (!formProps.password) {
+  if (!values.password) {
     errors.password = 'Please enter a password';
-  } else if (formProps.password.length < MIN_PW_LENGTH) {
+  } else if (values.password.length < MIN_PW_LENGTH) {
     errors.password = `A password needs to be at least ${MIN_PW_LENGTH} characters`}
 
-  if (!formProps.passwordConfirm) {
+  if (!values.passwordConfirm) {
     errors.passwordConfirm = 'Please enter a password confirmation';
   }
 
-  if (formProps.password !== formProps.passwordConfirm) {
+  if (values.password !== formProps.passwordConfirm) {
     errors.passwordConfirm = 'Passwords must match';
   }
   // console.log(errors);

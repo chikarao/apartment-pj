@@ -105,18 +105,18 @@ const InputField = ({
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
 function validate(values){
   console.log('in signin modal, validate values: ', values);
-    const errors = {}
-    if(!values.email){
-        errors.email = 'Email is required'
+    const errors = {};
+    
+    if (!values.email) {
+        errors.email = 'An email is required';
     } else if (!/^.+@.+$/i.test(values.email)) {
     // console.log('email is invalid');
     errors.email = 'Invalid email address';
   }
-    if(!values.password){
-        errors.password = 'Password is required'
+    if (!values.password) {
+        errors.password = 'Password is required';
     } else if (values.password.length < 6) {
-      errors.password = "A password needs to be at least 6 characters"
-
+      errors.password = 'A password needs to be at least 6 characters';
     }
     console.log('in signin modal, validate errors: ', errors);
     return errors;

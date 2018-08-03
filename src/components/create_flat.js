@@ -248,23 +248,23 @@ class CreateFlat extends Component {
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset key={'address1'} className="form-group">
           <label className="create-flat-form-label">Street Address<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="address1" component="input" type="string" className="form-control" />
+          <Field name="address1" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'city'} className="form-group">
           <label className="create-flat-form-label">City<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="city" component="input" type="string" className="form-control" />
+          <Field name="city" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'state'} className="form-group">
           <label className="create-flat-form-label">State<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="state" component="input" type="string" className="form-control" />
+          <Field name="state" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'zip'} className="form-group">
           <label className="create-flat-form-label">Zip<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="zip" component="input" type="string" className="form-control" />
+          <Field name="zip" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'country'} className="form-group">
           <label className="create-flat-form-label">Country<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="country" component="input" type="string" className="form-control" />
+          <Field name="country" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset className="form-group">
           <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span> Required fields -- other fields can be filled-in on the edit page</div>
@@ -428,8 +428,59 @@ class CreateFlat extends Component {
   }
 }
 
+const InputField = ({
+  input,
+  type,
+  placeholder,
+  meta: { touched, error, warning },
+}) =>
+  <div>
+      <input {...input} type={type} placeholder={placeholder} className="form-control" />
+      {touched && error &&
+        <div className="error">
+          {error}
+        </div>
+      }
+  </div>;
+
+// reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
+function validate(values) {
+  console.log('in signin modal, validate values: ', values);
+    const errors = {};
+    if (!values.address1) {
+        errors.address1 = 'A Street address is required';
+    }
+
+    if (!values.city) {
+        errors.city = 'A city, district or ward is required';
+    }
+
+    if (!values.state) {
+        errors.state = 'A state or province is required';
+    }
+
+    if (!values.zip) {
+        errors.zip = 'A zip or postal code is required';
+    }
+
+    if (!values.country) {
+        errors.country = 'A country is required';
+    }
+
+
+    // if(!values.password){
+    //     errors.password = 'Password is required'
+    // } else if (values.password.length < 6) {
+    //   errors.password = 'A password needs to be at least 6 characters'
+    //
+    // }
+    console.log('in signin modal, validate errors: ', errors);
+    return errors;
+}
+
 CreateFlat = reduxForm({
-  form: 'simple'
+  form: 'simple',
+  validate
   // fields: [
   //   'address1',
   //   'city',
