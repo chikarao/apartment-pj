@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
 
+// !!!!!!!!!!!!!!!!!NOT USED; Using signin_modal.js !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class Signin extends Component {
   componentWillMount() {
     if (this.props.authenticated) {

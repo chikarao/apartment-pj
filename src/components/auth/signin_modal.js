@@ -13,10 +13,13 @@ class SigninModal extends Component {
 
   handleFormSubmit({ email, password }) {
     console.log('in signin, handleFormSubmit, email, password: ', email, password);
+    // console.log('in signin, handleFormSubmit, error: ', error);
     // this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
-    this.props.signinUser({ email, password }, () => this.handleFormSubmitCallback());
+    // this.props.signinUser({ email, password }, () => this.handleFormSubmitCallback());
     // navigates back to prior page after sign in; call back sent to action signinUser
-    // this.props.signinUser({ email, password }, () => this.props.history.goBack());
+    this.props.signinUser({ email, password }, () => this.props.history.goBack());
+    this.props.showSigninModal();
+    this.props.showAuthModal();
   }
 
   handleFormSubmitCallback() {
@@ -49,12 +52,16 @@ class SigninModal extends Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
+    const { handleSubmit, fields: { email, password } } = this.props;
+    console.log('in signin modal, this.props: ', this.props);
+    // const fieldHelper = this.props.fields;
+    // console.log('in signin modal, fieldHelper: ', fieldHelper);
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-    console.log('in modal, render showHideClassName:', showHideClassName);
-    console.log('in modal, render this.props.show:', this.props.show);
-    console.log('in modal, render this.props:', this.props);
+    // console.log('in modal, render showHideClassName:', showHideClassName);
+    // console.log('in modal, render this.props.show:', this.props.show);
+    // console.log('in modal, render this.props:', this.props);
     //handleClose is a prop passed from header when SigninModal is called
+    // {email.touched ? 'email touched' : ''}
     return (
       <div className={showHideClassName}>
        <section className="modal-main">
@@ -62,11 +69,11 @@ class SigninModal extends Component {
          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
            <fieldset className="form-group">
              <label className="auth-form-label">Email:</label>
-             <Field name="email" component="input" type="email" className="form-control" />
+             <Field name="email" component={InputField} type="email" className="form-control" placeholder="youremail@mail.com"/>
            </fieldset>
            <fieldset className="form-group">
              <label className="auth-form-label">Password:</label>
-             <Field name="password" component="input" type="password" className="form-control" />
+             <Field name="password" component={InputField} type="password" className="form-control" placeholder="Enter your password"/>
            </fieldset>
            <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
            <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>
@@ -79,11 +86,47 @@ class SigninModal extends Component {
     );
   }
 }
+// Reference: https://hashrocket.com/blog/posts/get-started-with-redux-form
+const InputField = ({
+  input,
+  type,
+  placeholder,
+  meta: { touched, error, warning },
+}) =>
+  <div>
+      <input {...input} type={type} placeholder={placeholder} className="form-control" />
+      {touched && error &&
+        <div className="error">
+          {error}
+        </div>
+      }
+  </div>;
+
+// reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
+function validate(values){
+  console.log('in signin modal, validate values: ', values);
+    const errors = {}
+    if(!values.email){
+        errors.email = 'Email is required'
+    } else if (!/^.+@.+$/i.test(values.email)) {
+    // console.log('email is invalid');
+    errors.email = 'Invalid email address';
+  }
+    if(!values.password){
+        errors.password = 'Password is required'
+    } else if (values.password.length < 6) {
+      errors.password = "A password needs to be at least 6 characters"
+
+    }
+    console.log('in signin modal, validate errors: ', errors);
+    return errors;
+}
 
 SigninModal = reduxForm({
     // (your redux-form config)
     form: 'signin',
-    fields: ['email', 'password']
+    fields: ['email', 'password'],
+    validate
 })(SigninModal);
 
 function mapStateToProps(state) {

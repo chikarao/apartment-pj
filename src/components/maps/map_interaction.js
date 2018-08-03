@@ -797,8 +797,9 @@ class MapInteraction extends Component {
       if (place.category == category) {
         console.log('in map_interaction, renderEachResult, .map, place: ', place);
         console.log('in map_interaction, renderEachResult, .map, category: ', category);
+        // add hide in first div to toggle
         return (
-          <div value={category} key={place.id.toString()} className="map-interaction-nearby-result-div hide">
+          <div value={category} key={place.id.toString()} className="map-interaction-nearby-result-div">
           <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
           &nbsp;{place.place_name}
           </li>
@@ -808,29 +809,29 @@ class MapInteraction extends Component {
       }
     });
   }
-
-  handleCategoryHeadingClick(event) {
-    // toggles open and closed the categories in nearby places
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementVal);
-    const categoryHeadings = document.getElementsByClassName('map-interaction-nearby-result-div')
-    // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementToOpen);
-    // gets category value from div and checks each div with above class if it matches
-    // the clicked div value and if so takes off hide if it has hide as a class and
-    // adds hide if it does not
-    _.each(categoryHeadings, element => {
-      // console.log('in map_interaction, handleCategoryHeadingClick element value: ', element.getAttribute('value'));
-      const clickedElementVal = element.getAttribute('value')
-      if (elementVal == clickedElementVal) {
-        if (element.classList.contains('hide')) {
-          element.classList.remove('hide');
-        } else {
-          element.classList.add('hide');
-        }
-      }
-    });
-  }
+// !!!!!!!!!!!!!! Code to toggle headings in nearby places
+  // handleCategoryHeadingClick(event) {
+  //   // toggles open and closed the categories in nearby places
+  //   const clickedElement = event.target;
+  //   const elementVal = clickedElement.getAttribute('value');
+  //   // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementVal);
+  //   const categoryHeadings = document.getElementsByClassName('map-interaction-nearby-result-div')
+  //   // console.log('in map_interaction, handleCategoryHeadingClick elementVal: ', elementToOpen);
+  //   // gets category value from div and checks each div with above class if it matches
+  //   // the clicked div value and if so takes off hide if it has hide as a class and
+  //   // adds hide if it does not
+  //   _.each(categoryHeadings, element => {
+  //     // console.log('in map_interaction, handleCategoryHeadingClick element value: ', element.getAttribute('value'));
+  //     const clickedElementVal = element.getAttribute('value')
+  //     if (elementVal == clickedElementVal) {
+  //       if (element.classList.contains('hide')) {
+  //         element.classList.remove('hide');
+  //       } else {
+  //         element.classList.add('hide');
+  //       }
+  //     }
+  //   });
+  // }
 
   renderSelectedResultsList() {
     // renders the places in the database with flat_id of show flat
@@ -839,17 +840,19 @@ class MapInteraction extends Component {
     // const searchTypeObject = SearchTypeList;
     if (places) {
       const categories = this.getCategoriesArray(places);
-      categories.sort();
+      // categories.sort();
       // console.log('in map_interaction, renderSelectedResultsList, places: ', places);
       // console.log('in map_interaction, renderSelectedResultsList, categories: ', categories);
       // console.log('in map_interaction, renderSelectedResultsList, searchTypeObject[category]: ', searchTypeObject[category]);
       // {this.renderEachResult(places, category)}
+      // code for toggling category heading
+      // <div value={category} className="search-result-category-heading" onClick={this.handleCategoryHeadingClick.bind(this)}>
       return _.map(categories, category => {
         // const cat = category;
         console.log('in map_interaction, renderSelectedResultsList,  SearchTypeList[category]: ', SearchTypeList[category]);
         return (
           <div key={category}>
-            <div value={category} className="search-result-category-heading" onClick={this.handleCategoryHeadingClick.bind(this)}>
+            <div value={category} className="search-result-category-heading">
             {SearchTypeList[category]}
             </div>
             {this.renderEachResult(places, category)}

@@ -323,7 +323,14 @@ body > div:first-child {
 
 .error {
   color: blue;
+  /* float: left; */
 }
+
+/* .auth-input-box {
+  display: flex;
+  flex-direction: column;
+  text-align: left
+} */
 
 .auth-form-group {
   /* margin-top: 20px; */
@@ -2634,6 +2641,11 @@ form {
 
 .auth-modal-title {
   color: gray;
+}
+
+.signout-page-message {
+  font-size: 17px;
+  margin: 30px auto 0 auto;
 }
 
 .success-alert {

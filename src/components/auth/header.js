@@ -31,12 +31,17 @@ class Header extends Component {
    }
 
   componentDidMount() {
+      const currentLocation = this.props.location.pathname;
+       console.log('in header, componentDidMount, currentLocation: ', currentLocation);
+
        window.addEventListener('resize', this.handleResize.bind(this));
-       this.props.getCurrentUser();
-       // don't need to do anymore since this screws up flats in results and other pages
-       // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
-       this.props.fetchConversationsByUser(() => {});
-       this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+       if (currentLocation !== '/signout') {
+         this.props.getCurrentUser();
+         // don't need to do anymore since this screws up flats in results and other pages
+         // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
+         this.props.fetchConversationsByUser(() => {});
+         this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+       }
    }
 
    // fetchFlatsByUserCallback(flatIdArray) {

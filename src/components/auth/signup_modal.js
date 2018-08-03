@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
 
+import globalConstants from '../constants/global_constants';
+
 let showHideClassName;
 
 class SignupModal extends Component {
@@ -14,7 +16,7 @@ class SignupModal extends Component {
       signUpCompleted: false
     };
   }
-  
+
   componentDidMount() {
   }
 
@@ -68,15 +70,15 @@ class SignupModal extends Component {
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="auth-form-label">Email:</label>
-            <Field name="email" component="input" type="email" className="form-control" />
+            <Field name="email" component={InputField} type="email" className="form-control" placeholder="youremail@mail.com" />
           </fieldset>
           <fieldset className="form-group">
             <label className="auth-form-label">Password:</label>
-            <Field name="password" component="input" type="password" className="form-control" type="password" />
+            <Field name="password" component={InputField} type="password" className="form-control" placeholder={`Enter your password of at least ${MIN_PW_LENGTH} characters`} />
           </fieldset>
           <fieldset className="form-group">
             <label className="auth-form-label">Confirm Password:</label>
-            <Field name="passwordConfirmation" component="input" className="form-control" type="password" />
+            <Field name="passwordConfirm" component={InputField} className="form-control" type="password" placeholder={'Enter your password again for confirmation'} />
           </fieldset>
           {this.renderAlert()}
           <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Already signed up? Sign in</span>
@@ -110,22 +112,47 @@ class SignupModal extends Component {
   } // end of render
 } // end of class
 
+// Reference: https://hashrocket.com/blog/posts/get-started-with-redux-form
+const InputField = ({
+  input,
+  type,
+  placeholder,
+  meta: { touched, error, warning },
+}) =>
+  <div>
+      <input {...input} type={type} placeholder={placeholder} className="form-control" />
+      {touched && error &&
+        <div className="error">
+          {error}
+        </div>
+      }
+  </div>;
 
+const MIN_PW_LENGTH = globalConstants.minPWLength;
+
+// reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
 function validate(formProps) {
   const errors = {};
+    console.log('in signup modal, validate formProps: ', formProps);
   // console.log(formProps);
-  if (!formProps.email) {
-    errors.email = 'Please enter an email';
+  if (!formProps.email){
+      errors.email = "Please enter an email"
+  } else if (!/^.+@.+$/i.test(formProps.email)) {
+  // console.log('email is invalid');
+    errors.email = 'Invalid email address';
   }
+
   if (!formProps.password) {
     errors.password = 'Please enter a password';
-  }
-  if (!formProps.passwordConfirm) {
+  } else if (formProps.password.length < 6) {
+    errors.password = 'A password needs to be at least 6 characters'}
+
+  if (formProps.password && !formProps.passwordConfirm) {
     errors.passwordConfirm = 'Please enter a password confirmation';
   }
 
   if (formProps.password !== formProps.passwordConfirm) {
-    errors.password = 'Passwords must match';
+    errors.passwordConfirm = 'Passwords must match';
   }
   // console.log(errors);
   return errors;
@@ -134,7 +161,8 @@ function validate(formProps) {
 SignupModal = reduxForm({
     // (your redux-form config)
     form: 'signup',
-    fields: ['email', 'password', 'passwordConfirm']
+    fields: ['email', 'password', 'passwordConfirm'],
+    validate
     //returns array of all different keys of FIELDS which will be email,
     // password and passwordConfirm
     // validate

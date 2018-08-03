@@ -8,7 +8,7 @@ class SignOut extends Component {
   }
   render() {
     return (
-      <div>You are signed out. Come back soon!</div>
+      <div className="signout-page-message">You have been signed out. <br/><br/>Please come back soon!</div>
     );
   }
 }

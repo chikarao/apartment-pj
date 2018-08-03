@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import * as actions from '../../actions';
 
+// !!!!!!!!!!!!!!NOT USED; Using signup_modal.js !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 class Signup extends Component {
   handleFormSubmit({ email, password }) {
