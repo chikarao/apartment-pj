@@ -438,7 +438,7 @@ const InputField = ({
       <input {...input} type={type} placeholder={placeholder} className="form-control" />
       {touched && error &&
         <div className="error">
-          {error}
+          <span style={{ color: 'red' }}>* </span>{error}
         </div>
       }
   </div>;

@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
 
+import globalConstants from '../constants/global_constants';
+
 let showHideClassName;
 
 class SigninModal extends Component {
@@ -52,7 +54,7 @@ class SigninModal extends Component {
   }
 
   render() {
-    const { handleSubmit, fields: { email, password } } = this.props;
+    const { handleSubmit } = this.props;
     console.log('in signin modal, this.props: ', this.props);
     // const fieldHelper = this.props.fields;
     // console.log('in signin modal, fieldHelper: ', fieldHelper);
@@ -69,7 +71,7 @@ class SigninModal extends Component {
          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
            <fieldset className="form-group">
              <label className="auth-form-label">Email:</label>
-             <Field name="email" component={InputField} type="email" className="form-control" placeholder="youremail@mail.com"/>
+             <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com"/>
            </fieldset>
            <fieldset className="form-group">
              <label className="auth-form-label">Password:</label>
@@ -86,6 +88,9 @@ class SigninModal extends Component {
     );
   }
 }
+// set minimum password length in src/constants/global_constants.js
+const MIN_PW_LENGTH = globalConstants.minPWLength;
+
 // Reference: https://hashrocket.com/blog/posts/get-started-with-redux-form
 const InputField = ({
   input,
@@ -93,20 +98,20 @@ const InputField = ({
   placeholder,
   meta: { touched, error, warning },
 }) =>
-  <div>
+  <div className="input-error-box">
       <input {...input} type={type} placeholder={placeholder} className="form-control" />
       {touched && error &&
-        <div className="error">
-          {error}
-        </div>
+      <div className="error">
+        <span style={{ color: 'red' }}>* </span>{error}
+      </div>
       }
   </div>;
 
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
-function validate(values){
+function validate(values) {
   console.log('in signin modal, validate values: ', values);
     const errors = {};
-    
+
     if (!values.email) {
         errors.email = 'An email is required';
     } else if (!/^.+@.+$/i.test(values.email)) {
@@ -114,18 +119,20 @@ function validate(values){
     errors.email = 'Invalid email address';
   }
     if (!values.password) {
-        errors.password = 'Password is required';
+        errors.password = 'A password is required';
     } else if (values.password.length < 6) {
-      errors.password = 'A password needs to be at least 6 characters';
+      errors.password = `Passwords need to be at least ${MIN_PW_LENGTH} characters`;
     }
     console.log('in signin modal, validate errors: ', errors);
     return errors;
 }
 
+// Reference: https://stackoverflow.com/questions/40262564/how-to-export-mapstatetoprops-and-redux-form
+// do not need fields from redux forms v6
 SigninModal = reduxForm({
-    // (your redux-form config)
+    // redux-form config
     form: 'signin',
-    fields: ['email', 'password'],
+    // fields: ['email', 'password'],
     validate
 })(SigninModal);
 
@@ -136,10 +143,10 @@ function mapStateToProps(state) {
     errorMessage: state.auth.error,
     authenticated: state.auth.authenticated };
 }
-
+// combining does not work!!!
 // export default reduxForm({
 //   form: 'signin',
-//   fields: ['email', 'password']
-// }, mapStateToProps, actions)(Signin);
+//   validate
+//   // fields: ['email', 'password']
+// }, mapStateToProps, actions)(SigninModal);
 export default connect(mapStateToProps, actions)(SigninModal);
-// export default Modal;

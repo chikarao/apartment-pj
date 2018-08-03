@@ -37,12 +37,13 @@ class ResetPasswordModal extends Component {
     this.props.showResetPasswordModal();
   }
 
+  // do not need fields from redux forms v6
   renderAuthForm() {
-    const { handleSubmit, fields: { email, password, token, passwordConfirm } } = this.props;
+    const { handleSubmit } = this.props;
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-    console.log('in modal, render showHideClassName:', showHideClassName);
-    console.log('in modal, render this.props.show:', this.props.show);
-    console.log('in modal, render this.props:', this.props);
+    // console.log('in modal, render showHideClassName:', showHideClassName);
+    // console.log('in modal, render this.props.show:', this.props.show);
+    // console.log('in modal, render this.props:', this.props);
     //handleClose is a prop passed from header when SigninModal is called
     // There are TWO forms in this form; one to get the password reset token
     // and another to reset password using the token
@@ -114,7 +115,7 @@ const InputField = ({
       <input {...input} type={type} placeholder={placeholder} className="form-control" />
       {touched && error &&
         <div className="error">
-          {error}
+          <span style={{ color: 'red' }}>* </span>{error}
         </div>
       }
   </div>;
@@ -146,18 +147,18 @@ function validate(values) {
     errors.passwordConfirm = 'Please enter a password confirmation';
   }
 
-  if (values.password !== formProps.passwordConfirm) {
+  if (values.password !== values.passwordConfirm) {
     errors.passwordConfirm = 'Passwords must match';
   }
   // console.log(errors);
   return errors;
 }
 
-
+// do not need fields from redux forms v6
 ResetPasswordModal = reduxForm({
     // (your redux-form config)
     form: 'resetPassword',
-    fields: ['email', 'password', 'token', 'passwordConfirm'],
+    // fields: ['email', 'password', 'token', 'passwordConfirm'],
     validate
 })(ResetPasswordModal);
 

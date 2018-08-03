@@ -41,13 +41,13 @@ class MapInteraction extends Component {
     // to handle error InvalidValueError: not an instance of HTMLInputElement
     // handleSearchInput was running before HTML was rendered
     //so input ID map-interaction-input was not getting picked up
-    if (this.props.flat) {
+    if (this.props.flat && !this.props.showFlat) {
       this.handleSearchInput();
     }
   }
 
   createMap(location, zoom) {
-    console.log('in map_interaction, createMap, location: ', location);
+    // console.log('in map_interaction, createMap, location: ', location);
     const map = new google.maps.Map(document.getElementById('map'), {
       center: location,
       zoom
@@ -114,7 +114,7 @@ class MapInteraction extends Component {
       // use () => to bind to this; gives access to this object
       // if (status === google.maps.places.PlacesServiceStatus.OK) {
         if (status === 'OK') {
-          console.log('in map_interaction, getPlaces, Placeservice, results: ', results);
+          // console.log('in map_interaction, getPlaces, Placeservice, results: ', results);
           // console.log('in map_interaction, getPlaces, Placeservice, placesResults: ', placesResults);
           // placesResults = results;
           // console.log('in map_interaction, getPlaces, Placeservice, this.props: ', this.props);
@@ -125,7 +125,7 @@ class MapInteraction extends Component {
             const showLabel = false;
             const marker = this.createMarker(results[i], mapShow, showLabel);
             marker.setMap(mapShow)
-            console.log('in map_interaction, getPlaces, Placeservice: ', results[i]);
+            // console.log('in map_interaction, getPlaces, Placeservice: ', results[i]);
             // resultsArray.push(results[i]);
             // console.log('in map_interaction, getPlaces, Placeservice: ', results[i]);
           }
@@ -178,7 +178,7 @@ class MapInteraction extends Component {
         //label origin starts at 0, 0 somewhere above the marker
         labelOrigin: new google.maps.Point(20, 33)
       };
-      console.log('in map_interaction, createMarker, place.geometry: ', place.geometry);
+      // console.log('in map_interaction, createMarker, place.geometry: ', place.geometry);
       const placeLoc = place.geometry.location;
       // Don't need map; setMap is run in function where createMarker is called
       const marker = new google.maps.Marker({
@@ -191,7 +191,7 @@ class MapInteraction extends Component {
 
       // INFOWINDOW CODE !!!!!!!!!!!!!!1
       // create divs inside info window; one for name and one for button
-      console.log('in map_interaction, createMarker, place: ', place);
+      // console.log('in map_interaction, createMarker, place: ', place);
       // const placeValueString = this.createPlaceValueString(place);
       //
       // const iwDivParent = document.createElement('div');
@@ -269,7 +269,7 @@ class MapInteraction extends Component {
 
   createFlatMarker(flat, map) {
     // console.log('in map_interaction, createFlatMarker, flatLocation: ', flatLocation);
-    console.log('in map_interaction, createFlatMarker, flat: ', flat);
+    // console.log('in map_interaction, createFlatMarker, flat: ', flat);
     const markerLabel = 'Here is the Flat';
     // Marker sizes are expressed as a Size of X,Y where the origin of the image
     // (0,0) is located in the top left of the image.
@@ -303,7 +303,7 @@ class MapInteraction extends Component {
         },
         radius: 300
       });
-      console.log('in map_interaction, createFlatMarker, marker (circle): ', marker);
+      // console.log('in map_interaction, createFlatMarker, marker (circle): ', marker);
     // ****marker
     // const marker = new google.maps.Marker({
     //   key: flat.id,
@@ -426,11 +426,11 @@ class MapInteraction extends Component {
         const pointALatLng = { lat: pointA.center.lat(), lng: pointA.center.lng() }
         const pointBLatLng = { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() }
         const distance = this.getDistance(pointALatLng, pointBLatLng, pointB, map);
-        console.log('in map_interaction, createSelectedMarker, after if status, distance: ', distance);
+        // console.log('in map_interaction, createSelectedMarker, after if status, distance: ', distance);
         pointA.setMap(map)
 
-        console.log('in map_interaction, createSelectedMarker, after if status, pointB: ', pointB);
-        console.log('in map_interaction, createSelectedMarker, after if status, markersArray: ', markersArray);
+        // console.log('in map_interaction, createSelectedMarker, after if status, pointB: ', pointB);
+        // console.log('in map_interaction, createSelectedMarker, after if status, markersArray: ', markersArray);
         // INFOWINDOW CODE
         const main = false;
         const iwContent = this.createInfoWindowContent(result, main);
@@ -505,7 +505,7 @@ class MapInteraction extends Component {
         // instantiate autocomplete and addlistener for when selection made
         const autocomplete = new google.maps.places.Autocomplete(input, options);
         autocomplete.addListener('place_changed', onPlaceChanged.bind(this));
-        console.log('in map_interaction, handleSearchInput, autocomplete: ', autocomplete);
+        // console.log('in map_interaction, handleSearchInput, autocomplete: ', autocomplete);
 
         // console.log('in map_interaction, handleSearchInput, this.state.autoCompletePlace: ', this.state.autoCompletePlace);
 
@@ -521,7 +521,7 @@ class MapInteraction extends Component {
 
           //https://developers.google.com/places/supported_types
           this.setState({ placeSearched: true, placeCategory: place.types[0] });
-          console.log('in map_interaction, handleSearchInput, onPlaceChanged, place: ', place.types[0]);
+          // console.log('in map_interaction, handleSearchInput, onPlaceChanged, place: ', place.types[0]);
           // List in 'Top Search Resutls'; put place in array first for getPlacesCallback to handle
           const placeForResultsList = [place];
           // sets results in this.state
@@ -559,17 +559,17 @@ class MapInteraction extends Component {
 
             // zoom map to fit markers drawn
             const bounds = new google.maps.LatLngBounds();
-            console.log('in map_interaction, handleSearchInput, bounds: ', bounds);
-            console.log('in map_interaction, handleSearchInput, markersArray: ', markersArray);
+            // console.log('in map_interaction, handleSearchInput, bounds: ', bounds);
+            // console.log('in map_interaction, handleSearchInput, markersArray: ', markersArray);
 
             // handle cases when marker is a circle or a real marker
             // used variable name marker for circle for simplicity
             for (let i = 0; i < markersArray.length; i++) {
               if (!markersArray[i].marker) {
-                console.log('in map_interaction, handleSearchInput, markersArray[i]: ', markersArray[i]);
+                // console.log('in map_interaction, handleSearchInput, markersArray[i]: ', markersArray[i]);
                 bounds.extend(markersArray[i].getCenter());
               } else {
-                console.log('in map_interaction, handleSearchInput, markersArray[i]: ', markersArray[i]);
+                // console.log('in map_interaction, handleSearchInput, markersArray[i]: ', markersArray[i]);
                 bounds.extend(markersArray[i].getPosition());
               }
             }
@@ -592,16 +592,16 @@ class MapInteraction extends Component {
         map,
         suppressMarkers: true
       });
-      console.log('in map_interaction, calculateAndDisplayRoute, after if status, pointA, pointB: ', pointA, pointB);
+      // console.log('in map_interaction, calculateAndDisplayRoute, after if status, pointA, pointB: ', pointA, pointB);
       directionsDisplay.setMap(map);
-      console.log('in map_interaction, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
+      // console.log('in map_interaction, createSelectedMarker, after if status, pointA, pointB: ', pointA, pointB.place);
       // for some reason, better to send markers than lat lng when calling calculateAndDisplayRoute
       // !!!!! Use position if use marker not circle (use center)
       // const pointALatLng = searchClick ? { lat: pointA.position.lat(), lng: pointA.position.lng() } : { lat: pointA.position.lat(), lng: pointA.position.lng() }
       const pointALatLng = searchClick ? { lat: pointA.center.lat(), lng: pointA.center.lng() } : { lat: pointA.center.lat(), lng: pointA.center.lng() }
       const pointBLatLng = searchClick ? { lat: pointB.place.location.lat(), lng: pointB.place.location.lng() } : { lat: pointB.position.lat(), lng: pointB.position.lng() }
 
-      console.log('in map_interaction, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
+      // console.log('in map_interaction, createSelectedMarker, after if status, pointALatLng: ', pointALatLng);
     directionsService.route({
       origin: pointALatLng,
       destination: pointBLatLng,
@@ -609,8 +609,8 @@ class MapInteraction extends Component {
       // preserveViewport: true
     }, (response, status) => {
       if (status === 'OK') {
-        console.log('in map_interaction, calculateAndDisplayRoute, after if status, response: ', response);
-        console.log('in map_interaction, calculateAndDisplayRoute, after if status, markersArray: ', markersArray);
+        // console.log('in map_interaction, calculateAndDisplayRoute, after if status, response: ', response);
+        // console.log('in map_interaction, calculateAndDisplayRoute, after if status, markersArray: ', markersArray);
         // _.each(markersArray, marker => {
         //   marker.setMap(map)
         // });
@@ -624,7 +624,7 @@ class MapInteraction extends Component {
   }
 
   getDistance(pointALatLng, pointBLatLng, pointB, map) {
-    console.log('in map_interaction, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
+    // console.log('in map_interaction, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
 
     const distanceService = new google.maps.DistanceMatrixService();
     let distance = '';
@@ -635,19 +635,19 @@ class MapInteraction extends Component {
         travelMode: 'WALKING',
       }, (response, status) => {
         if (status === 'OK') {
-          console.log('in map_interaction, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+          // console.log('in map_interaction, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
 
           distance = { distance: response.rows[0].elements[0].distance.text };
           const distanceText = response.rows[0].elements[0].distance.text;
           const marker = pointB;
-          console.log('in map_interaction, getDistance, after if status, distanceService after if, marker: ', marker);
-          console.log('in map_interaction, getDistance, after if status, distanceService after if, distanceText: ', distanceText);
+          // console.log('in map_interaction, getDistance, after if status, distanceService after if, marker: ', marker);
+          // console.log('in map_interaction, getDistance, after if status, distanceService after if, distanceText: ', distanceText);
           // marker.label.text = distance.text;
           const markerLabel = marker.getLabel();
-          console.log('in map_interaction, getDistance, after if status, distanceService after if, markerLabel: ', markerLabel);
+          // console.log('in map_interaction, getDistance, after if status, distanceService after if, markerLabel: ', markerLabel);
           markerLabel.text = distanceText;
           marker.setLabel(markerLabel);
-          console.log('in map_interaction, getDistance, after if status, distanceService after if, markerLabel.text: ', markerLabel.tet);
+          // console.log('in map_interaction, getDistance, after if status, distanceService after if, markerLabel.text: ', markerLabel.tet);
           marker.setMap(map)
         }
       }
@@ -665,11 +665,11 @@ class MapInteraction extends Component {
   handlePlaceClick(event) {
     this.unhighlightClickedPlace();
 
-    console.log('in map_interaction, handlePlaceClick, event.target: ', event.target);
+    // console.log('in map_interaction, handlePlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
     clickedElement.style.color = 'lightGray';
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in map_interaction, handlePlaceClick, elementVal: ', elementVal);
+    // console.log('in map_interaction, handlePlaceClick, elementVal: ', elementVal);
 
     // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     // Don't know why but this works
@@ -686,17 +686,17 @@ class MapInteraction extends Component {
     this.props.showLoading();
     this.unhighlightClickedPlace();
     const clickedElement = event.target;
-    console.log('in map_interaction, handleResultAddClick, event.target, clickedElement: ', clickedElement);
+    // console.log('in map_interaction, handleResultAddClick, event.target, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    console.log('in map_interaction, handleResultAddClick, elementVal: ', elementVal);
+    // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementVal);
     const elementValArray = elementVal.split(',');
     const placeId = elementValArray[0];
     const lat = elementValArray[1];
     const lng = elementValArray[2];
     const flatId = this.props.flat.id
-    console.log('in map_interaction, handleResultAddClick, elementVal: ', elementName);
-    console.log('in map_interaction, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
+    // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementName);
+    // console.log('in map_interaction, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
     this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, () => this.resultAddDeleteClickCallback());
     //ChIJIenHT9eAhYARiop0hvjNTzU
     //"9060163472ab6d69548873f75aba48278980c0ea"
@@ -708,17 +708,17 @@ class MapInteraction extends Component {
   }
 
   createPlaceValueString(place) {
-    console.log('in map_interaction, createPlaceValueString, places: ', place);
+    // console.log('in map_interaction, createPlaceValueString, places: ', place);
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
     const id = place.place_id;
-    console.log('in map_interaction, createPlaceValueString, id lat lng: ', id + ',' + lat + ',' + lng);
+    // console.log('in map_interaction, createPlaceValueString, id lat lng: ', id + ',' + lat + ',' + lng);
     return id + ',' + lat + ',' + lng;
   }
 
   renderSearchResultsList() {
     // <div className="search-result-list-radio-label">Add to map <input value={place.place_id} name={place.name} type="checkbox" onChange={this.handleResultAddClick.bind(this)} /></div>
-    console.log('in map_interaction, renderSearchResultsList, this.state, placesResults: ', this.state);
+    // console.log('in map_interaction, renderSearchResultsList, this.state, placesResults: ', this.state);
     const { placesResults } = this.state;
     const resultsArray = [];
     const nearbySearchRadiusKM = NEARBY_SEARCH_RADIUS / 1000
@@ -726,9 +726,9 @@ class MapInteraction extends Component {
     //cannont use object as react child
     _.each(placesResults, result => {
       resultsArray.push(result);
-      console.log('in map_interaction, renderSearchResultsList, each result.name: ', result);
+      // console.log('in map_interaction, renderSearchResultsList, each result.name: ', result);
     });
-    console.log('in map_interaction, renderSearchResultsList, resultsArray: ', resultsArray);
+    // console.log('in map_interaction, renderSearchResultsList, resultsArray: ', resultsArray);
     if (resultsArray.length < 1) {
       if (this.state.placeSearched) {
         return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-exclamation-triangle"></i>&nbsp;No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
@@ -739,9 +739,9 @@ class MapInteraction extends Component {
       return _.map(resultsArray, (place) => {
         const placeValueString = this.createPlaceValueString(place);
         // const array = placeValueString.split(',');
-        console.log('in map_interaction, renderSearchResultsList, .map placeValueString: ', placeValueString);
+        // console.log('in map_interaction, renderSearchResultsList, .map placeValueString: ', placeValueString);
         // console.log('in map_interaction, renderSearchResultsList, .map array: ', array);
-        console.log('in map_interaction, renderSearchResultsList, .map, place: ', place);
+        // console.log('in map_interaction, renderSearchResultsList, .map, place: ', place);
         return (
           <div key={place.place_id.toString()}>
             <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
@@ -757,20 +757,20 @@ class MapInteraction extends Component {
   handleResultDeleteClick(event) {
     this.props.showLoading();
     const clickedElement = event.target;
-    console.log('in map_interaction, handleResultDeleteClick, event.target, clickedElement: ', clickedElement);
+    // console.log('in map_interaction, handleResultDeleteClick, event.target, clickedElement: ', clickedElement);
     const placeId = clickedElement.getAttribute('value');
-    console.log('in map_interaction, handleResultDeleteClick, placeId: ', placeId);
+    // console.log('in map_interaction, handleResultDeleteClick, placeId: ', placeId);
     this.props.deletePlace(this.props.flat.id, placeId, () => this.resultAddDeleteClickCallback())
   }
 
   handleSelectedPlaceClick(event) {
     this.unhighlightClickedPlace();
 
-    console.log('in map_interaction, handleSelectedPlaceClick, event.target: ', event.target);
+    // console.log('in map_interaction, handleSelectedPlaceClick, event.target: ', event.target);
     const clickedElement = event.target;
     clickedElement.style.color = 'lightGray';
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in map_interaction, handleSelectedPlaceClick, elementVal: ', elementVal);
+    // console.log('in map_interaction, handleSelectedPlaceClick, elementVal: ', elementVal);
 
     // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
     // Don't know why but this works
@@ -795,8 +795,8 @@ class MapInteraction extends Component {
   renderEachResult(places, category) {
     return _.map(places, (place, i) => {
       if (place.category == category) {
-        console.log('in map_interaction, renderEachResult, .map, place: ', place);
-        console.log('in map_interaction, renderEachResult, .map, category: ', category);
+        // console.log('in map_interaction, renderEachResult, .map, place: ', place);
+        // console.log('in map_interaction, renderEachResult, .map, category: ', category);
         // add hide in first div to toggle
         return (
           <div value={category} key={place.id.toString()} className="map-interaction-nearby-result-div">
@@ -849,7 +849,7 @@ class MapInteraction extends Component {
       // <div value={category} className="search-result-category-heading" onClick={this.handleCategoryHeadingClick.bind(this)}>
       return _.map(categories, category => {
         // const cat = category;
-        console.log('in map_interaction, renderSelectedResultsList,  SearchTypeList[category]: ', SearchTypeList[category]);
+        // console.log('in map_interaction, renderSelectedResultsList,  SearchTypeList[category]: ', SearchTypeList[category]);
         return (
           <div key={category}>
             <div value={category} className="search-result-category-heading">
@@ -865,13 +865,13 @@ class MapInteraction extends Component {
   handleSearchLanguageSelect() {
     const selection = document.getElementById('mapInteractionLanguageSelect');
     const language = selection.value;
-    console.log('in map_interaction, handleSearchLanguageSelect, language: ', language);
+    // console.log('in map_interaction, handleSearchLanguageSelect, language: ', language);
     // this.getPlaces(type, () => this.getPlacesCallback())
     this.props.placeSearchLanguage(language, () => this.searchLanguageCallback());
   }
 
   searchLanguageCallback() {
-    console.log('in map_interaction, searchLanguageCallback, this.props.language: ', this.props.language);
+    // console.log('in map_interaction, searchLanguageCallback, this.props.language: ', this.props.language);
   }
 
   renderSearchBox() {

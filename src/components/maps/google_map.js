@@ -383,9 +383,9 @@ class GoogleMap extends Component {
 
       // !!!!if no image is available for the flat
       if (flat.images[this.props.imageIndex.count]) {
-        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
+        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       } else {
-        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/no_image_placeholder_5.jpg)`);
+        iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/no_image_placeholder_5.jpg)`);
       }
       // divs to contain the arrows, clicks on this will move carousel, addDomListener is assigned
       // increments image index in redux

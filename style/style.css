@@ -322,9 +322,19 @@ body > div:first-child {
 }
 
 .error {
-  color: blue;
+  color: black;
   /* float: left; */
+  /* padding-left: 25px;
+  max-width: 500px;
+  margin-left: 20px; */
 }
+
+/* .input-error-box {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+} */
 
 /* .auth-input-box {
   display: flex;
@@ -452,6 +462,7 @@ body > div:first-child {
 
 #infowindow-box-image-box {
   height: 220px !important;
+  /* width: 330px !important; */
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -1107,6 +1118,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 #carousel-show .slide-show {
   display: inline-block;
+  border-radius: 4px;
 }
 
 .slide-show img {
@@ -2580,7 +2592,7 @@ form {
   background: white;
   width: 80%;
   height: auto;
-  max-height: 600px;
+  max-height: 700px;
   min-height: 350px;
   top:50%;
   left:50%;
@@ -2620,14 +2632,14 @@ form {
 }
 
 .signin-btn {
-  margin-left: 20px;
+  margin: 20px;
 }
 
 .goto-signin-link {
   color: blue;
   padding: 10px;
   font-size: 14px;
-  margin-right: 20px;
+  /* margin-right: 20px; */
 }
 .goto-signin-link:hover {
   color: gray;
@@ -2664,6 +2676,7 @@ form {
 
 .reset-password-btn {
   margin-bottom: 0;
+  margin-left: 20px;
 }
 
 /* *******************EDIT PROFILE********************* */

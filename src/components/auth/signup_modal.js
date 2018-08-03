@@ -54,13 +54,13 @@ class SignupModal extends Component {
     console.log('in modal, in handleSigninClick:');
     this.props.showSigninModal();
   }
-
+  // do not need fields from redux forms v6
   renderAuthForm() {
-    const { handleSubmit, pristine, submitting, touched, fields: { email, password, passwordConfirm } } = this.props;
+    const { handleSubmit } = this.props;
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-    console.log('in signup modal, render showHideClassName:', showHideClassName);
-    console.log('in signupmodal, render this.props.show:', this.props.show);
-    console.log('in signup modal, render this.props:', this.props);
+    // console.log('in signup modal, render showHideClassName:', showHideClassName);
+    // console.log('in signupmodal, render this.props.show:', this.props.show);
+    // console.log('in signup modal, render this.props:', this.props);
 
     return (
       <div className={showHideClassName}>
@@ -70,7 +70,7 @@ class SignupModal extends Component {
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
             <label className="auth-form-label">Email:</label>
-            <Field name="email" component={InputField} type="email" className="form-control" placeholder="youremail@mail.com" />
+            <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com" />
           </fieldset>
           <fieldset className="form-group">
             <label className="auth-form-label">Password:</label>
@@ -123,7 +123,7 @@ const InputField = ({
       <input {...input} type={type} placeholder={placeholder} className="form-control" />
       {touched && error &&
         <div className="error">
-          {error}
+          <span style={{ color: 'red' }}>* </span>{error}
         </div>
       }
   </div>;
@@ -159,10 +159,11 @@ function validate(values) {
   return errors;
 }
 
+// do not need fields from redux forms v6
 SignupModal = reduxForm({
     // (your redux-form config)
     form: 'signup',
-    fields: ['email', 'password', 'passwordConfirm'],
+    // fields: ['email', 'password', 'passwordConfirm'],
     validate
     //returns array of all different keys of FIELDS which will be email,
     // password and passwordConfirm
@@ -177,6 +178,7 @@ function mapStateToProps(state) {
     auth: state.auth
   };
 }
+// this does not work!!!
 // export default reduxForm({
 //   form: 'signup',
 //   fields: ['email', 'password', 'passwordConfirm'],
