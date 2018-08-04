@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
+import { Elements, StripeProvider } from 'react-stripe-elements';
+import Swipe from './payments/parent';
+
 
 // import Upload from './images/upload_test';
 // import SigninModal from './auth/signin_modal';
@@ -81,6 +84,14 @@ class Landing extends Component {
     );
   }
 
+  renderPaymentForm() {
+    return (
+      <div>
+        <Swipe />
+      </div>
+    );
+  }
+
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
@@ -89,6 +100,7 @@ class Landing extends Component {
       <div>
         {this.renderBanner()}
         <div className="landing-main">
+        {this.renderPaymentForm()}
         </div>
           {this.renderFooter()}
       </div>

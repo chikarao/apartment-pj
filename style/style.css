@@ -2859,6 +2859,68 @@ form {
   /* height: auto; */
 }
 
+/* STRIPE */
+.stripe-pay-button {
+  white-space: nowrap !important;
+  border: 0 !important;
+  outline: 0 !important;
+  display: inline-block !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 14px !important;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08)  !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  background-color: #6772e5 !important;
+  text-decoration: none !important;
+  -webkit-transition: all 150ms ease !important;
+  transition: all 150ms ease !important;
+  margin-top: 10px !important;
+}
+
+.stripe-pay-button:hover {
+  color: #fff !important;
+  cursor: pointer !important;
+  background-color: #7795f8 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08) !important;
+}
+
+.stripe-form {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 3px solid #e6ebf1;
+}
+.StripeElement {
+  display: block;
+  margin: 10px 0 20px 0;
+  max-width: 500px;
+  padding: 10px 14px;
+  box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+  border-radius: 4px;
+  background: white;
+}
+.StripeElement--focus {
+  box-shadow: rgba(50, 50, 93, 0.109804) 0px 4px 6px, rgba(0, 0, 0, 0.0784314) 0px 1px 3px;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+}
+.StripeElement.PaymentRequestButton {
+  padding: 0;
+}
+
+.checkout {
+  width: 400px;
+  height: 300px;
+  margin: 50px auto 30px auto;
+}
+/* STRIPE */
+
+
 @media screen and (max-width: 750px) {
     /* body {
         background-color: lightgreen;
