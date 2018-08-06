@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
-import { Elements, StripeProvider } from 'react-stripe-elements';
+// import { Elements, StripeProvider } from 'react-stripe-elements';
 import Swipe from './payments/parent';
 
 
@@ -87,7 +87,9 @@ class Landing extends Component {
   renderPaymentForm() {
     return (
       <div>
-        <Swipe />
+        <Swipe
+          buttonText='Make Payment'
+        />
       </div>
     );
   }

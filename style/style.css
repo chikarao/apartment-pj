@@ -2470,6 +2470,17 @@ form {
   color: gray;
 }
 
+.my-page-enter-new-card-link {
+  color: blue;
+  padding: 10px;
+}
+
+.my-page-enter-new-card-link:hover {
+  color: gray;
+  text-decoration: underline;
+
+}
+
 /* ***********MODAL****************** */
 
 .modal {
@@ -2919,6 +2930,8 @@ form {
   margin: 50px auto 30px auto;
 }
 /* STRIPE */
+
+
 
 
 @media screen and (max-width: 750px) {

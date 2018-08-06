@@ -68,7 +68,12 @@ import {
   SEARCH_FLAT_PARAMENTERS,
   CLEAR_FLATS,
   CLEAR_MAPDIMENSIONS,
-  SET_MAP
+  SET_MAP,
+  NEW_CUSTOMER,
+  SHOW_CARD_INPUT_MODAL,
+  FETCH_CUSTOMER,
+  SELECTED_CARD_ID,
+  UPDATE_CARD_INFO
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -110,6 +115,8 @@ console.log('in action, index, sign in, email and password: ', { email, password
         localStorage.setItem('email', response.data.data.user.email);
         localStorage.setItem('id', response.data.data.user.id);
         localStorage.setItem('image', response.data.data.user.image);
+        // localStorage.setItem('customerId', response.data.data.user.stripe_customer_id);
+        // localStorage.setItem('customer_id', response.data.data.user.stripe_customer_id);
         // authentication_token for rails book review api
         // browserHistory.push('/feature');
         callback();
@@ -212,6 +219,7 @@ export function signoutUser() {
   localStorage.removeItem('email');
   localStorage.removeItem('id');
   localStorage.removeItem('image');
+  // localStorage.removeItem('customer_id');
   return { type: UNAUTH_USER };
 }
 
@@ -1198,4 +1206,85 @@ export function updateConversations(idArray, conversationAttributes, callback) {
       // callback();
     });
   };
+}
+
+export function newCustomer(info) {
+  console.log('in action index, newCustomer, info: ', info);
+  console.log('in action index, newCustomer, info.email: ', info.client);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/new_customer`, { stripeToken: info.token, client: info.email, detail: '' }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to newCustomer: ', response);
+      console.log('in action index, response to newCustomer: ', response.data.data.user);
+
+      dispatch({
+        type: NEW_CUSTOMER,
+        payload: response.data.data.user
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to newCustomer: ', error);
+    });
+  };
+}
+export function updateCardInfo(info) {
+  console.log('in action index, updateCardInfo, info: ', info);
+  const { cardId, customerId, expYear, expMonth } = info;
+  // console.log('in action index, updateCardInfo, info.email: ', info.client);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/update_card_info`, { cardId, customerId, expYear, expMonth }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateCardInfo: ', response);
+      console.log('in action index, response to updateCardInfo: ', response.data.data.user);
+
+      dispatch({
+        type: UPDATE_CARD_INFO,
+        payload: response.data.data.user
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to newCustomer: ', error);
+    });
+  };
+}
+
+export function fetchCustomer() {
+  console.log('in action index, fetchCustomer: ');
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/retrieve_customer`, {}, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to fetchCustomer: ', response);
+      console.log('in action index, response to fetchCustomer: ', response.data.data.customer);
+
+      dispatch({
+        type: FETCH_CUSTOMER,
+        payload: response.data.data.customer
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to fetchCustomer: ', error);
+    });
+  };
+}
+
+export function showCardInputModal() {
+  console.log('in actions index, showCardInputModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_CARD_INPUT_MODAL };
+}
+export function selectedCardId(cardId) {
+  console.log('in actions index, selectedcardId:', cardId);
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_CARD_ID, payload: cardId };
 }

@@ -9,6 +9,8 @@ import Messaging from './messaging/messaging';
 import Conversations from './messaging/conversations';
 import UploadForProfile from './images/upload_for_profile';
 
+import CardInputModal from './modals/card_input_modal';
+
 
 class MyPage extends Component {
   constructor(props) {
@@ -21,7 +23,8 @@ class MyPage extends Component {
       // showConversation: true,
       conversationToShow: {},
       // yourFlat: false,
-      conversationId: ''
+      conversationId: '',
+      actionType: 'Add a Card'
     };
   }
   componentDidMount() {
@@ -38,6 +41,7 @@ class MyPage extends Component {
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
     this.props.fetchProfileForUser();
+    this.props.fetchCustomer();
   }
 
   fetchFlatsByUserCallback(flatIdArray) {
@@ -164,7 +168,7 @@ class MyPage extends Component {
         <span className="my-page-category-right"></span>
       </div>
       <ul>
-      {this.renderEachBookingByUser()}
+       {this.renderEachBookingByUser()}
       </ul>
       </div>
     );
@@ -179,7 +183,7 @@ class MyPage extends Component {
           <span className="my-page-category-right"></span>
         </div>
         <ul>
-        {this.renderEachFlat()}
+         {this.renderEachFlat()}
         </ul>
       </div>
     );
@@ -242,11 +246,11 @@ class MyPage extends Component {
   //   // const ownImage = localStorage.getItem('image');
   //   if (notOwnFlatConversation) {
   //     // w_100,h_100,c_crop,g_face,r_max
-  //     return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  //     return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"} />;
   //   } else {
-  //     return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  //     return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"} />;
   //   }
-  //   // return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture.jpg"} />;
+  //   // return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"} />;
   // }
 
   formatDate(date) {
@@ -595,8 +599,8 @@ class MyPage extends Component {
   }
 
   handleRemoveProfileImage() {
-    // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
-    this.props.updateUser({ image: 'blank_profile_picture' }, () => this.handleRemoveProfileImageCallback());
+    // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
+    this.props.updateUser({ image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
   }
 
   handleRemoveProfileImageCallback() {
@@ -615,7 +619,7 @@ class MyPage extends Component {
               // profileId={this.props.auth.userProfile.id}
             />
           </div>
-          {this.props.auth.image === 'blank_profile_picture' ? '' :
+          {this.props.auth.image === 'blank_profile_picture_1' ? '' :
           <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
             Remove Profile Picture
           </div> }
@@ -655,9 +659,87 @@ class MyPage extends Component {
     } //end of if
   }
 
+  renderNewCardInput() {
+    return (
+      <div>New Card Input</div>
+    );
+  }
+
+  handleCardEditDeleteClick(event) {
+    const clickedElement = event.target;
+    const cardId = clickedElement.getAttribute('name')
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
+    console.log('in mypage, handleCardEditDeleteClick, cardId: ', cardId);
+    this.setState({ actionType: 'Edit Card Info' }, () => {
+      this.props.selectedCardId(cardId);
+      this.props.showCardInputModal();
+    });
+  }
+
+  renderExistingCardDetails() {
+    if (this.props.customer) {
+      const { sources } = this.props.customer;
+      return _.map(sources.data, card => {
+        return (
+          <div key={card.id}>
+            <li className="my-page-each-card">
+              <div className="my-page-each-card-click-box">
+                <div className="my-page-details">
+                  <ul>
+                    <li>{card.brand}</li>
+                    <li>Last four digits: {card.last4}</li>
+                    <li>Exp: {card.exp_month}/{card.exp_year}</li>
+                  </ul>
+                </div>
+            </div>
+
+              <div className="my-page-card-button-box">
+                <button name={card.id} value="edit" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
+                <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
+              </div>
+            </li>
+          </div>
+        );
+      });
+    }
+  }
+
+  handleAddNewCardClick() {
+    console.log('in mypage, handleAddNewCardClick: ');
+    this.props.showCardInputModal();
+  }
+
+  renderPayment() {
+    // {this.renderNewCardInput()}
+    return (
+      <div>
+        <div className="my-page-category-title">
+          <span className="my-page-category-left"></span>
+          <span>Payment Details</span>
+          <span className="my-page-category-right"></span>
+        </div>
+        <ul>
+          {this.renderExistingCardDetails()}
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}>Add New Card</div>
+        </ul>
+      </div>
+    );
+  }
+
+  renderCardInputModal() {
+    return (
+      <CardInputModal
+        show={this.props.showCardInput}
+        actionType={this.state.actionType}
+      />
+    );
+  }
+
   render() {
     return (
       <div>
+        {this.renderCardInputModal()}
         <h2>My Page</h2>
         <div className="container my-page-container">
           <div className="row">
@@ -667,6 +749,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayment()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
@@ -688,7 +771,9 @@ function mapStateToProps(state) {
     conversationId: state.conversation.conversationToShow,
     showConversationCards: state.conversation.showConversations,
     // likes: state.likes.userLikes
-    likes: state.flats.userLikes
+    likes: state.flats.userLikes,
+    showCardInput: state.modals.showCardInputModal,
+    customer: state.auth.customer
   };
 }
 

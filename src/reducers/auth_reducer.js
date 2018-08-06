@@ -14,7 +14,9 @@ import {
   SHOW_EDIT_PROFILE_MODAL,
   EDIT_PROFILE,
   SHOW_LOADING,
-  SHOW_LIGHTBOX
+  SHOW_LIGHTBOX,
+  FETCH_CUSTOMER,
+  SELECTED_CARD_ID
  } from '../actions/types';
 
 export default function (state = {
@@ -32,7 +34,8 @@ export default function (state = {
         authenticated: true,
         email: action.payload.email,
         id: action.payload.id,
-        image: action.payload.image
+        image: action.payload.image,
+        customerId: action.payload.customerId
       };
 
     case UPDATE_USER:
@@ -80,6 +83,12 @@ export default function (state = {
 
     case SHOW_LIGHTBOX:
       return { ...state, showLightbox: !state.showLightbox };
+
+    case FETCH_CUSTOMER:
+      return { ...state, customer: action.payload };
+
+    case SELECTED_CARD_ID:
+      return { ...state, selectedCardId: action.payload };
 
     default:
       return state;

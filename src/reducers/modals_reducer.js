@@ -1,18 +1,20 @@
 import _ from 'lodash';
-import { SHOW_EDIT_REVIEW_MODAL } from '../actions/types';
+import { SHOW_EDIT_REVIEW_MODAL, SHOW_CARD_INPUT_MODAL } from '../actions/types';
 //
 // const initialState = {
 //   : 0
 // };
 
-export default function (state = { showEditReview: false }, action) {
+export default function (state = { showEditReview: false, showCardInputModal: false }, action) {
   console.log('in image count reducer, state.count:', state);
 
   switch (action.type) {
-    //CREATE_LIKE is an object
     case SHOW_EDIT_REVIEW_MODAL:
       return { ...state, showEditReview: !state.showEditReview };
-    // LIKES_BY_USER is an object of objects
+
+    case SHOW_CARD_INPUT_MODAL:
+      return { ...state, showCardInputModal: !state.showCardInputModal };
+
     default:
       return state;
   }
