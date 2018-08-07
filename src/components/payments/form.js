@@ -60,13 +60,22 @@ class Form extends Component {
 
     this.props.stripe.createToken({ name: this.props.auth.email }).then(({ token }) => {
       console.log('in stripe form, handleSubmit, token, planId, email', token, this.state.email, this.state.planId)
-    // request to API end point
-      if (this.props.actionType == 'addCustomer') {
-        // this.props.newCustomer({ token: token.id, email: this.props.auth.email })
-      }
-      if (this.props.actionType == 'addCard') {
-        // this.props.newCustomer({ token, client: this.props.auth.email })
-      }
+      console.log('in stripe form, handleSubmit, this.props.auth.customer.id', this.props.auth.customer.id)
+      console.log('in stripe form, handleSubmit, this.props.cardActionType ', this.props.cardActionType)
+      // request to API end point
+      // this.props.updateCardInfo is called in card_input_modal
+      // if (this.props.cardActionType == 'Add a Card') {
+        if (this.props.auth.customer.id) {
+          console.log('in stripe form, handleSubmit, if this.props.auth.stripe_customer_id, token', this.props.auth.customer.id, token)
+          this.props.addCard({ token: token.id });
+        } else {
+          this.props.newCustomer({ token: token.id, email: this.props.auth.email })
+        }
+      // }
+
+      // if (this.props.cardActionType == 'Edit Card Info') {
+      //   this.props.newCustomer({ token, client: this.props.auth.email })
+      // }
       // axios.post(STRIPE_API,
       //   {
       //     stripeToken: token.id,
@@ -103,7 +112,7 @@ class Form extends Component {
   render() {
     // <button fluid className="stripe-pay-button">Make Payment</button>
     {this.renderUpdateInput()}
-    console.log('in stripe form, handleSubmit, this.props.actionType', this.props.actionType)
+    console.log('in stripe form, handleSubmit, this.props.actionType', this.props.auth.cardActionType)
     console.log('in stripe form, handleSubmit, this.props', this.props)
     return (
       <div className="checkout">

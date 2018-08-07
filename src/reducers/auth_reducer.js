@@ -16,7 +16,11 @@ import {
   SHOW_LOADING,
   SHOW_LIGHTBOX,
   FETCH_CUSTOMER,
-  SELECTED_CARD_ID
+  SELECTED_CARD_ID,
+  UPDATE_CARD_INFO,
+  ACTION_TYPE_CARD,
+  DELETE_CARD,
+  ADD_CARD
  } from '../actions/types';
 
 export default function (state = {
@@ -89,6 +93,18 @@ export default function (state = {
 
     case SELECTED_CARD_ID:
       return { ...state, selectedCardId: action.payload };
+
+    case UPDATE_CARD_INFO:
+      return { ...state, customer: action.payload };
+
+    case DELETE_CARD:
+      return { ...state, customer: action.payload };
+
+    case ADD_CARD:
+      return { ...state, customer: action.payload };
+
+    case ACTION_TYPE_CARD:
+      return { ...state, cardActionType: action.payload };
 
     default:
       return state;

@@ -13,7 +13,8 @@ class CardInputModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      addCardCompleted: false
+      addCardCompleted: false,
+      updateCardCompleted: false
     };
   }
 
@@ -29,11 +30,11 @@ class CardInputModal extends Component {
     //
   // }
 
-  handleFormSubmitCallback() {
+  // handleFormSubmitCallback() {
     // console.log('in CardInputModal, handleFormSubmitCallback: ');
     // // showHideClassName = 'modal display-none';
     // this.setState({ editReviewCompleted: true });
-  }
+  // }
 
   renderAlert() {
     if (this.props.errorMessage) {
@@ -57,20 +58,24 @@ class CardInputModal extends Component {
     console.log('in CardInputModal, handleFormSubmit:', data);
     const customerId = this.props.auth.customer.id;
     const cardId = this.props.auth.selectedCardId;
-
-    this.props.updateCardInfo({ customerId, cardId, expMonth: data.expMonth, expYear: data.expYear });
-
+    this.props.showLoading();
+    this.props.updateCardInfo({ customerId, cardId, expMonth: data.expMonth, expYear: data.expYear }, () => this.handleFormSubmitCallback());
   }
 
-  renderAddCardInput() {
-      const { handleSubmit, initialValues } = this.props;
-      console.log('in CardInputModal, renderAddCardInput, initialValues:', initialValues);
-    if (this.props.actionType == 'Add a Card') {
+  handleFormSubmitCallback() {
+    this.props.showLoading();
+    this.setState({ updateCardCompleted: true })
+  }
+
+  renderEachCardInput() {
+      const { handleSubmit } = this.props;
+      console.log('in CardInputModal, renderEachCardInput, this.props.auth.cardActionType:', this.props.auth.cardActionType);
+    if (this.props.auth.cardActionType == 'Add a Card') {
       return (
         <div>
         <SwipeInput
           buttonText='Add Card'
-          actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
+          // actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
         />
         </div>
       );
@@ -124,19 +129,27 @@ class CardInputModal extends Component {
     }
   }
 
+  renderCompletedMessage() {
+    return (
+      <div>Completed!</div>
+    );
+  }
+
   renderCardInput() {
     const { handleSubmit } = this.props;
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     //handleClose is a prop passed from header when SigninModal is called
+    // {this.state.updateCardCompleted || this.state.addCardCompleted ? this.renderCompletedMessage() : this.renderCardInput()}
     if (this.props.auth.userProfile) {
-      console.log('in CardInputModal, this.props.actionType:', this.props.actionType);
+      console.log('in CardInputModal, this.props.cardActionType:', this.props.cardActionType);
       return (
         <div className={showHideClassName}>
           <div className="modal-main">
-            <h3 className="auth-modal-title">{this.props.actionType}</h3>
+            <h3 className="auth-modal-title">{this.props.auth.cardActionType}</h3>
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-            {this.renderAddCardInput()}
+            {this.renderEachCardInput()}
             {this.renderAlert()}
+            {this.state.updateCardCompleted ? <div style={{ color: 'blue', fontSize: '20px' }}>Card updated!</div> : ''}
           </div>
         </div>
       );

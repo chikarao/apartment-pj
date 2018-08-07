@@ -10,7 +10,7 @@ class Parent extends Component {
       <Elements>
         <Form
           buttonText={this.props.buttonText}
-          actionType={this.props.actionType}
+          // actionType={this.props.actionType}
         />
       </Elements>
     );

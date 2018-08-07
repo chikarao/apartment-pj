@@ -23,8 +23,8 @@ class MyPage extends Component {
       // showConversation: true,
       conversationToShow: {},
       // yourFlat: false,
-      conversationId: '',
-      actionType: 'Add a Card'
+      conversationId: ''
+      // actionType: 'Add a Card'
     };
   }
   componentDidMount() {
@@ -42,6 +42,7 @@ class MyPage extends Component {
     this.props.fetchLikesByUser();
     this.props.fetchProfileForUser();
     this.props.fetchCustomer();
+    this.props.actionTypeCard('Add a Card');
   }
 
   fetchFlatsByUserCallback(flatIdArray) {
@@ -671,10 +672,16 @@ class MyPage extends Component {
     const elementVal = clickedElement.getAttribute('value')
     console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
     console.log('in mypage, handleCardEditDeleteClick, cardId: ', cardId);
-    this.setState({ actionType: 'Edit Card Info' }, () => {
+    // this.setState({ actionType: 'Edit Card Info' }, () => {
+      if (elementVal == 'delete') {
+        this.props.deleteCard(cardId);
+      } else {
+        this.props.actionTypeCard(elementVal);
+      }
       this.props.selectedCardId(cardId);
       this.props.showCardInputModal();
-    });
+
+    // });
   }
 
   renderExistingCardDetails() {
@@ -695,7 +702,7 @@ class MyPage extends Component {
             </div>
 
               <div className="my-page-card-button-box">
-                <button name={card.id} value="edit" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
+                <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
                 <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
               </div>
             </li>
@@ -708,9 +715,14 @@ class MyPage extends Component {
   handleAddNewCardClick() {
     console.log('in mypage, handleAddNewCardClick: ');
     this.props.showCardInputModal();
+    this.props.actionTypeCard('Add a Card');
+    if (this.props.auth.stripe_customer_id) {
+      console.log('in mypage, handleAddNewCardClick, this.props.auth.stripe_customer_id: ', this.props.auth.stripe_customer_id);
+      // this.props.addCard(this.props.auth.stripe_customer_id);
+    }
   }
 
-  renderPayment() {
+  renderPayments() {
     // {this.renderNewCardInput()}
     return (
       <div>
@@ -731,7 +743,8 @@ class MyPage extends Component {
     return (
       <CardInputModal
         show={this.props.showCardInput}
-        actionType={this.state.actionType}
+        // actionType={this.state.actionType}
+        // actionType={'addCustomer'}
       />
     );
   }
@@ -749,7 +762,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayment()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>

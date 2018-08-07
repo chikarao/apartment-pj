@@ -73,7 +73,10 @@ import {
   SHOW_CARD_INPUT_MODAL,
   FETCH_CUSTOMER,
   SELECTED_CARD_ID,
-  UPDATE_CARD_INFO
+  UPDATE_CARD_INFO,
+  ACTION_TYPE_CARD,
+  DELETE_CARD,
+  ADD_CARD
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1230,7 +1233,7 @@ export function newCustomer(info) {
     });
   };
 }
-export function updateCardInfo(info) {
+export function updateCardInfo(info, callback) {
   console.log('in action index, updateCardInfo, info: ', info);
   const { cardId, customerId, expYear, expMonth } = info;
   // console.log('in action index, updateCardInfo, info.email: ', info.client);
@@ -1241,12 +1244,14 @@ export function updateCardInfo(info) {
     })
     .then(response => {
       console.log('in action index, response to updateCardInfo: ', response);
-      console.log('in action index, response to updateCardInfo: ', response.data.data.user);
+      console.log('in action index, response to updateCardInfo: ', response.data.data.customer);
 
       dispatch({
         type: UPDATE_CARD_INFO,
-        payload: response.data.data.user
+        payload: response.data.data.customer
       });
+
+      callback();
     })
     .catch(error => {
       console.log('in action index, catch error to newCustomer: ', error);
@@ -1275,6 +1280,48 @@ export function fetchCustomer() {
     });
   };
 }
+export function deleteCard(cardId) {
+  console.log('in action index, fetchCustomer: ');
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/delete_card`, { cardId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteCard: ', response);
+      console.log('in action index, response to deleteCard: ', response.data.data.customer);
+
+      dispatch({
+        type: DELETE_CARD,
+        payload: response.data.data.customer
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteCard: ', error);
+    });
+  };
+}
+export function addCard(info) {
+  console.log('in action index, fetchCustomer: ');
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/add_card`, { stripeToken: info.token }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to addCard: ', response);
+      console.log('in action index, response to addCard: ', response.data.data.customer);
+
+      dispatch({
+        type: ADD_CARD,
+        payload: response.data.data.customer
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to addCard: ', error);
+    });
+  };
+}
 
 export function showCardInputModal() {
   console.log('in actions index, showCardInputModal:');
@@ -1287,4 +1334,10 @@ export function selectedCardId(cardId) {
 
   //flip showResetPasswordModal
   return { type: SELECTED_CARD_ID, payload: cardId };
+}
+export function actionTypeCard(action) {
+  console.log('in actions index, actionTypeCard:', action);
+
+  //flip showResetPasswordModal
+  return { type: ACTION_TYPE_CARD, payload: action };
 }
