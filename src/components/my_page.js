@@ -714,6 +714,25 @@ class MyPage extends Component {
     this.props.showLoading();
   }
 
+  renderCardAddress(card) {
+    // name: 'Name on Card',
+    // address_line1: 'Street Address',
+    // address_line2: 'Street Address 2',
+    // address_city: 'City',
+    // address_state: 'State',
+    // address_zip: 'Postal Code / Zip',
+    // address_country: 'Country',
+    // currency: 'Currency'
+    console.log('in mypage, renderCardAddress, card, : ', card);
+    return (
+      <div className="my-page-card-address-box">
+        <span>{card.name}</span>
+        <span> {card.address_line1}</span>
+        <span>...</span>
+      </div>
+    );
+  }
+
   renderExistingCardDetails() {
     if (this.props.customer) {
       const { sources } = this.props.customer;
@@ -723,25 +742,29 @@ class MyPage extends Component {
         console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
         return (
           <div key={card.id}>
-            <li className="my-page-each-card">
-              <div className="my-page-each-card-click-box">
-                <div className="my-page-details">
-                  <ul>
-                    <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${CardTypes[card.brand]}`}></i></li>
-                    <li>Last four digits: {card.last4}</li>
-                    <li>Exp: {card.exp_month}/{card.exp_year}</li>
-                  </ul>
+            <li className="my-page-each-card each-card-payments">
+              <div className="my-page-card-details-box">
+                  <div className="my-page-each-card-click-box payments-click-box">
+                    <div className="my-page-details">
+                      <ul>
+                        <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${CardTypes[card.brand]}`}></i></li>
+                        <li>Last four digits: {card.last4}</li>
+                        <li>Exp: {card.exp_month}/{card.exp_year}</li>
+                      </ul>
+                    </div>
+
+                    <div className="my-page-card-default-input-box">Use this card for payment &nbsp;
+                    <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
+                    </div>
+                  </div>
+                  {this.renderCardAddress(card)}
                 </div>
-                <div className="my-page-card-default-input-box">Use this card for payment &nbsp;<input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} /></div>
-
+                <div className="my-page-card-button-box">
+                  <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
+                  <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
+                </div>
+              </li>
             </div>
-
-              <div className="my-page-card-button-box">
-                <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
-                <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
-              </div>
-            </li>
-          </div>
         );
       });
     }

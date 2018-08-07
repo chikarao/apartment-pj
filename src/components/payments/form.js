@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import _ from 'lodash';
 
 import { CardElement, injectStripe } from 'react-stripe-elements';
 
@@ -56,16 +57,27 @@ class Form extends Component {
   }
 
   componentDidMount() {
-  
+
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    this.props.stripe.createToken({ name: this.props.auth.email }).then(({ token }) => {
-      console.log('in stripe form, handleSubmit, token, planId, email', token, this.state.email, this.state.planId)
-      console.log('in stripe form, handleSubmit, this.props.auth.customer.id', this.props.auth.customer.id)
-      console.log('in stripe form, handleSubmit, this.props.cardActionType ', this.props.cardActionType)
+    const tokenData = {
+      name: event.target[0].value,
+      address_line1: event.target[1].value,
+      address_line2: event.target[2].value,
+      address_city: event.target[3].value,
+      address_state: event.target[4].value,
+      address_zip: event.target[5].value,
+      address_country: event.target[6].value,
+      currency: event.target[7].value
+    };
+
+    this.props.stripe.createToken(tokenData).then(({ token }) => {
+      // console.log('in stripe form, handleSubmit, token, planId, email', token, this.state.email, this.state.planId)
+      // console.log('in stripe form, handleSubmit, this.props.auth.customer.id', this.props.auth.customer.id)
+      // console.log('in stripe form, handleSubmit, this.props.cardActionType ', this.props.cardActionType)
       // request to API end point
       // this.props.updateCardInfo is called in card_input_modal
       // if (this.props.cardActionType == 'Add a Card') {
@@ -120,18 +132,32 @@ class Form extends Component {
     );
   }
 
-  renderUpdateInput() {
-    return (
-      <div>
-        <input name="exp_year" type="integer" />
-        <input name="exp_month" type="integer" />
-      </div>
-    )
+  renderAddressInput() {
+    // The address_country field is a two character country code (for example, 'US').
+    const inputObject = {
+      name: 'Name on Card',
+      address_line1: 'Street Address',
+      address_line2: 'Street Address 2',
+      address_city: 'City',
+      address_state: 'State',
+      address_zip: 'Postal Code / Zip',
+      address_country: 'Country',
+      currency: 'Currency'
+    };
+
+    return _.map(Object.keys(inputObject), inputs => {
+      return (
+        <div className="form-group card-form-group">
+        <label className="create-flat-form-label">{inputObject[inputs]}: </label>
+        <input type="text" className="form-control card-form-control" />
+        </div>
+      );
+    });
   }
 
   render() {
     // <button fluid className="stripe-pay-button">Make Payment</button>
-    {this.renderUpdateInput()}
+    // {this.renderUpdateInput()}
     console.log('in stripe form, handleSubmit, this.props.actionType', this.props.auth.cardActionType)
     console.log('in stripe form, handleSubmit, this.props', this.props)
     return (
@@ -140,7 +166,8 @@ class Form extends Component {
           className="stripe-form"
           onSubmit={this.handleSubmit}
         >
-        {this.renderFullCardInput()}
+          {this.renderAddressInput()}
+          {this.renderFullCardInput()}
           <button className="stripe-pay-button">{this.props.buttonText}</button>
         </form>
       </div>
