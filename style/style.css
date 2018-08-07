@@ -2481,6 +2481,13 @@ form {
 
 }
 
+.my-page-card-default-input-box {
+  font-size: 11px;
+  text-align: left;
+  padding: 15px;
+  width: 150px;
+}
+
 /* ***********MODAL****************** */
 
 .modal {

@@ -76,7 +76,8 @@ import {
   UPDATE_CARD_INFO,
   ACTION_TYPE_CARD,
   DELETE_CARD,
-  ADD_CARD
+  ADD_CARD,
+  UPDATE_CUSTOMER
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1211,7 +1212,7 @@ export function updateConversations(idArray, conversationAttributes, callback) {
   };
 }
 
-export function newCustomer(info) {
+export function newCustomer(info, callback) {
   console.log('in action index, newCustomer, info: ', info);
   console.log('in action index, newCustomer, info.email: ', info.client);
 
@@ -1227,9 +1228,11 @@ export function newCustomer(info) {
         type: NEW_CUSTOMER,
         payload: response.data.data.user
       });
+      callback();
     })
     .catch(error => {
       console.log('in action index, catch error to newCustomer: ', error);
+      dispatch(authError(error.response.data.messages));
     });
   };
 }
@@ -1255,6 +1258,7 @@ export function updateCardInfo(info, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to newCustomer: ', error);
+      dispatch(authError(error.response.data.messages));
     });
   };
 }
@@ -1277,10 +1281,11 @@ export function fetchCustomer() {
     })
     .catch(error => {
       console.log('in action index, catch error to fetchCustomer: ', error);
+      dispatch(authError(error.response.data.messages));
     });
   };
 }
-export function deleteCard(cardId) {
+export function deleteCard(cardId, callback) {
   console.log('in action index, fetchCustomer: ');
 
   return function (dispatch) {
@@ -1295,13 +1300,15 @@ export function deleteCard(cardId) {
         type: DELETE_CARD,
         payload: response.data.data.customer
       });
+      callback();
     })
     .catch(error => {
       console.log('in action index, catch error to deleteCard: ', error);
+      dispatch(authError(error.response.data.messages));
     });
   };
 }
-export function addCard(info) {
+export function addCard(info, callback) {
   console.log('in action index, fetchCustomer: ');
 
   return function (dispatch) {
@@ -1316,9 +1323,35 @@ export function addCard(info) {
         type: ADD_CARD,
         payload: response.data.data.customer
       });
+      callback();
     })
     .catch(error => {
       console.log('in action index, catch error to addCard: ', error);
+      dispatch(authError(error.response.data.messages));
+      this.showloading();
+    });
+  };
+}
+export function updateCustomer(info, callback) {
+  console.log('in action index, fetchCustomer: ');
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/update_customer`, { cardId: info.cardId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateCustomer: ', response);
+      console.log('in action index, response to updateCustomer: ', response.data.data.customer);
+
+      dispatch({
+        type: UPDATE_CUSTOMER,
+        payload: response.data.data.customer
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateCustomer: ', error);
+      dispatch(authError(error.response.data.messages));
     });
   };
 }

@@ -73,4 +73,5 @@ export const UPDATE_CARD_INFO = 'update_card_info';
 export const ACTION_TYPE_CARD = 'action_type_card';
 export const DELETE_CARD = 'delete_card';
 export const ADD_CARD = 'add_card';
+export const UPDATE_CUSTOMER = 'update_customer';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

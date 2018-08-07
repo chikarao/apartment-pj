@@ -20,7 +20,8 @@ import {
   UPDATE_CARD_INFO,
   ACTION_TYPE_CARD,
   DELETE_CARD,
-  ADD_CARD
+  ADD_CARD,
+  UPDATE_CUSTOMER
  } from '../actions/types';
 
 export default function (state = {
@@ -101,6 +102,9 @@ export default function (state = {
       return { ...state, customer: action.payload };
 
     case ADD_CARD:
+      return { ...state, customer: action.payload };
+
+    case UPDATE_CUSTOMER:
       return { ...state, customer: action.payload };
 
     case ACTION_TYPE_CARD:

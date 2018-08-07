@@ -55,6 +55,10 @@ class Form extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+  
+  }
+
   handleSubmit(event) {
     event.preventDefault();
 
@@ -65,11 +69,21 @@ class Form extends Component {
       // request to API end point
       // this.props.updateCardInfo is called in card_input_modal
       // if (this.props.cardActionType == 'Add a Card') {
-        if (this.props.auth.customer.id) {
+        if (this.props.auth.customer) {
           console.log('in stripe form, handleSubmit, if this.props.auth.stripe_customer_id, token', this.props.auth.customer.id, token)
-          this.props.addCard({ token: token.id });
+          if (token) {
+            this.props.addCard({ token: token.id }, () => this.handleSubmitCallback());
+            this.props.showLoading()
+          } else {
+            this.props.authError('Cannot process card info, please try again.')
+          }
         } else {
-          this.props.newCustomer({ token: token.id, email: this.props.auth.email })
+          if (token) {
+            this.props.newCustomer({ token: token.id, email: this.props.auth.email }, () => this.handleSubmitCallback())
+            this.props.showLoading()
+          } else {
+            this.props.authError('Cannot process card info, please try again.')
+          }
         }
       // }
 
@@ -88,6 +102,12 @@ class Form extends Component {
       //   console.log('response to stripe, response.data.data: ', response.data.data);
       // });
     });
+  }
+
+  handleSubmitCallback() {
+    console.log('in stripe form, handleSubmit, handleSubmitCallback')
+    this.props.showLoading();
+    this.props.showCardInputModal();
   }
 
   renderFullCardInput() {

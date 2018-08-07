@@ -20,6 +20,7 @@ class CardInputModal extends Component {
 
   componentDidMount() {
     console.log('in CardInputModal, componentDidMount:');
+    this.props.authError('');
   }
 
   // handleFormSubmit(data) {
@@ -40,7 +41,7 @@ class CardInputModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
+          {this.props.errorMessage}
         </div>
       );
     }
@@ -52,19 +53,37 @@ class CardInputModal extends Component {
     // // switch off editReviewCompleted so when edit clicked again, it shows form not message
     this.setState({ addCardCompleted: true });
     this.props.showCardInputModal();
+    this.setState({ addCardCompleted: false, updateCardCompleted: false });
+    const expInputs = document.getElementsByClassName('exp-input');
+    console.log('in CardInputModal, handleFormSubmit:', expInputs);
+    _.each(expInputs, exp => {
+      const expValue = exp;
+      expValue.value = '';
+    });
+
+    this.props.authError('');
   }
 
   handleFormSubmit(data) {
     console.log('in CardInputModal, handleFormSubmit:', data);
     const customerId = this.props.auth.customer.id;
     const cardId = this.props.auth.selectedCardId;
-    this.props.showLoading();
-    this.props.updateCardInfo({ customerId, cardId, expMonth: data.expMonth, expYear: data.expYear }, () => this.handleFormSubmitCallback());
+
+    const dataEmpty = _.isEmpty(data);
+    if (!dataEmpty) {
+      this.props.showLoading();
+      this.props.updateCardInfo({ customerId, cardId, expMonth: data.expMonth, expYear: data.expYear }, () => this.handleFormSubmitCallback());
+    } else {
+      this.props.authError('Please select month and/or year to update');
+    }
   }
 
   handleFormSubmitCallback() {
     this.props.showLoading();
-    this.setState({ updateCardCompleted: true })
+    this.setState({ updateCardCompleted: true });
+    if (this.props.errorMessage) {
+      this.props.authError('');
+    }
   }
 
   renderEachCardInput() {
@@ -85,7 +104,7 @@ class CardInputModal extends Component {
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset key={1} className="form-group">
             <label className="create-flat-form-label">Exp Month:</label>
-            <Field name="expMonth" component="select" type="integer" className="form-control">
+            <Field name="expMonth" component="select" type="integer" className="form-control exp-input">
             <option></option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -103,7 +122,7 @@ class CardInputModal extends Component {
           </fieldset>
           <fieldset key={2} className="form-group">
             <label className="create-flat-form-label">Exp Year:</label>
-            <Field name="expYear" component="select" type="integer" className="form-control">
+            <Field name="expYear" component="select" type="integer" className="form-control exp-input">
             <option></option>
               <option value="2018">2018</option>
               <option value="2019">2019</option>
@@ -195,22 +214,6 @@ class CardInputModal extends Component {
 
 CardInputModal = reduxForm({
   form: 'CardInputModal'
-  // fields: [
-  //   'address1',
-  //   'city',
-  //   'zip',
-  //   'country',
-  //   'area',
-  //   'price_per_day',
-  //   'price_per_month',
-  //   'guests',
-  //   'sales_point',
-  //   'description',
-  //   'rooms',
-  //   'beds',
-  //   'flat_type',
-  //   'bath'
-  // ]
 })(CardInputModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields

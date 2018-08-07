@@ -11,6 +11,8 @@ import UploadForProfile from './images/upload_for_profile';
 
 import CardInputModal from './modals/card_input_modal';
 
+import CardTypes from './constants/card_types'
+
 
 class MyPage extends Component {
   constructor(props) {
@@ -671,34 +673,67 @@ class MyPage extends Component {
     const cardId = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
     console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
-    console.log('in mypage, handleCardEditDeleteClick, cardId: ', cardId);
-    // this.setState({ actionType: 'Edit Card Info' }, () => {
       if (elementVal == 'delete') {
-        this.props.deleteCard(cardId);
+        this.props.showLoading();
+        this.props.deleteCard(cardId, () => this.handleCardEditDeleteClickCallback());
       } else {
         this.props.actionTypeCard(elementVal);
+        this.props.selectedCardId(cardId);
+        this.props.showCardInputModal();
       }
-      this.props.selectedCardId(cardId);
-      this.props.showCardInputModal();
+  }
 
-    // });
+  handleCardEditDeleteClickCallback() {
+    this.props.showLoading();
+  }
+
+  handleCardDefaultCheck(event) {
+    const checkedElement = event.target;
+    const cardId = checkedElement.getAttribute('value');
+    // const checkedVal = checkedElement.getAttribute('checked');
+    const checkedVal = checkedElement.checked;
+    const elementName = checkedElement.getAttribute('name')
+    // checkedElement.setAttribute('checked', 'checked=false')
+    const defaultCardInputs = document.getElementsByClassName('my-page-card-default-checkbox')
+    // console.log('in mypage, handleCardDefaultCheck, defaultCardInputs: ', defaultCardInputs);
+    console.log('in mypage, handleCardDefaultCheck, checkedVal: ', checkedVal);
+    console.log('in mypage, handleCardDefaultCheck, checkedElement: ', checkedElement);
+    console.log('in mypage, handleCardDefaultCheck, cardId: ', cardId);
+    const defaultCardId = this.props.customer.default_source;
+    if (cardId !== defaultCardId) {
+      _.each(defaultCardInputs, eachInput => {
+        const a = eachInput;
+        a.checked = false;
+      })
+      this.props.showLoading();
+      this.props.updateCustomer({ cardId }, () => this.handleCardDefaultCheckCallback());
+    }
+  }
+
+  handleCardDefaultCheckCallback() {
+    this.props.showLoading();
   }
 
   renderExistingCardDetails() {
     if (this.props.customer) {
       const { sources } = this.props.customer;
-      return _.map(sources.data, card => {
+      const defaultCardId = this.props.customer.default_source;
+      return _.map(sources.data, (card, i) => {
+        const isThisCardDefault = (defaultCardId == card.id);
+        console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
         return (
           <div key={card.id}>
             <li className="my-page-each-card">
               <div className="my-page-each-card-click-box">
                 <div className="my-page-details">
                   <ul>
-                    <li>{card.brand}</li>
+                    <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${CardTypes[card.brand]}`}></i></li>
                     <li>Last four digits: {card.last4}</li>
                     <li>Exp: {card.exp_month}/{card.exp_year}</li>
                   </ul>
                 </div>
+                <div className="my-page-card-default-input-box">Use this card for payment &nbsp;<input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} /></div>
+
             </div>
 
               <div className="my-page-card-button-box">
