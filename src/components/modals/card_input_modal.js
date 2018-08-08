@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import SwipeInput from '../payments/parent';
+import cardAddressInputObject from '../constants/card_address_input'
 
 let showHideClassName;
 
@@ -21,6 +22,12 @@ class CardInputModal extends Component {
   componentDidMount() {
     console.log('in CardInputModal, componentDidMount:');
     this.props.authError('');
+  }
+
+  componentDidUnMount() {
+    console.log('in CardInputModal, componentDidUnMount:');
+    this.props.authError('');
+    // this.props.selectedCard(undefined, () => {});
   }
 
   // handleFormSubmit(data) {
@@ -55,24 +62,45 @@ class CardInputModal extends Component {
     this.props.showCardInputModal();
     this.setState({ addCardCompleted: false, updateCardCompleted: false });
     const expInputs = document.getElementsByClassName('exp-input');
-    console.log('in CardInputModal, handleFormSubmit:', expInputs);
     _.each(expInputs, exp => {
+      console.log('in CardInputModal, handleClose, before each exp:', exp.value);
       const expValue = exp;
       expValue.value = '';
+      console.log('in CardInputModal, handleClose, after each exp:', exp.value);
     });
 
     this.props.authError('');
+    this.props.selectedCard(undefined, () => {});
+
+    // const editCardInputs = document.getElementsByClassName('exp-input');
+    // _.each(editCardInputs, input => {
+    //   const inputToChange = input;
+    //   inputToChange.value = '';
+    // })
   }
 
   handleFormSubmit(data) {
     console.log('in CardInputModal, handleFormSubmit:', data);
     const customerId = this.props.auth.customer.id;
-    const cardId = this.props.auth.selectedCardId;
+    const cardId = this.props.auth.selectedCard.id;
 
     const dataEmpty = _.isEmpty(data);
     if (!dataEmpty) {
       this.props.showLoading();
-      this.props.updateCardInfo({ customerId, cardId, expMonth: data.expMonth, expYear: data.expYear }, () => this.handleFormSubmitCallback());
+      this.props.updateCardInfo({
+        customerId,
+        cardId,
+        exp_month: data.exp_month,
+        exp_year: data.exp_year,
+        name: data.name,
+        address_line1: data.address_line1,
+        address_line2: data.address_line2,
+        address_city: data.address_city,
+        address_state: data.address_state,
+        address_zip: data.address_zip,
+        address_country: data.address_country
+        // currency: data.currency,
+      }, () => this.handleFormSubmitCallback());
     } else {
       this.props.authError('Please select month and/or year to update');
     }
@@ -86,65 +114,75 @@ class CardInputModal extends Component {
     }
   }
 
-  renderEachCardInput() {
-      const { handleSubmit } = this.props;
-      console.log('in CardInputModal, renderEachCardInput, this.props.auth.cardActionType:', this.props.auth.cardActionType);
-    if (this.props.auth.cardActionType == 'Add a Card') {
+  renderCardAddressInputs() {
+    return _.map(Object.keys(cardAddressInputObject), (inputs, i) => {
       return (
-        <div>
-        <SwipeInput
-          buttonText='Add Card'
-          // actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
-        />
-        </div>
+        <fieldset key={i} className="form-group">
+          <label className="create-flat-form-label">{cardAddressInputObject[inputs]}:</label>
+          <Field name={inputs} component="input" type="text" className="form-control exp-input"></ Field>
+        </fieldset>
+
       );
-    } else {
+    });
+  }
+
+  renderEditCardFields() {
+    // const customerEmpty = _.isEmpty(this.props.auth.customer);
+    console.log('in CardInputModal, renderEditCardFields, before if this.props.initialValues:', this.props.initialValues);
+    if (this.props.initialValues) {
+      console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
+      const { handleSubmit } = this.props;
       return (
         <div>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-          <fieldset key={1} className="form-group">
-            <label className="create-flat-form-label">Exp Month:</label>
-            <Field name="expMonth" component="select" type="integer" className="form-control exp-input">
-            <option></option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              </ Field>
-          </fieldset>
-          <fieldset key={2} className="form-group">
-            <label className="create-flat-form-label">Exp Year:</label>
-            <Field name="expYear" component="select" type="integer" className="form-control exp-input">
-            <option></option>
-              <option value="2018">2018</option>
-              <option value="2019">2019</option>
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-              </ Field>
-          </fieldset>
-
+        <fieldset key={1} className="form-group">
+        <label className="create-flat-form-label">Exp Month:</label>
+        <Field name="exp_month" component="select" type="integer" className="form-control exp-input">
+          <option></option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+        </ Field>
+        </fieldset>
+        <fieldset key={2} className="form-group">
+          <label className="create-flat-form-label">Exp Year:</label>
+          <Field name="exp_year" component="input" type="integer" className="form-control exp-input"></ Field>
+        </fieldset>
+        {this.renderCardAddressInputs()}
         <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
 
         </form>
         </div>
       );
+    }
+  }
+
+  renderEachCardInput() {
+    console.log('in CardInputModal, renderEachCardInput, this.props.auth.cardActionType:', this.props.auth.cardActionType);
+    if (this.props.auth.cardActionType == 'Add a Card') {
+      return (
+        <div>
+          <SwipeInput
+            buttonText='Add Card'
+            // actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          {this.renderEditCardFields()}
+        </div>
+      )
     }
   }
 
@@ -160,7 +198,6 @@ class CardInputModal extends Component {
     //handleClose is a prop passed from header when SigninModal is called
     // {this.state.updateCardCompleted || this.state.addCardCompleted ? this.renderCompletedMessage() : this.renderCardInput()}
     if (this.props.auth.userProfile) {
-      console.log('in CardInputModal, this.props.cardActionType:', this.props.cardActionType);
       return (
         <div className={showHideClassName}>
           <div className="modal-main">
@@ -212,22 +249,29 @@ class CardInputModal extends Component {
 //   return cardArray[0];
 // }
 
+// Reference: https://stackoverflow.com/questions/42711504/how-to-reset-initial-value-in-redux-form
 CardInputModal = reduxForm({
-  form: 'CardInputModal'
+  form: 'CardInputModal',
+  enableReinitialize: true
 })(CardInputModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  // let initialValues = {};
+  let initialValues = {};
+  initialValues = state.auth.selectedCard;
+  // let selectedCard;
   // if (state.auth.customer) {
   //   const cards = state.auth.customer.sources.data;
   //   if (state.auth.selectedCardId) {
-  //     const cardId = getCardForEdit(cards, state.auth.selectedCardId);
-  //     console.log('in CardInputModal, mapStateToProps, initialValues: ', initialValues);
+  //     selectedCard = getCardForEdit(cards, state.auth.selectedCardId);
+  //     console.log('in CardInputModal, mapStateToProps, selectedCard: ', selectedCard);
+  //     // initialValues = card;
+  //     // console.log('in CardInputModal, mapStateToProps, initialValues: ', initialValues);
   //   }
   // }
-  // initialValues =
-  console.log('in CardInputModal, mapStateToProps, state: ', state);
+  // console.log('in CardInputModal, mapStateToProps, state: ', state);
+  console.log('in CardInputModal, mapStateToProps, state.auth.selectedCard: ', state.auth.selectedCard);
+  console.log('in CardInputModal, mapStateToProps, initialValues: ', initialValues);
   return {
     auth: state.auth,
     successMessage: state.auth.success,
@@ -235,7 +279,7 @@ function mapStateToProps(state) {
     // review: state.reviews,
     // userProfile: state.auth.userProfile
     // initialValues: state.reviews.reviewForBookingByUser
-    // initialValues
+    initialValues
   };
 }
 

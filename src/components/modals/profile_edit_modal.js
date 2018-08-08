@@ -74,62 +74,62 @@ class EditProfileModal extends Component {
       // console.log('in modal, render this.props:', this.props);
       return (
         <div className={showHideClassName}>
-        <section className="modal-main">
-        <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-        <h3 className="auth-modal-title">Edit Profile</h3>
-        {this.renderAlert()}
-        <div className="edit-profile-scroll-div">
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Username:</label>
-        <Field name="username" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Title:</label>
-        <Field name="title" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">First Name:</label>
-        <Field name="first_name" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Last Name:</label>
-        <Field name="last_name" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Birthday:</label>
-        <Field name="birthday" component="input" type="date" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Street Address:</label>
-        <Field name="address1" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">City:</label>
-        <Field name="city" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">State:</label>
-        <Field name="state" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Zip:</label>
-        <Field name="zip" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-        <label className="create-flat-form-label">Country:</label>
-        <Field name="country" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group introduction">
-        <label className="create-flat-form-label">Self Intro:</label>
-        <Field name="introduction" component="textarea" type="text" className="form-control" />
-        </fieldset>
-        <div className="confirm-change-and-button">
-        <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
-        </div>
-        </form>
-        </div>
-        </section>
+          <section className="modal-main">
+          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+          <h3 className="auth-modal-title">Edit Profile</h3>
+          {this.renderAlert()}
+          <div className="edit-profile-scroll-div">
+            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Username:</label>
+                <Field name="username" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Title:</label>
+                <Field name="title" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">First Name:</label>
+                <Field name="first_name" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Last Name:</label>
+                <Field name="last_name" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Birthday:</label>
+                <Field name="birthday" component="input" type="date" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Street Address:</label>
+                <Field name="address1" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">City:</label>
+                <Field name="city" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">State:</label>
+                <Field name="state" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Zip:</label>
+                <Field name="zip" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">Country:</label>
+                <Field name="country" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group introduction">
+                <label className="create-flat-form-label">Self Intro:</label>
+                <Field name="introduction" component="textarea" type="text" className="form-control" />
+              </fieldset>
+              <div className="confirm-change-and-button">
+              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+              </div>
+            </form>
+          </div>
+          </section>
         </div>
       );
     }
@@ -161,22 +161,6 @@ class EditProfileModal extends Component {
 
 EditProfileModal = reduxForm({
   form: 'EditProfileModal'
-  // fields: [
-  //   'address1',
-  //   'city',
-  //   'zip',
-  //   'country',
-  //   'area',
-  //   'price_per_day',
-  //   'price_per_month',
-  //   'guests',
-  //   'sales_point',
-  //   'description',
-  //   'rooms',
-  //   'beds',
-  //   'flat_type',
-  //   'bath'
-  // ]
 })(EditProfileModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields

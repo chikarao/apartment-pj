@@ -567,10 +567,10 @@ function mapStateToProps(state) {
   let initialValues = {};
   if (flat) {
     initialValues = getInitialValueObject(flat)
-    console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
-    console.log('in edit_flat, mapStateToProps, flat: ', flat);
-    console.log('in edit_flat, mapStateToProps, flat: ', flat);
-    console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
+    // console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
+    // console.log('in edit_flat, mapStateToProps, flat: ', flat);
+    // console.log('in edit_flat, mapStateToProps, flat: ', flat);
+    // console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
     return {
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
       // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,

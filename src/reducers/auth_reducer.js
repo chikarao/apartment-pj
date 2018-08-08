@@ -16,7 +16,7 @@ import {
   SHOW_LOADING,
   SHOW_LIGHTBOX,
   FETCH_CUSTOMER,
-  SELECTED_CARD_ID,
+  SELECTED_CARD,
   UPDATE_CARD_INFO,
   ACTION_TYPE_CARD,
   DELETE_CARD,
@@ -92,8 +92,8 @@ export default function (state = {
     case FETCH_CUSTOMER:
       return { ...state, customer: action.payload };
 
-    case SELECTED_CARD_ID:
-      return { ...state, selectedCardId: action.payload };
+    case SELECTED_CARD:
+      return { ...state, selectedCard: action.payload };
 
     case UPDATE_CARD_INFO:
       return { ...state, customer: action.payload };

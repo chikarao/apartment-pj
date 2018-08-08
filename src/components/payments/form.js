@@ -7,12 +7,7 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-
-// import {
-//   Button
-// } from 'semantic-ui-react';
-
-// import './scss/index.scss';
+import cardAddressInputObject from '../constants/card_address_input'
 
 // const STRIPE_API = 'https://api.stripe.com/v1/charges';
 const STRIPE_API = 'http://localhost:3000/api/v1/new_subscription';
@@ -70,8 +65,8 @@ class Form extends Component {
       address_city: event.target[3].value,
       address_state: event.target[4].value,
       address_zip: event.target[5].value,
-      address_country: event.target[6].value,
-      currency: event.target[7].value
+      address_country: event.target[6].value
+      // currency: event.target[7].value
     };
 
     this.props.stripe.createToken(tokenData).then(({ token }) => {
@@ -134,21 +129,10 @@ class Form extends Component {
 
   renderAddressInput() {
     // The address_country field is a two character country code (for example, 'US').
-    const inputObject = {
-      name: 'Name on Card',
-      address_line1: 'Street Address',
-      address_line2: 'Street Address 2',
-      address_city: 'City',
-      address_state: 'State',
-      address_zip: 'Postal Code / Zip',
-      address_country: 'Country',
-      currency: 'Currency'
-    };
-
-    return _.map(Object.keys(inputObject), inputs => {
+    return _.map(Object.keys(cardAddressInputObject), (inputs, i) => {
       return (
-        <div className="form-group card-form-group">
-        <label className="create-flat-form-label">{inputObject[inputs]}: </label>
+        <div key={i} className="form-group card-form-group">
+        <label className="create-flat-form-label">{cardAddressInputObject[inputs]}: </label>
         <input type="text" className="form-control card-form-control" />
         </div>
       );

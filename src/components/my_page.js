@@ -674,13 +674,25 @@ class MyPage extends Component {
     const elementVal = clickedElement.getAttribute('value')
     console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
       if (elementVal == 'delete') {
-        this.props.showLoading();
-        this.props.deleteCard(cardId, () => this.handleCardEditDeleteClickCallback());
+        if (window.confirm('Are you sure you want to delete this card?')) {
+          this.props.showLoading();
+          this.props.deleteCard(cardId, () => this.handleCardEditDeleteClickCallback());
+        }
       } else {
+        const selectedCardArray = [];
+        _.each(this.props.auth.customer.sources.data, card => {
+          if (card.id == cardId) {
+            selectedCardArray.push(card);
+            console.log('in mypage, handleCardEditDeleteClick, selectedCardArray: ', selectedCardArray);
+          }
+        })
         this.props.actionTypeCard(elementVal);
-        this.props.selectedCardId(cardId);
-        this.props.showCardInputModal();
+        this.props.selectedCard(selectedCardArray[0], () => this.selectedCardCallBack());
       }
+  }
+
+  selectedCardCallBack() {
+    this.props.showCardInputModal();
   }
 
   handleCardEditDeleteClickCallback() {
@@ -727,8 +739,9 @@ class MyPage extends Component {
     return (
       <div className="my-page-card-address-box">
         <span>{card.name}</span>
-        <span> {card.address_line1}</span>
+        <span>  {card.address_line1}</span>
         <span>...</span>
+        <span>  {card.address_zip}</span>
       </div>
     );
   }
@@ -808,13 +821,13 @@ class MyPage extends Component {
   }
 
   render() {
+    // <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
     return (
       <div>
         {this.renderCardInputModal()}
         <h2>My Page</h2>
         <div className="container my-page-container">
           <div className="row">
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>

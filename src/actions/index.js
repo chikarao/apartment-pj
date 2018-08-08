@@ -72,7 +72,7 @@ import {
   NEW_CUSTOMER,
   SHOW_CARD_INPUT_MODAL,
   FETCH_CUSTOMER,
-  SELECTED_CARD_ID,
+  SELECTED_CARD,
   UPDATE_CARD_INFO,
   ACTION_TYPE_CARD,
   DELETE_CARD,
@@ -1238,11 +1238,11 @@ export function newCustomer(info, callback) {
 }
 export function updateCardInfo(info, callback) {
   console.log('in action index, updateCardInfo, info: ', info);
-  const { cardId, customerId, expYear, expMonth } = info;
+  // const { cardId, customerId, expYear, expMonth } = info;
   // console.log('in action index, updateCardInfo, info.email: ', info.client);
 
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/update_card_info`, { cardId, customerId, expYear, expMonth }, {
+    axios.post(`${ROOT_URL}/api/v1/update_card_info`, info, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
@@ -1362,11 +1362,11 @@ export function showCardInputModal() {
   //flip showResetPasswordModal
   return { type: SHOW_CARD_INPUT_MODAL };
 }
-export function selectedCardId(cardId) {
-  console.log('in actions index, selectedcardId:', cardId);
-
+export function selectedCard(card, callback) {
+  console.log('in actions index, selectedcard:', card);
+  callback();
   //flip showResetPasswordModal
-  return { type: SELECTED_CARD_ID, payload: cardId };
+  return { type: SELECTED_CARD, payload: card };
 }
 export function actionTypeCard(action) {
   console.log('in actions index, actionTypeCard:', action);
