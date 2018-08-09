@@ -21,14 +21,14 @@ class UploadForProfile extends Component {
   //
   // }
   createImageCallback() {
-    // console.log('in Upload, createImageCallback, flatId: ');
+    // console.log('in UploadForProfile, createImageCallback, flatId: ');
     // export function createImage(imagesArray, imageCount, flatId, callback)
 
       this.props.history.push('/myPage');
       // switch off loading page
       this.props.showLoading();
       // document.location.reload()
-      console.log('in Upload, createImageCallback, create image completed');
+      console.log('in UploadForProfile, createImageCallback, create image completed');
 
   }
 
@@ -38,9 +38,10 @@ class UploadForProfile extends Component {
     const imagesArray = [];
   // Push all the axios request promise into a single array
     const uploaders = files.map((file) => {
-    console.log('in Upload, handleDrop, uploaders, file: ', file);
+    console.log('in UploadForProfile, handleDrop, uploaders, file: ', file);
     // Initial FormData
     const formData = new FormData();
+    console.log('in UploadForProfile, handleDrop, uploaders, formData: ', formData);
     // const apiSecret = API_SECRET;
     // const timeStamp = (Date.now() / 1000) | 0;
     // const publicID = `flat_image-${timeStamp}-${index}`;
@@ -58,19 +59,18 @@ class UploadForProfile extends Component {
 
     // formData.append('signature', signatureSha1);
 
-
     // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-
+    // !!!!! formData.get errror not a function STOPS execution on Safari
     // console.log('api_key: ', formData.get('api_key'));
-    // console.log('in Upload, handleDrop, uploaders, timestamp: ', formData.get('timestamp'));
-    // console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, timestamp: ', formData.get('timestamp'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, public id: ', formData.get('public_id'));
     // console.log('formData api_key: ', formData.get('api_key'));
-    // console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
-    console.log('in Upload, handleDrop, uploaders, formData file: ', formData.get('file'));
-    console.log('in Upload, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, formData eager: ', formData.get('eager'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, formData file: ', formData.get('file'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
 
-    // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
-    console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
+    // console.log('in UploadForProfile, handleDrop, uploaders, signature: ', formData.get('signature'));
+    // console.log('in UploadForProfile, handleDrop, uploaders, formatData: ', formData);
 
     return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
     headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -80,25 +80,25 @@ class UploadForProfile extends Component {
       // const data = response.data;
       const filePublicId = response.data.data.response.public_id;
       // You should store this URL for future references in your app
-      // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
-      console.log('in Upload, handleDrop, uploaders, .then, response ', response);
-      console.log('in Upload, handleDrop, uploaders, .then, response.data.data.response.public_id ', response.data.data.response.public_id);
+      // console.log('in UploadForProfile, handleDrop, uploaders, .then, response.data.public_id ', response.data.public_id);
+      console.log('in UploadForProfile, handleDrop, uploaders, .then, response ', response);
+      console.log('in UploadForProfile, handleDrop, uploaders, .then, response.data.data.response.public_id ', response.data.data.response.public_id);
       imagesArray.push(filePublicId);
       // call create image action, send images Array with flat id
     });
     //end of then
   });
   //end of uploaders
-  // console.log('in Upload, handleDrop, uploaders: ', uploaders);
+  // console.log('in UploadForProfile, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
-    console.log('in Upload, handleDrop, axios.all, .then, imagesArray ', imagesArray);
+    console.log('in UploadForProfile, handleDrop, axios.all, .then, imagesArray ', imagesArray);
     // call createImage and conditional callback to check for last image
     // ... perform after upload is successful operation
     // CALL createImage and send public id, counter, callback with flat id
     //xport function createImage(imagesArray, imageCount, flatId, callback)
     // const imageCount = 0;
-    // console.log('in Upload, handleDrop, axios.all, .then, imageCount ', imageCount);
+    // console.log('in UploadForProfile, handleDrop, axios.all, .then, imageCount ', imageCount);
     // this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
     // this.props.editProfile({ id: this.props.profileId, image: imagesArray[0] }, () => this.createImageCallback())
     this.props.updateUser({ image: imagesArray[0] }, () => this.createImageCallback())
