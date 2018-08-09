@@ -84,25 +84,25 @@ class Landing extends Component {
     );
   }
 
-  renderPaymentForm() {
-    return (
-      <div>
-        <Swipe
-          buttonText='Make Payment'
-        />
-      </div>
-    );
-  }
+  // renderPaymentForm() {
+  //   return (
+  //     <div>
+  //       <Swipe
+  //         buttonText='Make Payment'
+  //       />
+  //     </div>
+  //   );
+  // }
 
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
+    // {this.renderPaymentForm()}
     return (
       <div>
         {this.renderBanner()}
         <div className="landing-main">
-        {this.renderPaymentForm()}
         </div>
           {this.renderFooter()}
       </div>

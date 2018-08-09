@@ -2302,15 +2302,17 @@ form {
 
 .my-page-card-button-box .btn-edit{
   /* background-color: #4CAF50 !important; */
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.1);
   border: 1px solid #4CAF50;
-  color: gray;
+  /* color: gray; */
   /* color: white; */
+  background-color: white;
   box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
 }
 .my-page-card-button-box .btn-delete{
   /* background-color: ; */
-  /* color greeen */
   color: gray;
+  background-color: white;
   border: 1px solid red;
   box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
   /* color: white; */
@@ -2497,13 +2499,27 @@ form {
   /* height: auto !important; */
 }
 
-/* wraps the clickbox address box */
+/* wraps the clickbox address box; webkit for safari but dont need */
 .my-page-card-details-box {
   width: auto;
   height: auto;
-  display: flex;
+  /* display: -webkit-flex;
+  display: flex; */
+  /* -webkit-flex-direction: column; */
   flex-direction: column;
 }
+
+/* display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+} */
 
 .my-page-card-address-box {
   height: 20%;
@@ -2569,7 +2585,7 @@ form {
 .lightbox-content {
   width: 100%;
   height: 500px;
-  margin-top: 140px;
+  margin-top: 50px;
   flex-direction: column;
   display: flex;
   justify-content: center;
@@ -2659,6 +2675,8 @@ form {
   z-index: 10;
   overflow: hidden;
   overflow-y: scroll;
+  padding: 0 60px 0 60px;
+
 }
 
 .modal-main form {
@@ -2959,8 +2977,10 @@ form {
   display: block;
   margin: 10px 0 20px 20px;
   max-width: 500px;
+  width: 400px;
   padding: 10px 14px;
-  box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
+  /* box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px; */
+  box-shadow: rgba(50, 50, 93, .5) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
   border-radius: 4px;
   background: white;
 }
@@ -2993,6 +3013,7 @@ form {
   height: 25px;
   /* width: auto !important; */
   /* margin: 0 auto 0 auto !important; */
+  padding: 0 12px 0px 12px !important;
 }
 
 .stripe-form {
@@ -3007,6 +3028,10 @@ form {
     /* body {
         background-color: lightgreen;
     } */
+    .modal-main {
+      padding: 0 60px 0 60px;
+    }
+
     .form-control {
       width: 90%;
       min-width: 200px;
@@ -3030,10 +3055,20 @@ form {
       text-align: left;
       padding: 10px 0 20px 5px;
     }
+    .StripeElement {
+      width: 360px !important;
+
+    }
 }
 
 @media screen and (max-width: 500px) {
-
+  .banner-content {
+    /* position: relative; */
+    width: 100%;
+    height: 100%;
+    margin-top: 30px;
+    /* padding-top: 10%; */
+}
   .banner-content p {
     padding: 20%;
     /* font-size: 60px; */
@@ -3051,9 +3086,17 @@ form {
     height: 60px !important;
   }
 
+  .modal-main {
+    padding: 0 50px 0 50px;
+  }
+
   .results-search-box input {
     height: 30px;
     width: 230px;
+  }
+
+  .banner-search-box {
+    margin-top: 30px;
   }
 
   .banner-search-button {
@@ -3066,6 +3109,7 @@ form {
   .banner-search-input-and-button input {
     height: 31px;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    width: 230px;
 }
 
   .amenity-input-each {
@@ -3123,7 +3167,7 @@ form {
   }
 
   .StripeElement {
-    width: 70% !important;
+    width: 62.5% !important;
     height: 30px !important;
     margin: 0 0 20px 20px !important;
   }

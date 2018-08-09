@@ -125,7 +125,7 @@ class CardInputModal extends Component {
       return (
         <fieldset key={i} className="form-group">
           <label className="create-flat-form-label">{cardAddressInputObject[inputs]}:</label>
-          <Field name={inputs} component="input" type="text" className="form-control exp-input"></ Field>
+          <Field name={inputs} component="input" type="text" className="form-control card-form-control"></ Field>
         </fieldset>
 
       );
@@ -143,7 +143,7 @@ class CardInputModal extends Component {
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset key={1} className="form-group">
           <label className="create-flat-form-label">Exp Month:</label>
-          <Field name="exp_month" component="select" type="integer" className="form-control exp-input">
+          <Field name="exp_month" component="select" type="integer" className="form-control card-form-control">
             <option></option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -161,7 +161,7 @@ class CardInputModal extends Component {
           </fieldset>
           <fieldset key={2} className="form-group">
             <label className="create-flat-form-label">Exp Year:</label>
-            <Field name="exp_year" component="input" type="integer" className="form-control exp-input"></ Field>
+            <Field name="exp_year" component="input" type="integer" className="form-control card-form-control"></ Field>
           </fieldset>
           {this.renderCardAddressInputs()}
           <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>

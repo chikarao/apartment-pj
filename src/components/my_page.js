@@ -13,6 +13,7 @@ import CardInputModal from './modals/card_input_modal';
 
 import CardTypes from './constants/card_types'
 
+const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
 
 class MyPage extends Component {
   constructor(props) {
@@ -603,7 +604,7 @@ class MyPage extends Component {
 
   handleRemoveProfileImage() {
     // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
-    this.props.updateUser({ image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
+    this.props.updateUser({ image: BLANK_PROFILE_PICTURE }, () => this.handleRemoveProfileImageCallback());
   }
 
   handleRemoveProfileImageCallback() {
@@ -622,7 +623,7 @@ class MyPage extends Component {
               // profileId={this.props.auth.userProfile.id}
             />
           </div>
-          {this.props.auth.image === 'blank_profile_picture_1' ? '' :
+          {this.props.auth.image == BLANK_PROFILE_PICTURE ? '' :
           <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
             Remove Profile Picture
           </div> }
