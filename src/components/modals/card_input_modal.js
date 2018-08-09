@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
-import SwipeInput from '../payments/parent';
+import SwipeParent from '../payments/parent';
 import cardAddressInputObject from '../constants/card_address_input'
 
 let showHideClassName;
@@ -15,7 +15,8 @@ class CardInputModal extends Component {
     super(props);
     this.state = {
       addCardCompleted: false,
-      updateCardCompleted: false
+      updateCardCompleted: false,
+      paymentCompleted: false
     };
   }
 
@@ -58,9 +59,9 @@ class CardInputModal extends Component {
     // switch off showeditreview boolean in state to close modal
     // this.props.showEditReview();
     // // switch off editReviewCompleted so when edit clicked again, it shows form not message
-    this.setState({ addCardCompleted: true });
+    // this.setState({ addCardCompleted: true });
     this.props.showCardInputModal();
-    this.setState({ addCardCompleted: false, updateCardCompleted: false });
+    this.setState({ addCardCompleted: false, updateCardCompleted: false, paymentCompleted: false });
     const expInputs = document.getElementsByClassName('exp-input');
     _.each(expInputs, exp => {
       console.log('in CardInputModal, handleClose, before each exp:', exp.value);
@@ -83,9 +84,13 @@ class CardInputModal extends Component {
     console.log('in CardInputModal, handleFormSubmit:', data);
     const customerId = this.props.auth.customer.id;
     const cardId = this.props.auth.selectedCard.id;
+    if (!data.name) {
+      this.props.authError('Please enter the name of the cardholder.');
+      // this.props.showLoading();
+    }
 
     const dataEmpty = _.isEmpty(data);
-    if (!dataEmpty) {
+    if (!dataEmpty && data.name) {
       this.props.showLoading();
       this.props.updateCardInfo({
         customerId,
@@ -93,12 +98,13 @@ class CardInputModal extends Component {
         exp_month: data.exp_month,
         exp_year: data.exp_year,
         name: data.name,
-        address_line1: data.address_line1,
-        address_line2: data.address_line2,
-        address_city: data.address_city,
-        address_state: data.address_state,
-        address_zip: data.address_zip,
-        address_country: data.address_country
+        address_line1: data.address_line1 ? data.address_line1 : null,
+        address_line2: data.address_line2 ? data.address_line2 : null,
+        // send address_line2 as null since stripe will not take an empty string
+        address_city: data.address_city ? data.address_city : null,
+        address_state: data.address_state ? data.address_state : null,
+        address_zip: data.address_zip ? data.address_zip : null,
+        address_country: data.address_country ? data.address_country : null
         // currency: data.currency,
       }, () => this.handleFormSubmitCallback());
     } else {
@@ -135,35 +141,78 @@ class CardInputModal extends Component {
       return (
         <div>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        <fieldset key={1} className="form-group">
-        <label className="create-flat-form-label">Exp Month:</label>
-        <Field name="exp_month" component="select" type="integer" className="form-control exp-input">
-          <option></option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-        </ Field>
-        </fieldset>
-        <fieldset key={2} className="form-group">
-          <label className="create-flat-form-label">Exp Year:</label>
-          <Field name="exp_year" component="input" type="integer" className="form-control exp-input"></ Field>
-        </fieldset>
-        {this.renderCardAddressInputs()}
-        <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
-
+          <fieldset key={1} className="form-group">
+          <label className="create-flat-form-label">Exp Month:</label>
+          <Field name="exp_month" component="select" type="integer" className="form-control exp-input">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </ Field>
+          </fieldset>
+          <fieldset key={2} className="form-group">
+            <label className="create-flat-form-label">Exp Year:</label>
+            <Field name="exp_year" component="input" type="integer" className="form-control exp-input"></ Field>
+          </fieldset>
+          {this.renderCardAddressInputs()}
+          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
         </form>
         </div>
       );
     }
+  }
+
+  handlePaymentFormSubmit(data) {
+    console.log('in CardInputModal, handlePaymentFormSubmit, data: ', data);
+    this.props.showLoading()
+    this.props.makePayment({ amount: data.amount, currency: data.currency, description: data.description }, () => this.handlePaymentFormSubmitCallback());
+  }
+
+  handlePaymentFormSubmitCallback() {
+    this.props.showLoading()
+    this.setState({ paymentCompleted: true })
+  }
+
+  renderPaymentFields() {
+      console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
+      const { handleSubmit } = this.props;
+      return (
+        <div>
+          <form onSubmit={handleSubmit(this.handlePaymentFormSubmit.bind(this))}>
+            <fieldset key={11} className="form-group">
+              <label className="create-flat-form-label">Payment Amount:</label>
+              <Field name="amount" component="input" type="integer" className="form-control exp-input">
+            </ Field>
+            </fieldset>
+            <fieldset key={12} className="form-group">
+              <label className="create-flat-form-label">Currency:</label>
+              <Field name="currency" component="select" type="string" className="form-control exp-input">
+                <option></option>
+                <option value="jpy">Japanese Yen</option>
+                <option value="usd">US Dollar</option>
+                <option value="eur">Euro</option>
+                <option value="gbp">British Pound</option>
+              </ Field>
+            </fieldset>
+            <fieldset key={13} className="form-group">
+              <label className="create-flat-form-label">Notes:</label>
+              <Field name="description" component="input" type="string" className="form-control exp-input"></ Field>
+            </fieldset>
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+          </form>
+          {this.renderAlert()}
+          {this.state.paymentCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Payment Completed!</div> : ''}
+        </div>
+      );
   }
 
   renderEachCardInput() {
@@ -171,18 +220,24 @@ class CardInputModal extends Component {
     if (this.props.auth.cardActionType == 'Add a Card') {
       return (
         <div>
-          <SwipeInput
+          <SwipeParent
             buttonText='Add Card'
             // actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
           />
         </div>
       );
+    } else if (this.props.auth.cardActionType == 'Make a Payment') {
+        return (
+          <div>
+            {this.renderPaymentFields()}
+          </div>
+        );
     } else {
       return (
         <div>
           {this.renderEditCardFields()}
         </div>
-      )
+      );
     }
   }
 
@@ -205,7 +260,7 @@ class CardInputModal extends Component {
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
             {this.renderEachCardInput()}
             {this.renderAlert()}
-            {this.state.updateCardCompleted ? <div style={{ color: 'blue', fontSize: '20px' }}>Card updated!</div> : ''}
+            {this.state.updateCardCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Card Updated!</div> : ''}
           </div>
         </div>
       );
@@ -238,18 +293,8 @@ class CardInputModal extends Component {
   }
 }
 
-// function getCardForEdit(cards, selectedCardId) {
-//   console.log('in CardInputModal, getCardForEdit, cards, selectedCardId : ', selectedCardId);
-//   const cardArray = [];
-//   _.each(cards, card => {
-//     if (card.id == selectedCardId) {
-//       cardArray.push(card);
-//     }
-//   });
-//   return cardArray[0];
-// }
-
 // Reference: https://stackoverflow.com/questions/42711504/how-to-reset-initial-value-in-redux-form
+// !!!!!!enableReinitialize allow for edit modals to be closed and open with new initialValue props.
 CardInputModal = reduxForm({
   form: 'CardInputModal',
   enableReinitialize: true
@@ -257,29 +302,16 @@ CardInputModal = reduxForm({
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  let initialValues = {};
-  initialValues = state.auth.selectedCard;
-  // let selectedCard;
-  // if (state.auth.customer) {
-  //   const cards = state.auth.customer.sources.data;
-  //   if (state.auth.selectedCardId) {
-  //     selectedCard = getCardForEdit(cards, state.auth.selectedCardId);
-  //     console.log('in CardInputModal, mapStateToProps, selectedCard: ', selectedCard);
-  //     // initialValues = card;
-  //     // console.log('in CardInputModal, mapStateToProps, initialValues: ', initialValues);
-  //   }
-  // }
-  // console.log('in CardInputModal, mapStateToProps, state: ', state);
-  console.log('in CardInputModal, mapStateToProps, state.auth.selectedCard: ', state.auth.selectedCard);
-  console.log('in CardInputModal, mapStateToProps, initialValues: ', initialValues);
+  // let initialValues = {};
+  // initialValues = state.auth.selectedCard;
+
+  console.log('in CardInputModal, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
-    // review: state.reviews,
-    // userProfile: state.auth.userProfile
-    // initialValues: state.reviews.reviewForBookingByUser
-    initialValues
+    charge: state.auth.charge,
+    initialValues: state.auth.selectedCard
   };
 }
 

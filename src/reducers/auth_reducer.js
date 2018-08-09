@@ -21,7 +21,8 @@ import {
   ACTION_TYPE_CARD,
   DELETE_CARD,
   ADD_CARD,
-  UPDATE_CUSTOMER
+  UPDATE_CUSTOMER,
+  MAKE_PAYMENT
  } from '../actions/types';
 
 export default function (state = {
@@ -109,6 +110,9 @@ export default function (state = {
 
     case ACTION_TYPE_CARD:
       return { ...state, cardActionType: action.payload };
+
+    case MAKE_PAYMENT:
+      return { ...state, charge: action.payload };
 
     default:
       return state;

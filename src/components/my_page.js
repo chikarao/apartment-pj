@@ -727,15 +727,7 @@ class MyPage extends Component {
   }
 
   renderCardAddress(card) {
-    // name: 'Name on Card',
-    // address_line1: 'Street Address',
-    // address_line2: 'Street Address 2',
-    // address_city: 'City',
-    // address_state: 'State',
-    // address_zip: 'Postal Code / Zip',
-    // address_country: 'Country',
-    // currency: 'Currency'
-    console.log('in mypage, renderCardAddress, card, : ', card);
+    // console.log('in mypage, renderCardAddress, card, : ', card);
     return (
       <div className="my-page-card-address-box">
         <span>{card.name}</span>
@@ -750,47 +742,64 @@ class MyPage extends Component {
     if (this.props.customer) {
       const { sources } = this.props.customer;
       const defaultCardId = this.props.customer.default_source;
-      return _.map(sources.data, (card, i) => {
-        const isThisCardDefault = (defaultCardId == card.id);
-        console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
-        return (
-          <div key={card.id}>
-            <li className="my-page-each-card each-card-payments">
-              <div className="my-page-card-details-box">
-                  <div className="my-page-each-card-click-box payments-click-box">
-                    <div className="my-page-details">
-                      <ul>
-                        <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${CardTypes[card.brand]}`}></i></li>
-                        <li>Last four digits: {card.last4}</li>
-                        <li>Exp: {card.exp_month}/{card.exp_year}</li>
-                      </ul>
-                    </div>
+      if (sources.data[0]) {
+        return _.map(sources.data, (card, i) => {
+          const isThisCardDefault = (defaultCardId == card.id);
+          console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
+          return (
+            <div key={card.id}>
+              <li className="my-page-each-card each-card-payments">
+                <div className="my-page-card-details-box">
+                    <div className="my-page-each-card-click-box payments-click-box">
+                      <div className="my-page-details">
+                        <ul>
+                          <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${card.brand.toLowerCase()}`}></i></li>
+                          <li>Last four digits: {card.last4}</li>
+                          <li>Exp: {card.exp_month}/{card.exp_year}</li>
+                        </ul>
+                      </div>
 
-                    <div className="my-page-card-default-input-box">Use this card for payment &nbsp;
-                    <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
+                      <div className="my-page-card-default-input-box">Use this card for payment &nbsp;
+                      <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
+                      </div>
                     </div>
+                    {this.renderCardAddress(card)}
                   </div>
-                  {this.renderCardAddress(card)}
-                </div>
-                <div className="my-page-card-button-box">
-                  <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
-                  <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
-                </div>
-              </li>
-            </div>
+                  <div className="my-page-card-button-box">
+                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
+                    <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
+                  </div>
+                </li>
+              </div>
+          );
+        });
+      } else {
+        // else for if source.data
+        return (
+          <div>You have no cards on file. <br/>Please add a card.</div>
         );
-      });
+      }
+    } else {
+      return (
+        <div>You have no cards on file. <br/>Please add a card.</div>
+      );
     }
   }
 
   handleAddNewCardClick() {
-    console.log('in mypage, handleAddNewCardClick: ');
+    // console.log('in mypage, handleAddNewCardClick: ');
     this.props.showCardInputModal();
     this.props.actionTypeCard('Add a Card');
-    if (this.props.auth.stripe_customer_id) {
-      console.log('in mypage, handleAddNewCardClick, this.props.auth.stripe_customer_id: ', this.props.auth.stripe_customer_id);
+    // if (this.props.auth.stripe_customer_id) {
+      // console.log('in mypage, handleAddNewCardClick, this.props.auth.stripe_customer_id: ', this.props.auth.stripe_customer_id);
       // this.props.addCard(this.props.auth.stripe_customer_id);
-    }
+    // }
+  }
+
+  handleMakePaymentClick() {
+    console.log('in mypage, handleMakePaymentClick: ');
+    this.props.showCardInputModal();
+    this.props.actionTypeCard('Make a Payment');
   }
 
   renderPayments() {
@@ -800,7 +809,7 @@ class MyPage extends Component {
         <div className="my-page-category-title">
           <span className="my-page-category-left"></span>
           <span>Payment Details</span>
-          <span className="my-page-category-right"></span>
+          <span className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick.bind(this)}><i className="fa fa-credit-card"></i></div></span>
         </div>
         <ul>
           {this.renderExistingCardDetails()}
@@ -857,7 +866,8 @@ function mapStateToProps(state) {
     // likes: state.likes.userLikes
     likes: state.flats.userLikes,
     showCardInput: state.modals.showCardInputModal,
-    customer: state.auth.customer
+    customer: state.auth.customer,
+    charge: state.auth.charge
   };
 }
 

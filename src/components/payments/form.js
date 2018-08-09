@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 
-import { CardElement, injectStripe } from 'react-stripe-elements';
+import {
+  CardElement,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCVCElement,
+  PostalCodeElement,
+  injectStripe
+} from 'react-stripe-elements';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -42,22 +49,45 @@ class Form extends Component {
     super(props);
 
     this.state = {
-      planId: 'plan_DM2s9FEFa6hjiN',
-      planName: 'TestPlan',
-      planAmount: 1,
-      email: 'test1@test.com'
+      // planId: 'plan_DM2s9FEFa6hjiN',
+      // planName: 'TestPlan',
+      // planAmount: 1,
+      // email: 'test1@test.com'
+      windowWidth: window.innerWidth,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
+  handleResize() {
+    this.setState({ windowWidth: window.innerWidth }, () => {
 
+      console.log('in stripe form, handleSubmit, this.state.windowWidth: ', this.state.windowWidth)
+    });
+  }
+
+  componentDidMount() {
+     window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  emptyOutInputs() {
+    const formInputs = document.getElementsByClassName('card-form-control')
+    // !!!! for some reason cannot empty out stripe inputs
+    const stripeInputs = document.getElementsByClassName('InputElement')
+    console.log('in stripe form, handleSubmit, stripeInputs: ', stripeInputs)
+    _.each(formInputs, input => {
+      const inputToEmpty = input;
+      inputToEmpty.value = '';
+    })
+    _.each(stripeInputs, stripeInput => {
+      const inputToEmpty = stripeInput;
+      inputToEmpty.value = '';
+    })
   }
 
   handleSubmit(event) {
     event.preventDefault();
-
+    // !!!!!createToken will take an empty string as parameter in address_line2
     const tokenData = {
       name: event.target[0].value,
       address_line1: event.target[1].value,
@@ -68,9 +98,9 @@ class Form extends Component {
       address_country: event.target[6].value
       // currency: event.target[7].value
     };
+    // console.log('in stripe form, handleSubmit, tokenData.address_line2', tokenData.address_line2)
 
     this.props.stripe.createToken(tokenData).then(({ token }) => {
-      // console.log('in stripe form, handleSubmit, token, planId, email', token, this.state.email, this.state.planId)
       // console.log('in stripe form, handleSubmit, this.props.auth.customer.id', this.props.auth.customer.id)
       // console.log('in stripe form, handleSubmit, this.props.cardActionType ', this.props.cardActionType)
       // request to API end point
@@ -81,6 +111,7 @@ class Form extends Component {
           if (token) {
             this.props.addCard({ token: token.id }, () => this.handleSubmitCallback());
             this.props.showLoading()
+            this.emptyOutInputs()
           } else {
             this.props.authError('Cannot process card info, please try again.')
           }
@@ -117,14 +148,41 @@ class Form extends Component {
     this.props.showCardInputModal();
   }
 
-  renderFullCardInput() {
+  renderMobileCardInput() {
     return (
       <div>
-        <CardElement
-        {...createOptions()}
+        <CardNumberElement
+          {...createOptions()}
+        />
+        <CardExpiryElement
+          {...createOptions()}
+        />
+        <CardCVCElement
+          {...createOptions()}
+        />
+        <PostalCodeElement
+          {...createOptions()}
         />
       </div>
     );
+  }
+
+  renderFullCardInput() {
+    if (this.state.windowWidth > 600) {
+      return (
+        <div>
+          <CardElement
+            {...createOptions()}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+        {this.renderMobileCardInput()}
+        </div>
+      );
+    }
   }
 
   renderAddressInput() {

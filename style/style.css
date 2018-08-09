@@ -2484,8 +2484,9 @@ form {
 .my-page-card-default-input-box {
   font-size: 11px;
   text-align: left;
-  padding: 15px 15px 0 15px;
+  padding: 12px 15px 0 15px;
   width: 150px;
+  margin: 0 0 0 15px;
 }
 
 .payments-click-box {
@@ -2513,6 +2514,15 @@ form {
 
 .my-page-card-address-box span {
   font-size: 11px;
+}
+
+.my_page-make-payment-link {
+  font-size: 25px;
+  color: blue;
+}
+.my_page-make-payment-link:hover {
+  /* font-size: 25px; */
+  color: gray;
 }
 
 
@@ -2943,11 +2953,11 @@ form {
 .stripe-form {
   margin-bottom: 40px;
   padding-bottom: 40px;
-  border-bottom: 3px solid #e6ebf1;
+  /* border-bottom: 3px solid #e6ebf1; */
 }
 .StripeElement {
   display: block;
-  margin: 10px 0 20px 0;
+  margin: 10px 0 20px 20px;
   max-width: 500px;
   padding: 10px 14px;
   box-shadow: rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px;
@@ -2965,7 +2975,8 @@ form {
 
 .checkout {
   width: 400px;
-  height: 300px;
+  /* height: 300px; */
+  height: auto;
   margin: 50px auto 30px auto;
 }
 
@@ -3095,6 +3106,26 @@ form {
   .dropzone-area i {
     color: gray !important;
     font-size: 30px;
+  }
+
+  .card-form-control {
+    /* height: 25px; */
+    width: 90% !important;
+    /* width: auto !important; */
+    /* margin: 0 auto 0 auto !important; */
+  }
+
+  .card-form-group {
+    /* height: 25px; */
+    width: 70% !important;
+    /* width: auto !important; */
+    /* margin: 0 auto 0 auto !important; */
+  }
+
+  .StripeElement {
+    width: 70% !important;
+    height: 30px !important;
+    margin: 0 0 20px 20px !important;
   }
 
 

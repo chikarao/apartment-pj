@@ -77,7 +77,8 @@ import {
   ACTION_TYPE_CARD,
   DELETE_CARD,
   ADD_CARD,
-  UPDATE_CUSTOMER
+  UPDATE_CUSTOMER,
+  MAKE_PAYMENT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1233,9 +1234,11 @@ export function newCustomer(info, callback) {
     .catch(error => {
       console.log('in action index, catch error to newCustomer: ', error);
       dispatch(authError(error.response.data.messages));
+      this.showloading();
     });
   };
 }
+
 export function updateCardInfo(info, callback) {
   console.log('in action index, updateCardInfo, info: ', info);
   // const { cardId, customerId, expYear, expMonth } = info;
@@ -1352,6 +1355,29 @@ export function updateCustomer(info, callback) {
     .catch(error => {
       console.log('in action index, catch error to updateCustomer: ', error);
       dispatch(authError(error.response.data.messages));
+    });
+  };
+}
+export function makePayment(info, callback) {
+  console.log('in action index, makePayment: ', info);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/make_payment`, info, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to makePayment: ', response);
+      console.log('in action index, response to makePayment: ', response.data.data.charge);
+
+      dispatch({
+        type: MAKE_PAYMENT,
+        payload: response.data.data.charge
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to makePayment: ', error);
+      dispatch(authError(error));
     });
   };
 }
