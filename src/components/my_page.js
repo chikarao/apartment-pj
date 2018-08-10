@@ -14,6 +14,7 @@ import CardInputModal from './modals/card_input_modal';
 import CardTypes from './constants/card_types'
 
 const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
+const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
 
 class MyPage extends Component {
   constructor(props) {
@@ -86,7 +87,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-            <button className="btn btn-delete btn-sm">Delete</button>
+            <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
             </div>
           </li>
         );
@@ -145,8 +146,8 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
-              <button value={flat.id} className="btn btn-sm btn-edit" onClick={this.handleEditClick.bind(this)}>Edit</button>
+              <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
+              <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick.bind(this)}>Edit</button>
             </div>
           </li>
         );
@@ -476,7 +477,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
+                  <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
                 </div>
               </li>
             );
@@ -553,7 +554,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete" onClick={this.handleUnlikeClick.bind(this)}>Remove</button>
+                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>Remove</button>
                 </div>
               </li>
             );
@@ -768,8 +769,8 @@ class MyPage extends Component {
                     {this.renderCardAddress(card)}
                   </div>
                   <div className="my-page-card-button-box">
-                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
-                    <button name={card.id} value="delete" className="btn btn-sm btn-delete" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
+                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
+                    <button name={card.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
                   </div>
                 </li>
               </div>
@@ -816,6 +817,7 @@ class MyPage extends Component {
         <ul>
           {this.renderExistingCardDetails()}
           <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> Add New Card</div>
+          <a className="my-page-enter-new-card-link" href={`https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&scope=read_write`} target="_blank" rel="noopener noreferrer"><i className="fa fa-link" style={{ fontSize: '20px' }}></i> Connect Your Bank Account to this Platform</a>
         </ul>
       </div>
     );

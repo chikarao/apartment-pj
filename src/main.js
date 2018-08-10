@@ -13,6 +13,7 @@ import BookingConfirmation from './components/booking_confirmation';
 import CreateFlat from './components/create_flat';
 import EditFlat from './components/edit_flat';
 import MessagingMain from './components/messaging_main';
+import StripeRedirect from './components/payments/stripe_redirect';
 
 import RequireAuth from './components/auth/require_auth';
 
@@ -32,6 +33,7 @@ export const Main = () => (
       <Route path='/bookingconfirmation/:id' component={RequireAuth(BookingConfirmation)} />
       <Route path='/createflat' component={RequireAuth(CreateFlat)} />
       <Route path='/messagingmain' component={RequireAuth(MessagingMain)} />
+      <Route path='/striperedirect/:params' component={RequireAuth(StripeRedirect)} />
     </Switch>
   </main>
 );

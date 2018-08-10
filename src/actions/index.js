@@ -78,7 +78,8 @@ import {
   DELETE_CARD,
   ADD_CARD,
   UPDATE_CUSTOMER,
-  MAKE_PAYMENT
+  MAKE_PAYMENT,
+  FETCH_STRIPE_USER_CREDENTIALS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1374,6 +1375,30 @@ export function makePayment(info, callback) {
         payload: response.data.data.charge
       });
       callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to makePayment: ', error);
+      dispatch(authError(error));
+    });
+  };
+}
+
+export function fetchStripeUserCredentials(info, callback) {
+  console.log('in action index, fetchStripeUserCredentials: ', info);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/get_user_credentials`, info, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => { 
+      console.log('in action index, response to fetchStripeUserCredentials: ', response);
+      console.log('in action index, response to fetchStripeUserCredentials: ', response.data.data.client_id);
+
+      dispatch({
+        type: FETCH_STRIPE_USER_CREDENTIALS,
+        payload: response.data.data.client_id
+      });
+      callback(response.data.data.client_id);
     })
     .catch(error => {
       console.log('in action index, catch error to makePayment: ', error);
