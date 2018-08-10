@@ -298,6 +298,7 @@ body > div:first-child {
 .header-links {
   padding: 10px;
   font-size: 17px;
+  color: blue;
 }
 
 .header-links:hover {
@@ -771,6 +772,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 5px;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px !important;
 }
+.search-criteria-increment-min-max:hover {
+  background-color: lightgray;
+}
 
 .search-criteria-clear-all, .search-criteria-apply {
   /* border: 1px solid #ccc; */
@@ -854,6 +858,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: bold;
   margin: 3px 0 0 0;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px !important;
+}
+
+.results-search-box-sub-tab:hover {
+  background-color: lightgray;
 }
 
 .results-search-box-sub-display {
@@ -1266,6 +1274,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   background: white;
 }
 
+.btn-book-submit {
+  background-color: blue;
+}
+
 /* ******************* MESSAGING *************************** */
 .message-box-container {
   width: 100%;
@@ -1309,6 +1321,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .message-btn {
   float: right;
   margin: 5px;
+  background-color: blue;
 }
 
 .each-message-box {
@@ -1622,6 +1635,8 @@ form {
 .submit-button {
   margin-left: 20px;
   margin-bottom: 20px;
+  background-color: blue;
+  border-color: blue;
 }
 
 .confirm-change-and-button {
@@ -2476,12 +2491,18 @@ form {
 .my-page-enter-new-card-link {
   color: blue;
   padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+.my-page-enter-new-card-link i {
+   padding: 0 5px 0 5px;
 }
 
 .my-page-enter-new-card-link:hover {
   color: gray;
-  text-decoration: underline;
-
+  /* text-decoration: underline; */
 }
 
 .my-page-card-default-input-box {
@@ -2525,11 +2546,13 @@ form {
 .my-page-card-address-box {
   height: 20%;
   text-align: left;
-  padding: 0 0 5px 2px;
+  padding: 2px 0 5px 2px;
   margin: 0 0 0 8px;
+  display: flex;
+  flex-direction: row;
 }
 
-.my-page-card-address-box span {
+.my-page-card-address-box div {
   font-size: 11px;
 }
 
@@ -2676,7 +2699,7 @@ form {
   z-index: 10;
   overflow: hidden;
   overflow-y: scroll;
-  padding: 0 60px 0 60px;
+  /* padding: 0 60px 0 60px; */
 
 }
 
@@ -2707,11 +2730,25 @@ form {
   background-color: white;
   color: blue;
   border-color: gray;
+  margin: 20px 0 0 20px;
+  /* margin: 20px 0 0 15px; */
+}
+.signup-btn:hover {
+  background-color: gray;
+  color: white;
+  border-color: gray;
   /* margin: 20px 0 0 15px; */
 }
 
 .signin-btn {
   margin: 20px;
+  background-color: gray;
+  border-color: gray;
+}
+.signin-btn:hover {
+  /* margin: 20px; */
+  background-color: blue;
+  border-color: blue;
 }
 
 .goto-signin-link {
@@ -2756,6 +2793,9 @@ form {
 .reset-password-btn {
   margin-bottom: 0;
   margin-left: 20px;
+  background-color: blue;
+  border-color: blue;
+  color: white;
 }
 
 /* *******************EDIT PROFILE********************* */
@@ -2954,7 +2994,8 @@ form {
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.025em !important;
-  background-color: #6772e5 !important;
+  /* background-color: #6772e5 !important; */
+  background-color: blue !important;
   text-decoration: none !important;
   -webkit-transition: all 150ms ease !important;
   transition: all 150ms ease !important;
@@ -3030,7 +3071,7 @@ form {
         background-color: lightgreen;
     } */
     .modal-main {
-      padding: 0 60px 0 60px;
+      /* padding: 0 60px 0 60px; */
     }
 
     .form-control {
@@ -3088,7 +3129,7 @@ form {
   }
 
   .modal-main {
-    padding: 0 50px 0 50px;
+    /* padding: 0 50px 0 50px; */
   }
 
   .results-search-box input {

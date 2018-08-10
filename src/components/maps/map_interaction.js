@@ -733,7 +733,7 @@ class MapInteraction extends Component {
       if (this.state.placeSearched) {
         return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-exclamation-triangle"></i>&nbsp;No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
       } else {
-        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;To get nearby places, click on criterion under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
+        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;&nbsp;To get nearby places, click on criterion under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
       };
     } else {
       return _.map(resultsArray, (place) => {
@@ -800,9 +800,9 @@ class MapInteraction extends Component {
         // add hide in first div to toggle
         return (
           <div value={category} key={place.id.toString()} className="map-interaction-nearby-result-div">
-          <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
-          &nbsp;{place.place_name}
-          </li>
+            <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
+            &nbsp;{place.place_name}
+            </li>
           {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
           </div>
         );
@@ -838,7 +838,8 @@ class MapInteraction extends Component {
     // 'remove' buttons do not show in showflat page
     const { places } = this.props;
     // const searchTypeObject = SearchTypeList;
-    if (places) {
+      const placesEmpty = _.isEmpty(places);
+    if (!placesEmpty) {
       const categories = this.getCategoriesArray(places);
       // categories.sort();
       // console.log('in map_interaction, renderSelectedResultsList, places: ', places);
@@ -853,12 +854,16 @@ class MapInteraction extends Component {
         return (
           <div key={category}>
             <div value={category} className="search-result-category-heading">
-            {SearchTypeList[category]}
+              {SearchTypeList[category]}
             </div>
             {this.renderEachResult(places, category)}
           </div>
         );
       });
+    } else {
+      return (
+        <div style={{ padding: '20px', textAlign: 'center' }}>No nearby places registered</div>
+      );
     }
   }
   // Need to work o this... Cannot set language preference in app.js script after componentWillMount

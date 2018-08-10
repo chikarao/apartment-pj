@@ -41,7 +41,6 @@ class ShowFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
-    this.props.fetchPlaces(this.props.match.params.id);
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
     if (this.props.auth.authenticated) {
       this.props.getCurrentUser();
@@ -52,6 +51,7 @@ class ShowFlat extends Component {
     }
 
     this.props.fetchReviewsForFlat(this.props.match.params.id);
+    // this.props.fetchPlaces(this.props.match.params.id);
   }
 
   // componentDidUpdate() {
@@ -319,9 +319,9 @@ class ShowFlat extends Component {
 
   currentUserIsOwner() {
     if (this.props.auth && this.props.flat) {
-      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+      // console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+      // console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+      // console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
       return (this.props.auth.id == this.props.flat.user_id);
       // return true;
       // return false;
@@ -380,7 +380,7 @@ class ShowFlat extends Component {
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
-  renderButton() {
+  renderButtons() {
     console.log('in show_flat, currentUserIsOwner: ', this.currentUserIsOwner());
     console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
@@ -388,7 +388,7 @@ class ShowFlat extends Component {
           console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
-              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg">Book Reservation</button>
+              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">Book Reservation</button>
             </div>
           );
         } else {
@@ -402,7 +402,7 @@ class ShowFlat extends Component {
                 <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">Delete</button>
               </div>
               <div className="show-flat-button-box">
-              <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg">Block Dates</button>
+              <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">Block Dates</button>
               </div>
             </div>
           );
@@ -515,9 +515,12 @@ class ShowFlat extends Component {
             </div>
             <div className="col-xs-12 col-sm-12 col-md-4">
               <MapInteraction
-              flat={this.props.flat}
-              places={this.props.places}
-              showFlat
+                // check if props updated
+                flat={this.props.flat ? this.props.flat : {}}
+                places={this.props.flat ? this.props.flat.places : {}}
+                showFlat
+                // check if currentUserIsOwner to display right messages
+                currentUserIsOwner={this.currentUserIsOwner()}
               />
             </div>
           </div>
@@ -530,7 +533,7 @@ class ShowFlat extends Component {
           {this.renderReviews()}
         </div>
         <footer className="show-flat-footer">
-          {this.renderButton()}
+          {this.renderButtons()}
         </footer>
       </div>
     );
@@ -546,7 +549,9 @@ function mapStateToProps(state) {
     conversation: state.conversation.conversationByFlat,
     noConversation: state.conversation.noConversation,
     reviews: state.reviews,
-    places: state.places.places,
+    // places uses flat.selectedFlatFromParams.places
+    // places: state.places.places,
+    // places: state.flat.selectedFlatFromParams.places,
     language: state.places.placeSearchLanguage
     // conversation: state.conversation.createMessage
   };

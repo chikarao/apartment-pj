@@ -141,6 +141,9 @@ class CardInputModal extends Component {
       return (
         <div>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <fieldset>
+          <div className="edit-flat-form-message" style={{ marginLeft: '15px' }}><span style={{ color: 'red' }}>*</span> If you need to upate the CVC, please delete this card and enter a new one for your safety.</div>
+          </fieldset>
           <fieldset key={1} className="form-group">
           <label className="create-flat-form-label">Exp Month:</label>
           <Field name="exp_month" component="select" type="integer" className="form-control card-form-control">

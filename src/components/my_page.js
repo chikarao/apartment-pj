@@ -731,10 +731,11 @@ class MyPage extends Component {
     // console.log('in mypage, renderCardAddress, card, : ', card);
     return (
       <div className="my-page-card-address-box">
-        <span>{card.name}</span>
-        <span>  {card.address_line1}</span>
-        <span>...</span>
-        <span>  {card.address_zip}</span>
+        <div>{card.name}&nbsp;&nbsp;</div>
+        <div>  {card.address_line1}</div>
+        <div>&nbsp;{card.address_line2}</div>
+        <div>&nbsp;...&nbsp;</div>
+        <div>  {card.address_zip}</div>
       </div>
     );
   }
@@ -814,7 +815,7 @@ class MyPage extends Component {
         </div>
         <ul>
           {this.renderExistingCardDetails()}
-          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}>Add New Card</div>
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> Add New Card</div>
         </ul>
       </div>
     );

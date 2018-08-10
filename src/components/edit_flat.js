@@ -32,7 +32,7 @@ class EditFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
-    this.props.fetchPlaces(this.props.match.params.id);
+    // this.props.fetchPlaces(this.props.match.params.id);
 
     console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
@@ -41,21 +41,31 @@ class EditFlat extends Component {
     // }
   }
 
+  currentUserIsOwner() {
+    if (this.props.auth && this.props.flat) {
+      console.log('in editFlat, currentUserIsOwner, this.props.auth.id == this.props.flat.user_id : ', this.props.auth.id == this.props.flat.user_id);
+      return (this.props.auth.id == this.props.flat.user_id);
+      // return true;
+      // return false;
+    }
+  }
+
+
   separateFlatAndAmenities(data) {
     const amenityObj = { flat: {}, amenity: {} }
-    console.log('in createflat, separateFlatAndAmenities, data : ', data);
+    console.log('in editFlat, separateFlatAndAmenities, data : ', data);
      _.each(Object.keys(data), (key) => {
     // return _.map(AMENITIES, (amenity) => {
       if (AMENITIES[key]) {
-        console.log('in createflat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
-        console.log('in createflat, separateFlatAndAmenities, key : ', key);
-        // console.log('in createflat, separateFlatAndAmenities, key : ', key);
+        console.log('in editFlat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
+        console.log('in editFlat, separateFlatAndAmenities, key : ', key);
+        // console.log('in editFlat, separateFlatAndAmenities, key : ', key);
         amenityObj.amenity[key] = data[key];
       } else {
         amenityObj.flat[key] = data[key];
       }
     });
-    // console.log('in createflat, separateFlatAndAmenities, amenityObj : ', amenityObj);
+    // console.log('in editFlat, separateFlatAndAmenities, amenityObj : ', amenityObj);
     return amenityObj;
   }
 
@@ -488,8 +498,9 @@ class EditFlat extends Component {
               {this.renderMap()}
             </div>
               <MapInteraction
-              flat={this.props.flat}
-              places={this.props.places}
+                flat={this.props.flat}
+                places={this.props.flat.places}
+                currentUserIsOwner={this.currentUserIsOwner()}
               />
         </div>
           <div className="back-button">
@@ -511,22 +522,6 @@ class EditFlat extends Component {
 
 EditFlat = reduxForm({
   form: 'EditFlat'
-  // fields: [
-  //   'address1',
-  //   'city',
-  //   'zip',
-  //   'country',
-  //   'area',
-  //   'price_per_day',
-  //   'price_per_month',
-  //   'guests',
-  //   'sales_point',
-  //   'description',
-  //   'rooms',
-  //   'beds',
-  //   'flat_type',
-  //   'bath'
-  // ]
 })(EditFlat);
 
 // !!!!!!!!!! REQUIRES SPECIAL mapStateToProps TO ADDRESS AMENITIES!!!!!!!!!!
