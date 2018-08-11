@@ -414,7 +414,7 @@ body > div:first-child {
 .create-flat-form-label {
   float: left;
   margin: 0 15px 0 20px;
-  min-width: 170px;
+  min-width: 140px;
   text-align: left;
 }
 
@@ -1139,7 +1139,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .show-flat-image-box {
   height: 280px;
-
+  margin: 30px 0 0 0;
 }
 
 .show-flat-container {
@@ -1610,7 +1610,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 /* ************Edit Flat******************* */
 
 .edit-flat-address {
-  width: 300px;
+  min-width: 350px;
   margin-left: 20px;
   text-align: left;
 }
@@ -1638,6 +1638,10 @@ form {
   margin-bottom: 20px;
   background-color: blue;
   border-color: blue;
+}
+.submit-button:hover {
+  background-color: gray;
+  border-color: gray;
 }
 
 .confirm-change-and-button {
@@ -2501,14 +2505,19 @@ text-decoration: underline;
   align-content: center;
   text-align: center;
 }
+
 .my-page-enter-new-card-link i {
    padding: 0 5px 0 5px;
 }
 
 .my-page-enter-new-card-link:hover {
   color: gray;
-  /* text-decoration: underline; */
+  text-decoration: none !important;
 }
+/* .my-page-enter-new-card-link a:hover {
+  color: gray;
+  text-decoration: none !important:;
+} */
 
 .my-page-card-default-input-box {
   font-size: 11px;
@@ -3114,6 +3123,15 @@ text-decoration: underline;
 }
 
 @media screen and (max-width: 500px) {
+
+  .show-flat-amenity-show-each {
+    max-width: 155px;
+    height: 25px;
+  }
+
+  .amenity-radio-show-page {
+    padding: 5px;
+}
   .banner-content {
     /* position: relative; */
     width: 100%;

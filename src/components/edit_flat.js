@@ -310,7 +310,7 @@ class EditFlat extends Component {
             <div className="edit-flat-address">{this.props.flat.country}</div>
           </fieldset>
           <fieldset>
-          <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> If you need to edit the address, please delete the listing and create a new one</div>
+          <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> Required fields.  If you need to edit the address, please delete the listing and create a new one</div>
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Description:</label>
@@ -321,8 +321,12 @@ class EditFlat extends Component {
             <Field name="area" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Price Per Month:</label>
+            <label className="create-flat-form-label">Price Per Month<span style={{ color: 'red' }}>*</span>:</label>
             <Field name="price_per_month" component="input" type="float" className="form-control" />
+          </fieldset>
+          <fieldset key={'size'} className="form-group">
+            <label className="create-flat-form-label">Floor space (sq m )<span style={{ color: 'red' }}>*</span>:</label>
+            <Field name="size" component="input" type="integer" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">Guests:</label>
@@ -411,7 +415,7 @@ class EditFlat extends Component {
             <Field name="station" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Minutes to Station:</label>
+            <label className="create-flat-form-label">Minutes to Station<span style={{ color: 'red' }}>*</span>:</label>
             <Field name="minutes_to_station" component="select" type="integer" className="form-control">
               <option></option>
               <option value="1">1 minute or less</option>
@@ -424,7 +428,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset key={'station1'} className="form-group">
-            <label className="create-flat-form-label">Second nearest Station:</label>
+            <label className="create-flat-form-label">2nd nearest Station:</label>
             <Field name="station1" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">

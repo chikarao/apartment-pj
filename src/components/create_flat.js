@@ -278,8 +278,12 @@ class CreateFlat extends Component {
           <Field name="area" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'price_per_month'} className="form-group">
-          <label className="create-flat-form-label">Price Per Month:</label>
-          <Field name="price_per_month" component="input" type="float" className="form-control" />
+          <label className="create-flat-form-label">Price Per Month<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="price_per_month" component={InputField} type="float" className="form-control" />
+        </fieldset>
+        <fieldset key={'size'} className="form-group">
+          <label className="create-flat-form-label">Floor space (sq m)<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="size" component={InputField} type="integer" className="form-control" />
         </fieldset>
         <fieldset key={'guests'} className="form-group">
           <label className="create-flat-form-label">Guests:</label>
@@ -362,8 +366,8 @@ class CreateFlat extends Component {
         <Field name="station" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset className="form-group">
-        <label className="create-flat-form-label">Minutes to Station:</label>
-        <Field name="minutes_to_station" component="select" type="integer" className="form-control">
+        <label className="create-flat-form-label">Minutes to Station<span style={{ color: 'red' }}>*</span>:</label>
+        <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
         <option></option>
         <option value="1">1 minute or less</option>
         <option value="3">Under 3 minutes</option>
@@ -443,6 +447,24 @@ const InputField = ({
       }
   </div>;
 
+  const SelectField = ({
+      input,
+      label,
+      meta: {touched, error},
+      children
+    }) => (
+      <div>
+        <select {...input} className="form-control">
+          {children}
+        </select>
+        {touched && error &&
+          <div className="error">
+            <span style={{ color: 'red' }}>* </span>{error}
+          </div>
+        }
+      </div>
+);
+
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
 function validate(values) {
   console.log('in signin modal, validate values: ', values);
@@ -466,6 +488,20 @@ function validate(values) {
     if (!values.country) {
         errors.country = 'A country is required';
     }
+    if (!values.  price_per_month) {
+        errors.price_per_month = 'A price is required';
+    }
+
+    if (!values.size) {
+        errors.size = 'Floor space is required';
+    }
+    if (!values.minutes_to_station) {
+        errors.minutes_to_station = 'Minutes to station is required';
+    }
+
+    // if (values.size !== parseInt(values.size, 10)) {
+    //     errors.size = 'Floor space needs to be a number';
+    // }
 
 
     // if(!values.password){
@@ -481,22 +517,6 @@ function validate(values) {
 CreateFlat = reduxForm({
   form: 'simple',
   validate
-  // fields: [
-  //   'address1',
-  //   'city',
-  //   'zip',
-  //   'country',
-  //   'area',
-  //   'price_per_day',
-  //   'price_per_month',
-  //   'guests',
-  //   'sales_point',
-  //   'description',
-  //   'rooms',
-  //   'beds',
-  //   'flat_type',
-  //   'bath'
-  // ]
 })(CreateFlat);
 
 function mapStateToProps(state) {
