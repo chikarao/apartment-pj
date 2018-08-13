@@ -34,7 +34,7 @@ ReactDOM.render(
   <Provider store={store}>
     <StripeProvider apiKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
-      <App />
+       <App />
       </BrowserRouter>
     </StripeProvider>
   </Provider>

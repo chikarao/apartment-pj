@@ -4,8 +4,6 @@ import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 
 // import { Elements, StripeProvider } from 'react-stripe-elements';
-import Swipe from './payments/parent';
-
 
 // import Upload from './images/upload_test';
 // import SigninModal from './auth/signin_modal';
@@ -26,8 +24,80 @@ class Landing extends Component {
   }
 
   componentDidMount() {
-      window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize.bind(this));
+    // this.facebookLogin()
   }
+
+  facebookLogin() {
+    console.log('in Landing, facebookLogin, in subscribe, this  ', this);
+    // if (FB) {
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId            : '2249093511770692',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.1'
+        });
+
+        FB.Event.subscribe('auth.statusChange', (response) => {
+          console.log('in Landing, facebookLogin, in subscribe, response  ', response);
+          if (response.authResponse) {
+            this.updateLoggedInState(response)
+          } else {
+            this.udpateLoggedInState()
+          }
+        });
+      }.bind(this);
+      // .bind(this);
+      // for some reason need this again...
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        console.log('in Landing, facebookLogin, in lower function');
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    // }
+  }
+
+  updateLoggedInState(response) {
+    console.log('in Landing, updateLoggedInState', response);
+    // console.log('in SigninModal, updateLoggedInState', response);
+  }
+
+
+  // facebookLogin() {
+  //   window.fbAsyncInit = function () {
+  //     FB.init({
+  //       appId            : '2249093511770692  ',
+  //       autoLogAppEvents : true,
+  //       xfbml            : true,
+  //       version          : 'v3.1'
+  //     });
+  //
+  //     FB.Event.subscribe('auth.statusChange', (response) => {
+  //       if (response.authResponse) {
+  //         this.updateLoggedInState(response)
+  //       } else {
+  //         this.udpateLoggedInState()
+  //       }
+  //     });
+  // }.bind(this);
+  // // for some reason need this again...
+  //   (function(d, s, id) {
+  //      var js, fjs = d.getElementsByTagName(s)[0];
+  //      if (d.getElementById(id)) {return;}
+  //      js = d.createElement(s); js.id = id;
+  //      js.src = "https://connect.facebook.net/en_US/sdk.js";
+  //      fjs.parentNode.insertBefore(js, fjs);
+  //    }(document, 'script', 'facebook-jssdk'));
+  // }
+  //
+  // updateLoggedInState(response) {
+  //   console.log('in landing, updateLoggedInState', response);
+  //
+  // }
 
   componentDidUpdate() {
     const banner = document.getElementById('banner');
@@ -35,8 +105,11 @@ class Landing extends Component {
     console.log('in landing, componentDidUpdate', banner);
     banner.focus();
   }
-
-
+  //
+  // facebook() {
+  //   console.log('in landing, facebook FB: ', FB);
+  //
+  // }
 
   handleResize() {
     // console.log('in landing, createBackghandleResizeroundImage: ', this.state.windowWidth);
@@ -84,25 +157,19 @@ class Landing extends Component {
     );
   }
 
-  // renderPaymentForm() {
-  //   return (
-  //     <div>
-  //       <Swipe
-  //         buttonText='Make Payment'
-  //       />
-  //     </div>
-  //   );
-  // }
-
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     // {this.renderPaymentForm()}
+    // <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB LOGIN</div>
     return (
       <div>
         {this.renderBanner()}
         <div className="landing-main">
+        <div className="oath-button-box">
+        <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
+        </div>
         </div>
           {this.renderFooter()}
       </div>

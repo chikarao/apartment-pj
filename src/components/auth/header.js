@@ -33,9 +33,10 @@ class Header extends Component {
   componentDidMount() {
       const currentLocation = this.props.location.pathname;
        console.log('in header, componentDidMount, currentLocation: ', currentLocation);
+       console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
 
        window.addEventListener('resize', this.handleResize.bind(this));
-       if (currentLocation !== '/signout') {
+       if (this.props.auth.authenticated) {
          this.props.getCurrentUser();
          // don't need to do anymore since this screws up flats in results and other pages
          // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));

@@ -16,6 +16,18 @@ crossorigin="anonymous">
   </head>
   <body>
     <div class="container"></div>
+    <div id="fb-root"></div>
+    <script>
+
+    // Facebook login; For some reason, need this as well as in component did mount of auth component
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.1&appId=2249093511770692&autoLogAppEvents=1';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
   </body>
   <script src="/bundle.js"></script>
 </html>

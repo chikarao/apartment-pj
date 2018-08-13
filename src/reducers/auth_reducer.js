@@ -29,7 +29,8 @@ export default function (state = {
   showAuthModal: false,
   showSigninModal: false,
   showResetPasswordModal: false,
-  showLoading: false
+  showLoading: false,
+  authenticated: false
 }, action) {
   console.log('in auth reducer, action.payload: ', action.payload);
   switch (action.type) {

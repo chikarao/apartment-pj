@@ -8,9 +8,67 @@ import * as actions from '../../actions';
 import globalConstants from '../constants/global_constants';
 
 let showHideClassName;
+let fbResponse = {};
 
 class SigninModal extends Component {
   componentDidMount() {
+    this.facebookLogin((res) => this.updateLoggedInState(res));
+    console.log('in SigninModal, componentDidMount, this  ', this);
+  }
+  //
+  // componentDidUpdate() {
+  //
+  // }
+
+  facebookLogin(callback) {
+    // if (FB) {
+    console.log('in SigninModal, facebookLogin, before fbAsyncInit, this  ', this);
+      window.fbAsyncInit = function () {
+        console.log('in SigninModal, facebookLogin, in fbAsyncInit, this  ', this);
+        FB.init({
+          appId            : '2249093511770692',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.1'
+        });
+
+        console.log('in SigninModal, facebookLogin, after fbAsyncInit, this  ', this);
+        // console.log('in SigninModal, facebookLogin, in subscribe, response  ', response);
+        FB.Event.subscribe('auth.statusChange', (response) => {
+          if (response.authResponse) {
+            fbResponse = response;
+            console.log('in SigninModal, facebookLogin, in subscribe, this  ', this);
+            console.log('in SigninModal, facebookLogin, in subscribe, fbResponse  ', fbResponse);
+            // this.updateLoggedInState(response)
+            callback(fbResponse);
+          } else {
+            this.udpateLoggedInState()
+          }
+        });
+      }
+      // .bind(this);
+      // .bind(this);
+      // for some reason need this again...
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        // console.log('in SigninModal, facebookLogin, in lower function, this', this);
+        if (d.getElementById(id)) { return; }
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    // }
+  }
+
+  updateLoggedInState(response) {
+    console.log('in SigninModal, updateLoggedInState', response);
+    if(response.status == 'connected') {
+      console.log('in SigninModal, updateLoggedInState', response.status);
+
+    } else {
+      console.log('in SigninModal, updateLoggedInState', response.status);
+    }
+    // console.log('in SigninModal, updateLoggedInState', response);
   }
 
   handleFormSubmit({ email, password }) {
@@ -64,29 +122,39 @@ class SigninModal extends Component {
     // console.log('in modal, render this.props:', this.props);
     //handleClose is a prop passed from header when SigninModal is called
     // {email.touched ? 'email touched' : ''}
-    return (
-      <div className={showHideClassName}>
-       <section className="modal-main">
-         <h3 className="auth-modal-title">Sign in</h3>
-         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-           <fieldset className="form-group">
-             <label className="auth-form-label">Email:</label>
-             <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com"/>
-           </fieldset>
-           <fieldset className="form-group">
-             <label className="auth-form-label">Password:</label>
-             <Field name="password" component={InputField} type="password" className="form-control" placeholder="Enter your password"/>
-           </fieldset>
-           <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
-           <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>
-           {this.renderAlert()}
-           <button action="submit" className="btn btn-primary signin-btn">Sign in</button>
-         </form>
-         <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-       </section>
-     </div>
-    );
-  }
+    // if (FB) {
+      // console.log('in signin modal, render, FB: ', FB);
+      return (
+        <div className={showHideClassName}>
+        <section className="modal-main">
+        <h3 className="auth-modal-title">Sign in</h3>
+        <div className="oath-button-box">
+          <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
+        </div>
+
+        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <fieldset className="form-group">
+            <label className="auth-form-label">Email:</label>
+            <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com"/>
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="auth-form-label">Password:</label>
+            <Field name="password" component={InputField} type="password" className="form-control" placeholder="Enter your password"/>
+          </fieldset>
+          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
+          <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>
+
+          {this.renderAlert()}
+
+          <button action="submit" className="btn btn-primary signin-btn">Sign in</button>
+        </form>
+
+        <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+        </section>
+        </div>
+      );
+    }
+  // }
 }
 // set minimum password length in src/constants/global_constants.js
 const MIN_PW_LENGTH = globalConstants.minPWLength;
