@@ -16,51 +16,66 @@ class SignupModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      signUpCompleted: false
+      signUpCompleted: false,
+      facebookSignUp: false
     };
   }
 
   componentDidMount() {
-    // this.facebookLogin();
+    this.facebookLogin((res) => this.updateLoggedInState(res));
   }
 
-  facebookLogin() {
-    // console.log('in facebookLogin, facebookLogin FB', FB);
-    window.fbAsyncInit = function () {
-      FB.init({
-        appId            : '2249093511770692',
-        autoLogAppEvents : true,
-        xfbml            : true,
-        version          : 'v3.1'
-      });
+  facebookLogin(callback) {
+    // if (FB) {
+    console.log('in SigninModal, facebookLogin, before fbAsyncInit, this  ', this);
+      window.fbAsyncInit = function () {
+        console.log('in SigninModal, facebookLogin, in fbAsyncInit, this  ', this);
+        FB.init({
+          appId            : '2249093511770692',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.1'
+        });
 
-      FB.Event.subscribe('auth.statusChange', (response) => {
-        if (response.authResponse) {
-          this.updateLoggedInState(response)
-        } else {
-          this.udpateLoggedInState()
-        }
-      });
-      console.log('in SigninModal, facebookLogin, after subscribe, this', this);
-  }
-  // don't need to bind; FB button will not show
-  //.bind(this);
-  // for some reason need this again...
-    (function(d, s, id) {
-       var js, fjs = d.getElementsByTagName(s)[0];
-       console.log('in SigninModal, facebookLogin, in lower function');
-       if (d.getElementById(id)) {return;}
-       js = d.createElement(s); js.id = id;
-       js.src = "https://connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-     }(document, 'script', 'facebook-jssdk'));
+        console.log('in SigninModal, facebookLogin, after fbAsyncInit, this  ', this);
+        // console.log('in SigninModal, facebookLogin, in subscribe, response  ', response);
+        FB.Event.subscribe('auth.statusChange', (response) => {
+          if (response.authResponse) {
+            const fbResponse = response;
+            console.log('in SigninModal, facebookLogin, in subscribe, this  ', this);
+            console.log('in SigninModal, facebookLogin, in subscribe, fbResponse  ', fbResponse);
+            // this.updateLoggedInState(response)
+            callback(fbResponse);
+          } else {
+            this.udpateLoggedInState()
+          }
+        });
+      }
+      // .bind(this);
+      // .bind(this);
+      // for some reason need this again...
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        // console.log('in SigninModal, facebookLogin, in lower function, this', this);
+        if (d.getElementById(id)) { return; }
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    // }
   }
 
   updateLoggedInState(response) {
     console.log('in SigninModal, updateLoggedInState', response);
-    // console.log('in SigninModal, updateLoggedInState', response);
-  }
+    if(response.status == 'connected') {
+      console.log('in SigninModal, updateLoggedInState', response.status);
+      this.props.authFacebookUser({ facebook_access_token: response.authResponse.accessToken }, () => this.handleFormSubmitCallback())
 
+    } else {
+      console.log('in SigninModal, updateLoggedInState', response.status);
+      this.props.authError(response.status)
+    }
+  }
 
   handleFormSubmit({ email, password }) {
     // call action creator to sign up user
@@ -71,8 +86,7 @@ class SignupModal extends Component {
   }
 
   handleFormSubmitCallback() {
-    this.setState({ signUpCompleted: true })
-    // showHideClassName = 'modal display-none';
+    this.setState({ signUpCompleted: true });
   }
 
   renderAlert() {

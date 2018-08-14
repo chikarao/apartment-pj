@@ -103,8 +103,8 @@ console.log('in action, index, sign in, email and password: ', { email, password
     //signin for express server
       .then(response => {
         console.log('in action, index, sign in, response: ', response);
-        console.log('in action, index, sign in, esponse.data.data.user.email: ', response.data.data.user.email);
-        console.log('in action, index, sign in, esponse.data.data.user.id: ', response.data.data.user.id);
+        // console.log('in action, index, sign in, esponse.data.data.user.email: ', response.data.data.user.email);
+        // console.log('in action, index, sign in, esponse.data.data.user.id: ', response.data.data.user.id);
         // request is good
         // Update state to indicate user is authenticated
         // dispatch({ type: AUTH_USER, payload: email });
@@ -116,7 +116,60 @@ console.log('in action, index, sign in, email and password: ', { email, password
         // data.token for express server api
         //redirect to the route '/feature'
 
-        console.log('in action, signin user, .then, response, auth token: ', response.data.data.user.authentication_token);
+        // console.log('in action, signin user, .then, response, auth token: ', response.data.data.user.authentication_token);
+        localStorage.setItem('token', response.data.data.user.authentication_token);
+        localStorage.setItem('email', response.data.data.user.email);
+        localStorage.setItem('id', response.data.data.user.id);
+        localStorage.setItem('image', response.data.data.user.image);
+        // localStorage.setItem('customerId', response.data.data.user.stripe_customer_id);
+        // localStorage.setItem('customer_id', response.data.data.user.stripe_customer_id);
+        // authentication_token for rails book review api
+        // browserHistory.push('/feature');
+        callback();
+        // callback for this.props.history.push('/feature') from signin.js
+      })
+        .catch((error) => {
+          // take out error if hard coding error messages
+          // if request is bad
+          // show error to user
+          console.log('action index, sign in, catch, error.response.data.messages:', error.response.data.messages);
+          dispatch(authError(error.response.data.messages));
+          // dispatch(authError('Bad login info...'));
+        });
+  };
+}
+export function authFacebookUser(token, callback) {
+  // reduxthunk allow return of function and edirect access to dispatch method
+//dispatch accepts action and forwards to all reducers;
+// main pipeline of redux; dispatch can wait for async
+console.log('in action, index, sign in, email and password: ', token);
+  // now can place lots of logic
+  // console.log('in actions index, signinUser:');
+
+  return function (dispatch) {
+    // redux thunk let's us call dispatch method; returns action
+    // submit email/password to the server
+    // same as { email: email, password: password}
+    // console.log({ sign_in: { email, password } });
+    axios.post(`${ROOT_URL}/api/v1/facebook`, token)
+    // axios.post(`${ROOT_URL}/sign_in`, { email, password })
+    //signin for express server
+      .then(response => {
+        console.log('in action, index, sign in, response: ', response);
+        // console.log('in action, index, sign in, esponse.data.data.user.email: ', response.data.data.user.email);
+        // console.log('in action, index, sign in, esponse.data.data.user.id: ', response.data.data.user.id);
+        // request is good
+        // Update state to indicate user is authenticated
+        // dispatch({ type: AUTH_USER, payload: email });
+        // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
+        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image } });
+        // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
+        // save JWT token
+        // localStorage.setItem('token', response.data.token);
+        // data.token for express server api
+        //redirect to the route '/feature'
+
+        // console.log('in action, signin user, .then, response, auth token: ', response.data.data.user.authentication_token);
         localStorage.setItem('token', response.data.data.user.authentication_token);
         localStorage.setItem('email', response.data.data.user.email);
         localStorage.setItem('id', response.data.data.user.id);
@@ -216,7 +269,7 @@ export function authError(error) {
   };
 }
 
-export function signoutUser() {
+export function signoutUser(callback) {
   console.log('in actions index, signoutUser:');
 
   //flip authenticated to false
@@ -226,6 +279,7 @@ export function signoutUser() {
   localStorage.removeItem('id');
   localStorage.removeItem('image');
   // localStorage.removeItem('customer_id');
+  callback();
   return { type: UNAUTH_USER };
 }
 
@@ -450,6 +504,9 @@ export function fetchConversationsByUser(callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to fetchConversationsByUser: ', error);
+      dispatch({
+        type: NO_CONVERSATION
+      });
     });
   };
 }
@@ -1390,7 +1447,7 @@ export function fetchStripeUserCredentials(info, callback) {
     axios.post(`${ROOT_URL}/api/v1/get_user_credentials`, info, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
-    .then(response => { 
+    .then(response => {
       console.log('in action index, response to fetchStripeUserCredentials: ', response);
       console.log('in action index, response to fetchStripeUserCredentials: ', response.data.data.client_id);
 

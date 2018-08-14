@@ -64,9 +64,11 @@ class SigninModal extends Component {
     console.log('in SigninModal, updateLoggedInState', response);
     if(response.status == 'connected') {
       console.log('in SigninModal, updateLoggedInState', response.status);
+      this.props.authFacebookUser({ facebook_access_token: response.authResponse.accessToken }, () => this.handleFormSubmitCallback())
 
     } else {
       console.log('in SigninModal, updateLoggedInState', response.status);
+      this.props.authError(response.status)
     }
     // console.log('in SigninModal, updateLoggedInState', response);
   }
