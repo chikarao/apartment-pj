@@ -12,7 +12,9 @@ let fbResponse = {};
 
 class SigninModal extends Component {
   componentDidMount() {
-    this.facebookLogin((res) => this.updateLoggedInState(res));
+    if (FB) {
+      this.facebookLogin((res) => this.updateLoggedInState(res));
+    }
     console.log('in SigninModal, componentDidMount, this  ', this);
   }
   //
@@ -42,7 +44,7 @@ class SigninModal extends Component {
             // this.updateLoggedInState(response)
             callback(fbResponse);
           } else {
-            this.udpateLoggedInState()
+            // this.udpateLoggedInState()
           }
         });
       }

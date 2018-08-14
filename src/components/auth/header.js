@@ -147,8 +147,8 @@ class Header extends Component {
         return (
           <div>
             <ResetPasswordModal
-            show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
-            handleClose={this.hideModal}
+              show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
+              handleClose={this.hideModal}
             />
           </div>
         );
@@ -165,8 +165,8 @@ class Header extends Component {
         return (
           <div>
             <SignupModal
-            show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
-            handleClose={this.hideModal}
+              show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
+              handleClose={this.hideModal}
             />
           </div>
         );

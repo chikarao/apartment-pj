@@ -6,17 +6,25 @@ class SignOut extends Component {
   componentWillMount() {
     this.props.signoutUser(() => this.signoutFB());
   }
-
+  // below code signs user out of app as well as FB itself
   signoutFB() {
     if (FB) {
-      FB.getAuthResponse(function(response) {
-        console.log('in signout, signoutFB, getAuthResponse response: ', response)
-
+      FB.getLoginStatus(function (response) {
+        console.log('in signout, signoutFB, getLoginStatus response FB: ', response, FB);
+        if (response.status == 'connected') {
+          FB.logout(() => {
+            FB.getLoginStatus(function (res) {
+              console.log('in signout, signoutFB, getLoginStatus after logout response: ', res);
+            });
+          }
+            // FB.Auth.setAuthResponse(null, 'unknown');
+            // console.log('in signout, signoutFB, after logout: ', response);
+          );
+        }
       });
       // FB.logout(function(response) {
-      //   // user is now logged out
-      //   console.log('in signout, signoutFB, logout response: ', response)
-      // });
+      //   FB.Auth.setAuthResponse(null, 'unknown');
+      //   });
     }
   }
 
@@ -27,4 +35,12 @@ class SignOut extends Component {
   }
 }
 
-export default connect(null, actions)(SignOut);
+function mapStateToProps(state) {
+  console.log('in signin modal, state: ', state);
+
+  return {
+    errorMessage: state.auth.error,
+    authenticated: state.auth.authenticated };
+}
+
+export default connect(mapStateToProps, actions)(SignOut);

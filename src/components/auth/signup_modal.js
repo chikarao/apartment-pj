@@ -22,7 +22,9 @@ class SignupModal extends Component {
   }
 
   componentDidMount() {
-    this.facebookLogin((res) => this.updateLoggedInState(res));
+    if (FB) {
+      this.facebookLogin((res) => this.updateLoggedInState(res));
+    }
   }
 
   facebookLogin(callback) {
@@ -47,7 +49,7 @@ class SignupModal extends Component {
             // this.updateLoggedInState(response)
             callback(fbResponse);
           } else {
-            this.udpateLoggedInState()
+            // this.udpateLoggedInState()
           }
         });
       }
@@ -155,7 +157,6 @@ class SignupModal extends Component {
       <div className={showHideClassName}>
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-          {this.renderAlert()}
           <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email to confirm. <br/>To start using the service, please confirm your sign up.</div>
         </div>
       </div>
