@@ -26,6 +26,16 @@ class App extends Component {
     script.async = true;
     script.defer = true;
     document.head.append(script);
+
+    // Does not work; no way to do a call back
+    // No issues with exposing app id; Since user needs to know for any unwanted activity
+    // reference: https://stackoverflow.com/questions/33572477/is-there-a-way-to-hide-my-facebook-appid
+    // const FB_API_KEY = process.env.FACEBOOK_APP_ID;
+    // const fbScript = document.createElement('script');
+    // fbScript.src = `https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.1&appId=${FB_API_KEY}&autoLogAppEvents=1`;
+    // // fbScript.async = true;
+    // // fbScript.defer = true;
+    // document.head.append(fbScript);
   }
 
   // componentDidUpdate() {

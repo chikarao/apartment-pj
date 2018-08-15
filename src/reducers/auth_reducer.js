@@ -8,6 +8,7 @@ import {
   GET_CURRENT_USER,
   GET_CURRENT_USER_FOR_MY_PAGE,
   SHOW_SIGNIN_MODAL,
+  SHOW_SIGNUP_MODAL,
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
@@ -28,11 +29,13 @@ import {
 export default function (state = {
   showAuthModal: false,
   showSigninModal: false,
+  showSignupModal: false,
   showResetPasswordModal: false,
   showLoading: false,
-  authenticated: false
+  authenticated: false,
+  existingUser: false
 }, action) {
-  console.log('in auth reducer, action.payload: ', action.payload);
+  console.log('in auth reducer, action: ', action);
   switch (action.type) {
     case AUTH_USER:
       return {
@@ -42,7 +45,8 @@ export default function (state = {
         email: action.payload.email,
         id: action.payload.id,
         image: action.payload.image,
-        customerId: action.payload.customerId
+        customerId: action.payload.customerId,
+        existingUser: action.payload.existingUser
       };
 
     case UPDATE_USER:
@@ -69,6 +73,9 @@ export default function (state = {
 
     case SHOW_SIGNIN_MODAL:
       return { ...state, showSigninModal: !state.showSigninModal };
+
+    case SHOW_SIGNUP_MODAL:
+      return { ...state, showSignupModal: !state.showSignupModal };
 
     case SHOW_AUTH_MODAL:
       return { ...state, showAuthModal: !state.showAuthModal };

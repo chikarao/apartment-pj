@@ -47,6 +47,7 @@ import {
   DELETE_LIKE,
   LIKES_BY_USER,
   SHOW_SIGNIN_MODAL,
+  SHOW_SIGNUP_MODAL,
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
@@ -109,7 +110,7 @@ console.log('in action, index, sign in, email and password: ', { email, password
         // Update state to indicate user is authenticated
         // dispatch({ type: AUTH_USER, payload: email });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
-        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image } });
+        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image }, existing_user: response.data.data.existing_user });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
         // save JWT token
         // localStorage.setItem('token', response.data.token);
@@ -125,6 +126,7 @@ console.log('in action, index, sign in, email and password: ', { email, password
         // localStorage.setItem('customer_id', response.data.data.user.stripe_customer_id);
         // authentication_token for rails book review api
         // browserHistory.push('/feature');
+        console.log('in action, index, sign in, after dispatch, response: ', response);
         callback();
         // callback for this.props.history.push('/feature') from signin.js
       })
@@ -142,7 +144,7 @@ export function authFacebookUser(token, callback) {
   // reduxthunk allow return of function and edirect access to dispatch method
 //dispatch accepts action and forwards to all reducers;
 // main pipeline of redux; dispatch can wait for async
-console.log('in action, index, sign in, email and password: ', token);
+console.log('in action, index, authFacebookUser, email and password: ', token);
   // now can place lots of logic
   // console.log('in actions index, signinUser:');
 
@@ -155,14 +157,14 @@ console.log('in action, index, sign in, email and password: ', token);
     // axios.post(`${ROOT_URL}/sign_in`, { email, password })
     //signin for express server
       .then(response => {
-        console.log('in action, index, sign in, response: ', response);
+        console.log('in action, index, authFacebookUser, response: ', response);
         // console.log('in action, index, sign in, esponse.data.data.user.email: ', response.data.data.user.email);
         // console.log('in action, index, sign in, esponse.data.data.user.id: ', response.data.data.user.id);
         // request is good
         // Update state to indicate user is authenticated
         // dispatch({ type: AUTH_USER, payload: email });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id } });
-        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image } });
+        dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, id: response.data.data.user.id, image: response.data.data.user.image, existingUser: response.data.data.existing_user } });
         // dispatch({ type: AUTH_USER, payload: { email: response.data.data.user.email, user_id: response.data.data.user.id } });
         // save JWT token
         // localStorage.setItem('token', response.data.token);
@@ -288,6 +290,12 @@ export function showSigninModal() {
 
   //flip showSigninModal
   return { type: SHOW_SIGNIN_MODAL };
+}
+export function showSignupModal() {
+  console.log('in actions index, showSigninModal:');
+
+  //flip showSigninModal
+  return { type: SHOW_SIGNUP_MODAL };
 }
 
 export function showAuthModal() {

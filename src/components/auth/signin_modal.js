@@ -21,17 +21,23 @@ class SigninModal extends Component {
   // componentDidUpdate() {
   //
   // }
-
+  // for Facebook signin signup called in componentDidMount;
+  // index.html header has facebook sdk which loads js
+  // fbAsyncInit initializes FB instance and assigns parameters
+  // subscribe gets login status and user token to be sent to backend API
+  // callback calls action to API end point to log in user
+  // last function renders button?
   facebookLogin(callback) {
     // if (FB) {
     console.log('in SigninModal, facebookLogin, before fbAsyncInit, this  ', this);
       window.fbAsyncInit = function () {
         console.log('in SigninModal, facebookLogin, in fbAsyncInit, this  ', this);
         FB.init({
-          appId            : '2249093511770692',
+          appId            : process.env.FACEBOOK_APP_ID,
           autoLogAppEvents : true,
           xfbml            : true,
-          version          : 'v3.1'
+          version          : 'v3.1',
+          scope            : 'email'
         });
 
         console.log('in SigninModal, facebookLogin, after fbAsyncInit, this  ', this);
@@ -61,15 +67,15 @@ class SigninModal extends Component {
       }(document, 'script', 'facebook-jssdk'));
     // }
   }
-
+  // call back to facebookLogin
   updateLoggedInState(response) {
-    console.log('in SigninModal, updateLoggedInState', response);
+    // console.log('in SigninModal, updateLoggedInState', response);
     if(response.status == 'connected') {
-      console.log('in SigninModal, updateLoggedInState', response.status);
+      // console.log('in SigninModal, updateLoggedInState', response.status);
       this.props.authFacebookUser({ facebook_access_token: response.authResponse.accessToken }, () => this.handleFormSubmitCallback())
 
     } else {
-      console.log('in SigninModal, updateLoggedInState', response.status);
+      // console.log('in SigninModal, updateLoggedInState', response.status);
       this.props.authError(response.status)
     }
     // console.log('in SigninModal, updateLoggedInState', response);
@@ -81,22 +87,32 @@ class SigninModal extends Component {
     // this.props.signinUser({ email, password }, () => this.props.history.push('/feature'));
     // this.props.signinUser({ email, password }, () => this.handleFormSubmitCallback());
     // navigates back to prior page after sign in; call back sent to action signinUser
-    this.props.signinUser({ email, password }, () => this.props.history.goBack());
-    this.props.showSigninModal();
-    this.props.showAuthModal();
+    this.props.signinUser({ email, password }, () => this.handleFormSubmitCallback());
+    // this.props.showSigninModal();
+    // this.props.showAuthModal();
+  }
+  // for oauth facebook login
+  handleFormSubmitCallback() {
+    // showHideClassName = 'modal display-none';
+    console.log('in signin, handleFormSubmitCallback: ');
+    this.props.showAuthModal(); // turn off
+    this.props.showSigninModal(); // turn off to close modal
+
+    // when goBack is called, any code after does not get called
+    this.props.history.goBack();
   }
 
-  handleFormSubmitCallback() {
-    showHideClassName = 'modal display-none';
-    this.props.showAuthModal();
-    this.props.showSigninModal();
-  }
+  // clearPasswordInput() {
+  //   const passwordInput = document.getElementsByClassName('password-input');
+  //   console.log('in signin, clearPasswordInput: ', passwordInput);
+  //   passwordInput.value = '';
+  // }
 
   renderAlert() {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
+          <strong>Ooops! &nbsp;</strong> {this.props.errorMessage}
         </div>
       );
     }
@@ -108,10 +124,11 @@ class SigninModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
     if (elementVal === 'reset-password') {
       console.log('in modal, in handleAuthClick, if reset-password, true:');
-      this.props.showResetPasswordModal();
-      this.props.showSigninModal();
+      this.props.showResetPasswordModal(); // turn on
+      this.props.showSigninModal(); // turn off
     } else {
-      this.props.showSigninModal();
+      this.props.showSigninModal(); // turn off
+      this.props.showSignupModal(); // turn on
     }
   }
 
@@ -143,7 +160,7 @@ class SigninModal extends Component {
           </fieldset>
           <fieldset className="form-group">
             <label className="auth-form-label">Password:</label>
-            <Field name="password" component={InputField} type="password" className="form-control" placeholder="Enter your password"/>
+            <Field name="password" component={InputField} type="password" className="form-control password-input" placeholder="Enter your password"/>
           </fieldset>
           <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
           <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>

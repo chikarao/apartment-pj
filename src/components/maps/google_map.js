@@ -256,8 +256,8 @@ class GoogleMap extends Component {
 
           //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
           if (!this.props.showFlat) {
-            console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
-            console.log('in googlemap, fetchFlats call, this:', this);
+            // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+            // console.log('in googlemap, fetchFlats call, this:', this);
             this.props.updateMapDimensions(MAP_DIMENSIONS);
             const searchAttributes = { price_max: 10000000, price_min: 0, bedrooms_max: 100, bedrooms_min: 0, bedrooms_exact: null };
             this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
@@ -272,6 +272,7 @@ class GoogleMap extends Component {
         // this.createMarkers();
         // END of map initialization and map addlisterners
   } // end of renderMap
+
 
   fetchFlatsCallback(fromWhere) {
     console.log('in googlemap, fetchFlatsCallback:', fromWhere);

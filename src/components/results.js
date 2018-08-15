@@ -1457,12 +1457,12 @@ class Results extends Component {
     const whichAmenityToList = Object.keys(amenities);
     // return _.map(Object.keys(amenities), (amenity) => {
       // console.log('in results renderEachAmenityCriteria, amenity: ', amenity);
-      return _.map(whichAmenityToList, a => {
+      return _.map(whichAmenityToList, (a, i) => {
         console.log('in results renderEachAmenityCriteria, a: ', a);
         // if (amenity == a) {
           // console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
           return (
-            <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
+            <div key={i} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
               <label className="amenity-radio">{amenities[a]}</label>
               <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck.bind(this)} />
             </div>

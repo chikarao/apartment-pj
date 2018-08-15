@@ -83,17 +83,25 @@ class Header extends Component {
       // switch off showAuthModal only if it is true
       if (this.props.auth.showAuthModal) {
         this.props.showAuthModal(); //switch off showAuthModal to hide all auth modals
+        this.props.authError('')
       }
 
       if (this.props.auth.showSigninModal) {
         // if signin opened, switch off showSigninModal to hide signin modal
         this.props.showSigninModal();
+        this.props.authError('')
+      }
+      if (this.props.auth.showSignupModal) {
+        // if signin opened, switch off showSigninModal to hide signin modal
+        this.props.showSignupModal();
+        this.props.authError('')
       }
 
       if (this.props.auth.showResetPasswordModal) {
         // if reset password opened, switch off showResetPasswordModal to hide reset modal
         // so if sign in clicked, sign in opens since showResetPasswordModal is false
         this.props.showResetPasswordModal();
+        this.props.authError('')
       }
 
       if (this.props.auth.showEditProfileModal) {
@@ -102,8 +110,7 @@ class Header extends Component {
         // switch off showEditProfileModal boolean
         this.props.showEditProfileModal();
         // document.location.reload();
-        this.props.history.push(`/myPage`);
-
+        this.props.history.push('/myPage');
       }
     };
 
@@ -138,7 +145,9 @@ class Header extends Component {
         return (
           <div>
             <SigninModal
+              // close the modal when authenticated
               show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
+              // pass hideModal funtion in this header component to props handleClose in SigninModal
               handleClose={this.hideModal}
             />
           </div>
@@ -161,11 +170,12 @@ class Header extends Component {
           />
           </div>
         )
-      } else {
+      } else if (this.props.auth.showSignupModal) {
         return (
           <div>
             <SignupModal
-              show={this.props.auth.authenticated ? false : this.props.auth.showAuthModal}
+              // show={this.props.auth.showSignupModal}
+              show={this.props.auth.showSignupModal}
               handleClose={this.hideModal}
             />
           </div>
@@ -184,10 +194,11 @@ class Header extends Component {
      console.log('in header, handleAuthLinkClick, elementVal', elementVal);
      if (elementVal === 'signin') {
        console.log('in header, handleAuthLinkClick, elementVal === sigin', true);
-       this.props.showSigninModal();
-       this.showModal();
+       this.showModal(); // turn on
+       this.props.showSigninModal(); // turn on
      } else {
-       this.showModal();
+       this.showModal(); // turn on
+       this.props.showSignupModal(); // turn on
      }
    }
 
@@ -325,17 +336,17 @@ class Header extends Component {
     // ];
   }
 
-    resizeHeader(larger) {
-      const header = document.getElementById('nav_container');
-      console.log('in header, resizeHeader, header: ', header);
-      if (header) {
-        if (larger) {
-          header.setAttribute('style', 'height: 200px !important');
-        } else {
-          header.setAttribute('style', 'height: 80px !important');
-        }
+  resizeHeader(larger) {
+    const header = document.getElementById('nav_container');
+    console.log('in header, resizeHeader, header: ', header);
+    if (header) {
+      if (larger) {
+        header.setAttribute('style', 'height: 200px !important');
+      } else {
+        header.setAttribute('style', 'height: 80px !important');
       }
     }
+  }
 
   handleNavClick() {
     if (!this.state.mobileNavVisible) {

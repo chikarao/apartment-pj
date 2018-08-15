@@ -40,6 +40,7 @@ export const CREATE_VIEW = 'create_view';
 export const DELETE_LIKE = 'delete_like';
 export const LIKES_BY_USER = 'likes_by_user';
 export const SHOW_SIGNIN_MODAL = 'show_signin_modal';
+export const SHOW_SIGNUP_MODAL = 'show_signup_modal';
 export const SHOW_AUTH_MODAL = 'show_auth_modal';
 export const SHOW_RESET_PASSWORD_MODAL = 'show_reset_password_modal';
 export const FETCH_PROFILE_FOR_USER = 'fetch_profile_for_user';

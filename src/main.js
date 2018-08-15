@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Signin from './components/auth/signin';
+// import Signin from './components/auth/signin';
 import Signout from './components/auth/signout';
-import Signup from './components/auth/signup';
+// import Signup from './components/auth/signup';
 import ResetPassword from './components/auth/reset_password';
 import Results from './components/results';
 import Landing from './components/landing';
@@ -12,20 +12,21 @@ import MyPage from './components/my_page';
 import BookingConfirmation from './components/booking_confirmation';
 import CreateFlat from './components/create_flat';
 import EditFlat from './components/edit_flat';
+import NoMatch from './components/no_match';
 import MessagingMain from './components/messaging_main';
 import StripeRedirect from './components/payments/stripe_redirect';
 
 import RequireAuth from './components/auth/require_auth';
 
+// <Route path='/signup' component={Signup} />
+// <Route path='/signin' component={Signin} />
+// <Route path='/resetpassword' component={ResetPassword} />
 
 export const Main = () => (
   <main>
     <Switch>
       <Route exact path='/' component={Landing} />
-      // <Route path='/signin' component={Signin} />
       <Route path='/signout' component={Signout} />
-      // <Route path='/signup' component={Signup} />
-      // <Route path='/resetpassword' component={ResetPassword} />
       <Route path='/show/:id' component={ShowFlat} />
       <Route path='/results' component={Results} />
       <Route path='/mypage' component={RequireAuth(MyPage)} />
@@ -34,6 +35,7 @@ export const Main = () => (
       <Route path='/createflat' component={RequireAuth(CreateFlat)} />
       <Route path='/messagingmain' component={RequireAuth(MessagingMain)} />
       <Route path='/striperedirect/:params' component={RequireAuth(StripeRedirect)} />
+      <Route component={NoMatch} />
     </Switch>
   </main>
 );

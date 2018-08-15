@@ -7,8 +7,6 @@ import * as actions from '../../actions';
 
 import globalConstants from '../constants/global_constants';
 
-// import FacebookLogin from './fb_login_function';
-
 
 let showHideClassName;
 
@@ -33,7 +31,7 @@ class SignupModal extends Component {
       window.fbAsyncInit = function () {
         console.log('in SigninModal, facebookLogin, in fbAsyncInit, this  ', this);
         FB.init({
-          appId            : '2249093511770692',
+          appId            : process.env.FACEBOOK_APP_ID,
           autoLogAppEvents : true,
           xfbml            : true,
           version          : 'v3.1'
@@ -72,7 +70,9 @@ class SignupModal extends Component {
     if(response.status == 'connected') {
       console.log('in SigninModal, updateLoggedInState', response.status);
       this.props.authFacebookUser({ facebook_access_token: response.authResponse.accessToken }, () => this.handleFormSubmitCallback())
-
+      this.setState({ facebookSignUp: true }, () => {
+        console.log('in SigninModal, updateLoggedInState, this.state.facebookSignUp', this.state.facebookSignUp);
+      })
     } else {
       console.log('in SigninModal, updateLoggedInState', response.status);
       this.props.authError(response.status)
@@ -107,10 +107,11 @@ class SignupModal extends Component {
       );
     }
   }
-
+  // go to sign in modal
   handleSigninClick() {
     console.log('in modal, in handleSigninClick:');
-    this.props.showSigninModal();
+    this.props.showSigninModal(); // turn on signin
+    this.props.showSignupModal(); // turn off signup
   }
   // do not need fields from redux forms v6
   renderAuthForm() {
@@ -150,6 +151,14 @@ class SignupModal extends Component {
     );
   }
 
+  renderFacebookSignupMessage() {
+    if (this.props.auth.existingUser) {
+      return <div className="post-signup-message">Welcome back!</div>;
+    } else {
+      return <div className="post-signup-message">Thank you for signing up through Facebook! <br/><br/><br/>You can start using the service!</div>;
+    }
+  }
+
   renderPostSignUpMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     //handleClose is a prop passed from header when SigninModal is called
@@ -157,7 +166,8 @@ class SignupModal extends Component {
       <div className={showHideClassName}>
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-          <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email to confirm. <br/>To start using the service, please confirm your sign up.</div>
+
+          {this.state.facebookSignUp ? <div>{this.renderFacebookSignupMessage()}</div> : <div className="post-signup-message">Thank you for signing up! <br/><br/>We have sent you an email to confirm. <br/>To start using the service, please confirm your sign up.</div>}
         </div>
       </div>
     )
