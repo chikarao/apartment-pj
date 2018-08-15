@@ -149,7 +149,7 @@ class SigninModal extends Component {
         <div className={showHideClassName}>
         <section className="modal-main">
         <h3 className="auth-modal-title">Sign in</h3>
-        <div className="oath-button-box">
+        <div className="oauth-button-box">
           <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
         </div>
 

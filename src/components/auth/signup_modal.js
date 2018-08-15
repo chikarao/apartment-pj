@@ -120,13 +120,14 @@ class SignupModal extends Component {
     // console.log('in signup modal, render showHideClassName:', showHideClassName);
     // console.log('in signupmodal, render this.props.show:', this.props.show);
     // console.log('in signup modal, render this.props:', this.props);
-
+    // FB button reference: https://developers.facebook.com/docs/reference/javascript/FB.login/v3.1
     return (
       <div className={showHideClassName}>
       <div className="modal-main">
         <h3 className="auth-modal-title">Sign up</h3>
-        <div className="oath-button-box">
-          <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
+        <div className="oauth-button-box">
+          <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-scope="email,public_profile" data-use-continue-as="false"></div>
+          <div className="sign-up-with-email-message">Or sign up with your email</div>
         </div>
         <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>

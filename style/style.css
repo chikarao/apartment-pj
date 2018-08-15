@@ -2731,7 +2731,11 @@ text-decoration: underline;
 }
 
 .modal-main form {
-  margin-top: 70px;
+  margin-top: 40px;
+}
+
+.sign-up-with-email-message {
+  margin-top: 40px;
 }
 
 .display-block {
@@ -2825,7 +2829,7 @@ text-decoration: underline;
   color: white;
 }
 
-.oath-button-box {
+.oauth-button-box {
   margin: 50px auto 0 auto;
 }
 

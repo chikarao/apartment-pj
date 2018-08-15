@@ -5,6 +5,13 @@ import * as actions from '../../actions';
 
 
 class StripeRedirect extends Component {
+  constructor(props) {
+    super(props);
+    this.state = ({
+      stripeLinkEstablished: false
+    });
+  }
+
   componentDidMount() {
     // query strings with react router: https://stackoverflow.com/questions/42862253/how-to-parse-query-string-in-react-router-v4
     // uses native javascript URLSearchParams; there is query-string API but use native
@@ -23,20 +30,23 @@ class StripeRedirect extends Component {
       error = parsedParams.get('scope');
       this.props.authError(error);
     }
-    console.log('in StripeRedirect, componentDidMount, params, scope: ', scope);
-    console.log('in StripeRedirect, componentDidMount, params, AUTHORIZATION_CODE: ', AUTHORIZATION_CODE);
-    console.log('in StripeRedirect, componentDidMount, params, error: ', error);
+    // console.log('in StripeRedirect, componentDidMount, params, scope: ', scope);
+    // console.log('in StripeRedirect, componentDidMount, params, AUTHORIZATION_CODE: ', AUTHORIZATION_CODE);
+    // console.log('in StripeRedirect, componentDidMount, params, error: ', error);
     // NEED action since need to secret key!!!!
     this.props.fetchStripeUserCredentials({ code: AUTHORIZATION_CODE, grant_type: 'authorization_code' }, (clientId) => this.fetchStripeUserCredentialsCallback(clientId))
   }
 
   fetchStripeUserCredentialsCallback(clientId) {
     console.log('in StripeRedirect, fetchStripeUserCredentialsCallback, clientId: ', clientId);
+    if (clientId) {
+      this.setState({ stripeLinkEstablished: true })
+    }
   }
 
   render() {
     return (
-      <div>Stripe Redirect</div>
+      <div className="stripe-redirect-message" style={{ margin: '100px auto 0 auto', fontSize: '17px' }}>{this.state.stripeLinkEstablished ? 'Your account was successfully linked to our platform!' : 'In process...'}</div>
     );
   }
 }

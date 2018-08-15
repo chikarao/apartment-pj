@@ -28,9 +28,15 @@ class SignOut extends Component {
     }
   }
 
-  render() {
+  renderMessage() {
     return (
       <div className="signout-page-message">You have been signed out. <br/><br/>Please come back soon!</div>
+    );
+  }
+
+  render() {
+    return (
+      <div>{this.renderMessage()}</div>
     );
   }
 }
