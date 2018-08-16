@@ -20,12 +20,13 @@ export default function (state = {
   noConversation: true,
   noConversationForFlat: true,
   newMessages: 0,
-  conversationToShow: '',
+  conversationToShow: [],
   showConversations: true,
   checkedConversationsArray: [],
   conversationByFlat: [],
   conversationByUserAndFlat: [],
-  conversationsByUser: []
+  conversationsByUser: [],
+  yourFlat: false
 }, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);

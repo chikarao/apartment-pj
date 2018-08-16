@@ -286,16 +286,16 @@ class MessagingMain extends Component {
     );
   }
 
-  currentUserIsOwner() {
-    if (this.props.auth && this.props.flat) {
-      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
-      return (this.props.auth.id == this.props.flat.user_id);
-      // return true;
-      // return false;
-    }
-  }
+  // currentUserIsOwner() {
+  //   if (this.props.auth && this.props.flat) {
+  //     console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+  //     console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+  //     console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+  //     return (this.props.auth.id == this.props.flat.user_id);
+  //     // return true;
+  //     // return false;
+  //   }
+  // }
 
   // Class wrapping messaging switches based on window size
   // passes props onMessagingMain and mobileView based on window size
@@ -308,7 +308,8 @@ class MessagingMain extends Component {
     return (
       <div className={this.state.windowWidth < RESIZE_BREAK_POINT ? 'my-page-message-box' : 'messaging-main-messages-box col-md-8' }>
       <Messaging
-        currentUserIsOwner={false}
+        // currentUserIsOwner={false}
+        // currentUserIsOwner={this.props.yourFlat}
         // conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
         // yourFlat={this.state.yourFlat}
@@ -317,6 +318,7 @@ class MessagingMain extends Component {
         mobileView={this.state.windowWidth < RESIZE_BREAK_POINT}
         largeTextBox={this.state.windowWidth > RESIZE_BREAK_POINT}
         // conversationId={this.state.conversationId}
+        fromShowPage={false}
       />
       </div>
     );
@@ -464,6 +466,7 @@ function mapStateToProps(state) {
     conversationId: state.conversation.conversationToShow,
     checkedConversationsArray: state.conversation.checkedConversationsArray,
     showConversationCards: state.conversation.showConversations,
+    thisIsYourFlat: state.conversation.yourFlat
   };
 }
 

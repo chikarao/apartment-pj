@@ -86,10 +86,21 @@ class Messaging extends Component {
 
   handleMessageSendClick(event) {
     //this.props.conversation is an array!!!
-    console.log('in messaging, handleMessageSendClick, this.props.conversation', this.props.conversation);
-    console.log('in messaging, handleMessageSendClick, clicked: ', event);
+    // console.log('in messaging, handleMessageSendClick, this.props.conversation', this.props.conversation);
+    // console.log('in messaging, handleMessageSendClick, clicked: ', event);
     const messageText = document.getElementById('messsage-textarea');
-    console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
+    // console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
+
+    let sentByUser;
+
+    if (this.props.fromShowPage) {
+      sentByUser = !this.props.currentUserIsOwner;
+    } else {
+      sentByUser = !this.props.thisIsYourFlat;
+    }
+    console.log('in messaging, handleMessageSendClick, sentByUser: ', sentByUser);
+    console.log('in messaging, handleMessageSendClick, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+    console.log('in messaging, handleMessageSendClick, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
 
     if (this.props.noConversationForFlat && this.props.fromShowPage) {
       console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.noConversationForFlat);
@@ -99,7 +110,7 @@ class Messaging extends Component {
       const conversationToShowArray = this.conversationToShow();
       const { user_id, flat_id, id } = conversationToShowArray[0];
       console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
-      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.currentUserIsOwner }, (flatId) => this.createMessageCallback(flatId));
+      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
     messageText.value = '';
@@ -148,6 +159,8 @@ class Messaging extends Component {
         console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
         console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
         console.log('in messaging, renderEachMessage, messages: ', messages);
+        console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+        console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
         return _.map(messages, (message, index) => {
           // console.log('in messaging, renderEachMessage, message: ', message);
           const date = new Date(message.created_at)
@@ -155,7 +168,7 @@ class Messaging extends Component {
           //   this.scrollLastMessageIntoView();
           // }
           //yourFlat passed as props
-          if (this.props.currentUserIsOwner) {
+          if (this.props.currentUserIsOwner || this.props.thisIsYourFlat) {
             // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
             // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
             // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
@@ -244,6 +257,8 @@ class Messaging extends Component {
         const conversationToShowArray = this.conversationToShow();
         // console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
         console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
+        console.log('in messaging, renderMessaging. conversationToShowArray, after each, this.props.fromShowPage: ', this.props.fromShowPage);
+        console.log('in messaging, renderMessaging. conversationToShowArray, after each, this.props.noConversationForFlat: ', this.props.noConversationForFlat);
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
         return (
@@ -258,6 +273,18 @@ class Messaging extends Component {
           </div>
         );
         // }
+      } else if (!this.props.fromShowPage) {
+        return (
+          <div style={{ overflow: 'auto ' }}>
+            <div id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+              {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
+              <br/><br/>You have not started a conversation...
+              <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
+              </div>
+            <textarea id="messsage-textarea" className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder="Enter your message here..." />
+            <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
+          </div>
+        );
       }
     }
   }
@@ -279,8 +306,9 @@ function mapStateToProps(state) {
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     noConversationForFlat: state.conversation.noConversationForFlat,
-    flat: state.flat.selectedFlatFromParams
-    // currentUserIsOwner: state.conversation.yourFlat
+    flat: state.flat.selectedFlatFromParams,
+    thisIsYourFlat: state.conversation.yourFlat
+    // yourFlat: state.conversation.yourFlat
   };
 }
 
