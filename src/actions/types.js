@@ -34,6 +34,7 @@ export const FETCH_CONVERSATION_BY_USER_AND_FLAT = 'fetch_conversation_by_user_a
 export const FETCH_CONVERSATIONS_BY_USER = 'fetch_conversations_by_user';
 export const CREATE_MESSAGE = 'create_message';
 export const NO_CONVERSATION = 'no_conversation';
+export const NO_CONVERSATION_FOR_FLAT = 'no_conversation_for_flat';
 export const CREATE_CONVERSATION = 'create_conversation';
 export const CREATE_LIKE = 'create_like';
 export const CREATE_VIEW = 'create_view';

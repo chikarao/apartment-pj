@@ -3,6 +3,7 @@ import {
   CREATE_MESSAGE,
   CREATE_CONVERSATION,
   NO_CONVERSATION,
+  NO_CONVERSATION_FOR_FLAT,
   FETCH_CONVERSATION_BY_USER_AND_FLAT,
   FETCH_CONVERSATIONS_BY_USER,
   FETCH_CONVERSATION_BY_FLAT,
@@ -15,7 +16,17 @@ import {
   UPDATE_CONVERSATIONS
 } from '../actions/types';
 
-export default function (state = { noConversation: false, newMessages: 0, conversationToShow: '', showConversations: true, checkedConversationsArray: [] }, action) {
+export default function (state = {
+  noConversation: true,
+  noConversationForFlat: true,
+  newMessages: 0,
+  conversationToShow: '',
+  showConversations: true,
+  checkedConversationsArray: [],
+  conversationByFlat: [],
+  conversationByUserAndFlat: [],
+  conversationsByUser: []
+}, action) {
   console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
@@ -85,6 +96,9 @@ export default function (state = { noConversation: false, newMessages: 0, conver
 
     case NO_CONVERSATION:
       return { ...state, noConversation: true };
+
+    case NO_CONVERSATION_FOR_FLAT:
+      return { ...state, noConversationForFlat: false };
 
     case SET_NEW_MESSAGES:
       return { ...state, newMessages: action.payload };

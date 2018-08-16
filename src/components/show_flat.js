@@ -41,6 +41,8 @@ class ShowFlat extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
+    // init
+    // this.props.setNoConversation();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
     if (this.props.auth.authenticated) {
       this.props.getCurrentUser();
@@ -360,10 +362,11 @@ class ShowFlat extends Component {
       return (
         <div className="message-box-container">
           <div className="message-box">
+          <h3>Messages</h3>
             <Messaging
               currentUserIsOwner={this.currentUserIsOwner()}
               conversation={this.props.conversation}
-              noConversation={this.props.noConversation}
+              noConversationForFlat={this.props.noConversationForFlat}
               // noConversation={this.props.noConversation}
               fromShowPage
             />
@@ -500,7 +503,7 @@ class ShowFlat extends Component {
   render() {
   // !!!!!map needs to be id=map for the interaction to work
     return (
-      <div>
+      <div className="show-flat-body">
           {this.renderLightboxScreen()}
         <div>
           {this.renderFlat(this.props.match.params.id)}
@@ -525,13 +528,13 @@ class ShowFlat extends Component {
             </div>
           </div>
         </div>
-        <div>
+
           {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
+
           {this.renderMessaging()}
-        </div>
-        <div>
+
           {this.renderReviews()}
-        </div>
+        <div className="clear-div" style={{ height: '70px' }}></div>
         <footer className="show-flat-footer">
           {this.renderButtons()}
         </footer>
@@ -548,6 +551,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversation: state.conversation.conversationByFlat,
     noConversation: state.conversation.noConversation,
+    noConversationForFlat: state.conversation.noConversationForFlat,
     reviews: state.reviews,
     // places uses flat.selectedFlatFromParams.places
     // places: state.places.places,

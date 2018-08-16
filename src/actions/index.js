@@ -36,6 +36,7 @@ import {
   FETCH_MESSAGE,
   CREATE_MESSAGE,
   NO_CONVERSATION,
+  NO_CONVERSATION_FOR_FLAT,
   YOUR_FLAT,
   CREATE_CONVERSATION,
   CONVERSATION_TO_SHOW,
@@ -243,7 +244,7 @@ export function signupUser({ email, password }, callback) {
       // dispatch(authError(error));
     });
     // .catch(response => dispatch(console.log(response.data)));
-  };
+  }; // end of return function
 }
 
 export function getCurrentUser() {
@@ -441,10 +442,10 @@ export function fetchConversationByFlat(flatId) {
       console.log('in action index, response to fetchConversationByFlat: ', response);
       console.log('in action index, response to fetchConversationByFlat: ', response.data.data.conversation);
       const { conversation } = response.data.data;
-      if (conversation.length === 0) {
-        console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversation.length === 0);
+      if (conversation.length > 0) {
+        console.log('in action index, fetchConversationByFlat, if conversation.length === 0: ', conversation.length == 0);
         dispatch({
-          type: NO_CONVERSATION
+          type: NO_CONVERSATION_FOR_FLAT
         });
       }
       dispatch({
@@ -519,6 +520,12 @@ export function fetchConversationsByUser(callback) {
   };
 }
 
+export function setNoConversation() {
+  console.log('in actions index, setNoConversation ');
+  return {
+    type: NO_CONVERSATION
+  };
+}
 export function setNewMessages(trueOrFalse) {
   console.log('in actions index, setNewMessages ');
   return {

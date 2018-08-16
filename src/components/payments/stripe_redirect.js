@@ -46,7 +46,7 @@ class StripeRedirect extends Component {
 
   render() {
     return (
-      <div className="stripe-redirect-message" style={{ margin: '100px auto 0 auto', fontSize: '17px' }}>{this.state.stripeLinkEstablished ? 'Your account was successfully linked to our platform!' : 'In process...'}</div>
+      <div className="stripe-redirect-message" style={{ margin: '100px auto 0 auto', fontSize: '17px' }}>{this.state.stripeLinkEstablished ? 'Account linked successfully!' : 'In process...'}</div>
     );
   }
 }

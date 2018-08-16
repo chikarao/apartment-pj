@@ -91,9 +91,9 @@ class Messaging extends Component {
     const messageText = document.getElementById('messsage-textarea');
     console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
 
-    if (this.props.noConversation) {
-      console.log('in messaging, handleMessageSendClick, if this.props.noConversation: ', this.props.noConversation);
-      console.log('in messaging, handleMessageSendClick, if this.props.noConversation: ', this.props.conversation);
+    if (this.props.noConversationForFlat) {
+      console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.noConversationForFlat);
+      console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
       this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     } else {
       const conversationToShowArray = this.conversationToShow();
@@ -229,22 +229,24 @@ class Messaging extends Component {
 
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
-    console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-    console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
+    // console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+    // console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
     if (this.props.conversations) {
-      console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
-      console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
+      // console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
+      // console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
       if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
         const conversationToShowArray = this.conversationToShow();
-        console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
-        console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
+        // console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
+        // console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
+        // check if from show page and there is no conversation for flat
+        // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
         return (
-          <div>
-            <div id={'message-show-box'} style={this.props.mobileView ?  { height: '300px' } : { height: '500px' }}>
-              {this.props.noConversation ? <div className="no-conversation-message">
+          <div style={{ overflow: 'auto ' }}>
+            <div id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+              {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
               <br/><br/>You have not started a conversation...
               <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
               </div>
@@ -273,6 +275,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
+    noConversationForFlat: state.conversation.noConversationForFlat,
     flat: state.flat.selectedFlatFromParams,
     thisIsYourFlat: state.conversation.yourFlat
   };

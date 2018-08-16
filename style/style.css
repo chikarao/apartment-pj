@@ -7,7 +7,7 @@
 html, body {
   height: 100%;
   margin: 0 auto 0 auto;
-  padding: 0;
+  padding-bottom: 0;
   width: 100%;
   text-align:center;
 /* font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;  */
@@ -1219,7 +1219,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .show-flat-review-container h3 {
   /* border: 1px solid #ccc; */
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .show-flat-review-row {
@@ -1292,6 +1292,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width: 100%;
   display: flex;
   justify-content: center;
+  min-height: 600px;
 }
 
 .message-box {
@@ -1303,6 +1304,15 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 #message-show-box {
   width: 100%;
   /* height: 300px; */
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+#message-show-box-show-page {
+  width: 100%;
+  height: 300px !important;
   border: 1px solid #ccc;
   border-radius: 2px;
   overflow: hidden;
@@ -2862,6 +2872,11 @@ text-decoration: underline;
   /* fit content */
   display: block;
   overflow: auto;
+  min-height: 300px;
+}
+
+.review-section-heading {
+
 }
 
 .review-details {
