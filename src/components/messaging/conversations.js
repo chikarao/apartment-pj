@@ -16,17 +16,21 @@ class Conversations extends Component {
    this.state = INITIAL_STATE;
  }
 
- getConversationToShow(coversationId) {
+ getConversationToShow(conversationId) {
    // console.log('in conversations, getConversationToShow, before each: ', coversationId);
    const { conversations } = this.props;
+   console.log('in conversations, getConversationToShow, this.props.conversations: ', this.props.conversations);
+   console.log('in conversations, getConversationToShow, conversationId: ', conversationId);
    // console.log('in conversations, getConversationToShow, before each conversation: ', conversations);
    const conversationArray = []
    _.each(conversations, (conv) => {
      // console.log('in conversations, getConversationToShow, each: ', conv);
-     if (conv.id == coversationId) {
+     if (conv.id == conversationId) {
        conversationArray.push(conv);
      }
    });
+
+   console.log('in conversations, getConversationToShow, conversationArray: ', conversationArray);
    return conversationArray;
  }
 
@@ -34,10 +38,11 @@ class Conversations extends Component {
    console.log('in conversations, handleConversationCardClick, event: ', event.target);
    const clickedElement = event.target;
    const elementVal = clickedElement.getAttribute('value');
+   console.log('in conversations, handleConversationCardClick, elementVal', elementVal);
 
    const wasCheckBoxClicked = event.target.className === 'my-page-conversation-input' ||
    event.target.className === 'conversations-input-checkbox';
-   console.log('in conversations, handleConversationCardClick, wasCheckBoxClicked', wasCheckBoxClicked);
+   // console.log('in conversations, handleConversationCardClick, wasCheckBoxClicked', wasCheckBoxClicked);
 
    // if (!wasCheckBoxClicked) {
      // console.log('in conversations, handleConversationCardClick, elementVal: ', elementVal);
@@ -47,7 +52,7 @@ class Conversations extends Component {
      // this.props.fetchConversationsByUser();
      // let conversationToShow;
      let conversationToShow = this.getConversationToShow(elementVal);
-     console.log('in conversations, handleConversationCardClick, conversationToShow.length', conversationToShow.length);
+     // console.log('in conversations, handleConversationCardClick, conversationToShow.length', conversationToShow.length);
      if (conversationToShow.length > 0) {
        let yourFlat = conversationToShow[0].flat.user_id == this.props.auth.id;
        // console.log('in conversations, handleConversationCardClick, conversationToShow, yourFlat: ', conversationToShow, yourFlat);
@@ -61,10 +66,10 @@ class Conversations extends Component {
        if (!this.props.onMessagingMain && !wasCheckBoxClicked) {
          this.props.showConversations();
        }
-       console.log('in conversations, handleConversationCardClick, before if conversation card was clicked, elementVal: ', elementVal);
+       // console.log('in conversations, handleConversationCardClick, before if conversation card was clicked, elementVal: ', elementVal);
        // if card was clicked
        if (!wasCheckBoxClicked) {
-         console.log('in conversations, handleConversationCardClick, if conversation card was clicked, elementVal: ', elementVal);
+         // console.log('in conversations, handleConversationCardClick, if conversation card was clicked, elementVal: ', elementVal);
          // console.log('in conversations, handleConversationCardClick, if conversation card was clicked, elementVal: ', elementVal);
          this.props.conversationToShow(parseInt(elementVal));
          if (this.props.onMessageMainMobile) {
@@ -244,7 +249,7 @@ function mapStateToProps(state) {
     // conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     flat: state.flat.selectedFlatFromParams,
-    conversationId: state.conversation.conversationToShow
+    // conversationId: state.conversation.conversationToShow
   };
 }
 

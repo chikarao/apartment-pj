@@ -156,11 +156,11 @@ class Messaging extends Component {
         // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
         // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
-        console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
-        console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-        console.log('in messaging, renderEachMessage, messages: ', messages);
-        console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-        console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
+        // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
+        // console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+        // console.log('in messaging, renderEachMessage, messages: ', messages);
+        // console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+        // console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
         return _.map(messages, (message, index) => {
           // console.log('in messaging, renderEachMessage, message: ', message);
           const date = new Date(message.created_at)
@@ -276,11 +276,9 @@ class Messaging extends Component {
       } else if (!this.props.fromShowPage) {
         return (
           <div style={{ overflow: 'auto ' }}>
-            <div id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
-              {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
-              <br/><br/>You have not started a conversation...
-              <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}
-              </div>
+            <div id={'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+              this.renderEachMessage(conversationToShowArray)}
+            </div>
             <textarea id="messsage-textarea" className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder="Enter your message here..." />
             <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>Send</button>
           </div>

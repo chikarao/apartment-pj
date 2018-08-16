@@ -278,7 +278,7 @@ class MessagingMain extends Component {
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderEachMainControl()}
           <Conversations
             // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
-            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations() }
+            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations()}
             onMessagingMain
             onMessageMainMobile={this.state.windowWidth < RESIZE_BREAK_POINT}
           />
@@ -466,6 +466,7 @@ function mapStateToProps(state) {
     conversationId: state.conversation.conversationToShow,
     checkedConversationsArray: state.conversation.checkedConversationsArray,
     showConversationCards: state.conversation.showConversations,
+    // separated from currentUserIsOwner since there is a check in the render method in messagin.js
     thisIsYourFlat: state.conversation.yourFlat
   };
 }
