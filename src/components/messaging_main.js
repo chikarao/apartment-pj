@@ -286,6 +286,17 @@ class MessagingMain extends Component {
     );
   }
 
+  currentUserIsOwner() {
+    if (this.props.auth && this.props.flat) {
+      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+      return (this.props.auth.id == this.props.flat.user_id);
+      // return true;
+      // return false;
+    }
+  }
+
   // Class wrapping messaging switches based on window size
   // passes props onMessagingMain and mobileView based on window size
   // noConversation is for messages on showFlat; if noConversation for flat with user,

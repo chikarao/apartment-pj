@@ -321,9 +321,9 @@ class ShowFlat extends Component {
 
   currentUserIsOwner() {
     if (this.props.auth && this.props.flat) {
-      // console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-      // console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      // console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
       return (this.props.auth.id == this.props.flat.user_id);
       // return true;
       // return false;
@@ -356,7 +356,7 @@ class ShowFlat extends Component {
     this.props.showLoading();
   }
 
-  renderMessaging() {
+    renderMessaging() {
     if (!this.currentUserIsOwner() && this.props.conversation) {
       console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
       return (
@@ -531,7 +531,7 @@ class ShowFlat extends Component {
 
           {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
 
-          {this.renderMessaging()}
+            {this.renderMessaging()}
 
           {this.renderReviews()}
         <div className="clear-div" style={{ height: '70px' }}></div>

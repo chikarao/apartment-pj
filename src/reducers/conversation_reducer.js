@@ -86,8 +86,9 @@ export default function (state = {
           conversationArray.push(action.payload);
         }
       })
-      // console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray };
+      console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
+        console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
+      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, noConversationForFlat: false };
 
     case CREATE_CONVERSATION:
       // console.log('in conversation reducer, state: ', state);

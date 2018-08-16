@@ -91,7 +91,7 @@ class Messaging extends Component {
     const messageText = document.getElementById('messsage-textarea');
     console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
 
-    if (this.props.noConversationForFlat) {
+    if (this.props.noConversationForFlat && this.props.fromShowPage) {
       console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.noConversationForFlat);
       console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
       this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
@@ -99,7 +99,7 @@ class Messaging extends Component {
       const conversationToShowArray = this.conversationToShow();
       const { user_id, flat_id, id } = conversationToShowArray[0];
       console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
-      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.thisIsYourFlat }, (flatId) => this.createMessageCallback(flatId));
+      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: !this.props.currentUserIsOwner }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
     messageText.value = '';
@@ -107,6 +107,7 @@ class Messaging extends Component {
 
   createConversationCallback(messageAttributes) {
     console.log('in show_flat, createConversationCallback, messageAttributes: ', messageAttributes);
+
     this.props.createMessage(messageAttributes, (flatId) => this.createMessageCallback(flatId));
   }
 
@@ -144,7 +145,9 @@ class Messaging extends Component {
         // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
         // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
 
-        console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
+        console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
+        console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
+        console.log('in messaging, renderEachMessage, messages: ', messages);
         return _.map(messages, (message, index) => {
           // console.log('in messaging, renderEachMessage, message: ', message);
           const date = new Date(message.created_at)
@@ -152,7 +155,7 @@ class Messaging extends Component {
           //   this.scrollLastMessageIntoView();
           // }
           //yourFlat passed as props
-          if (this.props.thisIsYourFlat) {
+          if (this.props.currentUserIsOwner) {
             // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
             // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
             // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
@@ -240,7 +243,7 @@ class Messaging extends Component {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
         const conversationToShowArray = this.conversationToShow();
         // console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
-        // console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
+        console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
         return (
@@ -276,8 +279,8 @@ function mapStateToProps(state) {
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     noConversationForFlat: state.conversation.noConversationForFlat,
-    flat: state.flat.selectedFlatFromParams,
-    thisIsYourFlat: state.conversation.yourFlat
+    flat: state.flat.selectedFlatFromParams
+    // currentUserIsOwner: state.conversation.yourFlat
   };
 }
 
