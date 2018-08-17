@@ -1180,7 +1180,7 @@ export function createPlace(flatId, placeid, lat, lng, place_name, category, cal
       // the response is a new array of places
       dispatch({
         type: CREATE_PLACE,
-        payload: response.data.data.places
+        payload: response.data.data
       });
       callback();
     });
@@ -1224,7 +1224,7 @@ export function deletePlace(flatId, id, callback) {
       // the response is a new array of places
       dispatch({
         type: DELETE_PLACE,
-        payload: response.data.data.places
+        payload: response.data.data
       });
       callback();
     });

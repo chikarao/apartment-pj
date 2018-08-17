@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import axios from 'axios';
 
-import SearchTypeList from '../constants/search_type_list'
+import SearchTypeList from '../constants/search_type_list';
 
 import * as actions from '../../actions';
 
@@ -16,8 +16,16 @@ const NEARBY_SEARCH_RADIUS = 3000;
 class MapInteraction extends Component {
   constructor(props) {
    super(props);
-   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [], placeSearched: false, placeCategory: '' };
+   this.state = {
+     placesResults: [],
+     map: {},
+     autoCompletePlace: {},
+     clickedPlaceArray: [],
+     placeSearched: false,
+     placeCategory: ''
+   };
  }
+
   componentDidMount() {
     // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
@@ -165,10 +173,13 @@ class MapInteraction extends Component {
       const infowindow = new google.maps.InfoWindow();
       // push infowidow into array to enable close by clicking on map see addListener below
       infowindowArray.push(infowindow);
+      const placeType = place.types[0];
+      console.log('in map_interaction, createMarker, place: ', place);
       const markerIcon = {
         // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
         // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
-        url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+        // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+        url: (SearchTypeList[placeType] == undefined) ? 'http://maps.google.com/mapfiles/ms/icons/blue.png' : SearchTypeList[placeType].icon,
         // url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
         // url: 'https://image.flaticon.com/icons/svg/143/143964.svg',        // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
         scaledSize: new google.maps.Size(40, 40),
@@ -359,7 +370,8 @@ class MapInteraction extends Component {
     // consider moving this somewhere else
     const searchTypeList = SearchTypeList;
     return _.map(searchTypeList, (v, k) => {
-        return <option key={k} value={k}>{v}</option>;
+      console.log('in map_interaction, renderSearchSelection, v, k: ', v, k);
+        return <option key={k} value={k}>{v.name}</option>;
       // })
     });
 }
@@ -393,10 +405,12 @@ class MapInteraction extends Component {
         markersArray.push(pointA);
         // console.log('in map_interaction, createSelectedMarker, after if status, pointA: ', pointA);
         // const pointB = this.createMarker(flat, map);
-
+        const placeType = result.types[0];
         const markerIcon = {
           // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
-          url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+          // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
+          url: (SearchTypeList[placeType] == undefined) ? 'http://maps.google.com/mapfiles/ms/icons/blue.png' : SearchTypeList[placeType].icon,
+
           // url: 'https://image.flaticon.com/icons/svg/138/138978.svg',
           // url: 'https://image.flaticon.com/icons/svg/143/143964.svg',
           // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
@@ -784,6 +798,7 @@ class MapInteraction extends Component {
 
   getCategoriesArray(places) {
     const categoriesArray = [];
+    console.log('in map_interaction, getCategoriesArray, places: ', places);
     _.each(places, place => {
       if (!categoriesArray.includes(place.category)) {
         categoriesArray.push(place.category);
@@ -854,7 +869,7 @@ class MapInteraction extends Component {
         return (
           <div key={category}>
             <div value={category} className="search-result-category-heading">
-              {SearchTypeList[category]}
+              {SearchTypeList[category].name}
             </div>
             {this.renderEachResult(places, category)}
           </div>
@@ -880,6 +895,7 @@ class MapInteraction extends Component {
   }
 
   renderSearchBox() {
+    // this.renderSearchSelection();
     // keep for when there is solution for language selection;
     // <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
     // <option>Select Search Output Language</option>

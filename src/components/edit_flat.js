@@ -562,6 +562,7 @@ function getInitialValueObject(flat) {
 // unless call it conditionally when there is flat
 // mapStateToProps needs an object returned even without flat, so return empty {}
 function mapStateToProps(state) {
+  console.log('in edit_flat, mapStateToProps: ', state);
   const flat = state.selectedFlatFromParams.selectedFlatFromParams;
   let initialValues = {};
   if (flat) {

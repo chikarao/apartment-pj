@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
 
+
 // carousel could not be used for infowindow for some reason
 // import Carousel from '../carousel/carousel';
 
@@ -311,6 +312,7 @@ class GoogleMap extends Component {
       // (0,0) is located in the top left of the image.
       const markerIcon = {
         url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
+        // url: iconObject.icon,
         // scaledsize originally 80, 80 taken from medium https://medium.com/@barvysta/google-marker-api-lets-play-level-1-dynamic-label-on-marker-f9b94f2e3585
         scaledSize: new google.maps.Size(40, 40),
         origin: new google.maps.Point(0, 0),

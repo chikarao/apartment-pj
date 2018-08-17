@@ -51,6 +51,7 @@
     "redux-form": "^6.8.0",
     "redux-thunk": "^2.2.0",
     "sha1": "^1.1.1",
-    "webpack": "^1.12.9"
+    "webpack": "^1.12.9",
+    "file-loader": "^1.1.11"
   }
 }

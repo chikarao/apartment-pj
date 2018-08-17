@@ -13,14 +13,16 @@ import {
   DELETE_LIKE,
   SEARCH_FLAT_PARAMENTERS,
   CLEAR_FLATS,
-  UPDATE_SEARCH_FLAT_CRITERIA
+  UPDATE_SEARCH_FLAT_CRITERIA,
+  CREATE_PLACE,
+  DELETE_PLACE
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
   console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
-  
+
   switch (action.type) {
     case FETCH_FLATS:
       return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
@@ -95,6 +97,14 @@ export default function (state = { searchFlatParameters: {} }, action) {
         }
       });
       return { ...state, deletedLikeFlat: action.payload, flatsResults: _.mapKeys(flatsArray, 'id') };
+
+    // NEED to have place create and delete in flat reducer so that in edit and show flat,
+    // the places are in sync with selectedFlatFromParams
+    case CREATE_PLACE:
+      return { ...state, selectedFlatFromParams: action.payload.flat };
+
+    case DELETE_PLACE:
+      return { ...state, selectedFlatFromParams: action.payload.flat };
 
 
     default:

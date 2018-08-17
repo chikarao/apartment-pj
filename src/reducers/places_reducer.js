@@ -11,11 +11,11 @@ export default function (state = { placeSearchLanguage: 'en' }, action) {
   switch (action.type) {
     case CREATE_PLACE:
     // console.log('in places reducer, action.payload:', action.payload);
-      return { ...state, places: action.payload };
+      return { ...state, places: action.payload.places, flat: action.payload.flat };
 
     case DELETE_PLACE:
     // console.log('in places reducer, action.payload:', action.payload);
-      return { ...state, places: action.payload };
+      return { ...state, places: action.payload, flat: action.payload.flat };
 
     case FETCH_PLACES:
     // console.log('in places reducer, action.payload:', action.payload);

@@ -1590,7 +1590,6 @@ class Results extends Component {
         <div className="container" id="map">
         {this.renderMap()}
         </div>
-
         <div>
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
