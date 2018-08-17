@@ -45,7 +45,7 @@ const SearchTypeList = {
   funeral_home: { name: 'Funeral Homes', icon: 'http://maps.google.com/mapfiles/ms/icons/blue.png' },
   furniture_store: { name: 'Furniture Stores', icon: 'http://maps.google.com/mapfiles/ms/icons/blue.png' },
   gas_station: { name: 'Gas Stations', icon: gasStation },
-  grocery_or_supermarket: { name: 'Supermarkets', icon: supermarket },
+  grocery_or_supermarket: { name: 'Grocery Stores', icon: supermarket },
   gym: { name: 'Gyms', icon: 'http://maps.google.com/mapfiles/ms/icons/blue.png' },
   hair_care: { name: 'Hair Care', icon: 'http://maps.google.com/mapfiles/ms/icons/blue.png' },
   hardware_store: { name: 'Hardware Stores', icon: 'http://maps.google.com/mapfiles/ms/icons/blue.png' },

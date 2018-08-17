@@ -21,7 +21,9 @@ class MessagingMain extends Component {
       showTrashBin: false,
       showArchiveBin: false,
       showAllConversations: true,
-      filteredConversationsArray: []
+      filteredConversationsArray: [],
+      showMessageControls: false,
+      showMessageSubControls: false
     };
   }
 
@@ -79,6 +81,7 @@ class MessagingMain extends Component {
     if (this.state.showAllConversations) {
       return (
         <div className="messaging-main-controls-left">
+        <span className="btn messaging-main-large-archive"><i className="fa fa-ellipsis-v ellipsis" value="ellipsis" onClick={this.handleMessageEditClick.bind(this)}></i></span>
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</span>
           <span value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</span>
           <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
@@ -115,13 +118,61 @@ class MessagingMain extends Component {
       </div>
     );
   }
+
+  renderMessagingControls() {
+    console.log('in messagingMain, renderMessagingControls: ');
+    if (this.state.showMessageControls) {
+      return (
+        <div value="subControl" onClick={this.handleMessageEditClick.bind(this)} className="messaging-main-messaging-control-box">
+          Messaging Controls
+          <ul>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Show messages by listing</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 2</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 3</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+            <li name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
+          </ul>
+        </div>
+      );
+    }
+  }
+
+  renderMessagingSubControls() {
+    console.log('in messagingMain, renderMessagingSubControls: ');
+    if (this.state.showMessageSubControls) {
+      return (
+        <div className="messaging-main-messaging-sub-control-box">
+          Messaging Sub-Controls
+          <ul>
+            <li>Listing 1</li>
+            <li>Listing 2</li>
+            <li>Listing 3</li>
+            <li>Listing 4</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+            <li>Listing 5</li>
+          </ul>
+        </div>
+      );
+    }
+  }
   // after conversation checkbox checked, handles what to do with the conversations;
   handleMessageEditClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
-    console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
-    console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+    // console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
+    // console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
+    // console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
 
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
@@ -190,6 +241,19 @@ class MessagingMain extends Component {
         this.filterConversations();
       })
     }
+    if (elementVal == 'ellipsis') {
+      this.setState({ showMessageControls: !this.state.showMessageControls, showMessageSubControls: false }, () => {
+        console.log('in messagingMain, handleMessageEditClick, this.state.showMessageControls: ', this.state.showMessageControls);
+        // this.filterConversations();
+      })
+    }
+
+    if (elementVal == 'subControl') {
+      this.setState({ showMessageSubControls: !this.state.showMessageSubControls }, () => {
+        console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
+        // this.filterConversations();
+      })
+    }
   }
 
   // Called when conversation checkboxes checked; shos archive and trash box links
@@ -202,6 +266,8 @@ class MessagingMain extends Component {
       </div>
     );
   }
+
+
 
   // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
@@ -275,6 +341,8 @@ class MessagingMain extends Component {
     return (
       // <div className="messaging-main-conversation-box col-md-4">
       <div className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : 'messaging-main-mobile-conversation-box'}>
+        {this.renderMessagingControls()}
+        {this.renderMessagingSubControls()}
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderEachMainControl()}
           <Conversations
             // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}

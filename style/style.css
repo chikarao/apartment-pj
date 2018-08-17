@@ -1536,12 +1536,14 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   display: flex;
   flex-direction: column;
   overflow-x: auto;
+  position: relative;
 }
 
 .messaging-main-mobile-conversation-box {
   display: flex;
   flex-direction: column;
   /* overflow-x: auto; */
+  position: relative;
 }
 
 
@@ -1617,6 +1619,71 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: blue;
   font-weight: bold;
 }
+.fa-ellipsis-v:before {
+  color: gray;
+  font-size: 19px;
+  font-weight: normal;
+}
+
+.messaging-main-messaging-control-box {
+  height: 300px;
+  width: 200px;
+  background-color: white;
+  z-index: 10;
+  position: absolute;
+  top: 45px;
+  /* right: 0; */
+  left: 20px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.messaging-main-messaging-sub-control-box {
+  height: 300px;
+  width: 200px;
+  background-color: white;
+  z-index: 11;
+  position: absolute;
+  top: 80px;
+  /* right: 0; */
+  left: 60px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.messaging-main-messaging-control-box ul {
+  list-style: none;
+  margin: 20px auto 10px auto;
+  padding: 5px !important;
+  text-align: left;
+
+}
+
+.messaging-main-messaging-sub-control-box ul {
+  list-style: none;
+  margin: 20px auto 10px auto;
+  padding: 5px !important;
+  text-align: left;
+
+}
+.messaging-main-messaging-control-box li {
+
+  padding: 5px !important;
+
+}
+.messaging-main-messaging-sub-control-box li {
+
+  padding: 5px !important;
+
+}
+
+
 
 /* .conversation-main-div {
   position: relative;
@@ -3152,9 +3219,18 @@ text-decoration: underline;
       width: 360px !important;
 
     }
+    /* .my-page-category-container {
+      width: 90%;
+      margin: 5px auto 10px 15px;
+    } */
 }
 
 @media screen and (max-width: 500px) {
+
+  /* .my-page-category-container {
+    width: 90%;
+    margin: 5px auto 10px 15px;
+  } */
 
   .show-flat-amenity-show-each {
     max-width: 155px;
