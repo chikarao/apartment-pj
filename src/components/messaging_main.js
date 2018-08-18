@@ -12,6 +12,7 @@ import Conversations from './messaging/conversations';
 // const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 // const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 const RESIZE_BREAK_POINT = 800;
+const SUB_BOX_LISTING_CLASS_ARRAY = ['main-messagin-sub-control-listing-details', 'main-messagin-sub-control-listing-details-img', 'main-messagin-sub-control-listing-details-box', 'main-messagin-sub-control-listing-details-box-div'];
 
 class MessagingMain extends Component {
   constructor(props) {
@@ -131,46 +132,34 @@ class MessagingMain extends Component {
       );
 
   }
-  // renderMessagingControls() {
-  //   // console.log('in messagingMain, renderMessagingControls, this.state.showMessageControls: ', this.state.showMessageControls);
-  //     return (
-  //       <div id="messaging-main-messaging-control-box" value="subControl" onClick={this.handleMessageEditClick.bind(this)} className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
-  //         <ul className="messaging-controls-ul">
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Show messages by listing</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 2</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 3</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //           <li className="messaging-controls-li"name="" value="subControl" onClick={this.handleMessageEditClick.bind(this)}>Choice 4</li>
-  //         </ul>
-  //       </div>
-  //     );
-  //
-  // }
+
+  renderListingDetails(listing) {
+    return (
+      <div name={listing.id} value="listingClick" id="" className="main-messagin-sub-control-listing-details" onClick={this.handleMessageEditClick.bind(this)}>
+        <img name={listing.id} className="main-messagin-sub-control-listing-details-img" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + listing.images[0].publicid + '.jpg'} alt="" />
+        <div name={listing.id} className="main-messagin-sub-control-listing-details-box">
+          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">{listing.description.substring(0, 15)}...</div>
+          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">{listing.area.substring(0, 15)}...</div>
+          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">id: {listing.id}</div>
+        </div>
+      </div>
+    );
+  }
+
+  renderEachMessageSubControlListing() {
+    return _.map(this.props.flats, listing => {
+      // return <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>{listing.id}</div>;
+      return <div key={listing.id} name={listing.id} value="listingClick" className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>{this.renderListingDetails(listing)}</div>;
+    })
+  }
 
   renderMessagingSubControls() {
     console.log('in messagingMain, renderMessagingSubControls: ');
       return (
         <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 1</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 2</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 3</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
-          <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>Listing 4</div>
+          {this.renderEachMessageSubControlListing()}
+          {this.renderEachMessageSubControlListing()}
+          {this.renderEachMessageSubControlListing()}
         </div>
       );
   }
@@ -195,10 +184,15 @@ class MessagingMain extends Component {
   // after conversation checkbox checked, handles what to do with the conversations;
   handleMessageEditClick(event) {
     const clickedElement = event.target;
+    // const clickedElementParent = clickedElement.parentNode;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
+    const elementName = clickedElement.getAttribute('name');
+    console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
     // console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
-    // console.log('in messagingMain, handleMessageEditClick, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+
+    const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
+    console.log('in messagingMain, handleMessageEditClick, SUB_BOX_LISTING_CLASS_ARRAY: ', SUB_BOX_LISTING_CLASS_ARRAY);
+    console.log('in messagingMain, handleMessageEditClick, listingClicked: ', listingClicked);
 
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
@@ -288,6 +282,10 @@ class MessagingMain extends Component {
         // this.filterConversations();
       })
     }
+    if (listingClicked) {
+        console.log('in messagingMain, handleMessageEditClick, listingClick, elementName flat id: ', elementName);
+        // this.filterConversations();
+    }
   }
   // handle clicks after message control box opened by clicking on ellipsis
   // basically, if there are any clicks outside of the two control boxes, close the box(es)
@@ -309,15 +307,18 @@ class MessagingMain extends Component {
     _.each(subBox.childNodes, subBoxChild => {
       subBoxChildNodeArray.push(subBoxChild.className)
     });
+    // !!! If any classes added below subBox, add into this array subBoxOtherDecendantsArray so that any clicks inside will not close box!!!!!
+    const subBoxOtherDecendantsArray = SUB_BOX_LISTING_CLASS_ARRAY;
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, boxChildNodeArray: ', boxChildNodeArray);
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, subBoxChildNodeArray: ', subBoxChildNodeArray);
     const boxChildrenClicked = boxChildNodeArray.includes(e.target.className);
     const subBoxChildrenClicked = subBoxChildNodeArray.includes(e.target.className);
+    const subBoxOtherDecendantsClicked = subBoxOtherDecendantsArray.includes(e.target.className);
     // const ellipsisClicked = ellipsisArray.includes(e.target.className);
     const boxClicked = (box.className == e.target.className)
     const subBoxClicked = (subBox.className == e.target.className)
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, boxClicked, subBoxClicked: ', boxClicked, subBoxClicked);
-    if ((!boxClicked & !subBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked)) {
+    if ((!boxClicked & !subBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked && !subBoxOtherDecendantsClicked)) {
       console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked: ');
       this.setState({ showMessageControls: !this.state.showMessageControls }, () => {
         if (this.state.showMessageSubControls == true) {
