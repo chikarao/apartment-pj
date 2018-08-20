@@ -27,7 +27,9 @@ class MessagingMain extends Component {
       showMessageControls: false,
       showMessageSubControls: false,
       sortListingId: null,
-      sortListingSelected: false
+      sortListingSelected: false,
+      sortByDateNew: true,
+      sortByDateOld: false
     };
   }
 
@@ -115,13 +117,12 @@ class MessagingMain extends Component {
     // console.log('in messagingMain, renderMessagingControls, this.state.showMessageControls: ', this.state.showMessageControls);
       return (
         <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
-            <div style={{ fontWeight: 'bold' }}>Order by</div>
-          <div className="messaging-controls-div">Message Date (Newest)</div>
-          <div className="messaging-controls-div">Message Date (Oldest) </div>
+          <div style={{ fontWeight: 'bold' }}>Order by</div>
+          <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Newest)</div>
+          <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Oldest) </div>
 
         </div>
       );
-
   }
 
   renderListingDetails(listing) {
@@ -186,6 +187,26 @@ class MessagingMain extends Component {
     })
       // if (listing.name == 0)
       // allListings.style.border = '1px dotted gray';
+  }
+
+  unhighlightOrder() {
+    const orderDivs = document.getElementsByClassName('messaging-controls-div');
+    _.each(orderDivs, eachDiv => {
+      const divChanged = eachDiv;
+      divChanged.style.backgroundColor = 'white';
+    })
+  }
+
+  highlightOrder(newOrOld) {
+    const orderDivs = document.getElementsByClassName('messaging-controls-div');
+    _.each(orderDivs, eachDiv => {
+      console.log('in messagingMain, highlightOrder, before if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
+      if (newOrOld == eachDiv.getAttribute('name')) {
+        console.log('in messagingMain, highlightOrder, if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
+        const changedDiv = eachDiv;
+        changedDiv.style.backgroundColor = 'gray'
+      }
+    })
   }
 
   // after conversation checkbox checked, handles what to do with the conversations;
@@ -292,6 +313,28 @@ class MessagingMain extends Component {
       }
     }
 
+    if (elementVal == 'orderByDate') {
+      // this.unhighlightListing()
+      if (elementName == 'new') {
+        if (this.state.sortByDateOld) {
+          // this.unhighlightOrder();
+          this.setState({ sortByDateNew: true, sortByDateOld: false }, () => {
+            console.log('in messagingMain, handleMessageEditClick, this.state.sortByDateNew, this.state.sortByDateOld: ', this.state.sortByDateNew, this.state.sortByDateOld);
+            // this.highlightOrder(elementName);
+          });
+        }
+      }
+      if (elementName == 'old') {
+        if (this.state.sortByDateNew) {
+          // this.unhighlightOrder();
+          this.setState({ sortByDateNew: false, sortByDateOld: true }, () => {
+            console.log('in messagingMain, handleMessageEditClick, this.state.sortByDateNew, this.state.sortByDateOld: ', this.state.sortByDateNew, this.state.sortByDateOld);
+            // this.highlightOrder(elementName);
+          });
+        }
+      }
+    }
+
     // if (elementVal == 'subControl') {
     //   this.setState({ showMessageSubControls: !this.state.showMessageSubControls }, () => {
     //     console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
@@ -383,10 +426,24 @@ class MessagingMain extends Component {
     );
   }
 
+  orderByDate(filteredConversationsArray) {
+    const newest = [...filteredConversationsArray].sort(function (a, b) {
+      console.log('in messagingMain, initialFilteredConversations, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));
+      return (new Date(a.messages[a.messages.length - 1].created_at)) - (new Date(b.messages[b.messages.length - 1].created_at))
+    });
+
+    const oldest = [...filteredConversationsArray].sort(function (a, b) {
+      // console.log('in messagingMain, initialFilteredConversations, oldest, a, b : ', a, b);
+      return (new Date((b.messages[b.messages.length - 1].created_at)) - (new Date(a.messages[a.messages.length - 1].created_at)))
+    });
+    // console.log('in messagingMain, initialFilteredConversations, newest, oldest : ', newest, oldest);
+      return this.state.sortByDateNew ? newest : oldest;
+  }
+
   // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
     let filteredConversationsArray = [];
-    console.log('in messagingMain, initialFilteredConversations, this.props.conversations : ', this.props.conversations);
+    // console.log('in messagingMain, initialFilteredConversations, this.props.conversations : ', this.props.conversations);
     if (this.state.showAllConversations) {
       // filteredConversationsArray = this.props.conversations
       _.each(this.props.conversations, conv => {
@@ -395,7 +452,21 @@ class MessagingMain extends Component {
         }
       });
     }
-    return filteredConversationsArray;
+    const orderedArray = this.orderByDate(filteredConversationsArray);
+    // const newest = [...filteredConversationsArray].sort(function (a, b) {
+    //   console.log('in messagingMain, initialFilteredConversations, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));
+    //   return (new Date(a.messages[a.messages.length - 1].created_at)) - (new Date(b.messages[b.messages.length - 1].created_at))
+    // });
+    //
+    // const oldest = [...filteredConversationsArray].sort(function (a, b) {
+    //   // console.log('in messagingMain, initialFilteredConversations, oldest, a, b : ', a, b);
+    //   return (new Date((b.messages[b.messages.length - 1].created_at)) - (new Date(a.messages[a.messages.length - 1].created_at)))
+    // });
+    // console.log('in messagingMain, initialFilteredConversations, newest, oldest : ', newest, oldest);
+
+    console.log('in messagingMain, initialFilteredConversations, filteredConversationsArray: ', filteredConversationsArray);
+    return orderedArray;
+    // return filteredConversationsArray;
   }
 
   filteredByListing() {
@@ -419,8 +490,11 @@ class MessagingMain extends Component {
     if (this.props.conversations) {
       const filteredConversationsArray = [];
       console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
-      const convervationsFilteredByListing = this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin) ? this.filteredByListing() : this.props.conversations;
-      console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
+      const convervationsFilteredByListing =
+        this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin)
+        ?
+        this.filteredByListing() : this.props.conversations;
+        console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
 
 
       if (this.state.showTrashBin) {
@@ -447,11 +521,16 @@ class MessagingMain extends Component {
         // this.setState({ filteredConversationsArray });
       }
 
-      if (this.state.sortListingSelected && this.state.showAllConversations && !(this.state.showArchiveBin || this.state.showTrashBin)) {
-        return convervationsFilteredByListing;
+      if (this.state.sortListingSelected && this.state.showAllConversations) {
+        const dataOrderedArray = this.orderByDate(convervationsFilteredByListing);
+        return dataOrderedArray;
+        // return convervationsFilteredByListing;
       }
 
-      return filteredConversationsArray;
+      const dataOrderedArray = this.orderByDate(filteredConversationsArray);
+
+      return dataOrderedArray;
+      // return filteredConversationsArray;
     } // end of first if
     // console.log('in messagingMain, filterConversations, filteredConversationsArray  : ', filteredConversationsArray);
     // return filteredConversationsArray;
@@ -460,6 +539,7 @@ class MessagingMain extends Component {
   // Calls conversation.js and passes conversations to show based on which box (trash, archive)
   // the user has selected
   renderConversations() {
+    console.log('in messagingMain, renderConversations, this.initialFilteredConversations(): ', this.initialFilteredConversations());
     // console.log('in messagingMain, renderConversations, document.getElementsByTagName  : ', document.getElementsByTagName('input'));
     // console.log('in messagingMain, renderConversations, document.getElementsByClassName  : ', document.getElementsByClassName('conversations-input-checkbox'));
     const moveElemment = document.getElementById('conversation-main-ul');
