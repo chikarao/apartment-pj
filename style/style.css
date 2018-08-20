@@ -1619,7 +1619,12 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: blue;
   font-weight: bold;
 }
-.fa-ellipsis-v:before {
+.fa-sort:before {
+  color: gray;
+  font-size: 19px;
+  font-weight: normal;
+}
+.fa-filter:before {
   color: gray;
   font-size: 19px;
   font-weight: normal;
@@ -1649,32 +1654,41 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   border: 1px solid #ccc;
   width: 100%;
   height: 35px;
-  margin-left: 5px;
-  padding: 5px;
+  padding: 10px 0 0 0;
 
 }
 
 .messaging-sub-controls-div {
   border: 1px solid #ccc;
-  padding: 1px !important;
-  width: 100%;
-  height: auto;
-  margin: 5px 0 5px 0;
+    width: 100%;
+    /* height: 35px; */
+    /* margin-left: 5px; */
+    /* padding: 5px; */
+    padding-top: 10px;
 
 }
 
 .messaging-main-messaging-sub-control-box {
-  height: 300px;
+  height: 400px;
   width: 200px;
   background-color: white;
   z-index: 11;
   position: absolute;
-  top: 80px;
+  top: 50px;
   /* right: 0; */
-  left: 60px;
+  left: 40px;
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 10px;
+  overflow: hidden;
+  /* overflow-y: scroll; */
+  /* display: flex; */
+  flex-direction: column;
+  text-align: left;
+}
+.messaging-main-messaging-sub-control-box-scroll {
+  height: 310px;
+  width: 100%;
   overflow: hidden;
   overflow-y: scroll;
   /* display: flex; */
@@ -1695,11 +1709,19 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .main-messagin-sub-control-listing-details-box {
   height: 50px;
-  padding: 1px;
+  padding: 1px 1px 1px 3px;
   width: auto;
   border: 1px solid #ccc;
   flex-grow: 100;
   font-size: 2px;
+}
+
+#main-messaging-search-box {
+  margin: 0 0 15px 0;
+  width: 100%;
+  height: 35px;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 
