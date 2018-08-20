@@ -1615,11 +1615,12 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: bold;
 }
 .messaging-main-large-archive i {
-  font-size: 25px;
-  color: blue;
+  font-size: 18px;
+  /* color: blue; */
+  color: gray;
   font-weight: bold;
 }
-.fa-sort:before {
+/* .fa-sort:before {
   color: gray;
   font-size: 19px;
   font-weight: normal;
@@ -1628,7 +1629,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: gray;
   font-size: 19px;
   font-weight: normal;
-}
+} */
 
 .messaging-main-messaging-control-box {
   height: 300px;
@@ -1636,9 +1637,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   background-color: white;
   z-index: 10;
   position: absolute;
-  top: 45px;
+  top: 50px;
   /* right: 0; */
-  left: 20px;
+  left: 15px;
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 20px 10px 20px 10px;
@@ -1651,7 +1652,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .messaging-controls-div {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   width: 100%;
   height: 35px;
   padding: 10px 0 0 0;
@@ -1659,7 +1660,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .messaging-sub-controls-div {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
     width: 100%;
     /* height: 35px; */
     /* margin-left: 5px; */
@@ -1670,7 +1671,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .messaging-main-messaging-sub-control-box {
   height: 400px;
-  width: 200px;
+  width: 240px;
   background-color: white;
   z-index: 11;
   position: absolute;
@@ -1687,7 +1688,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-align: left;
 }
 .messaging-main-messaging-sub-control-box-scroll {
-  height: 310px;
+  height: 270px;
   width: 100%;
   overflow: hidden;
   overflow-y: scroll;
@@ -1696,25 +1697,36 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-align: left;
 }
 
-.main-messagin-sub-control-listing-details {
+.main-messaging-sub-control-listing-details {
   display: flex;
   justify-content: space-between;
+  padding: 0 0 0 5px;
 }
 
-.main-messagin-sub-control-listing-details img{
+.main-messaging-sub-control-listing-details img{
   width: 75px;
   height: 50px;
   padding: 1px;
+  border-radius: 4px;
 }
 
-.main-messagin-sub-control-listing-details-box {
+.main-messaging-sub-control-listing-details-box {
   height: 50px;
   padding: 1px 1px 1px 3px;
   width: auto;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   flex-grow: 100;
   font-size: 2px;
+  border-radius: 3px;
 }
+
+.messaging-main-sub-control-box-all-listings {
+  /* border: 1px solid #ccc; */
+  padding: 5px 0 5px 5px;
+  margin: 10px 0 0 0;
+  border-radius: 4px;
+}
+
 
 #main-messaging-search-box {
   margin: 0 0 15px 0;

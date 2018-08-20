@@ -12,7 +12,8 @@ import Conversations from './messaging/conversations';
 // const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 // const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 const RESIZE_BREAK_POINT = 800;
-const SUB_BOX_LISTING_CLASS_ARRAY = ['main-messagin-sub-control-listing-details', 'main-messagin-sub-control-listing-details-img', 'main-messagin-sub-control-listing-details-box', 'main-messagin-sub-control-listing-details-box-div'];
+// if any of the class names below are changed in any way, update the array below
+const SUB_BOX_LISTING_CLASS_ARRAY = ['main-messaging-sub-control-listing-details', 'main-messaging-sub-control-listing-details-img', 'main-messaging-sub-control-listing-details-box', 'main-messaging-sub-control-listing-details-box-div', 'messaging-main-sub-control-box-all-listings'];
 
 class MessagingMain extends Component {
   constructor(props) {
@@ -24,7 +25,9 @@ class MessagingMain extends Component {
       showAllConversations: true,
       filteredConversationsArray: [],
       showMessageControls: false,
-      showMessageSubControls: false
+      showMessageSubControls: false,
+      sortListingId: null,
+      sortListingSelected: false
     };
   }
 
@@ -58,8 +61,19 @@ class MessagingMain extends Component {
     if (this.state.showAllConversations) {
       return (
         <div className="messaging-main-controls-left">
-          <span className="btn messaging-main-large-archive ellipsis" value="ellipsis" onClick={this.handleMessageEditClick.bind(this)}><i className="fa fa-sort ellipsis" value="ellipsis" onClick={this.handleMessageEditClick.bind(this)}></i></span>
-          <span className="btn messaging-main-large-archive filter" value="filter" onClick={this.handleMessageEditClick.bind(this)}><i className="fa fa-filter filter" value="filter" onClick={this.handleMessageEditClick.bind(this)}></i></span>
+          <span className="btn messaging-main-large-archive sort" value="sort" onClick={this.handleMessageEditClick.bind(this)}><i className="fa fa-sort sort" value="sort" onClick={this.handleMessageEditClick.bind(this)}></i></span>
+          <span
+            className="btn messaging-main-large-archive filter"
+            value="filter"
+            onClick={this.handleMessageEditClick.bind(this)}
+            >
+            <i className="fa fa-filter filter" value="filter"
+              // style={this.state.sortListingSelected ? { color: '#fff600' } : { color: 'gray' }}
+              style={this.state.sortListingSelected ? { color: 'green' } : { color: 'gray' }}
+              onClick={this.handleMessageEditClick.bind(this)}
+            >
+            </i>
+            </span>
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</span>
           <span value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</span>
           <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
@@ -102,10 +116,9 @@ class MessagingMain extends Component {
       return (
         <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
             <div style={{ fontWeight: 'bold' }}>Order by</div>
-          <div className="messaging-controls-div">Message Date Most recent</div>
-          <div className="messaging-controls-div">Message Date Oldest </div>
-          <div className="messaging-controls-div">Choice 3</div>
-          <div className="messaging-controls-div">Choice 4</div>
+          <div className="messaging-controls-div">Message Date (Newest)</div>
+          <div className="messaging-controls-div">Message Date (Oldest) </div>
+
         </div>
       );
 
@@ -113,12 +126,12 @@ class MessagingMain extends Component {
 
   renderListingDetails(listing) {
     return (
-      <div name={listing.id} value="listingClick" id="" className="main-messagin-sub-control-listing-details" onClick={this.handleMessageEditClick.bind(this)}>
-        <img name={listing.id} className="main-messagin-sub-control-listing-details-img" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + listing.images[0].publicid + '.jpg'} alt="" />
-        <div name={listing.id} className="main-messagin-sub-control-listing-details-box">
-          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">{listing.description.substring(0, 15)}...</div>
-          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">{listing.area.substring(0, 15)}...</div>
-          <div name={listing.id} className="main-messagin-sub-control-listing-details-box-div">id: {listing.id}</div>
+      <div name={listing.id} value="listingClick" id="" className="main-messaging-sub-control-listing-details" onClick={this.handleMessageEditClick.bind(this)}>
+        <img name={listing.id} className="main-messaging-sub-control-listing-details-img" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + listing.images[0].publicid + '.jpg'} alt="" />
+        <div name={listing.id} className="main-messaging-sub-control-listing-details-box">
+          <div name={listing.id} className="main-messaging-sub-control-listing-details-box-div">{listing.description.substring(0, 30)}</div>
+          <div name={listing.id} className="main-messaging-sub-control-listing-details-box-div">{listing.area.substring(0, 30)}</div>
+          <div name={listing.id} className="main-messaging-sub-control-listing-details-box-div">id: {listing.id}</div>
         </div>
       </div>
     );
@@ -127,7 +140,7 @@ class MessagingMain extends Component {
   renderEachMessageSubControlListing() {
     return _.map(this.props.flats, listing => {
       // return <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>{listing.id}</div>;
-      return <div key={listing.id} name={listing.id} value="listingClick" className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>{this.renderListingDetails(listing)}</div>;
+      return <div key={listing.id} name={listing.id} value="listingClick" className="messaging-sub-controls-div" onClick={this.handleMessageEditClick.bind(this)}>{this.renderListingDetails(listing)}</div>;
     })
   }
 
@@ -137,13 +150,42 @@ class MessagingMain extends Component {
         <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
           <input id="main-messaging-search-box" placeholder="Filter by key words"></input>
           <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
+          <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
             <div className="messaging-main-messaging-sub-control-box-scroll">
-              {this.renderEachMessageSubControlListing()}
-              {this.renderEachMessageSubControlListing()}
               {this.renderEachMessageSubControlListing()}
             </div>
         </div>
       );
+  }
+
+  unhighlightListing() {
+    const listings = document.getElementsByClassName('messaging-sub-controls-div');
+    const allListings = document.getElementById('messaging-main-sub-control-box-all-listings')
+
+    _.each(listings, listing => {
+      const changedListing = listing;
+      const child = changedListing.lastChild;
+      child.style.backgroundColor = 'white';
+    })
+
+      allListings.style.border = 'white';
+  }
+
+  highlightListing(ListingId) {
+    const listings = document.getElementsByClassName('messaging-sub-controls-div');
+    const allListings = document.getElementById('messaging-main-sub-control-box-all-listings')
+
+    _.each(listings, listing => {
+      console.log('in messagingMain, highlightListing, ListingId, listing, listing.name: ', ListingId, listing, listing.name);
+      if (listing.getAttribute('name') == ListingId) {
+        const changedListing = listing;
+        const child = changedListing.lastChild;
+
+        child.style.backgroundColor = 'lightgray';
+      }
+    })
+      // if (listing.name == 0)
+      // allListings.style.border = '1px dotted gray';
   }
 
   // after conversation checkbox checked, handles what to do with the conversations;
@@ -227,7 +269,7 @@ class MessagingMain extends Component {
       })
     }
 
-    if (elementVal == 'ellipsis') {
+    if (elementVal == 'sort') {
       this.setState({ showMessageControls: !this.state.showMessageControls, showMessageSubControls: false }, () => {
         console.log('in messagingMain, handleMessageEditClick, this.state.showMessageControls: ', this.state.showMessageControls);
         const body = document.getElementById('messaging-main-main-container');
@@ -241,6 +283,14 @@ class MessagingMain extends Component {
         // this.filterConversations();
       });
     }
+    if (elementVal == 'allListings') {
+      this.unhighlightListing()
+      if (this.state.sortListingSelected) {
+        this.setState({ sortListingId: 0, sortListingSelected: false }, () => {
+          console.log('in messagingMain, handleMessageEditClick, this.state.sortListingSelected: ', this.state.sortListingSelected);
+        });
+      }
+    }
 
     // if (elementVal == 'subControl') {
     //   this.setState({ showMessageSubControls: !this.state.showMessageSubControls }, () => {
@@ -250,7 +300,13 @@ class MessagingMain extends Component {
     // }
 
     if (listingClicked) {
-        console.log('in messagingMain, handleMessageEditClick, listingClick, elementName flat id: ', elementName);
+      if (clickedElement.className !== 'messaging-main-sub-control-box-all-listings') {
+        this.unhighlightListing(elementName);
+        this.setState({ sortListingId: elementName, sortListingSelected: true }, () => {
+          console.log('in messagingMain, handleMessageEditClick, listingClicked, this.state.sortListingId: ', this.state.sortListingId);
+          this.highlightListing(this.state.sortListingId);
+        })
+      }
         // this.filterConversations();
     }
 
@@ -264,7 +320,7 @@ class MessagingMain extends Component {
       })
     }
   }
-  // handle clicks after message control box opened by clicking on ellipsis
+  // handle clicks after message control box opened by clicking on sort
   // basically, if there are any clicks outside of the two control boxes, close the box(es)
   messageControlCloseClick = (e) => {
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
@@ -272,10 +328,10 @@ class MessagingMain extends Component {
     // get boxes elements and ellips elements (className returns array)
     const box = document.getElementById('messaging-main-messaging-control-box')
     const subBox = document.getElementById('messaging-main-messaging-sub-control-box')
-    // const ellipsisArray = document.getElementsByClassName('ellipsis')
+    // const sortArray = document.getElementsByClassName('sort')
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, box subBox: ', box, subBox);
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, box.childNodes subBox.childNodes: ', box.childNodes, subBox.childNodes);
-    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, ellipsisArray: ', ellipsisArray);
+    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, sortArray: ', sortArray);
     const boxChildNodeArray = [];
     const subBoxChildNodeArray = [];
     _.each(box.childNodes, boxChild => {
@@ -291,7 +347,7 @@ class MessagingMain extends Component {
     const boxChildrenClicked = boxChildNodeArray.includes(e.target.className);
     const subBoxChildrenClicked = subBoxChildNodeArray.includes(e.target.className);
     const subBoxOtherDecendantsClicked = subBoxOtherDecendantsArray.includes(e.target.className);
-    // const ellipsisClicked = ellipsisArray.includes(e.target.className);
+    // const sortClicked = sortArray.includes(e.target.className);
     const boxClicked = (box.className == e.target.className)
     const subBoxClicked = (subBox.className == e.target.className)
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, boxClicked, subBoxClicked: ', boxClicked, subBoxClicked);
@@ -329,7 +385,8 @@ class MessagingMain extends Component {
 
   // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
-    const filteredConversationsArray = [];
+    let filteredConversationsArray = [];
+    console.log('in messagingMain, initialFilteredConversations, this.props.conversations : ', this.props.conversations);
     if (this.state.showAllConversations) {
       // filteredConversationsArray = this.props.conversations
       _.each(this.props.conversations, conv => {
@@ -340,6 +397,21 @@ class MessagingMain extends Component {
     }
     return filteredConversationsArray;
   }
+
+  filteredByListing() {
+    const array = [];
+    _.each(this.props.conversations, conv => {
+      // console.log('in messagingMain, filteredByListing, conv.flat_id, this.state.sortListingId: ', conv.flat_id, this.state.sortListingId);
+      if (conv.flat_id == this.state.sortListingId) {
+        console.log('in messagingMain, filteredByListing, conv.flat_id, this.state.sortListingId: ', conv.flat_id, this.state.sortListingId);
+        if (!conv.archived && !conv.trashed) {
+          array.push(conv);
+        }
+      }
+    })
+    console.log('in messagingMain, filteredByListing, array: ', array);
+    return array;
+  }
   // filters conversation based on attributes of conversations, trashed or archived
   // and passes to conversation.js
   // called in renderConversations
@@ -347,9 +419,12 @@ class MessagingMain extends Component {
     if (this.props.conversations) {
       const filteredConversationsArray = [];
       console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
+      const convervationsFilteredByListing = this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin) ? this.filteredByListing() : this.props.conversations;
+      console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
+
 
       if (this.state.showTrashBin) {
-        _.each(this.props.conversations, conv => {
+        _.each(convervationsFilteredByListing, conv => {
           console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
           if (conv.trashed && (conv.archived || !conv.archived)) {
@@ -362,7 +437,7 @@ class MessagingMain extends Component {
       }
 
       if (this.state.showArchiveBin) {
-        _.each(this.props.conversations, conv => {
+        _.each(convervationsFilteredByListing, conv => {
           console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
           // archived cannot be trashed
           if (conv.archived && !conv.trashed) {
@@ -371,6 +446,11 @@ class MessagingMain extends Component {
         });
         // this.setState({ filteredConversationsArray });
       }
+
+      if (this.state.sortListingSelected && this.state.showAllConversations && !(this.state.showArchiveBin || this.state.showTrashBin)) {
+        return convervationsFilteredByListing;
+      }
+
       return filteredConversationsArray;
     } // end of first if
     // console.log('in messagingMain, filterConversations, filteredConversationsArray  : ', filteredConversationsArray);
@@ -404,7 +484,7 @@ class MessagingMain extends Component {
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderEachMainControl()}
           <Conversations
             // conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.state.filteredConversationsArray}
-            conversations={this.state.showAllConversations ? this.initialFilteredConversations() : this.filterConversations()}
+            conversations={this.state.showAllConversations && !this.state.sortListingSelected ? this.initialFilteredConversations() : this.filterConversations()}
             onMessagingMain
             onMessageMainMobile={this.state.windowWidth < RESIZE_BREAK_POINT}
           />
