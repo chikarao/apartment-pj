@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
-// import cloudinary from 'cloudinary-core';
 
 import * as actions from '../actions';
 
 import Messaging from './messaging/messaging';
 import Conversations from './messaging/conversations';
 
-//
-// const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-// const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 const RESIZE_BREAK_POINT = 800;
 // if any of the class names below are changed in any way, update the array below
 const SUB_BOX_LISTING_CLASS_ARRAY = ['main-messaging-sub-control-listing-details', 'main-messaging-sub-control-listing-details-img', 'main-messaging-sub-control-listing-details-box', 'main-messaging-sub-control-listing-details-box-div', 'messaging-main-sub-control-box-all-listings'];
@@ -29,8 +24,10 @@ class MessagingMain extends Component {
       sortListingId: null,
       sortListingSelected: false,
       sortByDateNew: true,
-      sortByDateOld: false
+      sortByDateOld: false,
+      searchInputVal: ''
     };
+    // this.handleSearchInput = this.handleSearchInput.bind(this);
   }
 
   componentDidMount() {
@@ -71,7 +68,7 @@ class MessagingMain extends Component {
             >
             <i className="fa fa-filter filter" value="filter"
               // style={this.state.sortListingSelected ? { color: '#fff600' } : { color: 'gray' }}
-              style={this.state.sortListingSelected ? { color: 'green' } : { color: 'gray' }}
+              style={(this.state.sortListingSelected || (this.state.searchInputVal !== '')) ? { color: 'green' } : { color: 'gray' }}
               onClick={this.handleMessageEditClick.bind(this)}
             >
             </i>
@@ -87,7 +84,7 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="archivebin" className="messaging-main-large-archive">Archived Messages</span>
+          <span value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>Archived Messages</span>
           <span value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>Unarchive</span>
           <span value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></span>
         </div>
@@ -98,7 +95,7 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="trashbin" className="messaging-main-large-archive">Trash Bin</span>
+          <span value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>Trash Bin</span>
           <span value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Untrash</span>
         </div>
       );
@@ -145,11 +142,19 @@ class MessagingMain extends Component {
     })
   }
 
+  handleSearchInput(event) {
+    const inputElement = event.target;
+      // !!!! inputElement.value works not elementVal.value Don't know why; Also dont need do event => this.handleSearchInput(event)
+    this.setState({ searchInputVal: inputElement.value }, () => {
+      console.log('in messagingMain, handleSearchInput, this.state.searchInputVal: ', this.state.searchInputVal);
+    })
+  }
+
   renderMessagingSubControls() {
     console.log('in messagingMain, renderMessagingSubControls: ');
       return (
         <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-          <input id="main-messaging-search-box" placeholder="Filter by key words"></input>
+          <input id="main-messaging-search-box" type="text" placeholder="Filter by key word" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
           <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
           <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
             <div className="messaging-main-messaging-sub-control-box-scroll">
@@ -185,8 +190,6 @@ class MessagingMain extends Component {
         child.style.backgroundColor = 'lightgray';
       }
     })
-      // if (listing.name == 0)
-      // allListings.style.border = '1px dotted gray';
   }
 
   unhighlightOrder() {
@@ -252,12 +255,7 @@ class MessagingMain extends Component {
       console.log('in messagingMain, handleMessageEditClick, if elementVal == untrash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
-        // this.props.checkedConversations([]);
-          // this.setState({ showAllConversations: true }, () => {});
-          // this.filterConversations();
         });
-      // this.setState({ checkedConversationsArray: [] });
-      // console.log('in messagingMain, handleMessageEditClick, this.state: ', this.state);
     }
 
     // calls action to update conversation in api to mark them archive = false
@@ -266,9 +264,6 @@ class MessagingMain extends Component {
       console.log('in messagingMain, handleMessageEditClick, if elementVal == unarchive, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
-        // this.props.checkedConversations([]);
-          // this.setState({ showAllConversations: true }, () => {});
-          // this.filterConversations();
         });
       // this.setState({ checkedConversationsArray: [] });
       // console.log('in messagingMain, handleMessageEditClick, this.state: ', this.state);
@@ -294,14 +289,8 @@ class MessagingMain extends Component {
       this.setState({ showMessageControls: !this.state.showMessageControls, showMessageSubControls: false }, () => {
         console.log('in messagingMain, handleMessageEditClick, this.state.showMessageControls: ', this.state.showMessageControls);
         const body = document.getElementById('messaging-main-main-container');
-        // const except = document.getElementById('messaging-main-messaging-control-box');
-        // console.log('in messagingMain, handleMessageEditClick, body, except: ', body, except);
+
         body.addEventListener('click', this.messageControlCloseClick);
-        // except.addEventListener("click", (ev) => {
-        //     // alert("except");
-        //     ev.stopPropagation(); //this is important! If removed, you'll get both alerts
-        // }, false);
-        // this.filterConversations();
       });
     }
     if (elementVal == 'allListings') {
@@ -334,13 +323,6 @@ class MessagingMain extends Component {
         }
       }
     }
-
-    // if (elementVal == 'subControl') {
-    //   this.setState({ showMessageSubControls: !this.state.showMessageSubControls }, () => {
-    //     console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
-    //     // this.filterConversations();
-    //   })
-    // }
 
     if (listingClicked) {
       if (clickedElement.className !== 'messaging-main-sub-control-box-all-listings') {
@@ -425,10 +407,36 @@ class MessagingMain extends Component {
       </div>
     );
   }
+  // reference: https://stackoverflow.com/questions/1789945/how-to-check-whether-a-string-contains-a-substring-in-javascript
+  // Takes input string downcases it, downcases each message
+  // and increments counter when there is a match and returns true if counter > 0
+  searchConversation(conversation, inputVal) {
+    // console.log('in messagingMain, searchConversation, conversation, before each conversation.message, inputVal : ', conversation, inputVal);
+    let counter = 0;
+   _.each(conversation.messages, eachMessage => {
+      const lowerCaseBody = eachMessage.body.toLowerCase();
+      // console.log('in messagingMain, searchConversation, conversation, eachMessage.body.toLowerCase : ', eachMessage.body.toLowerCase());
+      if (lowerCaseBody.includes(inputVal.toLowerCase())) {
+        counter++;
+      }
+    });
+
+    _.each(conversation.flat, flat => {
+      if (flat) {
+        console.log('in messagingMain, searchConversation, conversation, Object.keys(flat): ', Object.keys(flat));
+      }
+      // _.each(Object.keys(flat), (k, v) => {
+        // console.log('in messagingMain, searchConversation, conversation, flat : ', flat);
+        // console.log('in messagingMain, searchConversation, conversation, k, v : ', k, v);
+      // })
+    });
+
+    return counter > 0;
+  }
 
   orderByDate(filteredConversationsArray) {
     const newest = [...filteredConversationsArray].sort(function (a, b) {
-      console.log('in messagingMain, initialFilteredConversations, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));
+      // console.log('in messagingMain, orderByDate, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));
       return (new Date(a.messages[a.messages.length - 1].created_at)) - (new Date(b.messages[b.messages.length - 1].created_at))
     });
 
@@ -442,29 +450,34 @@ class MessagingMain extends Component {
 
   // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
-    let filteredConversationsArray = [];
+    const filteredConversationsArray = [];
     // console.log('in messagingMain, initialFilteredConversations, this.props.conversations : ', this.props.conversations);
     if (this.state.showAllConversations) {
+      // console.log('in messagingMain, initialFilteredConversations, this.state.searchInputVal: ', this.state.searchInputVal);
       // filteredConversationsArray = this.props.conversations
       _.each(this.props.conversations, conv => {
         if (!conv.trashed && !conv.archived) {
-          filteredConversationsArray.push(conv);
+          if (this.state.searchInputVal !== '') {
+            // get input value from search input;
+            const inputVal = this.state.searchInputVal;
+            // call function to search text for input string
+            const convHasSearchWords = this.searchConversation(conv, inputVal);
+            // console.log('in messagingMain, initialFilteredConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
+            // console.log('in messagingMain, initialFilteredConversations, conv, inputVal: ', conv, inputVal);
+            console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
+            // if strings included in one of messages, add to array
+            if (convHasSearchWords) {
+              filteredConversationsArray.push(conv);
+            }
+          } else { // if searchInputVal has value
+            filteredConversationsArray.push(conv);
+          }
         }
       });
     }
     const orderedArray = this.orderByDate(filteredConversationsArray);
-    // const newest = [...filteredConversationsArray].sort(function (a, b) {
-    //   console.log('in messagingMain, initialFilteredConversations, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));
-    //   return (new Date(a.messages[a.messages.length - 1].created_at)) - (new Date(b.messages[b.messages.length - 1].created_at))
-    // });
-    //
-    // const oldest = [...filteredConversationsArray].sort(function (a, b) {
-    //   // console.log('in messagingMain, initialFilteredConversations, oldest, a, b : ', a, b);
-    //   return (new Date((b.messages[b.messages.length - 1].created_at)) - (new Date(a.messages[a.messages.length - 1].created_at)))
-    // });
-    // console.log('in messagingMain, initialFilteredConversations, newest, oldest : ', newest, oldest);
 
-    console.log('in messagingMain, initialFilteredConversations, filteredConversationsArray: ', filteredConversationsArray);
+    // console.log('in messagingMain, initialFilteredConversations, filteredConversationsArray: ', filteredConversationsArray);
     return orderedArray;
     // return filteredConversationsArray;
   }
@@ -539,7 +552,7 @@ class MessagingMain extends Component {
   // Calls conversation.js and passes conversations to show based on which box (trash, archive)
   // the user has selected
   renderConversations() {
-    console.log('in messagingMain, renderConversations, this.initialFilteredConversations(): ', this.initialFilteredConversations());
+    // console.log('in messagingMain, renderConversations, this.initialFilteredConversations(): ', this.initialFilteredConversations());
     // console.log('in messagingMain, renderConversations, document.getElementsByTagName  : ', document.getElementsByTagName('input'));
     // console.log('in messagingMain, renderConversations, document.getElementsByClassName  : ', document.getElementsByClassName('conversations-input-checkbox'));
     const moveElemment = document.getElementById('conversation-main-ul');
@@ -572,16 +585,6 @@ class MessagingMain extends Component {
     );
   }
 
-  // currentUserIsOwner() {
-  //   if (this.props.auth && this.props.flat) {
-  //     console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-  //     console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-  //     console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
-  //     return (this.props.auth.id == this.props.flat.user_id);
-  //     // return true;
-  //     // return false;
-  //   }
-  // }
 
   // Class wrapping messaging switches based on window size
   // passes props onMessagingMain and mobileView based on window size
@@ -620,37 +623,6 @@ class MessagingMain extends Component {
   loadingCallback() {
     this.props.showLoading();
   }
-
-  // conversationSlideIn() {
-  //     const moveElemment = document.getElementById('conversation-main-ul');
-  //     // console.log('in messagingMain, conversationRollIn, moveElemment: ', moveElemment);
-  //     let pos = -100;
-  //     if (moveElemment) {
-  //       // moveElemment.style.left = '-100% !important';
-  //       // moveElemment.setAttribute('style', 'left: -100%;');
-  //
-  //       // console.log('in messagingMain, conversationRollIn, getAttribute style: ', moveElemment.getAttribute('style'));
-  //       // console.log('in messagingMain, conversationRollIn, inside if moveElemment, pos: ', moveElemment, pos);
-  //       // const id = setInterval(frame, 10);
-  //       let id = '';
-  //       frame();
-  //       function frame() {
-  //         // console.log('in messagingMain, conversationRollIn, inside function frame, pos: ', moveElemment, pos);
-  //         if (pos == 0) {
-  //           // clearInterval(id);
-  //           window.cancelAnimationFrame(id);
-  //         } else {
-  //           console.log('in messagingMain, conversationRollIn, inside if pos: ', pos);
-  //           pos = pos + 1;
-  //           id = window.requestAnimationFrame(frame);
-  //           // moveElemment.style.top = pos + 'px';
-  //           // moveElemment.style.left = pos + 'px';
-  //           // moveElemment.style.left = `${pos} % !important`;
-  //           moveElemment.setAttribute('style', `left: ${pos}%`);
-  //         }
-  //       }
-  //     }
-  // }
 
   conversationSlideIn() {
       const moveElemment = document.getElementById('conversation-main-ul');
