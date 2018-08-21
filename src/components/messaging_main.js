@@ -8,7 +8,13 @@ import Conversations from './messaging/conversations';
 
 const RESIZE_BREAK_POINT = 800;
 // if any of the class names below are changed in any way, update the array below
-const SUB_BOX_LISTING_CLASS_ARRAY = ['main-messaging-sub-control-listing-details', 'main-messaging-sub-control-listing-details-img', 'main-messaging-sub-control-listing-details-box', 'main-messaging-sub-control-listing-details-box-div', 'messaging-main-sub-control-box-all-listings'];
+const SUB_BOX_LISTING_CLASS_ARRAY = [
+  'main-messaging-sub-control-listing-details',
+  'main-messaging-sub-control-listing-details-img',
+  'main-messaging-sub-control-listing-details-box',
+  'main-messaging-sub-control-listing-details-box-div',
+  'messaging-main-sub-control-box-all-listings'
+];
 
 class MessagingMain extends Component {
   constructor(props) {
@@ -60,7 +66,8 @@ class MessagingMain extends Component {
     if (this.state.showAllConversations) {
       return (
         <div className="messaging-main-controls-left">
-          <span
+          <div
+            id="messaging-main-large-archive-sort"
             className="btn messaging-main-large-archive sort"
             value="sort"
             onClick={this.handleMessageEditClick.bind(this)}
@@ -72,8 +79,9 @@ class MessagingMain extends Component {
             onClick={this.handleMessageEditClick.bind(this)}
             >
             </i>
-          </span>
-          <span
+          </div>
+          <div
+            id="messaging-main-large-archive-filter"
             className="btn messaging-main-large-archive filter"
             value="filter"
             onClick={this.handleMessageEditClick.bind(this)}
@@ -86,31 +94,31 @@ class MessagingMain extends Component {
               onClick={this.handleMessageEditClick.bind(this)}
             >
             </i>
-          </span>
-          <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</span>
-          <span value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</span>
-          <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
+          </div>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</div>
+          <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</div>
+          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
         </div>
       );
     }
     if (this.state.showArchiveBin) {
-      // <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
+      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
       return (
         <div className="messaging-main-controls-left">
-          <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>Archived Messages</span>
-          <span value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>Unarchive</span>
-          <span value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></span>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
+          <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>Archived Messages</div>
+          <div value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>Unarchive</div>
+          <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
         </div>
       );
     }
     if (this.state.showTrashBin) {
-      // <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
+      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
       return (
         <div className="messaging-main-controls-left">
-          <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></span>
-          <span value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>Trash Bin</span>
-          <span value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Untrash</span>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
+          <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>Trash Bin</div>
+          <div value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Untrash</div>
         </div>
       );
     }
@@ -126,8 +134,23 @@ class MessagingMain extends Component {
 
   renderMessagingControls() {
     // console.log('in messagingMain, renderMessagingControls, this.state.showMessageControls: ', this.state.showMessageControls);
+    const conversationBox = document.getElementById('messaging-main-conversation-box')
+    const elementFilter = document.getElementById('messaging-main-large-archive-sort')
+    let leftDiff = null;
+    // console.log('in messagingMain, renderMessagingSubControls, elementFilter, conversationBox: ', elementFilter, conversationBox);
+    // console.log('in messagingMain, renderMessagingSubControls: ', this.state.sortListingSelected);
+    if (elementFilter && conversationBox) {
+      const rect = elementFilter.getBoundingClientRect();
+      const rectBox = conversationBox.getBoundingClientRect();
+      console.log('in messagingMain, renderMessagingSubControls, rect.top, rect.right, rect.bottom, rect.left: ', rect.top, rect.right, rect.bottom, rect.left);
+      console.log('in messagingMain, renderMessagingSubControls, rectBox.top, rectBox.right, rectBox.bottom, rectBox.left: ', rectBox.top, rectBox.right, rectBox.bottom, rectBox.left);
+      leftDiff = rect.left - rectBox.left;
+      console.log('in messagingMain, renderMessagingSubControls, leftDiff: ', leftDiff);
+      // const elementFilterPos = elementFilter.offsetLeft();
+      // const conversationBoxPos = conversationBox.offsetLeft();
+    }
       return (
-        <div className="messaging-main-messaging-control-box-box">
+        <div className="messaging-main-messaging-control-box-box" id="messaging-main-messaging-control-box-box" style={{ left: `${leftDiff - 5}px` }}>
           <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
             <div style={{ fontWeight: 'bold' }}>Order by</div>
             <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Newest)</div>
@@ -166,9 +189,23 @@ class MessagingMain extends Component {
   }
 
   renderMessagingSubControls() {
-    console.log('in messagingMain, renderMessagingSubControls: ', this.state.sortListingSelected);
+    const conversationBox = document.getElementById('messaging-main-conversation-box')
+    const elementSort = document.getElementById('messaging-main-large-archive-filter')
+    let leftDiff = null;
+    // console.log('in messagingMain, renderMessagingSubControls, elementSort, conversationBox: ', elementSort, conversationBox);
+    // console.log('in messagingMain, renderMessagingSubControls: ', this.state.sortListingSelected);
+    if (elementSort && conversationBox) {
+      const rect = elementSort.getBoundingClientRect();
+      const rectBox = conversationBox.getBoundingClientRect();
+      console.log('in messagingMain, renderMessagingSubControls, rect.top, rect.right, rect.bottom, rect.left: ', rect.top, rect.right, rect.bottom, rect.left);
+      console.log('in messagingMain, renderMessagingSubControls, rectBox.top, rectBox.right, rectBox.bottom, rectBox.left: ', rectBox.top, rectBox.right, rectBox.bottom, rectBox.left);
+      leftDiff = rect.left - rectBox.left;
+      console.log('in messagingMain, renderMessagingSubControls, leftDiff: ', leftDiff);
+      // const elementSortPos = elementSort.offsetLeft();
+      // const conversationBoxPos = conversationBox.offsetLeft();
+    }
       return (
-        <div className="messaging-main-messaging-sub-control-box-box">
+        <div className="messaging-main-messaging-sub-control-box-box" id="messaging-main-messaging-sub-control-box-box" style={{ left: `${leftDiff - 19}px` }}>
           <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
             <input id="main-messaging-search-box" type="text" placeholder="Filter messages by key words" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
             <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
@@ -367,11 +404,13 @@ class MessagingMain extends Component {
   // handle clicks after message control box opened by clicking on sort
   // basically, if there are any clicks outside of the two control boxes, close the box(es)
   messageControlCloseClick = (e) => {
-    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
-    console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target.className: ', e.target.className);
+    console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
+    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target.className: ', e.target.className);
     // get boxes elements and ellips elements (className returns array)
     const box = document.getElementById('messaging-main-messaging-control-box')
+    const boxBox = document.getElementById('messaging-main-messaging-control-box-box')
     const subBox = document.getElementById('messaging-main-messaging-sub-control-box')
+    const subBoxBox = document.getElementById('messaging-main-messaging-sub-control-box-box')
     // const sortArray = document.getElementsByClassName('sort')
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, box subBox: ', box, subBox);
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, box.childNodes subBox.childNodes: ', box.childNodes, subBox.childNodes);
@@ -394,18 +433,20 @@ class MessagingMain extends Component {
     // const sortClicked = sortArray.includes(e.target.className);
     const boxClicked = (box.className == e.target.className)
     const subBoxClicked = (subBox.className == e.target.className)
+    const boxBoxClicked = (boxBox.className == e.target.className)
+    const subBoxBoxClicked = (subBoxBox.className == e.target.className)
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, boxClicked, subBoxClicked: ', boxClicked, subBoxClicked);
-    if ((!boxClicked & !subBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked && !subBoxOtherDecendantsClicked)) {
-      console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked: ');
+    if ((!boxClicked & !subBoxClicked & !boxBoxClicked & !subBoxBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked && !subBoxOtherDecendantsClicked)) {
+      // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked: ');
       // this.setState({ showMessageControls: !this.state.showMessageControls }, () => {
         if (this.state.showMessageSubControls == true) {
           this.setState({ showMessageSubControls: false }, () => {
-            console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
+            // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
           })
         }
         if (this.state.showMessageControls == true) {
           this.setState({ showMessageControls: false }, () => {
-            console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
+            // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, if message control elements clicked, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
           })
         }
       const body = document.getElementById('messaging-main-main-container');
@@ -420,9 +461,9 @@ class MessagingMain extends Component {
   renderEditControls() {
     return (
       <div className="messaging-main-controls-left">
-        <span value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Move to Archives</span>
-        <span className="btn messaging-main-large-archive"></span>
-        <span value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></span>
+        <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Move to Archives</div>
+        <div className="btn messaging-main-large-archive"></div>
+        <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
       </div>
     );
   }
@@ -627,7 +668,7 @@ class MessagingMain extends Component {
     }
     return (
       // <div className="messaging-main-conversation-box col-md-4">
-      <div className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : 'messaging-main-mobile-conversation-box'}>
+      <div id="messaging-main-conversation-box" className={this.state.windowWidth > RESIZE_BREAK_POINT ? 'messaging-main-conversation-box col-md-4' : 'messaging-main-mobile-conversation-box'}>
         {this.renderMessagingControls()}
         {this.renderMessagingSubControls()}
         {this.props.checkedConversationsArray.length > 0 && !this.state.showTrashBin && !this.state.showArchiveBin ? this.renderEditControls() : this.renderEachMainControl()}
@@ -723,9 +764,9 @@ class MessagingMain extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
-          <span>Mail Box</span>
-          <span className="my-page-category-right"></span>
+          <div className="my-page-category-left"><div id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></div></div>
+          <div>Mail Box</div>
+          <div className="my-page-category-right"></div>
         </div>
         {this.props.showConversationCards ? this.renderConversations() : this.renderMessages()}
       </div>
