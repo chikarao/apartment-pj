@@ -60,19 +60,33 @@ class MessagingMain extends Component {
     if (this.state.showAllConversations) {
       return (
         <div className="messaging-main-controls-left">
-          <span className="btn messaging-main-large-archive sort" value="sort" onClick={this.handleMessageEditClick.bind(this)}><i className="fa fa-sort sort" value="sort" onClick={this.handleMessageEditClick.bind(this)}></i></span>
+          <span
+            className="btn messaging-main-large-archive sort"
+            value="sort"
+            onClick={this.handleMessageEditClick.bind(this)}
+          >
+            <i
+            className="fa fa-sort sort"
+            value="sort"
+            style={this.state.sortByDateOld ? { color: 'green' } : { color: 'gray' }}
+            onClick={this.handleMessageEditClick.bind(this)}
+            >
+            </i>
+          </span>
           <span
             className="btn messaging-main-large-archive filter"
             value="filter"
             onClick={this.handleMessageEditClick.bind(this)}
-            >
-            <i className="fa fa-filter filter" value="filter"
+          >
+            <i
+              className="fa fa-filter filter"
+              value="filter"
               // style={this.state.sortListingSelected ? { color: '#fff600' } : { color: 'gray' }}
               style={(this.state.sortListingSelected || (this.state.searchInputVal !== '')) ? { color: 'green' } : { color: 'gray' }}
               onClick={this.handleMessageEditClick.bind(this)}
             >
             </i>
-            </span>
+          </span>
           <span value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</span>
           <span value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</span>
           <span className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span>
@@ -154,7 +168,7 @@ class MessagingMain extends Component {
     console.log('in messagingMain, renderMessagingSubControls: ');
       return (
         <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-          <input id="main-messaging-search-box" type="text" placeholder="Filter by key word" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
+          <input id="main-messaging-search-box" type="text" placeholder="Filter messages by key words" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
           <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
           <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
             <div className="messaging-main-messaging-sub-control-box-scroll">
@@ -409,29 +423,45 @@ class MessagingMain extends Component {
   }
   // reference: https://stackoverflow.com/questions/1789945/how-to-check-whether-a-string-contains-a-substring-in-javascript
   // Takes input string downcases it, downcases each message
-  // and increments counter when there is a match and returns true if counter > 0
+  // and increments counter when there is a match for each word in any of the messages and
+  // keeps an array of each matched word and if the length of array matches the counter, return true
+  // So messages in conversation must have each word inputted to return the conversation
   searchConversation(conversation, inputVal) {
     // console.log('in messagingMain, searchConversation, conversation, before each conversation.message, inputVal : ', conversation, inputVal);
     let counter = 0;
+    let splitInputVal = [];
+    const countedArray = [];
+    // iterate through each message in conversation
    _.each(conversation.messages, eachMessage => {
+     // downcase messages
       const lowerCaseBody = eachMessage.body.toLowerCase();
-      // console.log('in messagingMain, searchConversation, conversation, eachMessage.body.toLowerCase : ', eachMessage.body.toLowerCase());
-      if (lowerCaseBody.includes(inputVal.toLowerCase())) {
-        counter++;
-      }
+      // split the search input string into each word split by space
+      splitInputVal = inputVal.split(' ');
+      // iterate through each word input
+      _.each(splitInputVal, eachWord => {
+        // console.log('in messagingMain, searchConversation, conversation, splitInputVal : ', splitInputVal);
+        // if message has any one of input words, check if that word has already been counted
+        // if not coiunted, add to array to be counted and increment counter
+        if (lowerCaseBody.includes(eachWord.toLowerCase())) {
+          if (!countedArray.includes(eachWord)) {
+            countedArray.push(eachWord);
+            counter++;
+          }
+        }
+      });
     });
-
-    _.each(conversation.flat, flat => {
-      if (flat) {
-        console.log('in messagingMain, searchConversation, conversation, Object.keys(flat): ', Object.keys(flat));
-      }
-      // _.each(Object.keys(flat), (k, v) => {
-        // console.log('in messagingMain, searchConversation, conversation, flat : ', flat);
-        // console.log('in messagingMain, searchConversation, conversation, k, v : ', k, v);
-      // })
-    });
-
-    return counter > 0;
+    // _.each(conversation.flat, flat => {
+    //   if (flat) {
+    //     // console.log('in messagingMain, searchConversation, conversation, Object.keys(flat): ', Object.keys(flat));
+    //     _.each(Object.keys(flat), (k, v) => {
+    //       console.log('in messagingMain, searchConversation, conversation, flat : ', flat);
+    //       console.log('in messagingMain, searchConversation, conversation, k, v : ', k, v);
+    //     })
+    //   }
+    // });
+    // return true if counter value matches the number of words input in search
+    return counter == splitInputVal.length;
+    // return counter > 0;
   }
 
   orderByDate(filteredConversationsArray) {
@@ -468,15 +498,15 @@ class MessagingMain extends Component {
             // if strings included in one of messages, add to array
             if (convHasSearchWords) {
               filteredConversationsArray.push(conv);
-            }
+            } // end of if convHasSearchWords
           } else { // if searchInputVal has value
             filteredConversationsArray.push(conv);
-          }
-        }
-      });
-    }
-    const orderedArray = this.orderByDate(filteredConversationsArray);
+          }// else searchInputVal has value
+        } // if not conv.trashed
+      }); // end of each
+    } // if show all conversations
 
+    const orderedArray = this.orderByDate(filteredConversationsArray);
     // console.log('in messagingMain, initialFilteredConversations, filteredConversationsArray: ', filteredConversationsArray);
     return orderedArray;
     // return filteredConversationsArray;
@@ -500,42 +530,63 @@ class MessagingMain extends Component {
   // and passes to conversation.js
   // called in renderConversations
   filterConversations() {
+    // check if props has been updated with conversations
     if (this.props.conversations) {
+      // to be used in trash bin and archived bin
       const filteredConversationsArray = [];
-      console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
+      // console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
+      // ternary expression to check if sorted by listing in sub controls
+      // return just props.conversations if no listing selected and not showing trash or archive bin
       const convervationsFilteredByListing =
-        this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin)
-        ?
+        this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin) ?
         this.filteredByListing() : this.props.conversations;
-        console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
+        // console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
 
+      // iterate through convs filtered by listing to get conversation with key words searched
+      const conversationsFilteredByFlatAndSearchArray = [];
+      _.each(convervationsFilteredByListing, conv => {
+        if (this.state.searchInputVal !== '') {
+          // get input value from search input;
+          const inputVal = this.state.searchInputVal;
+          // call function to search text for input string
+          const convHasSearchWords = this.searchConversation(conv, inputVal);
+          // console.log('in messagingMain, filterConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
+          // console.log('in messagingMain, filterConversations, conv, inputVal: ', conv, inputVal);
+          console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
+          // if strings included in one of messages, add to array
+          if (convHasSearchWords) {
+            conversationsFilteredByFlatAndSearchArray.push(conv);
+          } // end of if convHasSearchWords
+        } else { // if searchInputVal has value
+          conversationsFilteredByFlatAndSearchArray.push(conv);
+        }// else searchInputVal has value
+      });
 
+      // if user selects to see trash bin find conversations with trash true attribute in conversation
+      // trashed conversation can be arhived or not archived
       if (this.state.showTrashBin) {
-        _.each(convervationsFilteredByListing, conv => {
+        _.each(conversationsFilteredByFlatAndSearchArray, conv => {
           console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
           if (conv.trashed && (conv.archived || !conv.archived)) {
             filteredConversationsArray.push(conv);
           }
         });
-        // this.setState({ filteredConversationsArray }, () => {
-        //   console.log('in messagingMain, filterConversations, if showTrashBin conv, setState callback this.state.filteredConversationsArray: ', this.state.filteredConversationsArray);
-        // });
       }
-
+      // if user selects to see archived bin
+      // Archive messages will not show if trashed
       if (this.state.showArchiveBin) {
-        _.each(convervationsFilteredByListing, conv => {
+        _.each(conversationsFilteredByFlatAndSearchArray, conv => {
           console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
           // archived cannot be trashed
           if (conv.archived && !conv.trashed) {
             filteredConversationsArray.push(conv);
           }
         });
-        // this.setState({ filteredConversationsArray });
       }
-
+      // if sorted by listing in sub controls and show all conversations order by date
       if (this.state.sortListingSelected && this.state.showAllConversations) {
-        const dataOrderedArray = this.orderByDate(convervationsFilteredByListing);
+        const dataOrderedArray = this.orderByDate(conversationsFilteredByFlatAndSearchArray);
         return dataOrderedArray;
         // return convervationsFilteredByListing;
       }
