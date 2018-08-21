@@ -1631,15 +1631,21 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: normal;
 } */
 
+.messaging-main-messaging-control-box-box {
+  width: auto;
+  height: auto;
+  z-index: 10;
+  position: absolute;
+  top: 60px;
+  /* right: 0; */
+  left: 0px;
+}
+
 .messaging-main-messaging-control-box {
   height: 300px;
   width: 200px;
   background-color: white;
   z-index: 10;
-  position: absolute;
-  top: 50px;
-  /* right: 0; */
-  left: 15px;
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 20px 10px 20px 10px;
@@ -1648,8 +1654,36 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   /* display: flex; */
   flex-direction: column;
   text-align: left;
+  /* position: relative; */
 
 }
+
+.messaging-main-messaging-control-box:after, .messaging-main-messaging-control-box:before {
+  bottom: 99%;
+	left: 11%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+  border-radius: 4px;
+}
+
+.messaging-main-messaging-control-box:after {
+  border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+  border-width: 20px;
+	margin-left: -20px;
+}
+.messaging-main-messaging-control-box:before {
+  border-color: rgba(204, 204, 204, 0);
+  border-bottom-color: #ccc;
+  border-width: 21px;
+  margin-left: -21px;
+}
+
+
 
 .messaging-controls-div {
   /* border: 1px solid #ccc; */
@@ -1674,10 +1708,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width: 240px;
   background-color: white;
   z-index: 11;
-  position: absolute;
-  top: 50px;
-  /* right: 0; */
-  left: 40px;
+  /* position: absolute; */
+
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 10px;
@@ -1687,6 +1719,43 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   flex-direction: column;
   text-align: left;
 }
+
+.messaging-main-messaging-sub-control-box-box {
+  width: auto;
+  height: auto;
+  z-index: 11;
+  position: absolute;
+  top: 60px;
+  /* right: 0; */
+  left: 20px;
+}
+
+.messaging-main-messaging-sub-control-box:after, .messaging-main-messaging-sub-control-box:before {
+  bottom: 99%;
+	left: 16.5%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+  border-radius: 4px;
+}
+
+.messaging-main-messaging-sub-control-box:after {
+  border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+  border-width: 20px;
+	margin-left: -20px;
+}
+.messaging-main-messaging-sub-control-box:before {
+  border-color: rgba(204, 204, 204, 0);
+  border-bottom-color: #ccc;
+  border-width: 21px;
+  margin-left: -21px;
+}
+
+
 .messaging-main-messaging-sub-control-box-scroll {
   height: 270px;
   width: 100%;

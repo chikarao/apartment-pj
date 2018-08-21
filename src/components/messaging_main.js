@@ -127,12 +127,13 @@ class MessagingMain extends Component {
   renderMessagingControls() {
     // console.log('in messagingMain, renderMessagingControls, this.state.showMessageControls: ', this.state.showMessageControls);
       return (
-        <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
-          <div style={{ fontWeight: 'bold' }}>Order by</div>
-          <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Newest)</div>
-          <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Oldest) </div>
-
-        </div>
+        <div className="messaging-main-messaging-control-box-box">
+          <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
+            <div style={{ fontWeight: 'bold' }}>Order by</div>
+            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Newest)</div>
+            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Oldest) </div>
+          </div>
+          </div>
       );
   }
 
@@ -165,15 +166,17 @@ class MessagingMain extends Component {
   }
 
   renderMessagingSubControls() {
-    console.log('in messagingMain, renderMessagingSubControls: ');
+    console.log('in messagingMain, renderMessagingSubControls: ', this.state.sortListingSelected);
       return (
-        <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-          <input id="main-messaging-search-box" type="text" placeholder="Filter messages by key words" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
-          <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
-          <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
-            <div className="messaging-main-messaging-sub-control-box-scroll">
-              {this.renderEachMessageSubControlListing()}
-            </div>
+        <div className="messaging-main-messaging-sub-control-box-box">
+          <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
+            <input id="main-messaging-search-box" type="text" placeholder="Filter messages by key words" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
+            <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
+            <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
+              <div className="messaging-main-messaging-sub-control-box-scroll">
+                {this.renderEachMessageSubControlListing()}
+              </div>
+          </div>
         </div>
       );
   }
@@ -236,7 +239,7 @@ class MessagingMain extends Component {
     // console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
 
     const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
-    console.log('in messagingMain, handleMessageEditClick, SUB_BOX_LISTING_CLASS_ARRAY: ', SUB_BOX_LISTING_CLASS_ARRAY);
+    // console.log('in messagingMain, handleMessageEditClick, SUB_BOX_LISTING_CLASS_ARRAY: ', SUB_BOX_LISTING_CLASS_ARRAY);
     console.log('in messagingMain, handleMessageEditClick, listingClicked: ', listingClicked);
 
     // eleementVal is the conversation id
@@ -307,10 +310,12 @@ class MessagingMain extends Component {
         body.addEventListener('click', this.messageControlCloseClick);
       });
     }
+
     if (elementVal == 'allListings') {
+      console.log('in messagingMain, handleMessageEditClick, == alllistings elementVal, this.state.sortListingSelected: ', elementVal, this.state.sortListingSelected);
       this.unhighlightListing()
       if (this.state.sortListingSelected) {
-        this.setState({ sortListingId: 0, sortListingSelected: false }, () => {
+        this.setState({ sortListingId: null, sortListingSelected: false }, () => {
           console.log('in messagingMain, handleMessageEditClick, this.state.sortListingSelected: ', this.state.sortListingSelected);
         });
       }
