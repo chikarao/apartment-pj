@@ -18,6 +18,10 @@ html, body {
   overflow: hidden;
 }
 
+/* main {
+  background-color: rgb(253,253,253);
+} */
+
 /* .container { */
   /* min-height: calc(100vh - 70px); */
 /* } */
@@ -28,6 +32,18 @@ body > div:first-child {
     width: 100%;
     margin: 0;
     padding: 0;
+}
+
+main {
+  background-color: rgb(252, 252, 252)
+}
+
+h2 {
+  padding: 15px 0 0 0;
+}
+
+h3 {
+  padding: 15px 0 0 0;
 }
 
 .landing-main {
@@ -188,6 +204,7 @@ body > div:first-child {
   height: 80px !important;
   padding: 0 !important;
   margin: 0 !important;
+  background-color: rgb(254, 254, 254) !important;
 }
 
 .header-auth-link {
@@ -553,6 +570,8 @@ body > div:first-child {
   border: 1px solid #ccc;
   margin: 10px;
   padding: 5px;
+  border-radius: 3px;
+  background-color: white;
 }
 
 .map-interaction-box select{
@@ -1164,7 +1183,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .show-flat-image-box {
   height: 280px;
-  margin: 30px 0 0 0;
+  margin: 10px 0 0 0;
 }
 
 .show-flat-container {
@@ -1180,22 +1199,27 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .show-flat-description {
   color: blue;
   font-weight: bold;
+  font-size: 20px !important;
 }
 .show-flat-area {
+  /* color: gray; */
   color: gray;
+  font-size: 25px;
 }
 .show-flat-sales_point {
-  /* color: gray; */
+  color: darkblue;
+  font-size: 20px;
 }
 
 .show-flat-beds {
-  /* font-size: 15px; */
+  font-size: 25px;
 }
 .show-flat-price {
-  /* color: gray; */
+  color: gray;
+  font-size: 19px;
 }
 .show-flat-id {
-  color: gray;
+  color: lightgray;
   font-size: 15px;
 }
 
@@ -1207,6 +1231,23 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .date-picker-container {
   margin: 20px;
+}
+
+.date-picker-reset-btn {
+  border-color: blue;
+  background-color: white;
+  color: blue;
+  margin: 0 0 0 10px;
+}
+.date-picker-reset-btn:hover {
+  border-color: gray !important;
+  background-color: lightgray !important;
+  color: white !important;
+}
+.date-picker-reset-btn:active {
+  border-color: gray !important;
+  background-color: gray !important;
+  color: white !important;
 }
 
 .booking-button {
@@ -1297,11 +1338,27 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width:100%;
   /* display: block; */
   /* background:#ccc; */
-  background: white;
+  background-color: rgb(254, 254, 254);
+}
+
+.show-flat-footer-edit-btn {
+  background-color: green;
+  border-color: green;
+}
+.show-flat-footer-edit-btn:hover {
+  background-color: lightgray;
+  border-color: green;
 }
 
 .btn-book-submit {
   background-color: blue;
+}
+.btn-book-submit:hover {
+  background-color: gray;
+}
+
+.DayPicker-Months {
+  background-color: white !important;
 }
 
 /* ******************* MESSAGING *************************** */
@@ -1331,7 +1388,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width: 100%;
   height: 300px !important;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  background-color: white;
+  border-radius: 3px;
   overflow: hidden;
   overflow-y: scroll;
 }
@@ -1341,7 +1399,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   height: 100px !important;
   /* height: 35%; */
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 3px;
   font-size: 16px;
   padding: 5px;
 }
@@ -2173,19 +2231,22 @@ form {
 }
 
 .card-container {
-  height: 350px;
+  height: 340px;
   width: 350px;
   margin: 10px 10px 0px 0px;
   padding: 0;
+  background-color: white;
+  /* border: 1px solid #ccc; */
+  border-radius: 3px;
   /* background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)); */
 }
 .card-image {
   height: 233px;
   width: 350px;
-  border-radius: 4px;
+  border-radius: 4px 4px 0 0;
   background-color: lightgray;
   padding: 0px;
-  margin: 10px 10px 0px 0px;
+  margin: 0px 10px 0px 0px;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -2253,38 +2314,46 @@ form {
   height: 60px;
   padding-top: 5px;
   margin-bottom: 10px;
+  padding: 3px 0 0 3px;
 }
 
 .card-flat-caption {
-  color: gray;
+  color: blue;
   text-align: left;
-  font-weight: bold;
+  /* font-weight: bold; */
+  padding: 0 0 0 3px;
 }
 
 .card-flat-area {
   text-align: left;
   color: darkblue;
   font-weight: bold;
+  padding: 0 0 0 3px;
 }
 
 .card-flat-price {
   text-align: left;
   color: gray;
+  padding: 0 0 0 3px;
 }
 
 .card-flat-amenities {
   text-align: left;
+  padding: 0 0 0 3px;
 }
 .card-flat-amenities i {
   padding-right: 5px;
+  padding: 0 0 0 3px;
 }
 
 .card-flat-likes-and-views {
   color: #ccc;
+  padding: 0 0 0 3px;
 }
 
 .card-flat-likes-and-views span {
   float: left;
+  padding: 0 0 0 3px;
 }
 
 /* card box is postion: relative */
@@ -2419,14 +2488,20 @@ form {
   right: 5px;
 
 } */
+/* **************** Review Create ********** */
 
+.review-create-btn {
+  background-color: white !important;
+  border-color: blue;
+  color: blue;
+}
 
 /* **************MY PAGE**************** */
 /* ***************** MYPAGE ********************  */
 
 .btn-create-flat {
   margin: 20px 20px;
-  background-color: white;
+  background-color: white !important;
   color: blue;
   /* border-color: blue; */
   border-color: gray;
@@ -2445,6 +2520,7 @@ form {
   border: 1px solid #ccc;
   border-radius: 3px;
   margin: 5px 5px 0 0;
+  background-color: white;
   /* display: flex;
   justify-content: center;
   align-content: center; */
@@ -2557,13 +2633,13 @@ form {
   border: 1px solid #4CAF50;
   /* color: gray; */
   /* color: white; */
-  background-color: white;
+  background-color: white !important;
   box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
 }
 .my-page-card-button-box .btn-delete{
   /* background-color: ; */
   color: gray;
-  background-color: white;
+  background-color: white !important;
   border: 1px solid red;
   box-shadow: inset 0 2px 2px rgba(0,0,0,.075);
   /* color: white; */
@@ -2978,7 +3054,7 @@ text-decoration: underline;
 }
 
 .signup-btn {
-  background-color: white;
+  background-color: white !important;
   color: blue;
   border-color: gray;
   margin: 20px 0 0 20px;

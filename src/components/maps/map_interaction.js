@@ -877,7 +877,7 @@ class MapInteraction extends Component {
       });
     } else {
       return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>No nearby places registered</div>
+        <div style={{ padding: '20px', textAlign: 'center' }}>No nearby places listed</div>
       );
     }
   }

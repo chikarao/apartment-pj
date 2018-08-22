@@ -201,7 +201,7 @@ class MainCards extends Component {
                 {flat.description}
               </div>
               <div className="card-flat-area">
-                {flat.area}
+                {flat.area.toUpperCase()}
               </div>
               <div className="card-flat-price">
                 {currency} {parseFloat(flat.price_per_month).toFixed(0)} /month

@@ -144,12 +144,12 @@ class ShowFlat extends Component {
               </div>
             </div>
             <div className="show-flat-container">
-              <div key={description} className="show-flat-desription">
+              <div key={description} className="show-flat-description">
                 { description }
               </div>
 
               <div key={area} className="show-flat-area">
-                { area }
+                { area.toUpperCase() }
               </div>
 
               <div key={beds} className="show-flat-beds">
@@ -399,7 +399,7 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
-                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg">Edit</button>
+                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg show-flat-footer-edit-btn">Edit</button>
               </div>
               <div className="show-flat-button-box">
                 <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">Delete</button>
@@ -464,7 +464,14 @@ class ShowFlat extends Component {
 
         <div className="review-user-box">
         <div className="review-avatar">
-        <img src={'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.profile.image + '.jpg'} alt="" />
+        <img
+          src={review.user.image ?
+            'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.image + '.jpg'
+          :
+           'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + 'blank_profile_picture_4' + '.jpg'
+              }
+          alt=""
+          />
         </div>
         <div className="review-username">
           {review.user.profile.username}

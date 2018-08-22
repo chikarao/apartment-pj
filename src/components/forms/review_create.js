@@ -114,7 +114,7 @@ class ReviewCreateFrom extends Component {
             {this.renderStars()}
             </div>
               {this.renderAlert()}
-            <button action="submit" className="btn btn-primary">Submit</button>
+            <button action="submit" className="btn btn-primary review-create-btn">Submit Review</button>
           </form>
         </div>
     );

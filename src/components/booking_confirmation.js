@@ -173,7 +173,13 @@ class BookingConfirmation extends Component {
                 <div className="review-top-box">
                   <div className="review-user-box">
                     <div className="review-avatar">
-                      <img src={'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.profile.image + '.jpg'} />
+                      <img src={review.user.image ?
+                        'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.image + '.jpg'
+                        :
+                        'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + 'blank_profile_picture_4' + '.jpg'
+                      }
+                      alt=""
+                        />
                     </div>
                     <div className="review-username">
                       {review.user.profile.username}
@@ -217,9 +223,9 @@ class BookingConfirmation extends Component {
         if (pastBookingEnd) {
           return (
             <div>
-            <ReviewCreateFrom
-              booking={this.props.bookingData}
-            />
+              <ReviewCreateFrom
+                booking={this.props.bookingData}
+              />
             </div>
           );
         }

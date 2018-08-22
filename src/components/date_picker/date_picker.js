@@ -247,7 +247,7 @@ class DatePicker extends Component {
          ${to.toLocaleDateString()}`}{' '}
          {from &&
            to && (
-             <button className="btn btn-primary btn-small data-picker-reset-btn" onClick={this.handleResetClick}>
+             <button className="btn btn-primary btn-small date-picker-reset-btn" onClick={this.handleResetClick}>
              Reset
              </button>
            )}
