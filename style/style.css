@@ -190,6 +190,13 @@ body > div:first-child {
   margin: 0 !important;
 }
 
+.header-auth-link {
+  color: gray !important;
+}
+.header-auth-link:hover {
+  color: blue !important;
+}
+
 .mobile-header {
   /* padding-bottom: 100px !important; */
   /* margin-bottom: 100px !important; */
@@ -662,13 +669,23 @@ body > div:first-child {
 .btn-iw-add-place {
   background-color: blue;
   margin: 5px;
-
 }
 
 .map-interaction-iw-place {
   font-weight: bold;
   font-size: 15px;
   padding: 5px;
+}
+
+/* .add-place-btn {
+  border-color: blue;
+  background-color: white;
+  color: blue;
+} */
+.remove-place-btn, .add-place-btn {
+  border-color: gray;
+  background-color: white;
+  color: gray;
 }
 /* background to iw parent */
 /* .iwBackground {
@@ -2122,14 +2139,16 @@ form {
   margin: 0 15px 10px 0;
 }
 .btn-check-all-images {
-  /* background-color: gray; */
-  color: white;
+  color: blue;
+  background-color: white;
+  border-color: blue;
   margin: 0 15px 10px 0;
 }
 
 .to-show-btn {
   /* margin: 20px auto 20px auto; */
   background-color: blue;
+  margin-top: 40px;
 }
 
 .back-btn {
@@ -2407,8 +2426,10 @@ form {
 
 .btn-create-flat {
   margin: 20px 20px;
-  background-color: green;
-  color: white;
+  background-color: white;
+  color: blue;
+  /* border-color: blue; */
+  border-color: gray;
 }
 
 .my-page-container {
@@ -2419,7 +2440,7 @@ form {
 
 .my-page-category-container {
   min-height: 450px;
-  min-width: 350px;
+  min-width: 370px;
   max-height: 500px;
   border: 1px solid #ccc;
   border-radius: 3px;

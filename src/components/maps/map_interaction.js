@@ -761,7 +761,7 @@ class MapInteraction extends Component {
             <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
             &nbsp;{place.name}
             </li>
-          <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
+            <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm add-place-btn" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
           </div>
         )
       });
@@ -818,7 +818,7 @@ class MapInteraction extends Component {
             <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
             &nbsp;{place.place_name}
             </li>
-          {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
+          {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm remove-place-btn" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
           </div>
         );
       }

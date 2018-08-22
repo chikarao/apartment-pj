@@ -252,7 +252,7 @@ class MessagingMain extends Component {
       }
     })
   }
-
+  // unhighlighting data order 
   unhighlightOrder() {
     const orderDivs = document.getElementsByClassName('messaging-controls-div');
     _.each(orderDivs, eachDiv => {
@@ -415,11 +415,11 @@ class MessagingMain extends Component {
   // handle clicks after message control box opened by clicking on sort
   // basically, if there are any clicks outside of the two control boxes, close the box(es)
   messageControlCloseClick = (e) => {
-    console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
+    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
     const clickedElement = e.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target.className: ', e.target.className);
-    console.log('in messagingMain, messageControlCloseClick, body.addEventListener, elementVal: ', elementVal);
+    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target.className: ', e.target.className);
+    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, elementVal: ', elementVal);
     // get boxes elements and ellips elements (className returns array)
     // needed to use boxboxes so to have relative positioning on box for arrow
     const box = document.getElementById('messaging-main-messaging-control-box')
@@ -533,7 +533,7 @@ class MessagingMain extends Component {
     return counter == splitInputVal.length;
     // return counter > 0;
   }
-
+  // Reference: https://stackoverflow.com/questions/10123953/sort-javascript-object-array-by-date
   orderByDate(filteredConversationsArray) {
     const newest = [...filteredConversationsArray].sort(function (a, b) {
       // console.log('in messagingMain, orderByDate, newest a, b : ', new Date(a.messages[a.messages.length - 1].created_at), new Date(b.messages[b.messages.length - 1].created_at));

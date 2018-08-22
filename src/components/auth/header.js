@@ -257,7 +257,7 @@ class Header extends Component {
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
-              <Link className="nav-link" to="/signout">Sign Out</Link>
+              <Link className="nav-link header-auth-link" to="/signout">Sign Out</Link>
              </li>
              <li className="nav-item">
               <p className="nav-link">Signed in as {this.props.email}</p>
@@ -277,7 +277,7 @@ class Header extends Component {
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
-              <Link className="nav-link" to={'/mypage'} >My Page</Link>
+              <Link className="nav-link header-auth-link" to={'/mypage'} >My Page</Link>
              </li>
              <li className="nav-item">
               <p className="nav-link">Signed in as {this.props.email}</p>
@@ -294,7 +294,7 @@ class Header extends Component {
            return [
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
-                <Link className="nav-link" to={'/mypage'} >My Page</Link>
+                <Link className="nav-link header-auth-link" to={'/mypage'} >My Page</Link>
                </li>
                <li className="nav-item">
                 <p className="nav-link">Signed in as {this.props.email}</p>

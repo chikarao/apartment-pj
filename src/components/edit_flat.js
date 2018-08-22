@@ -28,7 +28,7 @@ class EditFlat extends Component {
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
 
   componentDidMount() {
-    console.log('in edit flat, componentDidMount, this.props.match.params:', this.props.match.params);
+    // console.log('in edit flat, componentDidMount, this.props.match.params:', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     this.props.selectedFlatFromParams(this.props.match.params.id);
     this.props.getCurrentUser();
@@ -36,14 +36,14 @@ class EditFlat extends Component {
 
     console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
-    //   console.log('in edit flat, componentDidMount, editFlatLoad called');
+      // console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
     // }
   }
 
   currentUserIsOwner() {
     if (this.props.auth && this.props.flat) {
-      console.log('in editFlat, currentUserIsOwner, this.props.auth.id == this.props.flat.user_id : ', this.props.auth.id == this.props.flat.user_id);
+      // console.log('in editFlat, currentUserIsOwner, this.props.auth.id == this.props.flat.user_id : ', this.props.auth.id == this.props.flat.user_id);
       return (this.props.auth.id == this.props.flat.user_id);
       // return true;
       // return false;
@@ -53,12 +53,12 @@ class EditFlat extends Component {
 
   separateFlatAndAmenities(data) {
     const amenityObj = { flat: {}, amenity: {} }
-    console.log('in editFlat, separateFlatAndAmenities, data : ', data);
+    // console.log('in editFlat, separateFlatAndAmenities, data : ', data);
      _.each(Object.keys(data), (key) => {
     // return _.map(AMENITIES, (amenity) => {
       if (AMENITIES[key]) {
-        console.log('in editFlat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
-        console.log('in editFlat, separateFlatAndAmenities, key : ', key);
+        // console.log('in editFlat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
+        // console.log('in editFlat, separateFlatAndAmenities, key : ', key);
         // console.log('in editFlat, separateFlatAndAmenities, key : ', key);
         amenityObj.amenity[key] = data[key];
       } else {
@@ -70,7 +70,7 @@ class EditFlat extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in edit flat, handleFormSubmit, data: ', data);
+    // console.log('in edit flat, handleFormSubmit, data: ', data);
     if (this.state.confirmChecked) {
       const dataSeparated = this.separateFlatAndAmenities(data);
       this.props.editFlat(dataSeparated, (id) => this.editFlatCallback(id));
@@ -82,7 +82,7 @@ class EditFlat extends Component {
   }
 
   editFlatCallback(id) {
-    console.log('in edit flat, editFlatCallback, id: ', id);
+    // console.log('in edit flat, editFlatCallback, id: ', id);
     // this.props.history.push(`/editflat/${id}`);
     //for some reason, history.push does not update the default values in fields
     // reload page; fetches new flat data
@@ -102,7 +102,7 @@ class EditFlat extends Component {
 
   handleImageDeleteCheck(event) {
     // reference: https://stackoverflow.com/questions/7378228/check-if-an-element-is-present-in-an-array
-    console.log('in edit flat, handleImageDeleteCheck, event.target: ', event.target.value);
+    // console.log('in edit flat, handleImageDeleteCheck, event.target: ', event.target.value);
     // const parent = event.target.parentElement;
     // const parentElement = parent.parentElement;
     // console.log('in edit flat, handleImageDeleteCheck, parentElement: ', parent);
@@ -114,43 +114,43 @@ class EditFlat extends Component {
     } else {
       deleteImageArray = _.without(deleteImageArray, event.target.value);
     }
-    console.log('in edit flat, handleImageDeleteCheck, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, handleImageDeleteCheck, deleteImageArray: ', deleteImageArray);
   }
 
   uncheckAllImages() {
     //reference: https://stackoverflow.com/questions/18862149/how-to-uncheck-a-checkbox-in-pure-javascript
     deleteImageArray = [];
-    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
 
     const ImageDeleteCheckBoxes = document.getElementsByClassName('editFlatImageDeleteCheck');
     // console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
 
     _.each(ImageDeleteCheckBoxes, (checkbox) => {
       checkbox.checked = false;
-      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
+      // console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox);
     });
-    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
   }
 
   checkAllImages() {
-    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
 
     // const ImageDeleteCheckBoxes = document.getElementsByClassName('checkmarkDeleteImage');
     // const ImageDeleteCheckBoxes = document.getElementById('editFlatImageDeleteCheck');
     const ImageDeleteCheckBoxes = document.getElementsByClassName('editFlatImageDeleteCheck');
     // ImageDeleteCheckBoxes.checked = false;
-    console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
+    // console.log('in edit flat, uncheckAllImages, ImageDeleteCheckBoxes: ', ImageDeleteCheckBoxes);
 
     _.each(ImageDeleteCheckBoxes, (checkbox) => {
       checkbox.checked = true;
-      console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox.value);
+      // console.log('in edit flat, uncheckAllImages, in each, checkbox: ', checkbox.value);
       deleteImageArray.push(checkbox.value)
     });
-    console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, uncheckAllImages, deleteImageArray: ', deleteImageArray);
   }
 
   deleteImageCallback(imageCount) {
-    console.log('in edit flat, deleteImageCallback, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, deleteImageCallback, deleteImageArray: ', deleteImageArray);
     const currentImageCount = imageCount + 1;
     if (currentImageCount <= (deleteImageArray.length - 1)) {
       this.props.deleteImage(deleteImageArray[currentImageCount], currentImageCount, (countCB) => this.deleteImageCallback(countCB));
@@ -162,8 +162,7 @@ class EditFlat extends Component {
   }
 
   deleteCheckedImages() {
-    this.props.showLoading();
-    console.log('in edit flat, deleteCheckedImages, deleteImageArray: ', deleteImageArray);
+    // console.log('in edit flat, deleteCheckedImages, deleteImageArray: ', deleteImageArray);
     const imageArrayEmpty = _.isEmpty(deleteImageArray);
     if (imageArrayEmpty) {
       window.alert('No images checked')
@@ -171,38 +170,41 @@ class EditFlat extends Component {
     }
     let imageCount = 0;
 
-    const deleteConfirm = window.confirm(`Are you sure you want to delete all checked images?`)
-    if (deleteConfirm) {
-      console.log('in edit flat, deleteCheckedImages, deleteConfirm Yes.');
-      // _.each(deleteImageArray, (image) => {
+    if (!imageArrayEmpty) {
+      const deleteConfirm = window.confirm(`Are you sure you want to delete all checked images?`)
+      if (deleteConfirm) {
+        this.props.showLoading();
+        // console.log('in edit flat, deleteCheckedImages, deleteConfirm Yes.');
+        // _.each(deleteImageArray, (image) => {
         this.props.deleteImage(deleteImageArray[imageCount], imageCount, (countCB) => this.deleteImageCallback(countCB));
-        console.log('in edit flat, deleteCheckedImages, image:', deleteImageArray[imageCount]);
-      // });
-    } else {
-      console.log('in edit flat, deleteCheckedImages, deleteConfirm No.');
+        // console.log('in edit flat, deleteCheckedImages, image:', deleteImageArray[imageCount]);
+        // });
+      } else {
+        // console.log('in edit flat, deleteCheckedImages, deleteConfirm No.');
+      }
     }
   }
 
   renderDeleteImageButtons() {
-    console.log('in edit flat, renderDeleteImageButtons: ');
+    // console.log('in edit flat, renderDeleteImageButtons: ');
     return (
       <div>
-      <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>Delete checked images</button>
-      <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>Uncheck all images</button>
-      <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>Check all images</button>
+        <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>Delete checked images</button>
+        <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>Uncheck all images</button>
+        <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>Check all images</button>
       </div>
     );
   }
 
   renderImages(images) {
-    console.log('in edit flat, renderImages, images: ', images);
+    // console.log('in edit flat, renderImages, images: ', images);
     // reference: https://stackoverflow.com/questions/8877807/how-can-i-display-the-checkbox-over-the-images-for-selection
     const imagesEmpty = _.isEmpty(images);
     if (!imagesEmpty) {
       return (
         _.map(images, (image) => {
           if (image) {
-            console.log('in show_flat renderImages, image: ', image.publicid);
+            // console.log('in show_flat renderImages, image: ', image.publicid);
             return (
               <div key={image.id} className="slide-show-edit-flat">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/w_165,h_110/" + image.publicid + '.jpg'} />
@@ -254,14 +256,14 @@ class EditFlat extends Component {
       //calling this here gives error InvalidValueError: not an instance of HTMLInputElement
       // so call in componentDidUpdate
 
-      console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
+      // console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
       const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
       const flatsEmpty = false;
       const flatArray = [this.props.flat];
       const flatArrayMapped = _.mapKeys(flatArray, 'id');
 
-      console.log('in show_flat, renderMap, flatArray: ', flatArray);
-      console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+      // console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      // console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
 
       return (
         <div>
@@ -279,11 +281,11 @@ class EditFlat extends Component {
   renderEditForm() {
     const { handleSubmit } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
-    console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
-    console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
+    // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
+    // console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
 
     if (!flatEmpty) {
-      console.log('in edit flat, renderEditForm, this.props: ', this.props);
+      // console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
         <h2 style={{ marginBottom: '30px' }}>Edit Your Listing</h2>
@@ -518,7 +520,7 @@ class EditFlat extends Component {
   render() {
     return (
       <div>
-      {this.renderEditForm()}
+        {this.renderEditForm()}
       </div>
     );
   }
