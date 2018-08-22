@@ -1316,6 +1316,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   max-width: 200px;
   height: 40px;
   margin: 5px 5px 5px 15px;
+  /* background-color: white; */
   text-align: center;
   padding: 0;
   /* position: relative; */
@@ -1347,6 +1348,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 .show-flat-footer-edit-btn:hover {
   background-color: lightgray;
+  border-color: green;
+}
+.show-flat-footer-edit-btn:active {
+  background-color: lightgray !important;
   border-color: green;
 }
 
@@ -2053,6 +2058,7 @@ form {
   text-align: left;
   padding: 0;
   position: relative;
+  background-color: white;
 }
 .amenity-input-each input {
   border: 2px solid #ccc;
@@ -2208,6 +2214,14 @@ form {
   background-color: blue;
   margin-top: 40px;
 }
+.to-show-btn:hover {
+  background-color: lightgray;
+  border-color: gray;
+}
+.to-show-btn:active {
+  background-color: gray !important;
+  border-color: gray;
+}
 
 .back-btn {
   /* margin-left: auto;
@@ -2318,9 +2332,9 @@ form {
 }
 
 .card-flat-caption {
-  color: blue;
+  color: gray;
   text-align: left;
-  /* font-weight: bold; */
+  font-weight: bold;
   padding: 0 0 0 3px;
 }
 
@@ -2329,6 +2343,7 @@ form {
   color: darkblue;
   font-weight: bold;
   padding: 0 0 0 3px;
+  font-size: 12px;
 }
 
 .card-flat-price {
@@ -2677,7 +2692,7 @@ form {
 .my-page-details ul li:first-child {
   font-weight: bold;
   font-size: 13px;
-  color: darkGray;
+  color: gray;
 }
 
 .my-page-conversation-input {
@@ -3469,6 +3484,7 @@ text-decoration: underline;
   .show-flat-amenity-show-each {
     max-width: 155px;
     height: 25px;
+    /* background-color: white; */
   }
 
   .amenity-radio-show-page {
@@ -3528,6 +3544,7 @@ text-decoration: underline;
     /* font-size: 13 !important; */
     max-width: 155px;
     height: 25px;
+    background-color: white;
   }
 
   .amenity-input-each .amenity-radio {

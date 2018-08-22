@@ -67,6 +67,9 @@ class MyPage extends Component {
     const { bookingsByUser } = this.props;
     // sort by date_start
     const sortedBookingsByUser = this.sortBookings(bookingsByUser);
+    // <div className="my-page-card-button-box">
+    // <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
+    // </div>
 
     if (!bookingsByUserEmpty) {
       console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);
@@ -85,9 +88,6 @@ class MyPage extends Component {
                   <li>flat id: {booking.flat.id}</li>
                 </ul>
               </div>
-            </div>
-            <div className="my-page-card-button-box">
-            <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
             </div>
           </li>
         );
@@ -124,6 +124,7 @@ class MyPage extends Component {
 
   renderEachFlat() {
     // const { flats } = this.props;
+    // <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
     const flatsEmpty = _.isEmpty(this.props.flats);
     if (!flatsEmpty) {
       const { flats } = this.props;
@@ -138,7 +139,7 @@ class MyPage extends Component {
               <div className="my-page-details">
                 <ul>
                   <li>{flat.description}</li>
-                  <li>{flat.area}</li>
+                  <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
                   <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
                   <li>id: {flat.id}</li>
                 </ul>
@@ -146,7 +147,6 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
               <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick.bind(this)}>Edit</button>
             </div>
           </li>
@@ -460,6 +460,9 @@ class MyPage extends Component {
           console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
           const flat = booking.flat;
           console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+          // <div className="my-page-card-button-box">
+          // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
+          // </div>
 
             return (
               <li key={index} className="my-page-each-card">
@@ -475,9 +478,6 @@ class MyPage extends Component {
                     </ul>
 
                   </div>
-                </div>
-                <div className="my-page-card-button-box">
-                  <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
                 </div>
               </li>
             );
@@ -546,7 +546,7 @@ class MyPage extends Component {
                   <div className="my-page-details">
                     <ul>
                       <li>{flat.description}</li>
-                      <li>{flat.area}</li>
+                      <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
                       <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
                       <li>flat id: {flat.id}</li>
                     </ul>

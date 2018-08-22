@@ -202,6 +202,7 @@ class ShowFlat extends Component {
       this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
     } else {
       console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
+      alert('Please select dates for booking.')
     }
   }
 
@@ -332,6 +333,7 @@ class ShowFlat extends Component {
 
   handleDateBlockClick() {
     console.log('in show_flat, handleDateBlockClick: ');
+    alert('handleDateBlockClick has not yet been implemented')
   }
 
   handleEditFlatClick() {
