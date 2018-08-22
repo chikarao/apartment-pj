@@ -263,7 +263,7 @@ class Messaging extends Component {
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
         return (
           <div style={{ overflow: 'auto ' }}>
-            <div id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+            <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
               {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
               <br/><br/>You have not started a conversation...
               <br/>Start one by sending a message! <br/> Make sure to introduce yourself</div> : this.renderEachMessage(conversationToShowArray)}

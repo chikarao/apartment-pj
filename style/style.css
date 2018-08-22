@@ -1477,9 +1477,12 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 /* ************Main Messaging*********** */
 
 .messaging-main-main-container {
+  width: auto;
   max-width: 100%;
-  height: 100%;
-  margin: 25px auto 0 auto;
+  /* height: 100%; */
+  height: auto;
+  /* margin: 25px auto 0 auto; */
+  margin: 2% 5% 0 5%;
   /* border: 2px solid #ccc; */
   flex-direction: column;
   display: flex;
@@ -2124,8 +2127,9 @@ form {
   margin: 0 15px 10px 0;
 }
 
-.back-to-show-btn {
+.to-show-btn {
   /* margin: 20px auto 20px auto; */
+  background-color: blue;
 }
 
 .back-btn {
@@ -2415,7 +2419,7 @@ form {
 
 .my-page-category-container {
   min-height: 450px;
-  min-width: 370px;
+  min-width: 350px;
   max-height: 500px;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -3305,6 +3309,17 @@ text-decoration: underline;
     /* body {
         background-color: lightgreen;
     } */
+
+    .messaging-main-main-container {
+
+      margin: 5% 10  % 0 10%;
+    }
+
+    /* .my-page-category-container {
+
+      margin: 5px 5px 0 0;
+    } */
+
     .modal-main {
       /* padding: 0 60px 0 60px; */
     }
@@ -3348,6 +3363,11 @@ text-decoration: underline;
     width: 90%;
     margin: 5px auto 10px 15px;
   } */
+
+  .messaging-main-main-container {
+
+    margin: 10% 2% 0 2%;
+  }
 
   .show-flat-amenity-show-each {
     max-width: 155px;
