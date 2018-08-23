@@ -10,6 +10,9 @@ import GoogleMap from './maps/google_map';
 import MapInteraction from './maps/map_interaction';
 
 import globalConstants from './constants/global_constants';
+import languages from './constants/languages';
+
+import LanguageCreateModal from './modals/language_create_modal';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -278,6 +281,41 @@ class EditFlat extends Component {
     }
   }
 
+  renderAvailableLanguages() {
+    return _.map(this.props.flat.flat_languages, language => {
+      return (
+        <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
+          {languages[language.code].name}
+          <div className="edit-flat-each-available-language-edit-link">edit</div>
+        </div>
+      );
+    })
+  }
+
+  handleAddLanguageClick() {
+    console.log('in show_flat, handleAddLanguageClick: ');
+    this.props.showLanguageCreateModal();
+  }
+
+  renderLanguages() {
+    return (
+      <div className="edit-flat-language-box">
+        <div className="edit-flat-base-language-box">Base Language: {languages[this.props.flat.language_code].name}</div>
+        <div className="edit-flat-available-language-box">
+          <h5>Available Languages</h5>
+          {this.props.flat.flat_languages.length > 0 ?
+            <div className="edit-flat-available-languages-box-container container">
+              <div className="edit-flat-available-languages-box-row row">
+                {this.renderAvailableLanguages()}
+              </div>
+            </div>
+            : <div style={{ margin: '15px auto 25px auto' }}>No other languages added.</div> }
+        </div>
+        <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick.bind(this)}>Add Another Language</div>
+      </div>
+    );
+  }
+
   renderEditForm() {
     const { handleSubmit } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -480,6 +518,11 @@ class EditFlat extends Component {
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
           </div>
         </form>
+
+
+        <h4>Add or Edit Languages</h4>
+        {this.renderLanguages()}
+
         <h4>Add or Delete Photos  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
         <div className="edit-flat-image-box">
           <div id="carousel-show-edit-flat">
@@ -517,9 +560,20 @@ class EditFlat extends Component {
     }
   }
 
+  renderLanguageCreateModal() {
+    return (
+      <div>
+        <LanguageCreateModal
+          show={this.props.showLanguageCreate}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
+        {this.renderLanguageCreateModal()}
         {this.renderEditForm()}
       </div>
     );
@@ -579,6 +633,7 @@ function mapStateToProps(state) {
       amenity: state.selectedFlatFromParams.selectedFlatFromParams.amenity,
       auth: state.auth,
       places: state.places.places,
+      showLanguageCreate: state.modals.showLanguageCreateModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

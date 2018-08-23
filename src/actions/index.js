@@ -81,7 +81,9 @@ import {
   ADD_CARD,
   UPDATE_CUSTOMER,
   MAKE_PAYMENT,
-  FETCH_STRIPE_USER_CREDENTIALS
+  FETCH_STRIPE_USER_CREDENTIALS,
+  SHOW_LANGUAGE_CREATE_MODAL,
+  CREATE_FLAT_LANGUAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1496,4 +1498,37 @@ export function actionTypeCard(action) {
 
   //flip showResetPasswordModal
   return { type: ACTION_TYPE_CARD, payload: action };
+}
+
+export function showLanguageCreateModal() {
+  console.log('in actions index, showLanguageCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_LANGUAGE_CREATE_MODAL };
+}
+
+export function createFlatLanguage(flatLanguageAttributes, callback) {
+    console.log('in action index, createFlatLanguage, flatLanguageAttributes: ', flatLanguageAttributes);
+  const { flat_id } = flatLanguageAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flat_id}/flat_languages`, { flat_language: flatLanguageAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createFlatLanguage: ', response);
+      console.log('in action index, response to createFlatLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_FLAT_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createFlatLanguage: ', error);
+      dispatch(authError(error.response.data.messages));
+      this.showloading();
+    });
+  };
 }

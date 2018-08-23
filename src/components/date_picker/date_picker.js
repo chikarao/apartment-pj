@@ -164,6 +164,9 @@ class DatePicker extends Component {
         from: day,
         to: null,
         enteredTo: null,
+      }, () => {
+        // this.handleResetClick();
+         this.props.selectedDates({ to: null, from: null });
       });
       console.log('in date_picker, handleDayClick, second if', this.state);
     } else {
@@ -213,9 +216,12 @@ class DatePicker extends Component {
      });
    }
  }
+
  handleResetClick() {
    console.log('in date_picker, handleResetClick');
-   this.setState(INITIAL_STATE);
+   this.setState(INITIAL_STATE, () => {
+     this.props.selectedDates({ to: this.state.enteredTo, from: this.state.from })
+   });
  }
 
 //not using since updating state in render is not preferable

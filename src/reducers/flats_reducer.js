@@ -15,7 +15,8 @@ import {
   CLEAR_FLATS,
   UPDATE_SEARCH_FLAT_CRITERIA,
   CREATE_PLACE,
-  DELETE_PLACE
+  DELETE_PLACE,
+  CREATE_FLAT_LANGUAGE
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
@@ -105,6 +106,9 @@ export default function (state = { searchFlatParameters: {} }, action) {
 
     case DELETE_PLACE:
       return { ...state, selectedFlatFromParams: action.payload.flat };
+
+    case CREATE_FLAT_LANGUAGE:
+      return { ...state, selectedFlatFromParams: action.payload };
 
 
     default:

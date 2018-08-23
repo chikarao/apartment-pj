@@ -78,4 +78,6 @@ export const ADD_CARD = 'add_card';
 export const UPDATE_CUSTOMER = 'update_customer';
 export const MAKE_PAYMENT = 'make_payment';
 export const FETCH_STRIPE_USER_CREDENTIALS = 'fetch_stripe_user_credentials';
+export const SHOW_LANGUAGE_CREATE_MODAL = 'show_language_create_modal';
+export const CREATE_FLAT_LANGUAGE = 'create_flat_language';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

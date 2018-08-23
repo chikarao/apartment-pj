@@ -2090,6 +2090,55 @@ form {
   float:left;
 }
 
+.edit-flat-language-box {
+  margin: 10px auto 50px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.edit-flat-available-languages-box-container {
+  width: 100% !important;
+  margin: 20px auto 20px auto;
+}
+.edit-flat-available-languages-box-row {
+  margin: 0 auto 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.edit-flat-each-available-language {
+  width: 200px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 0 0 10px 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.edit-flat-language-add-link {
+  color: blue;
+  width: 200px;
+  height: auto;
+  margin: 0 auto 0 auto;
+}
+.edit-flat-language-add-link:hover {
+  color: gray;
+}
+.edit-flat-each-available-language-edit-link {
+  color: blue;
+}
+.edit-flat-each-available-language-edit-link:hover {
+  color: gray;
+}
+
+.edit-flat-base-language-box {
+  margin: 15px auto 15px auto;
+}
+
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {

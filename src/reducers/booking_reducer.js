@@ -6,7 +6,9 @@ import {
   FETCH_BOOKINGS_BY_USER
 } from '../actions/types';
 
-export default function (state = {}, action) {
+export default function (state = {
+  selectedBookingDates: { to: null, from: null }
+}, action) {
   console.log('in booking reducer, action.payload: ', action.payload);
 
   switch (action.type) {

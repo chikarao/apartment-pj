@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-
 import * as actions from '../../actions';
 
+// Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
 
 class EditProfileModal extends Component {

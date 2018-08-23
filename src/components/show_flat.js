@@ -188,18 +188,31 @@ class ShowFlat extends Component {
       }
     }
 
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+  }
+
   handleBookingClick() {
     console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
-    if (this.props.selectedBookingDates) {
+    if (this.props.selectedBookingDates.to && this.props.selectedBookingDates.to) {
       console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
+      const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.to)} to ${this.formatDate(this.props.selectedBookingDates.from)}?`)
+      if (bookingConfirm) {
+        const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
+        console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
-      const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
-      console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
-
-      // calls action craetor and sends callback to action to go to the booking confiramtion page
-      // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
-      this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+        // calls action craetor and sends callback to action to go to the booking confiramtion page
+        // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
+        this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+      }
     } else {
       console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
       alert('Please select dates for booking.')
