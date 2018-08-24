@@ -9,63 +9,55 @@ import languages from '../constants/languages';
 
 let showHideClassName;
 
-class LanguageCreateModal extends Component {
+class LanguageEditModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createLanguageCompleted: false,
-      selectedLanguage: ''
+      editLanguageCompleted: false,
+      deleteLanguageCompleted: false,
+      selectedLanguage: '',
+      languageCode: ''
     };
   }
-
-  componentDidMount() {
-  }
+  //
+  // componentDidMount() {
+  // }
 
   handleFormSubmit(data) {
     const { code } = data;
     this.setState({ selectedLanguage: languages[code].name });
     const dataToBeSent = data;
     dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in LanguageCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    console.log('in LanguageEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.createFlatLanguage(dataToBeSent, () => {
+    this.props.updateFlatLanguage(dataToBeSent, () => {
       this.handleFormSubmitCallback();
     });
   }
 
-  // emptyInputFields() {
-  //   const inputs = document.getElementsByClassName('form-control');
-  //   console.log('in LanguageCreateModal, emptyInputFields, inputs: ', inputs);
-  //   _.each(inputs, each => {
-  //     const inputToChange = each;
-  //     console.log('in LanguageCreateModal, emptyInputFields, each: ', each);
-  //     inputToChange.setAttribute('value', '');
-  //   });
-  // }
-
-  // resetAdvancedFilters(){
-  //     const fields = ['code', 'address1', 'city', 'state', 'zip', 'country', 'description', 'area', 'sales_point', 'station', 'intro']
-  //     _.each(fields, field => {
-  //       this.props.dispatch(change('LanguageCreateModal', field, null))
-  //       this.props.dispatch(untouch('LanguageCreateModal', field))
-  //     })
-  //   }
-
-  emptyInputFields() {
-   let resetFields = { code: '', address1: '', city: '', state: '', zip: '', country: '', description: '', area: '', sales_point: '', station: '', intro: '' }
-
-    console.log('in LanguageCreateModal, emptyInputFields: ');
-    this.props.initialize(resetFields, true); //keepDirty = true;
+  handleFormSubmitCallback() {
+    console.log('in LanguageEditModal, handleFormSubmitCallback: ');
+    // showHideClassName = 'modal display-none';
+    this.setState({ editLanguageCompleted: true });
+    // this.resetAdvancedFilters();
+    // this.emptyInputFields();
+    this.props.showLoading();
   }
 
-
-  handleFormSubmitCallback() {
-    console.log('in LanguageCreateModal, handleFormSubmitCallback: ');
-    // showHideClassName = 'modal display-none';
-    this.setState({ createLanguageCompleted: true });
-    // this.resetAdvancedFilters();
-    this.emptyInputFields();
+  handleDeleteLanguageClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    const elementName = clickedElement.getAttribute('name');
+    console.log('in show_flat, handleDeleteLanguageClick, elementVal: ', elementVal);
     this.props.showLoading();
+    this.setState({ languageCode: elementName });
+    this.props.deleteFlatLanguage({ id: elementVal, flat_id: this.props.flat.id }, () => this.handleDeleteLanguageCallback());
+  }
+
+  handleDeleteLanguageCallback() {
+    this.setState({ deleteLanguageCompleted: true, editLanguageCompleted: true, selectedLanguage: languages[this.state.languageCode].name }, () => {
+      this.props.showLoading()
+    });
   }
 
   renderAlert() {
@@ -79,54 +71,44 @@ class LanguageCreateModal extends Component {
   }
 
 
-  // turn off showLanguageCreateModal app state
+  // turn off showLanguageEditModal app state
   handleClose() {
-    if (this.props.showLanguageCreate) {
-      this.props.showLanguageCreateModal();
-      this.setState({ createLanguageCompleted: false })
+    if (this.props.showLanguageEdit) {
+      this.props.showLanguageEditModal();
+      this.setState({ editLanguageCompleted: false, deleteLanguageCompleted: false });
     }
   }
 
-  renderLanguageSelectOptions() {
-    // console.log('in modal, in renderLanguageSelectOptions, languages:', languages);
-    const languageCodesArray = [];
-    _.each(this.props.flat.flat_languages, (language) => {
-      languageCodesArray.push(language.code);
-    });
-    return _.map(languages, (v, k) => {
-      const languageAlreadyCreated = languageCodesArray.includes(k);
-        // console.log('in modal, in renderLanguageSelectOptions, v, k:', v, k);
-        if ((this.props.flat.language_code !== k) && !languageAlreadyCreated) {
-          return (
-            <option key={k} value={k}>{v.name}</option>
-          );
-        }
-    });
-  }
-
-  renderCreateLanguageForm() {
+  renderEditLanguageForm() {
     const { handleSubmit } = this.props;
     // const profileEmpty = _.isEmpty(this.props.auth.userProfile);
-    if (this.props.flat) {
+    if (this.props.language) {
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      // console.log('in modal, render showHideClassName:', showHideClassName);
-      // console.log('in modal, render this.props.show:', this.props.show);
-      // console.log('in modal, render this.props:', this.props);
+      // console.log('in modal, renderCreateLanguageForm showHideClassName:', showHideClassName);
+      // console.log('in modal, renderCreateLanguageForm this.props.show:', this.props.show);
+      // console.log('in modal, renderCreateLanguageForm this.props:', this.props);
+      // console.log('in modal, renderEditLanguageForm languages:', languages);
+      // console.log('in modal, renderEditLanguageForm this.props.language:', this.props.language);
+      // console.log('in modal, renderEditLanguageForm languages[this.props.language]:', languages[this.props.language.code]);
+      // const language = languages[this.props.language.code].name;
+      // {languages[this.props.language.code].name}
+      // <div>
+      // </div>
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title">Create Flat Language</h3>
+          <h3 className="auth-modal-title">Edit Flat Language</h3>
+          <fieldset key={'code'} className="form-group">
+            <label className="create-flat-form-label">Language:</label>
+            <div className="edit-flat-address">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
+          </fieldset>
+          <fieldset className="form-group">
+            <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick.bind(this)}>Delete</button>
+          </fieldset>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
             <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-            <fieldset key={'code'} className="form-group">
-              <label className="create-flat-form-label">Select Language:</label>
-              <Field name="code" component="select" type="string" className="form-control">
-                <option></option>
-                {this.renderLanguageSelectOptions()}
-              </ Field>
-            </fieldset>
             <fieldset key={'address1'} className="form-group">
               <label className="create-flat-form-label">Street Address:</label>
               <Field name="address1" component="input" type="string" className="form-control" />
@@ -179,7 +161,7 @@ class LanguageCreateModal extends Component {
   }
 
 
-  renderPostCreateMessage() {
+  renderPostEditDeleteMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
@@ -188,29 +170,33 @@ class LanguageCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">A {this.state.selectedLanguage} language version has been successfully created for your listing.</div>
+          {this.state.deleteLanguageCompleted ?
+            <div className="post-signup-message">The {this.state.selectedLanguage} language version has been deleted.</div>
+            :
+            <div className="post-signup-message">The {this.state.selectedLanguage} language version has been successfully updated.</div>
+          }
         </div>
       </div>
     )
   }
 
   render() {
-    // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
     return (
       <div>
-        {this.state.createLanguageCompleted ? this.renderPostCreateMessage() : this.renderCreateLanguageForm()}
+        {this.state.editLanguageCompleted ? this.renderPostEditDeleteMessage() : this.renderEditLanguageForm()}
       </div>
     );
   }
 }
-
-LanguageCreateModal = reduxForm({
-  form: 'LanguageCreateModal'
-})(LanguageCreateModal);
+// enableReinitialize allow for edit modals to be closed and open with new initialValue props.
+LanguageEditModal = reduxForm({
+  form: 'LanguageEditModal',
+  enableReinitialize: true
+})(LanguageEditModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in show_flat, mapStateToProps, state: ', state);
+  console.log('in LanguageEditModal, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
     successMessage: state.auth.success,
@@ -218,10 +204,12 @@ function mapStateToProps(state) {
     flat: state.selectedFlatFromParams.selectedFlatFromParams,
     // userProfile: state.auth.userProfile
     // initialValues: state.auth.userProfile
-    languages: state.languages,
-    showLanguageCreate: state.modals.showLanguageCreateModal,
+    // languages: state.languages,
+    showLanguageEdit: state.modals.showLanguageEditModal,
+    language: state.languages.selectedLanguage,
+    initialValues: state.languages.selectedLanguage
   };
 }
 
 
-export default connect(mapStateToProps, actions)(LanguageCreateModal);
+export default connect(mapStateToProps, actions)(LanguageEditModal);

@@ -6,7 +6,7 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
-  console.log('in image count reducer, state.count:', state);
+  // console.log('in image count reducer, state.count:', state);
 
   switch (action.type) {
     case INCREMENT_IMAGE_INDEX:

@@ -35,7 +35,7 @@ export default function (state = {
   authenticated: false,
   existingUser: false
 }, action) {
-  console.log('in auth reducer, action: ', action);
+  // console.log('in auth reducer, action: ', action);
   switch (action.type) {
     case AUTH_USER:
       return {

@@ -83,7 +83,11 @@ import {
   MAKE_PAYMENT,
   FETCH_STRIPE_USER_CREDENTIALS,
   SHOW_LANGUAGE_CREATE_MODAL,
-  CREATE_FLAT_LANGUAGE
+  CREATE_FLAT_LANGUAGE,
+  SHOW_LANGUAGE_EDIT_MODAL,
+  SELECTED_LANGUAGE,
+  UPDATE_FLAT_LANGUAGE,
+  DELETE_FLAT_LANGUAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1499,12 +1503,22 @@ export function actionTypeCard(action) {
   //flip showResetPasswordModal
   return { type: ACTION_TYPE_CARD, payload: action };
 }
+export function selectedLanguage(language) {
+  console.log('in actions index, selectedLanguage:', language);
+  return { type: SELECTED_LANGUAGE, payload: language };
+}
 
 export function showLanguageCreateModal() {
   console.log('in actions index, showLanguageCreateModal:');
 
   //flip showResetPasswordModal
   return { type: SHOW_LANGUAGE_CREATE_MODAL };
+}
+export function showLanguageEditModal() {
+  console.log('in actions index, showLanguageCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_LANGUAGE_EDIT_MODAL };
 }
 
 export function createFlatLanguage(flatLanguageAttributes, callback) {
@@ -1527,7 +1541,58 @@ export function createFlatLanguage(flatLanguageAttributes, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to createFlatLanguage: ', error);
-      dispatch(authError(error.response.data.messages));
+      dispatch(authError(error));
+      this.showloading();
+    });
+  };
+}
+export function updateFlatLanguage(flatLanguageAttributes, callback) {
+    console.log('in action index, updateFlatLanguage, flatLanguageAttributes: ', flatLanguageAttributes);
+  const { flat_id, id } = flatLanguageAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/flats/${flat_id}/flat_languages/${id}`, { flat_language: flatLanguageAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateFlatLanguage: ', response);
+      console.log('in action index, response to updateFlatLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_FLAT_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateFlatLanguage: ', error);
+      dispatch(authError(error));
+      this.showloading();
+    });
+  };
+}
+
+export function deleteFlatLanguage(languageAttributes, callback) {
+    console.log('in action index, deleteFlatLanguage, languageAttributes: ', languageAttributes);
+  const { flat_id, id } = languageAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/flats/${flat_id}/flat_languages/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteFlatLanguage: ', response);
+      console.log('in action index, response to deleteFlatLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: DELETE_FLAT_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteFlatLanguage: ', error);
+      dispatch(authError(error));
       this.showloading();
     });
   };

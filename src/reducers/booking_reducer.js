@@ -9,7 +9,7 @@ import {
 export default function (state = {
   selectedBookingDates: { to: null, from: null }
 }, action) {
-  console.log('in booking reducer, action.payload: ', action.payload);
+  // console.log('in booking reducer, action.payload: ', action.payload);
 
   switch (action.type) {
 

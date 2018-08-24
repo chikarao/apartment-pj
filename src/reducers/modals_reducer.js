@@ -1,5 +1,10 @@
 import _ from 'lodash';
-import { SHOW_EDIT_REVIEW_MODAL, SHOW_CARD_INPUT_MODAL, SHOW_LANGUAGE_CREATE_MODAL } from '../actions/types';
+import {
+  SHOW_EDIT_REVIEW_MODAL,
+  SHOW_CARD_INPUT_MODAL,
+  SHOW_LANGUAGE_CREATE_MODAL,
+  SHOW_LANGUAGE_EDIT_MODAL
+} from '../actions/types';
 //
 // const initialState = {
 //   : 0
@@ -10,7 +15,7 @@ export default function (
     showEditReview: false,
     showCardInputModal: false,
     showLanguageCreateModal: false }, action) {
-  console.log('in image count reducer, state.count:', state);
+  // console.log('in image count reducer, state.count:', state);
 
   switch (action.type) {
     case SHOW_EDIT_REVIEW_MODAL:
@@ -21,6 +26,9 @@ export default function (
 
     case SHOW_LANGUAGE_CREATE_MODAL:
       return { ...state, showLanguageCreateModal: !state.showLanguageCreateModal };
+
+    case SHOW_LANGUAGE_EDIT_MODAL:
+      return { ...state, showLanguageEditModal: !state.showLanguageEditModal };
 
     default:
       return state;

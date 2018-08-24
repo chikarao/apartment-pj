@@ -16,11 +16,13 @@ import {
   UPDATE_SEARCH_FLAT_CRITERIA,
   CREATE_PLACE,
   DELETE_PLACE,
-  CREATE_FLAT_LANGUAGE
+  CREATE_FLAT_LANGUAGE,
+  UPDATE_FLAT_LANGUAGE,
+  DELETE_FLAT_LANGUAGE
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
-  console.log('in flats reducer, action.payload: ', action.payload);
+  // console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
 
@@ -108,6 +110,12 @@ export default function (state = { searchFlatParameters: {} }, action) {
       return { ...state, selectedFlatFromParams: action.payload.flat };
 
     case CREATE_FLAT_LANGUAGE:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case UPDATE_FLAT_LANGUAGE:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_FLAT_LANGUAGE:
       return { ...state, selectedFlatFromParams: action.payload };
 
 

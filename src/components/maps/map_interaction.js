@@ -370,7 +370,7 @@ class MapInteraction extends Component {
     // consider moving this somewhere else
     const searchTypeList = SearchTypeList;
     return _.map(searchTypeList, (v, k) => {
-      console.log('in map_interaction, renderSearchSelection, v, k: ', v, k);
+      // console.log('in map_interaction, renderSearchSelection, v, k: ', v, k);
         return <option key={k} value={k}>{v.name}</option>;
       // })
     });

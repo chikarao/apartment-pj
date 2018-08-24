@@ -32,8 +32,8 @@ class Header extends Component {
 
   componentDidMount() {
       const currentLocation = this.props.location.pathname;
-       console.log('in header, componentDidMount, currentLocation: ', currentLocation);
-       console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
+       // console.log('in header, componentDidMount, currentLocation: ', currentLocation);
+       // console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
 
        window.addEventListener('resize', this.handleResize.bind(this));
        if (this.props.auth.authenticated) {
@@ -189,9 +189,9 @@ class Header extends Component {
    }
 
    handleAuthLinkClick(event) {
-     console.log('in header, handleAuthLinkClick, event.target', event.target);
+     // console.log('in header, handleAuthLinkClick, event.target', event.target);
      const elementVal = event.target.getAttribute('value');
-     console.log('in header, handleAuthLinkClick, elementVal', elementVal);
+     // console.log('in header, handleAuthLinkClick, elementVal', elementVal);
      if (elementVal === 'signin') {
        console.log('in header, handleAuthLinkClick, elementVal === sigin', true);
        this.showModal(); // turn on
@@ -211,7 +211,7 @@ class Header extends Component {
       });
 
       let newMessages = false;
-      console.log('in header, newMessagesOrNot, conversations: ', conversations);
+      // console.log('in header, newMessagesOrNot, conversations: ', conversations);
       _.each(conversations, conversation => {
         const ownFlatConversation = flatIdArray.includes(conversation.flat_id);
         _.each(conversation.messages, message => {
@@ -223,7 +223,7 @@ class Header extends Component {
           }
         });
       });
-      console.log('in header, newMessagesOrNot, newMessages: ', newMessages);
+      // console.log('in header, newMessagesOrNot, newMessages: ', newMessages);
       if (newMessages) {
         this.props.setNewMessages(true);
       }
@@ -234,26 +234,26 @@ class Header extends Component {
     // this.props.history.push(`/messagingmain/${this.props.auth.id}`);
     const win = window.open(`/messagingmain/${this.props.auth.id}`, '_blank');
     win.focus();
-    console.log('in header, handleMailBoxClick: ');
+    // console.log('in header, handleMailBoxClick: ');
   }
 
   navigationLinks() {
-    console.log('in header, navigationLinks, this.props.location: ', this.props.location);
+    // console.log('in header, navigationLinks, this.props.location: ', this.props.location);
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
-    console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
+    // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
 
 
     if (this.props.authenticated) {
-      console.log('in header, navigationLinks, this.props.newMessages: ', this.props.newMessages);
+      // console.log('in header, navigationLinks, this.props.newMessages: ', this.props.newMessages);
        // show link to signout and signed in as...
        // const newMessages = this.newMessagesOrNot();
 
        if (onMyPage) {
-         console.log('in header, navigationLinks, if on mypage, newMessages: ', this.props.newMessages);
-         console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
+         // console.log('in header, navigationLinks, if on mypage, newMessages: ', this.props.newMessages);
+         // console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">

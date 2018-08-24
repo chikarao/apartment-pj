@@ -13,6 +13,7 @@ import globalConstants from './constants/global_constants';
 import languages from './constants/languages';
 
 import LanguageCreateModal from './modals/language_create_modal';
+import LanguageEditModal from './modals/language_edit_modal';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -24,7 +25,8 @@ class EditFlat extends Component {
     super(props);
     this.state = {
       // confirmChecked: false
-      confirmChecked: false
+      confirmChecked: false,
+      selectedLanguageCode: ''
     };
   }
 // reference for checkbox
@@ -281,12 +283,33 @@ class EditFlat extends Component {
     }
   }
 
+  getSelectedLanguage(languageCode) {
+    console.log('in show_flat, getSelectedLanguage, languageCode: ', languageCode);
+    const array = []
+    _.each(this.props.flat.flat_languages, language => {
+      if (language.code == languageCode) {
+        array.push(language);
+      }
+    });
+    return array[0];
+  }
+
+  handleEditLanguageClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in show_flat, handleEditLanguageClick, elementVal: ', elementVal);
+    this.props.showLanguageEditModal();
+    // this.setState({ selectedLanguageCode: elementVal });
+    const selectedLanguage = this.getSelectedLanguage(elementVal);
+    this.props.selectedLanguage(selectedLanguage);
+  }
+
   renderAvailableLanguages() {
     return _.map(this.props.flat.flat_languages, language => {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
           {languages[language.code].name}
-          <div className="edit-flat-each-available-language-edit-link">edit</div>
+          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>edit</div>
         </div>
       );
     })
@@ -570,10 +593,21 @@ class EditFlat extends Component {
     );
   }
 
+  renderLanguageEditModal() {
+    return (
+      <div>
+        <LanguageEditModal
+          show={this.props.showLanguageEdit}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         {this.renderLanguageCreateModal()}
+        {this.renderLanguageEditModal()}
         {this.renderEditForm()}
       </div>
     );
@@ -634,6 +668,7 @@ function mapStateToProps(state) {
       auth: state.auth,
       places: state.places.places,
       showLanguageCreate: state.modals.showLanguageCreateModal,
+      showLanguageEdit: state.modals.showLanguageEditModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

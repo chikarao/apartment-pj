@@ -7,7 +7,7 @@ import {
 } from '../actions/types';
 
 export default function (state = {}, action) {
-  console.log('in image count reducer, state.count:', state);
+  // console.log('in image count reducer, state.count:', state);
 
   switch (action.type) {
     //CREATE_LIKE is an object

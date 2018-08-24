@@ -6,7 +6,7 @@ import { CREATE_PLACE, DELETE_PLACE, FETCH_PLACES, PLACE_SEARCH_LANGUAGE } from 
 // };
 
 export default function (state = { placeSearchLanguage: 'en' }, action) {
-  console.log('in places reducer, state.count:', state);
+  // console.log('in places reducer, state.count:', state);
 
   switch (action.type) {
     case CREATE_PLACE:

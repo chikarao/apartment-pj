@@ -2139,6 +2139,11 @@ form {
   margin: 15px auto 15px auto;
 }
 
+.edit-language-delete-btn {
+  margin-right: 50px;
+  margin-bottom: 20px;
+}
+
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {
