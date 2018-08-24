@@ -97,63 +97,65 @@ class LanguageEditModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title">Edit Flat Language</h3>
-          <fieldset key={'code'} className="form-group">
-            <label className="create-flat-form-label">Language:</label>
-            <div className="edit-flat-address">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
-          </fieldset>
-          <fieldset className="form-group">
+
+            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <h3 className="auth-modal-title">Edit Flat Language</h3>
+
+            <div className="edit-profile-scroll-div">
+            <div className="edit-flat-delete-language-button">
             <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick.bind(this)}>Delete</button>
-          </fieldset>
-          {this.renderAlert()}
-          <div className="edit-profile-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-            <fieldset key={'address1'} className="form-group">
-              <label className="create-flat-form-label">Street Address:</label>
-              <Field name="address1" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'city'} className="form-group">
-              <label className="create-flat-form-label">City:</label>
-              <Field name="city" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'state'} className="form-group">
-              <label className="create-flat-form-label">State:</label>
-              <Field name="state" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'zip'} className="form-group">
-              <label className="create-flat-form-label">Zip:</label>
-              <Field name="zip" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'country'} className="form-group">
-              <label className="create-flat-form-label">Country:</label>
-              <Field name="country" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'description'} className="form-group">
-              <label className="create-flat-form-label">Description:</label>
-              <Field name="description" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'area'} className="form-group">
-              <label className="create-flat-form-label">Area:</label>
-              <Field name="area" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'sales_point'} className="form-group">
-              <label className="create-flat-form-label">Sales Point:</label>
-              <Field name="sales_point" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'station'} className="form-group">
-              <label className="create-flat-form-label">Nearest Station:</label>
-              <Field name="station" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'intro'} className="form-group">
-              <label className="create-flat-form-label">Intro:</label>
-              <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
-            </fieldset>
-            <div className="confirm-change-and-button">
-              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
             </div>
-            </form>
-          </div>
+            <div key={'code'} className="edit-flat-delete-language-language-box">
+            <label className="edit-flat-delete-language-language-label">Language:</label>
+            <div className="edit-flat-language-delete-language">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
+            </div>
+            {this.renderAlert()}
+              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <fieldset key={'address1'} className="form-group">
+                <label className="create-flat-form-label">Street Address:</label>
+                <Field name="address1" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'city'} className="form-group">
+                <label className="create-flat-form-label">City:</label>
+                <Field name="city" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'state'} className="form-group">
+                <label className="create-flat-form-label">State:</label>
+                <Field name="state" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'zip'} className="form-group">
+                <label className="create-flat-form-label">Zip:</label>
+                <Field name="zip" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'country'} className="form-group">
+                <label className="create-flat-form-label">Country:</label>
+                <Field name="country" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'description'} className="form-group">
+                <label className="create-flat-form-label">Description:</label>
+                <Field name="description" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'area'} className="form-group">
+                <label className="create-flat-form-label">Area:</label>
+                <Field name="area" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'sales_point'} className="form-group">
+                <label className="create-flat-form-label">Sales Point:</label>
+                <Field name="sales_point" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'station'} className="form-group">
+                <label className="create-flat-form-label">Nearest Station:</label>
+                <Field name="station" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'intro'} className="form-group">
+                <label className="create-flat-form-label">Intro:</label>
+                <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
+              </fieldset>
+              <div className="confirm-change-and-button">
+                <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+              </div>
+              </form>
+            </div>
           </section>
         </div>
       );

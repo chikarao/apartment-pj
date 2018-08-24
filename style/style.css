@@ -2144,6 +2144,30 @@ form {
   margin-bottom: 20px;
 }
 
+.edit-flat-delete-language-button {
+  margin: 20px 0 10px 0;
+  width: 100px;
+}
+
+.edit-flat-delete-language-language-box {
+  display: flex;
+  justify-content:flex-start;
+  flex-direction: row;
+}
+
+.edit-flat-language-delete-language {
+  width: 100px;
+  margin: 10px 0 0 0;
+  text-align: left;
+}
+
+.edit-flat-delete-language-language-label {
+  width: 150px;
+  margin: 10px 5px 0 20px;
+  text-align: left;
+
+}
+
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {
