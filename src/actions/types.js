@@ -84,4 +84,5 @@ export const SHOW_LANGUAGE_EDIT_MODAL = 'create_edit_language';
 export const SELECTED_LANGUAGE = 'selected_language';
 export const UPDATE_FLAT_LANGUAGE = 'update_flat_language';
 export const DELETE_FLAT_LANGUAGE = 'update_flat_language';
+export const SET_APP_LANGUAGE_CODE = 'set_app_language_code';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

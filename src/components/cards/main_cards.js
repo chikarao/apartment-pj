@@ -164,7 +164,24 @@ class MainCards extends Component {
       });
   }
 
+  getFlatLanguage(flat, appLanguageCode) {
+    console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
+    const array = [];
+    _.each(flat.flat_languages, language => {
+      if (language.code == appLanguageCode) {
+        array.push(language);
+      }
+    })
+    if (flat.language_code == appLanguageCode) {
+      array.push(flat);
+    }
+    return array[0] ? array[0] : null
+  }
+
   renderCards() {
+    const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
+    // console.log('in main cards, renderCards, this.props.flat: ', this.props.flat);
+    console.log('in main cards, renderCards, this.props.appLanguageCode: ', this.props.appLanguageCode);
     // <i className="fa fa-wifi"></i>
     // <i className="fa fa-bath"></i>
     // <i className="fa fa-utensils"></i>
@@ -172,8 +189,8 @@ class MainCards extends Component {
     // const reviewsEmpty = _.isEmpty(reviews);
 
     // if (!reviewsEmpty) {
-      console.log('in main cards, renderCards, reviews: ', Object.keys(reviews).length);
-      console.log('in main cards, renderCards, reviews: ', reviews);
+      // console.log('in main cards, renderCards, reviews: ', Object.keys(reviews).length);
+      // console.log('in main cards, renderCards, reviews: ', reviews);
       const flatAverageRating = this.getRating(reviews);
     // console.log('in main_cards, renderCards, flat.images: ', flat.images[0]);
       return (
@@ -189,7 +206,7 @@ class MainCards extends Component {
                   <i className="fa fa-angle-left"></i>
                 </div>
                 <div className="card-cover">
-                  {flat.sales_point}
+                  {flatLanguage ? flatLanguage.sales_point : flat.sales_point}
                 </div>
                 <div className="card-arrow-box" onClick={this.handleRightArrowClick.bind(this)}>
                   <i className="fa fa-angle-right"></i>
@@ -198,10 +215,10 @@ class MainCards extends Component {
             </div>
             <div key={flat.id.toString()} className="card-details">
               <div className="card-flat-caption">
-                {flat.description}
+                {flatLanguage ? flatLanguage.description : flat.description}
               </div>
               <div className="card-flat-area">
-                {flat.area.toUpperCase()}
+                {flatLanguage ? flatLanguage.area.toUpperCase() : flat.area.toUpperCase()}
               </div>
               <div className="card-flat-price">
                 {currency} {parseFloat(flat.price_per_month).toFixed(0)} /month

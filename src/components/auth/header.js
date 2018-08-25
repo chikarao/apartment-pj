@@ -15,6 +15,8 @@ import Loading from '../modals/loading';
 // import Lightbox from '../modals/lightbox';
 
 import * as actions from '../../actions';
+import languages from '../constants/languages';
+
 
 const RESIZE_BREAK_POINT = 800;
 
@@ -34,7 +36,6 @@ class Header extends Component {
       const currentLocation = this.props.location.pathname;
        // console.log('in header, componentDidMount, currentLocation: ', currentLocation);
        // console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
-
        window.addEventListener('resize', this.handleResize.bind(this));
        if (this.props.auth.authenticated) {
          this.props.getCurrentUser();
@@ -45,13 +46,35 @@ class Header extends Component {
        }
    }
 
-   // fetchFlatsByUserCallback(flatIdArray) {
-   //   console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
-   //   // this.props.fetchConversationByUserAndFlat(flatIdArray);
-   // }
-   // componentDidUpdate() {
-   //
-   // }
+   componentDidUpdate() {
+     // specify which language at which the app state is currently set and change select box
+     if (this.props.appLanguageCode) {
+       const languageSelect = document.getElementById('header-language-selection-box-select')
+       // console.log('in header, componentDidMount, languageSelect: ', languageSelect);
+       // console.log('in header, componentDidMount, languages[this.props.appLanguageCode].name: ', languages[this.props.appLanguageCode].name);
+       // console.log('in header, componentDidMount, this.props.appLanguageCode: ', this.props.appLanguageCode);
+       // languageSelect.setAttribute('value', this.props.appLanguageCode);
+       const optionIndex = this.getIndexOption()
+       // console.log('in header, componentDidMount, optionIndex: ', optionIndex);
+       languageSelect.selectedIndex = optionIndex;
+     }
+   }
+
+   getIndexOption() {
+     const optionTags = document.getElementsByClassName('header-language-option')
+     // console.log('in header, getIndexOption, optionTags : ', optionTags);
+     const optionIndexArray = [];
+     _.each(optionTags, (tag, i) => {
+       // console.log('in header, getIndexOption, tag.value, i : ', tag.value, i);
+       // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
+       if (tag.value == this.props.appLanguageCode) {
+         optionIndexArray.push(i);
+       }
+     });
+     // console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
+     return optionIndexArray[0];
+   }
+
    componentWillUnmount() {
        window.removeEventListener('resize', this.handleResize.bind(this));
    }
@@ -237,6 +260,24 @@ class Header extends Component {
     // console.log('in header, handleMailBoxClick: ');
   }
 
+  handleLanguageSelectChange(event) {
+    const changedElement = event.target;
+    console.log('in header, handleLanguageSelectChange, changedElement.value: ', changedElement.value);
+    this.props.setAppLanguageCode(changedElement.value);
+  }
+
+  renderAppLanguageSelect() {
+    return (
+      <div>
+        <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange.bind(this)}>
+          <option className="header-language-option"></option>
+          <option className="header-language-option" value="jp">🇯🇵  日本語</option>
+          <option className="header-language-option" value="en">🇬🇧  English</option>
+        </select>
+      </div>
+    );
+  }
+
   navigationLinks() {
     // console.log('in header, navigationLinks, this.props.location: ', this.props.location);
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
@@ -244,6 +285,7 @@ class Header extends Component {
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
     // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
+    console.log('in header, navigationLinks, appLanguageCode: ', this.props.appLanguageCode);
 
 
     if (this.props.authenticated) {
@@ -258,6 +300,9 @@ class Header extends Component {
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
               <Link className="nav-link header-auth-link" to="/signout">Sign Out</Link>
+             </li>
+             <li className="nav-item header-language-selection-box-li">
+               {this.renderAppLanguageSelect()}
              </li>
              <li className="nav-item">
               <p className="nav-link">Signed in as {this.props.email}</p>
@@ -281,6 +326,9 @@ class Header extends Component {
              </li>
              <li className="nav-item">
               <p className="nav-link">Signed in as {this.props.email}</p>
+             </li>
+             <li className="nav-item header-language-selection-box-li">
+               {this.renderAppLanguageSelect()}
              </li>
            </ul>
          ];
@@ -308,6 +356,9 @@ class Header extends Component {
                  </li> :
                  ''
                }
+               <li className="nav-item header-language-selection-box-li">
+                 {this.renderAppLanguageSelect()}
+               </li>
              </ul>
            ];
          // } // end of if this.props.conversations
@@ -429,7 +480,8 @@ function mapStateToProps(state) {
     showLightbox: state.auth.showLightbox,
     conversations: state.conversation.conversationsByUser,
     newMessages: state.conversation.newMessages,
-    flats: state.flats.flatsByUser
+    flats: state.flats.flatsByUser,
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

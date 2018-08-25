@@ -168,7 +168,6 @@ class Landing extends Component {
         {this.renderBanner()}
         <div className="landing-main">
         <div className="oath-button-box">
-        <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
         </div>
         </div>
           {this.renderFooter()}

@@ -70,8 +70,8 @@ class LanguageEditModal extends Component {
     }
   }
 
-
   // turn off showLanguageEditModal app state
+  // set component state so that it shows the right message or render the edit modal;
   handleClose() {
     if (this.props.showLanguageEdit) {
       this.props.showLanguageEditModal();
@@ -81,19 +81,10 @@ class LanguageEditModal extends Component {
 
   renderEditLanguageForm() {
     const { handleSubmit } = this.props;
-    // const profileEmpty = _.isEmpty(this.props.auth.userProfile);
+
     if (this.props.language) {
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      // console.log('in modal, renderCreateLanguageForm showHideClassName:', showHideClassName);
-      // console.log('in modal, renderCreateLanguageForm this.props.show:', this.props.show);
-      // console.log('in modal, renderCreateLanguageForm this.props:', this.props);
-      // console.log('in modal, renderEditLanguageForm languages:', languages);
-      // console.log('in modal, renderEditLanguageForm this.props.language:', this.props.language);
-      // console.log('in modal, renderEditLanguageForm languages[this.props.language]:', languages[this.props.language.code]);
-      // const language = languages[this.props.language.code].name;
-      // {languages[this.props.language.code].name}
-      // <div>
-      // </div>
+
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
@@ -102,14 +93,14 @@ class LanguageEditModal extends Component {
             <h3 className="auth-modal-title">Edit Flat Language</h3>
 
             <div className="edit-profile-scroll-div">
-            <div className="edit-flat-delete-language-button">
-            <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick.bind(this)}>Delete</button>
-            </div>
-            <div key={'code'} className="edit-flat-delete-language-language-box">
-            <label className="edit-flat-delete-language-language-label">Language:</label>
-            <div className="edit-flat-language-delete-language">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
-            </div>
-            {this.renderAlert()}
+              <div className="edit-flat-delete-language-button">
+                <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick.bind(this)}>Delete</button>
+              </div>
+              <div key={'code'} className="edit-flat-delete-language-language-box">
+                <label className="edit-flat-delete-language-language-label">Language:</label>
+                <div className="edit-flat-language-delete-language">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
+              </div>
+              {this.renderAlert()}
               <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
               <fieldset key={'address1'} className="form-group">
                 <label className="create-flat-form-label">Street Address:</label>
@@ -181,7 +172,7 @@ class LanguageEditModal extends Component {
       </div>
     )
   }
-
+  // render the form or a message based on whether edit language (including delete) has been completed
   render() {
     return (
       <div>

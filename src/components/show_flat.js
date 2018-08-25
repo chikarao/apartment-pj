@@ -125,16 +125,13 @@ class ShowFlat extends Component {
   }
 
   renderFlat() {
-    // console.log('in show flat, flatId: ', flatId);
-    // console.log('in show flat, flat: ', this.props.flat);
-    // const flat = _.find(this.props.flats, (f) => {
-    //   return f.id === flatId;
-    // });
-    // console.log('in show flat, flat: ', flat.description);
+    // Multi languge: if flatLanaguge not null (user has created the appLangage), uses that language
+    // if flatLanguage is null, uses base language
     const flatEmpty = _.isEmpty(this.props.flat);
-    // console.log('in show_flat renderFlat, flat empty: ', flatEmpty);
+    console.log('in show_flat renderFlat, this.props: ', this.props);
       if (!flatEmpty) {
         const { description, area, beds, sales_point, price_per_month, images, king_or_queen_bed, intro } = this.props.flat;
+        const { flatLanguage } = this.props;
         console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
         return (
           <div>
@@ -145,11 +142,11 @@ class ShowFlat extends Component {
             </div>
             <div className="show-flat-container">
               <div key={description} className="show-flat-description">
-                { description }
+                { flatLanguage ? flatLanguage.description : description }
               </div>
 
               <div key={area} className="show-flat-area">
-                { area.toUpperCase() }
+                { flatLanguage ? flatLanguage.area.toUpperCase() : area.toUpperCase() }
               </div>
 
               <div key={beds} className="show-flat-beds">
@@ -157,7 +154,8 @@ class ShowFlat extends Component {
               </div>
 
               <div key={sales_point} className="show-flat-sales_point">
-                { sales_point }
+                { flatLanguage ? flatLanguage.sales_point : sales_point }
+
               </div>
 
               <div key={price_per_month} className="show-flat-price">
@@ -167,7 +165,7 @@ class ShowFlat extends Component {
               <small>flat id: {this.props.match.params.id}</small>
               </div>
               <div key={intro} className="show-flat-intro">
-                { intro }
+                { flatLanguage ? flatLanguage.intro : intro }
               </div>
             </div>
             <h4>Available Amenities</h4>
@@ -564,23 +562,61 @@ class ShowFlat extends Component {
     );
   }
 }
+// return flat language that matchese the app language
+function getFlatLanguage(flat, appLanguageCode) {
+  const array = [];
+  // if one of flat_languages matches app language add to array
+  _.each(flat.flat_languages, language => {
+    if (language.code == appLanguageCode) {
+      array.push(language)
+    }
+  });
+  // if app language is same as base flat language, push
+  if (appLanguageCode == flat.language_code) {
+    array.push(flat);
+  }
+  // return the first language OBJECT in array, if no language, return null
+  return array[0] ? array[0] : null;
+}
 
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
-  return {
-    flat: state.flat.selectedFlatFromParams,
-    selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
-    auth: state.auth,
-    conversation: state.conversation.conversationByFlat,
-    noConversation: state.conversation.noConversation,
-    noConversationForFlat: state.conversation.noConversationForFlat,
-    reviews: state.reviews,
-    // places uses flat.selectedFlatFromParams.places
-    // places: state.places.places,
-    // places: state.flat.selectedFlatFromParams.places,
-    language: state.places.placeSearchLanguage
-    // conversation: state.conversation.createMessage
-  };
+  if (state.flat.selectedFlatFromParams) {
+    const flatLanguage = getFlatLanguage(state.flat.selectedFlatFromParams, state.languages.appLanguageCode);
+
+    return {
+      flat: state.flat.selectedFlatFromParams,
+      selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
+      auth: state.auth,
+      conversation: state.conversation.conversationByFlat,
+      noConversation: state.conversation.noConversation,
+      noConversationForFlat: state.conversation.noConversationForFlat,
+      reviews: state.reviews,
+      // places uses flat.selectedFlatFromParams.places
+      // places: state.places.places,
+      // places: state.flat.selectedFlatFromParams.places,
+      language: state.places.placeSearchLanguage,
+      // conversation: state.conversation.createMessage
+      appLanguageCode: state.languages.appLanguageCode,
+      // state.flat.selectedFlatFromParams.flat_language that has been filtered above
+      // null means user has not created that language
+      //or the appLanaguageCode == flat_language, the base language
+      flatLanguage
+    };
+  } else {
+    return {
+      selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
+      auth: state.auth,
+      conversation: state.conversation.conversationByFlat,
+      noConversation: state.conversation.noConversation,
+      noConversationForFlat: state.conversation.noConversationForFlat,
+      reviews: state.reviews,
+      // places uses flat.selectedFlatFromParams.places
+      // places: state.places.places,
+      // places: state.flat.selectedFlatFromParams.places,
+      language: state.places.placeSearchLanguage,
+    };
+  }
 }
 
 export default connect(mapStateToProps, actions)(ShowFlat);

@@ -323,7 +323,7 @@ class EditFlat extends Component {
   renderLanguages() {
     return (
       <div className="edit-flat-language-box">
-        <div className="edit-flat-base-language-box">Base Language: {languages[this.props.flat.language_code].name}</div>
+        <div className="edit-flat-base-language-box">Base Language: <span style={{ fontStyle: 'italic' }}>{languages[this.props.flat.language_code].name}</span></div>
         <div className="edit-flat-available-language-box">
           <h5>Available Languages</h5>
           {this.props.flat.flat_languages.length > 0 ?

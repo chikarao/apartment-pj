@@ -785,6 +785,7 @@ class Results extends Component {
                   currency='$'
                   showFlat={false}
                   authenticated={this.props.auth.authenticated}
+                  appLanguageCode={this.props.appLanguageCode}
                 />
               </div>
             );
@@ -1622,7 +1623,8 @@ function mapStateToProps(state) {
     likes: state.flats.userLikes,
     auth: state.auth,
     reviews: state.flats.reviewsForFlatResults,
-    searchFlatParams: state.flats.searchFlatParameters
+    searchFlatParams: state.flats.searchFlatParameters,
+    appLanguageCode: state.languages.appLanguageCode
    };
 }
 

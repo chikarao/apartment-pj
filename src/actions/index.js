@@ -87,7 +87,8 @@ import {
   SHOW_LANGUAGE_EDIT_MODAL,
   SELECTED_LANGUAGE,
   UPDATE_FLAT_LANGUAGE,
-  DELETE_FLAT_LANGUAGE
+  DELETE_FLAT_LANGUAGE,
+  SET_APP_LANGUAGE_CODE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1506,6 +1507,11 @@ export function actionTypeCard(action) {
 export function selectedLanguage(language) {
   console.log('in actions index, selectedLanguage:', language);
   return { type: SELECTED_LANGUAGE, payload: language };
+}
+// This is for the entire app
+export function setAppLanguageCode(languageCode) {
+  console.log('in actions index, setLanguageCode:', languageCode);
+  return { type: SET_APP_LANGUAGE_CODE, payload: languageCode };
 }
 
 export function showLanguageCreateModal() {
