@@ -124,6 +124,20 @@ class ShowFlat extends Component {
     }
   }
 
+  getFlatLanguage(flat, appLanguageCode) {
+    console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
+    const array = [];
+    _.each(flat.flat_languages, language => {
+      if (language.code == appLanguageCode) {
+        array.push(language);
+      }
+    })
+    if (flat.language_code == appLanguageCode) {
+      array.push(flat);
+    }
+    return array[0] ? array[0] : null
+  }
+
   renderFlat() {
     // Multi languge: if flatLanaguge not null (user has created the appLangage), uses that language
     // if flatLanguage is null, uses base language
@@ -131,7 +145,10 @@ class ShowFlat extends Component {
     console.log('in show_flat renderFlat, this.props: ', this.props);
       if (!flatEmpty) {
         const { description, area, beds, sales_point, price_per_month, images, king_or_queen_bed, intro } = this.props.flat;
-        const { flatLanguage } = this.props;
+        // const { flatLanguage } = this.props;
+        // get language selected from this.props.flat sent from show flat
+        const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
+
         console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
         return (
           <div>
@@ -563,26 +580,26 @@ class ShowFlat extends Component {
   }
 }
 // return flat language that matchese the app language
-function getFlatLanguage(flat, appLanguageCode) {
-  const array = [];
-  // if one of flat_languages matches app language add to array
-  _.each(flat.flat_languages, language => {
-    if (language.code == appLanguageCode) {
-      array.push(language)
-    }
-  });
-  // if app language is same as base flat language, push
-  if (appLanguageCode == flat.language_code) {
-    array.push(flat);
-  }
-  // return the first language OBJECT in array, if no language, return null
-  return array[0] ? array[0] : null;
-}
+// function getFlatLanguage(flat, appLanguageCode) {
+//   const array = [];
+//   // if one of flat_languages matches app language add to array
+//   _.each(flat.flat_languages, language => {
+//     if (language.code == appLanguageCode) {
+//       array.push(language)
+//     }
+//   });
+//   // if app language is same as base flat language, push
+//   if (appLanguageCode == flat.language_code) {
+//     array.push(flat);
+//   }
+//   // return the first language OBJECT in array, if no language, return null
+//   return array[0] ? array[0] : null;
+// }
 
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
-  if (state.flat.selectedFlatFromParams) {
-    const flatLanguage = getFlatLanguage(state.flat.selectedFlatFromParams, state.languages.appLanguageCode);
+  // if (state.flat.selectedFlatFromParams) {
+  //   const flatLanguage = getFlatLanguage(state.flat.selectedFlatFromParams, state.languages.appLanguageCode);
 
     return {
       flat: state.flat.selectedFlatFromParams,
@@ -597,26 +614,27 @@ function mapStateToProps(state) {
       // places: state.flat.selectedFlatFromParams.places,
       language: state.places.placeSearchLanguage,
       // conversation: state.conversation.createMessage
-      appLanguageCode: state.languages.appLanguageCode,
+      appLanguageCode: state.languages.appLanguageCode
       // state.flat.selectedFlatFromParams.flat_language that has been filtered above
       // null means user has not created that language
       //or the appLanaguageCode == flat_language, the base language
-      flatLanguage
-    };
-  } else {
-    return {
-      selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
-      auth: state.auth,
-      conversation: state.conversation.conversationByFlat,
-      noConversation: state.conversation.noConversation,
-      noConversationForFlat: state.conversation.noConversationForFlat,
-      reviews: state.reviews,
-      // places uses flat.selectedFlatFromParams.places
-      // places: state.places.places,
-      // places: state.flat.selectedFlatFromParams.places,
-      language: state.places.placeSearchLanguage,
+      // flatLanguage
     };
   }
-}
+  // else {
+  //   return {
+  //     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
+  //     auth: state.auth,
+  //     conversation: state.conversation.conversationByFlat,
+  //     noConversation: state.conversation.noConversation,
+  //     noConversationForFlat: state.conversation.noConversationForFlat,
+  //     reviews: state.reviews,
+  //     // places uses flat.selectedFlatFromParams.places
+  //     // places: state.places.places,
+  //     // places: state.flat.selectedFlatFromParams.places,
+  //     language: state.places.placeSearchLanguage,
+  //   };
+  // }
+// }
 
 export default connect(mapStateToProps, actions)(ShowFlat);
