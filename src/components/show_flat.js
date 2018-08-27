@@ -18,6 +18,7 @@ import Lightbox from './modals/lightbox';
 import Amenities from './constants/amenities';
 import MapInteraction from './maps/map_interaction';
 
+import AppLanguages from './constants/app_languages'
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -116,7 +117,7 @@ class ShowFlat extends Component {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
             <div key={key} className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
-              <div className="amenity-radio-show-page">{AMENTIES[key]}</div>
+              <div className="amenity-radio-show-page">{AMENTIES[key][this.props.appLanguageCode]}</div>
             </div>
           );
         }
@@ -185,7 +186,7 @@ class ShowFlat extends Component {
                 { flatLanguage ? flatLanguage.intro : intro }
               </div>
             </div>
-            <h4>Available Amenities</h4>
+            <h4>{AppLanguages.availableAmenities[this.props.appLanguageCode]}</h4>
             <div className="container amenity-input-box">
               <div className="amenity-row row">
                 {this.renderAmenities()}
@@ -215,21 +216,21 @@ class ShowFlat extends Component {
   }
 
   handleBookingClick() {
-    console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
+    // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
     if (this.props.selectedBookingDates.to && this.props.selectedBookingDates.to) {
-      console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
-      console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
+      // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
+      // console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
       const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.to)} to ${this.formatDate(this.props.selectedBookingDates.from)}?`)
       if (bookingConfirm) {
         const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
-        console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
+        // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
         // calls action craetor and sends callback to action to go to the booking confiramtion page
         // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
         this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
       }
     } else {
-      console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
+      // console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
       alert('Please select dates for booking.')
     }
   }
@@ -282,27 +283,27 @@ class ShowFlat extends Component {
     // const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDay() - 2);
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const firstOfMonthJustDate = firstOfMonth.toDateString();
-    console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today just dates: ', firstOfMonthJustDate, todayJustDate);
+    // console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today just dates: ', firstOfMonthJustDate, todayJustDate);
     if (todayJustDate !== firstOfMonthJustDate) {
-      console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today: ', new Date(firstOfMonth - 1), today);
+      // console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today: ', new Date(firstOfMonth - 1), today);
       const firstOfMonthRange = { after: new Date(firstOfMonth - 1), before: today }
       daysList.push(firstOfMonthRange);
-      console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
+      // console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
     }
     // const firstofMonth = new Date.now()
 
-    console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+    // console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
     return daysList;
   }
 
   renderDatePicker() {
-    console.log('in show_flat, renderDatePicker, before if, this.props.flat: ', this.props.flat);
+    // console.log('in show_flat, renderDatePicker, before if, this.props.flat: ', this.props.flat);
     // const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
     if (this.props.flat) {
-      console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
+      // console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
       return (
         <div className="date-picker-container">
-        <h4>Select a range of dates you want:</h4>
+        <h4>{AppLanguages.selectRange[this.props.appLanguageCode]}:</h4>
         <DatePicker
           // initialMonth={new Date(2017, 4)}
           daysToDisable={this.disabledDays(this.props.flat.bookings)}
@@ -579,28 +580,9 @@ class ShowFlat extends Component {
     );
   }
 }
-// return flat language that matchese the app language
-// function getFlatLanguage(flat, appLanguageCode) {
-//   const array = [];
-//   // if one of flat_languages matches app language add to array
-//   _.each(flat.flat_languages, language => {
-//     if (language.code == appLanguageCode) {
-//       array.push(language)
-//     }
-//   });
-//   // if app language is same as base flat language, push
-//   if (appLanguageCode == flat.language_code) {
-//     array.push(flat);
-//   }
-//   // return the first language OBJECT in array, if no language, return null
-//   return array[0] ? array[0] : null;
-// }
 
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
-  // if (state.flat.selectedFlatFromParams) {
-  //   const flatLanguage = getFlatLanguage(state.flat.selectedFlatFromParams, state.languages.appLanguageCode);
-
     return {
       flat: state.flat.selectedFlatFromParams,
       selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
@@ -617,24 +599,9 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode
       // state.flat.selectedFlatFromParams.flat_language that has been filtered above
       // null means user has not created that language
-      //or the appLanaguageCode == flat_language, the base language
+      // or the appLanaguageCode == flat_language, the base language
       // flatLanguage
     };
   }
-  // else {
-  //   return {
-  //     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
-  //     auth: state.auth,
-  //     conversation: state.conversation.conversationByFlat,
-  //     noConversation: state.conversation.noConversation,
-  //     noConversationForFlat: state.conversation.noConversationForFlat,
-  //     reviews: state.reviews,
-  //     // places uses flat.selectedFlatFromParams.places
-  //     // places: state.places.places,
-  //     // places: state.flat.selectedFlatFromParams.places,
-  //     language: state.places.placeSearchLanguage,
-  //   };
-  // }
-// }
 
 export default connect(mapStateToProps, actions)(ShowFlat);

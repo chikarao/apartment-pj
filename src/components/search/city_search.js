@@ -8,6 +8,8 @@ import * as actions from '../../actions';
 import citiesList from '../constants/cities_list';
 import latLngOffset from '../constants/lat_lng_offset';
 
+import AppLanguages from '../constants/app_languages';
+
 
 class CitySearch extends Component {
   constructor(props) {
@@ -306,8 +308,8 @@ class CitySearch extends Component {
     return (
       <div>
         <div className="banner-search-input-and-button">
-          <label><input list="areas" value={this.state.selctedCity} className="banner-search-input" id="banner-input" type="string" onChange={event => this.handleSearchInputChange(event.target.value)} placeholder={this.props.resultsPage ? 'Search another city...' : 'Find flats in a city!'} /></label>
-          <button className="banner-search-button" onClick={this.handleBannerSearchBtnClick.bind(this)}>Search</button>
+          <label><input list="areas" value={this.state.selctedCity} className="banner-search-input" id="banner-input" type="string" onChange={event => this.handleSearchInputChange(event.target.value)} placeholder={this.props.resultsPage ? `${AppLanguages.searchAnotherCity[this.props.appLanguageCode]}` : `${AppLanguages.findFlats[this.props.appLanguageCode]}`} /></label>
+          <button className="banner-search-button" onClick={this.handleBannerSearchBtnClick.bind(this)}> {this.props.appLanguageCode == 'en' ? AppLanguages.search[this.props.appLanguageCode] : <i style={{ fontSize: '20px' }} className="fa fa-search"></i>}</button>
         </div>
         <ul className="cities-list-ul" id="banner-search-cities-list"style={this.state.displayCitiesList ? { display: 'block' } : { display: 'none' }} >
           <li key={1} value="">--</li>
@@ -333,7 +335,8 @@ function mapStateToProps(state) {
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
     searchFlatParams: state.flats.searchFlatParameters,
-    map: state.mapDimensions.map
+    map: state.mapDimensions.map,
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

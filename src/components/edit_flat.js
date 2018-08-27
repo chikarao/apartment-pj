@@ -241,9 +241,11 @@ class EditFlat extends Component {
     // <input type="checkbox" className="createFlatAmenityCheckBox"/><i className="fa fa-check fa-lg"></i>
     // get amenities object values of keys
     return _.map(Object.keys(AMENITIES), amenity => {
+      console.log('in show_flat, renderAmenityInput, amenity: ', amenity);
+      console.log('in show_flat, renderAmenityInput, amenity: ', amenity);
       return (
         <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-          <label className="amenity-radio">{AMENITIES[amenity]}</label>
+          <label className="amenity-radio">{AMENITIES[amenity][this.props.appLanguageCode]}</label>
           <Field name={amenity} component="input" type="checkbox" value="true" className="createFlatAmenityCheckBox" />
         </fieldset>
       );
@@ -308,7 +310,7 @@ class EditFlat extends Component {
     return _.map(this.props.flat.flat_languages, language => {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
-          {languages[language.code].name}
+          {languages[language.code].flag} {languages[language.code].name}
           <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>edit</div>
         </div>
       );
@@ -323,7 +325,7 @@ class EditFlat extends Component {
   renderLanguages() {
     return (
       <div className="edit-flat-language-box">
-        <div className="edit-flat-base-language-box">Base Language: <span style={{ fontStyle: 'italic' }}>{languages[this.props.flat.language_code].name}</span></div>
+        <div className="edit-flat-base-language-box">Base Language: {languages[this.props.flat.language_code].flag}<span style={{ fontStyle: 'italic' }}> {languages[this.props.flat.language_code].name}</span></div>
         <div className="edit-flat-available-language-box">
           <h5>Available Languages</h5>
           {this.props.flat.flat_languages.length > 0 ?
@@ -669,6 +671,7 @@ function mapStateToProps(state) {
       places: state.places.places,
       showLanguageCreate: state.modals.showLanguageCreateModal,
       showLanguageEdit: state.modals.showLanguageEditModal,
+      appLanguageCode: state.languages.appLanguageCode,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

@@ -232,7 +232,7 @@ class CreateFlat extends Component {
     return _.map(Object.keys(AMENITIES), amenity => {
       return (
         <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-          <label className="amenity-radio">{AMENITIES[amenity]}</label>
+          <label className="amenity-radio">{AMENITIES[amenity][this.props.appLanguageCode]}</label>
           <Field name={amenity} component="input" type="checkbox" value="true" className="createFlatAmenityCheckBox" />
         </fieldset>
       );
@@ -523,7 +523,8 @@ function mapStateToProps(state) {
   console.log('in feature mapStateToProps: ', state);
   return {
     errorMessage: state.auth.message,
-    flat: state.flat
+    flat: state.flat,
+    appLanguageCode: state.languages.appLanguageCode,
    };
 }
 

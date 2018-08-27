@@ -9,6 +9,9 @@ import DayPicker, { DateUtils } from 'react-day-picker';
 
 import * as actions from '../../actions';
 
+import AppLanguages from '../constants/app_languages'
+
+
 const INITIAL_STATE = {
     from: null,
     to: null,
@@ -246,10 +249,10 @@ class DatePicker extends Component {
    return (
      <div>
        <h5>
-       {!from && !to && 'Please select the first day.'}
-       {from && !to && 'Please select the last day.'}
+       {!from && !to && AppLanguages.selectFirst[this.props.appLanguageCode]}
+       {from && !to && AppLanguages.selectLast[this.props.appLanguageCode]}
        {from && to &&
-         `Selected from ${from.toLocaleDateString()} to
+         `${AppLanguages.selectFrom[this.props.appLanguageCode]} ${from.toLocaleDateString()} to
          ${to.toLocaleDateString()}`}{' '}
          {from &&
            to && (
@@ -288,8 +291,12 @@ class DatePicker extends Component {
  }
 }
 
-// function handleClickCallAction(callback) {
-//   callback();
-// }
+function mapStateToProps(state) {
+  console.log('in date_picker, mapStateToProps, state: ', state);
+    return {
+      appLanguageCode: state.languages.appLanguageCode
 
-export default connect(null, actions)(DatePicker);
+    };
+  }
+
+export default connect(mapStateToProps, actions)(DatePicker);

@@ -12,6 +12,7 @@ import latLngOffset from './constants/lat_lng_offset';
 
 import searchCriteria from './constants/search_criteria';
 import amenities from './constants/amenities';
+import AppLanguages from './constants/app_languages';
 
 // const initialPosition = {
 //   lat: 37.7952,
@@ -730,7 +731,7 @@ class Results extends Component {
       if (flat.id == review.flat_id) {
         reviewsArray.push(review);
       }
-    })
+    });
     return reviewsArray;
   }
 
@@ -799,7 +800,7 @@ class Results extends Component {
         // <div className="spinner">Loading flats...</div>
         return (
           <div className="results-no-flat-message">
-            There are no flats in that area. <br/><br/> Please search another.
+           {AppLanguages.noFlats[this.props.appLanguageCode]} <br/><br/>{AppLanguages.searchAnother[this.props.appLanguageCode]}
           </div>
         );
       }
@@ -971,6 +972,7 @@ class Results extends Component {
       }
     }
   }
+
   incrementFourthCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
 
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
@@ -1464,7 +1466,7 @@ class Results extends Component {
           // console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
           return (
             <div key={i} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-              <label className="amenity-radio">{amenities[a]}</label>
+              <label className="amenity-radio">{amenities[a][this.props.appLanguageCode]}</label>
               <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck.bind(this)} />
             </div>
           );
@@ -1530,53 +1532,53 @@ class Results extends Component {
               resultsPage
             />
             <div className={this.state.showRefineSearch ? 'hide' : 'results-refine-search-link'} onClick={this.handleRefineSearchLinkClick.bind(this)}>
-              Refine Search
+                {AppLanguages.refineSearch[this.props.appLanguageCode]}
             </div>
           </div>
           <div className="results-search-box-sub-box col-xs-12 col-sm-6 col-md-6">
           <div className="results-search-box-sub-box-box">
             <div className="results-search-box-sub">
               <div value={0} name={searchCriteria[0].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Size
+                {AppLanguages.size[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-                {selectedTabArray.includes(0) ? `${floorSpaceMin} sq m ~ ${floorSpaceMax} sq m` : `${floorSpaceMin} sq m ~` }
+                {selectedTabArray.includes(0) ? `${floorSpaceMin} m² ~ ${floorSpaceMax} m²` : `${floorSpaceMin} m² ~` }
               </div>
             </div>
             <div className="results-search-box-sub" >
               <div value={1} name={searchCriteria[1].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Bedrooms
+                {AppLanguages.bedrooms[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-              {selectedTabArray.includes(1) ? `${bedrooms}` : `${bedroomsMin} ~` }
+                {selectedTabArray.includes(1) ? `${bedrooms}` : `${bedroomsMin} ~` }
               </div>
 
             </div>
             <div className="results-search-box-sub">
               <div value={2} name={searchCriteria[2].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Station
+                {AppLanguages.station[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-              {selectedTabArray.includes(2) ? `${stationMin} mins ~ ${stationMax} mins` : `${stationMin} mins ~` }
+                {selectedTabArray.includes(2) ? `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~ ${stationMax}   ${AppLanguages.mins[this.props.appLanguageCode]}` : `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~` }
               </div>
 
             </div>
             <div className="results-search-box-sub">
               <div value={3} name={searchCriteria[3].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
-                Price
+                {AppLanguages.price[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-              {selectedTabArray.includes(3) ? `$${priceMin} ~ ${priceMax}` : `$${priceMin} ~` }
+                {selectedTabArray.includes(3) ? `$${priceMin} ~ ${priceMax}` : `$${priceMin} ~` }
               </div>
             </div>
           </div>
             <div className="search-criteria-increment-box">
-            <div value='all' className={this.state.searchCriteriaInpuStarted || this.state.amenitySearchArray.length > 0 ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>Clear All</div>
+            <div value='all' className={this.state.searchCriteriaInpuStarted || this.state.amenitySearchArray.length > 0 ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>{AppLanguages.clearAll[this.props.appLanguageCode]}</div>
               <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick.bind(this)}>Min</div>
               <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div value='max' className="search-criteria-increment-min-max" style={this.state.incrementMax ? { backgroundColor: 'gray', color: 'white' } : { backgroundColor: 'white' }} onClick={this.handleMinMaxClick.bind(this)}>Max</div>
-              <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick.bind(this)}>Apply</div>
+              <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
             </div>
           </div>
         </div>
@@ -1594,7 +1596,7 @@ class Results extends Component {
         <div>
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
-            <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>Close</div>
+            <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>{AppLanguages.close[this.props.appLanguageCode]}</div>
             {this.state.showRefineSearch ? this.renderRefineSearchCriteria() : ''}
           </div>
         </div>

@@ -1511,6 +1511,7 @@ export function selectedLanguage(language) {
 // This is for the entire app
 export function setAppLanguageCode(languageCode) {
   console.log('in actions index, setLanguageCode:', languageCode);
+  localStorage.setItem('appLanguage', languageCode)
   return { type: SET_APP_LANGUAGE_CODE, payload: languageCode };
 }
 

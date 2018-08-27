@@ -16,7 +16,7 @@ import Loading from '../modals/loading';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
-
+import AppLanguages from '../constants/app_languages'
 
 const RESIZE_BREAK_POINT = 800;
 
@@ -56,7 +56,9 @@ class Header extends Component {
        // languageSelect.setAttribute('value', this.props.appLanguageCode);
        const optionIndex = this.getIndexOption()
        // console.log('in header, componentDidMount, optionIndex: ', optionIndex);
-       languageSelect.selectedIndex = optionIndex;
+       if (languageSelect) {
+         languageSelect.selectedIndex = optionIndex;
+       }
      }
    }
 
@@ -271,8 +273,8 @@ class Header extends Component {
       <div>
         <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange.bind(this)}>
           <option className="header-language-option"></option>
-          <option className="header-language-option" value="jp">🇯🇵  日本語</option>
-          <option className="header-language-option" value="en">🇬🇧  English</option>
+          <option className="header-language-option" value="jp">{languages['jp'].flag} {languages['jp'].name}</option>
+          <option className="header-language-option" value="en">{languages['en'].flag} {languages['en'].name}</option>
         </select>
       </div>
     );
@@ -299,13 +301,13 @@ class Header extends Component {
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
-              <Link className="nav-link header-auth-link" to="/signout">Sign Out</Link>
+              <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
              </li>
              <li className="nav-item header-language-selection-box-li">
                {this.renderAppLanguageSelect()}
              </li>
              <li className="nav-item">
-              <p className="nav-link">Signed in as {this.props.email}</p>
+              <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
              </li>
              { this.props.conversations ?
                <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>
@@ -322,10 +324,10 @@ class Header extends Component {
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
-              <Link className="nav-link header-auth-link" to={'/mypage'} >My Page</Link>
+              <Link className="nav-link header-auth-link" to={'/mypage'}>{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
              </li>
              <li className="nav-item">
-              <p className="nav-link">Signed in as {this.props.email}</p>
+              <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
              </li>
              <li className="nav-item header-language-selection-box-li">
                {this.renderAppLanguageSelect()}
@@ -342,10 +344,10 @@ class Header extends Component {
            return [
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
-                <Link className="nav-link header-auth-link" to={'/mypage'} >My Page</Link>
+                <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
                </li>
                <li className="nav-item">
-                <p className="nav-link">Signed in as {this.props.email}</p>
+                <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
                </li>
                { this.props.conversations ?
                  <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>

@@ -11,6 +11,7 @@ import cloudinary from 'cloudinary-core';
 import * as actions from '../actions';
 import citiesList from './constants/cities_list';
 import CitySearch from './search/city_search';
+import AppLanguages from './constants/app_languages';
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -143,7 +144,7 @@ class Landing extends Component {
               landingPage
             />
           </div>
-          <p>Live where you want</p>
+          <p> {AppLanguages.bannerMessage[this.props.appLanguageCode]}</p>
         </div>
       </div>
     );
@@ -181,6 +182,7 @@ function mapStateToProps(state) {
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
     auth: state.auth,
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

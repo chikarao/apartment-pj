@@ -98,7 +98,7 @@ class LanguageCreateModal extends Component {
         // console.log('in modal, in renderLanguageSelectOptions, v, k:', v, k);
         if ((this.props.flat.language_code !== k) && !languageAlreadyCreated) {
           return (
-            <option key={k} value={k}>{v.name}</option>
+            <option key={k} value={k}>{v.flag} {v.name}</option>
           );
         }
     });

@@ -7,6 +7,8 @@ import SearchTypeList from '../constants/search_type_list';
 
 import * as actions from '../../actions';
 
+import AppLanguages from '../constants/app_languages';
+
 // import * as images from '../../images';
 
 const NEARBY_SEARCH_RADIUS = 3000;
@@ -933,7 +935,7 @@ class MapInteraction extends Component {
   renderPlacesBox() {
     return (
       <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Nearby Places</div>
+        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}</div>
         <ul>
           {this.renderSelectedResultsList()}
         </ul>
@@ -983,6 +985,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

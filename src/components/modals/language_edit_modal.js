@@ -98,7 +98,7 @@ class LanguageEditModal extends Component {
               </div>
               <div key={'code'} className="edit-flat-delete-language-language-box">
                 <label className="edit-flat-delete-language-language-label">Language:</label>
-                <div className="edit-flat-language-delete-language">{this.props.language.code ? languages[this.props.language.code].name : ''}</div>
+                <div className="edit-flat-language-delete-language">{this.props.language.code ? <div>{languages[this.props.language.code].flag} {languages[this.props.language.code].name}</div> : ''}</div>
               </div>
               {this.renderAlert()}
               <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
