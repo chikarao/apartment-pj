@@ -6,7 +6,9 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import SwipeParent from '../payments/parent';
-import cardAddressInputObject from '../constants/card_address_input'
+import cardAddressInputObject from '../constants/card_address_input';
+
+import AppLanguages from '../constants/app_languages';
 
 let showHideClassName;
 
@@ -64,10 +66,10 @@ class CardInputModal extends Component {
     this.setState({ addCardCompleted: false, updateCardCompleted: false, paymentCompleted: false });
     const expInputs = document.getElementsByClassName('exp-input');
     _.each(expInputs, exp => {
-      console.log('in CardInputModal, handleClose, before each exp:', exp.value);
+      // console.log('in CardInputModal, handleClose, before each exp:', exp.value);
       const expValue = exp;
       expValue.value = '';
-      console.log('in CardInputModal, handleClose, after each exp:', exp.value);
+      // console.log('in CardInputModal, handleClose, after each exp:', exp.value);
     });
 
     this.props.authError('');
@@ -81,7 +83,7 @@ class CardInputModal extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in CardInputModal, handleFormSubmit:', data);
+    // console.log('in CardInputModal, handleFormSubmit:', data);
     const customerId = this.props.auth.customer.id;
     const cardId = this.props.auth.selectedCard.id;
     if (!data.name) {
@@ -121,22 +123,25 @@ class CardInputModal extends Component {
   }
 
   renderCardAddressInputs() {
-    return _.map(Object.keys(cardAddressInputObject), (inputs, i) => {
-      return (
-        <fieldset key={i} className="form-group">
-          <label className="create-flat-form-label">{cardAddressInputObject[inputs]}:</label>
-          <Field name={inputs} component="input" type="text" className="form-control card-form-control"></ Field>
-        </fieldset>
+    // if(this.props.appLanguageCode) {
+      return _.map(Object.keys(cardAddressInputObject), (inputs, i) => {
+        console.log('in CardInputModal, renderCardAddressInputs, inputs:', inputs);
+        return (
+          <fieldset key={i} className="form-group">
+            <label className="create-flat-form-label">{cardAddressInputObject[inputs][this.props.appLanguageCode]}:</label>
+            <Field name={inputs} component="input" type="text" className="form-control card-form-control"></ Field>
+          </fieldset>
 
-      );
-    });
+        );
+      });
+    // }
   }
 
   renderEditCardFields() {
     // const customerEmpty = _.isEmpty(this.props.auth.customer);
-    console.log('in CardInputModal, renderEditCardFields, before if this.props.initialValues:', this.props.initialValues);
+    // console.log('in CardInputModal, renderEditCardFields, before if this.props.initialValues:', this.props.initialValues);
     if (this.props.initialValues) {
-      console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
+      // console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
       const { handleSubmit } = this.props;
       return (
         <div>
@@ -167,7 +172,7 @@ class CardInputModal extends Component {
             <Field name="exp_year" component="input" type="integer" className="form-control card-form-control"></ Field>
           </fieldset>
           {this.renderCardAddressInputs()}
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
         </form>
         </div>
       );
@@ -175,7 +180,7 @@ class CardInputModal extends Component {
   }
 
   handlePaymentFormSubmit(data) {
-    console.log('in CardInputModal, handlePaymentFormSubmit, data: ', data);
+    // console.log('in CardInputModal, handlePaymentFormSubmit, data: ', data);
     this.props.showLoading()
     this.props.makePayment({ amount: data.amount, currency: data.currency, description: data.description }, () => this.handlePaymentFormSubmitCallback());
   }
@@ -186,18 +191,18 @@ class CardInputModal extends Component {
   }
 
   renderPaymentFields() {
-      console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
+      // console.log('in CardInputModal, renderEditCardFields, this.props.initialValues:', this.props.initialValues);
       const { handleSubmit } = this.props;
       return (
         <div>
           <form onSubmit={handleSubmit(this.handlePaymentFormSubmit.bind(this))}>
             <fieldset key={11} className="form-group">
-              <label className="create-flat-form-label">Payment Amount:</label>
+              <label className="create-flat-form-label">{AppLanguages.paymentAmount[this.props.appLanguageCode]}:</label>
               <Field name="amount" component="input" type="integer" className="form-control exp-input">
             </ Field>
             </fieldset>
             <fieldset key={12} className="form-group">
-              <label className="create-flat-form-label">Currency:</label>
+              <label className="create-flat-form-label">{AppLanguages.currency[this.props.appLanguageCode]}:</label>
               <Field name="currency" component="select" type="string" className="form-control exp-input">
                 <option></option>
                 <option value="jpy">Japanese Yen</option>
@@ -207,10 +212,10 @@ class CardInputModal extends Component {
               </ Field>
             </fieldset>
             <fieldset key={13} className="form-group">
-              <label className="create-flat-form-label">Notes:</label>
+              <label className="create-flat-form-label">{AppLanguages.notes[this.props.appLanguageCode]}:</label>
               <Field name="description" component="input" type="string" className="form-control exp-input"></ Field>
             </fieldset>
-            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
           </form>
           {this.renderAlert()}
           {this.state.paymentCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Payment Completed!</div> : ''}
@@ -219,12 +224,12 @@ class CardInputModal extends Component {
   }
 
   renderEachCardInput() {
-    console.log('in CardInputModal, renderEachCardInput, this.props.auth.cardActionType:', this.props.auth.cardActionType);
+    // console.log('in CardInputModal, renderEachCardInput, this.props.auth.cardActionType:', this.props.auth.cardActionType);
     if (this.props.auth.cardActionType == 'Add a Card') {
       return (
         <div>
           <SwipeParent
-            buttonText='Add Card'
+            buttonText={AppLanguages.addCard[this.props.appLanguageCode]}
             // actionType={this.props.auth.userProfile.user.stripe_customer_id ? 'addCard' : 'addCustomer'}
           />
         </div>
@@ -250,6 +255,10 @@ class CardInputModal extends Component {
     );
   }
 
+  // renderEditOrPayTitle() {
+  //   if()
+  // }
+
   renderCardInput() {
     const { handleSubmit } = this.props;
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
@@ -259,11 +268,11 @@ class CardInputModal extends Component {
       return (
         <div className={showHideClassName}>
           <div className="modal-main">
-            <h3 className="auth-modal-title">{this.props.auth.cardActionType}</h3>
+            <h3 className="auth-modal-title">{this.props.auth.cardActionType == 'Add a Card' ? AppLanguages.addCard[this.props.appLanguageCode] : AppLanguages.makePayment[this.props.appLanguageCode]}</h3>
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-            {this.renderEachCardInput()}
-            {this.renderAlert()}
-            {this.state.updateCardCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Card Updated!</div> : ''}
+              {this.renderEachCardInput()}
+              {this.renderAlert()}
+              {this.state.updateCardCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Card Updated!</div> : ''}
           </div>
         </div>
       );
@@ -290,7 +299,7 @@ class CardInputModal extends Component {
     // console.log('in CardInputModal, render, this.state.editReviewCompleted: ', this.state.editReviewCompleted);
     return (
       <div>
-      {this.renderCardInput()}
+        {this.renderCardInput()}
       </div>
     );
   }
@@ -314,6 +323,7 @@ function mapStateToProps(state) {
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
     charge: state.auth.charge,
+    appLanguageCode: state.languages.appLanguageCode,
     initialValues: state.auth.selectedCard
   };
 }

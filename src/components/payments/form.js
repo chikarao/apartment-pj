@@ -62,7 +62,7 @@ class Form extends Component {
   handleResize() {
     this.setState({ windowWidth: window.innerWidth }, () => {
 
-      console.log('in stripe form, handleSubmit, this.state.windowWidth: ', this.state.windowWidth)
+      // console.log('in stripe form, handleSubmit, this.state.windowWidth: ', this.state.windowWidth)
     });
   }
 
@@ -74,7 +74,7 @@ class Form extends Component {
     const formInputs = document.getElementsByClassName('card-form-control')
     // !!!! for some reason cannot empty out stripe inputs
     const stripeInputs = document.getElementsByClassName('InputElement')
-    console.log('in stripe form, handleSubmit, stripeInputs: ', stripeInputs)
+    // console.log('in stripe form, handleSubmit, stripeInputs: ', stripeInputs)
     _.each(formInputs, input => {
       const inputToEmpty = input;
       inputToEmpty.value = '';
@@ -190,7 +190,7 @@ class Form extends Component {
     return _.map(Object.keys(cardAddressInputObject), (inputs, i) => {
       return (
         <div key={i} className="form-group card-form-group">
-        <label className="create-flat-form-label">{cardAddressInputObject[inputs]}: </label>
+        <label className="create-flat-form-label">{cardAddressInputObject[inputs][this.props.appLanguageCode]}: </label>
         <input type="text" className="form-control card-form-control" />
         </div>
       );
@@ -200,8 +200,8 @@ class Form extends Component {
   render() {
     // <button fluid className="stripe-pay-button">Make Payment</button>
     // {this.renderUpdateInput()}
-    console.log('in stripe form, handleSubmit, this.props.actionType', this.props.auth.cardActionType)
-    console.log('in stripe form, handleSubmit, this.props', this.props)
+    // console.log('in stripe form, handleSubmit, this.props.actionType', this.props.auth.cardActionType)
+    // console.log('in stripe form, handleSubmit, this.props', this.props)
     return (
       <div className="checkout">
         <form
@@ -222,6 +222,7 @@ function mapStateToProps(state) {
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
     auth: state.auth,
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

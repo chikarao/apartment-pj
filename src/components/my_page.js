@@ -770,8 +770,8 @@ class MyPage extends Component {
                     {this.renderCardAddress(card)}
                   </div>
                   <div className="my-page-card-button-box">
-                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>Edit</button>
-                    <button name={card.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>Delete</button>
+                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+                    <button name={card.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
                   </div>
                 </li>
               </div>
@@ -780,12 +780,12 @@ class MyPage extends Component {
       } else {
         // else for if source.data
         return (
-          <div>You have no cards on file. <br/>Please add a card.</div>
+          <div>{AppLanguages.noCards[this.props.appLanguageCode]}</div>
         );
       }
     } else {
       return (
-        <div>You have no cards on file. <br/>Please add a card.</div>
+        <div>{AppLanguages.noCards[this.props.appLanguageCode]}</div>
       );
     }
   }
@@ -811,9 +811,9 @@ class MyPage extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"></span>
-          <span>{AppLanguages.paymentDetails[this.props.appLanguageCode]}</span>
-          <span className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick.bind(this)}><i className="fa fa-credit-card"></i></div></span>
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.paymentDetails[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick.bind(this)}><i className="fa fa-credit-card"></i></div></div>
         </div>
         <ul>
           {this.renderExistingCardDetails()}
@@ -850,7 +850,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
         </div>
         </div>
-        <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}!</button></Link>
+        <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}</button></Link>
       </div>
     );
   }
@@ -873,8 +873,7 @@ function mapStateToProps(state) {
     showCardInput: state.modals.showCardInputModal,
     customer: state.auth.customer,
     charge: state.auth.charge,
-    appLanguageCode: state.languages.appLanguageCode,
-
+    appLanguageCode: state.languages.appLanguageCode
   };
 }
 

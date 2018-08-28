@@ -106,10 +106,12 @@ const appLanguages =
     checkIn: { en: 'Check in', jp: 'チェックイン' },
     checkOut: { en: 'Check out', jp: 'チェックアウト' },
     edit: { en: 'edit', jp: '編集' },
+    delete: { en: 'delete', jp: '削除' },
     bookingsMyFlats: { en: 'Bookings for My Flats', jp: 'My物件の予約' },
-    paymentDetails: { en: 'Payment Details', jp: '支払い関係' },
+    paymentDetails: { en: 'Payment Details', jp: 'お支払い関係' },
     lastFour: { en: 'Last four digits', jp: '下４桁' },
     expiration: { en: 'Exp', jp: '有効期限' },
+    noCards: { en: 'You have no cards on file. Please add card', jp: 'カードがありません。追加して下さい。' },
     addNewCard: { en: 'Add New Card', jp: 'カードを追加' },
     connectBank: { en: 'Connect your bank account', jp: '銀行口座をリンクしよう' },
     useThisCard: { en: 'Use this card for payment', jp: 'このカードを支払いに使用' },
@@ -123,7 +125,7 @@ const appLanguages =
     birthday: { en: 'Birthday', jp: '生年月日' },
     address: { en: 'Address', jp: '住所' },
     selfIntro: { en: 'Self Intro', jp: '自己紹介' },
-    listNewFlat: { en: 'Create New Listing', jp: '新しい物件を掲載' },
+    listNewFlat: { en: 'Create New Listing!', jp: '新しい物件を掲載!' },
     // main message
     archives: { en: 'Archives', jp: '保管箱' },
     trashBin: { en: 'Trash Bin', jp: 'ゴミ箱' },
@@ -136,8 +138,16 @@ const appLanguages =
     allListings: { en: 'All listings', jp: '全ての物件' },
     send: { en: 'Send', jp: '送信' },
     noConversation: { en: 'You have not started a conversation... \nStart one by sending a message! \nMake sure to introduce yourself',
-      jp: 'まだ会話を始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' }
-
+      jp: 'まだ会話を始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' },
+      // edit profile
+    editProfile: { en: 'Edit Profile', jp: 'プロフィールを編集' },
+    // payment modal
+    makePayment: { en: 'Make a Payment', jp: 'お支払い' },
+    paymentAmount: { en: 'Payment Amount', jp: 'お支払い額' },
+    currency: { en: 'Currency', jp: 'お支払い通貨' },
+    notes: { en: 'Notes', jp: '備考' },
+    addCard: { en: 'Add a Card', jp: 'カードを追加' },
+    nameCard: { en: 'Name on Card', jp: 'カード名義' },
   };
 
 export default appLanguages;
