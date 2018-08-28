@@ -7,16 +7,17 @@ import cloudinary from 'cloudinary-core';
 import axios from 'axios';
 import sha1 from 'sha1';
 
-const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
-const API_KEY = process.env.CLOUDINARY_API_KEY;
-const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-
-import Upload from './images/upload';
 import * as actions from '../actions';
-import Amenities from './constants/amenities'
+import Amenities from './constants/amenities';
 import RenderDropzoneInput from './images/render_dropzone_input';
-import AppLanguages from './constants/app_languages'
+import AppLanguages from './constants/app_languages';
+
+// const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+// const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
+// const API_KEY = process.env.CLOUDINARY_API_KEY;
+// const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
+// import Upload from './images/upload';
 
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = 'http://localhost:3000';
@@ -380,7 +381,7 @@ class CreateFlat extends Component {
         </Field>
         </fieldset>
         <fieldset key={'intro'} className="form-group">
-          <label className="create-flat-form-label">Intro:</label>
+          <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
           <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
         </fieldset>
         <fieldset key={'cancellation'} className="form-group">

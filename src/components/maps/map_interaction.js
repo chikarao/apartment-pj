@@ -373,7 +373,7 @@ class MapInteraction extends Component {
     const searchTypeList = SearchTypeList;
     return _.map(searchTypeList, (v, k) => {
       // console.log('in map_interaction, renderSearchSelection, v, k: ', v, k);
-        return <option key={k} value={k}>{v.name}</option>;
+        return <option key={k} value={k}>{v[this.props.appLanguageCode]}</option>;
       // })
     });
 }
@@ -749,7 +749,7 @@ class MapInteraction extends Component {
       if (this.state.placeSearched) {
         return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-exclamation-triangle"></i>&nbsp;No results within {nearbySearchRadiusKM}km of flat, try searching by inputting name.</div>;
       } else {
-        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;&nbsp;To get nearby places, click on criterion under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.</div>;
+        return <div style={{ padding: '20px' }}><i style={{ fontSize: '19px' }}className="fa fa-info-circle"></i>&nbsp;&nbsp;{AppLanguages.searchResultsMessage[this.props.appLanguageCode]}</div>;
       };
     } else {
       return _.map(resultsArray, (place) => {
@@ -763,7 +763,7 @@ class MapInteraction extends Component {
             <li value={place.place_id} className="map-interaction-search-result" onClick={this.handlePlaceClick.bind(this)}><i className="fa fa-chevron-right"></i>
             &nbsp;{place.name}
             </li>
-            <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm add-place-btn" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>Add</ button></div>
+            <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm add-place-btn" value={placeValueString} name={place.name} type="checkbox" onClick={this.handleResultAddClick.bind(this)}>{AppLanguages.add[this.props.appLanguageCode]}</ button></div>
           </div>
         )
       });
@@ -820,7 +820,7 @@ class MapInteraction extends Component {
             <li value={place.placeid} className="map-interaction-search-result" onClick={this.handleSelectedPlaceClick.bind(this)}><i key={i.toString()} className="fa fa-chevron-right"></i>
             &nbsp;{place.place_name}
             </li>
-          {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm remove-place-btn" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>Remove</ button></div>}
+          {this.props.showFlat ? '' : <div className="search-result-list-radio-label"><button className="btn btn-primary btn-sm remove-place-btn" value={place.id} type="checkbox" onClick={this.handleResultDeleteClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</ button></div>}
           </div>
         );
       }
@@ -855,7 +855,8 @@ class MapInteraction extends Component {
     // 'remove' buttons do not show in showflat page
     const { places } = this.props;
     // const searchTypeObject = SearchTypeList;
-      const placesEmpty = _.isEmpty(places);
+    const placesEmpty = _.isEmpty(places);
+
     if (!placesEmpty) {
       const categories = this.getCategoriesArray(places);
       // categories.sort();
@@ -871,7 +872,7 @@ class MapInteraction extends Component {
         return (
           <div key={category}>
             <div value={category} className="search-result-category-heading">
-              {SearchTypeList[category].name}
+              {SearchTypeList[category][this.props.appLanguageCode]}
             </div>
             {this.renderEachResult(places, category)}
           </div>
@@ -906,17 +907,17 @@ class MapInteraction extends Component {
     // </ select>
     return (
       <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-search"></i>  Search for Nearest</div>
-        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Schools</div>
-        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Convenience Stores</div>
-        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Supermarkets</div>
-        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Train Stations</div>
-        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>Subway Stations</div>
+        <div className="map-interaction-title"><i className="fa fa-search"></i>  {AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
+        <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.schools[this.props.appLanguageCode]}</div>
+        <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.convenientStores[this.props.appLanguageCode]}</div>
+        <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.superMarkets[this.props.appLanguageCode]}</div>
+        <div value="train_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.trainStations[this.props.appLanguageCode]}</div>
+        <div value="subway_station" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.subwayStations[this.props.appLanguageCode]}</div>
         <select id="typeSelection" onChange={this.handleSearchTypeSelect.bind(this)}>
-          <option value="acquarium">Select type of place nearby</option>
+          <option value="acquarium">{AppLanguages.selectTypePlace[this.props.appLanguageCode]}</option>
           {this.renderSearchSelection()}
         </select>
-        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder="Search for place name or address..." />
+        <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder={AppLanguages.searchPlaceName[this.props.appLanguageCode]} />
       </div>
     );
   }
@@ -924,7 +925,7 @@ class MapInteraction extends Component {
   renderSearchResultsBox() {
     return (
       <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  Top Search Results</div>
+        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  {AppLanguages.topSearchResults[this.props.appLanguageCode]}</div>
         <ul>
           {this.renderSearchResultsList()}
         </ul>

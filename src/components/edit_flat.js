@@ -4,16 +4,16 @@ import { reduxForm, Field } from 'redux-form';
 import _ from 'lodash';
 
 import * as actions from '../actions';
+
 import Upload from './images/upload';
 import Amenities from './constants/amenities';
 import GoogleMap from './maps/google_map';
 import MapInteraction from './maps/map_interaction';
-
 import globalConstants from './constants/global_constants';
 import languages from './constants/languages';
-
 import LanguageCreateModal from './modals/language_create_modal';
 import LanguageEditModal from './modals/language_edit_modal';
+import AppLanguages from './constants/app_languages';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -194,9 +194,9 @@ class EditFlat extends Component {
     // console.log('in edit flat, renderDeleteImageButtons: ');
     return (
       <div>
-        <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>Delete checked images</button>
-        <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>Uncheck all images</button>
-        <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>Check all images</button>
+        <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>{AppLanguages.deleteCheckedImages[this.props.appLanguageCode]}</button>
+        <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>{AppLanguages.uncheckAllImages[this.props.appLanguageCode]}</button>
+        <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>{AppLanguages.checkAllImages[this.props.appLanguageCode]}</button>
       </div>
     );
   }
@@ -324,24 +324,24 @@ class EditFlat extends Component {
   renderLanguages() {
     return (
       <div className="edit-flat-language-box">
-        <div className="edit-flat-base-language-box">Base Language: {languages[this.props.flat.language_code].flag}<span style={{ fontStyle: 'italic' }}> {languages[this.props.flat.language_code].name}</span></div>
+        <div className="edit-flat-base-language-box">{AppLanguages.baseLanguage[this.props.appLanguageCode]}: {languages[this.props.flat.language_code].flag}<span style={{ fontStyle: 'italic' }}> {languages[this.props.flat.language_code].name}</span></div>
         <div className="edit-flat-available-language-box">
-          <h5>Available Languages</h5>
+          <h5>{AppLanguages.availableLanguages[this.props.appLanguageCode]}</h5>
           {this.props.flat.flat_languages.length > 0 ?
             <div className="edit-flat-available-languages-box-container container">
               <div className="edit-flat-available-languages-box-row row">
                 {this.renderAvailableLanguages()}
               </div>
             </div>
-            : <div style={{ margin: '15px auto 25px auto' }}>No other languages added.</div> }
+            : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noOtherLanguages[this.props.appLanguageCode]}</div> }
         </div>
-        <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick.bind(this)}>Add Another Language</div>
+        <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick.bind(this)}>{AppLanguages.addAnotherLanguage[this.props.appLanguageCode]}</div>
       </div>
     );
   }
 
   renderEditForm() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
     // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
     // console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
@@ -350,50 +350,50 @@ class EditFlat extends Component {
       // console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
-        <h2 style={{ marginBottom: '30px' }}>Edit Your Listing</h2>
-        <h4>Edit Basic Information and Amenities</h4>
+        <h2 style={{ marginBottom: '30px' }}>{AppLanguages.editYourListing[appLanguageCode]}</h2>
+        <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Street Address:</label>
+            <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
             <div className="edit-flat-address">{this.props.flat.address1}</div>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">City:</label>
+            <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}:</label>
           <div className="edit-flat-address">{this.props.flat.city}</div>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">State:</label>
+            <label className="create-flat-form-label">{AppLanguages.state[appLanguageCode]}:</label>
             <div className="edit-flat-address">{this.props.flat.state}</div>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Zip:</label>
+            <label className="create-flat-form-label">{AppLanguages.zip[appLanguageCode]}:</label>
             <div className="edit-flat-address">{this.props.flat.zip}</div>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Country:</label>
+            <label className="create-flat-form-label">{AppLanguages.country[appLanguageCode]}:</label>
             <div className="edit-flat-address">{this.props.flat.country}</div>
           </fieldset>
           <fieldset>
-          <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> Required fields.  If you need to edit the address, please delete the listing and create a new one</div>
+          <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.requiredFields[appLanguageCode]}</div>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Description:</label>
+            <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>
             <Field name="description" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Area:</label>
+            <label className="create-flat-form-label">{AppLanguages.area[appLanguageCode]}:</label>
             <Field name="area" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Price Per Month<span style={{ color: 'red' }}>*</span>:</label>
+            <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
             <Field name="price_per_month" component="input" type="float" className="form-control" />
           </fieldset>
           <fieldset key={'size'} className="form-group">
-            <label className="create-flat-form-label">Floor space (sq m )<span style={{ color: 'red' }}>*</span>:</label>
+            <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
             <Field name="size" component="input" type="integer" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Guests:</label>
+            <label className="create-flat-form-label">{AppLanguages.guests[appLanguageCode]}:</label>
             <Field name="guests" component="select" type="integer" className="form-control">
               <option></option>
               <option value="1">1</option>
@@ -409,11 +409,11 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Sales Point:</label>
+            <label className="create-flat-form-label">{AppLanguages.salesPoint[appLanguageCode]}:</label>
             <Field name="sales_point" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Rooms:</label>
+            <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}:</label>
             <Field name="rooms" component="select" type="float" className="form-control">
               <option></option>
               <option value="1">1</option>
@@ -424,7 +424,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Beds:</label>
+            <label className="create-flat-form-label">{AppLanguages.beds[appLanguageCode]}:</label>
             <Field name="beds" component="select" type="integer" className="form-control">
             <option></option>
             <option value="1">1</option>
@@ -436,7 +436,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">King or Queen Beds:</label>
+            <label className="create-flat-form-label">{AppLanguages.kingOrQueen[appLanguageCode]}:</label>
             <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
             <option></option>
             <option value="0">0</option>
@@ -449,7 +449,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Flat Type:</label>
+            <label className="create-flat-form-label">{AppLanguages.flatType[appLanguageCode]}:</label>
             <Field name="flat_type" component="select" type="string" className="form-control">
               <option></option>
               <option value="flat_in_building">Flat in building</option>
@@ -460,7 +460,7 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Bath:</label>
+            <label className="create-flat-form-label">{AppLanguages.bath[appLanguageCode]}:</label>
             <Field name="bath" component="select" type="float" className="form-control">
               <option></option>
               <option value="1">1</option>
@@ -471,15 +471,15 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Intro:</label>
+            <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
             <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
           </fieldset>
           <fieldset key={'station'} className="form-group">
-            <label className="create-flat-form-label">Nearest Station:</label>
+            <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
             <Field name="station" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Minutes to Station<span style={{ color: 'red' }}>*</span>:</label>
+            <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
             <Field name="minutes_to_station" component="select" type="integer" className="form-control">
               <option></option>
               <option value="1">1 minute or less</option>
@@ -492,11 +492,11 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset key={'station1'} className="form-group">
-            <label className="create-flat-form-label">2nd nearest Station:</label>
+            <label className="create-flat-form-label">{AppLanguages.nearestStation2[appLanguageCode]}:</label>
             <Field name="station1" component="input" type="string" className="form-control" />
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Minutes to Station:</label>
+            <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}:</label>
             <Field name="minutes_to_station1" component="select" type="integer" className="form-control">
               <option></option>
               <option value="1">1 minute or less</option>
@@ -509,19 +509,19 @@ class EditFlat extends Component {
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Cancellation:</label>
+            <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
             <Field name="cancellation" component="select" type="boolean" className="form-control">
               <option></option>
-              <option value={true}>Yes -- see policies for details</option>
-              <option value={false}>No</option>
+              <option value={true}>{AppLanguages.yesSeePolicies[appLanguageCode]}</option>
+              <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
-            <label className="create-flat-form-label">Smoking:</label>
+            <label className="create-flat-form-label">{AppLanguages.smoking[appLanguageCode]}:</label>
             <Field name="smoking" component="select" type="boolean" className="form-control">
               <option></option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+              <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
             </Field>
           </fieldset>
           <fieldset className="form-group">
@@ -535,19 +535,19 @@ class EditFlat extends Component {
           </div>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
-            <label className="confirm-radio"><i className="fa fa-check fa-lg"></i>  Confirm above changes then submit
+            <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
               <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
               <span className="checkmark"></span>
             </label>
-            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
           </div>
         </form>
 
 
-        <h4>Add or Edit Languages</h4>
-        {this.renderLanguages()}
+        <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
+          {this.renderLanguages()}
 
-        <h4>Add or Delete Photos  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
+        <h4>{AppLanguages.AddDeletePhotos[appLanguageCode]}  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
         <div className="edit-flat-image-box">
           <div id="carousel-show-edit-flat">
             {this.renderImages(this.props.flat.images)}
@@ -565,7 +565,7 @@ class EditFlat extends Component {
             ''
           }
         </div>
-        <h4>Add or Delete Convenient Places Near Your Flat</h4>
+        <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
         <div>
             <div className="container" id="map">
               {this.renderMap()}

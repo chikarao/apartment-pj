@@ -9,6 +9,8 @@ import sha1 from 'sha1';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
+import AppLanguages from '../constants/app_languages';
+
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 // const API_KEY = process.env.CLOUDINARY_API_KEY;
@@ -119,13 +121,21 @@ class UploadForProfile extends Component {
               // className="dropzone"
             // style={styles.dropzone}
             >
-              <p><br/>Change your profile picture</p>
+              <p><br/>{AppLanguages.changeProfilePicture[this.props.appLanguageCode]}</p>
             </Dropzone>
           </div>
           </div>
       );
     }
 }
+
+function mapStateToProps(state) {
+  console.log('in mypage, mapStateToProps, state: ', state);
+  return {
+    appLanguageCode: state.languages.appLanguageCode,
+  };
+}
+
 // withRouter used for letting this component use router history; enables rerender witout reload
 // must more smooth renering
-export default withRouter(connect(null, actions)(UploadForProfile));
+export default withRouter(connect(mapStateToProps, actions)(UploadForProfile));

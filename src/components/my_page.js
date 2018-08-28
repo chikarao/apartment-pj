@@ -8,10 +8,11 @@ import * as actions from '../actions';
 import Messaging from './messaging/messaging';
 import Conversations from './messaging/conversations';
 import UploadForProfile from './images/upload_for_profile';
-
 import CardInputModal from './modals/card_input_modal';
 
 import CardTypes from './constants/card_types'
+
+import AppLanguages from './constants/app_languages';
 
 const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
 const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
@@ -82,8 +83,8 @@ class MyPage extends Component {
               <div className="my-page-details">
                 <ul>
                   <li>{booking.flat.description}</li>
-                  <li>check in: {booking.date_start}</li>
-                  <li>check out: {booking.date_end}</li>
+                  <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
+                  <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
                   <li>booking id: {booking.id}</li>
                   <li>flat id: {booking.flat.id}</li>
                 </ul>
@@ -147,7 +148,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick.bind(this)}>Edit</button>
+              <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
             </div>
           </li>
         );
@@ -168,9 +169,9 @@ class MyPage extends Component {
     return (
       <div>
       <div className="my-page-category-title">
-        <span className="my-page-category-left"></span>
-        <span>My Bookings</span>
-        <span className="my-page-category-right"></span>
+        <div className="my-page-category-left"></div>
+        <div>{AppLanguages.myBookings[this.props.appLanguageCode]}</div>
+        <div className="my-page-category-right"></div>
       </div>
       <ul>
        {this.renderEachBookingByUser()}
@@ -183,9 +184,9 @@ class MyPage extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"></span>
-          <span>My Flats</span>
-          <span className="my-page-category-right"></span>
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.myFlats[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"></div>
         </div>
         <ul>
          {this.renderEachFlat()}
@@ -198,9 +199,9 @@ class MyPage extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"></span>
-          <span>Bookings For My Flats</span>
-          <span className="my-page-category-right"></span>
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.bookingsMyFlats[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"></div>
         </div>
         <ul>
         {this.renderEachOwnBookings()}
@@ -471,8 +472,8 @@ class MyPage extends Component {
                   <div className="my-page-details">
                     <ul>
                       <li>{flat.description}</li>
-                      <li>check in: {booking.date_start}</li>
-                      <li>check out: {booking.date_end}</li>
+                      <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
+                      <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
                       <li>booking id: {booking.id}</li>
                       <li>flat id: {flat.id}</li>
                     </ul>
@@ -554,7 +555,7 @@ class MyPage extends Component {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>Remove</button>
+                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
                 </div>
               </li>
             );
@@ -570,9 +571,9 @@ class MyPage extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"></span>
-          <span>My Likes</span>
-          <span className="my-page-category-right"></span>
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.myLikes[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"></div>
         </div>
         <ul>
         {this.renderEachLike()}
@@ -626,7 +627,7 @@ class MyPage extends Component {
           </div>
           {this.props.auth.image == BLANK_PROFILE_PICTURE ? '' :
           <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
-            Remove Profile Picture
+          {AppLanguages.removeProfilePicture[this.props.appLanguageCode]}
           </div> }
       </div>
     );
@@ -639,24 +640,24 @@ class MyPage extends Component {
       return (
         <div>
           <div className="my-page-category-title">
-          <span className="my-page-category-left"></span>
-          <span>My Profile</span>
-          <span className="my-page-category-right"><span id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></span></span>
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.myProfile[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"><div id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></div></div>
           </div>
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">
-            <li value="username"className="my-page-profile-attribute"><span>User Name:</span> <span>{username}</span></li>
-            <li value="user_id"className="my-page-profile-attribute"><span>User ID:</span> <span>{user_id}</span></li>
-            <li value="title"className="my-page-profile-attribute"><span>Title:</span> <span>{title}</span></li>
-            <li value="first_name"className="my-page-profile-attribute"><span>First Name:</span> <span>{first_name}</span></li>
-            <li value="last_name"className="my-page-profile-attribute"><span>Last Name:</span> <span>{last_name}</span></li>
-            <li value="birthday"className="my-page-profile-attribute"><span>Birthday:</span> <span>{birthday}</span></li>
-            <li value="address1"className="my-page-profile-attribute"><span>Street Address:</span> <span>{address1}</span></li>
-            <li value="city"className="my-page-profile-attribute"><span>City:</span> <span>{city}</span></li>
-            <li value="state"className="my-page-profile-attribute"><span>State:</span> <span>{state}</span></li>
-            <li value="zip"className="my-page-profile-attribute"><span>Zip:</span> <span>{zip}</span></li>
-            <li value="country"className="my-page-profile-attribute"><span>Country:</span> <span>{country}</span></li>
-            <li value=""className="my-page-profile-attribute"><span>Self Intro:</span> <span></span></li>
+            <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[this.props.appLanguageCode]}:</div> <div>{username}</div></li>
+            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.removeProfilePicture[this.props.appLanguageCode]}:</div> <div>{user_id}</div></li>
+            <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[this.props.appLanguageCode]}:</div> <div>{title}</div></li>
+            <li value="first_name"className="my-page-profile-attribute"><div>{AppLanguages.firstName[this.props.appLanguageCode]}:</div> <div>{first_name}</div></li>
+            <li value="last_name"className="my-page-profile-attribute"><div>{AppLanguages.lastName[this.props.appLanguageCode]}:</div> <div>{last_name}</div></li>
+            <li value="birthday"className="my-page-profile-attribute"><div>{AppLanguages.birthday[this.props.appLanguageCode]}:</div> <div>{birthday}</div></li>
+            <li value="address1"className="my-page-profile-attribute"><div>{AppLanguages.streetAddress[this.props.appLanguageCode]}:</div> <div>{address1}</div></li>
+            <li value="city"className="my-page-profile-attribute"><div>{AppLanguages.city[this.props.appLanguageCode]}:</div> <div>{city}</div></li>
+            <li value="state"className="my-page-profile-attribute"><div>{AppLanguages.state[this.props.appLanguageCode]}:</div> <div>{state}</div></li>
+            <li value="zip"className="my-page-profile-attribute"><div>{AppLanguages.zip[this.props.appLanguageCode]}:</div> <div>{zip}</div></li>
+            <li value="country"className="my-page-profile-attribute"><div>{AppLanguages.country[this.props.appLanguageCode]}:</div> <div>{country}</div></li>
+            <li value=""className="my-page-profile-attribute"><div>{AppLanguages.selfIntro[this.props.appLanguageCode]}:</div> <div></div></li>
             <div value="introduction"className="my-page-profile-introduction">{introduction}</div>
           </ul>
         </div>
@@ -757,12 +758,12 @@ class MyPage extends Component {
                       <div className="my-page-details">
                         <ul>
                           <li style={{ fontSize: '30px' }}><i className={`fa fa-cc-${card.brand.toLowerCase()}`}></i></li>
-                          <li>Last four digits: {card.last4}</li>
-                          <li>Exp: {card.exp_month}/{card.exp_year}</li>
+                          <li>{AppLanguages.lastFour[this.props.appLanguageCode]}: {card.last4}</li>
+                          <li>{AppLanguages.expiration[this.props.appLanguageCode]}: {card.exp_month}/{card.exp_year}</li>
                         </ul>
                       </div>
 
-                      <div className="my-page-card-default-input-box">Use this card for payment &nbsp;
+                      <div className="my-page-card-default-input-box">{AppLanguages.useThisCard[this.props.appLanguageCode]} &nbsp;
                       <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
                       </div>
                     </div>
@@ -811,13 +812,13 @@ class MyPage extends Component {
       <div>
         <div className="my-page-category-title">
           <span className="my-page-category-left"></span>
-          <span>Payment Details</span>
+          <span>{AppLanguages.paymentDetails[this.props.appLanguageCode]}</span>
           <span className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick.bind(this)}><i className="fa fa-credit-card"></i></div></span>
         </div>
         <ul>
           {this.renderExistingCardDetails()}
-          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> Add New Card</div>
-          <a className="my-page-enter-new-card-link" href={`https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&scope=read_write`} target="_blank" rel="noopener noreferrer"><i className="fa fa-link" style={{ fontSize: '20px' }}></i> Connect Your Bank Account to this Platform</a>
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewCard[this.props.appLanguageCode]}</div>
+          <a className="my-page-enter-new-card-link" href={`https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&scope=read_write`} target="_blank" rel="noopener noreferrer"><i className="fa fa-link" style={{ fontSize: '20px' }}></i> {AppLanguages.connectBank[this.props.appLanguageCode]}</a>
         </ul>
       </div>
     );
@@ -838,7 +839,7 @@ class MyPage extends Component {
     return (
       <div>
         {this.renderCardInputModal()}
-        <h2>My Page</h2>
+        <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
@@ -849,7 +850,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
         </div>
         </div>
-        <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">List a New Flat!</button></Link>
+        <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}!</button></Link>
       </div>
     );
   }
@@ -871,7 +872,9 @@ function mapStateToProps(state) {
     likes: state.flats.userLikes,
     showCardInput: state.modals.showCardInputModal,
     customer: state.auth.customer,
-    charge: state.auth.charge
+    charge: state.auth.charge,
+    appLanguageCode: state.languages.appLanguageCode,
+
   };
 }
 

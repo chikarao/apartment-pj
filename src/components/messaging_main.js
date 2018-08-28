@@ -5,6 +5,7 @@ import * as actions from '../actions';
 
 import Messaging from './messaging/messaging';
 import Conversations from './messaging/conversations';
+import AppLanguages from './constants/app_languages';
 
 const RESIZE_BREAK_POINT = 800;
 // if any of the class names below are changed in any way, update the array below
@@ -103,8 +104,8 @@ class MessagingMain extends Component {
             >
             </i>
           </div>
-          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Archives</div>
-          <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Trash Bin</div>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.archives[this.props.appLanguageCode]}</div>
+          <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
           <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
         </div>
       );
@@ -114,8 +115,8 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
-          <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>Archived Messages</div>
-          <div value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>Unarchive</div>
+        <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
+          <div value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
           <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
         </div>
       );
@@ -125,8 +126,8 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
-          <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>Trash Bin</div>
-          <div value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Untrash</div>
+          <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
+          <div value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
         </div>
       );
     }
@@ -252,7 +253,7 @@ class MessagingMain extends Component {
       }
     })
   }
-  // unhighlighting data order 
+  // unhighlighting data order
   unhighlightOrder() {
     const orderDivs = document.getElementsByClassName('messaging-controls-div');
     _.each(orderDivs, eachDiv => {
@@ -846,7 +847,9 @@ function mapStateToProps(state) {
     checkedConversationsArray: state.conversation.checkedConversationsArray,
     showConversationCards: state.conversation.showConversations,
     // separated from currentUserIsOwner since there is a check in the render method in messagin.js
-    thisIsYourFlat: state.conversation.yourFlat
+    thisIsYourFlat: state.conversation.yourFlat,
+    appLanguageCode: state.languages.appLanguageCode
+
   };
 }
 
