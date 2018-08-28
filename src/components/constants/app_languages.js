@@ -20,7 +20,7 @@ const appLanguages =
     findFlats: { en: 'Find flats in a city...', jp: '街で物件を検索...' },
     close: { en: 'Close', jp: '閉じる' },
     noFlats: { en: 'There are no flats with that criteria', jp: 'そのエリア・条件で物件はありませんでした。' },
-    searchAnother: { en: 'Please search another', jp: '他の条件でお探して下さい。' },
+    searchAnother: { en: 'Please search another', jp: '他の条件でお探し下さい。' },
     search: { en: 'Search', jp: '' },
     // show flat
     availableAmenities: { en: 'Available Amenities', jp: '物件の特徴・設備' },
@@ -35,6 +35,7 @@ const appLanguages =
     // landing
     bannerMessage: { en: 'Live the way you want', jp: '住みかたを選ぼう' },
     // edit create flat
+    createListing: { en: 'Create a Listing', jp: '物件を登録' },
     editYourListing: { en: 'Edit Your Listing', jp: '物件をエディット' },
     editBasic: { en: 'Edit Basic Information and Amenities', jp: '基本情報及びアメニティーをエディット' },
     streetAddress: { en: 'Street Address', jp: '町村番地' },
@@ -60,7 +61,8 @@ const appLanguages =
     nearestStation2: { en: '2nd Nearest Station', jp: '次の最寄駅' },
     cancellation: { en: 'Cancellation', jp: 'キャンセル' },
     smoking: { en: 'Smoking', jp: '喫煙' },
-    confirmAbove: { en: 'Confirm above changes and submit', jp: '上記を確認し送信' },
+    confirmAbove: { en: 'Confirm above changes and submit', jp: '上記を確認して送信' },
+    submit: { en: 'Submit', jp: '送信' },
     addEditLanguages: { en: 'Add or Edit Languages', jp: '言語を追加・編集' },
     baseLanguage: { en: 'Base Language', jp: 'ベースの言語' },
     availableLanguages: { en: 'Available Languages', jp: '追加済みの言語' },
@@ -87,8 +89,13 @@ const appLanguages =
     toShowPage: { en: 'To Show Page', jp: '物件詳細へ' },
     add: { en: 'Add', jp: '追加' },
     remove: { en: 'Remove', jp: '削除' },
+    yes: { en: 'Yes', jp: '可' },
+    yesSeePolicies: { en: 'Yes -- see policies for details', jp: '可 -- ポリシーを参照' },
+    no: { en: 'No', jp: '可' },
     // createFlat
-    requiredFields: { en: 'Required fields -- other fields can be filled-in on the edit page', jp: '必須　ー　他の欄についてはエディットページで編集できます。' },
+    dropImages: { en: 'Drop your images or\n click here \nto upload ', jp: '写真をここにドロップ\n又は、クリックして\nアップロード' },
+    requiredFields: { en: 'Required fields -- other fields can be filled-in on the edit page',
+      jp: '必須　ー　他の欄についてはエディットページで編集できます。' },
     // my page
     myLikes: { en: 'My Likes', jp: 'いいねした物件' },
     myProfile: { en: 'My Profile', jp: 'Myプロファイル' },
@@ -108,6 +115,19 @@ const appLanguages =
     address: { en: 'Address', jp: '住所' },
     selfIntro: { en: 'Self Intro', jp: '自己紹介' },
     listNewFlat: { en: 'Create New Listing', jp: '新しい物件を掲載' },
+    // main message
+    archive: { en: 'Archive', jp: '保存箱' },
+    trashBin: { en: 'Trash Bin', jp: 'ゴミ箱' },
+    archivedMessages: { en: 'Archived Messages', jp: '保存済み' },
+    unarchive: { en: 'Unarchive', jp: 'メインに戻す' },
+    untrash: { en: 'Untrash', jp: 'メインに戻す' },
+    enterMessage: { en: 'Enter you message here', jp: 'メッセージを入力' },
+    filterKeyWords: { en: 'Filter by key words...', jp: 'キーワードで絞り込む...' },
+    filterListing: { en: 'Filter by listing...', jp: '物件で絞り込む...' },
+    allListings: { en: 'All listings', jp: '全ての物件' },
+    send: { en: 'Send', jp: '送信' },
+    noConversation: { en: 'You have not started a conversation... \nStart one by sending a message! \nMake sure to introduce yourself',
+      jp: 'まだ会話を始めてません。\nメッセージを送って始めましょう。\n　自己紹介を忘れない様に。' }
 
   };
 

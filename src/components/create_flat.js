@@ -16,6 +16,7 @@ import Upload from './images/upload';
 import * as actions from '../actions';
 import Amenities from './constants/amenities'
 import RenderDropzoneInput from './images/render_dropzone_input';
+import AppLanguages from './constants/app_languages'
 
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = 'http://localhost:3000';
@@ -240,53 +241,53 @@ class CreateFlat extends Component {
   }
 
   renderFields() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, appLanguageCode } = this.props;
     console.log('in createflat, renderFields, this.props: ', this.props);
     // console.log('in createflat, renderFields, Field: ', Field);
     // handle submit came from redux form; fields came from below
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         <fieldset key={'address1'} className="form-group">
-          <label className="create-flat-form-label">Street Address<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="address1" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'city'} className="form-group">
-          <label className="create-flat-form-label">City<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="city" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'state'} className="form-group">
-          <label className="create-flat-form-label">State<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.state[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="state" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'zip'} className="form-group">
-          <label className="create-flat-form-label">Zip<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.zip[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="zip" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset key={'country'} className="form-group">
-          <label className="create-flat-form-label">Country<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.country[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="country" component={InputField} type="string" className="form-control" />
         </fieldset>
         <fieldset className="form-group">
-          <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span> Required fields -- other fields can be filled-in on the edit page</div>
+          <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.requiredFields[appLanguageCode]}</div>
         </fieldset>
         <fieldset key={'description'} className="form-group">
-          <label className="create-flat-form-label">Description:</label>
+          <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>
           <Field name="description" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'area'} className="form-group">
-          <label className="create-flat-form-label">Area:</label>
+          <label className="create-flat-form-label">{AppLanguages.area[appLanguageCode]}:</label>
           <Field name="area" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'price_per_month'} className="form-group">
-          <label className="create-flat-form-label">Price Per Month<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="price_per_month" component={InputField} type="float" className="form-control" />
         </fieldset>
         <fieldset key={'size'} className="form-group">
-          <label className="create-flat-form-label">Floor space (sq m)<span style={{ color: 'red' }}>*</span>:</label>
+          <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="size" component={InputField} type="integer" className="form-control" />
         </fieldset>
         <fieldset key={'guests'} className="form-group">
-          <label className="create-flat-form-label">Guests:</label>
+          <label className="create-flat-form-label">{AppLanguages.guests[appLanguageCode]}:</label>
           <Field name="guests" component="select" type="integer" className="form-control">
             <option></option>
             <option value="1">1</option>
@@ -302,11 +303,11 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset key={'sales_point'} className="form-group">
-          <label className="create-flat-form-label">Sales Point:</label>
+          <label className="create-flat-form-label">{AppLanguages.salesPoint[appLanguageCode]}:</label>
           <Field name="sales_point" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'rooms'} className="form-group">
-          <label className="create-flat-form-label">Rooms:</label>
+          <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}:</label>
           <Field name="rooms" component="select" type="float" className="form-control">
             <option></option>
             <option value="1">1</option>
@@ -316,7 +317,7 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset key={'beds'} className="form-group">
-          <label className="create-flat-form-label">Beds:</label>
+          <label className="create-flat-form-label">{AppLanguages.beds[appLanguageCode]}:</label>
           <Field name="beds" component="select" type="integer" className="form-control">
           <option></option>
           <option value="1">1</option>
@@ -328,7 +329,7 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset className="form-group">
-          <label className="create-flat-form-label">King or Queen Beds:</label>
+          <label className="create-flat-form-label">{AppLanguages.kingOrQueen[appLanguageCode]}:</label>
           <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
           <option></option>
           <option value="1">1</option>
@@ -340,7 +341,7 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset key={'flat_type'} className="form-group">
-          <label className="create-flat-form-label">Flat Type:</label>
+          <label className="create-flat-form-label">{AppLanguages.flatType[appLanguageCode]}:</label>
           <Field name="flat_type" component="select" type="string" className="form-control">
             <option></option>
             <option value="flat_in_building">Flat in building</option>
@@ -351,7 +352,7 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset key={'bath'} className="form-group">
-          <label className="create-flat-form-label">Bath:</label>
+          <label className="create-flat-form-label">{AppLanguages.bath[appLanguageCode]}:</label>
           <Field name="bath" component="select" type="float" className="form-control">
             <option></option>
             <option value="1">1</option>
@@ -362,11 +363,11 @@ class CreateFlat extends Component {
           </Field>
         </fieldset>
         <fieldset key={'station'} className="form-group">
-        <label className="create-flat-form-label">Nearest Station:</label>
+        <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
         <Field name="station" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset className="form-group">
-        <label className="create-flat-form-label">Minutes to Station<span style={{ color: 'red' }}>*</span>:</label>
+        <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
         <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
         <option></option>
         <option value="1">1 minute or less</option>
@@ -383,19 +384,19 @@ class CreateFlat extends Component {
           <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
         </fieldset>
         <fieldset key={'cancellation'} className="form-group">
-          <label className="create-flat-form-label">Cancellation:</label>
+          <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
           <Field name="cancellation" component="select" type="boolean" className="form-control">
             <option></option>
-            <option value={true}>Yes -- see policies for details</option>
-            <option value={false}>No</option>
+            <option value={true}>{AppLanguages.yesSeePolicies[appLanguageCode]}</option>
+            <option value={false}>{AppLanguages.zip[appLanguageCode]}</option>
           </Field>
         </fieldset>
         <fieldset key={'smoking'} className="form-group">
-          <label className="create-flat-form-label">Smoking:</label>
+          <label className="create-flat-form-label">{AppLanguages.smoking[appLanguageCode]}:</label>
           <Field name="smoking" component="select" type="boolean" className="form-control">
             <option></option>
-            <option value={true}>Yes</option>
-            <option value={false}>No</option>
+            <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+            <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
           </Field>
         </fieldset>
         <div className="container amenity-input-box">
@@ -408,15 +409,16 @@ class CreateFlat extends Component {
           <Field
             name={FILE_FIELD_NAME}
             component={RenderDropzoneInput}
+            // message={AppLanguages.dropImages[appLanguageCode]}
           />
         </fieldset>
         {this.renderAlert()}
         <div className="confirm-change-and-button">
           <label className="confirm-radio">
-            <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i> Check to confirm changes then submit
+            <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i>{AppLanguages.confirmAbove[appLanguageCode]}
             <span className="checkmark"></span>
           </label>
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
+          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
         </div>
       </form>
     );
@@ -425,27 +427,30 @@ class CreateFlat extends Component {
   render() {
     return (
       <div>
-        <h2 style={{ marginBottom: '40px' }}>Create a Listing</h2>
+        <h2 style={{ marginBottom: '40px' }}>{AppLanguages.createListing[this.props.appLanguageCode]}</h2>
         {this.renderFields()}
       </div>
     );
   }
 }
 
+// For validation of input and select fields;
+//creates component for redux forms in componenet attribute
 const InputField = ({
   input,
   type,
   placeholder,
   meta: { touched, error, warning },
-}) =>
-  <div>
-      <input {...input} type={type} placeholder={placeholder} className="form-control" />
-      {touched && error &&
-        <div className="error">
-          <span style={{ color: 'red' }}>* </span>{error}
-        </div>
-      }
-  </div>;
+  }) => (
+      <div>
+          <input {...input} type={type} placeholder={placeholder} className="form-control" />
+          {touched && error &&
+            <div className="error">
+              <span style={{ color: 'red' }}>* </span>{error}
+            </div>
+          }
+      </div>
+    );
 
   const SelectField = ({
       input,
@@ -453,17 +458,17 @@ const InputField = ({
       meta: {touched, error},
       children
     }) => (
-      <div>
-        <select {...input} className="form-control">
-          {children}
-        </select>
-        {touched && error &&
-          <div className="error">
-            <span style={{ color: 'red' }}>* </span>{error}
-          </div>
-        }
-      </div>
-);
+        <div>
+          <select {...input} className="form-control">
+            {children}
+          </select>
+          {touched && error &&
+            <div className="error">
+              <span style={{ color: 'red' }}>* </span>{error}
+            </div>
+          }
+        </div>
+      );
 
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
 function validate(values) {
@@ -488,7 +493,7 @@ function validate(values) {
     if (!values.country) {
         errors.country = 'A country is required';
     }
-    if (!values.  price_per_month) {
+    if (!values.price_per_month) {
         errors.price_per_month = 'A price is required';
     }
 

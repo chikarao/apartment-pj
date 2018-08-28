@@ -39,7 +39,7 @@ class EditFlat extends Component {
     this.props.getCurrentUser();
     // this.props.fetchPlaces(this.props.match.params.id);
 
-    console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
+    // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
       // console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
@@ -81,7 +81,7 @@ class EditFlat extends Component {
       this.props.editFlat(dataSeparated, (id) => this.editFlatCallback(id));
       this.props.showLoading();
     } else {
-      console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
+      // console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
       window.alert('Please check box to confirm your inputs then push submit')
     }
   }
@@ -241,8 +241,7 @@ class EditFlat extends Component {
     // <input type="checkbox" className="createFlatAmenityCheckBox"/><i className="fa fa-check fa-lg"></i>
     // get amenities object values of keys
     return _.map(Object.keys(AMENITIES), amenity => {
-      console.log('in show_flat, renderAmenityInput, amenity: ', amenity);
-      console.log('in show_flat, renderAmenityInput, amenity: ', amenity);
+      // console.log('in show_flat, renderAmenityInput, amenity: ', amenity);
       return (
         <fieldset key={amenity} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
           <label className="amenity-radio">{AMENITIES[amenity][this.props.appLanguageCode]}</label>
@@ -286,7 +285,7 @@ class EditFlat extends Component {
   }
 
   getSelectedLanguage(languageCode) {
-    console.log('in show_flat, getSelectedLanguage, languageCode: ', languageCode);
+    // console.log('in show_flat, getSelectedLanguage, languageCode: ', languageCode);
     const array = []
     _.each(this.props.flat.flat_languages, language => {
       if (language.code == languageCode) {
@@ -299,7 +298,7 @@ class EditFlat extends Component {
   handleEditLanguageClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in show_flat, handleEditLanguageClick, elementVal: ', elementVal);
+    // console.log('in show_flat, handleEditLanguageClick, elementVal: ', elementVal);
     this.props.showLanguageEditModal();
     // this.setState({ selectedLanguageCode: elementVal });
     const selectedLanguage = this.getSelectedLanguage(elementVal);
@@ -318,7 +317,7 @@ class EditFlat extends Component {
   }
 
   handleAddLanguageClick() {
-    console.log('in show_flat, handleAddLanguageClick: ');
+    // console.log('in show_flat, handleAddLanguageClick: ');
     this.props.showLanguageCreateModal();
   }
 

@@ -11,6 +11,7 @@ const MAX_NUM_FILES = globalConstants.maxNumImages;
 let imageCount = 0;
 
 export default (field) => {
+  imageCount = 0;
   const files = field.input.value;
   console.log('in render_dropzone_input.js, field: ', field);
   console.log('in render_dropzone_input.js, files: ', files);
@@ -75,13 +76,14 @@ export default (field) => {
                 imageCount++;
                 console.log('in render_dropzone_input.js, inside map if imageCount: ', imageCount);
                 return (
-                  <div key={i}
-                  className="rdz-dropzone-preview col-xs-2 col-sm-3 col-md-3"
-                  style={{
-                    backgroundImage: `url(${file.preview})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: '105px 70px'
-                  }} // end of style
+                  <div
+                    key={i}
+                    className="rdz-dropzone-preview col-xs-2 col-sm-3 col-md-3"
+                    style={{
+                      backgroundImage: `url(${file.preview})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '105px 70px'
+                    }} // end of style
                   >
                   </div>
                 );

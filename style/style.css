@@ -451,7 +451,7 @@ h3 {
 .create-flat-form-label {
   float: left;
   margin: 0 15px 0 20px;
-  min-width: 140px;
+  min-width: 160px;
   text-align: left;
 }
 
@@ -969,7 +969,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .results-no-flat-message {
   margin-top: 50px;
-  font-size: 17px;
+  font-size: 15  px;
   /* margin: 0 auto 0 auto !important; */
   /* padding-left: auto !important; */
   /* padding-right: auto !important;   */
