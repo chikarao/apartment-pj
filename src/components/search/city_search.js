@@ -39,20 +39,32 @@ class CitySearch extends Component {
     callback(cityToSearch);
   }
 
-  handleBannerSearchBtnClick() {
-    // console.log('in CitySearch, handleBannerSearchBtnClick, event.target: ', event.target);
+  getCityObjectForMap() {
+    let cityToSearch = {};
+    // console.log('in CitySearch, getCityObject, this.state.selectedCity: ', this.state.selectedCity);
+    _.each(citiesList, city => {
+      if (city.name == this.state.selectedCity) {
+        cityToSearch = city
+      }
+    });
+    // console.log('in CitySearch, getCityObject, cityToSearch: ', cityToSearch);
+    return cityToSearch;
+  }
+
+  handleBannerSearchButtonClick() {
+    // console.log('in CitySearch, handleBannerSearchButtonClick, event.target: ', event.target);
     // const clickedElement = event.target;
     // const elementVal = clickedElement.getAttribute('value')
-    // console.log('in CitySearch, handleBannerSearchBtnClick, elementVal: ', elementVal);
-    // console.log('in CitySearch, handleBannerSearchBtnClick, cityToSearch: ', cityToSearch);
+    // console.log('in CitySearch, handleBannerSearchButtonClick, elementVal: ', elementVal);
+    // console.log('in CitySearch, handleBannerSearchButtonClick, cityToSearch: ', cityToSearch);
     if (this.props.resultsPage && this.props.searchFlatParams) {
       const body = document.getElementsByTagName('BODY');
       body[0].classList.remove('stop-scrolling');
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
       const mapBounds = {
         east: this.props.searchFlatParams.lng + latLngOffset.lngOffsetEast,
         west: this.props.searchFlatParams.lng + latLngOffset.lngOffsetWest,
@@ -62,7 +74,7 @@ class CitySearch extends Component {
       // make mapCenter.lat and lng a function to make consistent with Google maps way of getting lat and lng
       const mapCenter = { lat: () => { return this.props.searchFlatParams.lat; }, lng: () => { return this.props.searchFlatParams.lng; } };
       const mapDimensions = { mapBounds, mapCenter, mapZoom: 12 };
-   //    // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams: ', mapDimensions);
+   //    // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams: ', mapDimensions);
      //  const mapOptions = {
      //   center: new google.maps.LatLng(0, 0),
      //   zoom: 12,
@@ -70,10 +82,15 @@ class CitySearch extends Component {
      // };
      //  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
       const map = this.props.map;
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, map: ', map);
+      // get city object from citiesList cities_list.js; returns city object with zoom for city
+      const cityObject = this.getCityObjectForMap();
+      // console.log('in CitySearch, handleBannerSearchButtonClick cityObject: ', cityObject);
+      // specify zoom in current map
+      map.zoom = cityObject.zoom;
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, map: ', map);
       const center = new google.maps.LatLng(mapCenter.lat(), mapCenter.lng());
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
-      // console.log('in CitySearch, handleBannerSearchBtnClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
    //  // using global variable:
       map.panTo(center);
       const searchAttributes = {};
@@ -81,12 +98,14 @@ class CitySearch extends Component {
       // this.props.history.push('/results');
       this.props.updateMapDimensions(mapDimensions);
       this.setState({ displayCitiesList: false });
+      // save mapCenter for when user refreshes page
       localStorage.setItem('lat', mapCenter.lat());
       localStorage.setItem('lng', mapCenter.lng());
+      localStorage.setItem('zoom', cityObject.zoom);
     }
 
     if (this.props.landingPage) {
-      // console.log('in CitySearch, handleBannerSearchBtnClick if this.props.landingPage: ', this.props.landingPage);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if this.props.landingPage: ', this.props.landingPage);
       this.props.history.push('/results');
       this.props.clearFlats();
       this.props.updateMapDimensions({});
@@ -270,8 +289,8 @@ class CitySearch extends Component {
              });
              // document.activeElement.blur();
            } else if (this.state.selectedCity && !this.state.displayCitiesList) {
-             // if city is selected and displayCitiesList is false, call handleBannerSearchBtnClick as if button has been clicked
-             this.handleBannerSearchBtnClick();
+             // if city is selected and displayCitiesList is false, call handleBannerSearchButtonClick as if button has been clicked
+             this.handleBannerSearchButtonClick();
            } else {
              this.setState({ displayCitiesList: false, citiesSubsetArray: [] }, () => {
                // reference: https://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
@@ -305,7 +324,7 @@ class CitySearch extends Component {
       <div>
         <div className="banner-search-input-and-button">
           <label><input list="areas" value={this.state.selctedCity} className="banner-search-input" id="banner-input" type="string" onChange={event => this.handleSearchInputChange(event.target.value)} placeholder={this.props.resultsPage ? `${AppLanguages.searchAnotherCity[this.props.appLanguageCode]}` : `${AppLanguages.findFlats[this.props.appLanguageCode]}`} /></label>
-          <button className="banner-search-button" onClick={this.handleBannerSearchBtnClick.bind(this)}> {this.props.appLanguageCode == 'en' ? AppLanguages.search[this.props.appLanguageCode] : <i style={{ fontSize: '20px' }} className="fa fa-search"></i>}</button>
+          <button className="banner-search-button" onClick={this.handleBannerSearchButtonClick.bind(this)}> {this.props.appLanguageCode == 'en' ? AppLanguages.search[this.props.appLanguageCode] : <i style={{ fontSize: '20px' }} className="fa fa-search"></i>}</button>
         </div>
         <ul className="cities-list-ul" id="banner-search-cities-list"style={this.state.displayCitiesList ? { display: 'block' } : { display: 'none' }} >
           <li key={1} value="">--</li>

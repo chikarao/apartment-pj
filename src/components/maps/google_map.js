@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
 import GmStyle from './gm-style';
-
+import citiesList from '../constants/cities_list';
 
 // carousel could not be used for infowindow for some reason
 // import Carousel from '../carousel/carousel';
@@ -61,7 +61,6 @@ class GoogleMap extends Component {
   // takes newFlatsArray and calls createMarkers() passing flat array and oldMarkersArray, and also setMap null
 
   componentDidUpdate(prevProps, prevState) {
-
     // console.log('in googlemaps componentDidUpdate, prevProps.flats, this.props.flats, prevState, this.state: ', prevProps.flats, this.props.flats, prevState, this.state);
     // console.log('in googlemaps componentDidUpdate, this.state.markersArray: ', this.state.markersArray);
     // takes state markersArray updated in this.createMarkers
@@ -137,13 +136,6 @@ class GoogleMap extends Component {
      // create markers passing array of new flats and
      // array of old markers where old markers will be taken out of state markersArray
      this.createMarkers(newFlatsArray, oldMarkersArray);
-
-     // console.log('in googlemaps componentDidUpdate, currentPropsIdArray, currentPropsFlatArray : ', currentPropsIdArray, currentPropsFlatArray);
-     // console.log('in googlemaps componentDidUpdate, markersArrayIds: ', markersArrayIds);
-     // console.log('in googlemaps componentDidUpdate, newFlatsIdArray newFlatsArray: ', newFlatsIdArray, newFlatsArray);
-     // console.log('in googlemaps componentDidUpdate, this.props.flats: ', this.props.flats);
-     // console.log('in googlemaps componentDidUpdate, oldMarkerIdArray: ', oldMarkerIdArray);
-     // console.log('in googlemaps componentDidUpdate, oldMarkersArray: ', oldMarkersArray);
   }
 
   renderMap(flats) {
@@ -157,11 +149,14 @@ class GoogleMap extends Component {
     }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
-    // console.log('in googlemap, renderMap, FLATS:', this.props.flats);
+    console.log('in googlemap, renderMap, this.props.initialPosition:', this.props.initialPosition);
 
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
-      zoom: initialZoom,
+      // zoom: initialZoom,
+      // initialPosition has storedZoom from the city_list.js stored in results.js if the page is refreshed
+      // do storedZoom only if not on showFlat page 
+      zoom: this.props.initialPosition && !this.props.showFlat ? this.props.initialPosition.zoom : initialZoom,
       // center initialPosition is prop passed in map render in flats
       // or by mapdimensions object from redux
       center: {
@@ -415,8 +410,8 @@ class GoogleMap extends Component {
 
       iwImageLeftArrow.setAttribute('class', 'iw-arrow');
       iwImageRightArrow.setAttribute('class', 'iw-arrow');
-      iwImageLeftArrow.textContent = '<';
-      iwImageRightArrow.textContent = '>';
+      iwImageLeftArrow.textContent = '❮';
+      iwImageRightArrow.textContent = '❯';
 
       // font awesom icons do not work!!!!!!!!
       iwImageLeftArrowDiv.appendChild(iwImageLeftArrow);

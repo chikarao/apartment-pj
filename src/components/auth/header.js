@@ -394,7 +394,7 @@ class Header extends Component {
     // console.log('in header, resizeHeader, header: ', header);
     if (header) {
       if (larger) {
-        header.setAttribute('style', 'height: 200px !important');
+        header.setAttribute('style', 'height: 250px !important');
       } else {
         header.setAttribute('style', 'height: 80px !important');
       }

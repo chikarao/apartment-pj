@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 import GoogleMap from './maps/google_map';
-import Upload from './images/upload';
+// import Upload from './images/upload';
 import MainCards from './cards/main_cards';
 import CitySearch from './search/city_search';
 
@@ -196,8 +196,8 @@ class Results extends Component {
       this.props.searchFlatParameters(searchAttributes);
       // fetch flats
       if (this.props.searchFlatParams) {
-      // if (!searchEmpty) {
-      this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => {
+        // if (!searchEmpty) {
+        this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => {
         // console.log('in results componentDidMount, fetchFlats: ');
       });
       }
@@ -207,12 +207,6 @@ class Results extends Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   // this.setState({ componentUpdated: true });
-  // }
-
-  // componentWillReceiveProps() {
-  // }
   calculateLatLngAve(flats) {
     let totalLat = 0;
     let totalLng = 0;
@@ -258,8 +252,9 @@ class Results extends Component {
 
       const storedLat = localStorage.getItem('lat');
       const storedLng = localStorage.getItem('lng');
+      const storedZoom = localStorage.getItem('zoom');
       // const initialPosition = { lat: storedLat, lng: storedLng }
-      const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+      const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng, zoom: 12 } : { lat: storedLat, lng: storedLng, zoom: storedZoom }
       // console.log('results, renderMap, initialPosition: ', initialPosition);
 
       return (
@@ -274,7 +269,6 @@ class Results extends Component {
         />
         </div>
       );
-      // <div>{console.log('in div: ', flats)}</div>
     } else if (!mapDimensionsEmpty) {
       // return <div>Map Goes Here</div>;
       const emptyMapLatLngCenter = {
@@ -297,7 +291,8 @@ class Results extends Component {
       // if (this.props.searchFlatParams) {
         const storedLat = parseFloat(localStorage.getItem('lat'));
         const storedLng = parseFloat(localStorage.getItem('lng'));
-        const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
+        const storedZoom = parseFloat(localStorage.getItem('zoom'));
+        const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng, zoom: 12 } : { lat: storedLat, lng: storedLng, zoom: storedZoom }
         // const initialPosition = { lat: storedLat, lng: storedLng }
         // console.log('results, renderMap, else if emptyFlat: ', initialPosition);
         // const initialPosition = { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
@@ -1494,15 +1489,6 @@ class Results extends Component {
     // props of
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     const bedrooms = bedroomsExact ? `${bedroomsExact}` : `${bedroomsMin} ~ ${bedroomsMax}`
-
-    // console.log('in results renderSearchArea, bedrooms, bedroomsExact, ', bedrooms, bedroomsExact);
-    // bedroomsMin: searchCriteria[1].startMin,
-    // bedroomsMax: searchCriteria[1].startMax,
-    // stationMin: searchCriteria[2].startMin,
-    // stationMax: searchCriteria[2].startMax,
-    // priceMin: searchCriteria[3].startMin,
-    // priceMax: searchCriteria[3].startMax
-    // {this.state.showCriterionBox ? this.showCriterionBox() : ''}
     return (
       <div className="results-search-box container">
       <div className="results-search-box-row row">
