@@ -675,7 +675,7 @@ class MyPage extends Component {
     const clickedElement = event.target;
     const cardId = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
-    console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
+    // console.log('in mypage, handleCardEditDeleteClick, elementVal: ', elementVal);
       if (elementVal == 'delete') {
         if (window.confirm('Are you sure you want to delete this card?')) {
           this.props.showLoading();
@@ -686,9 +686,10 @@ class MyPage extends Component {
         _.each(this.props.auth.customer.sources.data, card => {
           if (card.id == cardId) {
             selectedCardArray.push(card);
-            console.log('in mypage, handleCardEditDeleteClick, selectedCardArray: ', selectedCardArray);
+            // console.log('in mypage, handleCardEditDeleteClick, selectedCardArray: ', selectedCardArray);
           }
-        })
+        });
+        // get whether intended action is edit payment or new card
         this.props.actionTypeCard(elementVal);
         this.props.selectedCard(selectedCardArray[0], () => this.selectedCardCallBack());
       }
@@ -762,9 +763,8 @@ class MyPage extends Component {
                           <li>{AppLanguages.expiration[this.props.appLanguageCode]}: {card.exp_month}/{card.exp_year}</li>
                         </ul>
                       </div>
-
                       <div className="my-page-card-default-input-box">{AppLanguages.useThisCard[this.props.appLanguageCode]} &nbsp;
-                      <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault ? true : false} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
+                        <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
                       </div>
                     </div>
                     {this.renderCardAddress(card)}

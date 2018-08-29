@@ -161,9 +161,9 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-messaging-control-box-box" id="messaging-main-messaging-control-box-box" style={{ left: `${leftDiff - 5}px` }}>
           <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
-            <div style={{ fontWeight: 'bold' }}>Order by</div>
-            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Newest)</div>
-            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>Message Date (Oldest) </div>
+            <div style={{ fontWeight: 'bold' }}>{AppLanguages.orderBy[this.props.appLanguageCode]}</div>
+            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.messageDateNewest[this.props.appLanguageCode]}</div>
+            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.messageDateOldest[this.props.appLanguageCode]}</div>
           </div>
           </div>
       );
@@ -216,9 +216,9 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-messaging-sub-control-box-box" id="messaging-main-messaging-sub-control-box-box" style={{ left: `${leftDiff - 19}px` }}>
           <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-            <input id="main-messaging-search-box" type="text" placeholder="Filter messages by key words" value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
-            <div style={{ fontWeight: 'bold' }}>Filter by Listing</div>
-            <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>All listings</div>
+            <input id="main-messaging-search-box" type="text" placeholder={AppLanguages.filterKeyWords[this.props.appLanguageCode]} value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
+            <div style={{ fontWeight: 'bold' }}>{AppLanguages.filterListing[this.props.appLanguageCode]}</div>
+            <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.allListings[this.props.appLanguageCode]}</div>
               <div className="messaging-main-messaging-sub-control-box-scroll">
                 {this.renderEachMessageSubControlListing()}
               </div>
@@ -360,7 +360,7 @@ class MessagingMain extends Component {
     // invoked when filter icon clicked to show subcontrol window
     if (elementVal == 'filter') {
       this.setState({ showMessageSubControls: !this.state.showMessageSubControls, showMessageControls: false }, () => {
-        console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
+        // console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
         // this.filterConversations();
         // if (this.state.showMessageSubControls) {
           if (this.state.showMessageSubControls) {
@@ -407,7 +407,7 @@ class MessagingMain extends Component {
       if (clickedElement.className !== 'messaging-main-sub-control-box-all-listings') {
         this.unhighlightListing(elementName);
         this.setState({ sortListingId: elementName, sortListingSelected: true }, () => {
-          console.log('in messagingMain, handleMessageEditClick, listingClicked, this.state.sortListingId: ', this.state.sortListingId);
+          // console.log('in messagingMain, handleMessageEditClick, listingClicked, this.state.sortListingId: ', this.state.sortListingId);
           this.highlightListing(this.state.sortListingId);
         })
       }
@@ -456,7 +456,7 @@ class MessagingMain extends Component {
     const filterIconClicked = (filterIcon.getAttribute('value') == elementVal)
 
     if ((!boxClicked & !subBoxClicked & !boxBoxClicked & !subBoxBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked && !subBoxOtherDecendantsClicked)) {
-      console.log('in messagingMain, messageControlCloseClick, after if !boxes...');
+      // console.log('in messagingMain, messageControlCloseClick, after if !boxes...');
 
         // if controls open and user clicks something other than control box elements or filter and sort icons
         // get element to be clicked to close control boxes and remove addEventListener if any box open

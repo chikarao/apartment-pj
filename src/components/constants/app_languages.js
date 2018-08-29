@@ -125,7 +125,8 @@ const appLanguages =
     birthday: { en: 'Birthday', jp: '生年月日' },
     address: { en: 'Address', jp: '住所' },
     selfIntro: { en: 'Self Intro', jp: '自己紹介' },
-    listNewFlat: { en: 'Create New Listing!', jp: '新しい物件を掲載!' },
+    listNewFlat: { en: 'Create New Listing!', jp: '新しい物件を登録   ' },
+
     // main message
     archives: { en: 'Archives', jp: '保管箱' },
     trashBin: { en: 'Trash Bin', jp: 'ゴミ箱' },
@@ -136,18 +137,26 @@ const appLanguages =
     filterKeyWords: { en: 'Filter by key words...', jp: 'キーワードで絞り込む...' },
     filterListing: { en: 'Filter by listing...', jp: '物件で絞り込む...' },
     allListings: { en: 'All listings', jp: '全ての物件' },
+    messageDateOldest: { en: 'Message Date (oldest)', jp: '日付で並べる(昇順)' },
+    messageDateNewest: { en: 'Message Date (newest)', jp: '日付で並べる(降順)' },
+    orderBy: { en: 'Order by', jp: '並べを変える' },
     send: { en: 'Send', jp: '送信' },
     noConversation: { en: 'You have not started a conversation... \nStart one by sending a message! \nMake sure to introduce yourself',
       jp: 'まだ会話を始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' },
-      // edit profile
+
+    // edit profile
     editProfile: { en: 'Edit Profile', jp: 'プロフィールを編集' },
+
     // payment modal
     makePayment: { en: 'Make a Payment', jp: 'お支払い' },
     paymentAmount: { en: 'Payment Amount', jp: 'お支払い額' },
     currency: { en: 'Currency', jp: 'お支払い通貨' },
     notes: { en: 'Notes', jp: '備考' },
     addCard: { en: 'Add a Card', jp: 'カードを追加' },
+    editCard: { en: 'Edit Card', jp: 'カード情報を編集' },
     nameCard: { en: 'Name on Card', jp: 'カード名義' },
+    expiryYear: { en: 'Expiry Year', jp: '有効期限年' },
+    expiryMonth: { en: 'Expiry Month', jp: '有効期限月' },
   };
 
 export default appLanguages;

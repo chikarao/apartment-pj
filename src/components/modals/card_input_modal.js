@@ -150,7 +150,7 @@ class CardInputModal extends Component {
           <div className="edit-flat-form-message" style={{ marginLeft: '15px' }}><span style={{ color: 'red' }}>*</span> If you need to upate the CVC, please delete this card and enter a new one for your safety.</div>
           </fieldset>
           <fieldset key={1} className="form-group">
-          <label className="create-flat-form-label">Exp Month:</label>
+          <label className="create-flat-form-label">{AppLanguages.expiryMonth[this.props.appLanguageCode]}:</label>
           <Field name="exp_month" component="select" type="integer" className="form-control card-form-control">
             <option></option>
             <option value="1">1</option>
@@ -168,7 +168,7 @@ class CardInputModal extends Component {
           </ Field>
           </fieldset>
           <fieldset key={2} className="form-group">
-            <label className="create-flat-form-label">Exp Year:</label>
+            <label className="create-flat-form-label">{AppLanguages.expiryYear[this.props.appLanguageCode]}:</label>
             <Field name="exp_year" component="input" type="integer" className="form-control card-form-control"></ Field>
           </fieldset>
           {this.renderCardAddressInputs()}
@@ -255,9 +255,14 @@ class CardInputModal extends Component {
     );
   }
 
-  // renderEditOrPayTitle() {
-  //   if()
-  // }
+  renderEditOrPayTitle() {
+
+    if (this.props.auth.cardActionType == 'Edit Card Info') {
+      return <div>{AppLanguages.editCard[this.props.appLanguageCode]}</div>;
+    }
+
+    return <div>{AppLanguages.makePayment[this.props.appLanguageCode]}</div>;
+  }
 
   renderCardInput() {
     const { handleSubmit } = this.props;
@@ -268,7 +273,7 @@ class CardInputModal extends Component {
       return (
         <div className={showHideClassName}>
           <div className="modal-main">
-            <h3 className="auth-modal-title">{this.props.auth.cardActionType == 'Add a Card' ? AppLanguages.addCard[this.props.appLanguageCode] : AppLanguages.makePayment[this.props.appLanguageCode]}</h3>
+            <h3 className="auth-modal-title">{this.props.auth.cardActionType == 'Add a Card' ? AppLanguages.addCard[this.props.appLanguageCode] : this.renderEditOrPayTitle()}</h3>
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
               {this.renderEachCardInput()}
               {this.renderAlert()}
@@ -319,6 +324,7 @@ function mapStateToProps(state) {
 
   console.log('in CardInputModal, mapStateToProps, state: ', state);
   return {
+    // auth includes card action type edit payment or new card
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
