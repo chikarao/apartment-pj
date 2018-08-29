@@ -140,7 +140,7 @@ class Header extends Component {
     };
 
     renderLoadingScreen() {
-      console.log('in header, renderLoadingScreen, ');
+      // console.log('in header, renderLoadingScreen, ');
       return (
         <div>
           <Loading
@@ -218,7 +218,7 @@ class Header extends Component {
      const elementVal = event.target.getAttribute('value');
      // console.log('in header, handleAuthLinkClick, elementVal', elementVal);
      if (elementVal === 'signin') {
-       console.log('in header, handleAuthLinkClick, elementVal === sigin', true);
+       // console.log('in header, handleAuthLinkClick, elementVal === sigin', true);
        this.showModal(); // turn on
        this.props.showSigninModal(); // turn on
      } else {
@@ -264,7 +264,7 @@ class Header extends Component {
 
   handleLanguageSelectChange(event) {
     const changedElement = event.target;
-    console.log('in header, handleLanguageSelectChange, changedElement.value: ', changedElement.value);
+    // console.log('in header, handleLanguageSelectChange, changedElement.value: ', changedElement.value);
     this.props.setAppLanguageCode(changedElement.value);
   }
 
@@ -287,7 +287,7 @@ class Header extends Component {
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
     // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
-    console.log('in header, navigationLinks, appLanguageCode: ', this.props.appLanguageCode);
+    // console.log('in header, navigationLinks, appLanguageCode: ', this.props.appLanguageCode);
 
 
     if (this.props.authenticated) {
@@ -391,7 +391,7 @@ class Header extends Component {
 
   resizeHeader(larger) {
     const header = document.getElementById('nav_container');
-    console.log('in header, resizeHeader, header: ', header);
+    // console.log('in header, resizeHeader, header: ', header);
     if (header) {
       if (larger) {
         header.setAttribute('style', 'height: 200px !important');

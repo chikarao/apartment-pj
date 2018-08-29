@@ -56,7 +56,7 @@ export default function (state = { searchFlatParameters: {} }, action) {
       const searchFlatParameters = state.searchFlatParameters;
       _.each(Object.keys(action.payload), (key) => {
         searchFlatParameters[key] = action.payload[key];
-        console.log('in flats reducer, SEARCH_FLAT_PARAMENTERS, key: ', key);
+        // console.log('in flats reducer, SEARCH_FLAT_PARAMENTERS, key: ', key);
       });
       return { ...state, searchFlatParameters };
 

@@ -42,16 +42,16 @@ export default function (state = {
       return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
 
     case FETCH_CONVERSATIONS_BY_USER:
-      console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
+      // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
       const currentUserId = localStorage.getItem('id');
       let newMessagesNum = 0;
       _.each(action.payload, conversation => {
         // somehow needs to be == not ====
         const userNotOwner = conversation.user_id == currentUserId
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.user_id: ', conversation.user_id);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.user_id: ', conversation.user_id);
         // if (conversation.id !== action.payload.id) {
         //   conversationArray.push(conversation);
         // } else {
@@ -61,12 +61,12 @@ export default function (state = {
           if (userNotOwner) {
             if ((message.read === false) && !message.sent_by_user) {
               newMessagesNum++;
-              console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
+              // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
             }
           } else {
             if ((message.read === false) && message.sent_by_user) {
               newMessagesNum++;
-              console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
+              // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
             }
           }
         });
@@ -114,7 +114,7 @@ export default function (state = {
     case CHECKED_CONVERSATIONS:
       const newArray = state.checkedConversationsArray;
       const removeFromIndexArray = [];
-      console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
+      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, action.payload: ', action.payload);
       // iterate through action.payload to get index of conversations in existing state;
@@ -133,12 +133,12 @@ export default function (state = {
           newArray.push(conversationId);
         }
       });
-      console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray, removeFromIndexArray: ', newArray, removeFromIndexArray);
+      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray, removeFromIndexArray: ', newArray, removeFromIndexArray);
       // iterate in reverse order so the first elements in newArray are not removed, then update state with newArray
       for (let i = removeFromIndexArray.length - 1; i >= 0; i--) {
         newArray.splice(removeFromIndexArray[i], 1);
       }
-      console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray: ', newArray);
+      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray: ', newArray);
 
       return { ...state, checkedConversationsArray: newArray };
 
@@ -148,7 +148,7 @@ export default function (state = {
     case UPDATE_CONVERSATIONS:
       const conversationUpdateArray = [];
       const conversationUpdateIdArray = [];
-      console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
+      // console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
       _.each(state.conversationByUserAndFlat, conversation => {
         conversationUpdateIdArray.push(conversation.id);
         conversationUpdateArray.push(conversation);
@@ -160,8 +160,8 @@ export default function (state = {
         conversationUpdateArray.splice(index, 1); // remove one element at index
         conversationUpdateArray.push(conv);
       });
-      console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateArray: ', conversationUpdateArray);
-      console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
+      // console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateArray: ', conversationUpdateArray);
+      // console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
 
       return { ...state, conversationByUserAndFlat: conversationUpdateArray };
     // case UPDATE_CONVERSATIONS:
@@ -194,7 +194,7 @@ export default function (state = {
       return { ...state, yourFlat: action.payload };
 
     case MARK_MESSAGES_READ:
-    console.log('in conversation reducer, MARK_MESSAGES_READ: ');
+    // console.log('in conversation reducer, MARK_MESSAGES_READ: ');
       let newMessages = 0;
       // go through old conversationByUserAndFlat and replace with new conversation with messages marked read
       _.each(state.conversationByUserAndFlat, conversation => {

@@ -25,13 +25,13 @@ const appLanguages =
     // show flat
     availableAmenities: { en: 'Available Amenities', jp: '物件の特徴・設備' },
     selectRange: { en: 'Select range of dates you want', jp: ' 日程を指定' },
-    selectFirst: { en: 'Please select first day ', jp: 'チェックインの日を指定' },
+    selectFirst: { en: 'Please select first day ', jp: 'チェックイン日を指定' },
     selectLast: { en: 'Please select last day ', jp: 'チェックアウト日を指定' },
     selectFrom: { en: 'Selected From', jp: '指定された日程' },
     noNearby: { en: 'No nearby places selected', jp: 'まだオーナーによって選択されてません。' },
     messages: { en: 'Messages', jp: 'メッセージ' },
     reviews: { en: 'Reviews', jp: 'レビュー' },
-    bookReservation: { en: 'Book Reservation', jp: '予約する' },
+    requestReservation: { en: 'Request Reservation', jp: '予約をリクエストする' },
     // landing
     bannerMessage: { en: 'Live the way you want', jp: '住みかたを選ぼう' },
     // edit create flat
@@ -88,6 +88,7 @@ const appLanguages =
     searchResultsMessage: { en: 'To get nearby places, click on criterion under "Search for Nearest," then click the "add" button to add it to your list so that users can see it on the show page.',
       jp: '近くの施設を検索するには、「近所の施設」の下にある条件をクリックして「追加」のボタンを押すとリストに加えられます。' },
     nearbyPlaces: { en: 'Nearby Places', jp: '近所の便利な施設' },
+    noNearbyPlaces: { en: 'No nearby places listed', jp: '施設が選択されてません。' },
     toShowPage: { en: 'To Show Page', jp: '物件詳細へ' },
     add: { en: 'Add', jp: '追加' },
     remove: { en: 'Remove', jp: '削除' },
@@ -126,11 +127,11 @@ const appLanguages =
     address: { en: 'Address', jp: '住所' },
     selfIntro: { en: 'Self Intro', jp: '自己紹介' },
     listNewFlat: { en: 'Create New Listing!', jp: '新しい物件を登録   ' },
-
     // main message
     archives: { en: 'Archives', jp: '保管箱' },
     trashBin: { en: 'Trash Bin', jp: 'ゴミ箱' },
-    archivedMessages: { en: 'Archived Messages', jp: '保存済み' },
+    archivedMessages: { en: 'Archived Messages', jp: '保管箱' },
+    moveToArchives: { en: 'Move to archives', jp: '保管箱に入れる' },
     unarchive: { en: 'Unarchive', jp: 'メインに戻す' },
     untrash: { en: 'Untrash', jp: 'メインに戻す' },
     enterMessage: { en: 'Enter you message here', jp: 'メッセージを入力' },
@@ -142,11 +143,9 @@ const appLanguages =
     orderBy: { en: 'Order by', jp: '並べを変える' },
     send: { en: 'Send', jp: '送信' },
     noConversation: { en: 'You have not started a conversation... \nStart one by sending a message! \nMake sure to introduce yourself',
-      jp: 'まだ会話を始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' },
-
+      jp: 'まだコンバセーションを始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' },
     // edit profile
     editProfile: { en: 'Edit Profile', jp: 'プロフィールを編集' },
-
     // payment modal
     makePayment: { en: 'Make a Payment', jp: 'お支払い' },
     paymentAmount: { en: 'Payment Amount', jp: 'お支払い額' },

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 // import ReactDOMServer from 'react-dom/server';
 
 import * as actions from '../../actions';
+import GmStyle from './gm-style';
 
 
 // carousel could not be used for infowindow for some reason
@@ -47,7 +48,7 @@ class GoogleMap extends Component {
     this.renderMap(this.props.flats);
     // this.createMarkers();
 
-    console.log('in googlemaps componentDidMount, this.props: ', this.props);
+    // console.log('in googlemaps componentDidMount, this.props: ', this.props);
     this.setState({ initialFlats: this.props.flats });
   }
   //*********************************************************
@@ -61,7 +62,7 @@ class GoogleMap extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 
-    console.log('in googlemaps componentDidUpdate, prevProps.flats, this.props.flats, prevState, this.state: ', prevProps.flats, this.props.flats, prevState, this.state);
+    // console.log('in googlemaps componentDidUpdate, prevProps.flats, this.props.flats, prevState, this.state: ', prevProps.flats, this.props.flats, prevState, this.state);
     // console.log('in googlemaps componentDidUpdate, this.state.markersArray: ', this.state.markersArray);
     // takes state markersArray updated in this.createMarkers
     // and creates array of markers on map with just IDs so that easy to compare this and prev props
@@ -156,7 +157,7 @@ class GoogleMap extends Component {
     }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
-    console.log('in googlemap, renderMap, FLATS:', this.props.flats);
+    // console.log('in googlemap, renderMap, FLATS:', this.props.flats);
 
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
@@ -178,6 +179,7 @@ class GoogleMap extends Component {
       // clickableIcons false so that user does not open IW; right now cannot close
       // since close button hidden
       clickableIcons: false
+      // styles: GmStyle
       //hide POIs;
       // styles: [
       //   {
@@ -203,8 +205,8 @@ class GoogleMap extends Component {
         // calls action updateMapDimensions for updating mapDimensions state
         // mapDimensions is used to render map when flats search result is empty
         google.maps.event.addListener(map, 'idle', () => {
-          console.log('in googlemap, map idle listener fired, map', map);
-          console.log('in googlemap, map idle listener fired, map.getBounds()', map.getBounds());
+          // console.log('in googlemap, map idle listener fired, map', map);
+          // console.log('in googlemap, map idle listener fired, map.getBounds()', map.getBounds());
           // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
           //   this.state.markersArray[i].setMap(null);
           // }
@@ -276,7 +278,7 @@ class GoogleMap extends Component {
 
 
   fetchFlatsCallback(fromWhere) {
-    console.log('in googlemap, fetchFlatsCallback:', fromWhere);
+    // console.log('in googlemap, fetchFlatsCallback:', fromWhere);
     this.props.showLoading(fromWhere);
   }
 
@@ -306,7 +308,7 @@ class GoogleMap extends Component {
 
     //flats is object from props in map render
     _.each(flats, (flat) => {
-      console.log('in googlemaps, each, flat: ', flat);
+      // console.log('in googlemaps, each, flat: ', flat);
       const markerLabel = this.props.showFlat ? 'Here I am' : `$${parseFloat(flat.price_per_month).toFixed(0)}`;
       // Marker sizes are expressed as a Size of X,Y where the origin of the image
       // (0,0) is located in the top left of the image.
@@ -359,7 +361,7 @@ class GoogleMap extends Component {
           infowindowArray[i].close();
         }
         // console.log('in google map, marker addlistener clicked');
-        console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
+        // console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
         // then open clicked infowindow
         infowindow.open(map, marker);
       });
@@ -369,8 +371,8 @@ class GoogleMap extends Component {
       marker.addListener('click', (event) => {
         const latitude = event.latLng.lat();
         const longitude = event.latLng.lng();
-        console.log('in googlemaps clicked marker latitude: ', latitude);
-        console.log('in googlemaps clicked marker longitude: ', longitude);
+        // console.log('in googlemaps clicked marker latitude: ', latitude);
+        // console.log('in googlemaps clicked marker longitude: ', longitude);
         // console.log('in googlemaps clicked marker longitude: ', event);
       });
 
@@ -379,7 +381,7 @@ class GoogleMap extends Component {
       const iwDivParent = document.createElement('div');
 
       // Image div
-      console.log('in googlemaps, infowindow create elements, flat.images: ', flat.images);
+      // console.log('in googlemaps, infowindow create elements, flat.images: ', flat.images);
       const iwImageDiv = document.createElement('div');
       iwImageDiv.id = 'infowindow-box-image-box';
       iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
@@ -470,20 +472,20 @@ class GoogleMap extends Component {
       // to test if image index is at zero or max number
       google.maps.event.addDomListener(iwImageLeftArrowDiv, 'click', (marker) => {
         let indexAtZero = false;
-        console.log('in googlemap, map iwImageLeftArrow clicked');
+        // console.log('in googlemap, map iwImageLeftArrow clicked');
         const maxImageIndex = flat.images.length - 1;
-        console.log('in googlemap, iwImageLeftArrow, maxImageIndex:', maxImageIndex);
-        console.log('in googlemap, iwImageLeftArrow, this.props.imageIndex, before if statement:', this.props.imageIndex.count);
+        // console.log('in googlemap, iwImageLeftArrow, maxImageIndex:', maxImageIndex);
+        // console.log('in googlemap, iwImageLeftArrow, this.props.imageIndex, before if statement:', this.props.imageIndex.count);
         if (this.props.imageIndex.count <= 0) {
-          console.log('in googlemap, iwImageLeftArrow, if statement, we are at 0');
+          // console.log('in googlemap, iwImageLeftArrow, if statement, we are at 0');
           indexAtZero = true;
-          console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
+          // console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
           this.props.decrementImageIndex(indexAtZero, maxImageIndex);
         } else {
           this.props.decrementImageIndex(indexAtZero, maxImageIndex);
-          console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
+          // console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
         }
-        console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
+        // console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
         // console.log('in googlemap, map iwImageLeftArrow clicked, t
         //his.props.imageIndex', this.props.imageIndex);
         // infowindowClickHandler(flat);
@@ -492,30 +494,30 @@ class GoogleMap extends Component {
 
       google.maps.event.addDomListener(iwImageRightArrowDiv, 'click', (marker) => {
         let indexAtMax = false;
-        console.log('in googlemap, map iwImageRightArrow clicked');
+        // console.log('in googlemap, map iwImageRightArrow clicked');
         // const maxNumOfImages = infowindowClickHandler(flat);
         const maxImageIndex = flat.images.length - 1;
 
-        console.log('in googlemap, iwImageRightArrow, maxImageIndex:', maxImageIndex);
-        console.log('in googlemap, iwImageRightArrow, this.props.imageIndex.count before if statement:', this.props.imageIndex.count);
+        // console.log('in googlemap, iwImageRightArrow, maxImageIndex:', maxImageIndex);
+        // console.log('in googlemap, iwImageRightArrow, this.props.imageIndex.count before if statement:', this.props.imageIndex.count);
 
         if (this.props.imageIndex.count >= maxImageIndex) {
-          console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
+          // console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
           indexAtMax = true;
           this.props.incrementImageIndex(indexAtMax, maxImageIndex);
-          console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
+          // console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         } else {
           this.props.incrementImageIndex(indexAtMax, maxImageIndex);
-          console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
+          // console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
         }
-        console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
+        // console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
         document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
       }); // end of addDomListener
 
       // opens up new tab when IW details clicked and passes flat id in params to the new tab
       google.maps.event.addDomListener(iwDetailDiv, 'click', function () {
-        console.log('in googlemap, map iwDetailDiv clicked, marker', iwDetailDiv);
-        console.log('in googlemap, map iwDetailDiv clicked, marker', marker.flatId);
+        // console.log('in googlemap, map iwDetailDiv clicked, marker', iwDetailDiv);
+        // console.log('in googlemap, map iwDetailDiv clicked, marker', marker.flatId);
         // infowindowClickHandler(flat);
         const win = window.open(`/show/${marker.flatId}`, '_blank');
         win.focus();
@@ -543,8 +545,8 @@ class GoogleMap extends Component {
     google.maps.event.addListener(map, 'click', function (event) {
       const latitude = event.latLng.lat();
       const longitude = event.latLng.lng();
-      console.log('in googlemaps clicked latitude: ', latitude);
-      console.log('in googlemaps clicked longitude: ', longitude);
+      // console.log('in googlemaps clicked latitude: ', latitude);
+      // console.log('in googlemaps clicked longitude: ', longitude);
 
       //close open infowindows
       for (let i = 0; i < infowindowArray.length; i++) {

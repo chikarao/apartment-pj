@@ -8,6 +8,7 @@ import SearchTypeList from '../constants/search_type_list';
 import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
+import GmStyle from './gm-style';
 
 // import * as images from '../../images';
 
@@ -60,7 +61,8 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, createMap, location: ', location);
     const map = new google.maps.Map(document.getElementById('map'), {
       center: location,
-      zoom
+      zoom,
+      styles: GmStyle
     });
     this.setState({ map })
     return map;
@@ -880,7 +882,7 @@ class MapInteraction extends Component {
       });
     } else {
       return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>No nearby places listed</div>
+        <div style={{ padding: '20px', textAlign: 'center' }}>{AppLanguages.noNearbyPlaces[this.props.appLanguageCode]}</div>
       );
     }
   }

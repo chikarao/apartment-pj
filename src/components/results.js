@@ -36,7 +36,7 @@ const MAX_NUM_PAGE_NUMBERS = 5;
 class Results extends Component {
   constructor() {
   super();
-  console.log('in results constructor, searchCriteria.startMin : ', searchCriteria[1]);
+  // console.log('in results constructor, searchCriteria.startMin : ', searchCriteria[1]);
 
   this.state = {
     // initialized at page 1
@@ -116,7 +116,7 @@ class Results extends Component {
     // const lngOffsetWest = -122.28701 - initialPosition.lng; //about .12
     // const lngOffsetEast = -122.5376 - initialPosition.lng; // about -.13
 
-    console.log('in results componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
+    // console.log('in results componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
     // console.log('in results componentDidMount, this.props.searchFlatParams: ', this.props.searchFlatParams);
 
     // const mapBounds = {
@@ -133,8 +133,8 @@ class Results extends Component {
     const searchEmpty = _.isEmpty(this.props.searchFlatParams);
 
     const testBool = 'lat' in object;
-    console.log('in results componentDidMount, testBool: ', testBool);
-    console.log('in results componentDidMount, object: ', object);
+    // console.log('in results componentDidMount, testBool: ', testBool);
+    // console.log('in results componentDidMount, object: ', object);
     // if (object!== undefined) {
     // if (!searchEmpty) {
       if (!searchEmpty && ('lat' in object)) {
@@ -145,9 +145,9 @@ class Results extends Component {
         localStorage.setItem('lat', lat);
         localStorage.setItem('lng', lng);
 
-        console.log('in results componentDidMount, lat, lng: ', lat, lng);
-        console.log('in results componentDidMount, if this.props.searchFlatParams: ', this.props.searchFlatParams);
-        console.log('in results componentDidMount, if this.props.mapDimensions: ', this.props.mapDimensions);
+        // console.log('in results componentDidMount, lat, lng: ', lat, lng);
+        // console.log('in results componentDidMount, if this.props.searchFlatParams: ', this.props.searchFlatParams);
+        // console.log('in results componentDidMount, if this.props.mapDimensions: ', this.props.mapDimensions);
         // console.log('in results componentDidMount, storedLat, in if storedLng: ', storedLat, storedLng);
         // set map bounds on offsets defined above
         mapBounds = {
@@ -156,22 +156,22 @@ class Results extends Component {
           north: (lat + latOffsetNorth),
           south: (lat + latOffsetSouth)
         };
-        console.log('in results componentDidMount, in if mapBounds: ', mapBounds);
+        // console.log('in results componentDidMount, in if mapBounds: ', mapBounds);
       } else {
         // retrieve lat lng when reloaded
         const storedLat = parseFloat(localStorage.getItem('lat'));
         const storedLng = parseFloat(localStorage.getItem('lng'));
         // const mapZoom = parseFloat(localStorage.getItem('mapZoom'));
         // const searchParams = parseFloat(localStorage.getItem('searchParams'));
-        console.log('in results componentDidMount, else this.props.searchFlatParams: ', this.props.searchFlatParams);
-        console.log('in results componentDidMount, storedLat, storedLng, mapZoom: ', storedLat, storedLng);
+        // console.log('in results componentDidMount, else this.props.searchFlatParams: ', this.props.searchFlatParams);
+        // console.log('in results componentDidMount, storedLat, storedLng, mapZoom: ', storedLat, storedLng);
         mapBounds = {
           east: (storedLng + lngOffsetEast),
           west: (storedLng + lngOffsetWest),
           north: (storedLat + latOffsetNorth),
           south: (storedLat + latOffsetSouth)
         };
-        console.log('in results componentDidMount, in else with stored latlng mapBounds: ', mapBounds);
+        // console.log('in results componentDidMount, in else with stored latlng mapBounds: ', mapBounds);
       }
       // this.props.startUpIndex();
       // initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
@@ -189,16 +189,16 @@ class Results extends Component {
         station_max: this.state.stationMax
       };
 
-      console.log('in results componentDidMount, searchAttributes: ', searchAttributes);
-      console.log('in results componentDidMount, before fetchflats mapBounds: ', mapBounds);
-      console.log('in results componentDidMount, before fetchflats, this.props.searchFlatParams : ',  this.props.searchFlatParams);
+      // console.log('in results componentDidMount, searchAttributes: ', searchAttributes);
+      // console.log('in results componentDidMount, before fetchflats mapBounds: ', mapBounds);
+      // console.log('in results componentDidMount, before fetchflats, this.props.searchFlatParams : ',  this.props.searchFlatParams);
       // set app state for search parameter with serch attributes with initial values from construction
       this.props.searchFlatParameters(searchAttributes);
       // fetch flats
       if (this.props.searchFlatParams) {
       // if (!searchEmpty) {
       this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => {
-        console.log('in results componentDidMount, fetchFlats: ');
+        // console.log('in results componentDidMount, fetchFlats: ');
       });
       }
 
@@ -237,9 +237,9 @@ class Results extends Component {
   renderMap() {
     const flatsEmpty = _.isEmpty(this.props.flats);
     const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
-    console.log('in results renderMap, flats empty: ', flatsEmpty);
-    console.log('in results renderMap, mapDimensions empty: ', mapDimensionsEmpty);
-    console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
+    // console.log('in results renderMap, flats empty: ', flatsEmpty);
+    // console.log('in results renderMap, mapDimensions empty: ', mapDimensionsEmpty);
+    // console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
 
     if (!flatsEmpty) {
       // if (!mapDimensionsEmpty) {
@@ -251,7 +251,7 @@ class Results extends Component {
       // }
       // const { id } = this.props.flats[0];
       // console.log('in results renderFlats, id: ', id);
-      console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
+      // console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       console.log('here is latLngAve: ', latLngAve);
       // console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
@@ -260,7 +260,7 @@ class Results extends Component {
       const storedLng = localStorage.getItem('lng');
       // const initialPosition = { lat: storedLat, lng: storedLng }
       const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
-      console.log('results, renderMap, initialPosition: ', initialPosition);
+      // console.log('results, renderMap, initialPosition: ', initialPosition);
 
       return (
         <div>
@@ -281,8 +281,8 @@ class Results extends Component {
         lat: this.props.mapDimensions.mapCenter.lat(),
         lng: this.props.mapDimensions.mapCenter.lng()
       };
-      console.log('results, renderMap, else if !mapDimensionsEmpty: ', emptyMapLatLngCenter);
-      console.log('results, renderMap, else if this.props.mapDimensions: ', this.props.mapDimensions.mapCenter.lng());
+      // console.log('results, renderMap, else if !mapDimensionsEmpty: ', emptyMapLatLngCenter);
+      // console.log('results, renderMap, else if this.props.mapDimensions: ', this.props.mapDimensions.mapCenter.lng());
       return (
         <div>
         <GoogleMap
@@ -299,7 +299,7 @@ class Results extends Component {
         const storedLng = parseFloat(localStorage.getItem('lng'));
         const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng } : { lat: storedLat, lng: storedLng }
         // const initialPosition = { lat: storedLat, lng: storedLng }
-        console.log('results, renderMap, else if emptyFlat: ', initialPosition);
+        // console.log('results, renderMap, else if emptyFlat: ', initialPosition);
         // const initialPosition = { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
         return (
           <div>
@@ -386,7 +386,7 @@ class Results extends Component {
           firstPagingIndex: (lastPage - (MAX_NUM_PAGE_NUMBERS)),
           lastPagingIndex: lastPage,
         }, () => {
-          console.log('in results handlePageClick, before if lastPage, displayedPagesArray: ', displayedPagesArray)
+          // console.log('in results handlePageClick, before if lastPage, displayedPagesArray: ', displayedPagesArray)
         })
         }
       }); // end of first setState
@@ -396,18 +396,18 @@ class Results extends Component {
     // purpose of function is to shift displayedPagesArray under certain conditions
     // lastPage is num, MAX_NUM_PAGE_NUMBERS is num, -1 to convert to index
     // first check if current page (already decremented by one) fits on last set of buttons with no ...
-    console.log('in results decrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
+    // console.log('in results decrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
     if (this.state.currentPage < (lastPage - (MAX_NUM_PAGE_NUMBERS - 1))) {
       // and current page is the first before ..., specify that position
-      console.log('in results decrementPagingIndex, first if cp fpi lpi <, : ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
+      // console.log('in results decrementPagingIndex, first if cp fpi lpi <, : ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
       if (this.state.currentPage === lastPage - MAX_NUM_PAGE_NUMBERS) {
-        console.log('in results decrementPagingIndex, second if this.state.currentPage ===, lastPagingIndex: ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
-        console.log('in results decrementPagingIndex, second if lastPage, MAX_NUM_PAGE_NUMBERS: ', lastPage, MAX_NUM_PAGE_NUMBERS);
+        // console.log('in results decrementPagingIndex, second if this.state.currentPage ===, lastPagingIndex: ', this.state.currentPage, this.state.firstPagingIndex, this.state.lastPagingIndex);
+        // console.log('in results decrementPagingIndex, second if lastPage, MAX_NUM_PAGE_NUMBERS: ', lastPage, MAX_NUM_PAGE_NUMBERS);
         this.setState({
           firstPagingIndex: (this.state.firstPagingIndex - (MAX_NUM_PAGE_NUMBERS - 2)),
           lastPagingIndex: (this.state.lastPagingIndex - (MAX_NUM_PAGE_NUMBERS - 2)),
         }, () => {
-          console.log('in results decrementPagingIndex, this.state.currentPage, lastPagingIndex: ', this.state.firstPagingIndex, this.state.lastPagingIndex);
+          // console.log('in results decrementPagingIndex, this.state.currentPage, lastPagingIndex: ', this.state.firstPagingIndex, this.state.lastPagingIndex);
           // const currentLi = document.getElementById(this.state.currentPage);
           // currentLi.classList.add('current');
           this.addCurrent();
@@ -419,7 +419,7 @@ class Results extends Component {
          firstPagingIndex: (this.state.firstPagingIndex - 1),
          lastPagingIndex: (this.state.lastPagingIndex - 1),
        }, () => {
-         console.log('in results decrementPagingIndex, this.state.currentPage: ', this.state.firstPagingIndex, this.state.lastPagingIndex );
+         // console.log('in results decrementPagingIndex, this.state.currentPage: ', this.state.firstPagingIndex, this.state.lastPagingIndex );
          // const currentLi = document.getElementById(this.state.currentPage);
          // currentLi.classList.add('current');
          this.addCurrent();
@@ -430,7 +430,7 @@ class Results extends Component {
       // end of first if
       // if currentPage fits in last set of pages and not the last in set then just addCurrent
       // to the already decremented paging button
-      console.log('in results decrementPagingIndex, first else, cp: ', this.state.currentPage);
+      // console.log('in results decrementPagingIndex, first else, cp: ', this.state.currentPage);
       this.addCurrent();
     }
   }
@@ -445,7 +445,7 @@ class Results extends Component {
         firstPagingIndex: (this.state.firstPagingIndex + 1),
         lastPagingIndex: (this.state.lastPagingIndex + 1),
       }, () => {
-        console.log('in results incrementPagingIndex, if this.state.currentPage: ', this.state.currentPage);
+        // console.log('in results incrementPagingIndex, if this.state.currentPage: ', this.state.currentPage);
         // const currentLi = document.getElementById(this.state.currentPage);
         // currentLi.classList.add('current');
         this.addCurrent();
@@ -453,7 +453,7 @@ class Results extends Component {
     } else {
       // if at before the ..., get a new array in the last set of paging buttons
       // Needs to shift by MAX_NUM_PAGE_NUMBERS - 2 to present full last set
-      console.log('in results incrementPagingIndex, else displayedPagesArray[0]: ', displayedPagesArray[0]);
+      // console.log('in results incrementPagingIndex, else displayedPagesArray[0]: ', displayedPagesArray[0]);
       this.setState({
         firstPagingIndex: (this.state.firstPagingIndex + (MAX_NUM_PAGE_NUMBERS - 2)),
         lastPagingIndex: (this.state.lastPagingIndex + (MAX_NUM_PAGE_NUMBERS - 2))
@@ -462,8 +462,8 @@ class Results extends Component {
         this.setState({
           currentPage: displayedPagesArray[0]
         }, () => {
-          console.log('in results incrementPagingIndex, else this.state.currentPage: ', this.state.currentPage);
-          console.log('in results incrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
+          // console.log('in results incrementPagingIndex, else this.state.currentPage: ', this.state.currentPage);
+          // console.log('in results incrementPagingIndex, displayedPagesArray: ', displayedPagesArray);
           // const currentLi = document.getElementById(this.state.currentPage);
           // currentLi.classList.add('current');
           this.addCurrent();
@@ -499,17 +499,17 @@ class Results extends Component {
             this.addCurrent();
           } else {
             // else shift array
-            console.log('in results handleLeftPageClick, if cp >= mnpn -1, cp: ', this.state.currentPage);
+            // console.log('in results handleLeftPageClick, if cp >= mnpn -1, cp: ', this.state.currentPage);
             this.decrementPagingIndex();
           }
         } else if (firstPageInArray === 2) {
           // else if for second if
-          console.log('in results handleLeftPageClick, else if this.state.currentPage: ', this.state.currentPage);
+          // console.log('in results handleLeftPageClick, else if this.state.currentPage: ', this.state.currentPage);
           this.setState({
             firstPagingIndex: (this.state.firstPagingIndex - 1),
             lastPagingIndex: (this.state.lastPagingIndex - 1),
           }, () => {
-            console.log('in results handleLeftPageClick, else if displayedPagesArray: ', displayedPagesArray);
+            // console.log('in results handleLeftPageClick, else if displayedPagesArray: ', displayedPagesArray);
             this.addCurrent();
           });
         } else {
@@ -526,7 +526,7 @@ class Results extends Component {
     const firstPageInArray = displayedPagesArray[0];
     const lastPageInArray = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 1)];
     const pageBeforeDots = displayedPagesArray[(MAX_NUM_PAGE_NUMBERS - 3)];
-    console.log('in results handleRightPageClick, currentPageIndex: ', lastPageIndex);
+    // console.log('in results handleRightPageClick, currentPageIndex: ', lastPageIndex);
     // console.log('in results handleRightPageClick, before set state displayedPagesArray: ', displayedPagesArray);
 
     if (this.state.currentPage < lastPage) {
@@ -546,26 +546,26 @@ class Results extends Component {
       }, () => {
         // in callback of setState
         // const firstInLastSet = lastPage - (MAX_NUM_PAGE_NUMBERS - 1);
-        console.log('in results handleRightPageClick, this.state: ', this.state);
-        console.log('in results handleRightPageClick, after setState, displayedPagesArray: ', displayedPagesArray);
+        // console.log('in results handleRightPageClick, this.state: ', this.state);
+        // console.log('in results handleRightPageClick, after setState, displayedPagesArray: ', displayedPagesArray);
         // const currentLi = document.getElementById(this.state.currentPage);
         // function to do currentLi.classList.add('current');
         // ***************key logic for advancing pages one by one or moving array
         // if pagebefore dots in this pages array is before last set of pages
         if (this.state.pageBeforeDots < (lastPage - (MAX_NUM_PAGE_NUMBERS))) {
-          console.log('in results handleRightPageClick, < if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
-          console.log('in results handleRightPageClick, < if this.state: ', this.state);
+          // console.log('in results handleRightPageClick, < if this.state.pageBeforeDots: ', this.state.pageBeforeDots);
+          // console.log('in results handleRightPageClick, < if this.state: ', this.state);
           // console.log('in results handleRightPageClick, if (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)): ', (lastPage - (MAX_NUM_PAGE_NUMBERS - 1)));
           // as long as not in the last set and last page index was is 2 or increment array
           if ((this.state.lastPageIndex) === (MAX_NUM_PAGE_NUMBERS - 3)) {
-            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === pbd: ', this.state.pageBeforeDots);
-            console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === lpi: ', this.state.lastPageIndex);
+            // console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === pbd: ', this.state.pageBeforeDots);
+            // console.log('in results handleRightPageClick, if pageBeforeDots <, if lastpagei === lpi: ', this.state.lastPageIndex);
             const atPageBeforeDots = false;
             this.incrementPagingIndex(atPageBeforeDots);
           } else {
             // otherwise, add current
-            console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === lpi: ', this.state.lastPageIndex);
-            console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === pbd: ', this.state.pageBeforeDots);
+            // console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === lpi: ', this.state.lastPageIndex);
+            // console.log('in results handleRightPageClick, else pageBeforeDots <, if lastpage === pbd: ', this.state.pageBeforeDots);
             this.addCurrent();
           }
           // else if pagebefore dots in this array of pages
@@ -573,12 +573,12 @@ class Results extends Component {
         } else if ((this.state.pageBeforeDots === (lastPage - MAX_NUM_PAGE_NUMBERS)) && (this.state.pageBeforeDots === this.state.currentPage - 1)) {
           // if pageBeforeDots is last one before last set AND
           // before clicked, currentPage was at pageBeforeDots
-          console.log('in results handleRightPageClick, else pageBeforeDots <, first else if lastpage === pbd: ', this.state.pageBeforeDots);
-          console.log('in results handleRightPageClick, else if === this.state: ', this.state);
+          // console.log('in results handleRightPageClick, else pageBeforeDots <, first else if lastpage === pbd: ', this.state.pageBeforeDots);
+          // console.log('in results handleRightPageClick, else if === this.state: ', this.state);
           const atPageBeforeDots = true;
           this.incrementPagingIndex(atPageBeforeDots);
         } else {
-          console.log('in results handleRightPageClick, in else this.state: ', this.state);
+          // console.log('in results handleRightPageClick, in else this.state: ', this.state);
           this.addCurrent();
         }
         // **********************
@@ -588,7 +588,7 @@ class Results extends Component {
 
   renderPageNumbers(pageNumbersArray) {
     // pageNumbersArray ? pageNumbersArray : [];
-    console.log('in results renderPageNumbers, pageNumbersArray: ', pageNumbersArray);
+    // console.log('in results renderPageNumbers, pageNumbersArray: ', pageNumbersArray);
     // cannot set state here...
       // renders ... button if last page is longer than MAX_NUM_PAGE_NUMBERS
       // otherwise, just static without ...
@@ -597,10 +597,10 @@ class Results extends Component {
       if (lastPage > MAX_NUM_PAGE_NUMBERS) {
         // firstPagingIndex is the first page to be showing
         // lastPagingIndex is how many paging boxes to show, so
-        console.log('in results renderPageNumbers, displayedPagesArray: ', displayedPagesArray);
+        // console.log('in results renderPageNumbers, displayedPagesArray: ', displayedPagesArray);
 
         return displayedPagesArray.map((pageNumber, index) => {
-          console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
+          // console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
           if (index === 0) {
             //if right arrow has been clicked, don't automatically assign current to class
             if (this.state.rightArrowClicked) {
@@ -637,7 +637,7 @@ class Results extends Component {
       } else {
         // if there are only pages less than MAX_NUM_PAGE_NUMBERS, then no flexible pagination
         return pageNumbersArray.map((pageNumber, index) => {
-          console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
+          // console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
           if (index === 0) {
             return (
               <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
@@ -704,7 +704,7 @@ class Results extends Component {
         if (i === Math.ceil(Object.keys(cards).length / cardsPerPage)) {
           // lastpage is  a global variable
           lastPage = i;
-          console.log('in results renderPagination, if i === ... i lastPage: ', i, lastPage);
+          // console.log('in results renderPagination, if i === ... i lastPage: ', i, lastPage);
         }
       }
       // console.log('in results renderPagination, lastPage: ', lastPage);
@@ -737,11 +737,11 @@ class Results extends Component {
 
   renderFlats() {
     let index = 1;
-    console.log('in results renderFlats, flats data length: ', this.props.flats);
+    // console.log('in results renderFlats, flats data length: ', this.props.flats);
     const flatsEmpty = _.isEmpty(this.props.flats);
     const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
-    console.log('in results renderFlats, flats empty: ', flatsEmpty);
-    console.log('in results renderFlats, this.props.startUpCount.startUpCount: ', this.props.startUpCount.startUpCount);
+    // console.log('in results renderFlats, flats empty: ', flatsEmpty);
+    // console.log('in results renderFlats, this.props.startUpCount.startUpCount: ', this.props.startUpCount.startUpCount);
     // const randomNum = _.random(0, 1);
     // console.log('in results renderFlats, randomNum: ', randomNum);
 
@@ -755,7 +755,7 @@ class Results extends Component {
         // console.log('in results renderPagination, currentPage: ', currentPage);
         // console.log('in results renderPagination, cardsPerPage: ', cardsPerPage);
         const cards = this.props.flats;
-        console.log('in results renderPagination, cards: ', cards);
+        // console.log('in results renderPagination, cards: ', cards);
         // Logic for displaying todos
         const indexOfLastCard = currentPage * cardsPerPage;
         const indexOfFirstCard = indexOfLastCard - cardsPerPage;
@@ -769,9 +769,9 @@ class Results extends Component {
 
         const flats = mappedSlicedCards;
         // const flats = this.props.flats;
-        console.log('in results renderFlats, slicedCards, slicedCards: ', slicedCards);
-        console.log('in results renderFlats, slicedCards, mappedSlicedCards: ', mappedSlicedCards);
-        console.log('in results renderFlats, slicedCards, this.props.flats: ', this.props.flats);
+        // console.log('in results renderFlats, slicedCards, slicedCards: ', slicedCards);
+        // console.log('in results renderFlats, slicedCards, mappedSlicedCards: ', mappedSlicedCards);
+        // console.log('in results renderFlats, slicedCards, this.props.flats: ', this.props.flats);
 
         return _.map(flats, (flat) => {
             const reviewsArray = this.getReviewsForFlat(flat);
@@ -805,27 +805,6 @@ class Results extends Component {
         );
       }
   }
-
-  // getStateCriteria(min) {
-  //   switch(parseInt(this.state.criterionValue)) {
-  //     case 1: {
-  //       if (min) {
-  //         return this.state.floorSpaceMin;
-  //       } else {
-  //         return this.state.floorSpaceMax;
-  //       }
-  //     }
-  //     case 2: {
-  //
-  //     }
-  //     case 3: {
-  //
-  //     }
-  //     case 4: {
-  //
-  //     }
-  //   }
-  // }
 
   // Each increment function for each tab, size, bedroom, station, price;
   // could not refactor to one function since cannot use a variable to specify key of state object!!!!!
@@ -1133,7 +1112,7 @@ class Results extends Component {
 
   unHighlightTab(name) {
     const searchTabs = document.getElementsByClassName(name);
-    console.log('in results unHighlightTab elementVal: ', searchTabs);
+    // console.log('in results unHighlightTab elementVal: ', searchTabs);
     _.each(searchTabs, tab => {
       tab.setAttribute('style', 'background-color: white; color: black')
     })
@@ -1187,15 +1166,15 @@ class Results extends Component {
     const elementName = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
     // const results-search-box-sub-tab
-    console.log('in results handleSearchTabClick elementVal: ', elementVal);
-    console.log('in results handleSearchTabClickm elementName: ', elementName);
+    // console.log('in results handleSearchTabClick elementVal: ', elementVal);
+    // console.log('in results handleSearchTabClickm elementName: ', elementName);
     // set state searchCriteriaInpuStarted to show max values and set max values to realistic
     const elementValInt = parseInt(elementVal);
 
     if (elementVal !== this.state.criterionValue) {
       this.unHighlightTab('results-search-box-sub-tab');
       this.setState({ criterionValue: elementValInt }, () => {
-        console.log('in results handleSearchTabClick this.state.criterionValue: ', this.state.criterionValue);
+        // console.log('in results handleSearchTabClick this.state.criterionValue: ', this.state.criterionValue);
         clickedElement.setAttribute('style', 'background-color: gray; color: white;');
         this.userInputStarted();
       });// end of first setState
@@ -1263,8 +1242,8 @@ class Results extends Component {
       tabCount[tabIndex] = (tabCount[tabIndex] || 0) + 1;
     })
     // selectedTabArray.forEach((i) => { tabCount[i] = (tabCount[i] || 0) + 1;})
-      console.log('in results setStateMaxToNormal tabCount: ', tabCount);
-      console.log('in results setStateMaxToNormal this.state.criterionValue: ', this.state.criterionValue);
+      // console.log('in results setStateMaxToNormal tabCount: ', tabCount);
+      // console.log('in results setStateMaxToNormal this.state.criterionValue: ', this.state.criterionValue);
 
     switch (this.state.criterionValue) {
       case 0:
@@ -1317,7 +1296,7 @@ class Results extends Component {
         searchCriteriaInpuStarted: true,
       }, () => {
 
-        console.log('in results userInputStarted, this.state: ', this.state);
+        // console.log('in results userInputStarted, this.state: ', this.state);
         // console.log('in results userInputStarted outside of switch: ', this.state.criterionValue);
       });
     }
@@ -1326,7 +1305,7 @@ class Results extends Component {
   handleMinMaxClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in results handleMinMaxClick: ', elementVal);
+    // console.log('in results handleMinMaxClick: ', elementVal);
     // record that user has started to input search to render initial max
     // set max levels to realistic levels (startMax in searchCriteria object, not startBigMax)
     // this.userInputStarted();
@@ -1390,21 +1369,21 @@ class Results extends Component {
       });
 
       this.props.searchFlatParameters(searchParamsObject);
-      console.log('in results handleSearchClearClick, this.state: ', this.state);
+      // console.log('in results handleSearchClearClick, this.state: ', this.state);
     });
   }
 
   handleSearchApplyClick() {
     this.props.showLoading();
-    console.log('in results handleSearchApplyClick: ');
+    // console.log('in results handleSearchApplyClick: ');
     const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
-    console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
+    // console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
     // const searchAttributes = bedroomsExact ?
     // { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax } :
     // { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_min: bedroomsMin, bedrooms_max: bedroomsMax, station_min: stationMin, station_max: stationMax };
 
     // console.log('in results handleSearchApplyClick, searchAttributes: ', searchAttributes);
-    console.log('in results handleSearchApplyClick, this.props.searchFlatParams: ', this.props.searchFlatParams);
+    // console.log('in results handleSearchApplyClick, this.props.searchFlatParams: ', this.props.searchFlatParams);
     this.props.fetchFlats(this.props.mapDimensions.mapBounds, this.props.searchFlatParams, () => { this.searchApplyCallback(); });
   }
 
@@ -1414,14 +1393,14 @@ class Results extends Component {
 
   handleRefineSearchLinkClick() {
     this.setState({ showRefineSearch: !this.state.showRefineSearch }, () => {
-      console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
+      // console.log('in results handleRefineSearchLinkClick, this.state.showRefineSearch: ', this.state.showRefineSearch);
     })
   }
 
   handleAmenityCheck(event) {
     const checkedElement = event.target;
     const elementVal = checkedElement.getAttribute('value');
-    console.log('in results handleAmenityCheck, elementVal: ', elementVal);
+    // console.log('in results handleAmenityCheck, elementVal: ', elementVal);
     // add value of checked amenity (name of amenity same as api amenity table column name)
     const { amenitySearchArray, amenitySearchStarted } = this.state;
 
@@ -1441,7 +1420,7 @@ class Results extends Component {
         // const key = elementVal
         // const obj = {};
         this.props.searchFlatParameters({ [elementVal]: false });
-          console.log('in results handleAmenityCheck, amnenitySearchArray if includes: ', this.state.amenitySearchArray);
+          // console.log('in results handleAmenityCheck, amnenitySearchArray if includes: ', this.state.amenitySearchArray);
         });
 
     } else {
@@ -1449,7 +1428,7 @@ class Results extends Component {
       this.setState(prevState => ({
         amenitySearchArray: [...prevState.amenitySearchArray, elementVal]
       }), () => {
-        console.log('in results handleAmenityCheck, amnenitySearchArray if else: ', this.state.amenitySearchArray);
+        // console.log('in results handleAmenityCheck, amnenitySearchArray if else: ', this.state.amenitySearchArray);
       this.props.searchFlatParameters({ [elementVal]: true });
       }); // end of setState
     }
@@ -1461,7 +1440,7 @@ class Results extends Component {
     // return _.map(Object.keys(amenities), (amenity) => {
       // console.log('in results renderEachAmenityCriteria, amenity: ', amenity);
       return _.map(whichAmenityToList, (a, i) => {
-        console.log('in results renderEachAmenityCriteria, a: ', a);
+        // console.log('in results renderEachAmenityCriteria, a: ', a);
         // if (amenity == a) {
           // console.log('in results renderEachAmenityCriteria, match, amenity, a: ', amenity == a, amenity, a, amenities[amenity]);
           return (
@@ -1478,7 +1457,7 @@ class Results extends Component {
   renderRefineSearchCriteria() {
     return (
       <div>
-      <div className={this.state.amenitySearchStarted ? 'refine-search-apply-link-highlight' : 'refine-search-apply-link'} onClick={this.handleSearchApplyClick.bind(this)}>{this.state.amenitySearchStarted ? 'Apply' : ''}</div>
+      <div className={this.state.amenitySearchStarted ? 'refine-search-apply-link-highlight' : 'refine-search-apply-link'} onClick={this.handleSearchApplyClick.bind(this)}>{this.state.amenitySearchStarted ? AppLanguages.apply[this.props.appLanguageCode] : ''}</div>
         <div className="row refine-search-row">
         {this.renderEachAmenityCriteria()}
         </div>
@@ -1516,7 +1495,7 @@ class Results extends Component {
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     const bedrooms = bedroomsExact ? `${bedroomsExact}` : `${bedroomsMin} ~ ${bedroomsMax}`
 
-    console.log('in results renderSearchArea, bedrooms, bedroomsExact, ', bedrooms, bedroomsExact);
+    // console.log('in results renderSearchArea, bedrooms, bedroomsExact, ', bedrooms, bedroomsExact);
     // bedroomsMin: searchCriteria[1].startMin,
     // bedroomsMax: searchCriteria[1].startMax,
     // stationMin: searchCriteria[2].startMin,

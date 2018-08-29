@@ -28,7 +28,7 @@ class MainCards extends Component {
   }
 
   createBackgroundImage(image) {
-    console.log('in main_cards, createBackgroundImage, image: ', image);
+    // console.log('in main_cards, createBackgroundImage, image: ', image);
     const width = 400;
     const t = new cloudinary.Transformation();
     t.angle(0).crop('scale').width(width).aspectRatio('1.5');
@@ -36,13 +36,13 @@ class MainCards extends Component {
   }
 
   handleCardClick = (event) => {
-    console.log('in main_cards, handleCardClick, event.target.className: ', event.target.className);
+    // console.log('in main_cards, handleCardClick, event.target.className: ', event.target.className);
     const wasParentClicked = event.target.className === 'card-cover' ||
     event.target.className === 'card';
-    console.log('in main_cards, handleCardClick, wasParentClicked: ', wasParentClicked);
+    // console.log('in main_cards, handleCardClick, wasParentClicked: ', wasParentClicked);
     if (wasParentClicked) {
       // this.props.selectedFlat(this.props.flat);
-      console.log('in main_cards, handleCardClick, Card clicked');
+      // console.log('in main_cards, handleCardClick, Card clicked');
       // for each click of card, a view is persisited in the database
       this.props.createView(this.props.flat.id);
       const win = window.open(`/show/${this.props.flat.id}`, '_blank');
@@ -53,8 +53,8 @@ class MainCards extends Component {
   handleLeftArrowClick() {
     const a = this.props.flat.images;
     const maxImagesIndex = a.length - 1;
-    console.log('in handleLeftArrowClick, maxImagesIndex: ', maxImagesIndex);
-    console.log('in handleLeftArrowClick, this.state.imageIndex: ', this.state);
+    // console.log('in handleLeftArrowClick, maxImagesIndex: ', maxImagesIndex);
+    // console.log('in handleLeftArrowClick, this.state.imageIndex: ', this.state);
     if (this.state.imageIndex === 0) {
       this.setState({
         imageIndex: maxImagesIndex
@@ -66,15 +66,15 @@ class MainCards extends Component {
       });
     }
 
-      console.log('in main_cards, left arrow clicked');
-      console.log('in main_cards, number of images: ', maxImagesIndex);
+      // console.log('in main_cards, left arrow clicked');
+      // console.log('in main_cards, number of images: ', maxImagesIndex);
   }
 
   handleRightArrowClick() {
     const a = this.props.flat.images;
     const maxImagesIndex = a.length - 1;
-    console.log('in main_cards, handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
-    console.log('in main_cards, handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
+    // console.log('in main_cards, handleRightArrowClick, maxImagesIndex: ', maxImagesIndex);
+    // console.log('in main_cards, handleRightArrowClick, this.state.imageIndex: ', this.state.imageIndex);
     if (this.state.imageIndex === maxImagesIndex) {
       this.setState({
         imageIndex: 0
@@ -92,7 +92,7 @@ class MainCards extends Component {
     // if logged in, user can like a flat
     // header has a check on showAuthModal to show modal or not; default show sign UP modal
     if (this.props.authenticated) {
-      console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
+      // console.log('in main cards, handleLikeClick, like clicked, event.target: ', event.target);
       const clickedElement = event.target;
       const elementVal = clickedElement.getAttribute('value');
       console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
@@ -124,7 +124,7 @@ class MainCards extends Component {
     const { flat } = this.props;
     const likesArray = this.getLikesArray();
     if (!likesArray.includes(flat.id)) {
-      console.log('in main cards, renderLikes, likesArray, flat.id: ', likesArray, flat.id);
+      // console.log('in main cards, renderLikes, likesArray, flat.id: ', likesArray, flat.id);
       return (
         <div key={likesArray[0]} value={flat.id} id="card-like-box" onClick={this.handleLikeClick.bind(this)}>
           <i key={flat.user_id} className="fa fa-heart" style={{ opacity: '.75' }}></i>
@@ -151,27 +151,28 @@ class MainCards extends Component {
       return _.times(totalPossibleRating, (i) => {
         if (i < averageRating) {
           if ((i + 1) < averageRating) {
-            console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+            // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
             // return <i key={i} className="fa fa-star gold-star-main-cards"></i>;
             return <i key={i} className="fa fa-star gold-star-main-cards"></i>;
           } else {
             return <i key={i} className="fa fa-star-half-full gold-star-main-cards"></i>;
           }
         } else {
-          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
           return <i key={i} className="fa fa-star gray-star-main-cards"></i>
         }
       });
   }
 
   getFlatLanguage(flat, appLanguageCode) {
-    console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
+    // console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
     const array = [];
     _.each(flat.flat_languages, language => {
       if (language.code == appLanguageCode) {
         array.push(language);
       }
-    })
+    });
+
     if (flat.language_code == appLanguageCode) {
       array.push(flat);
     }
@@ -181,7 +182,7 @@ class MainCards extends Component {
   renderCards() {
     const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
     // console.log('in main cards, renderCards, this.props.flat: ', this.props.flat);
-    console.log('in main cards, renderCards, this.props.appLanguageCode: ', this.props.appLanguageCode);
+    // console.log('in main cards, renderCards, this.props.appLanguageCode: ', this.props.appLanguageCode);
     // <i className="fa fa-wifi"></i>
     // <i className="fa fa-bath"></i>
     // <i className="fa fa-utensils"></i>

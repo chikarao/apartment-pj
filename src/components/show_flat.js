@@ -19,6 +19,7 @@ import Amenities from './constants/amenities';
 import MapInteraction from './maps/map_interaction';
 
 import AppLanguages from './constants/app_languages'
+import GmStyle from './maps/gm-style';
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -38,7 +39,7 @@ class ShowFlat extends Component {
  //   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
  // }
   componentDidMount() {
-    console.log('in show flat, componentDidMount, params', this.props.match.params);
+    // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id);
@@ -50,7 +51,7 @@ class ShowFlat extends Component {
       this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
     }
     if (this.props.flat) {
-      console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
+      // console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
     }
 
     this.props.fetchReviewsForFlat(this.props.match.params.id);
@@ -68,11 +69,11 @@ class ShowFlat extends Component {
   // }
 
   handleImageClick(event) {
-    console.log('in show_flat handleImageClick, event.target: ', event.target);
+    // console.log('in show_flat handleImageClick, event.target: ', event.target);
     //get image index from div
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value')
-    console.log('in show_flat handleImageClick, elementVal: ', elementVal);
+    // console.log('in show_flat handleImageClick, elementVal: ', elementVal);
     // elementval is taken as string so convert to decimal (10) integer
     // call action creator setImageIndex
     //(note: setImageIndex is shared with infowidow carousel in googlemaps)
@@ -83,14 +84,14 @@ class ShowFlat extends Component {
   }
 
   renderImages(images) {
-    console.log('in show_flat renderImages, images: ', images);
+    // console.log('in show_flat renderImages, images: ', images);
     const imagesEmpty = _.isEmpty(images);
     if (!imagesEmpty) {
-      console.log('in show_flat renderImages, images: ', images[0].publicid);
+      // console.log('in show_flat renderImages, images: ', images[0].publicid);
       return (
         _.map(images, (image, index) => {
           if (image) {
-            console.log('in show_flat renderImages, image: ', image.publicid);
+            // console.log('in show_flat renderImages, image: ', image.publicid);
             return (
               <div key={index} className="slide-show">
               <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
@@ -108,8 +109,8 @@ class ShowFlat extends Component {
 
   renderAmenities() {
     if (this.props.flat.amenity) {
-      console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
-      console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
+      // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
+      // console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
       const { amenity } = this.props.flat;
 
       return _.map(Object.keys(amenity), key => {
@@ -126,7 +127,7 @@ class ShowFlat extends Component {
   }
 
   getFlatLanguage(flat, appLanguageCode) {
-    console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
+    // console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
     const array = [];
     _.each(flat.flat_languages, language => {
       if (language.code == appLanguageCode) {
@@ -143,14 +144,14 @@ class ShowFlat extends Component {
     // Multi languge: if flatLanaguge not null (user has created the appLangage), uses that language
     // if flatLanguage is null, uses base language
     const flatEmpty = _.isEmpty(this.props.flat);
-    console.log('in show_flat renderFlat, this.props: ', this.props);
+    // console.log('in show_flat renderFlat, this.props: ', this.props);
       if (!flatEmpty) {
         const { description, area, beds, sales_point, price_per_month, images, king_or_queen_bed, intro } = this.props.flat;
         // const { flatLanguage } = this.props;
         // get language selected from this.props.flat sent from show flat
         const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
 
-        console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
+        // console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
         return (
           <div>
             <div key={1234} className="show-flat-image-box">
@@ -242,8 +243,8 @@ class ShowFlat extends Component {
     const daysList = [];
 
     if (!bookingsEmpty) {
-      console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
-      console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
+      // console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
+      // console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
 
       _.each(bookings, (booking) => {
         // console.log('in show_flat, disabledDays, in _.each, booking: ', booking);
@@ -261,7 +262,7 @@ class ShowFlat extends Component {
         // console.log('in show_flat, disabledDays, in _.each, before Date before setDate: ', adjustedBeforeDate);
 
         adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
-        console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
+        // console.log('in show_flat, disabledDays, in _.each, afterDate after setDate: ', adjustedAfterDate);
         // adjustedBeforeDate.setDate(adjustedBeforeDate.getDate() + 1);
         // no need to adjust if check in on check out day
 
@@ -322,14 +323,14 @@ class ShowFlat extends Component {
       //calling this here gives error InvalidValueError: not an instance of HTMLInputElement
       // so call in componentDidUpdate
 
-      console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
+      // console.log('in show_flat, renderMap, this.props.flat: ', this.props.flat);
       const initialPosition = { lat: this.props.flat.lat, lng: this.props.flat.lng };
       const flatsEmpty = false;
       const flatArray = [this.props.flat];
       const flatArrayMapped = _.mapKeys(flatArray, 'id');
 
-      console.log('in show_flat, renderMap, flatArray: ', flatArray);
-      console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+      // console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      // console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
 
       return (
         <div>
@@ -345,15 +346,15 @@ class ShowFlat extends Component {
   }
 
   bookingRequestCallback(flatId) {
-    console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
+    // console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
     this.props.history.push(`/bookingconfirmation/${flatId}`);
   }
 
   currentUserIsOwner() {
     if (this.props.auth && this.props.flat) {
-      console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-      console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+      // console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+      // console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+      // console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
       return (this.props.auth.id == this.props.flat.user_id);
       // return true;
       // return false;
@@ -361,24 +362,24 @@ class ShowFlat extends Component {
   }
 
   handleDateBlockClick() {
-    console.log('in show_flat, handleDateBlockClick: ');
+    // console.log('in show_flat, handleDateBlockClick: ');
     alert('handleDateBlockClick has not yet been implemented')
   }
 
   handleEditFlatClick() {
-    console.log('in show_flat, handleEditFlatClick, this.props.flat.id: ', this.props.flat.id);
+    // console.log('in show_flat, handleEditFlatClick, this.props.flat.id: ', this.props.flat.id);
     this.props.history.push(`/editflat/${this.props.flat.id}`);
   }
 
   handleDeleteFlatClick() {
-    console.log('in show_flat, handleDeleteFlatClick: ');
+    // console.log('in show_flat, handleDeleteFlatClick: ');
     if (window.confirm('Are you sure you want to delete this listing?')) {
       this.props.showLoading();
-      console.log('in show_flat, handleDeleteFlatClick, window.confirm, YES, this.props.flat.id: ', this.props.flat.id);
+      // console.log('in show_flat, handleDeleteFlatClick, window.confirm, YES, this.props.flat.id: ', this.props.flat.id);
       // call deleteFlat action creator
       this.props.deleteFlat(this.props.flat.id, () => this.deleteFlatClickCallBack());
     } else {
-      console.log('in show_flat, handleDeleteFlatClick, window.confirm, NO: ');
+      // console.log('in show_flat, handleDeleteFlatClick, window.confirm, NO: ');
     }
   }
 
@@ -389,11 +390,11 @@ class ShowFlat extends Component {
 
     renderMessaging() {
     if (!this.currentUserIsOwner() && this.props.conversation) {
-      console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
+      // console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
       return (
         <div className="message-box-container">
           <div className="message-box">
-          <h3>Messages</h3>
+          <h3>{AppLanguages.messages[this.props.appLanguageCode]}</h3>
             <Messaging
               currentUserIsOwner={this.currentUserIsOwner()}
               conversation={this.props.conversation}
@@ -415,18 +416,18 @@ class ShowFlat extends Component {
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
   renderButtons() {
-    console.log('in show_flat, currentUserIsOwner: ', this.currentUserIsOwner());
-    console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
+    // console.log('in show_flat, currentUserIsOwner: ', this.currentUserIsOwner());
+    // console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
         if (!this.currentUserIsOwner()) {
-          console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
+          // console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
-              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">Book Reservation</button>
+              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
             </div>
           );
         } else {
-          console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUserIsOwner());
+          // console.log('in show_flat, renderButton, if, am current user; I am the currentUser: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
@@ -526,7 +527,7 @@ class ShowFlat extends Component {
   renderReviews() {
     const reviewsEmpty = _.isEmpty(this.props.reviews)
     if (!reviewsEmpty) {
-      console.log('in show_flat, renderReviews, : ', this.props.reviews);
+      // console.log('in show_flat, renderReviews, : ', this.props.reviews);
       return (
         <div className="container show-flat-review-container">
         <h3 className="review-section-heading">Reviews</h3>

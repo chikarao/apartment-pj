@@ -1184,7 +1184,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .pagination li.current {
-  background-color: #4CAF50;
+  /* background-color: #4CAF50; */
+  background-color: gray;
   color: white;
 }
 .pagination li:hover:not(.active) {

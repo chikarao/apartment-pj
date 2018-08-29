@@ -47,7 +47,7 @@ class MessagingMain extends Component {
       this.conversationSlideIn();
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     // remove addEventListener for closing control boxes when unmounting component
     if (this.state.showMessageControls || this.state.showMessageSubControls) {
       const body = document.getElementById('messaging-main-main-container');
@@ -245,7 +245,7 @@ class MessagingMain extends Component {
     const allListings = document.getElementById('messaging-main-sub-control-box-all-listings')
 
     _.each(listings, listing => {
-      console.log('in messagingMain, highlightListing, ListingId, listing, listing.name: ', ListingId, listing, listing.name);
+      // console.log('in messagingMain, highlightListing, ListingId, listing, listing.name: ', ListingId, listing, listing.name);
       if (listing.getAttribute('name') == ListingId) {
         const changedListing = listing;
         const child = changedListing.lastChild;
@@ -265,9 +265,9 @@ class MessagingMain extends Component {
   highlightOrder(newOrOld) {
     const orderDivs = document.getElementsByClassName('messaging-controls-div');
     _.each(orderDivs, eachDiv => {
-      console.log('in messagingMain, highlightOrder, before if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
+      // console.log('in messagingMain, highlightOrder, before if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
       if (newOrOld == eachDiv.getAttribute('name')) {
-        console.log('in messagingMain, highlightOrder, if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
+        // console.log('in messagingMain, highlightOrder, if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
         const changedDiv = eachDiv;
         changedDiv.style.backgroundColor = 'gray'
       }
@@ -280,12 +280,12 @@ class MessagingMain extends Component {
     // const clickedElementParent = clickedElement.parentNode;
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
+    // console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
     // console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
 
     const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
     // console.log('in messagingMain, handleMessageEditClick, SUB_BOX_LISTING_CLASS_ARRAY: ', SUB_BOX_LISTING_CLASS_ARRAY);
-    console.log('in messagingMain, handleMessageEditClick, listingClicked: ', listingClicked);
+    // console.log('in messagingMain, handleMessageEditClick, listingClicked: ', listingClicked);
 
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
@@ -349,7 +349,7 @@ class MessagingMain extends Component {
     // invoked when sort icon clicked to show sort box (by date)
     if (elementVal == 'sort') {
       this.setState({ showMessageControls: !this.state.showMessageControls, showMessageSubControls: false }, () => {
-        console.log('in messagingMain, handleMessageEditClick, this.state.showMessageControls: ', this.state.showMessageControls);
+        // console.log('in messagingMain, handleMessageEditClick, this.state.showMessageControls: ', this.state.showMessageControls);
 
         if (this.state.showMessageControls) {
         const body = document.getElementById('messaging-main-main-container');
@@ -486,7 +486,7 @@ class MessagingMain extends Component {
   renderEditControls() {
     return (
       <div className="messaging-main-controls-left">
-        <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>Move to Archives</div>
+        <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.moveToArchives[this.props.appLanguageCode]}</div>
         <div className="btn messaging-main-large-archive"></div>
         <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
       </div>

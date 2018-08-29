@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
+import MultiLineText from '../functions/multi_line_text';
 
 const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
 
@@ -15,11 +16,11 @@ class Messaging extends Component {
    this.state = INITIAL_STATE;
  }
 
-  componentDidMount() {
+  // componentDidMount() {
     // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // // gets flat id from params set in click of main_cards or infowindow detail click
       // this.scrollLastMessageIntoView();
-  }
+  // }
 
   componentDidUpdate() {
     // if (this.state.inMessaging) {
@@ -263,11 +264,13 @@ class Messaging extends Component {
         // console.log('in messaging, renderMessaging. conversationToShowArray, after each, this.props.noConversationForFlat: ', this.props.noConversationForFlat);
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
+        // {AppLanguages.noConversation[this.props.appLanguageCode]}
+        // console.log('in messaging, renderMessaging, <MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} />: ', <MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} />);
         return (
           <div style={{ overflow: 'auto ' }}>
             <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
               {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
-              <br/><br/>{AppLanguages.noConversation[this.props.appLanguageCode]}</div> : this.renderEachMessage(conversationToShowArray)}
+              <br/><br/><MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} /></div> : this.renderEachMessage(conversationToShowArray)}
               </div>
             <textarea id="messsage-textarea" className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
             <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick.bind(this)}>{AppLanguages.send[this.props.appLanguageCode]}</button>

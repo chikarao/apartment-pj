@@ -14,6 +14,7 @@ import languages from './constants/languages';
 import LanguageCreateModal from './modals/language_create_modal';
 import LanguageEditModal from './modals/language_edit_modal';
 import AppLanguages from './constants/app_languages';
+import GmStyle from './maps/gm-style'
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
