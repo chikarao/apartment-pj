@@ -12,6 +12,7 @@ import MyPage from './components/my_page';
 import BookingConfirmation from './components/booking_confirmation';
 import CreateFlat from './components/create_flat';
 import EditFlat from './components/edit_flat';
+// NoMatch for when user inputs url that does not exist
 import NoMatch from './components/no_match';
 import MessagingMain from './components/messaging_main';
 import StripeRedirect from './components/payments/stripe_redirect';

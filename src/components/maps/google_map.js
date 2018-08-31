@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-// ReactDOMServer tried but did not work for infowindow
-// elements not activated
-// import ReactDOMServer from 'react-dom/server';
 
 import * as actions from '../../actions';
+// GmStyle for changing map style
 import GmStyle from './gm-style';
-import citiesList from '../constants/cities_list';
+// import citiesList from '../constants/cities_list';
 
-// carousel could not be used for infowindow for some reason
-// import Carousel from '../carousel/carousel';
-
-// const INITIAL_POSITION = { lat: 37.7952,
-//   lng: -122.4029 };
-
-// used initially when getting map on page
-// const FLATS = [
-//   { lat: 37.7952, lng: -122.4029, flatName: 'Transamerica Building' },
-//   { lat: 37.787994, lng: -122.407437, flatName: 'Union Square' },
-//   { lat: 37.76904, lng: -122.483519, flatName: 'Golden Gate Park' }
-// ];
-const INITIAL_ZOOM = 12;
+// const INITIAL_ZOOM = 12;
 
 let MAP_DIMENSIONS = {};
 
@@ -145,7 +131,7 @@ class GoogleMap extends Component {
       initialZoom = 14;
     } else {
       // this is where initial zoom is set after city search and jump to results page
-      initialZoom = this.props.flatsEmpty ? 12 : INITIAL_ZOOM;
+      initialZoom = 12;
     }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
@@ -258,6 +244,9 @@ class GoogleMap extends Component {
       if (!this.props.showFlat) {
         // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
         // console.log('in googlemap, fetchFlats call, this:', this);
+        // !!!!!!don't need updateMapDimensions now that results calls googleMap by using
+        // searchFlatParams latlng and zoom; And if there is no searchFlatParams latlng
+        // then if there is no latlng in searchFlatParams, then uses stored latlng and zoom
         this.props.updateMapDimensions(MAP_DIMENSIONS, () => {});
         // const searchAttributes = { price_max: 10000000, price_min: 0, bedrooms_max: 100, bedrooms_min: 0, bedrooms_exact: null };
         this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
@@ -270,10 +259,9 @@ class GoogleMap extends Component {
     }); // end of addlistner idle
 
     // gets lat lng of point on map where click
-    // google.maps.event.addListener(map, 'click', (event) => {
-    //   alert('Latitude: '+ event.latLng.lat() + ' ' + ', longitude: ' + event.latLng.lng());
-    // });
-        // this.createMarkers();
+    google.maps.event.addListener(map, 'click', (event) => {
+      alert('Latitude: '+ event.latLng.lat() + ' ' + ', longitude: ' + event.latLng.lng());
+    });
         // END of map initialization and map addlisterners
   } // end of renderMap
 

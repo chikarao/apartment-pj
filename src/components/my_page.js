@@ -33,20 +33,14 @@ class MyPage extends Component {
     };
   }
   componentDidMount() {
-    // this.props.getCurrentUserForMyPage((id) => this.fetchData(id));
-    // if (this.props.flat) {
-    //   console.log('in edit flat, componentDidMount, editFlatLoad called');
-    //   this.props.editFlatLoad(this.props.flat);
-    // }
-    // this.props.fetchUserFlats(this.props.auth.id);
-    // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
-    this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+    this.props.fetchFlatsByUser(this.props.auth.id, () => {});
     // this.props.fetchConversationsByUser(() => {});
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
-    this.props.fetchProfileForUser();
-    this.props.fetchCustomer();
+    // call fetch customer only if profile.user. stripe_customer_id is not null; logic in action
+    this.props.fetchProfileForUser(() => this.props.fetchCustomer());
+    // this.props.fetchCustomer();
     this.props.actionTypeCard('Add a Card');
   }
 
@@ -55,11 +49,11 @@ class MyPage extends Component {
   //   this.props.fetchConversationByUserAndFlat(flatIdArray);
   // }
 
- fetchData(id) {
-    //callback from getCurrentUserForMyPageid
-    console.log('in mypage, fetchData, this.props.auth.id: ', this.props.auth.id);
-    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
-  }
+ // fetchData(id) {
+ //    //callback from getCurrentUserForMyPageid
+ //    console.log('in mypage, fetchData, this.props.auth.id: ', this.props.auth.id);
+ //    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
+ //  }
 
   renderEachBookingByUser() {
     console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
@@ -454,15 +448,16 @@ class MyPage extends Component {
     const preSortBookings = this.createBookingObject();
     // sorts preSortBookings by date_start
     const bookings = this.sortBookings(preSortBookings);
+    const bookingsEmpty = _.isEmpty(bookings)
 
     // const bookings = this.createBookingObject((b) => this.sortBookings(b));
     // const sortedBookings = this.sortBookings(bookings);
-    console.log('in mypage, renderEachOwnBookings, bookings, h: ', bookings);
-    if (bookings.length > 0) {
+    // console.log('in mypage, renderEachOwnBookings, bookings.length: ', bookings);
+    if (!bookingsEmpty) {
       return _.map(bookings, (booking, index) => {
-        console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
+        // console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
         const flat = booking.flat;
-        console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+        // console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
         // <div className="my-page-card-button-box">
         // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
         // </div>

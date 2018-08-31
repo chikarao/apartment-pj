@@ -497,7 +497,7 @@ export function fetchConversationByUserAndFlat(flatIdArray) {
 export function fetchConversationsByUser(callback) {
   // better way to do this thn fetchConversationByUserAndFlat
   // gets @user to get conversation where user_id is @user.id and @flats where user id is user_id
-  console.log('in actions index, fetchConversationsByUser: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, fetchConversationsByUser: localStorage.getItem, token; ', localStorage.getItem('token'));
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1//users/conversations/conversations_by_user`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -1092,7 +1092,7 @@ export function deleteLike(flatId, callback) {
   };
 }
 
-export function fetchProfileForUser() {
+export function fetchProfileForUser(callback) {
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/users/profiles/profile_for_user?`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -1100,6 +1100,10 @@ export function fetchProfileForUser() {
     .then(response => {
       console.log('response to fetchProfileForUser, response: ', response);
       console.log('response to fetchProfileForUser, response.data.data.profile: ', response.data.data.profile);
+      // callback to fetchCustomer
+      if (response.data.data.profile.user.stripe_customer_id) {
+        callback();
+      }
       dispatch({
         type: FETCH_PROFILE_FOR_USER,
         payload: response.data.data.profile

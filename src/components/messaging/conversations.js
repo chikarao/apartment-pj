@@ -5,6 +5,9 @@ import { withRouter } from 'react-router-dom';
 
 import * as actions from '../../actions';
 
+import AppLanguages from '../constants/app_languages';
+
+
 // const INITIAL_STATE = { inMessaging: false, messagingToggle: false, messageToShowId: '' };
 // const INITIAL_STATE = { showConversation: true, conversationId: '', checkedConversationsArray: [] };
 const INITIAL_STATE = { showConversation: true, checkedConversationsArray: [] };
@@ -135,6 +138,8 @@ handleConversationCheck(event) {
 
  renderEachConversation() {
    const { conversations, flats } = this.props;
+   const conversationsEmpty = conversations.length < 1;
+   console.log('in conversations, renderEachConversation, conversationsEmpty: ', conversationsEmpty);
 
    // send props flats from message main
    if (this.state.showConversation) {
@@ -144,66 +149,70 @@ handleConversationCheck(event) {
      //   flatIdArray.push(flat.id);
      // });
      // iterate through each conversation
-     return _.map(conversations, (conversation, index) => {
-       const lastMessageIndex = conversation.messages.length - 1;
-       // console.log('in conversations, renderEachConversation, conversation: ', conversation);
-       // check for unread messages and increment counter if message.read = false
-       // if there are unread messages, the healine chnages in style of li
-       const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
-       // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
-       // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
-       // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-       // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
-       // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
-       let unreadMessages = 0;
-       _.each(conversation.messages, (message) => {
-         if (notOwnFlatConversation) {
-           // console.log('in conversations, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
-           // console.log('in conversations, renderEachConversation, message.conversation_id: ', message.conversation_id);
-           if ((message.read === false) && (!message.sent_by_user)) {
-             // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-             unreadMessages++;
-             // console.log('in conversations, renderEachConversation, notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages);
+     if (!conversationsEmpty) {
+       return _.map(conversations, (conversation, index) => {
+         const lastMessageIndex = conversation.messages.length - 1;
+         // console.log('in conversations, renderEachConversation, conversation: ', conversation);
+         // check for unread messages and increment counter if message.read = false
+         // if there are unread messages, the healine chnages in style of li
+         const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
+         // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
+         // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
+         // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+         // console.log('in conversations, renderEachConversation, conversation.user_id: ', conversation.user_id);
+         // console.log('in conversations, renderEachConversation, this.props.auth.id: ', this.props.auth.id);
+         let unreadMessages = 0;
+         _.each(conversation.messages, (message) => {
+           if (notOwnFlatConversation) {
+             // console.log('in conversations, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
+             // console.log('in conversations, renderEachConversation, message.conversation_id: ', message.conversation_id);
+             if ((message.read === false) && (!message.sent_by_user)) {
+               // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+               unreadMessages++;
+               // console.log('in conversations, renderEachConversation, notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, !message.sent_by_user, conversation.id, unreadMessages);
+             }
+           } else {
+             if ((message.read === false) && (message.sent_by_user)) {
+               // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
+               // console.log('in conversations, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
+               unreadMessages++;
+               // console.log('in conversations, renderEachConversation, notOwnFlatConversation message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, message.sent_by_user, conversation.id, unreadMessages);
+             }
            }
-         } else {
-           if ((message.read === false) && (message.sent_by_user)) {
-             // console.log('in conversations, renderEachConversation, notOwnFlatConversation: ', notOwnFlatConversation);
-             // console.log('in conversations, renderEachConversation, message.sent_by_user: ', message.sent_by_user);
-             unreadMessages++;
-             // console.log('in conversations, renderEachConversation, notOwnFlatConversation message.sent_by_user, conversation.id, unreadMessages: ', notOwnFlatConversation, message.sent_by_user, conversation.id, unreadMessages);
-           }
-         }
-         // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);
-       });
-       const date = new Date(conversation.messages[lastMessageIndex].created_at);
-       //show only first 26 characters of text
-       const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
+           // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);
+         });
+         const date = new Date(conversation.messages[lastMessageIndex].created_at);
+         //show only first 26 characters of text
+         const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
 
-       // const checkboxes = document.getElementsByClassName('conversations-input-checkbox')
+         // const checkboxes = document.getElementsByClassName('conversations-input-checkbox')
 
-       return (
-         <li key={index} className="my-page-each-card">
-           <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
-             <div className="my-page-messaging-image-box">
-               {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-               {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
+         return (
+           <li key={index} className="my-page-each-card">
+             <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick.bind(this)}>
+               <div className="my-page-messaging-image-box">
+                 {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                 {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
+               </div>
+               <div className="my-page-details">
+                 <ul>
+                   <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="conversations-conversation-headline">{stringToShow}...</li>
+                   <li>{this.formatDate(date)}</li>
+                   <li>user id: {conversation.user.id}</li>
+                   <li>conversation id: {conversation.id}</li>
+                 </ul>
+               </div>
+               <div className="my-page-conversation-input">
+                 <input value={conversation.id} className="conversations-input-checkbox" type="checkbox" onChange={this.handleConversationCheck.bind(this)} />
+               </div>
              </div>
-             <div className="my-page-details">
-               <ul>
-                 <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="conversations-conversation-headline">{stringToShow}...</li>
-                 <li>{this.formatDate(date)}</li>
-                 <li>user id: {conversation.user.id}</li>
-                 <li>conversation id: {conversation.id}</li>
-               </ul>
-             </div>
-             <div className="my-page-conversation-input">
-               <input value={conversation.id} className="conversations-input-checkbox" type="checkbox" onChange={this.handleConversationCheck.bind(this)} />
-             </div>
-           </div>
-         </li>
-       );
-     });
-   }
+           </li>
+         );
+       }); // end of map
+     } else {
+       return <div className="conversations-no-conversations">{AppLanguages.noConversationsYet[this.props.appLanguageCode]}</div>
+     }// end of if !conversationsEmpty
+   } // end of if showConversation
  }
 
  // conversationRollIn() {
@@ -250,6 +259,8 @@ function mapStateToProps(state) {
     noConversation: state.conversation.noConversation,
     flat: state.flat.selectedFlatFromParams,
     // conversationId: state.conversation.conversationToShow
+    appLanguageCode: state.languages.appLanguageCode,
+
   };
 }
 

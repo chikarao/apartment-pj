@@ -36,6 +36,7 @@ class CitySearch extends Component {
       }
     });
     // console.log('in CitySearch, getCityObject, cityToSearch: ', cityToSearch);
+    // call back to action searchFlatParameters
     callback(cityToSearch);
   }
 
@@ -54,16 +55,14 @@ class CitySearch extends Component {
   handleBannerSearchButtonClick() {
     // If in results page and searchFlatParams is not null,
     // stop scrolling
-    // get mapBounds from searchFlatParams which is set by user when
+    // get mapBounds from latlng in searchFlatParams which is set by user when
     // clicking or selecting city in up or down click to form mapDimensions
+    // when on landingPage, user clicks search and after clearing out mapDimensions,
+    // pushes to results page, the componentDidMount of which sets mapBounds and
+    // fetches flat based on searchFlatParameters and mapBounds
     if (this.props.resultsPage && this.props.searchFlatParams) {
       const body = document.getElementsByTagName('BODY');
       body[0].classList.remove('stop-scrolling');
-      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, this.props.searchFlatParams: ', this.props.searchFlatParams);
-      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetEast: ', latLngOffset.lngOffsetEast);
-      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.lngOffsetWest: ', latLngOffset.lngOffsetWest);
-      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.latOffsetNorth: ', latLngOffset.latOffsetNorth);
-      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, latLngOffset.latOffsetSouth: ', latLngOffset.latOffsetSouth);
       const mapBounds = {
         east: this.props.searchFlatParams.lng + latLngOffset.lngOffsetEast,
         west: this.props.searchFlatParams.lng + latLngOffset.lngOffsetWest,
@@ -73,29 +72,27 @@ class CitySearch extends Component {
       // make mapCenter.lat and lng a function to make consistent with Google maps way of getting lat and lng
       const mapCenter = { lat: () => { return this.props.searchFlatParams.lat; }, lng: () => { return this.props.searchFlatParams.lng; } };
       const mapDimensions = { mapBounds, mapCenter, mapZoom: 12 };
-   //    // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams: ', mapDimensions);
-     //  const mapOptions = {
-     //   center: new google.maps.LatLng(0, 0),
-     //   zoom: 12,
-     //   mapTypeId: google.maps.MapTypeId.ROADMAP
-     // };
-      // let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams: ', mapDimensions);
+      // gets map set in google_maps.js, when on landing page, there is no map yet
       const map = this.props.map;
       // get city object from citiesList cities_list.js; returns city object with zoom for city
       const cityObject = this.getCityObjectForMap();
       // console.log('in CitySearch, handleBannerSearchButtonClick cityObject: ', cityObject);
-      console.log('in CitySearch, handleBannerSearchButtonClick map: ', map);
+      // console.log('in CitySearch, handleBannerSearchButtonClick map: ', map);
       // specify zoom in current map
       if (map) { map.zoom = cityObject.zoom; }
       // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, map: ', map);
       const center = new google.maps.LatLng(mapCenter.lat(), mapCenter.lng());
       // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
       // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, mapCenter.lat, mapCenter.lng: ', mapCenter.lat(), mapCenter.lng());
-   //  // using global variable:
+      // pans map to center using map from props variable:
       map.panTo(center);
       const searchAttributes = {};
+      // fetch all flats based on mapbounds from searchFlatParams
       this.props.fetchFlats(mapBounds, searchAttributes, () => {});
-      // this.props.history.push('/results');
+      // !!!!!!don't need updateMapDimensions now that results calls googleMap by using
+      // searchFlatParams latlng and zoom; And if there is no searchFlatParams latlng
+      // then if there is no latlng in searchFlatParams, then uses stored latlng and zoom
       this.props.updateMapDimensions(mapDimensions, () => {});
       this.setState({ displayCitiesList: false });
       // save mapCenter for when user refreshes page
@@ -106,9 +103,12 @@ class CitySearch extends Component {
 
     if (this.props.landingPage) {
       // console.log('in CitySearch, handleBannerSearchButtonClick if this.props.landingPage: ', this.props.landingPage);
-
+      // clear flats action so that when user uses back button or something, the flats are not carried over
       this.props.clearFlats();
-      this.props.updateMapDimensions({}, () => this.props.history.push('/results'));
+      // !!!!!!don't need updateMapDimensions now that results calls googleMap by using
+      // searchFlatParams latlng and zoom; And if there is no searchFlatParams latlng
+      // this.props.updateMapDimensions({}, () => this.props.history.push('/results'));
+      this.props.history.push('/results');
     }
   }
 
@@ -125,7 +125,7 @@ class CitySearch extends Component {
       // console.log('in CitySearch, handleCityClick, li: ', li);
       const liToBeChanged = li;
       liToBeChanged.style.backgroundColor = 'white'
-      });
+    }); // end of each
 
     clickedElement.style.backgroundColor = 'lightgray';
 
@@ -311,9 +311,9 @@ class CitySearch extends Component {
   } // end of scrollList function
 
 
-  handleRefineSearchLink() {
-    // console.log('in CitySearch, handleRefineSearchLink:');
-  }
+  // handleRefineSearchLink() {
+  //   // console.log('in CitySearch, handleRefineSearchLink:');
+  // }
 
   renderCitySearch() {
     // <div className={this.props.resultsPage ? 'results-refine-search-link' : 'hide'} onClick={this.handleRefineSearchLink.bind(this)}>

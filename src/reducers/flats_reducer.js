@@ -53,6 +53,7 @@ export default function (state = { searchFlatParameters: {} }, action) {
       return { ...state, editFlatData: action.payload };
 
     case SEARCH_FLAT_PARAMENTERS:
+    // everytime object with k-v passed, add k-v or updates it
       const searchFlatParameters = state.searchFlatParameters;
       _.each(Object.keys(action.payload), (key) => {
         searchFlatParameters[key] = action.payload[key];
@@ -63,7 +64,6 @@ export default function (state = { searchFlatParameters: {} }, action) {
     // Views and likes moved to flats reducer so that
     // they can be automatically updated when flats update
     // Reviews kept separate since reviews are not updatad on results page
-
     // updates flatsResults upon createView response of flat from API
     case CREATE_VIEW:
       _.each(state.flatsResults, flat => {

@@ -1551,6 +1551,12 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-size: 17px;
 }
 
+.conversations-no-conversations {
+  color: gray;
+  font-size: 15px;
+  margin: 20px 0 0 0;
+}
+
 #messaging-hamburger {
   /* float: left; */
   font-size: 20px;
@@ -3022,6 +3028,7 @@ text-decoration: underline;
   padding: 5px;
   margin: 10px;
   color: gray;
+  font-size: 15px;
 }
 
 
