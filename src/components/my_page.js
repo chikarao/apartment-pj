@@ -41,7 +41,7 @@ class MyPage extends Component {
     // this.props.fetchUserFlats(this.props.auth.id);
     // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
     this.props.fetchFlatsByUser(this.props.auth.id, () => {})
-    this.props.fetchConversationsByUser(() => {});
+    // this.props.fetchConversationsByUser(() => {});
     this.props.fetchBookingsByUser(this.props.auth.id);
     // send fetchConversationByUserAndFlat an array of flats ids
     this.props.fetchLikesByUser();
@@ -50,10 +50,10 @@ class MyPage extends Component {
     this.props.actionTypeCard('Add a Card');
   }
 
-  fetchFlatsByUserCallback(flatIdArray) {
-    console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
-    this.props.fetchConversationByUserAndFlat(flatIdArray);
-  }
+  // fetchFlatsByUserCallback(flatIdArray) {
+  //   // console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
+  //   this.props.fetchConversationByUserAndFlat(flatIdArray);
+  // }
 
  fetchData(id) {
     //callback from getCurrentUserForMyPageid
@@ -94,15 +94,13 @@ class MyPage extends Component {
         );
       });
       //end of map
+    } else {
+      return (
+        <div className="my-page-no-category-items">
+        {AppLanguages.noMyBooking[this.props.appLanguageCode]}
+        </div>
+      );
     }
-    // else {
-    //   return (
-    //     <div>
-    //       <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-    //       <div className="spinner">Loading...</div>
-    //     </div>
-    //   );
-    // }
     //end of else
   }
 
@@ -153,6 +151,10 @@ class MyPage extends Component {
           </li>
         );
       });
+    } else {
+      return (
+        <div className="my-page-no-category-items">{AppLanguages.noMyListings[this.props.appLanguageCode]}</div>
+      );
     }
     // else {
     //   return (
@@ -395,7 +397,7 @@ class MyPage extends Component {
   sortBookings(bookings) {
     //reference: https://stackoverflow.com/questions/10123953/sort-javascript-object-array-by-date
     console.log('in mypage, sortBookings, bookings: ', bookings);
-    let bookingsArray = [];
+    const bookingsArray = [];
     // push each object into array then sort
     _.each(bookings, (booking) => {
       bookingsArray.push(booking);
@@ -456,37 +458,43 @@ class MyPage extends Component {
     // const bookings = this.createBookingObject((b) => this.sortBookings(b));
     // const sortedBookings = this.sortBookings(bookings);
     console.log('in mypage, renderEachOwnBookings, bookings, h: ', bookings);
+    if (bookings.length > 0) {
+      return _.map(bookings, (booking, index) => {
+        console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
+        const flat = booking.flat;
+        console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+        // <div className="my-page-card-button-box">
+        // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
+        // </div>
 
-        return _.map(bookings, (booking, index) => {
-          console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
-          const flat = booking.flat;
-          console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
-          // <div className="my-page-card-button-box">
-          // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
-          // </div>
+          return (
+            <li key={index} className="my-page-each-card">
+              <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                <div className="my-page-details">
+                  <ul>
+                    <li>{flat.description}</li>
+                    <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
+                    <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
+                    <li>booking id: {booking.id}</li>
+                    <li>flat id: {flat.id}</li>
+                  </ul>
 
-            return (
-              <li key={index} className="my-page-each-card">
-                <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-                  {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-                  <div className="my-page-details">
-                    <ul>
-                      <li>{flat.description}</li>
-                      <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
-                      <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
-                      <li>booking id: {booking.id}</li>
-                      <li>flat id: {flat.id}</li>
-                    </ul>
-
-                  </div>
                 </div>
-              </li>
-            );
-            // end of return
-          // });
-          // end of second each
-        });
-        //end of first each
+              </div>
+            </li>
+          );
+          // end of return
+        // });
+        // end of second each
+      });
+      //end of first each
+    } else {
+      return (
+        <div className="my-page-no-category-items">{AppLanguages.noMyBooked[this.props.appLanguageCode]}</div>
+      );
+    }
+
       // }
   }
 
@@ -507,7 +515,6 @@ class MyPage extends Component {
 
             bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
             console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
-
           });
           // end of second each
         });
@@ -534,37 +541,44 @@ class MyPage extends Component {
   renderEachLike() {
     console.log('in mypage, renderEachLike, likes: ', this.props.likes);
     const { likes } = this.props;
+    const likesEmpty = _.isEmpty(likes);
 
-        return _.map(likes, (like, index) => {
-          console.log('in mypage, renderEachLike, in each, like: ', like);
-          const flat = like.flat;
-          console.log('in mypage, renderEachLike, in each, flat: ', flat);
+    if (!likesEmpty) {
+      return _.map(likes, (like, index) => {
+        console.log('in mypage, renderEachLike, in each, like: ', like);
+        const flat = like.flat;
+        console.log('in mypage, renderEachLike, in each, flat: ', flat);
 
-            return (
-              <li key={index} className="my-page-each-card">
-                <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
-                  {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-                  <div className="my-page-details">
-                    <ul>
-                      <li>{flat.description}</li>
-                      <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
-                      <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
-                      <li>flat id: {flat.id}</li>
-                    </ul>
+        return (
+          <li key={index} className="my-page-each-card">
+          <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
+          {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+          <div className="my-page-details">
+          <ul>
+          <li>{flat.description}</li>
+          <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
+          <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
+          <li>flat id: {flat.id}</li>
+          </ul>
 
-                  </div>
-                </div>
-                <div className="my-page-card-button-box">
-                  <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
-                </div>
-              </li>
-            );
-            // end of return
-          // });
-          // end of second each
-        });
-        //end of first each
+          </div>
+          </div>
+          <div className="my-page-card-button-box">
+          <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
+          </div>
+          </li>
+        );
+        // end of return
+        // });
+        // end of second each
+      });
+      //end of first each
       // }
+    }
+
+    return (
+      <div className="my-page-no-category-items">{AppLanguages.noMyLiked[this.props.appLanguageCode]}</div>
+    );
   }
 
   renderLikes() {
@@ -647,7 +661,7 @@ class MyPage extends Component {
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">
             <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[this.props.appLanguageCode]}:</div> <div>{username}</div></li>
-            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.removeProfilePicture[this.props.appLanguageCode]}:</div> <div>{user_id}</div></li>
+            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[this.props.appLanguageCode]}:</div> <div>{user_id}</div></li>
             <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[this.props.appLanguageCode]}:</div> <div>{title}</div></li>
             <li value="first_name"className="my-page-profile-attribute"><div>{AppLanguages.firstName[this.props.appLanguageCode]}:</div> <div>{first_name}</div></li>
             <li value="last_name"className="my-page-profile-attribute"><div>{AppLanguages.lastName[this.props.appLanguageCode]}:</div> <div>{last_name}</div></li>
@@ -780,12 +794,12 @@ class MyPage extends Component {
       } else {
         // else for if source.data
         return (
-          <div>{AppLanguages.noCards[this.props.appLanguageCode]}</div>
+          <div className="my-page-no-category-items">{AppLanguages.noCards[this.props.appLanguageCode]}</div>
         );
       }
     } else {
       return (
-        <div>{AppLanguages.noCards[this.props.appLanguageCode]}</div>
+        <div className="my-page-no-category-items">{AppLanguages.noCards[this.props.appLanguageCode]}</div>
       );
     }
   }

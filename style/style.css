@@ -208,8 +208,13 @@ h3 {
   color: gray !important;
   font-size: 15px;
 }
+
 .header-auth-link:hover {
   color: blue !important;
+}
+
+.nav-link {
+  font-size: 15px;
 }
 
 .mobile-header {
@@ -1730,7 +1735,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: bold;
 }
 .messaging-main-large-archive i {
-  font-size: 18px;
+  font-size: 23px;
   /* color: blue; */
   color: gray;
   font-weight: bold;
@@ -3011,6 +3016,12 @@ text-decoration: underline;
 
 .my-page-edit-delete-btn:hover {
   background-color: #ccc;
+}
+
+.my-page-no-category-items {
+  padding: 5px;
+  margin: 10px;
+  color: gray;
 }
 
 

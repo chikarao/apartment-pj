@@ -89,62 +89,24 @@ class Results extends Component {
 // Pagination reference: https://stackoverflow.com/questions/40232847/how-to-implement-pagination-in-reactjs
 
   componentDidMount() {
-    // let index = 1;
-    // console.log('in results componentDidMount, index: ', index);
-
-    // Set up initial mapBounds to make Mapbounds not undefined in action fetchFlats
-    // When able to obtain user location or search location, enter initial position here
-    // SF Transamerica touwer
-
-    // initial position offsets; based on zoom twelve of
-    //SF area showing tip of marin counth, tip of the sf peninsula, and tip of oakland
-    // const latOffsetNorth = 0.06629999999999825;
-    // const latOffsetSouth = -0.036700000000003286;
-    // const lngOffsetWest = -0.13469999999999516;
-    // const lngOffsetEast = 0.11589000000000738;
-    // wider offsets; reaches Oakland
-    // const latOffsetNorth = 0.06629999999999825;
-    // const latOffsetSouth = -0.036700000000003286;
-    // const lngOffsetWest = -0.14;
-    // const lngOffsetEast = 0.2;
     const latOffsetNorth = latLngOffset.latOffsetNorth;
     const latOffsetSouth = latLngOffset.latOffsetSouth;
     const lngOffsetWest = latLngOffset.lngOffsetWest;
     const lngOffsetEast = latLngOffset.lngOffsetEast;
-    // const latOffsetNorth = 37.8615 - initialPosition.lat; //about .07
-    // const latOffsetSouth = 37.7585 - initialPosition.lat; // about -.04
-    // const lngOffsetWest = -122.28701 - initialPosition.lng; //about .12
-    // const lngOffsetEast = -122.5376 - initialPosition.lng; // about -.13
-
-    // console.log('in results componentDidMount, Offsets, north, south, east, west: ', latOffsetNorth, latOffsetSouth, lngOffsetEast, lngOffsetWest);
-    // console.log('in results componentDidMount, this.props.searchFlatParams: ', this.props.searchFlatParams);
-
-    // const mapBounds = {
-    //   east: (initialPosition.lng + lngOffsetEast),
-    //   west: (initialPosition.lng + lngOffsetWest),
-    //   north: (initialPosition.lat + latOffsetNorth),
-    //   south: (initialPosition.lat + latOffsetSouth)
-    // };
-    // if (this.props.searchFlatParams) {
-    // }
 
     let mapBounds = {};
     const object = this.props.searchFlatParams;
     const searchEmpty = _.isEmpty(this.props.searchFlatParams);
-
-    const testBool = 'lat' in object;
-    // console.log('in results componentDidMount, testBool: ', testBool);
-    // console.log('in results componentDidMount, object: ', object);
-    // if (object!== undefined) {
-    // if (!searchEmpty) {
+    // if user searches city and searchFlatParams has latlng (set when user selects city) in it
+    // stores latlng and zoom for refresh and sets mapbounds based on searchFlatParams and constant offsets
       if (!searchEmpty && ('lat' in object)) {
-        const { lat, lng } = this.props.searchFlatParams;
-        const storedLat = parseFloat(localStorage.getItem('lat'));
-        const storedLng = parseFloat(localStorage.getItem('lng'));
+        console.log('in results componentDidMount, if !searchEmpty object: ', object);
+        const { lat, lng, zoom } = this.props.searchFlatParams;
+
         // store lat lng for when page is reloaded
         localStorage.setItem('lat', lat);
         localStorage.setItem('lng', lng);
-
+        localStorage.setItem('zoom', zoom);
         // console.log('in results componentDidMount, lat, lng: ', lat, lng);
         // console.log('in results componentDidMount, if this.props.searchFlatParams: ', this.props.searchFlatParams);
         // console.log('in results componentDidMount, if this.props.mapDimensions: ', this.props.mapDimensions);
@@ -154,16 +116,16 @@ class Results extends Component {
           east: (lng + lngOffsetEast),
           west: (lng + lngOffsetWest),
           north: (lat + latOffsetNorth),
-          south: (lat + latOffsetSouth)
+          south: (lat + latOffsetSouth),
         };
-        // console.log('in results componentDidMount, in if mapBounds: ', mapBounds);
       } else {
         // retrieve lat lng when reloaded
         const storedLat = parseFloat(localStorage.getItem('lat'));
         const storedLng = parseFloat(localStorage.getItem('lng'));
+        const storedZoom = parseFloat(localStorage.getItem('zoom'));
         // const mapZoom = parseFloat(localStorage.getItem('mapZoom'));
         // const searchParams = parseFloat(localStorage.getItem('searchParams'));
-        // console.log('in results componentDidMount, else this.props.searchFlatParams: ', this.props.searchFlatParams);
+        console.log('in results componentDidMount, else this.props.searchFlatParams: ', this.props.searchFlatParams);
         // console.log('in results componentDidMount, storedLat, storedLng, mapZoom: ', storedLat, storedLng);
         mapBounds = {
           east: (storedLng + lngOffsetEast),
@@ -171,11 +133,10 @@ class Results extends Component {
           north: (storedLat + latOffsetNorth),
           south: (storedLat + latOffsetSouth)
         };
-        // console.log('in results componentDidMount, in else with stored latlng mapBounds: ', mapBounds);
-      }
-      // this.props.startUpIndex();
+      } // end of if else
       // initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
       // fetchflats based on above bounds
+      // search Attributes set in state and selected by user
       const searchAttributes = {
         price_max: this.state.priceMax,
         price_min: this.state.priceMin,
@@ -188,10 +149,6 @@ class Results extends Component {
         station_min: this.state.stationMin,
         station_max: this.state.stationMax
       };
-
-      // console.log('in results componentDidMount, searchAttributes: ', searchAttributes);
-      // console.log('in results componentDidMount, before fetchflats mapBounds: ', mapBounds);
-      // console.log('in results componentDidMount, before fetchflats, this.props.searchFlatParams : ',  this.props.searchFlatParams);
       // set app state for search parameter with serch attributes with initial values from construction
       this.props.searchFlatParameters(searchAttributes);
       // fetch flats
@@ -202,9 +159,9 @@ class Results extends Component {
       });
       }
 
-    if (this.props.auth.authenticated) {
-      this.props.fetchLikesByUser();
-    }
+      if (this.props.auth.authenticated) {
+        this.props.fetchLikesByUser();
+      }
   }
 
   calculateLatLngAve(flats) {
@@ -236,26 +193,13 @@ class Results extends Component {
     // console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
 
     if (!flatsEmpty) {
-      // if (!mapDimensionsEmpty) {
-      //   console.log('in results, renderMap this.props.mapDimensions, mapBounds: ', this.props.mapDimensions.mapBounds);
-      //   console.log('in results, this.props.mapDimensions, mapCenter.lat: ', this.props.mapDimensions.mapCenter.lat());
-      //   console.log('in results, this.props.mapDimensions, mapCenter.lng: ', this.props.mapDimensions.mapCenter.lng());
-      //   console.log('in results, this.props.mapDimensions, mapZoom: ', this.props.mapDimensions.mapZoom);
-      //   console.log('in results, renderMap, this.props.searchFlatParams: ', this.props.searchFlatParams);
-      // }
-      // const { id } = this.props.flats[0];
-      // console.log('in results renderFlats, id: ', id);
-      // console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
       const latLngAve = this.calculateLatLngAve(this.props.flats);
-      console.log('here is latLngAve: ', latLngAve);
-      // console.log('here is the average lat lng, results from calculateLatLngAve: ', this.calculateLatLngAve(this.props.flats));
-
       const storedLat = localStorage.getItem('lat');
       const storedLng = localStorage.getItem('lng');
       const storedZoom = localStorage.getItem('zoom');
       // const initialPosition = { lat: storedLat, lng: storedLng }
       const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng, zoom: 12 } : { lat: storedLat, lng: storedLng, zoom: storedZoom }
-      // console.log('results, renderMap, initialPosition: ', initialPosition);
+      console.log('results, renderMap, initialPosition: ', initialPosition);
 
       return (
         <div>
@@ -269,13 +213,21 @@ class Results extends Component {
         />
         </div>
       );
+    // } else if (!mapDimensionsEmpty) {
     } else if (!mapDimensionsEmpty) {
-      // return <div>Map Goes Here</div>;
       const emptyMapLatLngCenter = {
-        lat: this.props.mapDimensions.mapCenter.lat(),
-        lng: this.props.mapDimensions.mapCenter.lng()
+        lat: this.props.searchFlatParams.lat,
+        lng: this.props.searchFlatParams.lng,
+        zoom: this.props.searchFlatParams.zoom
       };
-      // console.log('results, renderMap, else if !mapDimensionsEmpty: ', emptyMapLatLngCenter);
+      // const emptyMapLatLngCenter = {
+      //   lat: this.props.mapDimensions.mapCenter.lat(),
+      //   lng: this.props.mapDimensions.mapCenter.lng(),
+      //   zoom: this.props.mapDimensions.zoom
+      // };
+      // console.log('results, renderMap, else if !this.props.mapDimensions: ', this.props.mapDimensions);
+      console.log('results, renderMap, else if  this.props.mapDimensions.mapCenter.lat(), lng(),: ', this.props.mapDimensions.mapCenter.lat(),  this.props.mapDimensions.mapCenter.lng(),);
+      console.log('results, renderMap, else if emptyMapLatLngCenter.lat lng: ', emptyMapLatLngCenter.lat, emptyMapLatLngCenter.lng);
       // console.log('results, renderMap, else if this.props.mapDimensions: ', this.props.mapDimensions.mapCenter.lng());
       return (
         <div>
@@ -283,7 +235,7 @@ class Results extends Component {
           flatsEmpty={flatsEmpty}
           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
           initialPosition={emptyMapLatLngCenter}
-          initialZoom={this.props.mapDimensions.mapZoom}
+          // initialZoom={this.props.mapDimensions.mapZoom}
         />
         </div>
       );
@@ -294,8 +246,8 @@ class Results extends Component {
         const storedZoom = parseFloat(localStorage.getItem('zoom'));
         const initialPosition = ('lat' in this.props.searchFlatParams) ? { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng, zoom: 12 } : { lat: storedLat, lng: storedLng, zoom: storedZoom }
         // const initialPosition = { lat: storedLat, lng: storedLng }
-        // console.log('results, renderMap, else if emptyFlat: ', initialPosition);
-        // const initialPosition = { lat: this.props.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
+        console.log('results, renderMap, else if emptyFlat, initialPosition: ', initialPosition);
+        // const initialPosition = { lat: this.pr ops.searchFlatParams.lat, lng: this.props.searchFlatParams.lng }
         return (
           <div>
           <GoogleMap
@@ -1371,7 +1323,7 @@ class Results extends Component {
   handleSearchApplyClick() {
     this.props.showLoading();
     // console.log('in results handleSearchApplyClick: ');
-    const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
+    // const { floorSpaceMin, floorSpaceMax, floorSpaceBigMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     // console.log('in results handleSearchApplyClick, floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax: ', floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax);
     // const searchAttributes = bedroomsExact ?
     // { price_min: priceMin, price_max: priceMax, size_min: floorSpaceMin, size_max: floorSpaceMax, bedrooms_exact: bedroomsExact, station_min: stationMin, station_max: stationMax } :
@@ -1459,29 +1411,6 @@ class Results extends Component {
       </div>
     );
   }
-  // renderRefineSearchCriteria() {
-  //   return (
-  //     <div className="row refine-search-row">
-  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-  //         <label className="amenity-radio">Parking</label>
-  //         <input value={this.state.parking} type="checkbox" className="createFlatAmenityCheckBox" />
-  //       </div>
-  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-  //         <label className="amenity-radio">Kitchen</label>
-  //         <input value={this.state.kitchen} type="checkbox" className="createFlatAmenityCheckBox" />
-  //       </div>
-  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-  //         <label className="amenity-radio">Wifi</label>
-  //         <input value={this.state.wifi} type="checkbox" className="createFlatAmenityCheckBox" />
-  //       </div>
-  //       <div className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
-  //         <label className="amenity-radio">Bath</label>
-  //         <input value={this.state.bath} type="checkbox" className="createFlatAmenityCheckBox" />
-  //       </div>
-  //
-  //     </div>
-  //   );
-  // }
 
   renderSearchArea() {
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input

@@ -52,11 +52,10 @@ class CitySearch extends Component {
   }
 
   handleBannerSearchButtonClick() {
-    // console.log('in CitySearch, handleBannerSearchButtonClick, event.target: ', event.target);
-    // const clickedElement = event.target;
-    // const elementVal = clickedElement.getAttribute('value')
-    // console.log('in CitySearch, handleBannerSearchButtonClick, elementVal: ', elementVal);
-    // console.log('in CitySearch, handleBannerSearchButtonClick, cityToSearch: ', cityToSearch);
+    // If in results page and searchFlatParams is not null,
+    // stop scrolling
+    // get mapBounds from searchFlatParams which is set by user when
+    // clicking or selecting city in up or down click to form mapDimensions
     if (this.props.resultsPage && this.props.searchFlatParams) {
       const body = document.getElementsByTagName('BODY');
       body[0].classList.remove('stop-scrolling');
@@ -80,13 +79,14 @@ class CitySearch extends Component {
      //   zoom: 12,
      //   mapTypeId: google.maps.MapTypeId.ROADMAP
      // };
-     //  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      // let map = new google.maps.Map(document.getElementById('map'), mapOptions);
       const map = this.props.map;
       // get city object from citiesList cities_list.js; returns city object with zoom for city
       const cityObject = this.getCityObjectForMap();
       // console.log('in CitySearch, handleBannerSearchButtonClick cityObject: ', cityObject);
+      console.log('in CitySearch, handleBannerSearchButtonClick map: ', map);
       // specify zoom in current map
-      map.zoom = cityObject.zoom;
+      if (map) { map.zoom = cityObject.zoom; }
       // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, map: ', map);
       const center = new google.maps.LatLng(mapCenter.lat(), mapCenter.lng());
       // console.log('in CitySearch, handleBannerSearchButtonClick if resultsPage && searchFlatParams, center.lat(), center.lng(): ', center.lat(), center.lng());
@@ -96,7 +96,7 @@ class CitySearch extends Component {
       const searchAttributes = {};
       this.props.fetchFlats(mapBounds, searchAttributes, () => {});
       // this.props.history.push('/results');
-      this.props.updateMapDimensions(mapDimensions);
+      this.props.updateMapDimensions(mapDimensions, () => {});
       this.setState({ displayCitiesList: false });
       // save mapCenter for when user refreshes page
       localStorage.setItem('lat', mapCenter.lat());
@@ -106,9 +106,9 @@ class CitySearch extends Component {
 
     if (this.props.landingPage) {
       // console.log('in CitySearch, handleBannerSearchButtonClick if this.props.landingPage: ', this.props.landingPage);
-      this.props.history.push('/results');
+
       this.props.clearFlats();
-      this.props.updateMapDimensions({});
+      this.props.updateMapDimensions({}, () => this.props.history.push('/results'));
     }
   }
 

@@ -116,7 +116,7 @@ class MessagingMain extends Component {
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
         <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
-          <div value="unarchive" className="btn messaging-main-large-archive"  onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
+          <div value="unarchive" className="btn messaging-main-large-archive"  style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
           <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
         </div>
       );
@@ -127,7 +127,8 @@ class MessagingMain extends Component {
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
           <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
-          <div value="untrash" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
+          <div value="untrash" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
+          <div value="deleteCompletely" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.deleteCompletely[this.props.appLanguageCode]}</div>
         </div>
       );
     }
@@ -315,6 +316,14 @@ class MessagingMain extends Component {
     if (elementVal == 'untrash') {
       const conversationAttributes = { trashed: false };
       // console.log('in messagingMain, handleMessageEditClick, if elementVal == untrash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+        this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
+          this.props.checkedConversations(this.props.checkedConversationsArray);
+        });
+    }
+
+    if (elementVal == 'deleteCompletely') {
+      const conversationAttributes = { deleted: true };
+      console.log('in messagingMain, handleMessageEditClick, if elementVal == deleteCompletely, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
         });
@@ -639,6 +648,7 @@ class MessagingMain extends Component {
         _.each(conversationsFilteredByFlatAndSearchArray, conv => {
           console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
+          // the backend api filters for completely deleted messages
           if (conv.trashed && (conv.archived || !conv.archived)) {
             filteredConversationsArray.push(conv);
           }

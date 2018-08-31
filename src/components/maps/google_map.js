@@ -155,8 +155,10 @@ class GoogleMap extends Component {
       // creates embedded map in component
       // zoom: initialZoom,
       // initialPosition has storedZoom from the city_list.js stored in results.js if the page is refreshed
-      // do storedZoom only if not on showFlat page 
-      zoom: this.props.initialPosition && !this.props.showFlat ? this.props.initialPosition.zoom : initialZoom,
+      // do storedZoom only if not on showFlat page
+      zoom: this.props.initialPosition.zoom && !this.props.showFlat ? this.props.initialPosition.zoom : initialZoom,
+      // zoom: ('zoom' in this.props.initialPosition) && !this.props.showFlat ? this.props.initialPosition.zoom : initialZoom,
+      // zoom: this.props.initialPosition.zoom && !this.props.showFlat ? this.props.initialPosition.zoom : initialZoom,
       // center initialPosition is prop passed in map render in flats
       // or by mapdimensions object from redux
       center: {
@@ -195,78 +197,82 @@ class GoogleMap extends Component {
         this.createMarkers(flats, []);
       }
     });
-        // Fired when map is moved; gets map dimensions
-        // and call action fetchflats to get flats within map bounds
-        // calls action updateMapDimensions for updating mapDimensions state
-        // mapDimensions is used to render map when flats search result is empty
-        google.maps.event.addListener(map, 'idle', () => {
-          // console.log('in googlemap, map idle listener fired, map', map);
-          // console.log('in googlemap, map idle listener fired, map.getBounds()', map.getBounds());
-          // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
-          //   this.state.markersArray[i].setMap(null);
-          // }
+    // Fired when map is moved; gets map dimensions
+    // and call action fetchflats to get flats within map bounds
+    // calls action updateMapDimensions for updating mapDimensions state
+    // mapDimensions is used to render map when flats search result is empty
+    google.maps.event.addListener(map, 'idle', () => {
+      // console.log('in googlemap, map idle listener fired, map', map);
+      // console.log('in googlemap, map idle listener fired, map.getBounds()', map.getBounds());
+      // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+      //   this.state.markersArray[i].setMap(null);
+      // }
 
-          const bounds = map.getBounds();
-          const mapCenter = map.getCenter();
-          const mapZoom = map.getZoom();
-          //leaving just to show how mapbounds works
-          // console.log('in googlemap, bounds: ', bounds);
-          // const ew = bounds.b; // LatLng of the north-east corner
-          // const ns = bounds.f; // LatLng of the south-west corder
-          // const east = ew.f;
-          // const west = ew.b;
-          // const north = ns.f;
-          // const south = ns.b;
-          // console.log('in googlemap, EW bounds: ', ew);
-          // console.log('in googlemap, NS bounds: ', ns);
-          // console.log('in googlemap, E bound lng: ', east);
-          // console.log('in googlemap, W bound lng: ', west);
-          // console.log('in googlemap, N bound lat: ', north);
-          // console.log('in googlemap, S bound lat: ', south);
-          // const mapBounds = {
-          //   east,
-          //   west,
-          //   north,
-          //   south
-          // };
-          // for fetchFlats within the coordinate bounds
-          const mapBounds = {
-            east: bounds.b.f,
-            west: bounds.b.b,
-            north: bounds.f.f,
-            south: bounds.f.b
-          };
+      const bounds = map.getBounds();
+      const mapCenter = map.getCenter();
+      const mapZoom = map.getZoom();
+      //leaving just to show how mapbounds works
+      // console.log('in googlemap, bounds: ', bounds);
+      // const ew = bounds.b; // LatLng of the north-east corner
+      // const ns = bounds.f; // LatLng of the south-west corder
+      // const east = ew.f;
+      // const west = ew.b;
+      // const north = ns.f;
+      // const south = ns.b;
+      // console.log('in googlemap, EW bounds: ', ew);
+      // console.log('in googlemap, NS bounds: ', ns);
+      // console.log('in googlemap, E bound lng: ', east);
+      // console.log('in googlemap, W bound lng: ', west);
+      // console.log('in googlemap, N bound lat: ', north);
+      // console.log('in googlemap, S bound lat: ', south);
+      // const mapBounds = {
+      //   east,
+      //   west,
+      //   north,
+      //   south
+      // };
+      // for fetchFlats within the coordinate bounds
+      const mapBounds = {
+        east: bounds.b.f,
+        west: bounds.b.b,
+        north: bounds.f.f,
+        south: bounds.f.b
+      };
 
-          MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
+      MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
 
-          // console.log('in googlemap, mapBounds: ', mapBounds);
-          // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
-          // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
-          // console.log('in googlemap, mapZoom: ', mapZoom);
-          // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
-          // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
-          // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
-          // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
+      // console.log('in googlemap, mapBounds: ', mapBounds);
+      // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
+      // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
+      // console.log('in googlemap, mapZoom: ', mapZoom);
+      // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
+      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
+      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
+      // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
 
-          // updateMapBounds not available as app state obj but not currently used
+      // updateMapBounds not available as app state obj but not currently used
 
-          // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
+      // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
-          //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
-          if (!this.props.showFlat) {
-            // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
-            // console.log('in googlemap, fetchFlats call, this:', this);
-            this.props.updateMapDimensions(MAP_DIMENSIONS);
-            const searchAttributes = { price_max: 10000000, price_min: 0, bedrooms_max: 100, bedrooms_min: 0, bedrooms_exact: null };
-            this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
-            this.props.showLoading('google maps');
-          }
-          // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
-          //   this.state.markersArray[i].setMap(null);
-          // }
-          // this.createMarkers();
-        });
+      //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
+      if (!this.props.showFlat) {
+        // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
+        // console.log('in googlemap, fetchFlats call, this:', this);
+        this.props.updateMapDimensions(MAP_DIMENSIONS, () => {});
+        // const searchAttributes = { price_max: 10000000, price_min: 0, bedrooms_max: 100, bedrooms_min: 0, bedrooms_exact: null };
+        this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
+        this.props.showLoading('google maps');
+      }
+      // for (let i = 0; i < this.state.markersArray.length - 1; i++) {
+      //   this.state.markersArray[i].setMap(null);
+      // }
+      // this.createMarkers();
+    }); // end of addlistner idle
 
+    // gets lat lng of point on map where click
+    // google.maps.event.addListener(map, 'click', (event) => {
+    //   alert('Latitude: '+ event.latLng.lat() + ' ' + ', longitude: ' + event.latLng.lng());
+    // });
         // this.createMarkers();
         // END of map initialization and map addlisterners
   } // end of renderMap

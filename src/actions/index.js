@@ -632,8 +632,9 @@ export function fetchMessage() {
 
 // Gets map dimansions (lat, lng, zoom and center);
 // Requred to render map when there are no flats in the panned area
-export function updateMapDimensions(mapDimensions) {
+export function updateMapDimensions(mapDimensions, callback) {
   console.log('in actions index, updateMapDimensions: ', mapDimensions);
+  callback();
   return {
     type: UPDATE_MAP_DIMENSIONS,
     payload: mapDimensions
@@ -1092,8 +1093,6 @@ export function deleteLike(flatId, callback) {
 }
 
 export function fetchProfileForUser() {
-  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
-
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/users/profiles/profile_for_user?`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -1109,8 +1108,6 @@ export function fetchProfileForUser() {
   };
 }
 export function fetchReviewForBookingByUser(booking_id) {
-  // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
-
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/reviews/review_for_booking_by_user?`, { review: { booking_id } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
