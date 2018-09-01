@@ -43,7 +43,7 @@ class MessagingMain extends Component {
       // this.props.match.params.id
       this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
       this.props.fetchConversationsByUser(() => {});
-      this.props.fetchProfileForUser();
+      this.props.fetchProfileForUser(() => {});
       this.conversationSlideIn();
   }
 
@@ -322,10 +322,10 @@ class MessagingMain extends Component {
     }
 
     if (elementVal == 'deleteCompletely') {
-      const conversationAttributes = { deleted: true };
+      const conversationAttributes = { deleted: true, deleted_by_user: true };
       console.log('in messagingMain, handleMessageEditClick, if elementVal == deleteCompletely, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
-          this.props.checkedConversations(this.props.checkedConversationsArray);
+            this.props.checkedConversations(this.props.checkedConversationsArray);
         });
     }
 
@@ -614,6 +614,7 @@ class MessagingMain extends Component {
     if (this.props.conversations) {
       // to be used in trash bin and archived bin
       const filteredConversationsArray = [];
+      const filteredConversationsIdArray = [];
       // console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
       // ternary expression to check if sorted by listing in sub controls
       // return just props.conversations if no listing selected and not showing trash or archive bin
@@ -646,11 +647,25 @@ class MessagingMain extends Component {
       // trashed conversation can be arhived or not archived
       if (this.state.showTrashBin) {
         _.each(conversationsFilteredByFlatAndSearchArray, conv => {
-          console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
+          // console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
           // the backend api filters for completely deleted messages
           if (conv.trashed && (conv.archived || !conv.archived)) {
-            filteredConversationsArray.push(conv);
+            if ((conv.user_id == this.props.auth.id) && !conv.deleted_by_user) {
+              console.log('in messagingMain, filterConversations, if showTrashBin first conv user, conv.user_id, this.props.auth.id, conv.deleted_by_user  : ', conv.user_id, this.props.auth.id, conv.deleted_by_user);
+              if (!filteredConversationsIdArray.includes(conv.id)) {
+                filteredConversationsArray.push(conv);
+                filteredConversationsIdArray.push(conv.id);
+              }
+            }
+
+            if ((conv.user_id != this.props.auth.id) && !conv.deleted) {
+              console.log('in messagingMain, filterConversations, if showTrashBin second conv user, conv.user_id, this.props.auth.id, conv.deleted  : ', conv.user_id, this.props.auth.id, conv.deleted);
+              if (!filteredConversationsIdArray.includes(conv.id)) {
+                filteredConversationsArray.push(conv);
+                filteredConversationsIdArray.push(conv);
+              }
+            }
           }
         });
       }

@@ -33,7 +33,8 @@ export default function (state = {
   showResetPasswordModal: false,
   showLoading: false,
   authenticated: false,
-  existingUser: false
+  existingUser: false,
+  customer: {}
 }, action) {
   // console.log('in auth reducer, action: ', action);
   switch (action.type) {
@@ -56,7 +57,7 @@ export default function (state = {
       return { ...state, success: action.payload.message };
 
     case UNAUTH_USER:
-      return { ...state, authenticated: false };
+      return { ...state, authenticated: false, customer: {} };
 
     case GET_CURRENT_USER:
       return { ...state, email: action.payload.email, id: action.payload.id, image: action.payload.image };

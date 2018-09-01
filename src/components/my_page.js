@@ -753,7 +753,8 @@ class MyPage extends Component {
   }
 
   renderExistingCardDetails() {
-    if (this.props.customer) {
+    const customerEmpty = _.isEmpty(this.props.customer)
+    if (!customerEmpty) {
       const { sources } = this.props.customer;
       const defaultCardId = this.props.customer.default_source;
       if (sources.data[0]) {
