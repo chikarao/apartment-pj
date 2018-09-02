@@ -563,45 +563,63 @@ class MessagingMain extends Component {
     return convByUser;
   }
 
-  // filters for conversations that are not trashed or archived; called in renderConversations
+  // filters (key words, not by flats which is in this.filterConversations) for conversations
+  // that are not trashed or archived; called in renderConversations
+  // 6 tests;
+  // 1. show all conversations;
+  // 2. conversation is by user or not,
+  // 3. user searching;
+  // 4 search words match
+  // 5. conversation already added to array of conversations to render
+  // 6 order of conversations by date
   initialFilteredConversations() {
+    // array to send filtered subset
     const filteredConversationsArray = [];
+    // array to test if conversation has already been added to conversation array
+    const filteredConversationsIdArray = [];
     // console.log('in messagingMain, initialFilteredConversations, this.props.conversations : ', this.props.conversations);
+    // show if user wants all conversations (ie not trash or archive)
     if (this.state.showAllConversations) {
       // console.log('in messagingMain, initialFilteredConversations, this.state.searchInputVal: ', this.state.searchInputVal);
-      // filteredConversationsArray = this.props.conversations
-      const filteredConversationsIdArray = [];
+      // iterate through conversations by user
       _.each(this.props.conversations, conv => {
+        // test if conv.id is user.id (ie user is not owner of flat involved)
         const convByUser = this.isConvByUser(conv);
         // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
         if (convByUser) {
+          // if not owner (ie user), show conversation if conv is not trashed or archived
           if (!conv.trashed_by_user && !conv.archived_by_user) {
+            // if user inputs something in search
             if (this.state.searchInputVal !== '') {
               // get input value from search input;
               const inputVal = this.state.searchInputVal;
-              // call function to search text for input string
+              // call function to search each message text or body for input string
               const convHasSearchWords = this.searchConversation(conv, inputVal);
               // console.log('in messagingMain, initialFilteredConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
               // console.log('in messagingMain, initialFilteredConversations, conv, inputVal: ', conv, inputVal);
               // console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
-              // if strings included in one of messages, add to array
+              // if strings included in one of messages, add to array of conversation
+              // and ids to make sure there is no duplicate
               if (convHasSearchWords) {
                 if (!filteredConversationsIdArray.includes(conv.id)) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
-                  console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+                  // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
                 }
               } // end of if convHasSearchWords
-            } else { // if searchInputVal has value
+            } else { // if searchInputVal has no value ie user is not searching
+              // just add to array if not added  already
               if (!filteredConversationsIdArray.includes(conv.id)) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
-                console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+                // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
               }
             }// else searchInputVal has value
           } // if not conv.trashed
-        } else { // if convByUser
+        } else { // if not convByUser; ie user is owner of flat and conv.id != auth.id
+          // if not trashed or archived true
           if (!conv.trashed && !conv.archived) {
+            // if there is input in search
             if (this.state.searchInputVal !== '') {
               // get input value from search input;
               const inputVal = this.state.searchInputVal;
@@ -615,27 +633,29 @@ class MessagingMain extends Component {
                 if (!filteredConversationsIdArray.includes(conv.id)) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
-                  console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+                  // console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
                 }
               } // end of if convHasSearchWords
-            } else { // if searchInputVal has value
+            } else { // if searchInputVal does not have value
+              // just add to array if not already
               if (!filteredConversationsIdArray.includes(conv.id)) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
-                console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+                // console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
               }
             }// else searchInputVal has value
           } // if not conv.trashed
         }
       }); // end of each
     } // if show all conversations
-
+    // order array based on user desired order of conversations by date
     const orderedArray = this.orderByDate(filteredConversationsArray);
     // console.log('in messagingMain, initialFilteredConversations, filteredConversationsArray: ', filteredConversationsArray);
+    // return filtered and order array for rendering
     return orderedArray;
     // return filteredConversationsArray;
   }
-
+  // filter conversations based on user choice of flat in sub control box
   filteredByListing() {
     const array = [];
     _.each(this.props.conversations, conv => {
@@ -653,6 +673,11 @@ class MessagingMain extends Component {
   // filters conversation based on attributes of conversations, trashed or archived
   // and passes to conversation.js
   // called in renderConversations
+  // tests:
+  // 1. Is conversations prop there?
+  // 2  Is sort conversation by flat listing selected?
+  // 3. Has user input for search for key words?
+  // 4. Do the key words match those in any messages?
   filterConversations() {
     // check if props has been updated with conversations
     if (this.props.conversations) {
@@ -685,6 +710,7 @@ class MessagingMain extends Component {
             conversationsFilteredByFlatAndSearchArray.push(conv);
           } // end of if convHasSearchWords
         } else { // if searchInputVal has value
+          // just add conversation to array
           conversationsFilteredByFlatAndSearchArray.push(conv);
         }// else searchInputVal has value
       });
@@ -699,11 +725,14 @@ class MessagingMain extends Component {
           const convByUser = this.isConvByUser(conv);
           // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
           if (convByUser) {
+            // if conv is users ie not flat owner, add conv to array if not already
+            // if trashed but not deleted by user
             if (conv.trashed_by_user && !conv.deleted_by_user) {
               filteredConversationsArray.push(conv);
               filteredConversationsIdArray.push(conv.id);
             }
-          } else {
+          } else { // if user is not conv user ie conv.user_id != auth.id
+            // add to array if trashed but not deleted
             if (conv.trashed && !conv.deleted) {
               filteredConversationsArray.push(conv);
               filteredConversationsIdArray.push(conv.id);
@@ -737,13 +766,15 @@ class MessagingMain extends Component {
           // archived cannot be trashed
           const convByUser = this.isConvByUser(conv);
           // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
+          // if conv is users ie not flat owner, add conv to array if not already
           if (convByUser) {
-            if ((conv.archived_by_user) && !conv.trashed_by_user) {
+            if ((conv.archived_by_user) && !conv.trashed_by_user && !conv.deleted_by_user) {
               filteredConversationsArray.push(conv);
               filteredConversationsIdArray.push(conv.id);
             }
-          } else {
-            if ((conv.archived) && !conv.trashed) {
+          } else { // if user is not conv user ie conv.user_id != auth.id
+            if ((conv.archived) && !conv.trashed && !conv.deleted_by_user) {
+              // add to array if archived but not trashed
               filteredConversationsArray.push(conv);
               filteredConversationsIdArray.push(conv.id);
             }
@@ -931,12 +962,12 @@ class MessagingMain extends Component {
       <div id="messaging-main-main-container" className="messaging-main-main-container">
        {this.state.windowWidth > RESIZE_BREAK_POINT ?
          <div className="messaging-main-container container">
-         {this.renderConversations()}
-         {this.renderMessages()}
+           {this.renderConversations()}
+           {this.renderMessages()}
          </div>
          :
          <div className="my-page-category-container">
-         {this.renderMobileMessaging()}
+          {this.renderMobileMessaging()}
          </div>
        }
       </div>
