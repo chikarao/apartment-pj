@@ -1488,16 +1488,14 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .each-message-user {
-  max-width: 250px;
+  max-width: 70%;
   height: 100px;
   margin: 2px;
-  /* border-radius: 10px; */
-  /* border: 1px solid #ccc; */
   float: right;
-  /* overflow: hidden; */
   height: auto;
-  /* display: block;
-  overflow: auto; */
+  display: flex;
+  flex-direction: column;
+
 }
 .each-message-date {
   /* border: 1px solid #ccc; */
@@ -1506,19 +1504,32 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: #ccc;
   text-align: left;
   margin-left: 5px;
+  padding: 10px 10px 0 0;
 }
+.each-message-date-user {
+  /* border: 1px solid #ccc; */
+  width: auto;
+  font-size: 10px;
+  color: #ccc;
+  text-align: right;
+  margin-left: 5px;
+  padding: 10px 10px 0 0;
+}
+
 .each-message-read {
   /* border: 1px solid #ccc; */
   width: auto;
   font-size: 10px;
   color: #ccc;
-  text-align: left;
+  text-align: right;
   margin-left: 5px;
+  padding: 0 10px 0 0;
 }
 
 .each-message-content-user {
   max-width: 100%;
-  min-width: 100px;
+  min-width: 50px;
+  width: auto;
   border: 1px solid #ccc;
   text-align: right;
   border-radius: 10px;

@@ -115,7 +115,7 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
-        <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
+          <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
           <div value="unarchive" className="btn messaging-main-large-archive"  style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
           <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
         </div>
@@ -126,8 +126,8 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-controls-left">
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
-          <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
           <div value="untrash" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
+          <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
           <div value="deleteCompletely" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.deleteCompletely[this.props.appLanguageCode]}</div>
         </div>
       );
@@ -291,7 +291,7 @@ class MessagingMain extends Component {
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
     if (elementVal == 'archive') {
-      const conversationAttributes = { archived: true };
+      const conversationAttributes = { archived: true, archived_by_user: true };
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
         });
@@ -301,7 +301,7 @@ class MessagingMain extends Component {
 
     // calls action to update conversation in api to mark them trashed = true
     if (elementVal == 'trash') {
-      const conversationAttributes = { trashed: true };
+      const conversationAttributes = { trashed: true, trashed_by_user: true };
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           // console.log('in messagingMain, handleMessageEditClick, if elementVal == trash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
           this.props.checkedConversations(this.props.checkedConversationsArray);
@@ -314,8 +314,8 @@ class MessagingMain extends Component {
 
     // calls action to update conversation in api to mark them trashed = false
     if (elementVal == 'untrash') {
-      const conversationAttributes = { trashed: false };
-      // console.log('in messagingMain, handleMessageEditClick, if elementVal == untrash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+      const conversationAttributes = { trashed: false, trashed_by_user: false };
+      console.log('in messagingMain, handleMessageEditClick, if elementVal == untrash, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
         });
@@ -331,7 +331,7 @@ class MessagingMain extends Component {
 
     // calls action to update conversation in api to mark them archive = false
     if (elementVal == 'unarchive') {
-      const conversationAttributes = { archived: false };
+      const conversationAttributes = { archived: false, archived_by_user: false };
       // console.log('in messagingMain, handleMessageEditClick, if elementVal == unarchive, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
@@ -558,6 +558,11 @@ class MessagingMain extends Component {
       return this.state.sortByDateNew ? newest : oldest;
   }
 
+  isConvByUser(conv) {
+    const convByUser = conv.id == this.props.auth.id;
+    return convByUser;
+  }
+
   // filters for conversations that are not trashed or archived; called in renderConversations
   initialFilteredConversations() {
     const filteredConversationsArray = [];
@@ -565,24 +570,63 @@ class MessagingMain extends Component {
     if (this.state.showAllConversations) {
       // console.log('in messagingMain, initialFilteredConversations, this.state.searchInputVal: ', this.state.searchInputVal);
       // filteredConversationsArray = this.props.conversations
+      const filteredConversationsIdArray = [];
       _.each(this.props.conversations, conv => {
-        if (!conv.trashed && !conv.archived) {
-          if (this.state.searchInputVal !== '') {
-            // get input value from search input;
-            const inputVal = this.state.searchInputVal;
-            // call function to search text for input string
-            const convHasSearchWords = this.searchConversation(conv, inputVal);
-            // console.log('in messagingMain, initialFilteredConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
-            // console.log('in messagingMain, initialFilteredConversations, conv, inputVal: ', conv, inputVal);
-            console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
-            // if strings included in one of messages, add to array
-            if (convHasSearchWords) {
-              filteredConversationsArray.push(conv);
-            } // end of if convHasSearchWords
-          } else { // if searchInputVal has value
-            filteredConversationsArray.push(conv);
-          }// else searchInputVal has value
-        } // if not conv.trashed
+        const convByUser = this.isConvByUser(conv);
+        // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
+        if (convByUser) {
+          if (!conv.trashed_by_user && !conv.archived_by_user) {
+            if (this.state.searchInputVal !== '') {
+              // get input value from search input;
+              const inputVal = this.state.searchInputVal;
+              // call function to search text for input string
+              const convHasSearchWords = this.searchConversation(conv, inputVal);
+              // console.log('in messagingMain, initialFilteredConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
+              // console.log('in messagingMain, initialFilteredConversations, conv, inputVal: ', conv, inputVal);
+              // console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
+              // if strings included in one of messages, add to array
+              if (convHasSearchWords) {
+                if (!filteredConversationsIdArray.includes(conv.id)) {
+                  filteredConversationsArray.push(conv);
+                  filteredConversationsIdArray.push(conv.id);
+                  console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+                }
+              } // end of if convHasSearchWords
+            } else { // if searchInputVal has value
+              if (!filteredConversationsIdArray.includes(conv.id)) {
+                filteredConversationsArray.push(conv);
+                filteredConversationsIdArray.push(conv.id);
+                console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+              }
+            }// else searchInputVal has value
+          } // if not conv.trashed
+        } else { // if convByUser
+          if (!conv.trashed && !conv.archived) {
+            if (this.state.searchInputVal !== '') {
+              // get input value from search input;
+              const inputVal = this.state.searchInputVal;
+              // call function to search text for input string
+              const convHasSearchWords = this.searchConversation(conv, inputVal);
+              // console.log('in messagingMain, initialFilteredConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
+              // console.log('in messagingMain, initialFilteredConversations, conv, inputVal: ', conv, inputVal);
+              // console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
+              // if strings included in one of messages, add to array
+              if (convHasSearchWords) {
+                if (!filteredConversationsIdArray.includes(conv.id)) {
+                  filteredConversationsArray.push(conv);
+                  filteredConversationsIdArray.push(conv.id);
+                  console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+                }
+              } // end of if convHasSearchWords
+            } else { // if searchInputVal has value
+              if (!filteredConversationsIdArray.includes(conv.id)) {
+                filteredConversationsArray.push(conv);
+                filteredConversationsIdArray.push(conv.id);
+                console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+              }
+            }// else searchInputVal has value
+          } // if not conv.trashed
+        }
       }); // end of each
     } // if show all conversations
 
@@ -597,13 +641,13 @@ class MessagingMain extends Component {
     _.each(this.props.conversations, conv => {
       // console.log('in messagingMain, filteredByListing, conv.flat_id, this.state.sortListingId: ', conv.flat_id, this.state.sortListingId);
       if (conv.flat_id == this.state.sortListingId) {
-        console.log('in messagingMain, filteredByListing, conv.flat_id, this.state.sortListingId: ', conv.flat_id, this.state.sortListingId);
+        // console.log('in messagingMain, filteredByListing, conv.flat_id, this.state.sortListingId: ', conv.flat_id, this.state.sortListingId);
         if (!conv.archived && !conv.trashed) {
           array.push(conv);
         }
       }
     })
-    console.log('in messagingMain, filteredByListing, array: ', array);
+    // console.log('in messagingMain, filteredByListing, array: ', array);
     return array;
   }
   // filters conversation based on attributes of conversations, trashed or archived
@@ -618,8 +662,10 @@ class MessagingMain extends Component {
       // console.log('in messagingMain, filterConversations, this.props.conversations : ', this.props.conversations);
       // ternary expression to check if sorted by listing in sub controls
       // return just props.conversations if no listing selected and not showing trash or archive bin
+      // filter by flat also in trash bin and archive bin
       const convervationsFilteredByListing =
-        this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin) ?
+        // this.state.sortListingSelected && !(this.state.showArchiveBin || this.state.showTrashBin) ?
+        this.state.sortListingSelected ?
         this.filteredByListing() : this.props.conversations;
         // console.log('in messagingMain, filterConversations, convervationsFilteredByListing: ', convervationsFilteredByListing);
 
@@ -633,7 +679,7 @@ class MessagingMain extends Component {
           const convHasSearchWords = this.searchConversation(conv, inputVal);
           // console.log('in messagingMain, filterConversations, this.searchConversation(conv, inputVal): ', this.searchConversation(conv, inputVal));
           // console.log('in messagingMain, filterConversations, conv, inputVal: ', conv, inputVal);
-          console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
+          // console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
           // if strings included in one of messages, add to array
           if (convHasSearchWords) {
             conversationsFilteredByFlatAndSearchArray.push(conv);
@@ -650,34 +696,75 @@ class MessagingMain extends Component {
           // console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
           // the backend api filters for completely deleted messages
-          if (conv.trashed && (conv.archived || !conv.archived)) {
-            if ((conv.user_id == this.props.auth.id) && !conv.deleted_by_user) {
-              console.log('in messagingMain, filterConversations, if showTrashBin first conv user, conv.user_id, this.props.auth.id, conv.deleted_by_user  : ', conv.user_id, this.props.auth.id, conv.deleted_by_user);
-              if (!filteredConversationsIdArray.includes(conv.id)) {
-                filteredConversationsArray.push(conv);
-                filteredConversationsIdArray.push(conv.id);
-              }
+          const convByUser = this.isConvByUser(conv);
+          // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
+          if (convByUser) {
+            if (conv.trashed_by_user && !conv.deleted_by_user) {
+              filteredConversationsArray.push(conv);
+              filteredConversationsIdArray.push(conv.id);
             }
-
-            if ((conv.user_id != this.props.auth.id) && !conv.deleted) {
-              console.log('in messagingMain, filterConversations, if showTrashBin second conv user, conv.user_id, this.props.auth.id, conv.deleted  : ', conv.user_id, this.props.auth.id, conv.deleted);
-              if (!filteredConversationsIdArray.includes(conv.id)) {
-                filteredConversationsArray.push(conv);
-                filteredConversationsIdArray.push(conv);
-              }
+          } else {
+            if (conv.trashed && !conv.deleted) {
+              filteredConversationsArray.push(conv);
+              filteredConversationsIdArray.push(conv.id);
             }
           }
+          // if ((conv.trashed || conv.trashed_by_user) && (conv.archived || !conv.archived)) {
+          //   if ((conv.user_id == this.props.auth.id) && !conv.deleted_by_user) {
+          //     // console.log('in messagingMain, filterConversations, if showTrashBin first conv user, conv.user_id, this.props.auth.id, conv.deleted_by_user  : ', conv.user_id, this.props.auth.id, conv.deleted_by_user);
+          //     if (!filteredConversationsIdArray.includes(conv.id)) {
+          //       filteredConversationsArray.push(conv);
+          //       filteredConversationsIdArray.push(conv.id);
+          //     }
+          //   }
+          //   // !!!!watch out for datatype when doing !== or != or ====;
+          //   // No need to do deep comparison here
+          //   if ((conv.user_id != this.props.auth.id) && !conv.deleted) {
+          //     // console.log('in messagingMain, filterConversations, if showTrashBin second conv user, conv.user_id, this.props.auth.id, conv.deleted  : ', conv.user_id, this.props.auth.id, conv.deleted);
+          //     if (!filteredConversationsIdArray.includes(conv.id)) {
+          //       filteredConversationsArray.push(conv);
+          //       filteredConversationsIdArray.push(conv);
+          //     }
+          //   }
+          // }
         });
       }
       // if user selects to see archived bin
       // Archive messages will not show if trashed
       if (this.state.showArchiveBin) {
         _.each(conversationsFilteredByFlatAndSearchArray, conv => {
-          console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
+          // console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
           // archived cannot be trashed
-          if (conv.archived && !conv.trashed) {
-            filteredConversationsArray.push(conv);
+          const convByUser = this.isConvByUser(conv);
+          // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
+          if (convByUser) {
+            if ((conv.archived_by_user) && !conv.trashed_by_user) {
+              filteredConversationsArray.push(conv);
+              filteredConversationsIdArray.push(conv.id);
+            }
+          } else {
+            if ((conv.archived) && !conv.trashed) {
+              filteredConversationsArray.push(conv);
+              filteredConversationsIdArray.push(conv.id);
+            }
           }
+          // if ((conv.archived || conv.archived_by_user) && !conv.trashed) {
+          //   // filteredConversationsArray.push(conv);
+          //   if ((conv.user_id == this.props.auth.id) && !conv.archived_by_user) {
+          //     // console.log('in messagingMain, filterConversations, if showTrashBin first conv user, conv.user_id, this.props.auth.id, conv.deleted_by_user  : ', conv.user_id, this.props.auth.id, conv.deleted_by_user);
+          //     if (!filteredConversationsIdArray.includes(conv.id)) {
+          //       filteredConversationsArray.push(conv);
+          //       filteredConversationsIdArray.push(conv.id);
+          //     }
+          //   }
+          //   if ((conv.user_id == this.props.auth.id) && !conv.archived) {
+          //     // console.log('in messagingMain, filterConversations, if showTrashBin first conv user, conv.user_id, this.props.auth.id, conv.deleted_by_user  : ', conv.user_id, this.props.auth.id, conv.deleted_by_user);
+          //     if (!filteredConversationsIdArray.includes(conv.id)) {
+          //       filteredConversationsArray.push(conv);
+          //       filteredConversationsIdArray.push(conv.id);
+          //     }
+          //   }
+          // }
         });
       }
       // if sorted by listing in sub controls and show all conversations order by date

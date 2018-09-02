@@ -136,6 +136,12 @@ class Messaging extends Component {
 
 
   formatDate(date) {
+    // get date and time now
+    const today = new Date();
+    // get time as of midnight today (last night)
+    const todayMidnight = today.setHours(0, 0, 0, 0);
+    // test whether message is before midnight; if so return just the time not the entire date
+    const beforeTodayMidnight = date < todayMidnight;
     let hours = date.getHours();
     let minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'pm' : 'am';
@@ -143,7 +149,8 @@ class Messaging extends Component {
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? `0${minutes}` : minutes;
     const strTime = `${hours}:${minutes}  ${ampm}`;
-    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+    return beforeTodayMidnight ? date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime
+    : strTime;
 }
 
   renderEachMessage(conversationToShowArray) {
@@ -200,21 +207,22 @@ class Messaging extends Component {
   renderRightMessages(message, date) {
     return (
       <div key={message.id} className="each-message-box">
-      <div className="each-message-user">
-      <div className="each-message-date">{this.formatDate(date)}</div>
-      <div className="each-message-content-user">{message.body}</div>
-      <div className="each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
-      </div>
+        <div className="each-message-user">
+          <div className="each-message-date-user">{this.formatDate(date)}</div>
+          <div className="each-message-content-user">{message.body}</div>
+          <div className="each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
+        </div>
       </div>
     );
   }
   renderLeftMessages(message, date) {
+    // <div className="each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
     return (
       <div key={message.id} className="each-message-box">
-      <div className="each-message">
-      <div className="each-message-date">{this.formatDate(date)}</div>
-      <div className="each-message-content">{message.body}</div>
-      </div>
+        <div className="each-message">
+          <div className="each-message-date">{this.formatDate(date)}</div>
+          <div className="each-message-content">{message.body}</div>
+        </div>
       </div>
     );
   }

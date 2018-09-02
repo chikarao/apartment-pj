@@ -115,14 +115,21 @@ class Conversations extends Component {
  }
 
  formatDate(date) {
+   // get date and time now
+   const today = new Date();
+   // get time as of midnight today (last night)
+   const todayMidnight = today.setHours(0, 0, 0, 0);
+   // test whether message is before midnight; if so return just the time not the entire date
+   const beforeTodayMidnight = date < todayMidnight;
+   console.log('in conversations, formatDate, today, date, beforeTodayMidnight', today, date, beforeTodayMidnight);
    let hours = date.getHours();
    let minutes = date.getMinutes();
    const ampm = hours >= 12 ? 'pm' : 'am';
    hours = hours % 12;
    hours = hours ? hours : 12; // the hour '0' should be '12'
    minutes = minutes < 10 ? `0${minutes}` : minutes;
-   const strTime = `${hours}:${minutes}  ${ampm}`;
-   return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+   const strTime = `${hours}:${minutes}${ampm}`;
+   return beforeTodayMidnight ? date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime : strTime;
 }
 
 handleConversationCheck(event) {
@@ -139,7 +146,7 @@ handleConversationCheck(event) {
  renderEachConversation() {
    const { conversations, flats } = this.props;
    const conversationsEmpty = conversations.length < 1;
-   console.log('in conversations, renderEachConversation, conversationsEmpty: ', conversationsEmpty);
+   // console.log('in conversations, renderEachConversation, conversationsEmpty: ', conversationsEmpty);
 
    // send props flats from message main
    if (this.state.showConversation) {
@@ -182,6 +189,7 @@ handleConversationCheck(event) {
            // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);
          });
          const date = new Date(conversation.messages[lastMessageIndex].created_at);
+         console.log('in conversations, renderEachConversation, date: ', date);
          //show only first 26 characters of text
          const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
 

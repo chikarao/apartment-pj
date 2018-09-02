@@ -137,7 +137,7 @@ const appLanguages =
     archivedMessages: { en: 'Archived Messages', jp: '保管箱' },
     moveToArchives: { en: 'Move to archives', jp: '保管箱に入れる' },
     unarchive: { en: 'Unarchive', jp: 'メインに戻す' },
-    untrash: { en: 'Untrash', jp: 'メインに戻す' },
+    untrash: { en: 'Untrash', jp: 'もとに戻す' },
     deleteCompletely: { en: 'Delete', jp: '完全に消去' },
     enterMessage: { en: 'Enter you message here', jp: 'メッセージを入力' },
     filterKeyWords: { en: 'Filter by key words...', jp: 'キーワードで絞り込む...' },
