@@ -62,6 +62,10 @@ export default function (AuthRequiredComponent) {
   return connect(mapStateToProps)(Authentication);
 }
 
+// Authentication.propTypes = {
+//   router: PropTypes.object
+// };
+
 // in some other location.. not in this file
 // we want to use this authentication
 //import Authentication
