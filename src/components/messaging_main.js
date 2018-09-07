@@ -830,9 +830,6 @@ class MessagingMain extends Component {
       _.each(checkboxes, cb => {
         cb.checked = false
       });
-      // if (checkboxes.length > 1) {
-      //   checkboxes[0].checked = false;
-      // }
     }
     return (
       // <div className="messaging-main-conversation-box col-md-4">

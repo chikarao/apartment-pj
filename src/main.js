@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 // import Signin from './components/auth/signin';
 import Signout from './components/auth/signout';
 // import Signup from './components/auth/signup';
-import ResetPassword from './components/auth/reset_password';
+// import ResetPassword from './components/auth/reset_password';
 import Results from './components/results';
 import Landing from './components/landing';
 import ShowFlat from './components/show_flat';

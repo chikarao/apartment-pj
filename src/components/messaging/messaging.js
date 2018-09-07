@@ -185,6 +185,7 @@ class Messaging extends Component {
             // console.log('in messaging, renderEachMessage, date message.read: ', message.read);
             // console.log('in messaging, renderEachMessage, date: ', date);
             if (message.sent_by_user) {
+              //sent by user means conversation.id == auth.id; so not flatOwner
               return this.renderLeftMessages(message, date);
             } else {
               return this.renderRightMessages(message, date);

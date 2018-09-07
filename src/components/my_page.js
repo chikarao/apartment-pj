@@ -114,6 +114,22 @@ class MyPage extends Component {
     console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
     this.props.history.push(`/bookingconfirmation/${elementVal}`);
   }
+ // iterate through each flat_language (if created by user)
+ // and if one matches lnaguage code selected by user, push into array and return
+ // first element in array
+  getFlatLanguage(flat, appLanguageCode) {
+    // console.log('in main cards, getFlatLanguage, flat, appLanguageCode: ', flat, appLanguageCode);
+    const array = [];
+    _.each(flat.flat_languages, language => {
+      if (language.code == appLanguageCode) {
+        array.push(language);
+      }
+    })
+    if (flat.language_code == appLanguageCode) {
+      array.push(flat);
+    }
+    return array[0] ? array[0] : null;
+  }
 
   renderEachFlat() {
     // const { flats } = this.props;
@@ -121,18 +137,20 @@ class MyPage extends Component {
     const flatsEmpty = _.isEmpty(this.props.flats);
     if (!flatsEmpty) {
       const { flats } = this.props;
-      console.log('in mypage, renderEachFlat, flats: ', flats);
+      // console.log('in mypage, renderEachFlat, flats: ', flats);
       return _.map(flats, (flat, index) => {
-        console.log('in mypage, renderEachFlat, flat.id: ', flat.id);
-        console.log('in mypage, renderEachFlat, flat.description: ', flat.description);
+        // get flat's language that is selected by user
+        const flatLanguage = this.getFlatLanguage(flat, this.props.appLanguageCode )
+        // console.log('in mypage, renderEachFlat, flat.id: ', flat.id);
+        // console.log('in mypage, renderEachFlat, flat.description: ', flat.description);
         return (
           <li key={index} className="my-page-each-card">
             <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
               {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
-                  <li>{flat.description}</li>
-                  <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
+                  <li>{ flatLanguage ? flatLanguage.description : flat.description }</li>
+                  <li style={{ color: 'darkblue' }}>{ flatLanguage ? flatLanguage.area : flat.area.toUpperCase() }</li>
                   <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
                   <li>id: {flat.id}</li>
                 </ul>
