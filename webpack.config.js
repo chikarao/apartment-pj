@@ -3,6 +3,7 @@ const Dotenv = require('dotenv-webpack');
 
 // reference for babel and polyfill; async await
 // https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined
+// Reference: migration from webpack 1 to webpack 4 https://webpack-gatsby.netlify.com/how-to/upgrade-from-webpack-1/
 
 module.exports = {
   // polyfill for async await
