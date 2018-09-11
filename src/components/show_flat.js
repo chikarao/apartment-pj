@@ -58,8 +58,8 @@ class ShowFlat extends Component {
   componentDidUpdate() {
     if (this.props.flat) {
       // console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
-      // this.props.fetchIcal('https://calendar.google.com/calendar/ical/c0k45rf9b7kouldlg6k87o1ahc%40group.calendar.google.com/private-53f98142cd67b1641ea2aac051b4b1c8/basic.ics');
-      this.props.fetchIcal(this.props.flat.ical_import_url);
+      // !!!!!!! THIS is where iCal is fetched
+      // this.props.fetchIcal(this.p  rops.flat.ical_import_url);
     }
     // this.scrollLastMessageIntoView();
     // to handle error InvalidValueError: not an instance of HTMLInputElement
@@ -375,9 +375,19 @@ class ShowFlat extends Component {
     }
   }
 
-  handleDateBlockClick() {
+  handleDateBlockSyncClick(event) {
     // console.log('in show_flat, handleDateBlockClick: ');
-    alert('handleDateBlockClick has not yet been implemented')
+    // alert('handleDateBlockClick has not yet been implemented')
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    if (elementVal == 'block') {
+      console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
+    }
+
+    if (elementVal == 'sync') {
+      console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
+      this.props.syncCalendars({ flat_id: this.props.flat.id });
+    }
   }
 
   handleEditFlatClick() {
@@ -445,13 +455,16 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
-                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg show-flat-footer-edit-btn">Edit</button>
+                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg show-flat-footer-edit-btn">{AppLanguages.edit[this.props.appLanguageCode]}</button>
               </div>
               <div className="show-flat-button-box">
-                <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">Delete</button>
+                <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">{AppLanguages.delete[this.props.appLanguageCode]}</button>
               </div>
               <div className="show-flat-button-box">
-              <button onClick={this.handleDateBlockClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">Block Dates</button>
+                <button value="block" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
+              </div>
+              <div className="show-flat-button-box">
+                <button value="sync" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
               </div>
             </div>
           );
@@ -640,7 +653,7 @@ class ShowFlat extends Component {
 
           {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
 
-            {this.renderMessaging()}
+          {this.renderMessaging()}
 
           {this.renderReviews()}
         <div className="clear-div" style={{ height: '70px' }}></div>

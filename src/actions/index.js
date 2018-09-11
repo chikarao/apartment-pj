@@ -90,6 +90,7 @@ import {
   DELETE_FLAT_LANGUAGE,
   SET_APP_LANGUAGE_CODE,
   FETCH_ICAL,
+  SYNC_CALENDARS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1606,6 +1607,7 @@ export function deleteFlatLanguage(languageAttributes, callback) {
     });
   };
 }
+
 export function fetchIcal(url) {
     console.log('in action index, fetchIcal, url: ', url);
   // const { flat_id, id } = languageAttributes;
@@ -1615,12 +1617,14 @@ export function fetchIcal(url) {
 
   return function (dispatch) {
     // axios.get(url, { headers: { 'Access-Control-Allow-Origin': '*' } })
-    axios.get(proxyurl + url, { headers: { 'content-type': 'application/x-www-form-urlencoded' } })
+    axios.get(proxyurl + url, {
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    })
     // axios.get(url, { crossdomain: 'true' })
     // axios.get(url, { headers: { 'Access-Control-Allow-Origin': 'https://calendar.google.com' } })
     .then(response => {
-      console.log('in action index, response to fetchIcal: ', response);
-      console.log('in action index, response.data to fetchIcal: ', response.data);
+      // console.log('in action index, response to fetchIcal: ', response);
+      // console.log('in action index, response.data to fetchIcal: ', response.data);
 
       dispatch({
         type: FETCH_ICAL,
@@ -1630,6 +1634,35 @@ export function fetchIcal(url) {
     })
     .catch(error => {
       console.log('in action index, catch error to fetchIcal: ', error);
+      dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function syncCalendars(flatId) {
+    // console.log('in action index, syncCalendars, url: ', url);
+  // const { flat_id, id } = languageAttributes;
+  //https://stackoverflow.com/questions/43871637/no-access-control-allow-origin-header-is-present-on-the-requested-resource-whe/43881141#43881141
+  //https://github.com/axios/axios/issues/853
+  // const proxyurl = 'https://cors-anywhere.herokuapp.com/';
+
+  return function (dispatch) {
+    // axios.get(url, { headers: { 'Access-Control-Allow-Origin': '*' } })
+    axios.post(`${ROOT_URL}/api/v1/blockout_dates_ical`, flatId, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to syncCalendars: ', response);
+      console.log('in action index, response.data to syncCalendars: ', response.data.data.flat);
+
+      dispatch({
+        type: SYNC_CALENDARS,
+        payload: response.data.data.flat
+      });
+      // callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to syncCalendars: ', error);
       dispatch(authError(error));
       // this.showloading();
     });

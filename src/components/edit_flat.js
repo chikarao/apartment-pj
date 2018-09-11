@@ -534,6 +534,9 @@ class EditFlat extends Component {
               {this.renderAmenityInput()}
             </div>
           </div>
+          <fieldset>
+            <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.icalExplain[appLanguageCode]}</div>
+          </fieldset>
           <fieldset className="form-group">
             <label className="create-flat-form-label">{AppLanguages.icalImport[appLanguageCode]}:</label>
             <Field name="ical_import_url" component="input" type="boolean" className="form-control">

@@ -18,7 +18,8 @@ import {
   DELETE_PLACE,
   CREATE_FLAT_LANGUAGE,
   UPDATE_FLAT_LANGUAGE,
-  DELETE_FLAT_LANGUAGE
+  DELETE_FLAT_LANGUAGE,
+  SYNC_CALENDARS
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
@@ -116,6 +117,9 @@ export default function (state = { searchFlatParameters: {} }, action) {
       return { ...state, selectedFlatFromParams: action.payload };
 
     case DELETE_FLAT_LANGUAGE:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case SYNC_CALENDARS:
       return { ...state, selectedFlatFromParams: action.payload };
 
 

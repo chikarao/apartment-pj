@@ -86,4 +86,5 @@ export const UPDATE_FLAT_LANGUAGE = 'update_flat_language';
 export const DELETE_FLAT_LANGUAGE = 'update_flat_language';
 export const SET_APP_LANGUAGE_CODE = 'set_app_language_code';
 export const FETCH_ICAL = 'fetch_ical';
+export const SYNC_CALENDARS = 'sync_calendars';
 // export const SET_NEW_MESSAGES = 'set_new_messages';
