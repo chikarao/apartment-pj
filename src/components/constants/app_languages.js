@@ -61,6 +61,7 @@ const appLanguages =
     nearestStation2: { en: '2nd Nearest Station', jp: '次の最寄駅' },
     cancellation: { en: 'Cancellation', jp: 'キャンセル' },
     smoking: { en: 'Smoking', jp: '喫煙' },
+    icalImport: { en: 'iCalendar URL', jp: 'iCalendar URL' },
     confirmAbove: { en: 'Confirm above changes and submit', jp: '上記を確認して送信' },
     submit: { en: 'Submit', jp: '送信' },
     deleteImagesAdd: { en: 'Delete images to add', jp: '追加するには画像を削除して下さい。' },

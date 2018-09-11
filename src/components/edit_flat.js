@@ -534,6 +534,11 @@ class EditFlat extends Component {
               {this.renderAmenityInput()}
             </div>
           </div>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">{AppLanguages.icalImport[appLanguageCode]}:</label>
+            <Field name="ical_import_url" component="input" type="boolean" className="form-control">
+          </Field>
+          </fieldset>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
             <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}

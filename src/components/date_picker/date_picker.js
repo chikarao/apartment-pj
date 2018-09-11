@@ -31,19 +31,31 @@ class DatePicker extends Component {
    this.state = INITIAL_STATE;
  }
 
- componentDidMount() {
-   const { daysToDisable } = this.props;
-   _.each(daysToDisable, (range) => {
-     console.log('in date_picker, componentDidMount, each, range.after', range);
-     // setDate and getTime seems to mutate daysToDisable, so make a new copied date and adjust it
-     //https://stackoverflow.com/questions/1090815/how-to-clone-a-date-object-in-javascript
-     const copiedDateToDisableForBooking = new Date(range.after);
-     copiedDateToDisableForBooking.setDate(copiedDateToDisableForBooking.getDate() + 1);
-     const adjustedDaysToDisable = { after: copiedDateToDisableForBooking, before: range.before };
-     daysToDisableForBookingArray.push(adjustedDaysToDisable);
-   });
-   // adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
-   console.log('in date_picker, componentDidMount, daysToDisableForBookingArray', daysToDisableForBookingArray);
+ // componentDidMount() {
+ // }
+ // check if selected date is a disabled date (including ical inpurts)
+ // Using componentDidUpdate since ical imports do not get reflected until
+ // ics file received and added to disabled days so check if disabled days in
+ // prevProps has different number of ranges than this.props. if different,
+ // push range in daysToDisableForBookingArray, used to check if day is disabled
+ componentDidUpdate(prevProps) {
+   // console.log('in date_picker, componentDidUpdate, each, this.props.daysToDisable.length !== prevProps.daysToDisable.length', this.props.daysToDisable.length !== prevProps.daysToDisable.length);
+   if (this.props.daysToDisable.length !== prevProps.daysToDisable.length) {
+     // console.log('in date_picker, componentDidUpdate, this.props.daysToDisable.length !== prevProps.daysToDisable.length', this.props.daysToDisable.length, prevProps.daysToDisable.length, this.props.daysToDisable.length !== prevProps.daysToDisable.length);
+     // console.log('in date_picker, componentDidUpdate, this.props.daysToDisable, prevProps.daysToDisable', this.props.daysToDisable, prevProps.daysToDisable);
+     const { daysToDisable } = this.props;
+     _.each(daysToDisable, (range) => {
+       // console.log('in date_picker, componentDidUpdate, each, range.after', range);
+       // setDate and getTime seems to mutate daysToDisable, so make a new copied date and adjust it
+       //https://stackoverflow.com/questions/1090815/how-to-clone-a-date-object-in-javascript
+       const copiedDateToDisableForBooking = new Date(range.after);
+       copiedDateToDisableForBooking.setDate(copiedDateToDisableForBooking.getDate() + 1);
+       const adjustedDaysToDisable = { after: copiedDateToDisableForBooking, before: range.before };
+       daysToDisableForBookingArray.push(adjustedDaysToDisable);
+     });
+     // adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
+     console.log('in date_picker, componentDidUpdate, daysToDisableForBookingArray', daysToDisableForBookingArray);
+   }
  }
 
  isSelectingFirstDay(from, to, day) {
@@ -62,6 +74,7 @@ class DatePicker extends Component {
    // console.log('in date_picker, isSelectingFirstDay, to', to);
    console.log('in date_picker, isDayDisabled, day:', day);
    console.log('in date_picker, isDayDisabled, this.props.daysToDisable:', this.props.daysToDisable);
+   console.log('in date_picker, isDayDisabled, daysToDisableForBookingArray:', daysToDisableForBookingArray);
    // console.log('in date_picker, isSelectingFirstDay, isBeforeFirstDay', isBeforeFirstDay);
    // console.log('in date_picker, isSelectingFirstDay, isRangeSelected', isRangeSelected);
 
@@ -239,7 +252,8 @@ class DatePicker extends Component {
 
  render() {
    const { from, to, enteredTo } = this.state;
-   console.log('in date_picker, render, from: ', from);
+   // console.log('in date_picker, render, from: ', from);
+   // console.log('in date_picker, render, this.props.daysToDisable: ', this.props.daysToDisable);
    // console.log('in date_picker, render, from:', from);
    // console.log('in date_picker, render, to:', to);
    // this.handleDateSelect(from, to);

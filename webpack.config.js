@@ -6,18 +6,27 @@ const path = require('path');
 // reference for babel and polyfill; async await
 // https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined
 // Reference: migration from webpack 1 to webpack 4 https://webpack-gatsby.netlify.com/how-to/upgrade-from-webpack-1/
-
+// higher level about webpack: https://webpack-gatsby.netlify.com/concepts/
+// about polyfills: https://hackernoon.com/polyfills-everything-you-ever-wanted-to-know-or-maybe-a-bit-less-7c8de164e423
+// There are 4 major sections: entry, output, loaders, plugins
 module.exports = {
   // polyfill for async await
-  mode: 'development',
+  // mode: 'development',
+  // none works optimizes for both production and development
+  mode: 'none',
+  // entry is the first file to kick off app;
+  // polyfill needs to be loaded in the very beginning.
   entry: [
     'babel-polyfill', './src/index.js'
   ],
+  // output tells wp how to handle and where to put bundle
   output: {
     path: __dirname,
     publicPath: '/',
     filename: 'bundle.js'
   },
+  // to wp, every file is a module, css, js, html, jpg.
+  // loaders tell wp how to handle these files as they are added to dependency graph
   module: {
     // file-loader doc: https://github.com/webpack-contrib/file-loader
     // wp4 loaders changed to rules
@@ -38,15 +47,18 @@ module.exports = {
         ]
       },
       {
+        // tell wp if come across file that resolves to js or jsx inside require (import),
+        // use babel-loader to transform it before bundling
         test: /\.js?$/,
         exclude: /node_modules/,
         use:
-          { loader: 'babel-loader' }
-       //  options: {
-       //   presets: ['react', 'es2015', 'stage-0'],
-       //   plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy'],
-       // }
+          { loader: 'babel-loader',
+        options: {
+         presets: ['react', 'es2015', 'stage-0']
+         // plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy'],
+       }
       }
+    }
       // options: {
       //   // presets: ['react', 'es2015', 'stage-1']
       //   // state-0 for async await
@@ -70,6 +82,8 @@ module.exports = {
   }, // end of module
   // added resolve .css and root: __dirname for react-day-picker
   // resolve new in wp4
+  // resolve tells wp how to resolve modules in detail
+  // reference: https://webpack.js.org/configuration/resolve/
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     modules: [
@@ -83,12 +97,19 @@ module.exports = {
    //   name: '[path][name].[hash].[ext]',
    // },
     // root: __dirname
-  },
+  }, // end of resolve
+
+  // for webpack-dev-server
+  // can change port
   devServer: {
+    // for 404 responses
     historyApiFallback: true,
+    // tell server where to serve content from 
     contentBase: './'
   },
-
+  // plugins are for performing functions with chunks in the bundle,
+  // os need to require at top nut just per file basis like modules
+  // & create instance by new
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

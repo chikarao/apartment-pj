@@ -46,7 +46,7 @@ class GoogleMap extends Component {
   // and oldMarkersArray (prevProps.flat not in this.props.flat)
   // takes newFlatsArray and calls createMarkers() passing flat array and oldMarkersArray, and also setMap null
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     // console.log('in googlemaps componentDidUpdate, prevProps.flats, this.props.flats, prevState, this.state: ', prevProps.flats, this.props.flats, prevState, this.state);
     // console.log('in googlemaps componentDidUpdate, this.state.markersArray: ', this.state.markersArray);
     // takes state markersArray updated in this.createMarkers

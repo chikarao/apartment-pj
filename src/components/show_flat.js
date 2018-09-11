@@ -50,23 +50,25 @@ class ShowFlat extends Component {
       this.props.getCurrentUser();
       this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
     }
-    if (this.props.flat) {
-      // console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
-    }
 
     this.props.fetchReviewsForFlat(this.props.match.params.id);
     // this.props.fetchPlaces(this.props.match.params.id);
   }
 
-  // componentDidUpdate() {
+  componentDidUpdate() {
+    if (this.props.flat) {
+      // console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
+      // this.props.fetchIcal('https://calendar.google.com/calendar/ical/c0k45rf9b7kouldlg6k87o1ahc%40group.calendar.google.com/private-53f98142cd67b1641ea2aac051b4b1c8/basic.ics');
+      this.props.fetchIcal(this.props.flat.ical_import_url);
+    }
     // this.scrollLastMessageIntoView();
     // to handle error InvalidValueError: not an instance of HTMLInputElement
     // handleSearchInput was running before HTML was rendered
-    //so input ID map-interaction-input was not getting picked up
+    // so input ID map-interaction-input was not getting picked up
     // if (this.props.flat) {
     //   this.handleSearchInput();
     // }
-  // }
+  }
 
   handleImageClick(event) {
     // console.log('in show_flat handleImageClick, event.target: ', event.target);
@@ -292,15 +294,27 @@ class ShowFlat extends Component {
       // console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
     }
     // const firstofMonth = new Date.now()
-
+    // Add iCalendar imported dates to dates to block out
+    // test if fetched ical file exists. if so, read it and add to daysList array
+    // ical file is fetched in componentDidMount from this.props flat ical_import_url
+    if (this.props.fetchedIcal) {
+      // call fucntion to parse ical ics file
+      const daysRangeArray = this.readIcal();
+      _.each(daysRangeArray, range => {
+        // add start and end to range and push into dayList array
+        const eachRange = { after: new Date(range.date_start - 1), before: new Date(range.date_end + 1) };
+        daysList.push(eachRange);
+      });
+    }
     // console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+    // daylist array gets fed inot react-date-picker as props
     return daysList;
   }
 
   renderDatePicker() {
-    // console.log('in show_flat, renderDatePicker, before if, this.props.flat: ', this.props.flat);
     // const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
     if (this.props.flat) {
+      console.log('in show_flat, renderDatePicker, after if, this.disabledDays(this.props.flat.bookings): ', this.disabledDays(this.props.flat.bookings));
       // console.log('in show_flat, renderDatePicker, got past if, this.props.flat: ', this.props.flat);
       return (
         <div className="date-picker-container">
@@ -539,6 +553,62 @@ class ShowFlat extends Component {
     }
   }
 
+  formatIcalDate(date) {
+    const startYear = date.substr(0, 4);
+    const startMonth = parseInt(date.substr(4, 2), 10) - 1;
+    const startDay = date.substr(6, 2);
+    // bookings.date_start = dateStart[1];
+    const startDate = new Date(startYear, startMonth, startDay);
+    return startDate;
+  }
+
+  readIcal() {
+    // read in ics file fetched from calendar.google.com
+    // returns array of objects with date_start and date_end
+    if (this.props.fetchedIcal) {
+      const { fetchedIcal } = this.props;
+      // split file into lines
+      const lines = fetchedIcal.split('\n');
+      // booking object define
+      const bookingsArray = [];
+      let bookings;
+      //
+      // let bookingCount = 0;
+      _.each(lines, (line) => {
+        // console.log('in landing, readIcal, line: ', line);
+        if (line.includes('DTSTART')) {
+          bookings = {};
+          // if there is DTSTART in a line
+          const dateStart = line.split(':');
+
+          // const startYear = dateStart[1].substr(0, 4);
+          // const startMonth = parseInt(dateStart[1].substr(4, 2), 10);
+          // const startDay = dateStart[1].substr(6, 2);
+          // // bookings.date_start = dateStart[1];
+          // const startDate = new Date(startYear, startMonth, startDay);
+          bookings.date_start = this.formatIcalDate(dateStart[1]);
+          // console.log('in landing, readIcal, dateStart: ', dateStart);
+          // console.log('in landing, readIcal, startYear: ', startYear);
+          // console.log('in landing, readIcal, startMonth: ', startMonth);
+          // console.log('in landing, readIcal, startDay: ', startDay);
+          // consolstartog('in landing, readIcal, dateStart bookings: ', bookings);
+        }
+        if (line.includes('DTEND')) {
+          const dateEnd = line.split(':');
+          // bookings[bookingCount].date_end = dateEnd[1];
+          bookings.date_end = this.formatIcalDate(dateEnd[1]);
+          // bookings.date_end = dateEnd[1];
+          // console.log('in landing, readIcal, dateEnd: ', dateEnd);
+          // console.log('in landing, readIcal, dateEnd bookings: ', bookings);
+          bookingsArray.push(bookings);
+          // bookingCount++;
+        }
+      });
+      console.log('in show_flat, readIcal, bookingsArray: ', bookingsArray);
+      return bookingsArray;
+    }
+  }
+
   render() {
   // !!!!!map needs to be id=map for the interaction to work
     return (
@@ -597,11 +667,13 @@ function mapStateToProps(state) {
       // places: state.flat.selectedFlatFromParams.places,
       language: state.places.placeSearchLanguage,
       // conversation: state.conversation.createMessage
-      appLanguageCode: state.languages.appLanguageCode
+      appLanguageCode: state.languages.appLanguageCode,
       // state.flat.selectedFlatFromParams.flat_language that has been filtered above
       // null means user has not created that language
       // or the appLanaguageCode == flat_language, the base language
-      // flatLanguage
+      // flatLanguage,
+      fetchedIcal: state.bookingData.fetchedIcal
+
     };
   }
 

@@ -3,13 +3,14 @@ import {
   SELECTED_DATES,
   REQUEST_BOOKING,
   FETCH_BOOKING,
-  FETCH_BOOKINGS_BY_USER
+  FETCH_BOOKINGS_BY_USER,
+  FETCH_ICAL
 } from '../actions/types';
 
 export default function (state = {
   selectedBookingDates: { to: null, from: null }
 }, action) {
-  // console.log('in booking reducer, action.payload: ', action.payload);
+  console.log('in booking reducer, action.payload: ', action.payload);
 
   switch (action.type) {
 
@@ -30,6 +31,9 @@ export default function (state = {
       // return _.mapKeys(action.payload, 'id');
         // return _.mapKeys(action.payload, 'id');
       return { ...state, fetchBookingsByUserData: _.mapKeys(action.payload, 'id') };
+    case FETCH_ICAL:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, fetchedIcal: action.payload };
 
     default:
       return state;

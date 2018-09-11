@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
+import _ from 'lodash';
+
 
 // import { Elements, StripeProvider } from 'react-stripe-elements';
 
@@ -158,18 +160,74 @@ class Landing extends Component {
     );
   }
 
+  formatIcalDate(date) {
+    const startYear = date.substr(0, 4);
+    const startMonth = parseInt(date.substr(4, 2), 10) - 1;
+    const startDay = date.substr(6, 2);
+    // bookings.date_start = dateStart[1];
+    const startDate = new Date(startYear, startMonth, startDay);
+    return startDate;
+  }
+
+  readIcal() {
+    // read in ics file fetched from calendar.google.com
+    // returns array of objects with date_start and date_end
+    if (this.props.fetchedIcal) {
+      const { fetchedIcal } = this.props;
+      // split file into lines
+      const lines = fetchedIcal.split('\n');
+      // booking object define
+      const bookingsArray = [];
+      let bookings;
+      //
+      // let bookingCount = 0;
+      _.each(lines, (line) => {
+        // console.log('in landing, readIcal, line: ', line);
+        if (line.includes('DTSTART')) {
+          bookings = {};
+          // if there is DTSTART in a line
+          const dateStart = line.split(':');
+
+          // const startYear = dateStart[1].substr(0, 4);
+          // const startMonth = parseInt(dateStart[1].substr(4, 2), 10);
+          // const startDay = dateStart[1].substr(6, 2);
+          // // bookings.date_start = dateStart[1];
+          // const startDate = new Date(startYear, startMonth, startDay);
+          bookings.date_start = this.formatIcalDate(dateStart[1]);
+          // console.log('in landing, readIcal, dateStart: ', dateStart);
+          // console.log('in landing, readIcal, startYear: ', startYear);
+          // console.log('in landing, readIcal, startMonth: ', startMonth);
+          // console.log('in landing, readIcal, startDay: ', startDay);
+          // consolstartog('in landing, readIcal, dateStart bookings: ', bookings);
+        }
+        if (line.includes('DTEND')) {
+          const dateEnd = line.split(':');
+          // bookings[bookingCount].date_end = dateEnd[1];
+          bookings.date_end = this.formatIcalDate(dateEnd[1]);
+          // bookings.date_end = dateEnd[1];
+          // console.log('in landing, readIcal, dateEnd: ', dateEnd);
+          // console.log('in landing, readIcal, dateEnd bookings: ', bookings);
+          bookingsArray.push(bookings);
+          // bookingCount++;
+        }
+      });
+      console.log('in landing, readIcal, bookingsArray: ', bookingsArray);
+      return bookingsArray;
+    }
+  }
+
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     // {this.renderPaymentForm()}
     // <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB LOGIN</div>
+    // <div className="oath-button-box">
+    // </div>
     return (
       <div>
         {this.renderBanner()}
         <div className="landing-main">
-        <div className="oath-button-box">
-        </div>
         </div>
           {this.renderFooter()}
       </div>
@@ -178,11 +236,11 @@ class Landing extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log('in mypage, mapStateToProps, state: ', state);
+  console.log('in landing, mapStateToProps, state: ', state);
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
     auth: state.auth,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
   };
 }
 
