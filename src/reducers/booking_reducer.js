@@ -20,7 +20,7 @@ export default function (state = {
 
     case REQUEST_BOOKING:
       // console.log('in booking reducer, state: ', state);
-      return { ...state, bookingData: action.payload };
+      return { ...state, bookingData: action.payload.booking };
 
     case FETCH_BOOKING:
       // console.log('in booking reducer, state: ', state);

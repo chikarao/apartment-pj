@@ -1385,8 +1385,11 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .show-flat-footer-edit-btn {
-  background-color: green;
+  background-color: white;
   border-color: green;
+  color: green;
+  /* background-color: green;
+  border-color: green; */
 }
 .show-flat-footer-edit-btn:hover {
   background-color: lightgray;
@@ -1398,7 +1401,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .btn-book-submit {
-  background-color: blue;
+  /* background-color: blue; */
+  background-color: white;
+  border-color: gray;
+  color: gray;
 }
 .btn-book-submit:hover {
   background-color: gray;

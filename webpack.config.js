@@ -9,6 +9,7 @@ const path = require('path');
 // higher level about webpack: https://webpack-gatsby.netlify.com/concepts/
 // about polyfills: https://hackernoon.com/polyfills-everything-you-ever-wanted-to-know-or-maybe-a-bit-less-7c8de164e423
 // There are 4 major sections: entry, output, loaders, plugins
+// resolve taken out https://stackoverflow.com/questions/44518655/webpack-taking-a-long-time-to-build
 module.exports = {
   // polyfill for async await
   // mode: 'development',
@@ -84,27 +85,28 @@ module.exports = {
   // resolve new in wp4
   // resolve tells wp how to resolve modules in detail
   // reference: https://webpack.js.org/configuration/resolve/
-  resolve: {
-    extensions: ['*', '.js', '.jsx'],
-    modules: [
-     path.join(__dirname, 'src'),
-     'node_modules'
-   ],
-   // test: /\.(jpg|png|svg)$/,
-   // loader: 'file-loader',
-   // options: {
-   //   // regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
-   //   name: '[path][name].[hash].[ext]',
-   // },
-    // root: __dirname
-  }, // end of resolve
+
+  // resolve: {
+  //   extensions: ['*', '.js', '.jsx'],
+  //   modules: [
+  //    path.join(__dirname, 'src'),
+  //    'node_modules'
+  //  ],
+  //  // test: /\.(jpg|png|svg)$/,
+  //  // loader: 'file-loader',
+  //  // options: {
+  //  //   // regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
+  //  //   name: '[path][name].[hash].[ext]',
+  //  // },
+  //   // root: __dirname
+  // }, // end of resolve
 
   // for webpack-dev-server
   // can change port
   devServer: {
     // for 404 responses
     historyApiFallback: true,
-    // tell server where to serve content from 
+    // tell server where to serve content from
     contentBase: './'
   },
   // plugins are for performing functions with chunks in the bundle,

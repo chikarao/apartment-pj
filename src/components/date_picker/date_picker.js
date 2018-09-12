@@ -56,6 +56,17 @@ class DatePicker extends Component {
      // adjustedAfterDate.setDate(adjustedAfterDate.getDate() - 1);
      console.log('in date_picker, componentDidUpdate, daysToDisableForBookingArray', daysToDisableForBookingArray);
    }
+
+   // console.log('in date_picker, componentDidUpdate, this.props.flat.bookings.length', this.props.flat.bookings.length);
+   if (this.props.flat.bookings) {
+     console.log('in date_picker, componentDidUpdate, before if length this.props.flat', this.props.flat);
+     console.log('in date_picker, componentDidUpdate, before if length this.props.flat.bookings.length', this.props.flat.bookings.length);
+     console.log('in date_picker, componentDidUpdate, before if length prevProps.flat.bookings.length', prevProps.flat.bookings.length);
+     if (this.props.flat.bookings.length != prevProps.flat.bookings.length) {
+       console.log('in date_picker, componentDidUpdate, this.props.flat', this.props.flat);
+       this.handleResetClick();
+     }
+   }
  }
 
  isSelectingFirstDay(from, to, day) {
@@ -236,7 +247,7 @@ class DatePicker extends Component {
  handleResetClick() {
    console.log('in date_picker, handleResetClick');
    this.setState(INITIAL_STATE, () => {
-     this.props.selectedDates({ to: this.state.enteredTo, from: this.state.from })
+     this.props.selectedDates({ to: this.state.enteredTo, from: this.state.from });
    });
  }
 
@@ -308,8 +319,8 @@ class DatePicker extends Component {
 function mapStateToProps(state) {
   console.log('in date_picker, mapStateToProps, state: ', state);
     return {
-      appLanguageCode: state.languages.appLanguageCode
-
+      appLanguageCode: state.languages.appLanguageCode,
+      flat: state.flat.selectedFlatFromParams
     };
   }
 

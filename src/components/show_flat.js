@@ -218,24 +218,38 @@ class ShowFlat extends Component {
     return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
   }
 
-  handleBookingClick() {
+  handleBookingClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
     // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
-    if (this.props.selectedBookingDates.to && this.props.selectedBookingDates.to) {
+    if (this.props.selectedBookingDates.to && this.props.selectedBookingDates.from) {
       // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       // console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
-      const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.to)} to ${this.formatDate(this.props.selectedBookingDates.from)}?`)
-      if (bookingConfirm) {
-        const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
-        // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
+      if (elementVal == 'userBooking') {
+        const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.to)} to ${this.formatDate(this.props.selectedBookingDates.from)}?`)
+        if (bookingConfirm) {
+          const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
+          // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
-        // calls action craetor and sends callback to action to go to the booking confiramtion page
-        // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
-        this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
-      }
+          // calls action craetor and sends callback to action to go to the booking confiramtion page
+          // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
+          this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+        }
+      } // end of if elementVal userBooking
+
+        if (elementVal == 'ownerBooking') {
+          const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true }
+          this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
+        }
     } else {
       // console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
       alert('Please select dates for booking.')
     }
+  }
+
+  bookingRequestCallbackOwner() {
+    // this.renderDatePicker()
+    alert(`Dates ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)} blocked out. To unblock, delete booking on my page`)
   }
 
   disabledDays(bookings) {
@@ -380,10 +394,11 @@ class ShowFlat extends Component {
     // alert('handleDateBlockClick has not yet been implemented')
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    if (elementVal == 'block') {
-      console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
-    }
-
+    // if (elementVal == 'block') {
+    //   console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
+    //   // this.props.createBooking();
+    // }
+    // switched  block (now name ownerBooking) to handleBooking click
     if (elementVal == 'sync') {
       console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
       this.props.syncCalendars({ flat_id: this.props.flat.id });
@@ -447,7 +462,7 @@ class ShowFlat extends Component {
           // console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
-              <button onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
+              <button value="userBooking" onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
             </div>
           );
         } else {
@@ -461,11 +476,15 @@ class ShowFlat extends Component {
                 <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">{AppLanguages.delete[this.props.appLanguageCode]}</button>
               </div>
               <div className="show-flat-button-box">
-                <button value="block" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
+                <button value="ownerBooking" onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
               </div>
-              <div className="show-flat-button-box">
-                <button value="sync" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
-              </div>
+              {this.props.flat.ical_import_url ?
+                <div className="show-flat-button-box">
+                  <button value="sync" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
+                </div> :
+                ''
+              }
+
             </div>
           );
         }

@@ -19,7 +19,8 @@ import {
   CREATE_FLAT_LANGUAGE,
   UPDATE_FLAT_LANGUAGE,
   DELETE_FLAT_LANGUAGE,
-  SYNC_CALENDARS
+  SYNC_CALENDARS,
+  REQUEST_BOOKING
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
@@ -121,6 +122,9 @@ export default function (state = { searchFlatParameters: {} }, action) {
 
     case SYNC_CALENDARS:
       return { ...state, selectedFlatFromParams: action.payload };
+
+    case REQUEST_BOOKING:
+      return { ...state, selectedFlatFromParams: action.payload.flat };
 
 
     default:

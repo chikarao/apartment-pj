@@ -33,7 +33,7 @@ const appLanguages =
     reviews: { en: 'Reviews', jp: 'レビュー' },
     requestReservation: { en: 'Request Reservation', jp: '予約をリクエストする' },
     blockDates: { en: 'Block Dates', jp: '日程をブロックする' },
-    syncCalendar: { en: 'Sync Calendar', jp: 'カレンダーを同期' },
+    syncCalendar: { en: 'Update with iCal', jp: 'iCalカレンダーを反映' },
     // landing
     bannerMessage: { en: 'Live the way you want', jp: '住みかたを選ぼう' },
     // edit create flat
@@ -63,7 +63,7 @@ const appLanguages =
     nearestStation2: { en: '2nd Nearest Station', jp: '次の最寄駅' },
     cancellation: { en: 'Cancellation', jp: 'キャンセル' },
     smoking: { en: 'Smoking', jp: '喫煙' },
-    icalExplain: { en: 'To sync calendar for this flat, copy url of .ics file from Google Calendar or other listing apps and paste here', jp: 'この物件のカレンダーを同期するには、Googleカレンダーや他の賃貸アプリの.ics形式ファイルをコピーして、ここに貼り付けて下さい。' },
+    icalExplain: { en: 'To update calendar with iCal for this flat, copy url of .ics file from Google Calendar or other listing apps and paste here', jp: 'この物件のカレンダーをiCalカレンダーでアップデートするには、Googleカレンダーや他の賃貸アプリの.ics形式ファイルをコピーして、ここに貼り付けて下さい。' },
     icalImport: { en: 'iCalendar URL', jp: 'iCalendar URL' },
     confirmAbove: { en: 'Confirm above changes and submit', jp: '上記を確認して送信' },
     submit: { en: 'Submit', jp: '送信' },

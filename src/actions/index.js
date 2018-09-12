@@ -769,18 +769,18 @@ export function requestBooking(bookingRequest, callback) {
   console.log('in actions index, requestBooking, bookingRequest: ', bookingRequest);
   console.log('in actions index, requestBooking, localStorage.getItem : ', localStorage.getItem('token'));
 
-  const { flat_id, user_email, date_start, date_end } = bookingRequest;
+  const { flat_id, user_email, date_start, date_end, booking_by_owner } = bookingRequest;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/bookings`, { booking: { flat_id, user_email, date_start, date_end } }, {
+    axios.post(`${ROOT_URL}/api/v1/bookings`, { booking: { flat_id, user_email, date_start, date_end, booking_by_owner } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
       .then(response => {
-        console.log('response to requestBooking: ', response.data.data.booking);
+        callback(response.data.data.booking.id);
+        console.log('response to requestBooking: ', response.data.data);
         dispatch({
           type: REQUEST_BOOKING,
-          payload: response.data.data.booking
+          payload: response.data.data
         });
-        callback(response.data.data.booking.id);
       });
   };
 }
