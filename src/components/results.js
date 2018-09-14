@@ -73,6 +73,8 @@ class Results extends Component {
     stationMax: searchCriteria[2].startBigMax,
     priceMin: searchCriteria[3].startMin,
     priceMax: searchCriteria[3].startBigMax,
+    startDate: searchCriteria[4].startBigMax,
+    endDate: searchCriteria[5].startBigMax,
     amenitySearchArray: [],
     incrementMin: false,
     incrementMax: true,
@@ -143,7 +145,9 @@ class Results extends Component {
         bedrooms_exact: this.state.bedroomsExact,
         // bedrooms_exact: 1,
         station_min: this.state.stationMin,
-        station_max: this.state.stationMax
+        station_max: this.state.stationMax,
+        date_start: this.state.startDate,
+        date_end: this.state.endDate
       };
       // set app state for search parameter with serch attributes with initial values from constructor
       // You can send object to searchFlatParameters and reducer will add or update key value pairs
@@ -1416,6 +1420,9 @@ class Results extends Component {
   }
 
   hideCalendar() {
+    // if (this.props.datesSelected.from && this.props.datesSelected.to ) {
+    this.props.searchFlatParameters({ date_start: this.props.datesSelected.from, date_end: this.props.datesSelected.to })
+    // }
     const calendar = document.getElementsByClassName('results-search-date-search-popup')
     calendar[0].classList.add('hide');
     const calendarInput = document.getElementById('results-date-search-input')
@@ -1484,7 +1491,7 @@ class Results extends Component {
   renderCalendarPopup() {
     return (
       <div className="results-search-date-search-popup hide">
-        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>Close</div>
+        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>Finished</div>
         <DatePicker
           numberOfMonths={6}
           daysToDisable={this.disabledDays()}
@@ -1497,6 +1504,7 @@ class Results extends Component {
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
     // <div className="search-criteria-clear" onClick={this.handleSearchClearClick.bind(this)}>Clear</div>
     // props of
+    // <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     const bedrooms = bedroomsExact ? `${bedroomsExact}` : `${bedroomsMin} ~ ${bedroomsMax}`
     return (
@@ -1553,7 +1561,7 @@ class Results extends Component {
               <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
               <div value='max' className="search-criteria-increment-min-max" style={this.state.incrementMax ? { backgroundColor: 'gray', color: 'white' } : { backgroundColor: 'white' }} onClick={this.handleMinMaxClick.bind(this)}>Max</div>
-              <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
+              <div value='apply' className='search-criteria-apply-highlight' onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
             </div>
           </div>
         </div>
