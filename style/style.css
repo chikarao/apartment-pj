@@ -1198,6 +1198,56 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   background-color: #ddd;
 }
 
+.results-search-date-search-box {
+  /* border: 1px solid #ddd; */
+  /* background-color: white; */
+  width: 80%;
+  height: auto;
+  margin: 20px auto 20px auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.results-search-date-search-input {
+  border: 1px solid #ddd;
+  width: 250px;
+  height: 30px;
+  margin: 10px 0 10px 20px;
+  /* padding: 5px; */
+  border-radius: 3px;
+  position: relative;
+}
+
+.results-search-date-search-input input {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  text-align: center;
+}
+
+.results-search-date-search-popup {
+  border: 1px solid #ddd;
+  width: 400px;
+  height: auto;
+  z-index: 2;
+  position:absolute;
+  top: 35px;
+  left: -20px;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.results-search-date-search-clase {
+  margin: 10px auto 10px auto;
+  color: blue;
+}
+
+.results-search-date-search-clase:hover {
+  margin: 10px auto 10px auto;
+  color: gray;
+}
+
 
 
 /* **********SHOW FLAT***************** */

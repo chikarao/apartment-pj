@@ -7,6 +7,7 @@ import GoogleMap from './maps/google_map';
 // import Upload from './images/upload';
 import MainCards from './cards/main_cards';
 import CitySearch from './search/city_search';
+import DatePicker from './date_picker/date_picker';
 
 import latLngOffset from './constants/lat_lng_offset';
 
@@ -1407,6 +1408,91 @@ class Results extends Component {
     );
   }
 
+  popUpCalendar() {
+    const calendar = document.getElementsByClassName('results-search-date-search-popup')
+    calendar[0].classList.remove('hide');
+    const calendarInput = document.getElementById('results-date-search-input')
+    calendarInput.disabled = true;
+  }
+
+  hideCalendar() {
+    const calendar = document.getElementsByClassName('results-search-date-search-popup')
+    calendar[0].classList.add('hide');
+    const calendarInput = document.getElementById('results-date-search-input')
+    calendarInput.disabled = false;
+  }
+
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+  }
+
+  getCalendarInputValue() {
+    console.log('in results getCalendarInputValue, this.props.datesSelected: ', this.props.datesSelected);
+    let dates = '';
+    if (this.props.datesSelected.to) {
+      dates = this.formatDate(this.props.datesSelected.from) + ' to ' + this.formatDate(this.props.datesSelected.to);
+    }
+    return dates;
+  }
+
+  renderDateSearch() {
+    // <div className="results-search-date-search-input">
+    // <input type="text" placeholder="Date to" />
+    // </div>
+    return (
+      <div className="results-search-date-search-box">
+        <div className="results-search-date-search-input">
+          {this.renderCalendarPopup()}
+          <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder="Choose dates for your stay" onFocus={this.popUpCalendar.bind(this)} />
+        </div>
+      </div>
+    );
+  }
+
+  disabledDays() {
+    // Note that new disabledDays does not include the after and before daysr!!!!!!!!!!!!!!!!!!!!!!!
+    // So need to adjust dates with setDate and getDate
+
+    const daysList = [];
+
+    const today = new Date();
+    // just gate date so that first of month and today can be compared;
+    // otherwise there will be time involved
+    const todayJustDate = today.toDateString();
+    // const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDay() - 2);
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstOfMonthJustDate = firstOfMonth.toDateString();
+    // console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today just dates: ', firstOfMonthJustDate, todayJustDate);
+    if (todayJustDate !== firstOfMonthJustDate) {
+      // console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today: ', new Date(firstOfMonth - 1), today);
+      const firstOfMonthRange = { after: new Date(firstOfMonth - 1), before: today }
+      daysList.push(firstOfMonthRange);
+      // console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
+    }
+    // const firstofMonth = new Date.now()
+    // daylist array gets fed inot react-date-picker as props
+    return daysList;
+  }
+
+  renderCalendarPopup() {
+    return (
+      <div className="results-search-date-search-popup hide">
+        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>Close</div>
+        <DatePicker
+          numberOfMonths={6}
+          daysToDisable={this.disabledDays()}
+        />
+      </div>
+    );
+  }
+
   renderSearchArea() {
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
     // <div className="search-criteria-clear" onClick={this.handleSearchClearClick.bind(this)}>Clear</div>
@@ -1483,6 +1569,7 @@ class Results extends Component {
         {this.renderMap()}
         </div>
         <div>
+          {this.renderDateSearch()}
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
             <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>{AppLanguages.close[this.props.appLanguageCode]}</div>
@@ -1515,7 +1602,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     reviews: state.flats.reviewsForFlatResults,
     searchFlatParams: state.flats.searchFlatParameters,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
+    datesSelected: state.bookingData.selectedBookingDates
    };
 }
 

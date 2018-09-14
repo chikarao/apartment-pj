@@ -58,7 +58,7 @@ class DatePicker extends Component {
    }
 
    // console.log('in date_picker, componentDidUpdate, this.props.flat.bookings.length', this.props.flat.bookings.length);
-   if (this.props.flat.bookings) {
+   if (this.props.flat) {
      console.log('in date_picker, componentDidUpdate, before if length this.props.flat', this.props.flat);
      console.log('in date_picker, componentDidUpdate, before if length this.props.flat.bookings.length', this.props.flat.bookings.length);
      console.log('in date_picker, componentDidUpdate, before if length prevProps.flat.bookings.length', prevProps.flat.bookings.length);
@@ -261,6 +261,17 @@ class DatePicker extends Component {
  //   }
  // }
 
+ formatDate(date) {
+   let hours = date.getHours();
+   let minutes = date.getMinutes();
+   const ampm = hours >= 12 ? 'pm' : 'am';
+   hours = hours % 12;
+   hours = hours ? hours : 12; // the hour '0' should be '12'
+   minutes = minutes < 10 ? `0${minutes}` : minutes;
+   const strTime = `${hours}:${minutes}  ${ampm}`;
+   return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+ }
+
  render() {
    const { from, to, enteredTo } = this.state;
    // console.log('in date_picker, render, from: ', from);
@@ -271,6 +282,9 @@ class DatePicker extends Component {
    const modifiers = { start: from, end: enteredTo };
    // const disabledDays = { before: this.state.from };
    const selectedDays = [from, { from, to: enteredTo }];
+   // this.getPreviousMonth();
+   // `${AppLanguages.selectFrom[this.props.appLanguageCode]} ${this.formatDate(from)} to
+   // ${this.formatDate(to)}`}{' '}
    return (
      <div>
        <h5>
@@ -288,9 +302,11 @@ class DatePicker extends Component {
         </h5>
        <DayPicker
          className="Range"
-         numberOfMonths={3}
+         numberOfMonths={this.props.numberOfMonths}
          // month={new Date(2015, 8)}
-         fromMonth={from}
+         // fromMonth={from}
+         // make unable to see beyond current month
+         fromMonth={new Date()}
          selectedDays={selectedDays}
          disabledDays={this.props.daysToDisable}
          // disabledDays={[{ after: new Date(2018, 4, 10), before: new Date(2018, 4, 18), }]}

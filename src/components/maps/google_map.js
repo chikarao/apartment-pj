@@ -259,9 +259,9 @@ class GoogleMap extends Component {
     }); // end of addlistner idle
 
     // gets lat lng of point on map where click
-    google.maps.event.addListener(map, 'click', (event) => {
-      alert('Latitude: '+ event.latLng.lat() + ' ' + ', longitude: ' + event.latLng.lng());
-    });
+    // google.maps.event.addListener(map, 'click', (event) => {
+    //   alert('Latitude: '+ event.latLng.lat() + ' ' + ', longitude: ' + event.latLng.lng());
+    // });
         // END of map initialization and map addlisterners
   } // end of renderMap
 

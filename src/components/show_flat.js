@@ -336,6 +336,7 @@ class ShowFlat extends Component {
         <DatePicker
           // initialMonth={new Date(2017, 4)}
           daysToDisable={this.disabledDays(this.props.flat.bookings)}
+          numberOfMonths={3}
           // disabledDays={this.disabledDays(this.props.flat.bookings)}
           // daysToDisable={[{ after: new Date(2018, 4, 18), before: new Date(2018, 5, 25), }]}
         />
