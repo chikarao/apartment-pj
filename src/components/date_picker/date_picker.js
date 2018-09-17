@@ -296,7 +296,7 @@ class DatePicker extends Component {
          {from &&
            to && (
              <button className="btn btn-primary btn-small date-picker-reset-btn" onClick={this.handleResetClick}>
-             Reset
+               {AppLanguages.reset[this.props.appLanguageCode]}
              </button>
            )}
         </h5>

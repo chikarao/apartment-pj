@@ -2227,8 +2227,7 @@ form {
 }
 
 .edit-flat-each-available-language, .edit-flat-each-available-icalendar {
-  min-width: 200px;
-  width: auto;
+  width: 200px;
   height: 30px;
   background-color: white;
   border: 1px solid #ccc;
@@ -2240,8 +2239,7 @@ form {
 }
 
 .edit-flat-each-available-icalendar {
-  min-width: 200px;
-  width: auto;
+
 }
 .edit-flat-language-add-link, .edit-flat-icalendar-add-link  {
   color: blue;
@@ -2254,8 +2252,6 @@ form {
 }
 .edit-flat-each-available-language-edit-link, .edit-flat-each-available-icalendar-edit-link {
   color: blue;
-  padding: 0 0 0 10px;
-  font-size: 12.5px;
 }
 .edit-flat-each-available-language-edit-link:hover, .edit-flat-each-available-icalendar-edit-link:hover {
   color: gray;

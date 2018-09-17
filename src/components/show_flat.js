@@ -479,7 +479,7 @@ class ShowFlat extends Component {
               <div className="show-flat-button-box">
                 <button value="ownerBooking" onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
               </div>
-              {this.props.flat.ical_import_url ?
+              {this.props.flat.calendars ?
                 <div className="show-flat-button-box">
                   <button value="sync" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
                 </div> :

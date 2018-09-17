@@ -90,7 +90,13 @@ import {
   DELETE_FLAT_LANGUAGE,
   SET_APP_LANGUAGE_CODE,
   FETCH_ICAL,
-  SYNC_CALENDARS
+  SYNC_CALENDARS,
+  SELECTED_ICALENDAR_ID,
+  SHOW_ICALENDAR_CREATE_MODAL,
+  SHOW_ICALENDAR_EDIT_MODAL,
+  CREATE_ICALENDAR,
+  UPDATE_ICALENDAR,
+  DELETE_ICALENDAR
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1556,6 +1562,7 @@ export function createFlatLanguage(flatLanguageAttributes, callback) {
     });
   };
 }
+
 export function updateFlatLanguage(flatLanguageAttributes, callback) {
     console.log('in action index, updateFlatLanguage, flatLanguageAttributes: ', flatLanguageAttributes);
   const { flat_id, id } = flatLanguageAttributes;
@@ -1665,6 +1672,102 @@ export function syncCalendars(flatId) {
       console.log('in action index, catch error to syncCalendars: ', error);
       dispatch(authError(error));
       // this.showloading();
+    });
+  };
+}
+
+export function createIcalendar(iCalendarAttributes, callback) {
+    console.log('in action index, createIcalendar, iCalendarAttributes: ', iCalendarAttributes);
+  const { flat_id } = iCalendarAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flat_id}/calendars`, { calendars: iCalendarAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createIcalendar: ', response);
+      console.log('in action index, response to createIcalendar: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_ICALENDAR,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createIcalendar: ', error);
+      dispatch(authError(error));
+      this.showloading();
+    });
+  };
+}
+
+export function selectedIcalendarId(id) {
+  console.log('in actions index, selectedIcalendar id:', id);
+  return { type: SELECTED_ICALENDAR_ID, payload: id };
+}
+
+export function showIcalendarCreateModal() {
+  console.log('in actions index, showIcalendarCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_ICALENDAR_CREATE_MODAL };
+}
+export function showIcalendarEditModal() {
+  console.log('in actions index, showIcalendarEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_ICALENDAR_EDIT_MODAL };
+}
+
+export function updateIcalendar(iCalendarAttributes, callback) {
+  console.log('in action index, updateIcalendar, iCalendarAttributes: ', iCalendarAttributes);
+  const { flat_id, id } = iCalendarAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/flats/${flat_id}/calendars/${id}`, { calendars: iCalendarAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateIcalendar: ', response);
+      console.log('in action index, response to updateIcalendar: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_ICALENDAR,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateIcalendar: ', error);
+      dispatch(authError(error));
+      this.showloading();
+    });
+  };
+}
+
+export function deleteIcalendar(iCalendarAttributes, callback) {
+    console.log('in action index, deleteIcalendar, iCalendarAttributes: ', iCalendarAttributes);
+  const { flat_id, id } = iCalendarAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/flats/${flat_id}/calendars/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteIcalendar: ', response);
+      console.log('in action index, response to deleteIcalendar: ', response.data.data.flat);
+
+      dispatch({
+        type: DELETE_ICALENDAR,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteIcalendar: ', error);
+      dispatch(authError(error));
+      this.showloading();
     });
   };
 }

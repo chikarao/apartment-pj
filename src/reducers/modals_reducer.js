@@ -3,7 +3,10 @@ import {
   SHOW_EDIT_REVIEW_MODAL,
   SHOW_CARD_INPUT_MODAL,
   SHOW_LANGUAGE_CREATE_MODAL,
-  SHOW_LANGUAGE_EDIT_MODAL
+  SHOW_LANGUAGE_EDIT_MODAL,
+  SHOW_ICALENDAR_CREATE_MODAL,
+  SHOW_ICALENDAR_EDIT_MODAL,
+  SELECTED_ICALENDAR_ID
 } from '../actions/types';
 //
 // const initialState = {
@@ -14,7 +17,10 @@ export default function (
   state = {
     showEditReview: false,
     showCardInputModal: false,
-    showLanguageCreateModal: false }, action) {
+    showLanguageCreateModal: false,
+    showIcalendarCreateModal: false,
+    showIcalendarEditModal: false
+  }, action) {
   // console.log('in image count reducer, state.count:', state);
 
   switch (action.type) {
@@ -29,6 +35,16 @@ export default function (
 
     case SHOW_LANGUAGE_EDIT_MODAL:
       return { ...state, showLanguageEditModal: !state.showLanguageEditModal };
+
+    case SHOW_ICALENDAR_CREATE_MODAL:
+      return { ...state, showIcalendarCreateModal: !state.showIcalendarCreateModal };
+
+    case SHOW_ICALENDAR_EDIT_MODAL:
+      return { ...state, showIcalendarEditModal: !state.showIcalendarEditModal };
+
+    case SELECTED_ICALENDAR_ID:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, selectedIcalendarId: action.payload };
 
     default:
       return state;

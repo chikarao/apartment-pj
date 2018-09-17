@@ -20,7 +20,10 @@ import {
   UPDATE_FLAT_LANGUAGE,
   DELETE_FLAT_LANGUAGE,
   SYNC_CALENDARS,
-  REQUEST_BOOKING
+  REQUEST_BOOKING,
+  CREATE_ICALENDAR,
+  UPDATE_ICALENDAR,
+  DELETE_ICALENDAR
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
@@ -126,6 +129,14 @@ export default function (state = { searchFlatParameters: {} }, action) {
     case REQUEST_BOOKING:
       return { ...state, selectedFlatFromParams: action.payload.flat };
 
+    case CREATE_ICALENDAR:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case UPDATE_ICALENDAR:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_ICALENDAR:
+      return { ...state, selectedFlatFromParams: action.payload };
 
     default:
       return state;

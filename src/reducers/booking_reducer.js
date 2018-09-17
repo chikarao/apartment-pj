@@ -5,6 +5,7 @@ import {
   FETCH_BOOKING,
   FETCH_BOOKINGS_BY_USER,
   FETCH_ICAL
+  // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
 export default function (state = {
@@ -35,6 +36,10 @@ export default function (state = {
     case FETCH_ICAL:
     // console.log('in booking reducer, state: ', state);
     return { ...state, fetchedIcal: action.payload };
+
+    // case SELECTED_ICALENDAR_ID:
+    // // console.log('in booking reducer, state: ', state);
+    // return { ...state, selectedIcalendarId: action.payload };
 
     default:
       return state;

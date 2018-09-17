@@ -15,6 +15,8 @@ module.exports = {
   // mode: 'development',
   // none works optimizes for both production and development
   mode: 'none',
+  // turn off watch mode so after initial build, won't watch for changes in js files
+  watch: false,
   // entry is the first file to kick off app;
   // polyfill needs to be loaded in the very beginning.
   entry: [

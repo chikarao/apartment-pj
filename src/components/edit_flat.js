@@ -13,6 +13,8 @@ import globalConstants from './constants/global_constants';
 import languages from './constants/languages';
 import LanguageCreateModal from './modals/language_create_modal';
 import LanguageEditModal from './modals/language_edit_modal';
+import IcalendarCreateModal from './modals/icalendar_create_modal';
+import IcalendarEditModal from './modals/icalendar_edit_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style'
 
@@ -306,12 +308,21 @@ class EditFlat extends Component {
     this.props.selectedLanguage(selectedLanguage);
   }
 
+  handleEditIcalendarClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in show_flat, handleEditIcalendarClick, elementVal: ', elementVal);
+    this.props.showIcalendarEditModal();
+    // this.setState({ selectedLanguageCode: elementVal });
+    this.props.selectedIcalendarId(elementVal);
+  }
+
   renderAvailableLanguages() {
     return _.map(this.props.flat.flat_languages, language => {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
           {languages[language.code].flag} {languages[language.code].name}
-          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>edit</div>
+          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     })
@@ -320,6 +331,21 @@ class EditFlat extends Component {
   handleAddLanguageClick() {
     // console.log('in show_flat, handleAddLanguageClick: ');
     this.props.showLanguageCreateModal();
+  }
+
+  renderAvailableICalendars() {
+    return _.map(this.props.flat.calendars, calendar => {
+      return (
+        <div key={calendar.id} className="edit-flat-each-available-icalendar col-xs-6 col-sm-6 col-md-4">
+         {calendar.name}
+         <div value={calendar.id} className="edit-flat-each-available-icalendar-edit-link" onClick={this.handleEditIcalendarClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+        </div>
+      );
+    })
+  }
+
+  handleAddIcalendarClick() {
+    this.props.showIcalendarCreateModal();
   }
 
   renderLanguages() {
@@ -337,6 +363,24 @@ class EditFlat extends Component {
             : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noOtherLanguages[this.props.appLanguageCode]}</div> }
         </div>
         <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick.bind(this)}>{AppLanguages.addAnotherLanguage[this.props.appLanguageCode]}</div>
+      </div>
+    );
+  }
+
+  renderIcalendarAddEdit() {
+    return (
+      <div className="edit-flat-language-box">
+        <div className="edit-flat-available-language-box">
+          <h5>{AppLanguages.addedIcalendars[this.props.appLanguageCode]}</h5>
+          {this.props.flat.flat_languages.length > 0 ?
+            <div className="edit-flat-available-languages-box-container container">
+              <div className="edit-flat-available-languages-box-row row">
+                {this.renderAvailableICalendars()}
+              </div>
+            </div>
+            : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noIcalendarsAdded[this.props.appLanguageCode]}</div> }
+        </div>
+        <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnotherICalendar[this.props.appLanguageCode]}</div>
       </div>
     );
   }
@@ -534,14 +578,6 @@ class EditFlat extends Component {
               {this.renderAmenityInput()}
             </div>
           </div>
-          <fieldset>
-            <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.icalExplain[appLanguageCode]}</div>
-          </fieldset>
-          <fieldset className="form-group">
-            <label className="create-flat-form-label">{AppLanguages.icalImport[appLanguageCode]}:</label>
-            <Field name="ical_import_url" component="input" type="boolean" className="form-control">
-          </Field>
-          </fieldset>
           {this.renderAlert()}
           <div className="confirm-change-and-button">
             <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
@@ -555,6 +591,9 @@ class EditFlat extends Component {
 
         <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
           {this.renderLanguages()}
+
+        <h4>{AppLanguages.addEditCalendars[appLanguageCode]}</h4>
+          {this.renderIcalendarAddEdit()}
 
         <h4>{AppLanguages.AddDeletePhotos[appLanguageCode]}  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
         <div className="edit-flat-image-box">
@@ -613,11 +652,32 @@ class EditFlat extends Component {
     );
   }
 
+  renderIcalendarCreateModal() {
+    return (
+      <div>
+        <IcalendarCreateModal
+          show={this.props.showIcalendarCreate}
+        />
+      </div>
+    );
+  }
+  renderIcalendarEditModal() {
+    return (
+      <div>
+        <IcalendarEditModal
+          show={this.props.showIcalendarEdit}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         {this.renderLanguageCreateModal()}
         {this.renderLanguageEditModal()}
+        {this.renderIcalendarCreateModal()}
+        {this.renderIcalendarEditModal()}
         {this.renderEditForm()}
       </div>
     );
@@ -679,6 +739,8 @@ function mapStateToProps(state) {
       places: state.places.places,
       showLanguageCreate: state.modals.showLanguageCreateModal,
       showLanguageEdit: state.modals.showLanguageEditModal,
+      showIcalendarCreate: state.modals.showIcalendarCreateModal,
+      showIcalendarEdit: state.modals.showIcalendarEditModal,
       appLanguageCode: state.languages.appLanguageCode,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues

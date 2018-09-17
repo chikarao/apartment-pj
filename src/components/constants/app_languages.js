@@ -22,6 +22,9 @@ const appLanguages =
     noFlats: { en: 'There are no flats with that criteria', jp: 'そのエリア・条件で物件はありませんでした。' },
     searchAnother: { en: 'Please search another', jp: '他の条件でお探し下さい。' },
     search: { en: 'Search', jp: '' },
+    searchByDates: { en: 'Filter by dates of your stay...', jp: '日程で絞り込み...' },
+    reset: { en: 'Reset', jp: 'リセット' },
+    finished: { en: 'Finished', jp: '選択終了' },
     // show flat
     availableAmenities: { en: 'Available Amenities', jp: '物件の特徴・設備' },
     selectRange: { en: 'Select range of dates you want', jp: ' 日程を指定' },
@@ -34,6 +37,10 @@ const appLanguages =
     requestReservation: { en: 'Request Reservation', jp: '予約をリクエストする' },
     blockDates: { en: 'Block Dates', jp: '日程をブロックする' },
     syncCalendar: { en: 'Update with iCal', jp: 'iCalカレンダーを反映' },
+    addEditCalendars: { en: 'Add or Edit iCalendars', jp: 'iCalendarを追加・編集' },
+    addedIcalendars: { en: 'Added iCalendars:', jp: '登録されたiCalendar:' },
+    noIcalendarsAdded: { en: 'No iCalendars Added', jp: 'iCalendarが登録されてません' },
+    addAnotherICalendar: { en: 'Add Another iCalendar', jp: 'iCalendarを登録する' },
     // landing
     bannerMessage: { en: 'Live the way you want', jp: '住みかたを選ぼう' },
     // edit create flat
@@ -70,7 +77,7 @@ const appLanguages =
     deleteImagesAdd: { en: 'Delete images to add', jp: '追加するには画像を削除して下さい。' },
     addEditLanguages: { en: 'Add or Edit Languages', jp: '言語を追加・編集' },
     baseLanguage: { en: 'Base Language', jp: 'ベースの言語' },
-    availableLanguages: { en: 'Available Languages', jp: '追加済みの言語' },
+    availableLanguages: { en: 'Available Languages:', jp: '追加済みの言語:' },
     noOtherLanguages: { en: 'No other languages added.', jp: '他の言語は追加されてません。' },
     addAnotherLanguage: { en: 'Add Another Language', jp: '言語を追加する' },
     AddDeletePhotos: { en: 'Add or Delete Photos', jp: '画像を追加・削除  ' },

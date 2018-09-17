@@ -1457,7 +1457,7 @@ class Results extends Component {
       <div className="results-search-date-search-box">
         <div className="results-search-date-search-input">
           {this.renderCalendarPopup()}
-          <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder="Choose dates for your stay" onFocus={this.popUpCalendar.bind(this)} />
+          <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder={AppLanguages.searchByDates[this.props.appLanguageCode]} onFocus={this.popUpCalendar.bind(this)} />
         </div>
       </div>
     );
@@ -1491,7 +1491,7 @@ class Results extends Component {
   renderCalendarPopup() {
     return (
       <div className="results-search-date-search-popup hide">
-        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>Finished</div>
+        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>  {AppLanguages.finished[this.props.appLanguageCode]}</div>
         <DatePicker
           numberOfMonths={6}
           daysToDisable={this.disabledDays()}
