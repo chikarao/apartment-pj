@@ -839,14 +839,14 @@ export function deleteBooking(id, callback) {
     })
     .then(response => {
       console.log('response to deleteBooking, response: ', response);
-      console.log('response to deleteBooking, response.data.data: ', response.data.data.booking);
+      console.log('response to deleteBooking, response.data.data: ', response.data.data.flats);
       dispatch({
         type: DELETE_BOOKING,
-        payload: response.data.data.booking
+        payload: response.data.data.flats
       });
       // redirects to mypage
       callback();
-      window.alert('Deleted booking');
+      // window.alert('Deleted booking');
     });
     //end of then
   };

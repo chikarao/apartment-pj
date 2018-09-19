@@ -1240,12 +1240,13 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   border-radius: 3px;
 }
 
-.results-search-date-search-clase {
+.results-search-date-search-close {
   margin: 10px auto 10px auto;
   color: blue;
+  font-weight: bold;
 }
 
-.results-search-date-search-clase:hover {
+.results-search-date-search-close:hover {
   margin: 10px auto 10px auto;
   color: gray;
 }

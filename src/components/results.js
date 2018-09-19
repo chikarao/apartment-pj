@@ -1491,7 +1491,7 @@ class Results extends Component {
   renderCalendarPopup() {
     return (
       <div className="results-search-date-search-popup hide">
-        <div className="results-search-date-search-clase" onClick={this.hideCalendar.bind(this)}>  {AppLanguages.finished[this.props.appLanguageCode]}</div>
+        <div className="results-search-date-search-close" onClick={this.hideCalendar.bind(this)}>  {AppLanguages.finished[this.props.appLanguageCode]}</div>
         <DatePicker
           numberOfMonths={6}
           daysToDisable={this.disabledDays()}

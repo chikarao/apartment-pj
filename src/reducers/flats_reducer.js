@@ -23,7 +23,8 @@ import {
   REQUEST_BOOKING,
   CREATE_ICALENDAR,
   UPDATE_ICALENDAR,
-  DELETE_ICALENDAR
+  DELETE_ICALENDAR,
+  DELETE_BOOKING
 } from '../actions/types';
 
 export default function (state = { searchFlatParameters: {} }, action) {
@@ -137,6 +138,9 @@ export default function (state = { searchFlatParameters: {} }, action) {
 
     case DELETE_ICALENDAR:
       return { ...state, selectedFlatFromParams: action.payload };
+      
+    case DELETE_BOOKING:
+      return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };
 
     default:
       return state;

@@ -53,7 +53,10 @@ class MyPage extends Component {
  //    //callback from getCurrentUserForMyPageid
  //    console.log('in mypage, fetchData, this.props.auth.id: ', this.props.auth.id);
  //    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
- //  }
+ // //  }
+ isBookingForOwnFlat(booking) {
+   return booking.flat.user_id == parseInt(this.props.auth.id);
+ }
 
   renderEachBookingByUser() {
     console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
@@ -67,25 +70,30 @@ class MyPage extends Component {
     // </div>
 
     if (!bookingsByUserEmpty) {
-      console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);
+      // console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);
       return _.map(sortedBookingsByUser, (booking, index) => {
-        console.log('in mypage, renderEachBookingByUser, in map, booking: ', booking);
-        return (
-          <li key={index} className="my-page-each-card">
-            <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-              {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-              <div className="my-page-details">
-                <ul>
-                  <li>{booking.flat.description}</li>
-                  <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
-                  <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
-                  <li>booking id: {booking.id}</li>
-                  <li>flat id: {booking.flat.id}</li>
-                </ul>
+        // console.log('in mypage, renderEachBookingByUser, in map, booking: ', booking);
+        // check if booking is for own flat
+        const bookingIsForOwnFlat = this.isBookingForOwnFlat(booking);
+        // if NOT own flat, render bookings
+        if (!bookingIsForOwnFlat) {
+          return (
+            <li key={index} className="my-page-each-card">
+              <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                <div className="my-page-details">
+                  <ul>
+                    <li>{booking.flat.description}</li>
+                    <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
+                    <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
+                    <li>booking id: {booking.id}</li>
+                    <li>flat id: {booking.flat.id}</li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </li>
-        );
+            </li>
+          );
+        }
       });
       //end of map
     } else {
@@ -209,7 +217,7 @@ class MyPage extends Component {
     );
   }
 
-  renderOwnBookings() {
+  renderOwnFlatBookings() {
     return (
       <div>
         <div className="my-page-category-title">
@@ -218,7 +226,7 @@ class MyPage extends Component {
           <div className="my-page-category-right"></div>
         </div>
         <ul>
-        {this.renderEachOwnBookings()}
+          {this.renderEachOwnFlatBookings()}
         </ul>
       </div>
     );
@@ -392,8 +400,8 @@ class MyPage extends Component {
   }
 
   renderMessaging() {
-    console.log('in mypage, renderMessaging, this.state.showConversation: ', this.state.showConversation);
-    console.log('in mypage, renderMessaging, this.props.showConversations: ', this.props.showConversationCards);
+    // console.log('in mypage, renderMessaging, this.state.showConversation: ', this.state.showConversation);
+    // console.log('in mypage, renderMessaging, this.props.showConversations: ', this.props.showConversationCards);
     return (
       <div>
         <div className="my-page-category-title">
@@ -408,12 +416,12 @@ class MyPage extends Component {
 
   sortBookings(bookings) {
     //reference: https://stackoverflow.com/questions/10123953/sort-javascript-object-array-by-date
-    console.log('in mypage, sortBookings, bookings: ', bookings);
+    // console.log('in mypage, sortBookings, bookings: ', bookings);
     const bookingsArray = [];
     // push each object into array then sort
     _.each(bookings, (booking) => {
       bookingsArray.push(booking);
-      console.log('in mypage, sortBookings, in each, bookingsArray: ', bookingsArray);
+      // console.log('in mypage, sortBookings, in each, bookingsArray: ', bookingsArray);
     });
 
     const sortedBookingsArray = bookingsArray.sort((a, b) => {
@@ -422,30 +430,30 @@ class MyPage extends Component {
       return new Date(a.date_start) - new Date(b.date_start);
     });
     // put sorted array into object format that the app has been using
-    console.log('in mypage, sortBookings, in each, sortedBookingsArray: ', sortedBookingsArray);
+    // console.log('in mypage, sortBookings, in each, sortedBookingsArray: ', sortedBookingsArray);
     const bookingsList = {};
     _.each(sortedBookingsArray, (booking, index) => {
-      bookingsList[index] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat: booking.flat }
+      bookingsList[index] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, booking_by_owner: booking.booking_by_owner, booking_by_ical: booking.booking_by_ical, flat: booking.flat }
     });
-    console.log('in mypage, sortBookings, in each, bookingsList: ', bookingsList);
+    // console.log('in mypage, sortBookings, in each, bookingsList: ', bookingsList);
 
     return bookingsList;
   }
 
   handleDeleteClick(event) {
-    console.log('in mypage, handleDeleteClick, event.target: ', event.target);
+    // console.log('in mypage, handleDeleteClick, event.target: ', event.target);
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const elementType = clickedElement.getAttribute('type');
-    console.log('in mypage, handleDeleteClick, elementVal: ', elementVal);
-    console.log('in mypage, handleDeleteClick, elementType: ', elementType);
+    // console.log('in mypage, handleDeleteClick, elementVal: ', elementVal);
+    // console.log('in mypage, handleDeleteClick, elementType: ', elementType);
     this.props.showLoading();
     if (elementType === 'ownBooking' && window.confirm('Are you sure you want to delete this booking?')) {
-      console.log('in mypage, handleDeleteClick, if statement, delete own booking: ', elementType);
+      // console.log('in mypage, handleDeleteClick, if statement, delete own booking: ', elementType);
       this.props.deleteBooking(elementVal, () => this.deleteCallback());
     }
     if (elementType === 'flat' && window.confirm('Are you sure you want to delete this flat?')) {
-      console.log('in mypage, handleDeleteClick, if statement, delete flat: ', elementType);
+      // console.log('in mypage, handleDeleteClick, if statement, delete flat: ', elementType);
       this.props.deleteFlat(elementVal, () => this.deleteCallback());
     }
   }
@@ -461,25 +469,25 @@ class MyPage extends Component {
     this.props.history.push(`/editflat/${elementVal}`);
   }
 
-  renderEachOwnBookings() {
+  renderEachOwnFlatBookings() {
     // takes flats with bookings and creates object with bookings then flat
     const preSortBookings = this.createBookingObject();
     // sorts preSortBookings by date_start
     const bookings = this.sortBookings(preSortBookings);
-    const bookingsEmpty = _.isEmpty(bookings)
+    const bookingsEmpty = _.isEmpty(bookings);
 
     // const bookings = this.createBookingObject((b) => this.sortBookings(b));
     // const sortedBookings = this.sortBookings(bookings);
-    // console.log('in mypage, renderEachOwnBookings, bookings.length: ', bookings);
+    console.log('in mypage, renderEachOwnFlatBookings, preSortBookings: ', preSortBookings);
     if (!bookingsEmpty) {
       return _.map(bookings, (booking, index) => {
         // console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
         const flat = booking.flat;
-        // console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+        // const bookingForOwnFlat = this.isBookingForOwnFlat(booking);
+        console.log('in mypage, renderEachOwnFlatBookings, in each, bookings: ', bookings);
         // <div className="my-page-card-button-box">
         // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
         // </div>
-
           return (
             <li key={index} className="my-page-each-card">
               <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
@@ -491,8 +499,13 @@ class MyPage extends Component {
                     <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
                     <li>booking id: {booking.id}</li>
                     <li>flat id: {flat.id}</li>
+                    {booking.booking_by_ical ? <li style={{ color: 'green' }}>Dates blocked by ical</li> : ''}
+                    {booking.booking_by_owner && !booking.booking_by_ical ? <li style={{ color: 'green' }}>Dates blocked manually</li> : ''}
                   </ul>
 
+                </div>
+                <div className="my-page-card-button-box">
+                  {booking.booking_by_owner && !booking.booking_by_ical ? <button value={booking.id} type="ownBooking" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button> : ''}
                 </div>
               </div>
             </li>
@@ -526,7 +539,7 @@ class MyPage extends Component {
             console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
             console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
 
-            bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, flat }
+            bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, booking_by_owner: booking.booking_by_owner, booking_by_ical: booking.booking_by_ical, flat }
             console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
           });
           // end of second each
@@ -564,21 +577,21 @@ class MyPage extends Component {
 
         return (
           <li key={index} className="my-page-each-card">
-          <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
-          {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-          <div className="my-page-details">
-          <ul>
-          <li>{flat.description}</li>
-          <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
-          <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
-          <li>flat id: {flat.id}</li>
-          </ul>
+            <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
+              {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+              <div className="my-page-details">
+              <ul>
+                <li>{flat.description}</li>
+                <li style={{ color: 'darkblue' }}>{flat.area.toUpperCase()}</li>
+                <li>${parseFloat(flat.price_per_month).toFixed(0)}</li>
+                <li>flat id: {flat.id}</li>
+              </ul>
 
-          </div>
-          </div>
-          <div className="my-page-card-button-box">
-          <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
-          </div>
+              </div>
+            </div>
+              <div className="my-page-card-button-box">
+                <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
+              </div>
           </li>
         );
         // end of return
@@ -873,7 +886,7 @@ class MyPage extends Component {
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnBookings()}</div>
+          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
           <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
         </div>

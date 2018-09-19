@@ -87,11 +87,11 @@ class IcalendarCreateModal extends Component {
             <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             <fieldset key={'ical_url'} className="form-group">
               <label className="create-flat-form-label">iCal URL:</label>
-              <Field name="ical_url" component="input" type="string" className="form-control" />
+              <Field name="ical_url" component="input" type="string" className="form-control" placeholder="Ex. https://calendar.google.com/calendar/ical/8t...basic.ics" />
             </fieldset>
             <fieldset key={'name'} className="form-group">
               <label className="create-flat-form-label">iCalendar Name:</label>
-              <Field name="name" component="input" type="string" className="form-control" />
+              <Field name="name" component="input" type="string" className="form-control"  placeholder="Ex. My main calendar"/>
             </fieldset>
             <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
