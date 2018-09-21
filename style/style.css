@@ -3626,6 +3626,45 @@ text-decoration: underline;
 }
 /* STRIPE */
 
+/* DOCUMENTS */
+.test-image-pdf-jpg {
+  width: auto;
+  height: auto;
+  margin: 20px auto 0 auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: scroll;
+}
+
+.test-image-pdf-jpg-background {
+  width: 792px;
+  height: 1122px;
+  position: relative;
+}
+.test-image-pdf-jpg-background form{
+  width: auto;
+  height: auto;
+  /* position: relative; */
+}
+/* 
+.test-image-pdf-jpg input {
+  width: 100px;
+  height: 25px;
+  border-radius: 5px;
+} */
+
+.document-form-group {
+  position: absolute;
+
+}
+
+.document-submit-button {
+  background-color: blue;
+  color: white;
+}
+
+
+
 
 @media screen and (max-width: 820px) {
     /* body {

@@ -4,6 +4,9 @@ import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 import _ from 'lodash';
 
+import { reduxForm, Field } from 'redux-form';
+import DocumentForm from './constants/document_form'
+
 
 // import { Elements, StripeProvider } from 'react-stripe-elements';
 
@@ -216,6 +219,60 @@ class Landing extends Component {
     }
   }
 
+  createBackgroundImageForDocs(image) {
+    // console.log('in main_cards, createBackgroundImage, image: ', image);
+    const width = 792;
+    const height = 1122;
+    const t = new cloudinary.Transformation();
+    // t.angle(0).crop('scale').width(width).aspectRatio('1.41442715');
+    t.crop('scale').width(width).aspectRatio('0.7070');
+    return cloudinaryCore.url(image, t);
+  }
+
+//   renderDocument() {
+// //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
+// // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
+//     return (
+//       <div className="test-image-pdf-jpg">
+//         <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
+//           <input type="string" placeholder="test input" style={{ top: '204px', left: '-120px', borderColor: 'red' }} />
+//         </div>
+//       </div>
+//     );
+//   }
+
+handleFormSubmit(file) {
+  console.log('in landing, handleFormSubmit, file: ', file);
+}
+
+  renderEachDocumentField() {
+    return _.map(DocumentForm, formField => {
+      console.log('in landing, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
+      return (
+          <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
+            <Field name={formField.name} component={formField.component} type={formField.type} className="form-control" style={{ borderColor: formField.borderColor, width: formField.width, height: formField.height }} />
+          </fieldset>
+      );
+    });
+  }
+
+  renderDocument() {
+    const { handleSubmit, appLanguageCode } = this.props;
+    //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
+    // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
+    return (
+      <div className="test-image-pdf-jpg">
+        <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
+          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            {this.renderEachDocumentField()}
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+
   render() {
     console.log('in landing, render: ');
     // console.log('in Welcome, render, this.state: ', this.state)
@@ -224,16 +281,24 @@ class Landing extends Component {
     // <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB LOGIN</div>
     // <div className="oath-button-box">
     // </div>
+    // <img src={"http://res.cloudinary.com/chikarao/image/upload/w_211,h_300/" + 'udlyfjvzwdiz9qkcouv8' + '.jpg'} />
+    // <img src={"http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_50  /" + 'phmzxr1sle99vzwgy0qn' + '.jpg'} />
     return (
       <div>
         {this.renderBanner()}
         <div className="landing-main">
+        {this.renderDocument()}
         </div>
           {this.renderFooter()}
       </div>
     );
   }
 }
+
+Landing = reduxForm({
+  form: 'EditFlat'
+})(Landing);
+
 
 function mapStateToProps(state) {
   console.log('in landing, mapStateToProps, state: ', state);

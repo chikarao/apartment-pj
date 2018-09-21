@@ -16,7 +16,7 @@ import LanguageEditModal from './modals/language_edit_modal';
 import IcalendarCreateModal from './modals/icalendar_create_modal';
 import IcalendarEditModal from './modals/icalendar_edit_modal';
 import AppLanguages from './constants/app_languages';
-import GmStyle from './maps/gm-style'
+import GmStyle from './maps/gm-style';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
