@@ -370,14 +370,14 @@ class CreateFlat extends Component {
         <fieldset className="form-group">
         <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
         <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
-        <option></option>
-        <option value="1">1 minute or less</option>
-        <option value="3">Under 3 minutes</option>
-        <option value="5">Under 5 minutes</option>
-        <option value="7">Under 7 minutes</option>
-        <option value="10">Under 10 minutes</option>
-        <option value="15">Under 15 minutes</option>
-        <option value="16">Under 15 minutes</option>
+          <option></option>
+          <option value="1">1 minute or less</option>
+          <option value="3">Under 3 minutes</option>
+          <option value="5">Under 5 minutes</option>
+          <option value="7">Under 7 minutes</option>
+          <option value="10">Under 10 minutes</option>
+          <option value="15">Under 15 minutes</option>
+          <option value="16">Under 15 minutes</option>
         </Field>
         </fieldset>
         <fieldset key={'intro'} className="form-group">

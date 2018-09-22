@@ -61,8 +61,8 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, createMap, location: ', location);
     const map = new google.maps.Map(document.getElementById('map'), {
       center: location,
-      zoom,
-      styles: GmStyle
+      zoom
+      // styles: GmStyle
     });
     this.setState({ map })
     return map;

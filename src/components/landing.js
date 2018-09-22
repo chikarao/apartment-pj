@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { reduxForm, Field } from 'redux-form';
 import DocumentForm from './constants/document_form'
 
+import YesOrNo from './forms/document_yes_or_no'
+
 
 // import { Elements, StripeProvider } from 'react-stripe-elements';
 
@@ -241,8 +243,8 @@ class Landing extends Component {
 //     );
 //   }
 
-handleFormSubmit(file) {
-  console.log('in landing, handleFormSubmit, file: ', file);
+handleFormSubmit(data) {
+  console.log('in landing, handleFormSubmit, data: ', data);
 }
 
   renderEachDocumentField() {
@@ -265,6 +267,9 @@ handleFormSubmit(file) {
         <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderEachDocumentField()}
+            <fieldset key={'yesOrNo'} className="form-group document-form-group">
+              <Field name={'washer'} type="boolean" component={YesOrNo} className="form-control" />
+            </fieldset>
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
           </form>
         </div>
@@ -274,7 +279,8 @@ handleFormSubmit(file) {
 
 
   render() {
-    console.log('in landing, render: ');
+    console.log('in landing, render, this.props: ', this.props);
+
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
     // {this.renderPaymentForm()}
@@ -299,13 +305,27 @@ Landing = reduxForm({
   form: 'EditFlat'
 })(Landing);
 
+// const YesOrNo = ({
+//     input,
+//     label,
+//     meta: {touched, error},
+//     // children
+//   }) => (
+//       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+//         <div {...input} type="button" value onClick={console.log('in custom component Y')} className="document-yes-no-circle">Y</div>
+//         <div {...input} type="button" value={false} onClick={console.log('in custom component N')} className="document-yes-no-circle">N</div>
+//       </div>
+//     );
 
 function mapStateToProps(state) {
+  const testObject = { address: 'My address', flat_building_name: 'My building', washer: true }
+
   console.log('in landing, mapStateToProps, state: ', state);
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
     auth: state.auth,
     appLanguageCode: state.languages.appLanguageCode,
+    initialValues: testObject
   };
 }
 
