@@ -5,9 +5,9 @@ import cloudinary from 'cloudinary-core';
 import _ from 'lodash';
 
 import { reduxForm, Field } from 'redux-form';
-import DocumentForm from './constants/document_form'
+import DocumentForm from './constants/document_form';
 
-import YesOrNo from './forms/document_yes_or_no'
+import DocumentChoices from './forms/document_choices';
 
 
 // import { Elements, StripeProvider } from 'react-stripe-elements';
@@ -248,11 +248,18 @@ handleFormSubmit(data) {
 }
 
   renderEachDocumentField() {
+    let fieldComponent = '';
     return _.map(DocumentForm, formField => {
-      console.log('in landing, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
+      console.log('in landing, renderEachDocumentField, formField.component ', formField.component);
+      if (formField.component == 'DocumentChoices') {
+        fieldComponent = DocumentChoices;
+      } else {
+        fieldComponent = formField.component;
+      }
+      // console.log('in landing, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
       return (
           <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
-            <Field name={formField.name} component={formField.component} type={formField.type} className="form-control" style={{ borderColor: formField.borderColor, width: formField.width, height: formField.height }} />
+            <Field name={formField.name} component={fieldComponent} type={formField.type} className="form-control" style={{ borderColor: formField.borderColor, width: formField.width, height: formField.height }} />
           </fieldset>
       );
     });
@@ -267,9 +274,6 @@ handleFormSubmit(data) {
         <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderEachDocumentField()}
-            <fieldset key={'yesOrNo'} className="form-group document-form-group">
-              <Field name={'washer'} type="boolean" component={YesOrNo} className="form-control" />
-            </fieldset>
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
           </form>
         </div>
@@ -305,7 +309,7 @@ Landing = reduxForm({
   form: 'EditFlat'
 })(Landing);
 
-// const YesOrNo = ({
+// const DocumentChoices = ({
 //     input,
 //     label,
 //     meta: {touched, error},
@@ -318,7 +322,7 @@ Landing = reduxForm({
 //     );
 
 function mapStateToProps(state) {
-  const testObject = { address: 'My address', flat_building_name: 'My building', washer: true }
+  const testObject = { address: 'My address', flat_building_name: 'My building', bath: true }
 
   console.log('in landing, mapStateToProps, state: ', state);
   return {
