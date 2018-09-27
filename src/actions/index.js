@@ -96,7 +96,8 @@ import {
   SHOW_ICALENDAR_EDIT_MODAL,
   CREATE_ICALENDAR,
   UPDATE_ICALENDAR,
-  DELETE_ICALENDAR
+  DELETE_ICALENDAR,
+  CREATE_CONTRACT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1768,6 +1769,32 @@ export function deleteIcalendar(iCalendarAttributes, callback) {
       console.log('in action index, catch error to deleteIcalendar: ', error);
       dispatch(authError(error));
       this.showloading();
+    });
+  };
+}
+
+export function createContract(contractAttributes, callback) {
+  console.log('in action index, createContract, contractAttributes: ', contractAttributes);
+  // const { flat_id } = contractAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/create_contract`, contractAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createContract: ', response);
+      console.log('in action index, response to createContract: ', response.data.data);
+
+      dispatch({
+        type: CREATE_CONTRACT,
+        payload: response.data.data
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createContract: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
     });
   };
 }

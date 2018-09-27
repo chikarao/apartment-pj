@@ -3639,6 +3639,8 @@ text-decoration: underline;
 .test-image-pdf-jpg-background {
   width: 792px;
   height: 1122px;
+  /* width: 595px;
+  height: 842px; */
   position: relative;
 }
 .test-image-pdf-jpg-background form{
@@ -3653,14 +3655,17 @@ text-decoration: underline;
   border-radius: 5px;
 } */
 
-.document-form-group {
-  position: absolute;
-
-}
 
 .document-submit-button {
   background-color: blue;
   color: white;
+}
+
+/* .document-form-group { */
+  /* position: absolute; */
+/* } */
+.form-control-document {
+  position: absolute;
 }
 
 .document-circle {
@@ -3671,17 +3676,26 @@ text-decoration: underline;
   /* border-color: red !important; */
   border: 1.5px solid #ccc;
   background-color: transparent;
+  position: absolute;
+
 }
 
 .document-rectangle {
-  height: 20px;
+  height: 17px;
   /* width: 22px; */
   border-radius: 5px;
   margin: 0 0 0 5px;
   /* border-color: red !important; */
   border: 1.5px solid #ccc;
   background-color: transparent;
+  position: absolute;
 }
+
+/* .document-submit-button {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+} */
 
 
 @media screen and (max-width: 820px) {

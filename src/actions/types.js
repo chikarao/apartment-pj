@@ -93,4 +93,5 @@ export const SHOW_ICALENDAR_EDIT_MODAL = 'show_icalendar_edit_modal';
 export const CREATE_ICALENDAR = 'create_icalendar';
 export const UPDATE_ICALENDAR = 'update_icalendar';
 export const DELETE_ICALENDAR = 'delete_icalendar';
+export const CREATE_CONTRACT = 'create_contract';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

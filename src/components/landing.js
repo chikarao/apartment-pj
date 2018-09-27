@@ -34,45 +34,86 @@ class Landing extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     // this.facebookLogin()
+    // document.addEventListener('click', this.printMousePos);
+    // document.addEventListener('click', this.printMousePos1);
   }
 
-  facebookLogin() {
-    console.log('in Landing, facebookLogin, in subscribe, this  ', this);
-    // if (FB) {
-      window.fbAsyncInit = function () {
-        FB.init({
-          appId            : '2249093511770692',
-          autoLogAppEvents : true,
-          xfbml            : true,
-          version          : 'v3.1'
-        });
+  componentDidUpdate() {
+    const banner = document.getElementById('banner');
 
-        FB.Event.subscribe('auth.statusChange', (response) => {
-          console.log('in Landing, facebookLogin, in subscribe, response  ', response);
-          if (response.authResponse) {
-            this.updateLoggedInState(response)
-          } else {
-            this.udpateLoggedInState()
-          }
-        });
-      }.bind(this);
-      // .bind(this);
-      // for some reason need this again...
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        console.log('in Landing, facebookLogin, in lower function');
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "https://connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    // }
+    console.log('in landing, componentDidUpdate', banner);
+    banner.focus();
   }
 
-  updateLoggedInState(response) {
-    console.log('in Landing, updateLoggedInState', response);
-    // console.log('in SigninModal, updateLoggedInState', response);
+  printMousePos(event) {
+    // layerX is deprecated, so don't use
+    console.log('in landing, printMousePos', event);
+    console.log('in landing, printMousePos, event.layerX / 792', event.layerX / 792);
+    console.log('in landing, printMousePos, event.layerY / 1122', event.layerY / 1122);
+    // document.body.textContent =
+    //   'clientX: ' + event.clientX +
+    //   ' - clientY: ' + event.clientY;
   }
+  printMousePos1(event) {
+    // custom version of layerX; takes position of container and
+    // position of click inside container and takes difference to
+    // get the coorindates of click inside container on page
+    // yielded same as layerX and layerY
+    console.log('in landing, printMousePos1', event);
+    const documentContainer = document.getElementById('document-background')
+    // console.log('in landing, printMousePos, documentContainer', documentContainer);
+    const documentContainerPosTop = documentContainer.offsetTop
+    const documentContainerPosLeft = documentContainer.offsetLeft
+    console.log('in landing, printMousePos, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
+    const pageX = event.pageX;
+    const pageY = event.pageY;
+    console.log('in landing, printMousePos, pageX, pageY', pageX, pageY);
+    console.log('in landing, printMousePos, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
+
+    // console.log('in landing, printMousePos, event.layerX / 792', event.layerX / 792);
+    // console.log('in landing, printMousePos, event.layerY / 1122', event.layerY / 1122);
+    // document.body.textContent =
+    //   'clientX: ' + event.clientX +
+    //   ' - clientY: ' + event.clientY;
+  }
+
+  // facebookLogin() {
+  //   console.log('in Landing, facebookLogin, in subscribe, this  ', this);
+  //   // if (FB) {
+  //     window.fbAsyncInit = function () {
+  //       FB.init({
+  //         appId            : '2249093511770692',
+  //         autoLogAppEvents : true,
+  //         xfbml            : true,
+  //         version          : 'v3.1'
+  //       });
+  //
+  //       FB.Event.subscribe('auth.statusChange', (response) => {
+  //         console.log('in Landing, facebookLogin, in subscribe, response  ', response);
+  //         if (response.authResponse) {
+  //           this.updateLoggedInState(response)
+  //         } else {
+  //           this.udpateLoggedInState()
+  //         }
+  //       });
+  //     }.bind(this);
+  //     // .bind(this);
+  //     // for some reason need this again...
+  //     (function(d, s, id) {
+  //       var js, fjs = d.getElementsByTagName(s)[0];
+  //       console.log('in Landing, facebookLogin, in lower function');
+  //       if (d.getElementById(id)) {return;}
+  //       js = d.createElement(s); js.id = id;
+  //       js.src = "https://connect.facebook.net/en_US/sdk.js";
+  //       fjs.parentNode.insertBefore(js, fjs);
+  //     }(document, 'script', 'facebook-jssdk'));
+  //   // }
+  // }
+
+  // updateLoggedInState(response) {
+  //   console.log('in Landing, updateLoggedInState', response);
+  //   // console.log('in SigninModal, updateLoggedInState', response);
+  // }
 
 
   // facebookLogin() {
@@ -107,12 +148,6 @@ class Landing extends Component {
   //
   // }
 
-  componentDidUpdate() {
-    const banner = document.getElementById('banner');
-
-    console.log('in landing, componentDidUpdate', banner);
-    banner.focus();
-  }
   //
   // facebook() {
   //   console.log('in landing, facebook FB: ', FB);
@@ -227,7 +262,8 @@ class Landing extends Component {
     const height = 1122;
     const t = new cloudinary.Transformation();
     // t.angle(0).crop('scale').width(width).aspectRatio('1.41442715');
-    t.crop('scale').width(width).aspectRatio('0.7070');
+    // t.crop('scale').width(width).aspectRatio('0.7070');
+    t.crop('scale').width(width).aspectRatio('0.70582352941176');
     return cloudinaryCore.url(image, t);
   }
 
@@ -243,9 +279,33 @@ class Landing extends Component {
 //     );
 //   }
 
-handleFormSubmit(data) {
-  console.log('in landing, handleFormSubmit, data: ', data);
-}
+  handleFormSubmit(data) {
+    console.log('in landing, handleFormSubmit, data: ', data);
+    const paramsObject = { flat_id: 190 }
+    _.each(Object.keys(data), key => {
+      // console.log('in landing, handleFormSubmit, data[key]: ', data[key]);
+      // DocumentForm[key].params.value = data[key];
+      // paramsObject[key] = DocumentForm[key].params;
+      let choice = {};
+      _.each(DocumentForm[key].choices, eachChoice => {
+        // console.log('in landing, handleFormSubmit, eachChoice: ', eachChoice);
+        if (eachChoice.params.val == '') {
+          choice = eachChoice;
+          console.log('in landing, handleFormSubmit, choice for empty string val: ', choice);
+          choice.params.value = data[key];
+          paramsObject[key] = choice.params;
+        }
+        if (eachChoice.params.val == data[key]) {
+          choice = eachChoice;
+          console.log('in landing, handleFormSubmit, choice val == data[key]: ', choice);
+          choice.params.value = data[key];
+          paramsObject[key] = choice.params;
+        }
+      });
+    });
+    console.log('in landing, handleFormSubmit, data: ', paramsObject);
+    this.props.createContract(paramsObject);
+  }
 
   renderEachDocumentField() {
     let fieldComponent = '';
@@ -257,9 +317,10 @@ handleFormSubmit(data) {
         fieldComponent = formField.component;
       }
       // console.log('in landing, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
+      // <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
       return (
-          <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
-            <Field name={formField.name} component={fieldComponent} type={formField.type} className="form-control" style={{ borderColor: formField.borderColor, width: formField.width, height: formField.height }} />
+          <fieldset key={formField.name} className="form-group document-form-group" style={{ borderColor: formField.borderColor }}>
+            <Field name={formField.name} component={fieldComponent} type={formField.type} className={formField.component == 'input' ? 'form-control form-control-document' : ''} style={formField.component == 'input' ? { top: formField.choices[0].params.top, left: formField.choices[0].params.left, borderColor: formField.borderColor, width: formField.choices[0].params.width, height: formField.choices[0].params.height } : {}} />
           </fieldset>
       );
     });
@@ -271,10 +332,10 @@ handleFormSubmit(data) {
     // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
     return (
       <div className="test-image-pdf-jpg">
-        <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
+        <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderEachDocumentField()}
-            <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+            <button action="submit" id="submit-all" className="btn btn-primary btn-lg document-submit-button">{AppLanguages.submit[appLanguageCode]}</button>
           </form>
         </div>
       </div>
@@ -322,7 +383,7 @@ Landing = reduxForm({
 //     );
 
 function mapStateToProps(state) {
-  const testObject = { address: 'My address', flat_building_name: 'My building', bath: true }
+  const testObject = { address: 'まかろに町', flat_building_name: 'ほうれん荘', bath: true }
 
   console.log('in landing, mapStateToProps, state: ', state);
   return {
