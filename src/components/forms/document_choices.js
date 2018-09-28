@@ -47,7 +47,7 @@ class DocumentChoices extends Component {
           this.emptyInput();
         }}
         className={choice.params.className}
-        style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width } } ></div>
+        style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}></div>
       // define input element for user to input
       const inputElement = <input id="valueInput" key={choice.params.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // if choice type is string, use input element above and button if not string

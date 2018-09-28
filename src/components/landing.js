@@ -279,6 +279,16 @@ class Landing extends Component {
 //     );
 //   }
 
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+          <strong>Ooops! </strong> {this.props.errorMessage}
+        </div>
+      );
+    }
+  }
+
   handleFormSubmit(data) {
     console.log('in landing, handleFormSubmit, data: ', data);
     const paramsObject = { flat_id: 190 }
@@ -289,6 +299,7 @@ class Landing extends Component {
       let choice = {};
       _.each(DocumentForm[key].choices, eachChoice => {
         // console.log('in landing, handleFormSubmit, eachChoice: ', eachChoice);
+        // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == '') {
           choice = eachChoice;
           console.log('in landing, handleFormSubmit, choice for empty string val: ', choice);
@@ -304,12 +315,22 @@ class Landing extends Component {
       });
     });
     console.log('in landing, handleFormSubmit, data: ', paramsObject);
-    this.props.createContract(paramsObject);
+    if (!data['construction']) {
+      console.log('in landing, handleFormSubmit, construction is required: ', data['construction']);
+      this.props.authError('this is required!!!!');
+    } else {
+      this.props.createContract(paramsObject);
+    }
   }
+
+  // renderYesOrNoFields() {
+  //   const yesOrNoNames = ['bath', 'shower', 'sink', 'laundry_area', 'water_heater', 'cooking_stove', 'ac', 'permanent_lighting', 'auto_lock', 'ca_tv', 'internet_connection', 'mail_box', 'parcel_box', 'lock']
+  //   const yesOrNoAttributes = { startingTop: }
+  // }
 
   renderEachDocumentField() {
     let fieldComponent = '';
-    return _.map(DocumentForm, formField => {
+    return _.map(DocumentForm, (formField, i) => {
       console.log('in landing, renderEachDocumentField, formField.component ', formField.component);
       if (formField.component == 'DocumentChoices') {
         fieldComponent = DocumentChoices;
@@ -318,10 +339,10 @@ class Landing extends Component {
       }
       // console.log('in landing, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
       // <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
+      // <fieldset key={formField.name} className={formField.component == 'input' ? 'form-group form-group-document' : 'form-group'} style={{ borderColor: formField.borderColor, top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width }}>
+      // </fieldset>
       return (
-          <fieldset key={formField.name} className="form-group document-form-group" style={{ borderColor: formField.borderColor }}>
-            <Field name={formField.name} component={fieldComponent} type={formField.type} className={formField.component == 'input' ? 'form-control form-control-document' : ''} style={formField.component == 'input' ? { top: formField.choices[0].params.top, left: formField.choices[0].params.left, borderColor: formField.borderColor, width: formField.choices[0].params.width, height: formField.choices[0].params.height } : {}} />
-          </fieldset>
+        <Field key={i} name={formField.name} component={fieldComponent} type={formField.type} className={formField.component == 'input' ? 'form-control' : ''} style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height } : {}} />
       );
     });
   }
@@ -330,12 +351,15 @@ class Landing extends Component {
     const { handleSubmit, appLanguageCode } = this.props;
     //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
     // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
+    // {this.renderAlert()}
     return (
       <div className="test-image-pdf-jpg">
         <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderEachDocumentField()}
             <button action="submit" id="submit-all" className="btn btn-primary btn-lg document-submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+              <div>
+              </div>
           </form>
         </div>
       </div>
@@ -388,6 +412,7 @@ function mapStateToProps(state) {
   console.log('in landing, mapStateToProps, state: ', state);
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
+    errorMessage: state.auth.error,
     auth: state.auth,
     appLanguageCode: state.languages.appLanguageCode,
     initialValues: testObject

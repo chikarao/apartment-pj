@@ -697,10 +697,13 @@ function getInitialValueObject(flat) {
   // console.log('in edit_flat, getInitialValueObject: ', flat);
   // Need to have amenity for flat to get initial value
   if (flat.amenity) {
+    // iterate through each each key in flat
     _.each(Object.keys(flat), key => {
       if (key === 'amenity') {
         // console.log('in edit_flat, getInitialValueObject, if key === amenity, flat[key]: ', flat[key]);
+        // get array of amenities from flat
         const amenities = flat[key];
+        // iterate through each amnnity and put them in the object for initialValues
         _.each(Object.keys(amenities), k => {
           // console.log('in edit_flat, getInitialValueObject, if key === amenity, each amenities[k]: ', amenities[k]);
           initialValueObj[k] = amenities[k];
@@ -708,6 +711,7 @@ function getInitialValueObject(flat) {
       } else {
         // console.log('in edit_flat, getInitialValueObject, else, flat[key]: ', flat[key]);
         // console.log('in edit_flat, getInitialValueObject, else, key: ', key);
+        // if not an amenity key (just flat), put them in the object for initial values
         initialValueObj[key] = flat[key];
       }
     });
@@ -746,6 +750,7 @@ function mapStateToProps(state) {
       initialValues
     };
   } else {
+    // return an empty object which is required by mapStateToProps, if there is no flat in state;
     return {};
   }
 }
