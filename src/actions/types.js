@@ -94,4 +94,5 @@ export const CREATE_ICALENDAR = 'create_icalendar';
 export const UPDATE_ICALENDAR = 'update_icalendar';
 export const DELETE_ICALENDAR = 'delete_icalendar';
 export const CREATE_CONTRACT = 'create_contract';
+export const CREATE_DOCUMENT_ELEMENT_LOCALLY = 'create_document_element_locally';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

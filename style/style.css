@@ -3634,11 +3634,14 @@ text-decoration: underline;
   overflow: hidden;
   overflow-y: scroll;
   overflow-x: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 .test-image-pdf-jpg-background {
   width: 792px;
   height: 1122px;
+  margin: 30px auto 20px auto;
   /* width: 595px;
   height: 842px; */
   position: relative;

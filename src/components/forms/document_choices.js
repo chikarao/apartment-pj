@@ -35,11 +35,15 @@ class DocumentChoices extends Component {
   // <button type="button" onClick={() => onChange(value - 1)}>Dec</button>
   renderEachChoice() {
     const { input: { value, onChange, name } } = this.props;
+    // console.log('DocumentChoices, renderEachChoice this.props.page', this.props.page)
     // Field has choices in document_form object; iterate through choices
-    return _.map(DocumentForm[name].choices, choice => {
-      // console.log('DocumentChoices, renderEachChoice choice', choice);
+    // For some reason, cannot destructure page from this.props!!!!!!
+    // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
+    return _.map(DocumentForm[this.props.page][name].choices, choice => {
+      console.log('DocumentChoices, renderEachChoice choice', choice);
       // define button element for user to click to set value in submission
-      const buttonElement = <div
+      const buttonElement =
+      <div
         key={choice.params.val}
         type={choice.params.type}
         onClick={() => {
@@ -47,7 +51,8 @@ class DocumentChoices extends Component {
           this.emptyInput();
         }}
         className={choice.params.className}
-        style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}></div>
+        style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
+      />
       // define input element for user to input
       const inputElement = <input id="valueInput" key={choice.params.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // if choice type is string, use input element above and button if not string

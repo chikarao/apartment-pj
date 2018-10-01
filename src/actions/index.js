@@ -97,7 +97,8 @@ import {
   CREATE_ICALENDAR,
   UPDATE_ICALENDAR,
   DELETE_ICALENDAR,
-  CREATE_CONTRACT
+  CREATE_CONTRACT,
+  CREATE_DOCUMENT_ELEMENT_LOCALLY
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1797,4 +1798,9 @@ export function createContract(contractAttributes, callback) {
       // this.showloading();
     });
   };
+}
+
+export function createDocumentElementLocally(object) {
+  console.log('in actions index, createDocumentElementLocally id:', object);
+  return { type: CREATE_DOCUMENT_ELEMENT_LOCALLY, payload: object };
 }

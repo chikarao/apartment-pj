@@ -13,6 +13,7 @@ import reviewsReducer from './reviews_reducer';
 import modalsReducer from './modals_reducer';
 import placesReducer from './places_reducer';
 import languagesReducer from './languages_reducer';
+import documentsReducer from './documents_reducer';
 
 const rootReducer = combineReducers({
   form,
@@ -32,7 +33,8 @@ const rootReducer = combineReducers({
   reviews: reviewsReducer,
   modals: modalsReducer,
   places: placesReducer,
-  languages: languagesReducer
+  languages: languagesReducer,
+  documents: documentsReducer
   // can access mapbounds.east .west., etc
 });
 
