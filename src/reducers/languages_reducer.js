@@ -7,7 +7,7 @@ import {
 } from '../actions/types';
 
 export default function (state = { createdLanguage: {}, appLanguageCode: 'en' }, action) {
-  console.log('in language reducer, action.payload: ', action.payload);
+  // console.log('in language reducer, action.payload: ', action.payload);
 
   switch (action.type) {
     case CREATE_FLAT_LANGUAGE:

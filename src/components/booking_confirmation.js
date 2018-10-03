@@ -7,6 +7,7 @@ import * as actions from '../actions';
 import ReviewEditModal from './modals/review_edit_modal';
 import ReviewCreateFrom from './forms/review_create';
 
+import CreateEditDocument from './forms/create_edit_document'
 
 class BookingConfirmation extends Component {
   // constructor(props) {
@@ -30,10 +31,10 @@ class BookingConfirmation extends Component {
     renderImage(images) {
       const imagesEmpty = _.isEmpty(images);
       if(!imagesEmpty) {
-        console.log('in show_flat renderImages, images: ', images);
+        console.log('in booking_confirmation renderImages, images: ', images);
         return (
           _.map(images, (image, index) => {
-            console.log('in show_flat renderImages, image: ', image.publicid);
+            console.log('in booking_confirmation renderImages, image: ', image.publicid);
             return (
               <div key={index} className="slide-show">
                 <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
@@ -56,15 +57,15 @@ class BookingConfirmation extends Component {
         // localStorage.setItem('data', data);
         // const localData = localStorage.getItem('data');
         // console.log('in booking confirmation, renderBookingData, localstorage data: ', localData);
+        // <h4>
+        // This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
+        // </h4>
 
         return (
           <div>
             <h3>
-              Thank you for your booking!
+              Thank you for your booking request!
             </h3>
-            <h4>
-              This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
-            </h4>
             <div id="carousel-show" className="booking-confirmation-image">
               {this.renderImage(bookingData.flat.images)}
             </div>
@@ -88,6 +89,7 @@ class BookingConfirmation extends Component {
                 <strong>Booking ID:</strong> {bookingData.id}
               </div>
             </div>
+
           </div>
         );
       }
@@ -241,6 +243,7 @@ class BookingConfirmation extends Component {
         {this.renderReviewEditModal()}
         {this.renderBookingData()}
         {this.renderReview()}
+        <CreateEditDocument />
       </div>
     );
   }

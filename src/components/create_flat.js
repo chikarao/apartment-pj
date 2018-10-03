@@ -252,6 +252,10 @@ class CreateFlat extends Component {
           <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="address1" component={InputField} type="string" className="form-control" />
         </fieldset>
+        <fieldset key={'unit'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.unit[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="unit" component={InputField} type="string" className="form-control" />
+        </fieldset>
         <fieldset key={'city'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="city" component={InputField} type="string" className="form-control" />
@@ -286,6 +290,30 @@ class CreateFlat extends Component {
         <fieldset key={'size'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="size" component={InputField} type="integer" className="form-control" />
+        </fieldset>
+        <fieldset key={'balcony_size'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.balconySize[appLanguageCode]}:</label>
+          <Field name="balcony_size" component="input" type="integer" className="form-control" />
+        </fieldset>
+        <fieldset key={'layout'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.layout[appLanguageCode]}:</label>
+          <Field name="layout" component="select" type="string" className="form-control">
+            <option></option>
+            <option value="LDK">LDK</option>
+            <option value="DK">DK</option>
+            <option value="L">K</option>
+            <option value="One Room">One Room</option>
+          </Field>
+        </fieldset>
+        <fieldset key={'toilet'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.toilet[appLanguageCode]}:</label>
+          <Field name="toilet" component="select" type="string" className="form-control">
+            <option></option>
+            <option value="Dedicated Flushing Toilet">Dedicated Flushing Toilet</option>
+            <option value="Dedicated Non-flushing Toilet">Dedicated Non-flushing Toilet</option>
+            <option value="Shared Flushing Toilet">Shared Flushing Toilet</option>
+            <option value="Shared Non-flushing Toilet">Shared Non-flushing Toilet</option>
+          </Field>
         </fieldset>
         <fieldset key={'guests'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.guests[appLanguageCode]}:</label>
@@ -346,10 +374,9 @@ class CreateFlat extends Component {
           <Field name="flat_type" component="select" type="string" className="form-control">
             <option></option>
             <option value="flat_in_building">Flat in building</option>
-            <option value="single_house">House</option>
-            <option value="room_in_house_or_flat">Room in house or flat</option>
-            <option value="share_house">Share house</option>
-            <option value="mobile_home">Mobile home</option>
+            <option value="single_family">House</option>
+            <option value="town_house">Town House</option>
+            <option value="others">Others</option>
           </Field>
         </fieldset>
         <fieldset key={'bath'} className="form-group">

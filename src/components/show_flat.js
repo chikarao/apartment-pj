@@ -55,12 +55,12 @@ class ShowFlat extends Component {
     // this.props.fetchPlaces(this.props.match.params.id);
   }
 
-  componentDidUpdate() {
-    if (this.props.flat) {
+  // componentDidUpdate() {
+  //   if (this.props.flat) {
       // console.log('in show flat, componentDidMount, this.props.flat', this.props.flat);
       // !!!!!!! THIS is where iCal is fetched
       // this.props.fetchIcal(this.p  rops.flat.ical_import_url);
-    }
+    // }
     // this.scrollLastMessageIntoView();
     // to handle error InvalidValueError: not an instance of HTMLInputElement
     // handleSearchInput was running before HTML was rendered
@@ -68,7 +68,7 @@ class ShowFlat extends Component {
     // if (this.props.flat) {
     //   this.handleSearchInput();
     // }
-  }
+  // }
 
   handleImageClick(event) {
     // console.log('in show_flat handleImageClick, event.target: ', event.target);
@@ -116,6 +116,7 @@ class ShowFlat extends Component {
       const { amenity } = this.props.flat;
 
       return _.map(Object.keys(amenity), key => {
+        console.log('in show_flat renderAmenities, key: ', key);
         if (amenity[key] === true) {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
@@ -226,20 +227,20 @@ class ShowFlat extends Component {
       // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       // console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
       if (elementVal == 'userBooking') {
-        const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.to)} to ${this.formatDate(this.props.selectedBookingDates.from)}?`)
+        const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)}?`)
         if (bookingConfirm) {
           const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
           // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
 
           // calls action craetor and sends callback to action to go to the booking confiramtion page
           // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
-          this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+            this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
         }
       } // end of if elementVal userBooking
 
         if (elementVal == 'ownerBooking') {
           const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true }
-          this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
+            this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
         }
     } else {
       // console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
@@ -247,7 +248,7 @@ class ShowFlat extends Component {
     }
   }
 
-  bookingRequestCallbackOwner() {
+    bookingRequestCallbackOwner() {
     // this.renderDatePicker()
     alert(`Dates ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)} blocked out. To unblock, delete booking on my page`)
   }
@@ -374,7 +375,7 @@ class ShowFlat extends Component {
     }
   }
 
-  bookingRequestCallback(flatId) {
+    bookingRequestCallback(flatId) {
     // console.log('in show_flat bookingRequestCallback, passed from callback: ', flatId);
     this.props.history.push(`/bookingconfirmation/${flatId}`);
   }

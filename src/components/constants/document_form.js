@@ -45,14 +45,14 @@ const DocumentForm = {
       }
     },
 
-    building_type: {
-      name: 'building_type',
+    flat_type: {
+      name: 'flat_type',
       type: 'string',
       choices: {
-        0: { params: { val: 'Multi Family', top: '22.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'Long Building', top: '24.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-        2: { params: { val: 'Single Family', top: '25.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-        3: { params: { val: 'Others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+        0: { params: { val: 'flat_in_building', top: '22.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'town_house', top: '24.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'single_family', top: '25.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
+        3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
       },
       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
       className: 'form-control-document',
@@ -83,8 +83,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    units: {
-      name: 'units',
+    year_built: {
+      name: 'year_built',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '23.75%', left: '77.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -93,8 +93,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    construction_year: {
-      name: 'construction_year',
+    units: {
+      name: 'units',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '28.7%', left: '57.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -103,8 +103,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    renovation_year: {
-      name: 'renovation_year',
+    last_renovation_year: {
+      name: 'last_renovation_year',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '27%', left: '75%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -123,8 +123,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    bedrooms: {
-      name: 'bedrooms',
+    rooms: {
+      name: 'rooms',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '31.5%', left: '50%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -149,8 +149,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    floor_space: {
-      name: 'floor_space',
+    size: {
+      name: 'size',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '34.3%', left: '42.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -159,8 +159,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    balcony_space: {
-      name: 'balcony_space',
+    balcony_size: {
+      name: 'balcony_size',
       type: 'string',
       choices: {
         0: { params: { val: '', top: '34.2%', left: '77.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
@@ -207,8 +207,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    sink: {
-      name: 'sink',
+    wash_basin: {
+      name: 'wash_basin',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -219,8 +219,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    laundry_area: {
-      name: 'laundry_area',
+    washer_dryer_area: {
+      name: 'washer_dryer_area',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -231,8 +231,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    water_heater: {
-      name: 'water_heater',
+    hot_water: {
+      name: 'hot_water',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -243,8 +243,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    cooking_stove: {
-      name: 'cooking_stove',
+    kitchen_grill: {
+      name: 'kitchen_grill',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -267,8 +267,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    permanent_lighting: {
-      name: 'permanent_lighting',
+    lighting_fixed: {
+      name: 'lighting_fixed',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -290,9 +290,9 @@ const DocumentForm = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
-
-    ca_tv: {
-      name: 'ca_tv',
+    // cable_tv includes digital
+    cable_tv: {
+      name: 'cable_tv',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -303,8 +303,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    internet_connection: {
-      name: 'internet_connection',
+    internet_ready: {
+      name: 'internet_ready',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -327,8 +327,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    parcel_box: {
-      name: 'parcel_box',
+    parcel_delivery_box: {
+      name: 'parcel_delivery_box',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -339,8 +339,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    lock: {
-      name: 'lock',
+    lock_key: {
+      name: 'lock_key',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -373,8 +373,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    power_amount: {
-      name: 'power_amount',
+    power_usage_amount: {
+      name: 'power_usage_amount',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -426,8 +426,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    parking: {
-      name: 'parking',
+    parking_included: {
+      name: 'parking_included',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -685,8 +685,8 @@ const DocumentForm = {
   },
   // end of 1
   2: {
-    rent_per_month: {
-      name: 'rent_per_month',
+    price_per_month: {
+      name: 'price_per_month',
       className: 'form-control-document',
       component: 'input',
       borderColor: 'lightgray',
@@ -1084,7 +1084,7 @@ const DocumentForm = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
-    
+
     co_tenant_name_2: {
       name: 'co_tenant_name_2',
       type: 'string',

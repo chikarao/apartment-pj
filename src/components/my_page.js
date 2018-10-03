@@ -55,54 +55,58 @@ class MyPage extends Component {
  //    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
  // //  }
  isBookingForOwnFlat(booking) {
+   console.log('in mypage, isBookingForOwnFlat, booking: ', booking);
    return booking.flat.user_id == parseInt(this.props.auth.id);
  }
 
   renderEachBookingByUser() {
     console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
     // const { bookingsByUser } = this.props;
-    const bookingsByUserEmpty = _.isEmpty(this.props.bookingsByUser);
-    const { bookingsByUser } = this.props;
-    // sort by date_start
-    const sortedBookingsByUser = this.sortBookings(bookingsByUser);
-    // <div className="my-page-card-button-box">
-    // <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
-    // </div>
+    if (this.props.bookingsByUser) {
+      const bookingsByUserEmpty = _.isEmpty(this.props.bookingsByUser);
+      const { bookingsByUser } = this.props;
+      // sort by date_start
+      const sortedBookingsByUser = this.sortBookings(bookingsByUser);
+      // <div className="my-page-card-button-box">
+      // <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
+      // </div>
 
-    if (!bookingsByUserEmpty) {
-      // console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);
-      return _.map(sortedBookingsByUser, (booking, index) => {
-        // console.log('in mypage, renderEachBookingByUser, in map, booking: ', booking);
-        // check if booking is for own flat
-        const bookingIsForOwnFlat = this.isBookingForOwnFlat(booking);
-        // if NOT own flat, render bookings
-        if (!bookingIsForOwnFlat) {
-          return (
-            <li key={index} className="my-page-each-card">
-              <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
-                {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-                <div className="my-page-details">
-                  <ul>
-                    <li>{booking.flat.description}</li>
-                    <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
-                    <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
-                    <li>booking id: {booking.id}</li>
-                    <li>flat id: {booking.flat.id}</li>
-                  </ul>
+      if (!bookingsByUserEmpty) {
+        // console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);
+        return _.map(sortedBookingsByUser, (booking, index) => {
+          // console.log('in mypage, renderEachBookingByUser, in map, booking: ', booking);
+          // check if booking is for own flat
+          const bookingIsForOwnFlat = this.isBookingForOwnFlat(booking);
+          // if NOT own flat, render bookings
+          if (!bookingIsForOwnFlat) {
+            return (
+              <li key={index} className="my-page-each-card">
+                <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                  {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                  <div className="my-page-details">
+                    <ul>
+                      <li>{booking.flat.description}</li>
+                      <li>{AppLanguages.checkIn[this.props.appLanguageCode]}: {booking.date_start}</li>
+                      <li>{AppLanguages.checkOut[this.props.appLanguageCode]}: {booking.date_end}</li>
+                      <li>booking id: {booking.id}</li>
+                      <li>flat id: {booking.flat.id}</li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </li>
-          );
-        }
-      });
-      //end of map
-    } else {
-      return (
-        <div className="my-page-no-category-items">
-        {AppLanguages.noMyBooking[this.props.appLanguageCode]}
-        </div>
-      );
+              </li>
+            );
+          }
+        });
+        //end of map
+      } else {
+        return (
+          <div className="my-page-no-category-items">
+          {AppLanguages.noMyBooking[this.props.appLanguageCode]}
+          </div>
+        );
+      }
     }
+
     //end of else
   }
 
