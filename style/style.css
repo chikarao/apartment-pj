@@ -2292,7 +2292,27 @@ form {
   width: 150px;
   margin: 10px 5px 0 20px;
   text-align: left;
+}
 
+.edit-flat-building-choice {
+  background-color: white;
+  /* min-width: 300px; */
+  width: 400px;
+  min-width: 300px;
+  height: auto;
+  margin: 20px auto 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.edit-flat-building-add-link {
+  color: blue;
+  margin: 5px;
+}
+
+.edit-flat-building-add-link:hover {
+  color: lightgray;
 }
 
 /* ************Edit flat images************* */

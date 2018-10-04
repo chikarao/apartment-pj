@@ -6,8 +6,8 @@ const DocumentForm = {
   // fieldset form-group-document, takes params.top, params.left, params.width
   // !!!! Only height needs to be px NOT %
   1: {
-    flat_building_name: {
-      name: 'flat_building_name',
+    name: {
+      name: 'name',
       className: 'form-control-document',
       component: 'input',
       borderColor: 'lightgray',
@@ -398,8 +398,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    water_system: {
-      name: 'water_system',
+    water: {
+      name: 'water',
       type: 'string',
       choices: {
         0: { params: { val: 'Public Water', top: '65.7%', left: '39%', width: '15.5%', className: 'document-rectangle', type: 'button' } },
@@ -412,8 +412,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    sewer: {
-      name: 'sewer',
+    sewage: {
+      name: 'sewage',
       type: 'string',
       choices: {
         0: { params: { val: 'Public Sewer', top: '67.3%', left: '41.5%', width: '10.5%', className: 'document-rectangle', type: 'button' } },

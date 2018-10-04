@@ -60,7 +60,8 @@ class EditFlat extends Component {
 
 
   separateFlatAndAmenities(data) {
-    const amenityObj = { flat: {}, amenity: {} }
+    const amenityObj = { flat: { user_id: this.props.flat.user_id }, amenity: { basic: true } }
+    // populage flat and amenity object with something to avoid empty params error on the API
     // console.log('in editFlat, separateFlatAndAmenities, data : ', data);
      _.each(Object.keys(data), (key) => {
     // return _.map(AMENITIES, (amenity) => {
@@ -73,14 +74,27 @@ class EditFlat extends Component {
         amenityObj.flat[key] = data[key];
       }
     });
+      amenityObj.flat_id = this.props.flat.id;
+      // amenityObj.amenity.id = this.props.flat.amenity.id;
     // console.log('in editFlat, separateFlatAndAmenities, amenityObj : ', amenityObj);
     return amenityObj;
   }
 
   handleFormSubmit(data) {
-    // console.log('in edit flat, handleFormSubmit, data: ', data);
+    const delta = {}
+    console.log('in edit flat, handleFormSubmit, data: ', data);
+    console.log('in edit flat, handleFormSubmit, this.props.initialValues: ', this.props.initialValues);
+    _.each(Object.keys(data), each => {
+      // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
+      if (data[each] !== this.props.initialValues[each]) {
+        console.log('in edit flat, handleFormSubmit, each: ', each);
+        delta[each] = data[each]
+      }
+    })
+    console.log('in edit flat, handleFormSubmit, delta: ', delta);
+
     if (this.state.confirmChecked) {
-      const dataSeparated = this.separateFlatAndAmenities(data);
+      const dataSeparated = this.separateFlatAndAmenities(delta);
       this.props.editFlat(dataSeparated, (id) => this.editFlatCallback(id));
       this.props.showLoading();
     } else {
@@ -385,6 +399,62 @@ class EditFlat extends Component {
     );
   }
 
+  handleAssignBuildingClick(event) {
+    const clickedElement = event.target;
+    // console.log('in edit flat, handleAssignBuildingClick, clickedElement: ', clickedElement);
+    const elementVal = clickedElement.getAttribute('value');
+    // console.log('in edit flat, handleAssignBuildingClick, elementVal: ', elementVal);
+    this.props.editFlat({ flat_id: this.props.flat.id, flat: { building_id: elementVal }, amenity: { basic: true } }, () => {});
+  }
+
+  renderEachBuildingChoice() {
+    return _.map(this.props.buildings, eachBuilding => {
+      console.log('in edit flat, renderEachBuilding, eachBuilding: ', eachBuilding);
+      return (
+        <div key={eachBuilding.name} className="edit-flat-building-choice">
+          {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
+          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>Yes, assign this building to my listing</div>
+        </div>
+      );
+    });
+  }
+
+  renderBuilding(building) {
+    return (
+      <div key={building.name} className="edit-flat-building-choice">
+      {building.name}, {building.address1}, {building.city}, {building.state}
+      <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>edit</div>
+      </div>
+    );
+  }
+
+  renderBuildingAddEdit() {
+    if (!this.props.flat.building && !this.props.buildings) {
+      // search buildings if flat has no building assigned or flat.buildings is null
+      this.props.searchBuildings({ address1: this.props.flat.address1 });
+    }
+
+    if (!this.props.flat.building && this.props.buildings) {
+      console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
+      return (
+        <div className="edit-flat-language-box">
+          <div>No building has been identified for your listing. Is one of these buildings for your listing?</div>
+          {this.renderEachBuildingChoice()}
+          <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>Add your building</div>
+        </div>
+      );
+    }
+    if (this.props.flat.building) {
+      console.log('in edit flat, renderBuildingAddEdit, this.props.flat.building: ', this.props.flat.building);
+      return (
+        <div className="edit-flat-language-box">
+          <div>Here is your building information</div>
+           {this.renderBuilding(this.props.flat.building)}
+        </div>
+      );
+    }
+  }
+
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -404,7 +474,7 @@ class EditFlat extends Component {
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}:</label>
-            <div className="edit-flat-address">{this.props.flat.city}</div>
+              <div className="edit-flat-address">{this.props.flat.city}</div>
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.state[appLanguageCode]}:</label>
@@ -433,15 +503,15 @@ class EditFlat extends Component {
               <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
               <Field name="price_per_month" component="input" type="float" className="form-control" />
             </fieldset>
-            <fieldset key={'size'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
               <Field name="size" component="input" type="integer" className="form-control" />
             </fieldset>
-            <fieldset key={'balcony_size'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.balconySize[appLanguageCode]}:</label>
               <Field name="balcony_size" component="input" type="integer" className="form-control" />
             </fieldset>
-            <fieldset key={'layout'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.layout[appLanguageCode]}:</label>
               <Field name="layout" component="select" type="string" className="form-control">
                 <option></option>
@@ -451,7 +521,7 @@ class EditFlat extends Component {
                 <option value="One Room">One Room</option>
               </Field>
             </fieldset>
-            <fieldset key={'toilet'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.toilet[appLanguageCode]}:</label>
               <Field name="toilet" component="select" type="string" className="form-control">
                 <option></option>
@@ -543,7 +613,7 @@ class EditFlat extends Component {
               <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
               <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
             </fieldset>
-            <fieldset key={'station'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
               <Field name="station" component="input" type="string" className="form-control" />
             </fieldset>
@@ -560,7 +630,7 @@ class EditFlat extends Component {
                 <option value="16">Over 15 minutes</option>
               </Field>
             </fieldset>
-            <fieldset key={'station1'} className="form-group">
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.nearestStation2[appLanguageCode]}:</label>
               <Field name="station1" component="input" type="string" className="form-control" />
             </fieldset>
@@ -613,6 +683,9 @@ class EditFlat extends Component {
           </form>
 
 
+          <h4>{AppLanguages.addEditBuilding[appLanguageCode]}</h4>
+              {this.renderBuildingAddEdit()}
+
           <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
             {this.renderLanguages()}
 
@@ -648,9 +721,9 @@ class EditFlat extends Component {
                   currentUserIsOwner={this.currentUserIsOwner()}
                 />
           </div>
-            <div className="back-button">
-              <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
-            </div>
+          <div className="back-button">
+            <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
+          </div>
         </div>
       );
     }
@@ -711,7 +784,6 @@ class EditFlat extends Component {
 EditFlat = reduxForm({
   form: 'EditFlat'
 })(EditFlat);
-
 // !!!!!!!!!! REQUIRES SPECIAL mapStateToProps TO ADDRESS AMENITIES!!!!!!!!!!
 // need initialValues object with flat attributes and amenty attributes on the same level
 // so iterate through flat object and if amenity, then put into initialValueObj
@@ -758,9 +830,10 @@ function mapStateToProps(state) {
     // console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
-    // console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
+    console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
     return {
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
+      buildings: state.flat.buildings,
       // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
       amenity: state.selectedFlatFromParams.selectedFlatFromParams.amenity,
       auth: state.auth,

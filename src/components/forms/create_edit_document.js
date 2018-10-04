@@ -268,17 +268,21 @@ function getInitialValueObject(flat, booking) {
       }
     });
     // end of each Object.keys flat.amenity
-    _.each(Object.keys(flat.building), eachBuildingKey => {
+    if (flat.building) {
+      // test if building has been added to flat
+      _.each(Object.keys(flat.building), eachBuildingKey => {
         // if (eachBuildingKey == 'name') {
         //   eachBuildingKey = 'flat_building_name';
         // }
-      if (eachObject[eachBuildingKey]) {
-        console.log('in create_edit_document, getInitialValueObject, eachBuildingKey: ', eachBuildingKey);
-        // if attributes in flat.building are on DocumentForm, add to initialValues object
-        object[eachBuildingKey] = flat.building[eachBuildingKey];
-      }
-    });
-    // end of each Object.keys flat.amenity
+        if (eachObject[eachBuildingKey]) {
+          console.log('in create_edit_document, getInitialValueObject, eachBuildingKey: ', eachBuildingKey);
+          // if attributes in flat.building are on DocumentForm, add to initialValues object
+          object[eachBuildingKey] = flat.building[eachBuildingKey];
+        }
+      });
+      // end of each Object.keys flat.building
+    }
+    // end of if flat.building
   });
   // end of documentForm eachObject
   // deal with booking dates dates (separates year, month and day of to and from attributes)

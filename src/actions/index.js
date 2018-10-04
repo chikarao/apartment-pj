@@ -98,7 +98,8 @@ import {
   UPDATE_ICALENDAR,
   DELETE_ICALENDAR,
   CREATE_CONTRACT,
-  CREATE_DOCUMENT_ELEMENT_LOCALLY
+  CREATE_DOCUMENT_ELEMENT_LOCALLY,
+  SEARCH_BUILDINGS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -899,7 +900,7 @@ export function createMessage(messageAttributes, callback) {
 }
 
 export function editFlat(flatAttributes, callback) {
-  const { flat_id } = flatAttributes.flat;
+  const { flat_id } = flatAttributes;
   console.log('in actions index, editFlat, flatAttributes: ', flatAttributes);
   console.log('in actions index, editFlat, flat_id: ', flat_id);
   console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -1803,4 +1804,30 @@ export function createContract(contractAttributes, callback) {
 export function createDocumentElementLocally(object) {
   console.log('in actions index, createDocumentElementLocally id:', object);
   return { type: CREATE_DOCUMENT_ELEMENT_LOCALLY, payload: object };
+}
+
+export function searchBuildings(buildingAttributes) {
+  console.log('in action index, searchBuildings, buildingAttributes: ', buildingAttributes);
+  // const { flat_id } = buildingAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/search_buildings`, buildingAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to searchBuildings: ', response);
+      console.log('in action index, response to searchBuildings: ', response.data.data.buildings);
+
+      dispatch({
+        type: SEARCH_BUILDINGS,
+        payload: response.data.data.buildings
+      });
+      // callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to searchBuildings: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
 }

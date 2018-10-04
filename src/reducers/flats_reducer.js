@@ -24,10 +24,11 @@ import {
   CREATE_ICALENDAR,
   UPDATE_ICALENDAR,
   DELETE_ICALENDAR,
-  DELETE_BOOKING
+  DELETE_BOOKING,
+  SEARCH_BUILDINGS
 } from '../actions/types';
 
-export default function (state = { searchFlatParameters: {} }, action) {
+export default function (state = { searchFlatParameters: {}, buildings: null }, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
@@ -138,9 +139,12 @@ export default function (state = { searchFlatParameters: {} }, action) {
 
     case DELETE_ICALENDAR:
       return { ...state, selectedFlatFromParams: action.payload };
-      
+
     case DELETE_BOOKING:
       return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };
+
+    case SEARCH_BUILDINGS:
+      return { ...state, buildings: action.payload };
 
     default:
       return state;
