@@ -25,10 +25,14 @@ import {
   UPDATE_ICALENDAR,
   DELETE_ICALENDAR,
   DELETE_BOOKING,
-  SEARCH_BUILDINGS
+  SEARCH_BUILDINGS,
+  UPDATE_BUILDING
 } from '../actions/types';
 
-export default function (state = { searchFlatParameters: {}, buildings: null }, action) {
+export default function (state = {
+  searchFlatParameters: {},
+  buildings: []
+}, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
@@ -57,8 +61,10 @@ export default function (state = { searchFlatParameters: {}, buildings: null }, 
       return { ...state, editFlatData: action.payload };
 
     case EDIT_FLAT:
-      return { ...state, editFlatData: action.payload };
+      return { ...state, selectedFlatFromParams: action.payload };
 
+    // case EDIT_FLAT:
+    //   return { ...state, editFlatData: action.payload };
     case SEARCH_FLAT_PARAMENTERS:
     // everytime object with k-v passed, add k-v or updates it
       const searchFlatParameters = state.searchFlatParameters;
@@ -138,6 +144,9 @@ export default function (state = { searchFlatParameters: {}, buildings: null }, 
       return { ...state, selectedFlatFromParams: action.payload };
 
     case DELETE_ICALENDAR:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case UPDATE_BUILDING:
       return { ...state, selectedFlatFromParams: action.payload };
 
     case DELETE_BOOKING:

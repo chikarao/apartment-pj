@@ -99,7 +99,10 @@ import {
   DELETE_ICALENDAR,
   CREATE_CONTRACT,
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
-  SEARCH_BUILDINGS
+  SEARCH_BUILDINGS,
+  SHOW_BUILDING_EDIT_MODAL,
+  SHOW_BUILDING_CREATE_MODAL,
+  UPDATE_BUILDING
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -695,7 +698,7 @@ export function selectedFlat(flat) {
 }
 
 // takes id params in show flat page and fetches flat from api
-export function selectedFlatFromParams(id) {
+export function selectedFlatFromParams(id, callback) {
   console.log('in actions index, selectedFlatFromParams id: ', id);
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/flats/${id}`, {
@@ -707,6 +710,7 @@ export function selectedFlatFromParams(id) {
         type: SELECTED_FLAT_FROM_PARAMS,
         payload: response.data.data.flat
     });
+    callback();
   });
   };
 }
@@ -912,10 +916,10 @@ export function editFlat(flatAttributes, callback) {
     })
     .then(response => {
       console.log('response to editFlat, response: ', response);
-      console.log('response to editFlat, response.data.data: ', response.data.data);
+      console.log('response to editFlat, response.data.data: ', response.data.data.flat);
       dispatch({
         type: EDIT_FLAT,
-        payload: response.data.data
+        payload: response.data.data.flat
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.flat.id, flatAttributes.files);
@@ -1800,6 +1804,31 @@ export function createContract(contractAttributes, callback) {
     });
   };
 }
+export function updateBuilding(buildingAttributes, callback) {
+  console.log('in action index, updateBuilding, buildingAttributes: ', buildingAttributes);
+  const { building_id } = buildingAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/buildings/${building_id}`, buildingAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateBuilding: ', response);
+      console.log('in action index, response to updateBuilding: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_BUILDING,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateBuilding: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
 
 export function createDocumentElementLocally(object) {
   console.log('in actions index, createDocumentElementLocally id:', object);
@@ -1830,4 +1859,17 @@ export function searchBuildings(buildingAttributes) {
       // this.showloading();
     });
   };
+}
+
+export function showBuildingEditModal() {
+  console.log('in actions index, showIcalendarEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_BUILDING_EDIT_MODAL };
+}
+export function showBuildingCreateModal() {
+  console.log('in actions index, showIcalendarEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_BUILDING_CREATE_MODAL };
 }

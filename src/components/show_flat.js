@@ -42,7 +42,7 @@ class ShowFlat extends Component {
     // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
-    this.props.selectedFlatFromParams(this.props.match.params.id);
+    this.props.selectedFlatFromParams(this.props.match.params.id, () => {});
     // init
     // this.props.setNoConversation();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id

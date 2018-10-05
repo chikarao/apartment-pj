@@ -96,4 +96,7 @@ export const DELETE_ICALENDAR = 'delete_icalendar';
 export const CREATE_CONTRACT = 'create_contract';
 export const CREATE_DOCUMENT_ELEMENT_LOCALLY = 'create_document_element_locally';
 export const SEARCH_BUILDINGS = 'search_buildings';
+export const SHOW_BUILDING_EDIT_MODAL = 'show_building_edit_modal';
+export const SHOW_BUILDING_CREATE_MODAL = 'show_building_create_modal';
+export const UPDATE_BUILDING = 'update_building';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

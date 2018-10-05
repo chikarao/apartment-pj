@@ -6,7 +6,9 @@ import {
   SHOW_LANGUAGE_EDIT_MODAL,
   SHOW_ICALENDAR_CREATE_MODAL,
   SHOW_ICALENDAR_EDIT_MODAL,
-  SELECTED_ICALENDAR_ID
+  SELECTED_ICALENDAR_ID,
+  SHOW_BUILDING_EDIT_MODAL,
+  SHOW_BUILDING_CREATE_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -19,7 +21,9 @@ export default function (
     showCardInputModal: false,
     showLanguageCreateModal: false,
     showIcalendarCreateModal: false,
-    showIcalendarEditModal: false
+    showIcalendarEditModal: false,
+    showBuildingCreateModal: false,
+    showBuildingEditModal: false
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -45,6 +49,13 @@ export default function (
     case SELECTED_ICALENDAR_ID:
     // console.log('in booking reducer, state: ', state);
     return { ...state, selectedIcalendarId: action.payload };
+
+    case SHOW_BUILDING_EDIT_MODAL:
+      return { ...state, showBuildingEditModal: !state.showBuildingEditModal };
+
+    case SHOW_BUILDING_CREATE_MODAL:
+      return { ...state, showBuildingCreateModal: !state.showBuildingCreateModal };
+
 
     default:
       return state;

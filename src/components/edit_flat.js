@@ -15,6 +15,7 @@ import LanguageCreateModal from './modals/language_create_modal';
 import LanguageEditModal from './modals/language_edit_modal';
 import IcalendarCreateModal from './modals/icalendar_create_modal';
 import IcalendarEditModal from './modals/icalendar_edit_modal';
+import BuildingEditModal from './modals/building_edit_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
 
@@ -31,6 +32,7 @@ class EditFlat extends Component {
       confirmChecked: false,
       selectedLanguageCode: ''
     };
+    // this.handleAssignEditBuildingClick = this.handleAssignEditBuildingClick.bind(this);
   }
 // reference for checkbox
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
@@ -38,7 +40,9 @@ class EditFlat extends Component {
   componentDidMount() {
     // console.log('in edit flat, componentDidMount, this.props.match.params:', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
-    this.props.selectedFlatFromParams(this.props.match.params.id);
+    this.props.selectedFlatFromParams(this.props.match.params.id, () => {
+      this.selectedFlatFromParamsCallback();
+    });
     this.props.getCurrentUser();
     // this.props.fetchPlaces(this.props.match.params.id);
 
@@ -47,6 +51,15 @@ class EditFlat extends Component {
       // console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
     // }
+  }
+
+  selectedFlatFromParamsCallback() {
+    console.log('in edit flat, selectedFlatFromParamsCallback, this.props.flat: ', this.props.flat);
+    if (this.props.flat) {
+      if (!this.props.flat.building) {
+        this.props.searchBuildings({ address1: this.props.flat.address1 });
+      }
+    }
   }
 
   currentUserIsOwner() {
@@ -399,12 +412,19 @@ class EditFlat extends Component {
     );
   }
 
-  handleAssignBuildingClick(event) {
+  handleAssignEditBuildingClick(event) {
     const clickedElement = event.target;
-    // console.log('in edit flat, handleAssignBuildingClick, clickedElement: ', clickedElement);
+    // console.log('in edit flat, handleAssignEditBuildingClick, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in edit flat, handleAssignBuildingClick, elementVal: ', elementVal);
-    this.props.editFlat({ flat_id: this.props.flat.id, flat: { building_id: elementVal }, amenity: { basic: true } }, () => {});
+    const elementName = clickedElement.getAttribute('name');
+    // console.log('in edit flat, handleAssignEditBuildingClick, elementVal: ', elementVal);
+    if (elementName == 'add') {
+      this.props.editFlat({ flat_id: this.props.flat.id, flat: { building_id: elementVal }, amenity: { basic: true } }, () => {});
+    }
+
+    if (elementName == 'edit') {
+      this.props.showBuildingEditModal();
+    }
   }
 
   renderEachBuildingChoice() {
@@ -413,7 +433,7 @@ class EditFlat extends Component {
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
           {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
-          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>Yes, assign this building to my listing</div>
+          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Yes, assign this building to my listing</div>
         </div>
       );
     });
@@ -422,37 +442,52 @@ class EditFlat extends Component {
   renderBuilding(building) {
     return (
       <div key={building.name} className="edit-flat-building-choice">
-      {building.name}, {building.address1}, {building.city}, {building.state}
-      <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>edit</div>
+       {building.name}, {building.address1}, {building.city}, {building.state}, {building.country}
+      <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>edit</div>
       </div>
     );
   }
 
   renderBuildingAddEdit() {
-    if (!this.props.flat.building && !this.props.buildings) {
-      // search buildings if flat has no building assigned or flat.buildings is null
-      this.props.searchBuildings({ address1: this.props.flat.address1 });
-    }
+    // if (this.props.flat) {
+    //   if (!this.props.flat.building && !this.props.buildings) {
+    //     // search buildings if flat has no building assigned or flat.buildings is null
+    //     this.props.searchBuildings({ address1: this.props.flat.address1 });
+    //   }
 
-    if (!this.props.flat.building && this.props.buildings) {
-      console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
-      return (
-        <div className="edit-flat-language-box">
-          <div>No building has been identified for your listing. Is one of these buildings for your listing?</div>
-          {this.renderEachBuildingChoice()}
-          <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignBuildingClick.bind(this)}>Add your building</div>
-        </div>
-      );
-    }
-    if (this.props.flat.building) {
-      console.log('in edit flat, renderBuildingAddEdit, this.props.flat.building: ', this.props.flat.building);
-      return (
-        <div className="edit-flat-language-box">
+      if (!this.props.flat.building && this.props.buildings.length > 0) {
+        console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
+        return (
+          <div className="edit-flat-language-box">
+            <div>No building has been identified for your listing. <br/>Is one of these buildings for your listing?</div>
+            <div className="edit-flat-building-choice-scroll-box">
+                {this.renderEachBuildingChoice()}
+            </div>
+            <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>No, add my building</div>
+          </div>
+        );
+      }
+
+      if (!this.props.flat.building && !this.props.buildings.length > 0) {
+        console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
+        return (
+          <div className="edit-flat-language-box">
+            <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Add my building</div>
+          </div>
+        );
+      }
+
+      if (this.props.flat.building) {
+        console.log('in edit flat, renderBuildingAddEdit, this.props.flat.building: ', this.props.flat.building);
+        return (
+          <div className="edit-flat-language-box">
           <div>Here is your building information</div>
-           {this.renderBuilding(this.props.flat.building)}
-        </div>
-      );
-    }
+          {this.renderBuilding(this.props.flat.building)}
+          </div>
+        );
+      }
+    // }
+    // end of if this.props.flat
   }
 
   renderEditForm() {
@@ -768,9 +803,21 @@ class EditFlat extends Component {
     );
   }
 
+  renderBuildingEditModal() {
+    return (
+      <div>
+        <BuildingEditModal
+          show
+          // show={this.props.showBuildingEdit}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
+        {this.renderBuildingEditModal()}
         {this.renderLanguageCreateModal()}
         {this.renderLanguageEditModal()}
         {this.renderIcalendarCreateModal()}
@@ -842,6 +889,8 @@ function mapStateToProps(state) {
       showLanguageEdit: state.modals.showLanguageEditModal,
       showIcalendarCreate: state.modals.showIcalendarCreateModal,
       showIcalendarEdit: state.modals.showIcalendarEditModal,
+      showBuildingEdit: state.modals.showBuildingEditModal,
+      showBuildingCreate: state.modals.showBuildingCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
