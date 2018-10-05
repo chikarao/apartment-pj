@@ -242,11 +242,11 @@ class EditFlat extends Component {
             // console.log('in show_flat renderImages, image: ', image.publicid);
             return (
               <div key={image.id} className="slide-show-edit-flat">
-              <img src={"http://res.cloudinary.com/chikarao/image/upload/w_165,h_110/" + image.publicid + '.jpg'} />
-              <label className="delete-image-radio">
-              <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
-              <span className="checkmarkDeleteImage"></span>
-              </label>
+                <img src={"http://res.cloudinary.com/chikarao/image/upload/w_165,h_110/" + image.publicid + '.jpg'} />
+                <label className="delete-image-radio">
+                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+                <span className="checkmarkDeleteImage"></span>
+                </label>
               </div>
             );
           }

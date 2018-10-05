@@ -107,7 +107,7 @@ class BuildingEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            // props={fieldComponent == DocumentChoices ? { page } : {}}
+            // props={{ appLanguageCode: this.props.appLanguageCode }}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -212,6 +212,7 @@ function mapStateToProps(state) {
       // initialValues: state.auth.userProfile
       // languages: state.languages,
       showBuildingEdit: state.modals.showBuildingEditModal,
+      appLanguageCode: state.languages.appLanguageCode,
       // get the first calendar in array to match selectedBuildingId
       // calendar: calendarArray[0],
       // language: state.languages.selectedLanguage,

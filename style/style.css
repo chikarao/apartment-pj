@@ -2351,6 +2351,12 @@ form {
 
   padding: 5px;
 }
+
+.form-input {
+  min-width: 150px;
+  text-align: left;
+  padding: 5px;
+}
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {

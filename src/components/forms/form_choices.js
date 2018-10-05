@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 import Building from '../constants/building';
 
@@ -37,7 +39,7 @@ class FormChoices extends Component {
   anyOfOtherValues(name, value) {
     const anyOtherValueArray = [];
     _.each(Building[name].choices, choice => {
-      if (choice.val == value) {
+      if (choice.value == value) {
         console.log('FormChoices, anyOfOtherValues choice.val, value', choice.val, value);
         anyOtherValueArray.push(choice)
       }
@@ -60,19 +62,21 @@ class FormChoices extends Component {
       // console.log('FormChoices, renderEachChoice name', name);
       // console.log('FormChoices, renderEachChoice value', value);
       // define button element for user to click to set value in submission
+      console.log('FormChoices, renderEachChoice inside onClick, choice[this.props.appLanguageCode]', choice[this.props.appLanguageCode]);
+      console.log('FormChoices, renderEachChoice inside onClick, this.props.appLanguageCode', this.props.appLanguageCode);
       const buttonElement =
         <div
-          key={choice.val}
+          key={choice.value}
           type={choice.type}
           onClick={() => {
             onChange(choice.value);
-            console.log('FormChoices, renderEachChoice inside onClick, choice.value, value', choice.value, value);
+            // console.log('FormChoices, renderEachChoice inside onClick, choice.value, value', choice.value, value);
             this.emptyInput();
           }}
           className={choice.className}
           style={value.toString() == choice.value && (value != null) ? { borderColor: 'black' } : { borderColor: 'lightgray' }}
         >
-        {choice.val}
+        {choice[this.props.appLanguageCode]}
         </div>
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
@@ -80,7 +84,7 @@ class FormChoices extends Component {
       // console.log('FormChoices, renderEachChoice choice.val, value, this.anyOfOtherValues(name, value)', choice.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
-      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.val} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} />
+      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.value} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} placeholder="Enter other" />
       // const inputElement = <input id="valueInput" name={name} key={choice.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }} />
       // if choice type is string, use input element above and button if not string
       if (choice.type == 'string') {
@@ -112,4 +116,12 @@ class FormChoices extends Component {
   }
 }
 
-export default FormChoices;
+function mapStateToProps(state) {
+  console.log('in form_choices, mapStateToProps, state: ', state);
+  return {
+    appLanguageCode: state.languages.appLanguageCode,
+  };
+}
+
+// export default FormChoices;
+export default connect(mapStateToProps, actions)(FormChoices);
