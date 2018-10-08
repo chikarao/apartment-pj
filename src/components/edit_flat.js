@@ -804,14 +804,18 @@ class EditFlat extends Component {
   }
 
   renderBuildingEditModal() {
-    return (
-      <div>
-        <BuildingEditModal
-          show
-          // show={this.props.showBuildingEdit}
-        />
-      </div>
-    );
+    if (this.props.flat) {
+      if (this.props.flat.building) {
+        return (
+          <div>
+          <BuildingEditModal
+          // show
+          show={this.props.showBuildingEdit}
+          />
+          </div>
+        );
+      }
+    }
   }
 
   render() {

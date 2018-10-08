@@ -57,10 +57,13 @@ class BuildingEditModal extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // const elementName = clickedElement.getAttsribute('name');
-    console.log('in show_flat, handleDeleteBuildingClick, elementVal: ', elementVal);
+    console.log('in building_edit_modal, handleDeleteBuildingClick, elementVal: ', elementVal);
     this.props.showLoading();
     // this.setState({ languageCode: elementName });
-    this.props.deleteBuilding({ id: elementVal }, () => this.handleDeleteCallback());
+    // this.props.deleteBuilding({ id: elementVal }, () => this.handleDeleteCallback());
+    // unlink flat with building by assigining null to building_id for flat
+    this.props.showLoading()
+    this.props.editFlat({ flat_id: this.props.flat.id, flat: { building_id: null }, amenity: { basic: true } }, () => this.handleDeleteCallback());
   }
 
   handleDeleteCallback() {
@@ -91,13 +94,13 @@ class BuildingEditModal extends Component {
   renderEachBuildingField() {
     let fieldComponent = '';
     return _.map(Building, (formField, i) => {
-      console.log('in show_flat, renderEachBuildingField, formField: ', formField);
+      console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      console.log('in show_flat, renderEachBuildingField, fieldComponent: ', fieldComponent);
+      // console.log('in building_edit_modal, renderEachBuildingField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
@@ -121,7 +124,7 @@ class BuildingEditModal extends Component {
     const { handleSubmit } = this.props;
 
     if (this.props.flat) {
-      console.log('in show_flat, renderEditBuildingForm, this.props.flat: ', this.props.flat);
+      console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -133,7 +136,7 @@ class BuildingEditModal extends Component {
 
             <div className="edit-profile-scroll-div">
               <div className="edit-flat-delete-language-button">
-                <button value={this.props.flat.building.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteBuildingClick.bind(this)}>Delete</button>
+                <button value={this.props.flat.building.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteBuildingClick.bind(this)}>Unlink Building</button>
               </div>
               {this.renderAlert()}
 

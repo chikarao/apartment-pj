@@ -2319,7 +2319,9 @@ form {
 
 .edit-flat-building-add-link {
   color: blue;
-  margin: 5px;
+  width: auto;
+  max-width: 250px;
+  margin: 0 auto 0 auto;
 }
 
 .edit-flat-building-add-link:hover {
