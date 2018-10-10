@@ -102,7 +102,9 @@ import {
   SEARCH_BUILDINGS,
   SHOW_BUILDING_EDIT_MODAL,
   SHOW_BUILDING_CREATE_MODAL,
-  UPDATE_BUILDING
+  UPDATE_BUILDING,
+  CREATE_BUILDING,
+  FETCH_BANK_ACCOUNTS_BY_USER
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -269,10 +271,10 @@ export function signupUser({ email, password }, callback) {
 }
 
 export function getCurrentUser() {
-  console.log('in actions index, getCurrentUser:');
   const id = localStorage.getItem('id');
   const email = localStorage.getItem('email');
   const image = localStorage.getItem('image');
+  console.log('in actions index, getCurrentUser, id, email, image:', id, email, image);
   return { type: GET_CURRENT_USER, payload: { email, id, image } };
 }
 
@@ -405,7 +407,7 @@ export function fetchFlats(mapBounds, searchAttributes, callback) {
 export function fetchFlatsByUser(id, callback) {
   // const { north, south, east, west } = mapBounds;
   // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
-  console.log('in action index, fetchFlatsByUser, id: ', id);
+    console.log('in action index, fetchFlatsByUser, id: ', id);
 
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/users/flats`, {
@@ -1829,6 +1831,31 @@ export function updateBuilding(buildingAttributes, callback) {
     });
   };
 }
+export function createBuilding(buildingAttributes, callback) {
+  console.log('in action index, createBuilding, buildingAttributes: ', buildingAttributes);
+  const { building_id } = buildingAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/buildings/`, buildingAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createBuilding: ', response);
+      console.log('in action index, response to createBuilding: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_BUILDING,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createBuilding: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
 
 export function createDocumentElementLocally(object) {
   console.log('in actions index, createDocumentElementLocally id:', object);
@@ -1872,4 +1899,23 @@ export function showBuildingCreateModal() {
 
   //flip showResetPasswordModal
   return { type: SHOW_BUILDING_CREATE_MODAL };
+}
+
+export function fetchBankAccountsByUser() {
+  // console.log('in actions index, fetchUserBankAccounts allSearchAttributes: ', allSearchAttributes);
+  return function (dispatch) {  
+    // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max, ac, wifi, wheelchair_accessible, parking, kitchen } }, {
+    axios.get(`${ROOT_URL}/api/v1/bank_accounts`, {
+      // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchUserBankAccounts, response: ', response);
+      console.log('response to fetchUserBankAccounts, response.data.data: ', response.data.data);
+      dispatch({
+        type: FETCH_BANK_ACCOUNTS_BY_USER,
+        payload: response.data.data.bank_accounts
+      });
+    });
+  };
 }

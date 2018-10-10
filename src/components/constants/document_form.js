@@ -183,16 +183,18 @@ const DocumentForm = {
       component: 'DocumentChoices'
       // borderColor: 'blue'
     },
-
-    bath: {
-      name: 'bath',
+　　// !!!!!!bath is assuming if there is a shower, there is a bathingroom
+    bath_tub: {
+      name: 'bath_tub',
       type: 'boolean',
       choices: {
         0: { valName: 'Y', params: { val: true, top: '37.7%', left: '47.3%', width: '2.7%', className: 'document-circle', type: 'button' } },
         1: { valName: 'N', params: { val: false, top: '37.7%', left: '51%', width: '2.7%', className: 'document-circle', type: 'button' } }
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      attributes: { names: ['bath_tub'], type: 'boolean' }
     },
 
     shower: {
@@ -460,8 +462,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    bicycle_parking: {
-      name: 'bicycle_parking',
+    bicycle_parking_included: {
+      name: 'bicycle_parking_included',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -494,8 +496,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    motorcycle_parking: {
-      name: 'motorcycle_parking',
+    motorcycle_parking_included: {
+      name: 'motorcycle_parking_included',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -528,8 +530,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    storage: {
-      name: 'storage',
+    storage_included: {
+      name: 'storage_included',
       type: 'boolean',
       choices: {
         // add 1.5% to top
@@ -540,8 +542,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    yard: {
-      name: 'yard',
+    dedicated_yard: {
+      name: 'dedicated_yard',
       type: 'boolean',
       choices: {
         // add 1.5% to top

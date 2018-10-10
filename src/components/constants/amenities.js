@@ -30,7 +30,7 @@ const Amenities = {
     crib: { en: 'Crib', jp: 'ベビーベッド' },
     high_chair: { en: 'High Chair', jp: 'ハイチェア' },
     kitchen: { en: 'Kitchen', jp: 'キッチン' },
-    kitchen_grill: { en: 'Kitchen Grill', jp: 'ガス・電気調理器' },
+    kitchen_grill: { en: 'Kitchen Stove', jp: 'ガス・電気調理器' },
     oven: { en: 'Oven', jp: 'オーブン' },
     cooking_basics: { en: 'Cooking Basics', jp: 'クッキング用具' },
     eating_utensils: { en: 'Eating Utensils', jp: '食器' },

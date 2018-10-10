@@ -53,20 +53,20 @@ class DocumentChoices extends Component {
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(DocumentForm[this.props.page][name].choices, choice => {
       // console.log('DocumentChoices, renderEachChoice choice', choice.params.val);
-      // console.log('DocumentChoices, renderEachChoice name', name);
+      console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
       // console.log('DocumentChoices, renderEachChoice value', value);
       // define button element for user to click to set value in submission
       const buttonElement =
-      <div
-        key={choice.params.val}
-        type={choice.params.type}
-        onClick={() => {
-          onChange(choice.params.val);
-          this.emptyInput();
-        }}
-        className={choice.params.className}
-        style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
-      />
+        <div
+          key={choice.params.val}
+          type={choice.params.type}
+          onClick={() => {
+            onChange(choice.params.val);
+            this.emptyInput();
+          }}
+          className={choice.params.className}
+          style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
+        />
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
       // const inputElement = <input id="valueInput" value={value} key={choice.params.val} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />

@@ -26,7 +26,8 @@ import {
   DELETE_ICALENDAR,
   DELETE_BOOKING,
   SEARCH_BUILDINGS,
-  UPDATE_BUILDING
+  UPDATE_BUILDING,
+  CREATE_BUILDING
 } from '../actions/types';
 
 export default function (state = {
@@ -147,6 +148,10 @@ export default function (state = {
       return { ...state, selectedFlatFromParams: action.payload };
 
     case UPDATE_BUILDING:
+
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case CREATE_BUILDING:
       return { ...state, selectedFlatFromParams: action.payload };
 
     case DELETE_BOOKING:

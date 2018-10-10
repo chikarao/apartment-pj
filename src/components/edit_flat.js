@@ -16,6 +16,7 @@ import LanguageEditModal from './modals/language_edit_modal';
 import IcalendarCreateModal from './modals/icalendar_create_modal';
 import IcalendarEditModal from './modals/icalendar_edit_modal';
 import BuildingEditModal from './modals/building_edit_modal';
+import BuildingCreateModal from './modals/building_create_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
 
@@ -57,7 +58,7 @@ class EditFlat extends Component {
     console.log('in edit flat, selectedFlatFromParamsCallback, this.props.flat: ', this.props.flat);
     if (this.props.flat) {
       if (!this.props.flat.building) {
-        this.props.searchBuildings({ address1: this.props.flat.address1 });
+        this.props.searchBuildings({ address1: this.props.flat.address1, city: this.props.flat.city });
       }
     }
   }
@@ -121,8 +122,10 @@ class EditFlat extends Component {
     // this.props.history.push(`/editflat/${id}`);
     //for some reason, history.push does not update the default values in fields
     // reload page; fetches new flat data
-    this.props.showLoading();
-    document.location.reload()
+    this.setState({ confirmChecked: false }, () => {
+      this.props.showLoading();
+    });
+    // document.location.reload()
   }
 
   renderAlert() {
@@ -425,6 +428,10 @@ class EditFlat extends Component {
     if (elementName == 'edit') {
       this.props.showBuildingEditModal();
     }
+
+    if (elementName == 'create') {
+      this.props.showBuildingCreateModal();
+    }
   }
 
   renderEachBuildingChoice() {
@@ -454,7 +461,6 @@ class EditFlat extends Component {
     //     // search buildings if flat has no building assigned or flat.buildings is null
     //     this.props.searchBuildings({ address1: this.props.flat.address1 });
     //   }
-
       if (!this.props.flat.building && this.props.buildings.length > 0) {
         console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
@@ -463,7 +469,7 @@ class EditFlat extends Component {
             <div className="edit-flat-building-choice-scroll-box">
                 {this.renderEachBuildingChoice()}
             </div>
-            <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>No, add my building</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>No, add my building</div>
           </div>
         );
       }
@@ -472,7 +478,7 @@ class EditFlat extends Component {
         console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
           <div className="edit-flat-language-box">
-            <div value={this.props.flat.id} className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Add my building</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Add my building</div>
           </div>
         );
       }
@@ -506,6 +512,10 @@ class EditFlat extends Component {
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
               <div className="edit-flat-address">{this.props.flat.address1}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.unit}</div>
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}:</label>
@@ -627,10 +637,9 @@ class EditFlat extends Component {
               <Field name="flat_type" component="select" type="string" className="form-control">
                 <option></option>
                 <option value="flat_in_building">Flat in building</option>
-                <option value="single_house">House</option>
-                <option value="room_in_house_or_flat">Room in house or flat</option>
-                <option value="share_house">Share house</option>
-                <option value="mobile_home">Mobile home</option>
+                <option value="single_family">House</option>
+                <option value="town_house">Town House</option>
+                <option value="others">Others</option>
               </Field>
             </fieldset>
             <fieldset className="form-group">
@@ -691,6 +700,46 @@ class EditFlat extends Component {
               </Field>
             </fieldset>
             <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.parkingIncluded[appLanguageCode]}:</label>
+              <Field name="parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.bicycleParkingIncluded[appLanguageCode]}:</label>
+              <Field name="bicycle_parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.motorcycleParkingIncluded[appLanguageCode]}:</label>
+              <Field name="motorcycle_parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.storageIncluded[appLanguageCode]}:</label>
+              <Field name="storage_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.dedicatedYard[appLanguageCode]}:</label>
+              <Field name="dedicated_yard" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.smoking[appLanguageCode]}:</label>
               <Field name="smoking" component="select" type="boolean" className="form-control">
                 <option></option>
@@ -710,7 +759,7 @@ class EditFlat extends Component {
             {this.renderAlert()}
             <div className="confirm-change-and-button">
               <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
-                <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
+                <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
                 <span className="checkmark"></span>
               </label>
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
@@ -817,10 +866,23 @@ class EditFlat extends Component {
       }
     }
   }
+  renderBuildingCreateModal() {
+    if (this.props.flat) {
+      return (
+        <div>
+        <BuildingCreateModal
+        // show
+        show={this.props.showBuildingCreate}
+        />
+        </div>
+      );
+    }
+  }
 
   render() {
     return (
       <div>
+        {this.renderBuildingCreateModal()}
         {this.renderBuildingEditModal()}
         {this.renderLanguageCreateModal()}
         {this.renderLanguageEditModal()}

@@ -42,6 +42,7 @@ class MyPage extends Component {
     this.props.fetchProfileForUser(() => this.props.fetchCustomer());
     // this.props.fetchCustomer();
     this.props.actionTypeCard('Add a Card');
+    this.props.fetchBankAccountsByUser();
   }
 
   // fetchFlatsByUserCallback(flatIdArray) {
@@ -55,12 +56,12 @@ class MyPage extends Component {
  //    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
  // //  }
  isBookingForOwnFlat(booking) {
-   console.log('in mypage, isBookingForOwnFlat, booking: ', booking);
+   // console.log('in mypage, isBookingForOwnFlat, booking: ', booking);
    return booking.flat.user_id == parseInt(this.props.auth.id);
  }
 
   renderEachBookingByUser() {
-    console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
+    // console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
     // const { bookingsByUser } = this.props;
     if (this.props.bookingsByUser) {
       const bookingsByUserEmpty = _.isEmpty(this.props.bookingsByUser);
@@ -112,18 +113,18 @@ class MyPage extends Component {
 
 
   handleFlatCardClick(event) {
-    console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
+    // console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
+    // console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
     this.props.history.push(`/show/${elementVal}`);
   }
 
   handleBookingCardClick(event) {
-    console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
+    // console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
+    // console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
     this.props.history.push(`/bookingconfirmation/${elementVal}`);
   }
  // iterate through each flat_language (if created by user)
@@ -482,13 +483,13 @@ class MyPage extends Component {
 
     // const bookings = this.createBookingObject((b) => this.sortBookings(b));
     // const sortedBookings = this.sortBookings(bookings);
-    console.log('in mypage, renderEachOwnFlatBookings, preSortBookings: ', preSortBookings);
+    // console.log('in mypage, renderEachOwnFlatBookings, preSortBookings: ', preSortBookings);
     if (!bookingsEmpty) {
       return _.map(bookings, (booking, index) => {
         // console.log('in mypage, renderOwnBookings, in each, booking: ', booking);
         const flat = booking.flat;
         // const bookingForOwnFlat = this.isBookingForOwnFlat(booking);
-        console.log('in mypage, renderEachOwnFlatBookings, in each, bookings: ', bookings);
+        // console.log('in mypage, renderEachOwnFlatBookings, in each, bookings: ', bookings);
         // <div className="my-page-card-button-box">
         // <button value={booking.id} type="ownBooking" className="btn btn-delete btn-sm my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>Delete</button>
         // </div>
@@ -533,18 +534,18 @@ class MyPage extends Component {
       const { flats } = this.props;
       const flatsEmpty = _.isEmpty(flats);
       // let bookingsObj = {};
-      console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
+      // console.log('in mypage, renderOwnBookings, this.props.flats.bookings: ', this.props.flats);
       const bookingsList = {}
       if (!flatsEmpty) {
          _.map(flats, (flat) => {
-          console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
+          // console.log('in mypage, renderOwnBookings, in each, flat: ', flat);
           const bookings = flat.bookings;
            _.map(bookings, (booking, index) => {
-            console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
-            console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
+            // console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
+            // console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
 
             bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, booking_by_owner: booking.booking_by_owner, booking_by_ical: booking.booking_by_ical, flat }
-            console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
+            // console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
           });
           // end of second each
         });
@@ -557,10 +558,10 @@ class MyPage extends Component {
   // **************************LIKES **************************************************
 
   handleUnlikeClick(event) {
-    console.log('in main cards, handleUnlikeClick, like clicked, event.target: ', event.target);
+    // console.log('in main cards, handleUnlikeClick, like clicked, event.target: ', event.target);
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
+    // console.log('in main cards, handleLikeClick, elementVal: ', elementVal);
     this.props.deleteLike(elementVal, () => this.handleLikeClickCallback());
   }
 
@@ -569,15 +570,15 @@ class MyPage extends Component {
   }
 
   renderEachLike() {
-    console.log('in mypage, renderEachLike, likes: ', this.props.likes);
+    // console.log('in mypage, renderEachLike, likes: ', this.props.likes);
     const { likes } = this.props;
     const likesEmpty = _.isEmpty(likes);
 
     if (!likesEmpty) {
       return _.map(likes, (like, index) => {
-        console.log('in mypage, renderEachLike, in each, like: ', like);
+        // console.log('in mypage, renderEachLike, in each, like: ', like);
         const flat = like.flat;
-        console.log('in mypage, renderEachLike, in each, flat: ', flat);
+        // console.log('in mypage, renderEachLike, in each, flat: ', flat);
 
         return (
           <li key={index} className="my-page-each-card">
@@ -658,7 +659,7 @@ class MyPage extends Component {
   }
 
   renderProfileImage() {
-    console.log('in header, renderProfileImage, this.props.auth.userProfile.image: ', this.props.auth.userProfile.image);
+    // console.log('in header, renderProfileImage, this.props.auth.userProfile.image: ', this.props.auth.userProfile.image);
     return (
       <div className="my-page-profile-image-box">
         <div className="my-page-profile-image-box-image">
@@ -680,7 +681,7 @@ class MyPage extends Component {
   renderProfile() {
     if (this.props.auth.userProfile) {
       const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region, introduction } = this.props.auth.userProfile;
-      console.log('in mypage, renderProfile, user_id: ', user_id);
+      // console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
           <div className="my-page-category-title">
@@ -756,9 +757,9 @@ class MyPage extends Component {
     // checkedElement.setAttribute('checked', 'checked=false')
     const defaultCardInputs = document.getElementsByClassName('my-page-card-default-checkbox')
     // console.log('in mypage, handleCardDefaultCheck, defaultCardInputs: ', defaultCardInputs);
-    console.log('in mypage, handleCardDefaultCheck, checkedVal: ', checkedVal);
-    console.log('in mypage, handleCardDefaultCheck, checkedElement: ', checkedElement);
-    console.log('in mypage, handleCardDefaultCheck, cardId: ', cardId);
+    // console.log('in mypage, handleCardDefaultCheck, checkedVal: ', checkedVal);
+    // console.log('in mypage, handleCardDefaultCheck, checkedElement: ', checkedElement);
+    // console.log('in mypage, handleCardDefaultCheck, cardId: ', cardId);
     const defaultCardId = this.props.customer.default_source;
     if (cardId !== defaultCardId) {
       _.each(defaultCardInputs, eachInput => {
@@ -869,6 +870,57 @@ class MyPage extends Component {
     );
   }
 
+  handleBankAccountEditDeleteClick(event) {
+    const clickedElement = event.target;
+    const editOrDelete = clickedElement.getAttribute('value');
+    const bankAccountId = clickedElement.getAttribute('name');
+    console.log('in mypage, handleBankAccountEditDeleteClick, editOrDelete, bankAccountId: ', editOrDelete, bankAccountId);
+  }
+
+  renderExistingBankAccountDetails() {
+    console.log('in mypage, renderExistingBankAccountDetails, this.props.bankAccounts: ', this.props.bankAccounts);
+    return _.map(this.props.bankAccounts, (eachAccount, i) => {
+      return (
+        <li key={i} className="my-page-each-card">
+          <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+            <div className="my-page-details">
+              <ul>
+                <li>{AppLanguages.accountName[this.props.appLanguageCode]}:  {eachAccount.account_name}</li>
+                <li>{AppLanguages.bankName[this.props.appLanguageCode]}: {eachAccount.bank_name}</li>
+                <li>{AppLanguages.accountNumber[this.props.appLanguageCode]}: {eachAccount.account_number}***</li>
+                <li>{AppLanguages.accountType[this.props.appLanguageCode]}: {eachAccount.account_type}</li>
+              </ul>
+            </div>
+            <div className="my-page-card-button-box">
+              <button name={eachAccount.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+              <button name={eachAccount.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+            </div>
+          </div>
+        </li>
+      );
+    });
+  }
+
+  handleAddNewBankAccountClick() {
+    console.log('in mypage, renderExistingBankAccountDetails, this.props.bankAccounts: ', this.props.bankAccounts);
+  }
+
+  renderBankAccounts() {
+    return (
+      <div>
+        <div className="my-page-category-title">
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.bankAccountDetails[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"></div>
+        </div>
+        <ul>
+          {this.renderExistingBankAccountDetails()}
+        <div className="my-page-enter-new-card-link" onClick={this.handleAddNewBankAccountClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewBankAccount[this.props.appLanguageCode]}</div>
+        </ul>
+      </div>
+    );
+  }
+
   renderCardInputModal() {
     return (
       <CardInputModal
@@ -887,12 +939,13 @@ class MyPage extends Component {
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
-          <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBankAccounts()}</div>
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}</button></Link>
@@ -918,7 +971,8 @@ function mapStateToProps(state) {
     showCardInput: state.modals.showCardInputModal,
     customer: state.auth.customer,
     charge: state.auth.charge,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
+    bankAccounts: state.auth.bankAccounts
   };
 }
 

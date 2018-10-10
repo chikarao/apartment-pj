@@ -2276,7 +2276,7 @@ form {
 }
 
 .edit-flat-delete-language-button {
-  margin: 20px 0 10px 0;
+  margin: 20px 0 10px 20px;
   width: 100px;
 }
 
@@ -3163,6 +3163,11 @@ text-decoration: underline;
   color: blue;
 }
 
+
+.my-page-edit-delete-btn {
+  color: gray;
+}
+
 .my_page-make-payment-link:hover {
   /* font-size: 25px; */
   color: gray;
@@ -3177,6 +3182,10 @@ text-decoration: underline;
   margin: 10px;
   color: gray;
   font-size: 15px;
+}
+
+.my-page-card-no-picture-box {
+  justify-content: space-between !important;
 }
 
 

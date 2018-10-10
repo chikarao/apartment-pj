@@ -248,11 +248,11 @@ function createAddress(flat) {
 
 function getInitialValueObject(flat, booking) {
   const object = {};
-  _.each(DocumentForm, eachObject => {
+  _.each(DocumentForm, eachPageObject => {
     // for each page in DocumentForm
     _.each(Object.keys(flat), key => {
       // for each flat in boooking
-      if (eachObject[key]) {
+      if (eachPageObject[key]) {
         // if flat key is in one of the pages, on DocumentForm
         // add to object to be returned as initialValues
         object[key] = flat[key];
@@ -262,7 +262,7 @@ function getInitialValueObject(flat, booking) {
     });
     // end of Object.keys flat
     _.each(Object.keys(flat.amenity), eachAmenityKey => {
-      if (eachObject[eachAmenityKey]) {
+      if (eachPageObject[eachAmenityKey]) {
         // if attributes in flat.amenity are on DocumentForm, add to initialValues object
         object[eachAmenityKey] = flat.amenity[eachAmenityKey];
       }
@@ -274,7 +274,7 @@ function getInitialValueObject(flat, booking) {
         // if (eachBuildingKey == 'name') {
         //   eachBuildingKey = 'flat_building_name';
         // }
-        if (eachObject[eachBuildingKey]) {
+        if (eachPageObject[eachBuildingKey]) {
           console.log('in create_edit_document, getInitialValueObject, eachBuildingKey: ', eachBuildingKey);
           // if attributes in flat.building are on DocumentForm, add to initialValues object
           object[eachBuildingKey] = flat.building[eachBuildingKey];
@@ -283,8 +283,31 @@ function getInitialValueObject(flat, booking) {
       // end of each Object.keys flat.building
     }
     // end of if flat.building
+    // !!!!!after going through each by each flat, amenity and building,
+    // go through page object to see if document object (page) has 'attributes'
+    // set by multipe amenity keys
+    // _.each(Object.keys(eachPageObject), documentPageKey => {
+    //   // iterate through each page object key
+    //   if ('attributes' in eachPageObject[documentPageKey]) {
+    //     // if attributes key is in one of the objects in one of the pages
+    //     // take each name in names array and get the value of that key in amenity
+    //     // count up a counter if one of the amenities is true
+    //     let attributeBoolCount = 0;
+    //     _.each(eachPageObject[documentPageKey].attributes.names, eachName => {
+    //       console.log('in create_edit_document, getInitialValueObject, each attributes eachName, flat.amenity[eachName]: ', eachName, flat.amenity[eachName]);
+    //       if (flat.amenity[eachName]) {
+    //         attributeBoolCount++;
+    //       }
+    //     });
+    //     if (attributeBoolCount > 0) {
+    //       object[documentPageKey] = true;
+    //     } else {
+    //       object[documentPageKey] = false;
+    //     }
+    //   }
+    // });
   });
-  // end of documentForm eachObject
+  // end of documentForm eachPageObject
   // deal with booking dates dates (separates year, month and day of to and from attributes)
   const bookingDatesObject = getBookingDateObject(booking);
   _.each(Object.keys(bookingDatesObject), dateKey => {

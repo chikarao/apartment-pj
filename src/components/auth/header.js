@@ -42,7 +42,9 @@ class Header extends Component {
          // don't need to do anymore since this screws up flats in results and other pages
          // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
          this.props.fetchConversationsByUser(() => {});
-         this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+         if (this.props.auth.id) {
+           this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+         }
        }
    }
 

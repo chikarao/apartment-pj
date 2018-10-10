@@ -39,8 +39,10 @@ class MessagingMain extends Component {
 
   componentDidMount() {
     // console.log('in messagingMain, componentDidMount');
+    console.log('in messagingMain, componentDidMount, this.props.match.params.id', this.props.match.params.id);
       window.addEventListener('resize', this.handleResize.bind(this));
       // this.props.match.params.id
+      // this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
       this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
       this.props.fetchConversationsByUser(() => {});
       this.props.fetchProfileForUser(() => {});

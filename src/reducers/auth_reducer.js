@@ -23,7 +23,8 @@ import {
   DELETE_CARD,
   ADD_CARD,
   UPDATE_CUSTOMER,
-  MAKE_PAYMENT
+  MAKE_PAYMENT,
+  FETCH_BANK_ACCOUNTS_BY_USER
  } from '../actions/types';
 
 export default function (state = {
@@ -34,7 +35,8 @@ export default function (state = {
   showLoading: false,
   authenticated: false,
   existingUser: false,
-  customer: {}
+  customer: {},
+  bankAccounts: []
 }, action) {
   // console.log('in auth reducer, action: ', action);
   switch (action.type) {
@@ -122,6 +124,9 @@ export default function (state = {
 
     case MAKE_PAYMENT:
       return { ...state, charge: action.payload };
+
+    case FETCH_BANK_ACCOUNTS_BY_USER:
+      return { ...state, bankAccounts: action.payload };
 
     default:
       return state;
