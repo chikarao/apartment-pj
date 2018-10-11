@@ -10,6 +10,7 @@ import Conversations from './messaging/conversations';
 import UploadForProfile from './images/upload_for_profile';
 import CardInputModal from './modals/card_input_modal';
 import BankAccountCreateModal from './modals/bank_account_create_modal';
+import BankAccountEditModal from './modals/bank_account_edit_modal';
 
 import CardTypes from './constants/card_types'
 
@@ -878,8 +879,10 @@ class MyPage extends Component {
     console.log('in mypage, handleBankAccountEditDeleteClick, editOrDelete, bankAccountId: ', editOrDelete, bankAccountId);
     if (editOrDelete == 'edit') {
       this.props.showBankAccountEditModal()
+      this.props.selectedBankAccountId(bankAccountId);
     }
-    if (editOrDelete == 'delete') {
+    if (editOrDelete == 'delete' && window.confirm('Are you sure you want to delete this bank account?')) {
+      this.props.deleteBankAccount(bankAccountId);
     }
   }
 
@@ -945,6 +948,13 @@ class MyPage extends Component {
       />
     );
   }
+  renderEditBankAccountForm() {
+    return (
+      <BankAccountEditModal
+        show={this.props.showBankAccountEdit}
+      />
+    );
+  }
 
   render() {
     // <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
@@ -952,6 +962,7 @@ class MyPage extends Component {
       <div>
         {this.renderCardInputModal()}
         {this.renderCreateBankAccountForm()}
+        {this.renderEditBankAccountForm()}
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
@@ -986,7 +997,7 @@ function mapStateToProps(state) {
     likes: state.flats.userLikes,
     showCardInput: state.modals.showCardInputModal,
     showBankAccountCreate: state.modals.showBankAccountCreateModal,
-    showBankAccountEdit: state.modals.showBankAccountEditeModal,
+    showBankAccountEdit: state.modals.showBankAccountEditModal,
     customer: state.auth.customer,
     charge: state.auth.charge,
     appLanguageCode: state.languages.appLanguageCode,

@@ -25,7 +25,9 @@ import {
   UPDATE_CUSTOMER,
   MAKE_PAYMENT,
   FETCH_BANK_ACCOUNTS_BY_USER,
-  CREATE_BANK_ACCOUNT
+  CREATE_BANK_ACCOUNT,
+  UPDATE_BANK_ACCOUNT,
+  SELECTED_BANK_ACCOUNT_ID
  } from '../actions/types';
 
 export default function (state = {
@@ -128,9 +130,15 @@ export default function (state = {
 
     case FETCH_BANK_ACCOUNTS_BY_USER:
       return { ...state, bankAccounts: action.payload };
-      
+
     case CREATE_BANK_ACCOUNT:
       return { ...state, bankAccounts: action.payload };
+
+    case UPDATE_BANK_ACCOUNT:
+      return { ...state, bankAccounts: action.payload };
+
+    case SELECTED_BANK_ACCOUNT_ID:
+      return { ...state, selectedBankAccountId: action.payload };
 
     default:
       return state;

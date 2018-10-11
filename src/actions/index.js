@@ -107,7 +107,9 @@ import {
   FETCH_BANK_ACCOUNTS_BY_USER,
   SHOW_BANK_ACCOUNT_EDIT_MODAL,
   SHOW_BANK_ACCOUNT_CREATE_MODAL,
-  CREATE_BANK_ACCOUNT
+  CREATE_BANK_ACCOUNT,
+  UPDATE_BANK_ACCOUNT,
+  SELECTED_BANK_ACCOUNT_ID
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1917,6 +1919,13 @@ export function showBankAccountCreateModal() {
   return { type: SHOW_BANK_ACCOUNT_CREATE_MODAL };
 }
 
+export function selectedBankAccountId(id) {
+  console.log('in actions index, selectedBankAccountId:');
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_BANK_ACCOUNT_ID, payload: id };
+}
+
 export function fetchBankAccountsByUser() {
   // console.log('in actions index, fetchUserBankAccounts allSearchAttributes: ', allSearchAttributes);
   return function (dispatch) {
@@ -1956,6 +1965,56 @@ export function createBankAccount(bankAccountAttributes, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to createBankAccount: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function updateBankAccount(bankAccountAttributes, id, callback) {
+  console.log('in action index, updateBankAccount, bankAccountAttributes: ', bankAccountAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/bank_accounts/${id}`, bankAccountAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateBankAccount: ', response);
+      console.log('in action index, response to updateBankAccount: ', response.data.data.bank_accounts);
+
+      dispatch({
+        type: UPDATE_BANK_ACCOUNT,
+        payload: response.data.data.bank_accounts
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateBankAccount: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function deleteBankAccount(id, callback) {
+  console.log('in action index, deleteBankAccount: ');
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/bank_accounts/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteBankAccount: ', response);
+      console.log('in action index, response to deleteBankAccount: ', response.data.data.bank_accounts);
+
+      dispatch({
+        type: UPDATE_BANK_ACCOUNT,
+        payload: response.data.data.bank_accounts
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteBankAccount: ', error);
       // dispatch(authError(error));
       // this.showloading();
     });
