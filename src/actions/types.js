@@ -101,4 +101,7 @@ export const SHOW_BUILDING_CREATE_MODAL = 'show_building_create_modal';
 export const UPDATE_BUILDING = 'update_building';
 export const CREATE_BUILDING = 'create_building';
 export const FETCH_BANK_ACCOUNTS_BY_USER = 'fetch_bank_accounts_by_user';
+export const SHOW_BANK_ACCOUNT_EDIT_MODAL = 'show_bank_accounts_edit_modal';
+export const SHOW_BANK_ACCOUNT_CREATE_MODAL = 'show_bank_accounts_create_modal';
+export const CREATE_BANK_ACCOUNT = 'create_bank_account';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

@@ -9,6 +9,7 @@ import Messaging from './messaging/messaging';
 import Conversations from './messaging/conversations';
 import UploadForProfile from './images/upload_for_profile';
 import CardInputModal from './modals/card_input_modal';
+import BankAccountCreateModal from './modals/bank_account_create_modal';
 
 import CardTypes from './constants/card_types'
 
@@ -875,6 +876,11 @@ class MyPage extends Component {
     const editOrDelete = clickedElement.getAttribute('value');
     const bankAccountId = clickedElement.getAttribute('name');
     console.log('in mypage, handleBankAccountEditDeleteClick, editOrDelete, bankAccountId: ', editOrDelete, bankAccountId);
+    if (editOrDelete == 'edit') {
+      this.props.showBankAccountEditModal()
+    }
+    if (editOrDelete == 'delete') {
+    }
   }
 
   renderExistingBankAccountDetails() {
@@ -903,6 +909,7 @@ class MyPage extends Component {
 
   handleAddNewBankAccountClick() {
     console.log('in mypage, renderExistingBankAccountDetails, this.props.bankAccounts: ', this.props.bankAccounts);
+    this.props.showBankAccountCreateModal();
   }
 
   renderBankAccounts() {
@@ -931,11 +938,20 @@ class MyPage extends Component {
     );
   }
 
+  renderCreateBankAccountForm() {
+    return (
+      <BankAccountCreateModal
+        show={this.props.showBankAccountCreate}
+      />
+    );
+  }
+
   render() {
     // <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
     return (
       <div>
         {this.renderCardInputModal()}
+        {this.renderCreateBankAccountForm()}
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
@@ -969,6 +985,8 @@ function mapStateToProps(state) {
     // likes: state.likes.userLikes
     likes: state.flats.userLikes,
     showCardInput: state.modals.showCardInputModal,
+    showBankAccountCreate: state.modals.showBankAccountCreateModal,
+    showBankAccountEdit: state.modals.showBankAccountEditeModal,
     customer: state.auth.customer,
     charge: state.auth.charge,
     appLanguageCode: state.languages.appLanguageCode,

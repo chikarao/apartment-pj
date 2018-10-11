@@ -24,7 +24,8 @@ import {
   ADD_CARD,
   UPDATE_CUSTOMER,
   MAKE_PAYMENT,
-  FETCH_BANK_ACCOUNTS_BY_USER
+  FETCH_BANK_ACCOUNTS_BY_USER,
+  CREATE_BANK_ACCOUNT
  } from '../actions/types';
 
 export default function (state = {
@@ -126,6 +127,9 @@ export default function (state = {
       return { ...state, charge: action.payload };
 
     case FETCH_BANK_ACCOUNTS_BY_USER:
+      return { ...state, bankAccounts: action.payload };
+      
+    case CREATE_BANK_ACCOUNT:
       return { ...state, bankAccounts: action.payload };
 
     default:

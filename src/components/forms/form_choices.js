@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 import Building from '../constants/building';
+// import BankAccount from '../constants/bank_account';
 
 class FormChoices extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class FormChoices extends Component {
 
   anyOfOtherValues(name, value) {
     const anyOtherValueArray = [];
-    _.each(Building[name].choices, choice => {
+    _.each(this.props.model[name].choices, choice => {
       if (choice.value == value) {
         console.log('FormChoices, anyOfOtherValues choice.val, value', choice.val, value);
         anyOtherValueArray.push(choice)
@@ -55,15 +56,12 @@ class FormChoices extends Component {
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     // console.log('FormChoices, renderEachChoice name', name);
-    return _.map(Building[name].choices, choice => {
+    return _.map(this.props.model[name].choices, choice => {
       console.log('FormChoices, renderEachChoice choice, value', choice, value);
-      // console.log('FormChoices, renderEachChoice value != null', value != null);
-      // console.log('FormChoices, renderEachChoice value', value);
-      // console.log('FormChoices, renderEachChoice name', name);
-      // console.log('FormChoices, renderEachChoice value', value);
+      console.log('FormChoices, renderEachChoice this.props', this.props);
       // define button element for user to click to set value in submission
-      console.log('FormChoices, renderEachChoice inside onClick, choice[this.props.appLanguageCode]', choice[this.props.appLanguageCode]);
-      console.log('FormChoices, renderEachChoice inside onClick, this.props.appLanguageCode', this.props.appLanguageCode);
+      // console.log('FormChoices, renderEachChoice inside onClick, choice[this.props.appLanguageCode]', choice[this.props.appLanguageCode]);
+      // console.log('FormChoices, renderEachChoice inside onClick, this.props.appLanguageCode', this.props.appLanguageCode);
       const buttonElement =
         <div
           key={choice.value}

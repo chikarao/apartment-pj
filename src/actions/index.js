@@ -104,7 +104,10 @@ import {
   SHOW_BUILDING_CREATE_MODAL,
   UPDATE_BUILDING,
   CREATE_BUILDING,
-  FETCH_BANK_ACCOUNTS_BY_USER
+  FETCH_BANK_ACCOUNTS_BY_USER,
+  SHOW_BANK_ACCOUNT_EDIT_MODAL,
+  SHOW_BANK_ACCOUNT_CREATE_MODAL,
+  CREATE_BANK_ACCOUNT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1889,21 +1892,34 @@ export function searchBuildings(buildingAttributes) {
 }
 
 export function showBuildingEditModal() {
-  console.log('in actions index, showIcalendarEditModal:');
+  console.log('in actions index, showBuildingEditModal:');
 
   //flip showResetPasswordModal
   return { type: SHOW_BUILDING_EDIT_MODAL };
 }
 export function showBuildingCreateModal() {
-  console.log('in actions index, showIcalendarEditModal:');
+  console.log('in actions index, showBuildingCreateModal:');
 
   //flip showResetPasswordModal
   return { type: SHOW_BUILDING_CREATE_MODAL };
 }
 
+export function showBankAccountEditModal() {
+  console.log('in actions index, showBankAccountEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_BANK_ACCOUNT_EDIT_MODAL };
+}
+export function showBankAccountCreateModal() {
+  console.log('in actions index, showBankAccountCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_BANK_ACCOUNT_CREATE_MODAL };
+}
+
 export function fetchBankAccountsByUser() {
   // console.log('in actions index, fetchUserBankAccounts allSearchAttributes: ', allSearchAttributes);
-  return function (dispatch) {  
+  return function (dispatch) {
     // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west, price_max, price_min, bedrooms_min, bedrooms_max, bedrooms_exact, size_min, size_max, station_min, station_max, ac, wifi, wheelchair_accessible, parking, kitchen } }, {
     axios.get(`${ROOT_URL}/api/v1/bank_accounts`, {
       // axios.get(`${ROOT_URL}/api/v1/flats?`, { params: { north, south, east, west } }, {
@@ -1916,6 +1932,32 @@ export function fetchBankAccountsByUser() {
         type: FETCH_BANK_ACCOUNTS_BY_USER,
         payload: response.data.data.bank_accounts
       });
+    });
+  };
+}
+
+export function createBankAccount(bankAccountAttributes, callback) {
+  console.log('in action index, createBankAccount, bankAccountAttributes: ', bankAccountAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/bank_accounts/`, bankAccountAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createBankAccount: ', response);
+      console.log('in action index, response to createBankAccount: ', response.data.data.bank_accounts);
+
+      dispatch({
+        type: CREATE_BANK_ACCOUNT,
+        payload: response.data.data.bank_accounts
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createBankAccount: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
     });
   };
 }

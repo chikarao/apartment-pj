@@ -2340,6 +2340,7 @@ form {
 .form-rectangle {
   height: 35px;
   width: auto;
+  min-width: 90px;
   text-align: center;
   border-radius: 5px;
   margin: 0 0 5px 5px;
@@ -3396,6 +3397,7 @@ text-decoration: underline;
 
 .auth-modal-title {
   color: gray;
+  margin-bottom: 40px;
 }
 
 .signout-page-message {

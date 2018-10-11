@@ -8,7 +8,9 @@ import {
   SHOW_ICALENDAR_EDIT_MODAL,
   SELECTED_ICALENDAR_ID,
   SHOW_BUILDING_EDIT_MODAL,
-  SHOW_BUILDING_CREATE_MODAL
+  SHOW_BUILDING_CREATE_MODAL,
+  SHOW_BANK_ACCOUNT_EDIT_MODAL,
+  SHOW_BANK_ACCOUNT_CREATE_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -55,6 +57,12 @@ export default function (
 
     case SHOW_BUILDING_CREATE_MODAL:
       return { ...state, showBuildingCreateModal: !state.showBuildingCreateModal };
+
+    case SHOW_BANK_ACCOUNT_EDIT_MODAL:
+      return { ...state, showBankAccountEditModal: !state.showBankAccountEditModal };
+
+    case SHOW_BANK_ACCOUNT_CREATE_MODAL:
+      return { ...state, showBankAccountCreateModal: !state.showBankAccountCreateModal };
 
 
     default:
