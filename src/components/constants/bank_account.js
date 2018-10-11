@@ -35,8 +35,9 @@ const BankAccount = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Ordinary', en: 'Ordinary', jp: '普通', type: 'button', className: 'form-rectangle' },
-      1: { value: 'Current', en: 'Current', jp: '当座', type: 'button', className: 'form-rectangle' },
+      // value needs to be lower case since there is a translation in app_languages.js
+      0: { value: 'ordinary', en: 'Ordinary', jp: '普通', type: 'button', className: 'form-rectangle' },
+      1: { value: 'current', en: 'Current', jp: '当座', type: 'button', className: 'form-rectangle' },
     }
   }
 };

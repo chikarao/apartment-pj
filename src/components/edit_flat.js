@@ -45,6 +45,7 @@ class EditFlat extends Component {
       this.selectedFlatFromParamsCallback();
     });
     this.props.getCurrentUser();
+    this.props.fetchBankAccountsByUser();
     // this.props.fetchPlaces(this.props.match.params.id);
 
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
@@ -496,6 +497,55 @@ class EditFlat extends Component {
     // end of if this.props.flat
   }
 
+  handleBankAcccountDefaultCheck(event) {
+    const checkedElement = event.target;
+    const elementVal = checkedElement.getAttribute('value');
+    console.log('in edit flat, handleBankAcccountDefaultCheck, elementVal: ', elementVal);
+    this.props.showLoading();
+    this.props.editFlat({ flat_id: this.props.flat.id, flat: { bank_account_id: elementVal }, amenity: { basic: true } }, () => this.handleBankAcccountDefaultCheckCallback())
+  }
+
+  handleBankAcccountDefaultCheckCallback() {
+    this.props.showLoading();
+  }
+
+  renderEachBankAccountChoice() {
+    if (this.props.flat) {
+      return _.map(this.props.bankAccounts, (eachAccount, i) => {
+        console.log('in edit flat, renderEachBankAccountChoice, eachAccount.id, this.props.flat.bank_acccount: ', eachAccount.id, this.props.flat.bank_account.id);
+        const isThisAccountDefault = (this.props.flat.bank_account.id == eachAccount.id);
+        return (
+          <div key={i} className="edit-flat-building-choice">
+            {eachAccount.bank_name} {eachAccount.account_name} <br/>{AppLanguages[eachAccount.account_type][this.props.appLanguageCode]} {eachAccount.account_number}***&ensp;&ensp;
+            <input name={i} value={eachAccount.id} type="checkbox" checked={isThisAccountDefault} className="my-page-card-default-checkbox" onChange={this.handleBankAcccountDefaultCheck.bind(this)} />
+          </div>
+        );
+      });
+    }
+  }
+
+  renderSelectBankAccount() {
+    console.log('in edit flat, renderSelectBankAccount, this.props.bankAccounts: ', this.props.bankAccounts);
+    if (!this.props.bankAccounts) {
+      return (
+        <div className="edit-flat-language-box">
+          <div>You have not registered any bank accounts. <br/>Add your bank account on My Page</div>
+        </div>
+      );
+    }
+
+    if (this.props.flat.bank_account) {
+      return (
+        <div className="edit-flat-language-box">
+          <div>{AppLanguages.selectBankAccountMessage[this.props.appLanguageCode]}</div>
+          <div className="edit-flat-building-choice-scroll-box">
+            {this.renderEachBankAccountChoice()}
+          </div>
+        </div>
+      );
+    }
+  }
+
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -534,7 +584,7 @@ class EditFlat extends Component {
               <div className="edit-flat-address">{this.props.flat.country}</div>
             </fieldset>
             <fieldset>
-            <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.requiredFields[appLanguageCode]}</div>
+            <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.requiredFieldsEdit[appLanguageCode]}</div>
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>
@@ -770,6 +820,9 @@ class EditFlat extends Component {
           <h4>{AppLanguages.addEditBuilding[appLanguageCode]}</h4>
               {this.renderBuildingAddEdit()}
 
+          <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4>
+            {this.renderSelectBankAccount()}
+
           <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
             {this.renderLanguages()}
 
@@ -814,68 +867,80 @@ class EditFlat extends Component {
   }
 
   renderLanguageCreateModal() {
-    return (
-      <div>
+    if (this.props.showLanguageCreate) {
+      return (
+        <div>
         <LanguageCreateModal
           show={this.props.showLanguageCreate}
         />
-      </div>
-    );
+        </div>
+      );
+    }
   }
 
   renderLanguageEditModal() {
-    return (
-      <div>
+    if (this.props.showLanguageEdit) {
+      return (
+        <div>
         <LanguageEditModal
           show={this.props.showLanguageEdit}
         />
-      </div>
-    );
+        </div>
+      );
+    }
   }
 
   renderIcalendarCreateModal() {
-    return (
-      <div>
+    if (this.props.showIcalendarCreate) {
+      return (
+        <div>
         <IcalendarCreateModal
           show={this.props.showIcalendarCreate}
         />
-      </div>
-    );
+        </div>
+      );
+    }
   }
   renderIcalendarEditModal() {
-    return (
-      <div>
+    if (this.props.showIcalendarEdit) {
+      return (
+        <div>
         <IcalendarEditModal
           show={this.props.showIcalendarEdit}
         />
-      </div>
-    );
+        </div>
+      );
+    }
   }
 
   renderBuildingEditModal() {
-    if (this.props.flat) {
-      if (this.props.flat.building) {
-        return (
-          <div>
-          <BuildingEditModal
-          // show
-          show={this.props.showBuildingEdit}
-          />
-          </div>
-        );
+    if (this.props.showBuildingEdit) {
+      if (this.props.flat) {
+        if (this.props.flat.building) {
+          return (
+            <div>
+            <BuildingEditModal
+            // show
+              show={this.props.showBuildingEdit}
+            />
+            </div>
+          );
+        }
       }
     }
   }
   renderBuildingCreateModal() {
-    if (this.props.flat) {
-      return (
-        <div>
-        <BuildingCreateModal
-        // show
-        show={this.props.showBuildingCreate}
-        />
-        </div>
-      );
+    if (this.props.showBuildingCreate) {
+      if (this.props.flat) {
+        return (
+          <div>
+          <BuildingCreateModal
+          // show
+            show={this.props.showBuildingCreate}
+          />
+          </div>
+        );
+      }
     }
   }
 
@@ -958,6 +1023,7 @@ function mapStateToProps(state) {
       showBuildingEdit: state.modals.showBuildingEditModal,
       showBuildingCreate: state.modals.showBuildingCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
+      bankAccounts: state.auth.bankAccounts,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

@@ -887,8 +887,8 @@ class MyPage extends Component {
   }
 
   renderExistingBankAccountDetails() {
-    console.log('in mypage, renderExistingBankAccountDetails, this.props.bankAccounts: ', this.props.bankAccounts);
     return _.map(this.props.bankAccounts, (eachAccount, i) => {
+      console.log('in mypage, renderExistingBankAccountDetails, eachAccount.account_type: ', eachAccount.account_type);
       return (
         <li key={i} className="my-page-each-card">
           <div className="my-page-each-card-click-box my-page-card-no-picture-box">
@@ -897,7 +897,7 @@ class MyPage extends Component {
                 <li>{AppLanguages.accountName[this.props.appLanguageCode]}:  {eachAccount.account_name}</li>
                 <li>{AppLanguages.bankName[this.props.appLanguageCode]}: {eachAccount.bank_name}</li>
                 <li>{AppLanguages.accountNumber[this.props.appLanguageCode]}: {eachAccount.account_number}***</li>
-                <li>{AppLanguages.accountType[this.props.appLanguageCode]}: {eachAccount.account_type}</li>
+                <li>{AppLanguages.accountType[this.props.appLanguageCode]}: {AppLanguages[eachAccount.account_type][this.props.appLanguageCode]}</li>
               </ul>
             </div>
             <div className="my-page-card-button-box">
@@ -932,28 +932,34 @@ class MyPage extends Component {
   }
 
   renderCardInputModal() {
-    return (
-      <CardInputModal
+    if (this.props.showCardInput) {
+      return (
+        <CardInputModal
         show={this.props.showCardInput}
         // actionType={this.state.actionType}
         // actionType={'addCustomer'}
-      />
-    );
+        />
+      );
+    }
   }
 
   renderCreateBankAccountForm() {
-    return (
-      <BankAccountCreateModal
+    if (this.props.showBankAccountCreate) {
+      return (
+        <BankAccountCreateModal
         show={this.props.showBankAccountCreate}
-      />
-    );
+        />
+      );
+    }
   }
   renderEditBankAccountForm() {
-    return (
-      <BankAccountEditModal
+    if (this.props.showBankAccountEdit) {
+      return (
+        <BankAccountEditModal
         show={this.props.showBankAccountEdit}
-      />
-    );
+        />
+      );
+    }
   }
 
   render() {
