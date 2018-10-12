@@ -707,8 +707,8 @@ const DocumentForm = {
       }
     },
 
-    rent_deadline: {
-      name: 'rent_deadline',
+    payment_due_date: {
+      name: 'payment_due_date',
       className: 'form-control-document',
       component: 'input',
       borderColor: 'lightgray',
@@ -718,7 +718,7 @@ const DocumentForm = {
             val: '',
             top: '15.5%',
             left: '39.5%',
-            width: '5%',
+            width: '5.2%',
             // !!! height works only with px
             height: '23px',
             type: 'string'
@@ -727,8 +727,9 @@ const DocumentForm = {
       }
     },
 
-    expenses_per_month: {
-      name: 'expenses_per_month',
+    management_fees: {
+      // its for management fees
+      name: 'management_fees',
       className: 'form-control-document',
       component: 'input',
       borderColor: 'lightgray',
@@ -747,8 +748,8 @@ const DocumentForm = {
       }
     },
 
-    expense_deadline: {
-      name: 'expense_deadline',
+    fees_payment_due_date: {
+      name: 'fees_payment_due_date',
       className: 'form-control-document',
       component: 'input',
       borderColor: 'lightgray',
@@ -758,7 +759,7 @@ const DocumentForm = {
             val: '',
             top: '21.65%',
             left: '39.5%',
-            width: '5%',
+            width: '5.2%',
             // !!! height works only with px
             height: '23px',
             type: 'string'
@@ -787,12 +788,12 @@ const DocumentForm = {
       }
     },
 
-    bank_account_type: {
-      name: 'bank_account_type',
+    account_type: {
+      name: 'account_type',
       type: 'string',
       choices: {
-        0: { params: { val: 'Ordinary', top: '16.3%', left: '64.6%', width: '5%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'Current', top: '16.3%', left: '70.3%', width: '5%', className: 'document-rectangle', type: 'button' } },
+        0: { params: { val: 'ordinary', top: '16.3%', left: '64.6%', width: '5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'current', top: '16.3%', left: '70.3%', width: '5%', className: 'document-rectangle', type: 'button' } },
       },
       className: 'form-control-document',
       height: '23px',
@@ -800,8 +801,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    bank_account_number: {
-      name: 'bank_account_number',
+    account_number: {
+      name: 'account_number',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -811,8 +812,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    bank_account_name: {
-      name: 'bank_account_name',
+    account_name: {
+      name: 'account_name',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -822,8 +823,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    remittance_fee_paid_by: {
-      name: 'remittance_fee_paid_by',
+    transfer_fee_paid_by: {
+      name: 'transfer_fee_paid_by',
       type: 'string',
       choices: {
         0: { params: { val: 'Owner', top: '21.4%', left: '75.6%', width: '5%', className: 'document-rectangle', type: 'button' } },
@@ -835,8 +836,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    payment_in_person_address: {
-      name: 'payment_in_person_address',
+    payment_method: {
+      name: 'payment_method',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -846,8 +847,9 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    key_money_months: {
-      name: 'key_money_months',
+    deposit: {
+      // in MONTHS
+      name: 'deposit',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -857,8 +859,9 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    key_money: {
-      name: 'key_money',
+    deposit_amount: {
+      // calculated off of deposit months
+      name: 'deposit_amount',
       type: 'string',
       choices: {
         // add 1.5% to top

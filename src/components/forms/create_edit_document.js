@@ -282,6 +282,37 @@ function getInitialValueObject(flat, booking) {
       });
       // end of each Object.keys flat.building
     }
+
+    if (flat.bank_account) {
+      // test if bank_account has been added to flat
+      _.each(Object.keys(flat.bank_account), eachBankAccountKey => {
+        // if (eachBuildingKey == 'name') {
+        //   eachBuildingKey = 'flat_bank_account_name';
+        // }
+        if (eachPageObject[eachBankAccountKey]) {
+          console.log('in create_edit_document, getInitialValueObject, eachBankAccountKey: ', eachBankAccountKey);
+          // if attributes in flat.bank_account are on DocumentForm, add to initialValues object
+          object[eachBankAccountKey] = flat.bank_account[eachBankAccountKey];
+        }
+      });
+    }
+    // CALCULATED fields on document
+    // set payment due date for fees same as rent payment due date
+    if (flat.payment_due_date) {
+      object.fees_payment_due_date = flat.payment_due_date;
+    }
+
+    if (flat.deposit) {
+      object.deposit_amount = (flat.price_per_month * flat.deposit);
+    }
+
+    if (flat.price_per_month) {
+      // convert float to integer by multiplying flat by integer
+      object.price_per_month = (flat.price_per_month * 1);
+    }
+
+
+      // end of each Object.keys flat.bank_account
     // end of if flat.building
     // !!!!!after going through each by each flat, amenity and building,
     // go through page object to see if document object (page) has 'attributes'

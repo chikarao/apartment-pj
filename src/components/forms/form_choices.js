@@ -57,8 +57,8 @@ class FormChoices extends Component {
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     // console.log('FormChoices, renderEachChoice name', name);
     return _.map(this.props.model[name].choices, choice => {
-      console.log('FormChoices, renderEachChoice choice, value', choice, value);
-      console.log('FormChoices, renderEachChoice this.props', this.props);
+      // console.log('FormChoices, renderEachChoice choice, value', choice, value);
+      // console.log('FormChoices, renderEachChoice this.props', this.props);
       // define button element for user to click to set value in submission
       // console.log('FormChoices, renderEachChoice inside onClick, choice[this.props.appLanguageCode]', choice[this.props.appLanguageCode]);
       // console.log('FormChoices, renderEachChoice inside onClick, this.props.appLanguageCode', this.props.appLanguageCode);
@@ -107,9 +107,11 @@ class FormChoices extends Component {
     // <div type={DocumentForm[name].box.type} onClick={() => onChange(val)} className={DocumentForm[name].box.className} style={value == val ? { borderColor: 'black' } : { borderColor: 'lightgray' } }>Y</div>
     // <div key={name} style={DocumentForm[name].box.style}>
     return (
-      <div className="form-control-custom" key={name}>
-         {this.renderEachChoice()}
+      <div className="container" key={name}>
+        <div className="row form-control-custom">
+          {this.renderEachChoice()}
         </div>
+      </div>
     );
   }
 }

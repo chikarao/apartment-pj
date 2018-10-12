@@ -19,6 +19,8 @@ import BuildingEditModal from './modals/building_edit_modal';
 import BuildingCreateModal from './modals/building_create_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
+import RentPayment from './constants/rent_payment';
+import FormChoices from './forms/form_choices';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -95,17 +97,22 @@ class EditFlat extends Component {
     return amenityObj;
   }
 
-  handleFormSubmit(data) {
+  getDelta(data) {
     const delta = {}
-    console.log('in edit flat, handleFormSubmit, data: ', data);
-    console.log('in edit flat, handleFormSubmit, this.props.initialValues: ', this.props.initialValues);
     _.each(Object.keys(data), each => {
       // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
       if (data[each] !== this.props.initialValues[each]) {
-        console.log('in edit flat, handleFormSubmit, each: ', each);
-        delta[each] = data[each]
+        console.log('in edit flat, getDelta, each: ', each);
+        delta[each] = data[each];
       }
-    })
+    });
+    return delta;
+  }
+
+  handleFormSubmit(data) {
+    console.log('in edit flat, handleFormSubmit, data: ', data);
+    console.log('in edit flat, handleFormSubmit, this.props.initialValues: ', this.props.initialValues);
+    const delta = this.getDelta(data);
     console.log('in edit flat, handleFormSubmit, delta: ', delta);
 
     if (this.state.confirmChecked) {
@@ -509,11 +516,32 @@ class EditFlat extends Component {
     this.props.showLoading();
   }
 
-  renderEachBankAccountChoice() {
+  renderEachBankAccountChoices() {
     if (this.props.flat) {
-      return _.map(this.props.bankAccounts, (eachAccount, i) => {
-        console.log('in edit flat, renderEachBankAccountChoice, eachAccount.id, this.props.flat.bank_acccount: ', eachAccount.id, this.props.flat.bank_account.id);
-        const isThisAccountDefault = (this.props.flat.bank_account.id == eachAccount.id);
+      const bankAccountsArray = this.props.bankAccounts;
+      if (this.props.flat.bank_account && this.props.bankAccounts.length > 0) {
+        //get index of flat bank account id
+        // move index to top
+        console.log('in edit flat, renderEachBankAccountChoices, this.props.bankAccounts: ', this.props.bankAccounts);
+        console.log('in edit flat, renderEachBankAccountChoices, this.props.flat.bank_account: ', this.props.flat.bank_account);
+        let index;
+        _.each(this.props.bankAccounts, (each, i) => {
+          // console.log('in edit flat, renderEachBankAccountChoices, this.props.bankAccounts, each: ', each);
+          if (each.id == this.props.flat.bank_account.id) {
+            index = i;
+          }
+        });
+        // take out one checked bank account from array at index
+        const selectedBankAccount = bankAccountsArray.splice(index, 1)
+        // insert one account at index 0 (take out 0); splice take out returns an array
+        bankAccountsArray.splice(0, 0, selectedBankAccount[0]);
+        // console.log('in edit flat, renderEachBankAccountChoices, bankAccountsArray: ', bankAccountsArray);
+      }
+
+      return _.map(bankAccountsArray, (eachAccount, i) => {
+        // console.log('in edit flat, renderEachBankAccountChoices, eachAccount.id: ', eachAccount.id);
+        // check if this account is the flat.bank_account, if so check off
+        const isThisAccountDefault = this.props.flat.bank_account ? (this.props.flat.bank_account.id == eachAccount.id) : false;
         return (
           <div key={i} className="edit-flat-building-choice">
             {eachAccount.bank_name} {eachAccount.account_name} <br/>{AppLanguages[eachAccount.account_type][this.props.appLanguageCode]} {eachAccount.account_number}***&ensp;&ensp;
@@ -534,17 +562,77 @@ class EditFlat extends Component {
       );
     }
 
-    if (this.props.flat.bank_account) {
+    if (this.props.flat.bank_account || (this.props.flat.rent_payment_method == 'bank_transfer')) {
       return (
         <div className="edit-flat-language-box">
           <div>{AppLanguages.selectBankAccountMessage[this.props.appLanguageCode]}</div>
           <div className="edit-flat-building-choice-scroll-box">
-            {this.renderEachBankAccountChoice()}
+            {this.renderEachBankAccountChoices()}
           </div>
         </div>
       );
     }
   }
+
+  handlePaymentMethodFormSubmit(data) {
+    let dataToBeSent = {};
+    if (data.rent_payment_method == 'bank_tranfer') {
+      const delta = this.getDelta(data);
+      dataToBeSent = { flat_id: this.props.flat.id, flat: delta, amenity: { basic: true } };
+    } else {
+      const dataToBeChanged = data;
+      dataToBeChanged.bank_account_id = null;
+      const delta = this.getDelta(dataToBeChanged);
+      dataToBeSent = { flat_id: this.props.flat.id, flat: delta, amenity: { basic: true } };
+    }
+    // dataToBeSent.flat_id = this.props.flat.id;
+    console.log('in BankAccountCreateModal, handlePaymentMethodFormSubmit, dataToBeSent: ', dataToBeSent);
+    this.props.showLoading();
+    this.props.editFlat(dataToBeSent, () => {
+      this.handlePaymentMethodFormSubmitCallback();
+    });
+  }
+
+  handlePaymentMethodFormSubmitCallback() {
+    this.props.showLoading();
+  }
+
+  renderEachRentPaymentMethodField() {
+    return _.map(RentPayment, formField => {
+      return (
+        <div key={formField.name}>
+          <h5>{formField[this.props.appLanguageCode]}</h5>
+          <Field
+            name={formField.name}
+            // component={fieldComponent}
+            component={FormChoices}
+            // pass model rentpayment object
+            props={{ model: RentPayment }}
+            // props={fieldComponent == FormChoices ? { model: RentPayment } : {}}
+            type={formField.type}
+            className={formField.component == 'input' ? 'form-control' : ''}
+            // style={eachKey.component == 'input' ? }
+          />
+        </div>
+      );
+    });
+  }
+
+  renderRentPaymentMethod() {
+    const { handleSubmit } = this.props;
+    // const formField = RentPayment.rent_payment_method;
+    return (
+      <div>
+        {this.renderAlert()}
+        <form onSubmit={handleSubmit(this.handlePaymentMethodFormSubmit.bind(this))}>
+          {this.renderEachRentPaymentMethodField()}
+          <div className="confirm-change-and-button">
+            <button action="submit" id="submit-all" className="btn btn-primary btn-sm submit-button">Submit</button>
+          </div>
+        </form>
+      </div>
+    )
+  };
 
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
@@ -564,7 +652,7 @@ class EditFlat extends Component {
               <div className="edit-flat-address">{this.props.flat.address1}</div>
             </fieldset>
             <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
+              <label className="create-flat-form-label">{AppLanguages.unit[appLanguageCode]}:</label>
               <div className="edit-flat-address">{this.props.flat.unit}</div>
             </fieldset>
             <fieldset className="form-group">
@@ -597,6 +685,22 @@ class EditFlat extends Component {
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
               <Field name="price_per_month" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.paymentDueDate[appLanguageCode]}:</label>
+              <Field name="payment_due_date" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.keyMoney[appLanguageCode]}:</label>
+              <Field name="key_money" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.deposit[appLanguageCode]}:</label>
+              <Field name="deposit" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.managementFees[appLanguageCode]}:</label>
+              <Field name="management_fees" component="input" type="float" className="form-control" />
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
@@ -820,8 +924,12 @@ class EditFlat extends Component {
           <h4>{AppLanguages.addEditBuilding[appLanguageCode]}</h4>
               {this.renderBuildingAddEdit()}
 
-          <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4>
-            {this.renderSelectBankAccount()}
+          <h4>{AppLanguages.rentPayment[appLanguageCode]}</h4>
+            {this.renderRentPaymentMethod()}
+
+          {this.props.flat.rent_payment_method == 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4> : ''}
+          {this.props.flat.rent_payment_method == 'bank_transfer' ? this.renderSelectBankAccount() : ''}
+
 
           <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
             {this.renderLanguages()}
