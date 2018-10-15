@@ -82,7 +82,7 @@ class FormChoices extends Component {
       // console.log('FormChoices, renderEachChoice choice.val, value, this.anyOfOtherValues(name, value)', choice.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
-      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.value} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} placeholder="Enter other" />
+      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.value} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''} />
       // const inputElement = <input id="valueInput" name={name} key={choice.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }} />
       // if choice type is string, use input element above and button if not string
       if (choice.type == 'string') {

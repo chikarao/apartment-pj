@@ -9,6 +9,7 @@ import DocumentForm from '../constants/document_form';
 
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
+import RentPayment from '../constants/rent_payment'
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -222,6 +223,29 @@ function getBookingDateObject(booking) {
   return object;
 }
 
+function getContractLength(booking) {
+  console.log('in create_edit_document, getContractLength, booking: ', booking);
+  const dateFrom = new Date(booking.date_start);
+  const dateTo = new Date(booking.date_end);
+  const difference = Math.floor(dateTo - dateFrom);
+  const day = 1000 * 60 * 60 * 24;
+  const days = Math.floor(difference / day);
+  const months = days / 30;
+  let years = months / 12;
+  if (years < 1) {
+    years = '';
+  } else if (years > 1 && years < 2) {
+    years = 1;
+  } else if (years >   2 && years < 3) {
+    years = 2;
+  }
+  // console.log('in create_edit_document, getContractLength, months, years: ', months, years);
+
+  const object = { months, years };
+  console.log('in create_edit_document, getContractLength, object: ', object);
+  return object;
+}
+
 function createAddress(flat) {
   let addressFieldArray = [];
   // if (flat.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
@@ -246,7 +270,7 @@ function createAddress(flat) {
   return address;
 }
 
-function getInitialValueObject(flat, booking) {
+function getInitialValueObject(flat, booking, appLanguageCode) {
   const object = {};
   _.each(DocumentForm, eachPageObject => {
     // for each page in DocumentForm
@@ -292,7 +316,12 @@ function getInitialValueObject(flat, booking) {
         if (eachPageObject[eachBankAccountKey]) {
           console.log('in create_edit_document, getInitialValueObject, eachBankAccountKey: ', eachBankAccountKey);
           // if attributes in flat.bank_account are on DocumentForm, add to initialValues object
-          object[eachBankAccountKey] = flat.bank_account[eachBankAccountKey];
+          // if key is account_number, add *** to initial value
+          if (eachBankAccountKey == 'account_number') {
+            object[eachBankAccountKey] = flat.bank_account[eachBankAccountKey] + '***'
+          } else {
+            object[eachBankAccountKey] = flat.bank_account[eachBankAccountKey];
+          }
         }
       });
     }
@@ -310,6 +339,37 @@ function getInitialValueObject(flat, booking) {
       // convert float to integer by multiplying flat by integer
       object.price_per_month = (flat.price_per_month * 1);
     }
+
+    // handle rent_payment_method;
+    if (flat.rent_payment_method) {
+      // if bank transfer, nothing filled on the place to deliver rent line
+      if (flat.rent_payment_method == 'bank_transfer') {
+        object.rent_payment_method = '';
+      } else {
+        // if not bank transfer, get the choice from the constants object
+        let choice = {}
+        // get the choice with the value ==
+        _.each(RentPayment.rent_payment_method.choices, eachChoice => {
+          if (eachChoice.value == flat.rent_payment_method) {
+            // if match record in flat, assign to choice
+            choice = eachChoice;
+          }
+        })
+        // if choice is empty, user has entered own method
+        if (!_.isEmpty(choice)) {
+          // if standard input other than bank transfer, assign method to object
+          // get language jp or en
+          object.rent_payment_method = choice[appLanguageCode]
+        } else {
+          // if empty, it is own entry so assign to objct
+          object.rent_payment_method = flat.rent_payment_method;
+        }
+        // if not bank transfer, do not put rectangle on transfer fee paid by
+        object.transfer_fee_paid_by = '';
+      }
+      // end of else
+    }
+    // end of if flat.rent_payment_method
 
 
       // end of each Object.keys flat.bank_account
@@ -351,6 +411,10 @@ function getInitialValueObject(flat, booking) {
   // add address to initialvalues object
   object.address = address;
 
+  const contractLengthObject = getContractLength(booking);
+  object.contract_length_years = contractLengthObject.years;
+  object.contract_length_months = contractLengthObject.months;
+
   console.log('in create_edit_document, getInitialValueObject, object: ', object);
   // return object for assignment to initialValues in mapStateToProps
   return object;
@@ -363,7 +427,7 @@ function mapStateToProps(state) {
     const booking = state.bookingData.fetchBookingData;
     // console.log('in create_edit_document, mapStateToProps, flat: ', flat);
     // console.log('in create_edit_document, mapStateToProps, DocumentForm: ', DocumentForm);
-    const initialValues = getInitialValueObject(flat, booking);
+    const initialValues = getInitialValueObject(flat, booking, state.languages.appLanguageCode);
 
     console.log('in create_edit_document, mapStateToProps, state: ', state);
     return {

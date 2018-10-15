@@ -4,7 +4,7 @@ const RentPayment = {
   rent_payment_method: {
     name: 'rent_payment_method',
     en: 'Rent Payment Method',
-    jp: '家賃の支払いかた',
+    jp: '家賃の支払い方',
     component: 'FormChoices',
     type: 'string',
     choices: {
@@ -12,7 +12,7 @@ const RentPayment = {
       1: { value: 'submit_to_owner', en: 'Submit to Owner', jp: '物件所有者へ持参', type: 'button', className: 'form-rectangle' },
       2: { value: 'submit_to_landlord', en: 'Submit to Landlord', jp: '物件貸主へ持参', type: 'button', className: 'form-rectangle' },
       3: { value: 'submit_to_broker', en: 'Submit to Broker', jp: '物件管理業者へ持参', type: 'button', className: 'form-rectangle' },
-      4: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+      4: { value: '', en: 'Enter other...', jp: 'その他...', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
   transfer_fee_paid_by: {

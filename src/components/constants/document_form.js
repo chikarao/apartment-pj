@@ -620,6 +620,28 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
+    contract_length_years: {
+      name: 'contract_length_years',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: '', top: '84.2%', left: '72.1%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_length_months: {
+      name: 'contract_length_months',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: '', top: '84.2%', left: '79.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
     notice_from_year: {
       name: 'notice_from_year',
       type: 'string',
@@ -827,8 +849,8 @@ const DocumentForm = {
       name: 'transfer_fee_paid_by',
       type: 'string',
       choices: {
-        0: { params: { val: 'Owner', top: '21.4%', left: '75.6%', width: '5%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'Tenant', top: '21.4%', left: '81.3%', width: '5%', className: 'document-rectangle', type: 'button' } },
+        0: { params: { val: 'owner', top: '21.4%', left: '75.6%', width: '5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'tenant', top: '21.4%', left: '81.3%', width: '5%', className: 'document-rectangle', type: 'button' } },
       },
       className: 'form-control-document',
       height: '23px',
@@ -836,8 +858,8 @@ const DocumentForm = {
       // borderColor: 'blue'
     },
 
-    payment_method: {
-      name: 'payment_method',
+    rent_payment_method: {
+      name: 'rent_payment_method',
       type: 'string',
       choices: {
         // add 1.5% to top

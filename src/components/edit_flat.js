@@ -516,17 +516,17 @@ class EditFlat extends Component {
     this.props.showLoading();
   }
 
-  renderEachBankAccountChoices() {
+  renderEachBankAccountChoice() {
     if (this.props.flat) {
       const bankAccountsArray = this.props.bankAccounts;
       if (this.props.flat.bank_account && this.props.bankAccounts.length > 0) {
         //get index of flat bank account id
         // move index to top
-        console.log('in edit flat, renderEachBankAccountChoices, this.props.bankAccounts: ', this.props.bankAccounts);
-        console.log('in edit flat, renderEachBankAccountChoices, this.props.flat.bank_account: ', this.props.flat.bank_account);
+        console.log('in edit flat, renderEachBankAccountChoice, this.props.bankAccounts: ', this.props.bankAccounts);
+        console.log('in edit flat, renderEachBankAccountChoice, this.props.flat.bank_account: ', this.props.flat.bank_account);
         let index;
         _.each(this.props.bankAccounts, (each, i) => {
-          // console.log('in edit flat, renderEachBankAccountChoices, this.props.bankAccounts, each: ', each);
+          // console.log('in edit flat, renderEachBankAccountChoice, this.props.bankAccounts, each: ', each);
           if (each.id == this.props.flat.bank_account.id) {
             index = i;
           }
@@ -535,11 +535,11 @@ class EditFlat extends Component {
         const selectedBankAccount = bankAccountsArray.splice(index, 1)
         // insert one account at index 0 (take out 0); splice take out returns an array
         bankAccountsArray.splice(0, 0, selectedBankAccount[0]);
-        // console.log('in edit flat, renderEachBankAccountChoices, bankAccountsArray: ', bankAccountsArray);
+        // console.log('in edit flat, renderEachBankAccountChoice, bankAccountsArray: ', bankAccountsArray);
       }
 
       return _.map(bankAccountsArray, (eachAccount, i) => {
-        // console.log('in edit flat, renderEachBankAccountChoices, eachAccount.id: ', eachAccount.id);
+        // console.log('in edit flat, renderEachBankAccountChoice, eachAccount.id: ', eachAccount.id);
         // check if this account is the flat.bank_account, if so check off
         const isThisAccountDefault = this.props.flat.bank_account ? (this.props.flat.bank_account.id == eachAccount.id) : false;
         return (
@@ -567,7 +567,7 @@ class EditFlat extends Component {
         <div className="edit-flat-language-box">
           <div>{AppLanguages.selectBankAccountMessage[this.props.appLanguageCode]}</div>
           <div className="edit-flat-building-choice-scroll-box">
-            {this.renderEachBankAccountChoices()}
+            {this.renderEachBankAccountChoice()}
           </div>
         </div>
       );
@@ -632,7 +632,50 @@ class EditFlat extends Component {
         </form>
       </div>
     )
-  };
+  }
+
+  handleAddFacilityClick() {
+    console.log('in edit flat, handleAddFacilityClick: ');
+  }
+
+  renderEachFacility() {
+    console.log('in edit flat, renderEachFacility this.props.flat.facilities: ', this.props.flat.facilities);
+    // <input name={i} value={eachFacility.id} type="checkbox" className="my-page-card-default-checkbox" onChange={this.handleBankAcccountDefaultCheck.bind(this)} />
+    return _.map(this.props.flat.facilities, (eachFacility, i) => {
+      return (
+        <div key={i} className="edit-flat-building-choice">
+        {eachFacility.facility_type} {eachFacility.price_per_month}
+        </div>
+      );
+    });
+  }
+
+  renderFacilitiesAddEdit() {
+    console.log('in edit flat, renderFacilitiesAddEdit');
+    if (this.props.flat) {
+      if (!this.props.flat.facilities) {
+        return (
+          <div className="edit-flat-language-box">
+            <div>Add or Edit Facilities (parking for cars, bicycles, motorcycles, external storage etc.)</div>
+              <div style={{ margin: '20px 0 20px 0' }}>No Facilities to List</div>
+            <div className="edit-flat-language-add-link" onClick={this.handleAddFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+          </div>
+        );
+      }
+
+      if (this.props.flat.facilities) {
+        return (
+          <div className="edit-flat-language-box">
+            <div>Add or Edit Facilities (parking for bicycles, motorcycles, storage)</div>
+              <div className="edit-flat-building-choice-scroll-box">
+                {this.renderEachFacility()}
+              </div>
+            <div className="edit-flat-language-add-link" onClick={this.handleAddFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+          </div>
+        );
+      }
+    }
+  }
 
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
@@ -930,6 +973,8 @@ class EditFlat extends Component {
           {this.props.flat.rent_payment_method == 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4> : ''}
           {this.props.flat.rent_payment_method == 'bank_transfer' ? this.renderSelectBankAccount() : ''}
 
+          <h4>{AppLanguages.addEditFacilties[appLanguageCode]}</h4>
+          {this.renderFacilitiesAddEdit()}
 
           <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
             {this.renderLanguages()}

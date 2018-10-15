@@ -25,18 +25,11 @@ class BankAccountEditModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    // const { code } = data;
-    // this.setState({ selectedLanguage: languages[code].name });
-    // const delta = {}
-    // _.each(Object.keys(data), each => {
-    //   // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
-    //   if (data[each] !== this.props.initialValues[each]) {
-    //     console.log('in edit flat, handleFormSubmit, each: ', each);
-    //     delta[each] = data[each]
-    //   }
-    // })
+    // !!!!only persist first 4 characters of account number
+    data.account_number = data.account_number.slice(0, 4);
+    // console.log('in edit flat, handleFormSubmit, data.account_number, data.account_number.slice(0, 4);: ', data.account_number, data.account_number.slice(0, 4));
     const dataToBeSent = { bank_account: data };
-    // dataToBeSent.flat_id = this.props.flat.id;
+    // send all data for account; gets assigned user_id on api based on token
     console.log('in BankAccountEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.updateBankAccount(dataToBeSent, this.props.bankAccountId, () => {

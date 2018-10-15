@@ -31,7 +31,6 @@ class BuildingEditModal extends Component {
     _.each(Object.keys(data), each => {
       // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
       if (data[each] !== this.props.initialValues[each]) {
-        console.log('in edit flat, handleFormSubmit, each: ', each);
         delta[each] = data[each]
       }
     })

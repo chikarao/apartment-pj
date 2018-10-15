@@ -41,6 +41,8 @@ const appLanguages =
     blockDates: { en: 'Block Dates', jp: '日程をブロックする' },
     syncCalendar: { en: 'Update with iCal', jp: 'iCalカレンダーを反映' },
     addEditBuilding: { en: 'Add or Edit Building Information', jp: '建物情報を追加・編集' },
+    addEditFacilties: { en: 'Add or Edit Facilities Information', jp: '建物の付属施設を追加・編集' },
+    addAFacility: { en: 'Add a Facility', jp: '付属施設を追加' },
     addEditCalendars: { en: 'Add or Edit iCalendars', jp: 'iCalendarを追加・編集' },
     addedIcalendars: { en: 'Added iCalendars:', jp: '登録されたiCalendar:' },
     noIcalendarsAdded: { en: 'No iCalendars Added', jp: 'iCalendarが登録されてません' },
