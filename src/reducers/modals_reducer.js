@@ -10,7 +10,9 @@ import {
   SHOW_BUILDING_EDIT_MODAL,
   SHOW_BUILDING_CREATE_MODAL,
   SHOW_BANK_ACCOUNT_EDIT_MODAL,
-  SHOW_BANK_ACCOUNT_CREATE_MODAL
+  SHOW_BANK_ACCOUNT_CREATE_MODAL,
+  SHOW_FACILITY_EDIT_MODAL,
+  SHOW_FACILITY_CREATE_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -25,7 +27,9 @@ export default function (
     showIcalendarCreateModal: false,
     showIcalendarEditModal: false,
     showBuildingCreateModal: false,
-    showBuildingEditModal: false
+    showBuildingEditModal: false,
+    showFacilityEditModal: false,
+    showFacilityCreateModal: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -64,6 +68,11 @@ export default function (
     case SHOW_BANK_ACCOUNT_CREATE_MODAL:
       return { ...state, showBankAccountCreateModal: !state.showBankAccountCreateModal };
 
+    case SHOW_FACILITY_CREATE_MODAL:
+      return { ...state, showFacilityCreateModal: !state.showFacilityCreateModal };
+
+    case SHOW_FACILITY_EDIT_MODAL:
+      return { ...state, showFacilityEditModal: !state.showFacilityEditModal };
 
     default:
       return state;

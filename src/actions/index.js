@@ -109,7 +109,13 @@ import {
   SHOW_BANK_ACCOUNT_CREATE_MODAL,
   CREATE_BANK_ACCOUNT,
   UPDATE_BANK_ACCOUNT,
-  SELECTED_BANK_ACCOUNT_ID
+  SELECTED_BANK_ACCOUNT_ID,
+  SHOW_FACILITY_EDIT_MODAL,
+  SELECTED_FACILITY_ID,
+  SHOW_FACILITY_CREATE_MODAL,
+  UPDATE_FACILITY,
+  CREATE_FACILITY,
+  DELETE_FACILITY
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1912,6 +1918,7 @@ export function showBankAccountEditModal() {
   //flip showResetPasswordModal
   return { type: SHOW_BANK_ACCOUNT_EDIT_MODAL };
 }
+
 export function showBankAccountCreateModal() {
   console.log('in actions index, showBankAccountCreateModal:');
 
@@ -1919,11 +1926,32 @@ export function showBankAccountCreateModal() {
   return { type: SHOW_BANK_ACCOUNT_CREATE_MODAL };
 }
 
+export function showFacilityCreateModal() {
+  console.log('in actions index, showFacilityCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_FACILITY_CREATE_MODAL };
+}
+
+export function showFacilityEditModal() {
+  console.log('in actions index, showFacilityEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_FACILITY_EDIT_MODAL };
+}
+
 export function selectedBankAccountId(id) {
   console.log('in actions index, selectedBankAccountId:');
 
   //flip showResetPasswordModal
   return { type: SELECTED_BANK_ACCOUNT_ID, payload: id };
+}
+
+export function selectedFacilityId(id) {
+  console.log('in actions index, selectedFacilityId:');
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_FACILITY_ID, payload: id };
 }
 
 export function fetchBankAccountsByUser() {
@@ -2015,6 +2043,83 @@ export function deleteBankAccount(id, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to deleteBankAccount: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function updateFacility(facilityAttributes, id, callback) {
+  console.log('in action index, updateFacility, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/facilities/${id}`, facilityAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateFacility: ', response);
+      console.log('in action index, response to updateFacility: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_FACILITY,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateFacility: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function deleteFacility(id, callback) {
+  // console.log('in action index, deleteFacility, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/facilities/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteFacility: ', response);
+      console.log('in action index, response to deleteFacility: ', response.data.data.flat);
+
+      dispatch({
+        type: DELETE_FACILITY,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteFacility: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function createFacility(facilityAttributes, callback) {
+  console.log('in action index, createFacility, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/facilities/`, facilityAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createFacility: ', response);
+      console.log('in action index, response to createFacility: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_FACILITY,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createFacility: ', error);
       // dispatch(authError(error));
       // this.showloading();
     });

@@ -27,7 +27,11 @@ import {
   DELETE_BOOKING,
   SEARCH_BUILDINGS,
   UPDATE_BUILDING,
-  CREATE_BUILDING
+  CREATE_BUILDING,
+  SELECTED_FACILITY_ID,
+  UPDATE_FACILITY,
+  CREATE_FACILITY,
+  DELETE_FACILITY
 } from '../actions/types';
 
 export default function (state = {
@@ -159,6 +163,18 @@ export default function (state = {
 
     case SEARCH_BUILDINGS:
       return { ...state, buildings: action.payload };
+
+    case SELECTED_FACILITY_ID:
+      return { ...state, selectedFacilityId: action.payload };
+
+    case UPDATE_FACILITY:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case CREATE_FACILITY:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_FACILITY:
+      return { ...state, selectedFlatFromParams: action.payload };
 
     default:
       return state;

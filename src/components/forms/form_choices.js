@@ -107,7 +107,7 @@ class FormChoices extends Component {
     // <div type={DocumentForm[name].box.type} onClick={() => onChange(val)} className={DocumentForm[name].box.className} style={value == val ? { borderColor: 'black' } : { borderColor: 'lightgray' } }>Y</div>
     // <div key={name} style={DocumentForm[name].box.style}>
     return (
-      <div className="container" key={name}>
+      <div className="container form-control-custom-container" key={name}>
         <div className="row form-control-custom">
           {this.renderEachChoice()}
         </div>

@@ -17,10 +17,13 @@ import IcalendarCreateModal from './modals/icalendar_create_modal';
 import IcalendarEditModal from './modals/icalendar_edit_modal';
 import BuildingEditModal from './modals/building_edit_modal';
 import BuildingCreateModal from './modals/building_create_modal';
+import FacilityEditModal from './modals/facility_edit_modal';
+import FacilityCreateModal from './modals/facility_create_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
+import Facility from './constants/facility';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -448,7 +451,7 @@ class EditFlat extends Component {
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
           {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
-          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Yes, assign this building to my listing</div>
+          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.yesAssignThisBuilding[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -474,10 +477,10 @@ class EditFlat extends Component {
         return (
           <div className="edit-flat-language-box">
             <div>No building has been identified for your listing. <br/>Is one of these buildings for your listing?</div>
-            <div className="edit-flat-building-choice-scroll-box">
+            <div className="edit-flat-building-choice-scroll-box" style={this.props.buildings.length > 1 ? { height: '170px' } : { height: '85px'}}>
                 {this.renderEachBuildingChoice()}
             </div>
-            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>No, add my building</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.noAddMyBuilding[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -486,7 +489,7 @@ class EditFlat extends Component {
         console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
           <div className="edit-flat-language-box">
-            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>Add my building</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.addMyBuilding[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -634,8 +637,33 @@ class EditFlat extends Component {
     )
   }
 
-  handleAddFacilityClick() {
-    console.log('in edit flat, handleAddFacilityClick: ');
+  handleAddEditFacilityClick(event) {
+    console.log('in edit flat, handleAddEditFacilityClick: ');
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    const elementName = clickedElement.getAttribute('name');
+
+    if (elementName == 'add') {
+      this.props.showFacilityCreateModal();
+    }
+
+    if (elementName == 'edit') {
+      this.props.showFacilityEditModal();
+      this.props.selectedFacilityId(elementVal);
+    }
+  }
+
+  getFacilityType(facility) {
+    let choice = {}
+    // console.log('in edit flat, getFacilityType facility: ', facility);
+    // console.log('in edit flat, getFacilityType Facility: ', Facility);
+    // console.log('in edit flat, getFacilityType Facility[facility.facility_type]: ', Facility.facility_type);
+    _.each(Facility.facility_type.choices, eachChoice => {
+      if (eachChoice.value == facility.facility_type) {
+        choice = eachChoice;
+      }
+    });
+    return choice[this.props.appLanguageCode];
   }
 
   renderEachFacility() {
@@ -644,7 +672,8 @@ class EditFlat extends Component {
     return _.map(this.props.flat.facilities, (eachFacility, i) => {
       return (
         <div key={i} className="edit-flat-building-choice">
-        {eachFacility.facility_type} {eachFacility.price_per_month}
+        {this.getFacilityType(eachFacility)}  &nbsp;{eachFacility.facility_number ? eachFacility.facility_number : ''} &nbsp;¥{eachFacility.price_per_month} /{AppLanguages.month[this.props.appLanguageCode]}  &nbsp; {eachFacility.optional ? AppLanguages.optional[this.props.appLanguageCode] : AppLanguages.notOptional[this.props.appLanguageCode]}
+        <div name="edit" value={eachFacility.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -658,7 +687,7 @@ class EditFlat extends Component {
           <div className="edit-flat-language-box">
             <div>Add or Edit Facilities (parking for cars, bicycles, motorcycles, external storage etc.)</div>
               <div style={{ margin: '20px 0 20px 0' }}>No Facilities to List</div>
-            <div className="edit-flat-language-add-link" onClick={this.handleAddFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -667,10 +696,10 @@ class EditFlat extends Component {
         return (
           <div className="edit-flat-language-box">
             <div>Add or Edit Facilities (parking for bicycles, motorcycles, storage)</div>
-              <div className="edit-flat-building-choice-scroll-box">
+              <div className="edit-flat-building-choice-scroll-box" style={{ height: `${this.props.flat.facilities.length * 85}px !important` }}>
                 {this.renderEachFacility()}
               </div>
-            <div className="edit-flat-language-add-link" onClick={this.handleAddFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -974,7 +1003,7 @@ class EditFlat extends Component {
           {this.props.flat.rent_payment_method == 'bank_transfer' ? this.renderSelectBankAccount() : ''}
 
           <h4>{AppLanguages.addEditFacilties[appLanguageCode]}</h4>
-          {this.renderFacilitiesAddEdit()}
+            {this.renderFacilitiesAddEdit()}
 
           <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
             {this.renderLanguages()}
@@ -1000,17 +1029,6 @@ class EditFlat extends Component {
               ''
             }
           </div>
-          <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
-          <div>
-              <div className="container" id="map">
-                {this.renderMap()}
-              </div>
-                <MapInteraction
-                  flat={this.props.flat}
-                  places={this.props.flat.places}
-                  currentUserIsOwner={this.currentUserIsOwner()}
-                />
-          </div>
           <div className="back-button">
             <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
           </div>
@@ -1018,6 +1036,17 @@ class EditFlat extends Component {
       );
     }
   }
+  // <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
+  // <div>
+  // <div className="container" id="map">
+  // {this.renderMap()}
+  // </div>
+  // <MapInteraction
+  // flat={this.props.flat}
+  // places={this.props.flat.places}
+  // currentUserIsOwner={this.currentUserIsOwner()}
+  // />
+  // </div>
 
   renderLanguageCreateModal() {
     if (this.props.showLanguageCreate) {
@@ -1096,12 +1125,42 @@ class EditFlat extends Component {
       }
     }
   }
+  renderFacilityEditModal() {
+    if (this.props.showFacilityEdit) {
+      if (this.props.flat) {
+        return (
+          <div>
+          <FacilityEditModal
+          // show
+            show={this.props.showFacilityEdit}
+          />
+          </div>
+        );
+      }
+    }
+  }
+  renderFacilityCreateModal() {
+    if (this.props.showFacilityCreate) {
+      if (this.props.flat) {
+        return (
+          <div>
+          <FacilityCreateModal
+          // show
+            show={this.props.showFacilityCreate}
+          />
+          </div>
+        );
+      }
+    }
+  }
 
   render() {
     return (
       <div>
         {this.renderBuildingCreateModal()}
         {this.renderBuildingEditModal()}
+        {this.renderFacilityEditModal()}
+        {this.renderFacilityCreateModal()}
         {this.renderLanguageCreateModal()}
         {this.renderLanguageEditModal()}
         {this.renderIcalendarCreateModal()}
@@ -1177,6 +1236,9 @@ function mapStateToProps(state) {
       showBuildingCreate: state.modals.showBuildingCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
       bankAccounts: state.auth.bankAccounts,
+      selectedFacility: state.flat.selectedFacilityId,
+      showFacilityEdit: state.modals.showFacilityEditModal,
+      showFacilityCreate: state.modals.showFacilityCreateModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

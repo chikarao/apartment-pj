@@ -2300,7 +2300,7 @@ form {
 
 .edit-flat-building-choice-scroll-box {
   width: auto;
-  height: 170px;
+  min-height: 85px;
   overflow: hidden;
   overflow-y: scroll;
 }
@@ -2331,6 +2331,7 @@ form {
 .form-control-custom {
   margin: 0 0 0 20px;
   width: 200px;
+  max-width: 600px;
   display: flex;
   flex-direction: row;
   justify-content: center;

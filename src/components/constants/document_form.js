@@ -554,6 +554,29 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
+    // other_facility: {
+    //   name: 'other_facility',
+    //   type: 'boolean',
+    //   choices: {
+    //     // add 1.5% to top
+    //     0: { valName: 'Y', params: { val: true, top: '78.7%', left: '39%', width: '4.3%', className: 'document-rectangle', type: 'button' } },
+    //     1: { valName: 'N', params: { val: false, top: '78.7%', left: '44.2%', width: '8%', className: 'document-rectangle', type: 'button' } }
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices'
+    // },
+    //
+    // other_facility_name: {
+    //   name: 'other_facility_name',
+    //   type: 'string',
+    //   choices: {
+    //     // add 1.5% to top
+    //     0: { params: { val: '', top: '78.7%', left: '27%', width: '11.4%', className: 'document-rectangle', type: 'string' } },
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices'
+    // },
+
     from_year: {
       name: 'from_year',
       type: 'string',
