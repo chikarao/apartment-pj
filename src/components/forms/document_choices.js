@@ -38,7 +38,7 @@ class DocumentChoices extends Component {
     const anyOtherValueArray = [];
     _.each(DocumentForm[this.props.page][name].choices, choice => {
       if (choice.params.val == value) {
-        console.log('DocumentChoices, anyOfOtherValues choice.params.val, value', choice.params.val, value);
+        // console.log('DocumentChoices, anyOfOtherValues choice.params.val, value', choice.params.val, value);
         anyOtherValueArray.push(choice)
       }
     });
@@ -53,7 +53,7 @@ class DocumentChoices extends Component {
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(DocumentForm[this.props.page][name].choices, choice => {
       // console.log('DocumentChoices, renderEachChoice choice', choice.params.val);
-      console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
+      // console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
       // console.log('DocumentChoices, renderEachChoice value', value);
       // define button element for user to click to set value in submission
       const buttonElement =
@@ -70,7 +70,7 @@ class DocumentChoices extends Component {
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
       // const inputElement = <input id="valueInput" value={value} key={choice.params.val} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
-      console.log('DocumentChoices, renderEachChoice choice.params.val, value, this.anyOfOtherValues(name, value)', choice.params.val, value, this.anyOfOtherValues(name, value));
+      // console.log('DocumentChoices, renderEachChoice choice.params.val, value, this.anyOfOtherValues(name, value)', choice.params.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
       const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.params.val} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />

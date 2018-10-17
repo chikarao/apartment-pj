@@ -149,9 +149,9 @@ class CreateEditDocument extends Component {
     const documentEmpty = _.isEmpty(this.props.documents);
     if (!documentEmpty) {
       const { newElement } = this.props.documents;
-      console.log('in create_edit_document, renderNewElements, newElement: ', newElement);
+      // console.log('in create_edit_document, renderNewElements, newElement: ', newElement);
       if (newElement.page == page) {
-        console.log('in create_edit_document, renderNewElements, newElement.page, page: ', newElement.page, page);
+        // console.log('in create_edit_document, renderNewElements, newElement.page, page: ', newElement.page, page);
         return (
           <Field
             key={newElement.name}
@@ -179,7 +179,7 @@ class CreateEditDocument extends Component {
     // const page = 1;
     // {this.renderNewElements(page)}
     return _.map(Object.keys(DocumentForm), page => {
-      console.log('in create_edit_document, renderDocument, page: ', page);
+      // console.log('in create_edit_document, renderDocument, page: ', page);
       return (
           <div key={page} value={page} id="document-background" className="test-image-pdf-jpg-background" style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${file}.jpg)` }}>
               {this.renderEachDocumentField(page)}
@@ -225,7 +225,7 @@ function getBookingDateObject(booking) {
 }
 
 function getContractLength(booking) {
-  console.log('in create_edit_document, getContractLength, booking: ', booking);
+  // console.log('in create_edit_document, getContractLength, booking: ', booking);
   const dateFrom = new Date(booking.date_start);
   const dateTo = new Date(booking.date_end);
   const difference = Math.floor(dateTo - dateFrom);
@@ -243,7 +243,7 @@ function getContractLength(booking) {
   // console.log('in create_edit_document, getContractLength, months, years: ', months, years);
 
   const object = { months, years };
-  console.log('in create_edit_document, getContractLength, object: ', object);
+  // console.log('in create_edit_document, getContractLength, object: ', object);
   return object;
 }
 
@@ -272,7 +272,7 @@ function createAddress(flat) {
 }
 
 function getChoice(facility) {
-  console.log('in create_edit_document, getChoice, facility: ', facility);
+  // console.log('in create_edit_document, getChoice, facility: ', facility);
   const array = [];
   _.each(Facility.facility_type.choices, eachChoice => {
     if (eachChoice.value == facility.facility_type) {
@@ -311,7 +311,7 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
         //   eachBuildingKey = 'flat_building_name';
         // }
         if (eachPageObject[eachBuildingKey]) {
-          console.log('in create_edit_document, getInitialValueObject, eachBuildingKey: ', eachBuildingKey);
+          // console.log('in create_edit_document, getInitialValueObject, eachBuildingKey: ', eachBuildingKey);
           // if attributes in flat.building are on DocumentForm, add to initialValues object
           object[eachBuildingKey] = flat.building[eachBuildingKey];
         }
@@ -326,7 +326,7 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
         //   eachBuildingKey = 'flat_bank_account_name';
         // }
         if (eachPageObject[eachBankAccountKey]) {
-          console.log('in create_edit_document, getInitialValueObject, eachBankAccountKey: ', eachBankAccountKey);
+          // console.log('in create_edit_document, getInitialValueObject, eachBankAccountKey: ', eachBankAccountKey);
           // if attributes in flat.bank_account are on DocumentForm, add to initialValues object
           // if key is account_number, add *** to initial value
           if (eachBankAccountKey == 'account_number') {
@@ -403,33 +403,42 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
           }
         })
       })
-      console.log('in create_edit_document, getInitialValueObject, facilityArray: ', facilityArray);
+      // console.log('in create_edit_document, getInitialValueObject, facilityArray: ', facilityArray);
       // console.log('in create_edit_document, getInitialValueObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
+      let facilityUsageFeeCount = 0;
       _.each(facilityArray, eachArray => {
-        console.log('in create_edit_document, getInitialValueObject, eachArray: ', eachArray);
+        // console.log('in create_edit_document, getInitialValueObject, eachArray: ', eachArray);
         if (eachArray.length > 0) {
           let count = 0;
           let facilitySpaces = ''
           _.each(eachArray, each => {
-            console.log('in create_edit_document, getInitialValueObject, each: ', each);
+            // console.log('in create_edit_document, getInitialValueObject, each: ', each);
             // console.log('in create_edit_document, getInitialValueObject, each: ', each);
             if (count > 0) {
               facilitySpaces = facilitySpaces.concat(', ')
               facilitySpaces = facilitySpaces.concat(each.facility_number)
-              console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
+              // console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
               count++;
             } else {
               facilitySpaces = facilitySpaces.concat(each.facility_number)
-              console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count else: ', facilitySpaces, count);
+              // console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count else: ', facilitySpaces, count);
               count++;
             }
+            // get the choice that corresponds to each facility in facility types
+            const choiceInEach = getChoice(each);
+            // console.log('in create_edit_document, getInitialValueObject, choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]: ', choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]);
+            // if facility NOT included, add up price_per_month
+            if (!flat[choiceInEach.facilityObjectMap]) {
+              facilityUsageFeeCount += each.price_per_month;
+            }
           })
-          console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count: ', facilitySpaces, count);
+          // console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count: ', facilitySpaces, count);
           const choice = getChoice(eachArray[0]);
           object[choice.documentFormMap1] = count;
           object[choice.documentFormMap2] = facilitySpaces;
+          object.facilities_usage_fee = facilityUsageFeeCount;
         }
-      })
+      });
     }
 
 
