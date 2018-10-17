@@ -485,8 +485,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    bicycle_parking_number: {
-      name: 'bicycle_parking_number',
+    bicycle_parking_space_number: {
+      name: 'bicycle_parking_space_number',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -519,8 +519,8 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
-    motorcycle_parking_number: {
-      name: 'motorcycle_parking_number',
+    motorcycle_parking_space_number: {
+      name: 'motorcycle_parking_space_number',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -542,6 +542,27 @@ const DocumentForm = {
       component: 'DocumentChoices'
     },
 
+    storage_spaces: {
+      name: 'storage_spaces',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: '', top: '74.7%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    storage_space_number: {
+      name: 'storage_space_number',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: '', top: '74.7%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
     dedicated_yard: {
       name: 'dedicated_yard',
       type: 'boolean',
@@ -730,7 +751,7 @@ const DocumentForm = {
       component: 'DocumentChoices'
     }
   },
-  // end of 1
+  // end of page 1
   2: {
     price_per_month: {
       name: 'price_per_month',
@@ -1266,15 +1287,7 @@ const DocumentForm = {
     },
 
   }
-  // end of 2
+  // end of page 2
 };
 
 export default DocumentForm;
-// const DocumentForm = {
-//   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
-//   flat_building_name: { name: 'flat_building_name', type: 'string', className: 'form-control', top: '177.5px', left: '200px', width: '490px', height: '23px', component: 'input', borderColor: 'blue' },
-//   address: { name: 'address', type: 'string', className: 'form-control', top: '205.5px', left: '200px', width: '490px', height: '23px', component: 'input', borderColor: 'blue' },
-//   washer: { name: 'washer', type: 'boolean', className: 'form-control', top: '420.5px', left: '412px', width: '100px', height: '23px', component: 'YesOrNo', borderColor: 'blue' }
-// }
-//
-// export default DocumentForm;

@@ -1029,6 +1029,19 @@ class EditFlat extends Component {
               ''
             }
           </div>
+
+          <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
+          <div>
+            <div className="container" id="map">
+            {this.renderMap()}
+            </div>
+            <MapInteraction
+              flat={this.props.flat}
+              places={this.props.flat.places}
+              currentUserIsOwner={this.currentUserIsOwner()}
+            />
+          </div>
+
           <div className="back-button">
             <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
           </div>
@@ -1036,17 +1049,6 @@ class EditFlat extends Component {
       );
     }
   }
-  // <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
-  // <div>
-  // <div className="container" id="map">
-  // {this.renderMap()}
-  // </div>
-  // <MapInteraction
-  // flat={this.props.flat}
-  // places={this.props.flat.places}
-  // currentUserIsOwner={this.currentUserIsOwner()}
-  // />
-  // </div>
 
   renderLanguageCreateModal() {
     if (this.props.showLanguageCreate) {

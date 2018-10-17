@@ -10,6 +10,7 @@ import DocumentForm from '../constants/document_form';
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
 import RentPayment from '../constants/rent_payment'
+import Facility from '../constants/facility'
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -270,6 +271,17 @@ function createAddress(flat) {
   return address;
 }
 
+function getChoice(facility) {
+  console.log('in create_edit_document, getChoice, facility: ', facility);
+  const array = [];
+  _.each(Facility.facility_type.choices, eachChoice => {
+    if (eachChoice.value == facility.facility_type) {
+      array.push(eachChoice);
+    }
+  })
+  return array[0];
+}
+
 function getInitialValueObject(flat, booking, appLanguageCode) {
   const object = {};
   _.each(DocumentForm, eachPageObject => {
@@ -370,6 +382,55 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
       // end of else
     }
     // end of if flat.rent_payment_method
+
+    if (flat.facilities) {
+      // console.log('in create_edit_document, getInitialValueObject, flat.facilities: ', flat.facilities);
+      const carParkingArray = [];
+      const bicycleParkingArray = [];
+      const motorcycleParkingArray = [];
+      const storageArray = [];
+      const facilityArray = [carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray];
+      // const yardArray = []
+      const facilityTypes = ['car_parking', 'bicycle_parking', 'motorcycle_parking', 'storage'];
+      _.each(Facility.facility_type.choices, eachChoice => {
+        _.each(flat.facilities, eachFacility => {
+          if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
+            eachFacility.facility_type == 'car_parking' ? carParkingArray.push(eachFacility) : '';
+            eachFacility.facility_type == 'bicycle_parking' ? bicycleParkingArray.push(eachFacility) : '';
+            eachFacility.facility_type == 'motorcycle_parking' ? motorcycleParkingArray.push(eachFacility) : '';
+            eachFacility.facility_type == 'storage' ? storageArray.push(eachFacility) : '';
+            // eachFacility.facility_type == 'dedicated_yard' ? yardArray.push(eachFacility) : '';
+          }
+        })
+      })
+      console.log('in create_edit_document, getInitialValueObject, facilityArray: ', facilityArray);
+      // console.log('in create_edit_document, getInitialValueObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
+      _.each(facilityArray, eachArray => {
+        console.log('in create_edit_document, getInitialValueObject, eachArray: ', eachArray);
+        if (eachArray.length > 0) {
+          let count = 0;
+          let facilitySpaces = ''
+          _.each(eachArray, each => {
+            console.log('in create_edit_document, getInitialValueObject, each: ', each);
+            // console.log('in create_edit_document, getInitialValueObject, each: ', each);
+            if (count > 0) {
+              facilitySpaces = facilitySpaces.concat(', ')
+              facilitySpaces = facilitySpaces.concat(each.facility_number)
+              console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
+              count++;
+            } else {
+              facilitySpaces = facilitySpaces.concat(each.facility_number)
+              console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count else: ', facilitySpaces, count);
+              count++;
+            }
+          })
+          console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count: ', facilitySpaces, count);
+          const choice = getChoice(eachArray[0]);
+          object[choice.documentFormMap1] = count;
+          object[choice.documentFormMap2] = facilitySpaces;
+        }
+      })
+    }
 
 
       // end of each Object.keys flat.bank_account
