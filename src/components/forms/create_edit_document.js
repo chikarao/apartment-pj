@@ -282,7 +282,19 @@ function getChoice(facility) {
   return array[0];
 }
 
-function getInitialValueObject(flat, booking, appLanguageCode) {
+function calculateAge(dateString) {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+}
+
+function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode) {
   const object = {};
   _.each(DocumentForm, eachPageObject => {
     // for each page in DocumentForm
@@ -382,19 +394,27 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
       // end of else
     }
     // end of if flat.rent_payment_method
-
+    // calculate number of facilties, car park, bicycle parking, etc
+    // and get a string of their numbers 1A, 2D etc.
     if (flat.facilities) {
       // console.log('in create_edit_document, getInitialValueObject, flat.facilities: ', flat.facilities);
+      // set up arrays for each facility
       const carParkingArray = [];
       const bicycleParkingArray = [];
       const motorcycleParkingArray = [];
       const storageArray = [];
+      // set up array of each array;
       const facilityArray = [carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray];
       // const yardArray = []
+      // specify which facility_types should be iterated over
       const facilityTypes = ['car_parking', 'bicycle_parking', 'motorcycle_parking', 'storage'];
+      // iterate through each facility.js facility_type choices
       _.each(Facility.facility_type.choices, eachChoice => {
+        // iterate over each facility assigned to flat
         _.each(flat.facilities, eachFacility => {
           if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
+            // if there is a facility that match the choices and the types that we care about
+            // push them in respective arrays
             eachFacility.facility_type == 'car_parking' ? carParkingArray.push(eachFacility) : '';
             eachFacility.facility_type == 'bicycle_parking' ? bicycleParkingArray.push(eachFacility) : '';
             eachFacility.facility_type == 'motorcycle_parking' ? motorcycleParkingArray.push(eachFacility) : '';
@@ -405,9 +425,12 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
       })
       // console.log('in create_edit_document, getInitialValueObject, facilityArray: ', facilityArray);
       // console.log('in create_edit_document, getInitialValueObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
+      // facilityUsageFeeCount to calculate total of all facilities to charge
       let facilityUsageFeeCount = 0;
+      // iterate over each array in array of of arrays
       _.each(facilityArray, eachArray => {
         // console.log('in create_edit_document, getInitialValueObject, eachArray: ', eachArray);
+        // if an array has something in it, count how many and form their strings
         if (eachArray.length > 0) {
           let count = 0;
           let facilitySpaces = ''
@@ -433,12 +456,56 @@ function getInitialValueObject(flat, booking, appLanguageCode) {
             }
           })
           // console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count: ', facilitySpaces, count);
+          // get the choice that corresponds to the facility_type
           const choice = getChoice(eachArray[0]);
+          //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
           object[choice.documentFormMap1] = count;
           object[choice.documentFormMap2] = facilitySpaces;
           object.facilities_usage_fee = facilityUsageFeeCount;
         }
       });
+    }
+    // form string for user owner names
+    if (userOwner.profile.first_name && userOwner.profile.last_name) {
+      const fullName = userOwner.profile.last_name.concat(` ${userOwner.profile.first_name}`);
+      object.owner_name = fullName;
+      object.owner_phone = userOwner.profile.phone;
+    }
+
+    // form string for user tenant names
+    if (booking.user.profile.first_name && booking.user.profile.last_name) {
+      const fullName = booking.user.profile.last_name.concat(` ${booking.user.profile.first_name}`);
+      object.tenant_name = fullName;
+      object.tenant_phone = tenant.profile.phone;
+    }
+
+    // form string for address of user owner
+    if (userOwner.profile.address1 && userOwner.profile.city) {
+      if (userOwner.profile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+        let fullAddress = ''
+        fullAddress = fullAddress.concat(`${userOwner.profile.zip}${userOwner.profile.state}${userOwner.profile.state}${userOwner.profile.city}${userOwner.profile.address1}`);
+        object.owner_address = fullAddress;
+      }
+    }
+
+    // form get age of tenant
+    if (tenant.profile.birthday) {
+      const age = calculateAge(tenant.profile.birthday);
+      object.tenant_age = age;
+    }
+
+    if (flat.building.building_owner_name) {
+      object.building_owner_name = flat.building.building_owner_name;
+      object.building_owner_address = flat.building.building_owner_address;
+      object.building_owner_phone = flat.building.building_owner_phone;
+    }
+
+    console.log('in create_edit_document, getInitialValueObject, tenant.profile: ', tenant.profile);
+    if (tenant.profile.emergency_contact_name) {
+      object.emergency_contact_name = tenant.profile.emergency_contact_name;
+      object.emergency_contact_phone = tenant.profile.emergency_contact_phone;
+      object.emergency_contact_address = tenant.profile.emergency_contact_address;
+      object.emergency_contact_relationship = tenant.profile.emergency_contact_relationship;
     }
 
 
@@ -495,9 +562,11 @@ function mapStateToProps(state) {
   if (state.bookingData.fetchBookingData) {
     const flat = state.bookingData.fetchBookingData.flat;
     const booking = state.bookingData.fetchBookingData;
+    const userOwner = state.bookingData.user;
+    const tenant = state.bookingData.fetchBookingData.user
     // console.log('in create_edit_document, mapStateToProps, flat: ', flat);
     // console.log('in create_edit_document, mapStateToProps, DocumentForm: ', DocumentForm);
-    const initialValues = getInitialValueObject(flat, booking, state.languages.appLanguageCode);
+    const initialValues = getInitialValueObject(flat, booking, userOwner, tenant, state.languages.appLanguageCode);
 
     console.log('in create_edit_document, mapStateToProps, state: ', state);
     return {
@@ -506,6 +575,8 @@ function mapStateToProps(state) {
       auth: state.auth,
       appLanguageCode: state.languages.appLanguageCode,
       bookingData: state.bookingData.fetchBookingData.flat,
+      userOwner: state.bookingData.user,
+      tenant: state.bookingData.fetchBookingData.user,
       initialValues,
       // initialValues: testObject,
       documents: state.documents

@@ -821,10 +821,10 @@ export function fetchBooking(id) {
     })
     .then(response => {
       console.log('response to fetchBooking: ', response);
-      console.log('response to fetchBooking: ', response.data.data.booking);
+      console.log('response to fetchBooking: ', response.data.data);
       dispatch({
         type: FETCH_BOOKING,
-        payload: response.data.data.booking
+        payload: response.data.data
       });
     });
   };

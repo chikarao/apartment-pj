@@ -122,6 +122,22 @@ class EditProfileModal extends Component {
                 <label className="create-flat-form-label">{AppLanguages.country[this.props.appLanguageCode]}:</label>
                 <Field name="country" component="input" type="string" className="form-control" />
               </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">{AppLanguages.emergencyName[this.props.appLanguageCode]}:</label>
+                <Field name="emergency_contact_name" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">{AppLanguages.emergencyPhone[this.props.appLanguageCode]}:</label>
+                <Field name="emergency_contact_phone" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">{AppLanguages.emergencyAddress[this.props.appLanguageCode]}:</label>
+                <Field name="emergency_contact_address" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <label className="create-flat-form-label">{AppLanguages.emergencyRelationship[this.props.appLanguageCode]}:</label>
+                <Field name="emergency_contact_relationship" component="input" type="string" className="form-control" />
+              </fieldset>
               <fieldset className="form-group introduction">
                 <label className="create-flat-form-label">{AppLanguages.selfIntro[this.props.appLanguageCode]}:</label>
                 <Field name="introduction" component="textarea" type="text" className="form-control" />

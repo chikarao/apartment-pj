@@ -198,6 +198,7 @@ const Building = {
         2: { value: 'none', en: 'None', jp: '無し', type: 'button', component: 'button', className: 'form-rectangle' }
       }
     },
+
     asbestos_record: {
       name: 'asbestos_record',
       en: 'Asbestos Record',
@@ -208,6 +209,42 @@ const Building = {
         0: { value: 'true', en: 'Yes, performed', jp: 'はい、調査済み', type: 'button', className: 'form-rectangle' },
         1: { value: 'false', en: 'No, not performed', jp: 'いいえ、調査されてません', type: 'button', className: 'form-rectangle' }
       }
+    },
+
+    building_owner_name: {
+      name: 'building_owner_name',
+      en: 'Building Owner Name',
+      jp: '物件の所有者名',
+      component: 'input',
+      type: 'string',
+      className: 'form-control'
+      // choices: {
+      //   0: { value: '', val: ''},
+      // }
+    },
+
+    building_owner_address: {
+      name: 'building_owner_address',
+      en: 'Building Owner Address',
+      jp: '物件の所有者の住所',
+      component: 'input',
+      type: 'string',
+      className: 'form-control'
+      // choices: {
+      //   0: { value: '', val: ''},
+      // }
+    },
+
+    building_owner_phone: {
+      name: 'building_owner_phone',
+      en: 'Building Owner Phone',
+      jp: '物件の所有者の電話番号',
+      component: 'input',
+      type: 'string',
+      className: 'form-control'
+      // choices: {
+      //   0: { value: '', val: ''},
+      // }
     },
 
     asbestos_survey_contents: {
@@ -242,6 +279,7 @@ const Building = {
       type: 'string',
       className: 'form-control'
     },
+
     earthquake_study_performed: {
       name: 'earthquake_study_performed',
       en: 'Earthquake Study Performed',

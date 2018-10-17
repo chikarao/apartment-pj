@@ -682,7 +682,27 @@ class MyPage extends Component {
 
   renderProfile() {
     if (this.props.auth.userProfile) {
-      const { username, user_id, title, first_name, last_name, birthday, identification, address1, address2, city, state, zip, country, region, introduction } = this.props.auth.userProfile;
+      const {
+        username,
+        user_id,
+        title,
+        first_name,
+        last_name,
+        birthday,
+        identification,
+        address1,
+        address2,
+        city,
+        state,
+        zip,
+        country,
+        region,
+        emergency_contact_name,
+        emergency_contact_phone,
+        emergency_contact_address,
+        emergency_contact_relationship,
+        introduction
+      } = this.props.auth.userProfile;
       // console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
@@ -704,6 +724,10 @@ class MyPage extends Component {
             <li value="state"className="my-page-profile-attribute"><div>{AppLanguages.state[this.props.appLanguageCode]}:</div> <div>{state}</div></li>
             <li value="zip"className="my-page-profile-attribute"><div>{AppLanguages.zip[this.props.appLanguageCode]}:</div> <div>{zip}</div></li>
             <li value="country"className="my-page-profile-attribute"><div>{AppLanguages.country[this.props.appLanguageCode]}:</div> <div>{country}</div></li>
+            <li value="emergency_contact_name"className="my-page-profile-attribute"><div>{AppLanguages.emergencyName[this.props.appLanguageCode]}:</div> <div>{emergency_contact_name}</div></li>
+            <li value="emergency_contact_phone"className="my-page-profile-attribute"><div>{AppLanguages.emergencyPhone[this.props.appLanguageCode]}:</div> <div>{emergency_contact_phone}</div></li>
+            <li value="emergency_contact_address"className="my-page-profile-attribute"><div>{AppLanguages.emergencyAddress[this.props.appLanguageCode]}:</div> <div>{emergency_contact_address}</div></li>
+            <li value="emergency_contact_relationship"className="my-page-profile-attribute"><div>{AppLanguages.emergencyRelationship[this.props.appLanguageCode]}:</div> <div>{emergency_contact_relationship}</div></li>
             <li value=""className="my-page-profile-attribute"><div>{AppLanguages.selfIntro[this.props.appLanguageCode]}:</div> <div></div></li>
             <div value="introduction"className="my-page-profile-introduction">{introduction}</div>
           </ul>
