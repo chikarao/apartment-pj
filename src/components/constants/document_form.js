@@ -14,7 +14,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '16%',
             left: '24.5%',
             width: '63%',
@@ -35,7 +35,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '18.7%',
             left: '24.5%',
             width: '63%',
@@ -65,7 +65,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         0: { params: { val: 'Wooden', top: '21.6%', left: '45%', width: '10%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: '', top: '24%', left: '54.5%', width: '10%', className: 'document-rectangle', type: 'string', textAlign: 'right' } }
+        1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', className: 'document-rectangle', type: 'string', textAlign: 'right' } }
       },
       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
       className: 'form-control-document',
@@ -77,7 +77,7 @@ const DocumentForm = {
       name: 'floors',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '26.3%', left: '57%', width: '4%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '26.3%', left: '57%', width: '4%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -87,7 +87,7 @@ const DocumentForm = {
       name: 'year_built',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '23.75%', left: '77.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '23.75%', left: '77.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -97,7 +97,7 @@ const DocumentForm = {
       name: 'units',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '28.7%', left: '57.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '28.7%', left: '57.5%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -107,7 +107,7 @@ const DocumentForm = {
       name: 'last_renovation_year',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '27%', left: '75%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '27%', left: '75%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -117,7 +117,7 @@ const DocumentForm = {
       name: 'unit',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '31.5%', left: '29%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '31.5%', left: '29%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -127,7 +127,7 @@ const DocumentForm = {
       name: 'rooms',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '31.5%', left: '50%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '31.5%', left: '50%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -153,7 +153,7 @@ const DocumentForm = {
       name: 'size',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '34.3%', left: '42.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '34.3%', left: '42.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -163,7 +163,7 @@ const DocumentForm = {
       name: 'balcony_size',
       type: 'string',
       choices: {
-        0: { params: { val: '', top: '34.2%', left: '77.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '34.2%', left: '77.7%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -358,7 +358,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '57.7%', left: '64.4%', width: '13%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '57.7%', left: '64.4%', width: '13%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -369,7 +369,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '57.7%', left: '82%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '57.7%', left: '82%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -380,7 +380,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '62.7%', left: '44%', width: '7%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '62.7%', left: '44%', width: '7%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -445,7 +445,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '69%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '69%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -456,7 +456,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '69%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '69%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -479,7 +479,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '70.9%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '70.9%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -490,7 +490,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '70.9%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '70.9%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -513,7 +513,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '72.8%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '72.8%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -524,7 +524,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '72.8%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '72.8%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -547,7 +547,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '74.7%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '74.7%', left: '55%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -558,7 +558,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '74.7%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '74.7%', left: '74%', width: '12%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -592,7 +592,7 @@ const DocumentForm = {
     //   type: 'string',
     //   choices: {
     //     // add 1.5% to top
-    //     0: { params: { val: '', top: '78.7%', left: '27%', width: '11.4%', className: 'document-rectangle', type: 'string' } },
+    //     0: { params: { val: 'inputFieldValue', top: '78.7%', left: '27%', width: '11.4%', className: 'document-rectangle', type: 'string' } },
     //   },
     //   className: 'form-control-document',
     //   component: 'DocumentChoices'
@@ -603,7 +603,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '83.1%', left: '27%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '83.1%', left: '27%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -614,7 +614,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '83.1%', left: '40%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '83.1%', left: '40%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -625,7 +625,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '83.1%', left: '51.2%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '83.1%', left: '51.2%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -636,7 +636,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '85.3%', left: '27%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '85.3%', left: '27%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -647,7 +647,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '85.3%', left: '40%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '85.3%', left: '40%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -658,7 +658,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '85.3%', left: '51.2%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '85.3%', left: '51.2%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -669,7 +669,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '84.2%', left: '72.1%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '84.2%', left: '72.1%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -680,7 +680,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '84.2%', left: '79.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '84.2%', left: '79.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -691,7 +691,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '42.5%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '42.5%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -702,7 +702,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '50%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '50%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -713,7 +713,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '55.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '55.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -723,7 +723,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '64.5%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '64.5%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -734,7 +734,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '72%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '72%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -745,7 +745,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '87.4%', left: '77.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '87.4%', left: '77.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -761,7 +761,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '16.5%',
             left: '22.5%',
             width: '9%',
@@ -781,7 +781,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '15.5%',
             left: '39.5%',
             width: '5.2%',
@@ -802,7 +802,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '22.55%',
             left: '22.5%',
             width: '9%',
@@ -822,7 +822,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '21.65%',
             left: '39.5%',
             width: '5.2%',
@@ -842,7 +842,7 @@ const DocumentForm = {
       choices: {
         0: {
           params: {
-            val: '',
+            val: 'inputFieldValue',
             top: '14.3%',
             left: '57.8%',
             width: '29.5%',
@@ -872,7 +872,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '18%', left: '69.5%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '18%', left: '69.5%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -883,7 +883,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '19.5%', left: '70.5%', width: '19%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '19.5%', left: '70.5%', width: '19%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -907,7 +907,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '23.2%', left: '67.5%', width: '22%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '23.2%', left: '67.5%', width: '22%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -919,7 +919,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '25%', left: '25.8%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '25%', left: '25.8%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -931,7 +931,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '26.6%', left: '27.8%', width: '10%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '26.6%', left: '27.8%', width: '10%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -942,7 +942,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '29%', left: '29.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '29%', left: '29.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -953,7 +953,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '31.5%', left: '29.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '31.5%', left: '29.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -965,7 +965,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '37.1%', left: '37.8%', width: '51.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '37.1%', left: '37.8%', width: '51.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -976,7 +976,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '38.7%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '38.7%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -987,7 +987,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '38.7%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '38.7%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -998,7 +998,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '41.3%', left: '39.5%', width: '50%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '41.3%', left: '39.5%', width: '50%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1009,7 +1009,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '42.85%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '42.85%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1020,7 +1020,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '42.85%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '42.85%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1031,7 +1031,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '44.4%', left: '67.7%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '44.4%', left: '67.7%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1041,7 +1041,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '44.4%', left: '75.2%', width: '11.2%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '44.4%', left: '75.2%', width: '11.2%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1052,7 +1052,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '48.8%', left: '37.5%', width: '51.8%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '48.8%', left: '37.5%', width: '51.8%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1063,7 +1063,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '50.45%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '50.45%', left: '34.8%', width: '18%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1074,7 +1074,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '50.45%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '50.45%', left: '60.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1085,7 +1085,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '58.3%', left: '28.8%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '58.3%', left: '28.8%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1096,7 +1096,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '60.2%', left: '32.3%', width: '5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '60.2%', left: '32.3%', width: '5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1107,7 +1107,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '63.2%', left: '28.8%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '63.2%', left: '28.8%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1118,7 +1118,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '58.7%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '58.7%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1129,7 +1129,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '58.7%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '58.7%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1140,7 +1140,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '60.3%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '60.3%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1151,7 +1151,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '60.3%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '60.3%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1162,7 +1162,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '61.9%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '61.9%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1173,7 +1173,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '61.9%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '61.9%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1184,7 +1184,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '63.5%', left: '83%', width: '4%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '63.5%', left: '83%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1195,7 +1195,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '65.9%', left: '38.5%', width: '51%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '65.9%', left: '38.5%', width: '51%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1206,7 +1206,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '67.5%', left: '34.8%', width: '14.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '67.5%', left: '34.8%', width: '14.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1217,7 +1217,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '67.5%', left: '57%', width: '12.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '67.5%', left: '57%', width: '12.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1228,7 +1228,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '67.5%', left: '81%', width: '8.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '67.5%', left: '81%', width: '8.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1238,7 +1238,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '73.8%', left: '39.5%', width: '50%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '73.8%', left: '39.5%', width: '50%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1249,7 +1249,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '75.6%', left: '40.5%', width: '17%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '75.6%', left: '40.5%', width: '17%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1260,7 +1260,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '75.6%', left: '65.5%', width: '20%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '75.6%', left: '65.5%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1271,7 +1271,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '77.4%', left: '66.6%', width: '2.5%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '77.4%', left: '66.6%', width: '2.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1281,7 +1281,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: '', top: '77.4%', left: '72.5%', width: '11.2%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '77.4%', left: '72.5%', width: '11.2%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'

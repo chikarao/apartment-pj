@@ -85,7 +85,7 @@ class CreateEditDocument extends Component {
       _.each(DocumentForm[page][key].choices, eachChoice => {
         // console.log('in create_edit_document, handleFormSubmit, eachChoice: ', eachChoice);
         // val = '' means its an input element, not a custom field component
-        if (eachChoice.params.val == '') {
+        if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
           // console.log('in create_edit_document, handleFormSubmit, choice for empty string val: ', choice);
           // add data[key] (user choice) as value in the object to send to API
