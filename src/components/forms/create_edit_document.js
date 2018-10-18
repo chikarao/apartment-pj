@@ -93,11 +93,12 @@ class CreateEditDocument extends Component {
           choice.params.page = page;
           choice.params.name = DocumentForm[page][key].name
           // add params object with the top, left, width etc. to object to send to api
+          console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
           paramsObject[key] = choice.params;
         }
         if (eachChoice.params.val == data[key]) {
           choice = eachChoice;
-          // console.log('in create_edit_document, handleFormSubmit, choice val == data[key]: ', choice);
+          console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
           choice.params.value = data[key];
           choice.params.page = page;
           choice.params.name = DocumentForm[page][key].name
@@ -110,7 +111,7 @@ class CreateEditDocument extends Component {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('this is required!!!!');
     } else {
-      this.props.createContract(paramsObject);
+      // this.props.createContract(paramsObject);
     }
   }
 
@@ -241,10 +242,48 @@ function getContractLength(booking) {
     years = 2;
   }
   // console.log('in create_edit_document, getContractLength, months, years: ', months, years);
-
   const object = { months, years };
   // console.log('in create_edit_document, getContractLength, object: ', object);
   return object;
+}
+
+function getContractEndNoticePeriodObject(booking) {
+  // const daysInMonth = {
+  //   0: 31,
+  //   1: 28,
+  //   2: 31,
+  //   4: 30,
+  //   5: 31,
+  //   6: 30,
+  //   7: 31,
+  //   8: 31,
+  //   9: 30,
+  //   10: 31,
+  //   11: 30,
+  //   12: 31
+  // };
+
+  // const leapYearDay = 29;
+  //
+  // const leapYears = [2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2104, 2108, 2112, 2116, 2120]
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, booking: ', booking);
+  const dateEndOneYear = new Date(booking.date_end);
+  const dateEndSixMonths = new Date(booking.date_end);
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+  const oneYearBefore = new Date(dateEndOneYear.setFullYear(dateEndOneYear.getFullYear() - 1));
+  const sixMonthsBefore = new Date(dateEndSixMonths.setMonth(dateEndSixMonths.getMonth() - 6));
+  const oneYearBeforeDay = oneYearBefore.getDate() == (0 || 1) ? 30 : oneYearBefore.getDate() - 1;
+  const sixMonthsBeforeDay = sixMonthsBefore.getDate() == (0 || 1) ? 30 : sixMonthsBefore.getDate() - 1;
+  const oneYearBeforeMonth = oneYearBefore.getDate() == (0 || 1) ? oneYearBefore.getMonth() : oneYearBefore.getMonth() + 1;
+  const sixMonthsBeforeMonth = sixMonthsBefore.getDate() == (0 || 1) ? sixMonthsBefore.getMonth() : sixMonthsBefore.getMonth() + 1;
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, oneYearBefore: ', oneYearBefore.getFullYear(), oneYearBefore.getMonth() + 1, oneYearBefore.getDate() - 1);
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+
+  const noticeObject = { from: { year: oneYearBefore.getFullYear(), month: oneYearBeforeMonth, day: oneYearBeforeDay }, to: { year: sixMonthsBefore.getFullYear(), month: sixMonthsBeforeMonth, day: sixMonthsBeforeDay }}
+  return noticeObject;
+  // console.log('in create_edit_document, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
 }
 
 function createAddress(flat) {
@@ -548,9 +587,20 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
   // add address to initialvalues object
   object.address = address;
 
+  // get contract length object with years and months
   const contractLengthObject = getContractLength(booking);
   object.contract_length_years = contractLengthObject.years;
   object.contract_length_months = contractLengthObject.months;
+
+  if (contractLengthObject.years >= 1) {
+    const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
+    object.notice_from_year = contractEndNoticePeriodObject.from.year;
+    object.notice_from_month = contractEndNoticePeriodObject.from.month;
+    object.notice_from_day = contractEndNoticePeriodObject.from.day;
+    object.notice_to_year = contractEndNoticePeriodObject.to.year;
+    object.notice_to_month = contractEndNoticePeriodObject.to.month;
+    object.notice_to_day = contractEndNoticePeriodObject.to.day;
+  }
 
   console.log('in create_edit_document, getInitialValueObject, object: ', object);
   // return object for assignment to initialValues in mapStateToProps

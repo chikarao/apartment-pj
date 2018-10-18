@@ -956,7 +956,8 @@ const DocumentForm = {
         0: { params: { val: '', top: '31.5%', left: '29.8%', width: '20%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      required: true
     },
 
     owner_address: {
