@@ -115,7 +115,8 @@ import {
   SHOW_FACILITY_CREATE_MODAL,
   UPDATE_FACILITY,
   CREATE_FACILITY,
-  DELETE_FACILITY
+  DELETE_FACILITY,
+  REQUIRED_FIELDS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1952,6 +1953,13 @@ export function selectedFacilityId(id) {
 
   //flip showResetPasswordModal
   return { type: SELECTED_FACILITY_ID, payload: id };
+}
+
+export function requiredFields(array) {
+  console.log('in actions index, requiredFields, array:', array);
+
+  // payload goes to booking reducer 
+  return { type: REQUIRED_FIELDS, payload: array };
 }
 
 export function fetchBankAccountsByUser() {

@@ -60,24 +60,73 @@ class CreateEditDocument extends Component {
   //   //   ' - clientY: ' + event.clientY;
   // }
 
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-warning">
+          {this.props.errorMessage}
+        </div>
+      );
+    }
+  }
+
+  getRequiredKeys() {
+    const array = [];
+    _.each(Object.keys(DocumentForm), pageKey => {
+      // if the object has the key, that is the page the key is on
+      // so set page variable so we can get choices from input key
+      _.each(Object.keys(DocumentForm[pageKey]), eachKey => {
+        if (DocumentForm[pageKey][eachKey].required) {
+          array.push(eachKey);
+        }
+      })
+    });
+    console.log('in create_edit_document, getRequiredKeys array: ', array);
+    return array;
+  }
+
+  checkIfRequiredKeysNull(requiredKeys, data) {
+    console.log('in create_edit_document, checkIfRequiredKeysNull, requiredKeys, data: ', requiredKeys, data);
+    const array = [];
+    _.each(requiredKeys, eachKey => {
+      console.log('in create_edit_document, checkIfRequiredKeysNull, eachKey, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == : ', requiredKeys, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == ('' || undefined || null));
+      if (data[eachKey] == (undefined || null)) {
+        array.push(eachKey);
+      }
+      // for some reason, empty string does not return true to == ('' || undefined || null)
+      // so separate out
+      if (data[eachKey] == '') {
+        array.push(eachKey);
+      }
+    });
+    console.log('in create_edit_document, checkIfRequiredKeysNull array', array);
+    return array;
+  }
+
   handleFormSubmit(data) {
     console.log('in create_edit_document, handleFormSubmit, data: ', data);
     // object to send to API; set flat_id
     const paramsObject = { flat_id: 190 }
     // iterate through each key in data from form
+
+    const requiredKeysArray = this.getRequiredKeys();
+    console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
+    const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
+    console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys: ', nullRequiredKeys);
+
     _.each(Object.keys(data), key => {
       let page = 0;
       // find out which page the key is on
       // iterate through Document form first level key to see if each object has key in quesiton
-      _.each(Object.keys(DocumentForm), objKey => {
-        console.log('in create_edit_document, handleFormSubmit, key, objKey, (toString(key) in DocumentForm[objKey]), objKey: ', key, objKey, (key in DocumentForm[objKey]), DocumentForm[objKey]);
+      _.each(Object.keys(DocumentForm), pageKey => {
+        // console.log('in create_edit_document, handleFormSubmit, key, pageKey, (toString(key) in DocumentForm[pageKey]), pageKey: ', key, pageKey, (key in DocumentForm[pageKey]), DocumentForm[pageKey]);
         // if the object has the key, that is the page the key is on
         // so set page variable so we can get choices from input key
-        if (key in DocumentForm[objKey]) {
-          page = objKey;
+        if (key in DocumentForm[pageKey]) {
+          page = pageKey;
         }
       });
-      console.log('in create_edit_document, handleFormSubmit, key is on page: ', page);
+      // console.log('in create_edit_document, handleFormSubmit, key is on page: ', page);
       // console.log('in create_edit_document, handleFormSubmit, data[key]: ', data[key]);
       // DocumentForm[key].params.value = data[key];
       // paramsObject[key] = DocumentForm[key].params;
@@ -107,10 +156,14 @@ class CreateEditDocument extends Component {
       });
     });
     console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
-    if (!data['construction']) {
+    if (nullRequiredKeys.length > 0) {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
-      this.props.authError('this is required!!!!');
+      this.props.authError('The fields highlighted in blue are required.');
+      console.log('in create_edit_document, handleFormSubmit, required keys empty!!!: ', nullRequiredKeys);
+      this.props.requiredFields(nullRequiredKeys);
     } else {
+      this.props.authError('');
+      this.props.requiredFields([]);
       // this.props.createContract(paramsObject);
     }
   }
@@ -126,17 +179,29 @@ class CreateEditDocument extends Component {
         } else {
           fieldComponent = formField.component;
         }
-        // console.log('in create_edit_document, renderEachDocumentField, formField.top, formField.left: ', formField.top, formField.left);
         // <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
         // <fieldset key={formField.name} className={formField.component == 'input' ? 'form-group form-group-document' : 'form-group'} style={{ borderColor: formField.borderColor, top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width }}>
         // </fieldset>
+
+        let nullRequiredField = false;
+        if (this.props.requiredFieldsNull) {
+          if (this.props.requiredFieldsNull.length > 0) {
+            nullRequiredField = this.props.requiredFieldsNull.includes(formField.name);
+            // console.log('in create_edit_document, renderEachDocumentField, this.props.requiredFieldsNull: ', this.props.requiredFieldsNull);
+            // console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
+          }
+        }
+        if (nullRequiredField) {
+          console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
+        }
+
         return (
           <Field
             key={i}
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == DocumentChoices ? { page } : {}}
+            props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height } : {}}
@@ -197,6 +262,7 @@ class CreateEditDocument extends Component {
       <div className="test-image-pdf-jpg">
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderDocument()}
+            {this.renderAlert()}
           <button action="submit" id="submit-all" className="btn btn-primary btn-lg document-submit-button">{AppLanguages.submit[appLanguageCode]}</button>
         </form>
       </div>
@@ -629,7 +695,8 @@ function mapStateToProps(state) {
       tenant: state.bookingData.fetchBookingData.user,
       initialValues,
       // initialValues: testObject,
-      documents: state.documents
+      documents: state.documents,
+      requiredFieldsNull: state.bookingData.requiredFields
     };
   } else {
     return {};

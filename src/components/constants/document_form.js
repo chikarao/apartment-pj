@@ -70,7 +70,8 @@ const DocumentForm = {
       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
       className: 'form-control-document',
       height: '23px',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      required: true
     },
 
     floors: {
@@ -1143,7 +1144,8 @@ const DocumentForm = {
         0: { params: { val: 'inputFieldValue', top: '60.3%', left: '52.8%', width: '23%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      required: true
     },
 
     co_tenant_age_1: {
@@ -1154,7 +1156,8 @@ const DocumentForm = {
         0: { params: { val: 'inputFieldValue', top: '60.3%', left: '82.3%', width: '4%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      required: true
     },
 
     co_tenant_name_2: {
@@ -1233,6 +1236,7 @@ const DocumentForm = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
+
   guarantor_address: {
       name: 'guarantor_address',
       type: 'string',

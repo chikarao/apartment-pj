@@ -45,6 +45,40 @@ class DocumentChoices extends Component {
     // return true if any other values in choices match, so value does not show in input field
     return anyOtherValueArray.length > 0;
   }
+
+  getStyleOfButtonElement(required, value, choice) {
+    let elementStyle = {};
+
+    console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
+    if (value == choice.params.val) {
+      elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
+    } else {
+      elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width };
+    }
+
+    if (this.props.nullRequiredField && !value) {
+      // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
+      elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+    }
+
+    return elementStyle;
+  }
+
+  getStyleOfInputElement(value, choice) {
+    let elementStyle = {};
+
+    console.log('DocumentChoices, getStyleOfInputElement ');
+
+    if (this.props.nullRequiredField && !value) {
+      // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
+      elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+    } else {
+      elementStyle = { borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+    }
+
+    return elementStyle;
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name } } = this.props;
     // console.log('DocumentChoices, renderEachChoice this.props.page', this.props.page)
@@ -52,9 +86,9 @@ class DocumentChoices extends Component {
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(DocumentForm[this.props.page][name].choices, choice => {
-      // console.log('DocumentChoices, renderEachChoice choice', choice.params.val);
+        // console.log('DocumentChoices, renderEachChoice this.props.required', this.props.required);
       // console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
-      // console.log('DocumentChoices, renderEachChoice value', value);
+      // console.log('DocumentChoices, renderEachChoice name', name);
       // define button element for user to click to set value in submission
       const buttonElement =
         <div
@@ -65,7 +99,8 @@ class DocumentChoices extends Component {
             this.emptyInput();
           }}
           className={choice.params.className}
-          style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
+          // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
+          style={this.getStyleOfButtonElement(this.props.required, value, choice)}
         />
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
@@ -73,7 +108,17 @@ class DocumentChoices extends Component {
       // console.log('DocumentChoices, renderEachChoice choice.params.val, value, this.anyOfOtherValues(name, value)', choice.params.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
-      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.params.val} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
+      const inputElement =
+        <input
+          id="valueInput"
+          value={this.anyOfOtherValues(name, value) ? '' : value}
+          key={choice.params.val}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.params.type}
+          className={choice.params.className}
+          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
+          style={this.getStyleOfInputElement(value, choice)}
+        />
       // const inputElement = <input id="valueInput" name={name} key={choice.params.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // if choice type is string, use input element above and button if not string
       if (choice.params.type == 'string') {

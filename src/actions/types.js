@@ -112,4 +112,5 @@ export const SELECTED_FACILITY_ID = 'selected_facility_id';
 export const UPDATE_FACILITY = 'update_facility';
 export const CREATE_FACILITY = 'create_facility';
 export const DELETE_FACILITY = 'delete_facility';
+export const REQUIRED_FIELDS = 'required_fields';
 // export const SET_NEW_MESSAGES = 'set_new_messages';
