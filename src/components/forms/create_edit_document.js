@@ -79,17 +79,17 @@ class CreateEditDocument extends Component {
         if (DocumentForm[pageKey][eachKey].required) {
           array.push(eachKey);
         }
-      })
+      });
     });
-    console.log('in create_edit_document, getRequiredKeys array: ', array);
+    // console.log('in create_edit_document, getRequiredKeys array: ', array);
     return array;
   }
 
-  checkIfRequiredKeysNull(requiredKeys, data) {
-    console.log('in create_edit_document, checkIfRequiredKeysNull, requiredKeys, data: ', requiredKeys, data);
+  checkIfRequiredKeysNull(requiredKeysArray, data) {
+    // console.log('in create_edit_document, checkIfRequiredKeysNull, requiredKeys, data: ', requiredKeys, data);
     const array = [];
-    _.each(requiredKeys, eachKey => {
-      console.log('in create_edit_document, checkIfRequiredKeysNull, eachKey, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == : ', requiredKeys, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == ('' || undefined || null));
+    _.each(requiredKeysArray, eachKey => {
+      // console.log('in create_edit_document, checkIfRequiredKeysNull, eachKey, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == : ', requiredKeys, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == ('' || undefined || null));
       if (data[eachKey] == (undefined || null)) {
         array.push(eachKey);
       }
@@ -99,20 +99,32 @@ class CreateEditDocument extends Component {
         array.push(eachKey);
       }
     });
-    console.log('in create_edit_document, checkIfRequiredKeysNull array', array);
+    // console.log('in create_edit_document, checkIfRequiredKeysNull array', array);
     return array;
+  }
+
+  checkOtherChoicesVal(choices, key, data) {
+    let haveOrNot = false;
+    _.each(choices, choice => {
+      console.log('in create_edit_document, checkOtherChoicesVal, choice, key, data[key]: ', choice, key, data[key]);
+      if (choice.params.val == data[key]) {
+        haveOrNot = true;
+      }
+    });
+    return haveOrNot;
   }
 
   handleFormSubmit(data) {
     console.log('in create_edit_document, handleFormSubmit, data: ', data);
     // object to send to API; set flat_id
-    const paramsObject = { flat_id: 190 }
+    const contractName = 'teishaku-saimuhosho';
+    const paramsObject = { flat_id: this.props.flat, contract_name: contractName }
     // iterate through each key in data from form
 
     const requiredKeysArray = this.getRequiredKeys();
-    console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
+    // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
     const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
-    console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys: ', nullRequiredKeys);
+    // console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys: ', nullRequiredKeys);
 
     _.each(Object.keys(data), key => {
       let page = 0;
@@ -138,16 +150,20 @@ class CreateEditDocument extends Component {
           choice = eachChoice;
           // console.log('in create_edit_document, handleFormSubmit, choice for empty string val: ', choice);
           // add data[key] (user choice) as value in the object to send to API
-          choice.params.value = data[key];
-          choice.params.page = page;
-          choice.params.name = DocumentForm[page][key].name
-          // add params object with the top, left, width etc. to object to send to api
-          console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
-          paramsObject[key] = choice.params;
+          // check for other vals of choices if more than 1 choice
+          const otherChoicesHaveVal = Object.keys(DocumentForm[page][key].choices).length > 1 ? this.checkOtherChoicesVal(DocumentForm[page][key].choices, key, data) : false;
+          if (!otherChoicesHaveVal) {
+            choice.params.value = data[key];
+            choice.params.page = page;
+            choice.params.name = DocumentForm[page][key].name
+            // add params object with the top, left, width etc. to object to send to api
+            // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
+            paramsObject[key] = choice.params;
+          }
         }
         if (eachChoice.params.val == data[key]) {
           choice = eachChoice;
-          console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
+          // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
           choice.params.value = data[key];
           choice.params.page = page;
           choice.params.name = DocumentForm[page][key].name
@@ -155,16 +171,16 @@ class CreateEditDocument extends Component {
         }
       });
     });
-    console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
+    // console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
     if (nullRequiredKeys.length > 0) {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('The fields highlighted in blue are required.');
-      console.log('in create_edit_document, handleFormSubmit, required keys empty!!!: ', nullRequiredKeys);
+      // console.log('in create_edit_document, handleFormSubmit, required keys empty!!!: ', nullRequiredKeys);
       this.props.requiredFields(nullRequiredKeys);
     } else {
       this.props.authError('');
       this.props.requiredFields([]);
-      // this.props.createContract(paramsObject);
+      this.props.createContract(paramsObject, () => {});
     }
   }
 

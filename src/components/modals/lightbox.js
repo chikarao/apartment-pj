@@ -27,16 +27,17 @@ class Lightbox extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize.bind(this));
     // console.log('in Lightbox, componentDidMount: ', this.state.imageIndex);
   }
 
    componentDidUpdate() {
+     window.addEventListener('resize', this.handleResize.bind(this));
       // const indexEmpty = _.isEmpty(this.props.imageIndex);
       // if(!indexEmpty) {
       //   this.setState({ imageIndex: this.props.imageIndex})
       // }
    }
+
    componentWillUnmount() {
        window.removeEventListener('resize', this.handleResize.bind(this));
    }

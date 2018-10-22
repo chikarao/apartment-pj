@@ -234,14 +234,14 @@ class ShowFlat extends Component {
 
           // calls action craetor and sends callback to action to go to the booking confiramtion page
           // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
-            this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+          this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
         }
       } // end of if elementVal userBooking
 
-        if (elementVal == 'ownerBooking') {
-          const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true }
-            this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
-        }
+      if (elementVal == 'ownerBooking') {
+        const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true }
+          this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
+      }
     } else {
       // console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
       alert('Please select dates for booking.')

@@ -49,7 +49,7 @@ class DocumentChoices extends Component {
   getStyleOfButtonElement(required, value, choice) {
     let elementStyle = {};
 
-    console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
+    // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
     if (value == choice.params.val) {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
     } else {
@@ -67,7 +67,7 @@ class DocumentChoices extends Component {
   getStyleOfInputElement(value, choice) {
     let elementStyle = {};
 
-    console.log('DocumentChoices, getStyleOfInputElement ');
+    // console.log('DocumentChoices, getStyleOfInputElement ');
 
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };

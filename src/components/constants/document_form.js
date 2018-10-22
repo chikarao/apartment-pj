@@ -8,41 +8,48 @@ const DocumentForm = {
   1: {
     name: {
       name: 'name',
-      className: 'form-control-document',
-      component: 'input',
+      // className: 'form-control-document',
+      // change from input componnet use DocumentChoices
+      component: 'DocumentChoices',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '16%',
-            left: '24.5%',
+            top: '16.5%',
+            left: '26.5%',
             width: '63%',
+            // change from input componnet use document-rectange
+            className: 'document-rectangle',
             // !!! height works only with px
-            height: '23px',
+            // height: '23px',
             type: 'string',
           }
         }
-      }
+      },
+      required: true
     },
 
     address: {
       name: 'address',
-      type: 'string',
-      className: 'form-control-document',
-      component: 'input',
+      // type: 'string',
+      // className: 'form-control-document',
+      component: 'DocumentChoices',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '18.7%',
-            left: '24.5%',
+            top: '19.1%',
+            left: '26.5%',
             width: '63%',
             height: '23px',
+            className: 'document-rectangle',
+            type: 'string',
           }
         }
-      }
+      },
+      // required: true
     },
 
     flat_type: {
@@ -108,7 +115,7 @@ const DocumentForm = {
       name: 'last_renovation_year',
       type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '27%', left: '75%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
+        0: { params: { val: 'inputFieldValue', top: '26.9%', left: '75%', width: '5%', className: 'document-rectangle', type: 'string', textAlign: 'right' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -381,7 +388,7 @@ const DocumentForm = {
       type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '62.7%', left: '44%', width: '7%', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '62.6%', left: '44%', width: '7%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -564,6 +571,7 @@ const DocumentForm = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
+
     dedicated_yard: {
       name: 'dedicated_yard',
       type: 'boolean',
@@ -757,15 +765,17 @@ const DocumentForm = {
     price_per_month: {
       name: 'price_per_month',
       className: 'form-control-document',
-      component: 'input',
+      // type: 'string',
+      component: 'DocumentChoices',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '16.5%',
-            left: '22.5%',
-            width: '9%',
+            top: '17.1%',
+            left: '24.5%',
+            width: '8%',
+            className: 'document-rectangle',
             // !!! height works only with px
             height: '23px',
             type: 'string'
@@ -777,15 +787,18 @@ const DocumentForm = {
     payment_due_date: {
       name: 'payment_due_date',
       className: 'form-control-document',
-      component: 'input',
+      // component: 'input',
+      component: 'DocumentChoices',
+      // type: 'string',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '15.5%',
-            left: '39.5%',
-            width: '5.2%',
+            top: '15.7%',
+            left: '42.5%',
+            width: '4.2%',
+            className: 'document-rectangle',
             // !!! height works only with px
             height: '23px',
             type: 'string'
@@ -798,15 +811,18 @@ const DocumentForm = {
       // its for management fees
       name: 'management_fees',
       className: 'form-control-document',
-      component: 'input',
+      component: 'DocumentChoices',
+      // type: 'string',
+      // component: 'input',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '22.55%',
-            left: '22.5%',
-            width: '9%',
+            top: '23.1%',
+            left: '24.5%',
+            width: '8%',
+            className: 'document-rectangle',
             // !!! height works only with px
             height: '23px',
             type: 'string'
@@ -818,17 +834,21 @@ const DocumentForm = {
     fees_payment_due_date: {
       name: 'fees_payment_due_date',
       className: 'form-control-document',
-      component: 'input',
+      component: 'DocumentChoices',
+      // className: 'form-control-document',
+      // component: 'input',
+      // type: 'string',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '21.65%',
-            left: '39.5%',
-            width: '5.2%',
+            top: '22%',
+            left: '42.5%',
+            width: '4.2%',
             // !!! height works only with px
             height: '23px',
+            className: 'document-rectangle',
             type: 'string'
           }
         }
@@ -838,16 +858,20 @@ const DocumentForm = {
     bank_name: {
       name: 'bank_name',
       className: 'form-control-document',
-      component: 'input',
+      component: 'DocumentChoices',
+      // type: 'string',
+      // className: 'form-control-document',
+      // component: 'input',
       borderColor: 'lightgray',
       choices: {
         0: {
           params: {
             val: 'inputFieldValue',
-            top: '14.3%',
-            left: '57.8%',
+            top: '14.5%',
+            left: '59.8%',
             width: '29.5%',
             // !!! height works only with px
+            className: 'document-rectangle',
             height: '23px',
             type: 'string'
           }
@@ -958,7 +982,7 @@ const DocumentForm = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      required: true
+      // required: true
     },
 
     owner_address: {
@@ -1145,7 +1169,7 @@ const DocumentForm = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      required: true
+      // required: true
     },
 
     co_tenant_age_1: {
@@ -1157,7 +1181,7 @@ const DocumentForm = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      required: true
+      // required: true
     },
 
     co_tenant_name_2: {
