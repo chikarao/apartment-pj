@@ -113,4 +113,5 @@ export const UPDATE_FACILITY = 'update_facility';
 export const CREATE_FACILITY = 'create_facility';
 export const DELETE_FACILITY = 'delete_facility';
 export const REQUIRED_FIELDS = 'required_fields';
+export const BOOKING_REQUEST_DATA = 'booking_request_data';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

@@ -198,7 +198,7 @@ class GoogleMap extends Component {
       const mapCenter = map.getCenter();
       const mapZoom = map.getZoom();
       //leaving just to show how mapbounds works
-      // console.log('in googlemap, bounds: ', bounds);
+      console.log('in googlemap, bounds: ', bounds);
       // const ew = bounds.b; // LatLng of the north-east corner
       // const ns = bounds.f; // LatLng of the south-west corder
       // const east = ew.f;
@@ -218,12 +218,21 @@ class GoogleMap extends Component {
       //   south
       // };
       // for fetchFlats within the coordinate bounds
+      // got error of type error property f of undefined;
+      // Looks like google maps changed its API so
+      // change from b.f f.f to j.l and l.l
       const mapBounds = {
-        east: bounds.b.f,
-        west: bounds.b.b,
-        north: bounds.f.f,
-        south: bounds.f.b
+        east: bounds.j.l,
+        west: bounds.j.j,
+        north: bounds.l.l,
+        south: bounds.l.j
       };
+      // const mapBounds = {
+      //   east: bounds.b.f,
+      //   west: bounds.b.b,
+      //   north: bounds.f.f,
+      //   south: bounds.f.b
+      // };
 
       MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
 

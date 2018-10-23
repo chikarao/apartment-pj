@@ -12,6 +12,7 @@ import MyPage from './components/my_page';
 import BookingConfirmation from './components/booking_confirmation';
 import CreateFlat from './components/create_flat';
 import EditFlat from './components/edit_flat';
+import BookingRequest from './components/booking_request';
 // NoMatch for when user inputs url that does not exist
 import NoMatch from './components/no_match';
 import MessagingMain from './components/messaging_main';
@@ -33,6 +34,7 @@ export const Main = () => (
       <Route path='/mypage' component={RequireAuth(MyPage)} />
       <Route path='/editflat/:id' component={RequireAuth(EditFlat)} />
       <Route path='/bookingconfirmation/:id' component={RequireAuth(BookingConfirmation)} />
+      <Route path='/bookingrequest' component={RequireAuth(BookingRequest)} />
       <Route path='/createflat' component={RequireAuth(CreateFlat)} />
       <Route path='/messagingmain' component={RequireAuth(MessagingMain)} />
       <Route path='/striperedirect/:params' component={RequireAuth(StripeRedirect)} />

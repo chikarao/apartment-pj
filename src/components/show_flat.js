@@ -227,15 +227,15 @@ class ShowFlat extends Component {
       // console.log('in show_flat handleBookingClick, this.props.selectedBookingDates: ', this.props.selectedBookingDates);
       // console.log('in show_flat handleBookingClick, this.props.flat: ', this.props.flat);
       if (elementVal == 'userBooking') {
-        const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)}?`)
-        if (bookingConfirm) {
+        // const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)}?`)
+        // if (bookingConfirm) {
           const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
           // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
-
+          this.props.bookingRequestData(bookingRequest, () => this.props.history.push('/bookingrequest'))
           // calls action craetor and sends callback to action to go to the booking confiramtion page
           // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
-          this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
-        }
+          // this.props.requestBooking(bookingRequest, (id) => this.bookingRequestCallback(id));
+        // }
       } // end of if elementVal userBooking
 
       if (elementVal == 'ownerBooking') {

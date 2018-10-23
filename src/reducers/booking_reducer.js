@@ -5,13 +5,15 @@ import {
   FETCH_BOOKING,
   FETCH_BOOKINGS_BY_USER,
   FETCH_ICAL,
-  REQUIRED_FIELDS
+  REQUIRED_FIELDS,
+  BOOKING_REQUEST_DATA
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
 export default function (state = {
   selectedBookingDates: { to: null, from: null },
-  requiredFields: [] 
+  requiredFields: [],
+  bookingRequest: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -42,6 +44,10 @@ export default function (state = {
     case REQUIRED_FIELDS:
     // console.log('in booking reducer, state: ', state);
     return { ...state, requiredFields: action.payload };
+
+    case BOOKING_REQUEST_DATA:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, bookingRequestData: action.payload };
 
     // case SELECTED_ICALENDAR_ID:
     // // console.log('in booking reducer, state: ', state);

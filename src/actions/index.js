@@ -116,7 +116,8 @@ import {
   UPDATE_FACILITY,
   CREATE_FACILITY,
   DELETE_FACILITY,
-  REQUIRED_FIELDS
+  REQUIRED_FIELDS,
+  BOOKING_REQUEST_DATA
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1958,8 +1959,15 @@ export function selectedFacilityId(id) {
 export function requiredFields(array) {
   console.log('in actions index, requiredFields, array:', array);
 
-  // payload goes to booking reducer 
+  // payload goes to booking reducer
   return { type: REQUIRED_FIELDS, payload: array };
+}
+
+export function bookingRequestData(object, callback) {
+  console.log('in actions index, bookingRequestData, object:', object);
+  callback();
+  // payload goes to booking reducer
+  return { type: BOOKING_REQUEST_DATA, payload: object };
 }
 
 export function fetchBankAccountsByUser() {

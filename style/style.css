@@ -517,16 +517,34 @@ h3 {
 /* rename .gm-style-iw so it does not clash with others */
 .google-map-gm-style-iw {
   width: 350px !important;
-  top: 18px !important;
+  top: -67px !important;
   left: 0px !important;
 }
+/* change to GM API 10.2018 need to increase max-height on first child
+to override imposed max by API div */
+.google-map-gm-style-iw div:first-child {
+  max-height: 300px !important;
+  overflow: auto;
+}
+
 .google-map-gm-style-iw-next img {
   display: none;
 }
 
-.gm-style-iw + div {
+/* .gm-style-iw + div {
   display: none;
+} */
+/* gm-style-iw renamed to gm-style-pbc?? */
+.gm-style-pbc + div button {
+  display: none !important;
 }
+/* .gm-style-iw + div {
+  display: none !important;
+} */
+
+/* .gm-style-iw + div {
+  display: none;
+} */
 
 #infowindow-box-image-box {
   height: 220px !important;
@@ -1251,7 +1269,64 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: gray;
 }
 
+/* BOOKING REQUEST */
 
+.booking-request-container {
+  width: 100%;
+}
+
+.booking-request-row {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.booking-request-each-box {
+  width: 350px;
+  height: 350px;
+  margin: 10px 10px 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.booking-request-box-title {
+  padding: 10px;
+  font-weight: bold;
+}
+
+.booking-request-box-each-line {
+  width: auto;
+  margin: 5px 15px 5px 15px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.booking-request-box-each-line-title {
+  font-weight: bold;
+}
+
+.booking-request-each-box img {
+  width: 65%;
+  border-radius: 4px;
+}
+
+.booking-request-box-option-button-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.booking-request-box-option-button {
+  border: 1px solid blue;
+  width: 100px;
+  height: 25px;
+  padding: 2px 5px 0 5px;
+  margin: 5px;
+  border-radius: 4px;
+}
 
 /* **********SHOW FLAT***************** */
 #carousel-show {
