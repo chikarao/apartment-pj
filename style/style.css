@@ -1302,6 +1302,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   height: 20px;
   display: flex;
   justify-content: space-between;
+  padding: 10px;
 }
 
 .booking-request-box-each-line-title {
@@ -1324,8 +1325,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width: 100px;
   height: 25px;
   padding: 2px 5px 0 5px;
-  margin: 5px;
   border-radius: 4px;
+  margin: 10px auto 0 auto;
 }
 
 /* **********SHOW FLAT***************** */

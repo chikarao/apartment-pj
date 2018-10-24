@@ -68,7 +68,8 @@ class BookingRequest extends Component {
       facility_type: facility.facility_type,
       id: facility.id,
       facility_number: facility.facility_number,
-      price_per_month: facility.price_per_month
+      price_per_month: facility.price_per_month,
+      optional: false
     };
     return object;
   }
@@ -81,7 +82,6 @@ class BookingRequest extends Component {
         return;
       }
     });
-
     return facilityIsInState;
   }
 
@@ -89,21 +89,22 @@ class BookingRequest extends Component {
     if (this.props.flat) {
       _.each(this.props.flat.facilities, eachFacility => {
         const facilityObject = this.getFacilityObject(eachFacility);
-        const facilityInState = this.isFacilityInStateObject(eachFacility)
-        const facilityChoice = this.getFacilityChoice(eachFacility.facility_type)
-        console.log('in booking_request, addNonOptionalFacilityToState, facilityChoice: ', facilityChoice);
+        const facilityInState = this.isFacilityInStateObject(eachFacility);
+        const facilityChoice = this.getFacilityChoice(eachFacility.facility_type);
+        // console.log('in booking_request, addNonOptionalFacilityToState, facilityChoice: ', facilityChoice);
+        // get whether facility included from props.flat mapped by Facility.js choice
         const facilityIncluded = this.props.flat[facilityChoice.facilityObjectMap];
+        facilityObject.facility_included = facilityIncluded;
         if ((eachFacility.optional == false || facilityIncluded) && !facilityInState) {
           this.setState({
             addedFacilityArray: [...this.state.addedFacilityArray, facilityObject]
           }, () => {
-            console.log('in booking_request, addNonOptionalFacilityToState, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+            // console.log('in booking_request, addNonOptionalFacilityToState, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
           });
         }
       });
     }
   }
-
 
   formatDate(date) {
     let hours = date.getHours();
@@ -168,12 +169,14 @@ class BookingRequest extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
     const elementNameSplit = elementName.split(',')
+    console.log('in booking_request, handleOptionButtonClick, elementNameSplit: ', elementNameSplit);
     const facilityObject = {
       facility_type: elementNameSplit[0],
       facility_number: elementNameSplit[1],
       optional: elementNameSplit[2],
       price_per_month: elementNameSplit[3],
-      id: elementNameSplit[4]
+      id: parseInt(elementNameSplit[4], 10),
+      facility_included: false
     };
 
     if (elementVal == 'yes') {
@@ -213,19 +216,31 @@ class BookingRequest extends Component {
 
   facilityButtonSwitch(facility, facilityString) {
     let optionButton = '';
+    let optionCount = 0;
+    // check if anything in state array
     if (this.state.addedFacilityArray.length > 0) {
+      // if something in array, iterate through array and check
       _.each(this.state.addedFacilityArray, eachStateFacility => {
+        // console.log('in booking_request, facilityButtonSwitch, facility, eachStateFacility: ', facility, eachStateFacility);
+        // if any of the facilities in state array match then upcount the optionCount and return
         if (facility.id == eachStateFacility.id) {
-          optionButton = <div value="no" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Delete Option</div>
-        } else {
-          optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+          optionCount++;
+          return;
         }
       });
+    } else {
+      // if addedFacilityArray is empty, there are no options added so display "add"
+      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+    }
+    // if facility is included in state array, or optionCount > 0 return no button
+    if (optionCount > 0) {
+      optionButton = <div value="no" name={facilityString} style={{ borderColor: 'red' }}className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Delete Option</div>;
     } else {
       optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
     }
 
-    console.log('in booking_request, facilityButtonSwitch, optionButton: ', optionButton);
+    // console.log('in booking_request, facilityButtonSwitch, optionButton: ', optionButton);
+    // return button element
     return optionButton;
   }
 
@@ -239,15 +254,15 @@ class BookingRequest extends Component {
         const facilityChoice = this.getFacilityChoice(eachFacility.facility_type);
         // form the string to be sent to handleOptionButtonClick when user clicks to add or delete option
         facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString()
-        console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
+        // console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
         return (
           <div key={i} >
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
                 {facilityChoice[this.props.appLanguageCode]}
               </div>
-              <div>{this.props.flat[facilityChoice.facilityObjectMap] ? 'Price Included' : `Price per month: ${eachFacility.price_per_month}`}</div>
               <div className="booking-request-box-each-line-data">
+                {this.props.flat[facilityChoice.facilityObjectMap] ? 'Price Included' : `Price per month: $${eachFacility.price_per_month}`}
               </div>
             </div>
             <div className="booking-request-box-option-button-box">
@@ -270,10 +285,90 @@ class BookingRequest extends Component {
     );
   }
 
-  renderUserInfo() {
+  singularOrPlural(deposit) {
+    return deposit > 1 ? 's' : '';
+  }
+
+  renderInitialPayment() {
+    if (this.props.flat) {
+    const { flat } = this.props;
+    const paymentItems = [
+      { name: 'First Month Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
+      { name: `Deposit ${flat.deposit ? '(x' + parseInt(flat.deposit, 10) + ' month' + this.singularOrPlural(flat.deposit) + ' rent)' : ''}`, data: flat.deposit * flat.price_per_month, unit: '$', style: 'normal' },
+      { name: `Key Money ${flat.key_money ? '(x' + parseInt(flat.key_money, 10) + ' month(s) rent)' : ''}`, data: flat.key_money * flat.price_per_month, unit: '$', style: 'normal' },
+      { name: 'Others', data: 0, unit: '$', style: 'normal' },
+      { name: 'Due at contract signing', data: (parseInt((flat.deposit * flat.price_per_month), 10) + parseInt(flat.price_per_month, 10)), unit: '$', style: 'bold' },
+    ];
+
+      return _.map(paymentItems, (eachItem, i) => {
+        return (
+          <div key={i} className="booking-request-box-each-line">
+            <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
+              {eachItem.name}
+            </div>
+            <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
+              {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
+            </div>
+          </div>
+        );
+      });
+    }
+  }
+
+  getFacilityPayments() {
+    let facilityTotal = 0;
+    _.each(this.state.addedFacilityArray, eachFacility => {
+      if (!eachFacility.facility_included) {
+        facilityTotal += parseInt(eachFacility.price_per_month, 10);
+      }
+    })
+    return facilityTotal;
+  }
+
+  sumPaymentTotal(paymentItems) {
+    let count = 0;
+    _.each(paymentItems, (eachItem, i) => {
+      if (i < paymentItems.length - 2) {
+        count += parseInt(eachItem.data, 10);
+      }
+    });
+    return count;
+  }
+
+  renderMonthlyPayments() {
+    if (this.props.flat) {
+      const { flat } = this.props;
+      const paymentItems = [
+        { name: 'Monthly Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
+        { name: 'Facility Fees (parking, etc)', data: this.getFacilityPayments(), unit: '$', style: 'normal' },
+        { name: 'Management Fees', data: flat.management_fees, unit: '$', style: 'normal' },
+        { name: 'Others', data: 0, unit: '$', style: 'normal' },
+        { name: 'Total Monthly Payments', data: (parseInt(flat.price_per_month, 10) + this.getFacilityPayments()), unit: '$', style: 'bold' },
+      ];
+
+      return _.map(paymentItems, (eachItem, i) => {
+        // console.log('in booking request, renderMonthlyPayments, paymentItems.length, i, paymentItems.length == i: ', paymentItems.length, i, paymentItems.length == i);
+        return (
+          <div key={i} className="booking-request-box-each-line">
+            <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
+              {eachItem.name}
+            </div>
+            <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
+              {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
+            </div>
+          </div>
+        );
+      });
+    }
+  }
+
+  bookingPaymentDetails() {
     return (
       <div>
-        <div className="booking-request-box-title">User Information</div>
+        <div className="booking-request-box-title">Payment Details</div>
+        {this.renderInitialPayment()}
+        <br/>
+        {this.renderMonthlyPayments()}
       </div>
     );
   }
@@ -284,7 +379,7 @@ class BookingRequest extends Component {
         <div className="row booking-request-row">
           <div className="booking-request-each-box">{this.renderBookingInfo()}</div>
           <div className="booking-request-each-box">{this.renderFacilities()}</div>
-          <div className="booking-request-each-box">{this.renderUserInfo()}</div>
+          <div className="booking-request-each-box">{this.bookingPaymentDetails()}</div>
         </div>
       </div>
     );
