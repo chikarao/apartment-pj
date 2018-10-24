@@ -69,7 +69,8 @@ class BookingRequest extends Component {
       id: facility.id,
       facility_number: facility.facility_number,
       price_per_month: facility.price_per_month,
-      optional: false
+      optional: false,
+      facility_deposit: facility.facility_deposit
     };
     return object;
   }
@@ -176,7 +177,8 @@ class BookingRequest extends Component {
       optional: elementNameSplit[2],
       price_per_month: elementNameSplit[3],
       id: parseInt(elementNameSplit[4], 10),
-      facility_included: false
+      facility_included: false,
+      facility_deposit: elementNameSplit[5]
     };
 
     if (elementVal == 'yes') {
@@ -244,6 +246,23 @@ class BookingRequest extends Component {
     return optionButton;
   }
 
+  getFacilityString(facility) {
+    const facilityArray = ['facility_type', 'facility_number', 'optional', 'price_per_month', 'id', 'facility_deposit' ]
+    // facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString() + ',' + eachFacility.facility_deposit.toString()
+    // console.log('in booking_request, getFacilityString, facility: ', facility);
+    let facilityString = ''
+    _.each(facilityArray, (eachAttribute, i) => {
+      if (facility[eachAttribute]) {
+        console.log('in booking_request, getFacilityString, eachAttribute, facility[eachAttribute].toString(): ', eachAttribute, facility[eachAttribute].toString());
+        facilityString = facilityString.concat(`${facility[eachAttribute].toString()},`)
+      } else {
+        facilityString = facilityString.concat(',')
+        // console.log('in booking_request, getFacilityString, facilityString: ', facilityString);
+      }
+    });
+    return facilityString;
+  }
+
   renderEachFacility() {
     // <div value="no" name={eachFacility.facility_type} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Do not Add</div>
     let facilityString = ''
@@ -253,16 +272,22 @@ class BookingRequest extends Component {
         // get the choice corresponding to the facility in constants/Facility.js
         const facilityChoice = this.getFacilityChoice(eachFacility.facility_type);
         // form the string to be sent to handleOptionButtonClick when user clicks to add or delete option
-        facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString()
-        // console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
+        facilityString = this.getFacilityString(eachFacility)
+        // facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString() + ',' + eachFacility.facility_deposit.toString()
+        console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
         return (
           <div key={i} >
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
                 {facilityChoice[this.props.appLanguageCode]}
               </div>
-              <div className="booking-request-box-each-line-data">
+              <div className="booking-request-box-each-line-data-long">
+                <div className="booking-request-box-each-line-data-sib">
                 {this.props.flat[facilityChoice.facilityObjectMap] ? 'Price Included' : `Price per month: $${eachFacility.price_per_month}`}
+                </div>
+                <div className="booking-request-box-each-line-data-sib">
+                {this.props.flat[facilityChoice.facilityObjectMap] ? '' : `Deposit: ${eachFacility.facility_deposit} month${this.singularOrPlural()}`}
+                </div>
               </div>
             </div>
             <div className="booking-request-box-option-button-box">
@@ -292,37 +317,49 @@ class BookingRequest extends Component {
   renderInitialPayment() {
     if (this.props.flat) {
     const { flat } = this.props;
+    const facilityPaymentObject = this.getFacilityPayments();
+
     const paymentItems = [
       { name: 'First Month Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
       { name: `Deposit ${flat.deposit ? '(x' + parseInt(flat.deposit, 10) + ' month' + this.singularOrPlural(flat.deposit) + ' rent)' : ''}`, data: flat.deposit * flat.price_per_month, unit: '$', style: 'normal' },
+      { name: 'First Month Facility Fees (parking, etc)', data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
+      { name: 'Facilities Deposit', data: facilityPaymentObject.deposits, unit: '$', style: 'normal' },
       { name: `Key Money ${flat.key_money ? '(x' + parseInt(flat.key_money, 10) + ' month(s) rent)' : ''}`, data: flat.key_money * flat.price_per_month, unit: '$', style: 'normal' },
       { name: 'Others', data: 0, unit: '$', style: 'normal' },
       { name: 'Due at contract signing', data: (parseInt((flat.deposit * flat.price_per_month), 10) + parseInt(flat.price_per_month, 10)), unit: '$', style: 'bold' },
     ];
 
       return _.map(paymentItems, (eachItem, i) => {
-        return (
-          <div key={i} className="booking-request-box-each-line">
-            <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
-              {eachItem.name}
+        // if (eachItem.data) {
+          return (
+            <div key={i} className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
+                {eachItem.name}
+              </div>
+              <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
+                {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
+              </div>
             </div>
-            <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
-              {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
-            </div>
-          </div>
-        );
+          );
+        // }
       });
     }
   }
 
   getFacilityPayments() {
-    let facilityTotal = 0;
+    let facilityTotalFees = 0;
+    let facilityTotalDeposits = 0;
     _.each(this.state.addedFacilityArray, eachFacility => {
+      console.log('in booking request, getFacilityPayments, eachFacility: ', eachFacility);
       if (!eachFacility.facility_included) {
-        facilityTotal += parseInt(eachFacility.price_per_month, 10);
+        facilityTotalFees += parseInt(eachFacility.price_per_month, 10);
+        facilityTotalDeposits += (parseInt(eachFacility.facility_deposit, 10) * parseInt(eachFacility.price_per_month, 10));
       }
     })
-    return facilityTotal;
+    const object = { fees: facilityTotalFees, deposits: facilityTotalDeposits };
+    console.log('in booking request, getFacilityPayments, object: ', object);
+
+    return object;
   }
 
   sumPaymentTotal(paymentItems) {
@@ -338,9 +375,10 @@ class BookingRequest extends Component {
   renderMonthlyPayments() {
     if (this.props.flat) {
       const { flat } = this.props;
+      const facilityPaymentObject = this.getFacilityPayments();
       const paymentItems = [
         { name: 'Monthly Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
-        { name: 'Facility Fees (parking, etc)', data: this.getFacilityPayments(), unit: '$', style: 'normal' },
+        { name: 'Facility Fees (parking, etc)', data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
         { name: 'Management Fees', data: flat.management_fees, unit: '$', style: 'normal' },
         { name: 'Others', data: 0, unit: '$', style: 'normal' },
         { name: 'Total Monthly Payments', data: (parseInt(flat.price_per_month, 10) + this.getFacilityPayments()), unit: '$', style: 'bold' },
@@ -348,16 +386,18 @@ class BookingRequest extends Component {
 
       return _.map(paymentItems, (eachItem, i) => {
         // console.log('in booking request, renderMonthlyPayments, paymentItems.length, i, paymentItems.length == i: ', paymentItems.length, i, paymentItems.length == i);
-        return (
-          <div key={i} className="booking-request-box-each-line">
-            <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
-              {eachItem.name}
+        // if (eachItem.data) {
+          return (
+            <div key={i} className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title" style={{ fontWeight: eachItem.style }}>
+                {eachItem.name}
+              </div>
+              <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
+                {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
+              </div>
             </div>
-            <div className="booking-request-box-each-line-data" style={i == paymentItems.length - 1 ? { borderTop: '1px solid black' } : {}}>
-              {i == paymentItems.length - 1 ? `${eachItem.unit}${this.sumPaymentTotal(paymentItems)}` : `${eachItem.unit}${parseInt(eachItem.data, 10)}`}
-            </div>
-          </div>
-        );
+          );
+        // }
       });
     }
   }

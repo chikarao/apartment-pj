@@ -45,6 +45,15 @@ const Facility = {
     component: 'input',
     type: 'string',
     className: 'form-control'
+  },
+
+  facility_deposit: {
+    name: 'facility_deposit',
+    en: 'Facility Deposit (/month)',
+    jp: '施設の敷金(月)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
   }
 };
 

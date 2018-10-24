@@ -1284,11 +1284,13 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .booking-request-each-box {
   width: 350px;
-  height: 350px;
+  height: 390px;
   margin: 10px 10px 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: white;
+  overflow: auto;
+  overflow-y: scroll;
 }
 
 .booking-request-box-title {
@@ -1303,6 +1305,17 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   display: flex;
   justify-content: space-between;
   padding: 10px;
+}
+
+.booking-request-box-each-line-data {
+  height: auto;
+  text-align: right;
+}
+
+.booking-request-box-each-line-data-long {
+  width: 50%;
+  height: auto;
+  text-align: left;
 }
 
 .booking-request-box-each-line-title {
@@ -1326,7 +1339,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   height: 25px;
   padding: 2px 5px 0 5px;
   border-radius: 4px;
-  margin: 10px auto 0 auto;
+  margin: 30px auto 0 auto;
 }
 
 /* **********SHOW FLAT***************** */
