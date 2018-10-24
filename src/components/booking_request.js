@@ -5,13 +5,13 @@ import { reduxForm, Field } from 'redux-form';
 
 import * as actions from '../actions';
 
-import Facility from './constants/facility'
+import Facility from './constants/facility';
 
 class BookingRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // showReviewEditModal: false
+      addedFacilityArray: []
     };
     this.handleOptionButtonClick = this.handleOptionButtonClick.bind(this);
   }
@@ -36,7 +36,7 @@ class BookingRequest extends Component {
       bookingRequestFrom = localStorage.getItem('bookingRequestFrom');
       bookingRequestUserEmail = localStorage.getItem('bookingRequestUserEmail');
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
-      console.log('in booking_request, componentDidMount, in if !bookingRequestEmpty,   bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
+      // console.log('in booking_request, componentDidMount, in if !bookingRequestEmpty,   bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
       this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     } else {
@@ -44,20 +44,65 @@ class BookingRequest extends Component {
       bookingRequestFrom = localStorage.getItem('bookingRequestFrom');
       bookingRequestUserEmail = localStorage.getItem('bookingRequestUserEmail');
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
-      console.log('in booking_request, componentDidMount, bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
+      // console.log('in booking_request, componentDidMount, bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
       this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     }
-      this.props.fetchProfileForUser(() => {});
+    this.props.fetchProfileForUser(() => {});
   }
 
-    componentWillUnmount() {
-      console.log('in booking confirmation, componentWillUnmount');
-      const bookingRequestTo = localStorage.removeItem('bookingRequestTo');
-      const bookingRequestFrom = localStorage.removeItem('bookingRequestFrom');
-      const bookingRequestFlatId = localStorage.removeItem('bookingRequestFlatId');
-      const bookingRequestUserEmail = localStorage.removeItem('bookingRequestFlatId');
+  componentDidUpdate() {
+    this.addNonOptionalFacilityToState();
+  }
+
+  componentWillUnmount() {
+    // console.log('in booking confirmation, componentWillUnmount');
+    const bookingRequestTo = localStorage.removeItem('bookingRequestTo');
+    const bookingRequestFrom = localStorage.removeItem('bookingRequestFrom');
+    const bookingRequestFlatId = localStorage.removeItem('bookingRequestFlatId');
+    const bookingRequestUserEmail = localStorage.removeItem('bookingRequestFlatId');
+  }
+
+  getFacilityObject(facility) {
+    const object = {
+      facility_type: facility.facility_type,
+      id: facility.id,
+      facility_number: facility.facility_number,
+      price_per_month: facility.price_per_month
+    };
+    return object;
+  }
+
+  isFacilityInStateObject(facility) {
+    let facilityIsInState = false;
+    _.each(this.state.addedFacilityArray, eachStateFacility => {
+      if (facility.id == eachStateFacility.id) {
+        facilityIsInState = true;
+        return;
+      }
+    });
+
+    return facilityIsInState;
+  }
+
+  addNonOptionalFacilityToState() {
+    if (this.props.flat) {
+      _.each(this.props.flat.facilities, eachFacility => {
+        const facilityObject = this.getFacilityObject(eachFacility);
+        const facilityInState = this.isFacilityInStateObject(eachFacility)
+        const facilityChoice = this.getFacilityChoice(eachFacility.facility_type)
+        console.log('in booking_request, addNonOptionalFacilityToState, facilityChoice: ', facilityChoice);
+        const facilityIncluded = this.props.flat[facilityChoice.facilityObjectMap];
+        if ((eachFacility.optional == false || facilityIncluded) && !facilityInState) {
+          this.setState({
+            addedFacilityArray: [...this.state.addedFacilityArray, facilityObject]
+          }, () => {
+            console.log('in booking_request, addNonOptionalFacilityToState, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+          });
+        }
+      });
     }
+  }
 
 
   formatDate(date) {
@@ -122,15 +167,79 @@ class BookingRequest extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    console.log('in booking_request, handleOptionButtonClick, elementVal, elementName: ', elementVal, elementName);
+    const elementNameSplit = elementName.split(',')
+    const facilityObject = {
+      facility_type: elementNameSplit[0],
+      facility_number: elementNameSplit[1],
+      optional: elementNameSplit[2],
+      price_per_month: elementNameSplit[3],
+      id: elementNameSplit[4]
+    };
 
+    if (elementVal == 'yes') {
+      this.setState({
+        addedFacilityArray: [...this.state.addedFacilityArray, facilityObject]
+      }, () => {
+        console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+      })
+    }
+    // if button is to delete or value 'no', copy state array, get index of clicked facility
+    // then set state with the new copied array that has one element taken out of index
+    if (elementVal == 'no') {
+      const array = [...this.state.addedFacilityArray];
+      // need to have arrow function to keep context for using state
+      const elementIndex = () => {
+        let index = 0;
+        if (this.state.addedFacilityArray.length > 0) {
+          _.each(this.state.addedFacilityArray, (eachStateFacility, i) => {
+            if (eachStateFacility.id == facilityObject.id) {
+              index = i;
+              return
+            }
+          })
+        }
+        return index;
+      }
+      // console.log('in booking_request, handleOptionButtonClick, elementIndex: ', elementIndex());
+      // get index by running function elementIndex
+      array.splice(elementIndex(), 1)
+      this.setState({
+        addedFacilityArray: array
+      }, () => {
+        console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+      })
+    }
+  }
+
+  facilityButtonSwitch(facility, facilityString) {
+    let optionButton = '';
+    if (this.state.addedFacilityArray.length > 0) {
+      _.each(this.state.addedFacilityArray, eachStateFacility => {
+        if (facility.id == eachStateFacility.id) {
+          optionButton = <div value="no" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Delete Option</div>
+        } else {
+          optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+        }
+      });
+    } else {
+      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+    }
+
+    console.log('in booking_request, facilityButtonSwitch, optionButton: ', optionButton);
+    return optionButton;
   }
 
   renderEachFacility() {
     // <div value="no" name={eachFacility.facility_type} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Do not Add</div>
+    let facilityString = ''
     if (this.props.flat) {
+      // if there is flat in props, iterate through each facility to render each facility
       return _.map(this.props.flat.facilities, (eachFacility, i) => {
+        // get the choice corresponding to the facility in constants/Facility.js
         const facilityChoice = this.getFacilityChoice(eachFacility.facility_type);
+        // form the string to be sent to handleOptionButtonClick when user clicks to add or delete option
+        facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString()
+        console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
         return (
           <div key={i} >
             <div className="booking-request-box-each-line">
@@ -143,7 +252,7 @@ class BookingRequest extends Component {
             </div>
             <div className="booking-request-box-option-button-box">
               {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.optional ? '' :
-              <div value="yes" name={eachFacility.facility_type} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add</div>
+                this.facilityButtonSwitch(eachFacility, facilityString)
               }
             </div>
           </div>

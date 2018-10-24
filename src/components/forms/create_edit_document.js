@@ -398,8 +398,9 @@ function getChoice(facility) {
   _.each(Facility.facility_type.choices, eachChoice => {
     if (eachChoice.value == facility.facility_type) {
       array.push(eachChoice);
+      return;
     }
-  })
+  });
   return array[0];
 }
 
