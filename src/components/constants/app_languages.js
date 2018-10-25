@@ -96,6 +96,7 @@ const appLanguages =
     icalImport: { en: 'iCalendar URL', jp: 'iCalendar URL' },
     confirmAbove: { en: 'Confirm above changes and submit', jp: '上記を確認して送信' },
     submit: { en: 'Submit', jp: '送信' },
+    update: { en: 'Update', jp: 'アップデート' },
     deleteImagesAdd: { en: 'Delete images to add', jp: '追加するには画像を削除して下さい。' },
     addEditLanguages: { en: 'Add or Edit Languages', jp: '言語を追加・編集' },
     baseLanguage: { en: 'Base Language', jp: 'ベースの言語' },

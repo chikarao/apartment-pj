@@ -7,6 +7,7 @@ import _ from 'lodash';
 import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
+import Profile from '../constants/profile';
 
 // Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
@@ -66,6 +67,17 @@ class EditProfileModal extends Component {
   //   // }
   // }
 
+  renderEachInputField() {
+    return _.map(Object.keys(Profile), (eachKey, i) => {
+      return (
+        <fieldset key={i} className="form-group">
+          <label className="create-flat-form-label">{Profile[eachKey][this.props.appLanguageCode]}:</label>
+          <Field name={eachKey} component={Profile[eachKey].component} type={Profile[eachKey].type} className={Profile[eachKey].className} />
+        </fieldset>
+      );
+    })
+  }
+
   renderEditProfileForm() {
     const { handleSubmit } = this.props;
     const profileEmpty = _.isEmpty(this.props.auth.userProfile);
@@ -82,66 +94,7 @@ class EditProfileModal extends Component {
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
             <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.userName[this.props.appLanguageCode]}:</label>
-                <Field name="username" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.title[this.props.appLanguageCode]}:</label>
-                <Field name="title" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.firstName[this.props.appLanguageCode]}:</label>
-                <Field name="first_name" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.lastName[this.props.appLanguageCode]}:</label>
-                <Field name="last_name" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.birthday[this.props.appLanguageCode]}:</label>
-                <Field name="birthday" component="input" type="date" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.streetAddress[this.props.appLanguageCode]}:</label>
-                <Field name="address1" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.city[this.props.appLanguageCode]}:</label>
-                <Field name="city" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.state[this.props.appLanguageCode]}:</label>
-                <Field name="state" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.zip[this.props.appLanguageCode]}:</label>
-                <Field name="zip" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.country[this.props.appLanguageCode]}:</label>
-                <Field name="country" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.emergencyName[this.props.appLanguageCode]}:</label>
-                <Field name="emergency_contact_name" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.emergencyPhone[this.props.appLanguageCode]}:</label>
-                <Field name="emergency_contact_phone" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.emergencyAddress[this.props.appLanguageCode]}:</label>
-                <Field name="emergency_contact_address" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group">
-                <label className="create-flat-form-label">{AppLanguages.emergencyRelationship[this.props.appLanguageCode]}:</label>
-                <Field name="emergency_contact_relationship" component="input" type="string" className="form-control" />
-              </fieldset>
-              <fieldset className="form-group introduction">
-                <label className="create-flat-form-label">{AppLanguages.selfIntro[this.props.appLanguageCode]}:</label>
-                <Field name="introduction" component="textarea" type="text" className="form-control" />
-              </fieldset>
+              {this.renderEachInputField()}
               <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
               </div>

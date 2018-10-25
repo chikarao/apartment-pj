@@ -1293,6 +1293,43 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   overflow-y: scroll;
 }
 
+.booking-request-each-box-personal {
+  height: auto;
+  width: auto;
+  /* border: 1px solid #ccc;
+  background-color: white; */
+}
+
+.booking-request-personal-container {
+  width: auto;
+  height: auto;
+  /* padding: 5%; */
+}
+.booking-request-personal-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.booking-request-personal-box-each {
+  width: 360px;
+  height: auto;
+  border: 1px solid #ccc;
+  margin: 10px 10px 0 10px;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.form-group-personal {
+  margin-bottom: 10px;
+}
+
+.form-group-personal input {
+  height: 25px;
+  width: 90%;
+}
+
 .booking-request-box-title {
   padding: 10px;
   font-weight: bold;
@@ -3150,7 +3187,7 @@ text-decoration: underline;
 
 .my-page-profile-introduction {
   width: 100%;
-  height: auto;
+  height: 100px !important;
   margin: 10px;
   text-align: left;
 }

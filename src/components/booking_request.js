@@ -5,7 +5,10 @@ import { reduxForm, Field } from 'redux-form';
 
 import * as actions from '../actions';
 
+import AppLanguages from './constants/app_languages';
 import Facility from './constants/facility';
+import Profile from './constants/profile';
+import OtherTenants from './constants/other_tenants';
 
 class BookingRequest extends Component {
   constructor(props) {
@@ -247,6 +250,7 @@ class BookingRequest extends Component {
   }
 
   getFacilityString(facility) {
+    // use facilityArray instead of Object.keys(Facility) because of 'id'
     const facilityArray = ['facility_type', 'facility_number', 'optional', 'price_per_month', 'id', 'facility_deposit' ]
     // facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString() + ',' + eachFacility.facility_deposit.toString()
     // console.log('in booking_request, getFacilityString, facility: ', facility);
@@ -275,6 +279,8 @@ class BookingRequest extends Component {
         facilityString = this.getFacilityString(eachFacility)
         // facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString() + ',' + eachFacility.facility_deposit.toString()
         console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
+        //this.props.flat[facilityChoice.facilityObjectMap] to check if faciity included in price
+        // check if price included or no deposit or price_per_month available
         return (
           <div key={i} >
             <div className="booking-request-box-each-line">
@@ -283,10 +289,10 @@ class BookingRequest extends Component {
               </div>
               <div className="booking-request-box-each-line-data-long">
                 <div className="booking-request-box-each-line-data-sib">
-                {this.props.flat[facilityChoice.facilityObjectMap] ? 'Price Included' : `Price per month: $${eachFacility.price_per_month}`}
+                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.price_per_month ? 'Price Included' : `Price per month: $${eachFacility.price_per_month}`}
                 </div>
                 <div className="booking-request-box-each-line-data-sib">
-                {this.props.flat[facilityChoice.facilityObjectMap] ? '' : `Deposit: ${eachFacility.facility_deposit} month${this.singularOrPlural()}`}
+                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.facility_deposit ? '' : `Deposit: ${eachFacility.facility_deposit} month${this.singularOrPlural()}`}
                 </div>
               </div>
             </div>
@@ -326,7 +332,8 @@ class BookingRequest extends Component {
       { name: 'Facilities Deposit', data: facilityPaymentObject.deposits, unit: '$', style: 'normal' },
       { name: `Key Money ${flat.key_money ? '(x' + parseInt(flat.key_money, 10) + ' month(s) rent)' : ''}`, data: flat.key_money * flat.price_per_month, unit: '$', style: 'normal' },
       { name: 'Others', data: 0, unit: '$', style: 'normal' },
-      { name: 'Due at contract signing', data: (parseInt((flat.deposit * flat.price_per_month), 10) + parseInt(flat.price_per_month, 10)), unit: '$', style: 'bold' },
+      // { name: 'Due at contract signing', data: (parseInt((flat.deposit * flat.price_per_month), 10) + parseInt(flat.price_per_month, 10)), unit: '$', style: 'bold' },
+      { name: 'Due at contract signing', data: null, unit: '$', style: 'bold' },
     ];
 
       return _.map(paymentItems, (eachItem, i) => {
@@ -352,8 +359,9 @@ class BookingRequest extends Component {
     _.each(this.state.addedFacilityArray, eachFacility => {
       console.log('in booking request, getFacilityPayments, eachFacility: ', eachFacility);
       if (!eachFacility.facility_included) {
-        facilityTotalFees += parseInt(eachFacility.price_per_month, 10);
-        facilityTotalDeposits += (parseInt(eachFacility.facility_deposit, 10) * parseInt(eachFacility.price_per_month, 10));
+        // check if any values null with ternary
+        facilityTotalFees += eachFacility.price_per_month ? parseInt(eachFacility.price_per_month, 10) : 0;
+        facilityTotalDeposits += eachFacility.facility_deposit && eachFacility.price_per_month ? (parseInt(eachFacility.facility_deposit, 10) * parseInt(eachFacility.price_per_month, 10)) : 0;
       }
     })
     const object = { fees: facilityTotalFees, deposits: facilityTotalDeposits };
@@ -381,7 +389,7 @@ class BookingRequest extends Component {
         { name: 'Facility Fees (parking, etc)', data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
         { name: 'Management Fees', data: flat.management_fees, unit: '$', style: 'normal' },
         { name: 'Others', data: 0, unit: '$', style: 'normal' },
-        { name: 'Total Monthly Payments', data: (parseInt(flat.price_per_month, 10) + this.getFacilityPayments()), unit: '$', style: 'bold' },
+        { name: 'Total Monthly Payments', data: null, unit: '$', style: 'bold' },
       ];
 
       return _.map(paymentItems, (eachItem, i) => {
@@ -402,7 +410,7 @@ class BookingRequest extends Component {
     }
   }
 
-  bookingPaymentDetails() {
+  renderBookingPaymentDetails() {
     return (
       <div>
         <div className="booking-request-box-title">Payment Details</div>
@@ -413,16 +421,94 @@ class BookingRequest extends Component {
     );
   }
 
+  handleFormSubmit(data) {
+    console.log('in booking_request, handleFormSubmit, data: ', data);
+    // this.props.editProfile(data, () => {
+    //   this.handleFormSubmitCallback();
+    // });
+  }
+
+  handleFormSubmitCallback() {
+    console.log('in booking_request, handleFormSubmitCallback: ');
+    // showHideClassName = 'modal display-none';
+  }
+
+  renderEachInputField(eachBoxObject) {
+    // const profileKeyArray = ['first_name', 'last_name', 'birthday', 'address1', 'city', 'state', 'zip', 'country', 'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_address', 'co_tenant_name', 'co_tenant_age']
+    // console.log('in booking_request, renderEachInputField　eachBoxObject.constantFile, Object.keys(): ', eachBoxObject.constantFile, Object.keys(eachBoxObject.constantFile));
+    return _.map(Object.keys(eachBoxObject.constantFile), (eachKey, i) => {
+      if (eachBoxObject.constantFile[eachKey].category && eachBoxObject.constantFile[eachKey].category == eachBoxObject.category) {
+        console.log('in booking_request, renderEachInputField, eachKey, eachBoxObject.constantFile[eachKey]: ', eachKey, eachBoxObject.constantFile[eachKey]);
+        return (
+          <fieldset key={i} className="form-group form-group-personal">
+            <label className="create-flat-form-label">{eachBoxObject.constantFile[eachKey][this.props.appLanguageCode]}:</label>
+            <Field name={eachKey} component={InputField} type={eachBoxObject.constantFile[eachKey].type} className={eachBoxObject.constantFile[eachKey].className} />
+          </fieldset>
+        );
+      }
+    });
+  }
+
+  renderEachPersonalBox() {
+    const personalArray = [
+      { title: 'Basic Info', category: 'basic', constantFile: Profile },
+      { title: 'In Case of Emergency', category: 'emergency', constantFile: Profile },
+      { title: 'Other Tenants', category: 'otherTenants', constantFile: OtherTenants }
+    ]
+    // const personalArray = [{ title: 'Personal Info', category: 'basic', constant: 'Profile' }, { title: 'In Case of Emergency', category: 'emergency', constant: 'Profile' }, { title: 'Your Dependents', category: 'dependent', constant: 'Dependent' }]
+    return _.map(personalArray, (eachObject, i) => {
+      return (
+        <div key={i} className="booking-request-personal-box-each">
+          <div className="booking-request-box-title">{eachObject.title}</div>
+          {this.renderEachInputField(eachObject)}
+        </div>
+      );
+    });
+  }
+
+  renderUpdatePersonalDetails() {
+    const { handleSubmit } = this.props;
+
+    return (
+      <div>
+        <h4>Update Personal Details</h4>
+        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <div className="booking-request-personal-container container">
+            <div className="booking-request-personal-row row">
+              {this.renderEachPersonalBox()}
+            </div>
+          </div>
+          <div className="confirm-change-and-button">
+          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.update[this.props.appLanguageCode]}</button>
+          </div>
+        </form>
+
+      </div>
+    );
+  }
+
   renderBookingRequest() {
     return (
       <div className="container booking-request-container">
+      <h3>Booking Request</h3>
         <div className="row booking-request-row">
           <div className="booking-request-each-box">{this.renderBookingInfo()}</div>
+          <div className="booking-request-each-box">{this.renderBookingPaymentDetails()}</div>
           <div className="booking-request-each-box">{this.renderFacilities()}</div>
-          <div className="booking-request-each-box">{this.bookingPaymentDetails()}</div>
+          <div className="booking-request-each-box-personal">{this.renderUpdatePersonalDetails()}</div>
         </div>
       </div>
     );
+  }
+
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+        {this.props.errorMessage}
+        </div>
+      );
+    }
   }
 
   render() {
@@ -434,17 +520,86 @@ class BookingRequest extends Component {
   }
 }
 
+const InputField = ({
+  input,
+  type,
+  placeholder,
+  meta: { touched, error, warning },
+  }) => (
+      <div>
+          <input {...input} type={type} placeholder={placeholder} className="form-control" />
+          {touched && error &&
+            <div className="error">
+              <span style={{ color: 'red' }}>* </span>{error}
+            </div>
+          }
+      </div>
+    );
+
+function validate(values) {
+  console.log('in signin modal, validate values: ', values);
+    const errors = {};
+    if (!values.first_name) {
+        errors.first_name = 'A first name is required';
+    }
+    if (!values.last_name) {
+        errors.last_name = 'A last name is required';
+    }
+    if (!values.birthday) {
+        errors.birthday = 'A birthday is required';
+    }
+
+    if (!values.address1) {
+        errors.address1 = 'A Street address is required';
+    }
+
+    if (!values.city) {
+        errors.city = 'A city, district or ward is required';
+    }
+
+    if (!values.state) {
+        errors.state = 'A state or province is required';
+    }
+
+    if (!values.zip) {
+        errors.zip = 'A zip or postal code is required';
+    }
+
+    if (!values.country) {
+        errors.country = 'A country is required';
+    }
+    if (!values.emergency_contact_name) {
+        errors.emergency_contact_name = 'An emergency contact name is required';
+    }
+    if (!values.emergency_contact_phone) {
+        errors.emergency_contact_phone = 'An emergency contact phone is required';
+    }
+
+    if (!values.emergency_contact_address) {
+        errors.emergency_contact_address = 'An emergency contact phone is required';
+    }
+    // console.log('in signin modal, validate errors: ', errors);
+    return errors;
+}
+
+BookingRequest = reduxForm({
+  form: 'BookingRequest',
+  validate
+})(BookingRequest);
+
 function mapStateToProps(state) {
   console.log('in booking request, mapStateToProps, state: ', state);
   return {
+    errorMessage: state.auth.message,
     bookingData: state.bookingData.fetchBookingData,
     bookingRequest: state.bookingData.bookingRequestData,
     flat: state.selectedFlatFromParams.selectedFlatFromParams,
     userProfile: state.auth.userProfile,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
     // review: state.reviews.reviewForBookingByUser,
     // showEditReviewModal: state.modals.showEditReview
     // flat: state.flat.selectedFlat
+    initialValues: state.auth.userProfile
   };
 }
 
