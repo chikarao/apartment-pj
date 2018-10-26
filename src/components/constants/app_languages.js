@@ -237,6 +237,18 @@ const appLanguages =
     basicInfoForTenant: { en: 'Basic Information for Tenant', jp: '契約者の基本情報' },
     inCaseOfEmergency: { en: 'In Case of Emergency', jp: '緊急連絡先' },
     otherTenants: { en: 'Other Tenants', jp: '同居人の情報' },
+    firstNameError: { en: 'A first name is required', jp: '名は必須です。' },
+    lastNameError: { en: 'A last name is required', jp: '名字は必須です。' },
+    birthdayError: { en: 'A birthday is required', jp: '誕生日は必須です。' },
+    address1Error: { en: 'A street address is required', jp: '番地町村は必須です。' },
+    cityError: { en: 'A city is required', jp: '区市は必須です。' },
+    stateError: { en: 'A state is required', jp: '都道府県は必須です。' },
+    zipError: { en: 'A zip is required', jp: '郵便番号は必須です。' },
+    countryError: { en: 'A country is required', jp: '国名は必須です。' },
+    emergencyNameError: { en: 'An emergency contact name is required', jp: '緊急連絡先の名前は必須です。' },
+    emergencyPhoneError: { en: 'An emergency contact phone is required', jp: '緊急連絡先の電話番号は必須です。' },
+    emergencyAddressError: { en: 'An emergency contact address is required', jp: '緊急連絡先の住所は必須です。' },
+    emergencyRelationshipError: { en: 'An relationship with the emergency contact is required', jp: '緊急連絡先とのご関係は必須です。' },
   };
 
 export default appLanguages;

@@ -433,7 +433,7 @@ class BookingRequest extends Component {
       }
     });
     // separate delta into profile and other tenants
-    const dataToBeSent = { profile: {}, other_tenants: {} };
+    const dataToBeSent = { profile: {}, other_tenants: {}, facilities: [] };
 
     _.each(Object.keys(delta), eachDeltaKey => {
       if (eachDeltaKey in Profile) {
@@ -443,6 +443,10 @@ class BookingRequest extends Component {
         dataToBeSent.other_tenants[eachDeltaKey] = delta[eachDeltaKey];
       }
     });
+
+    if (this.state.addedFacilityArray.length > 0) {
+      dataToBeSent.facilities = this.state.addedFacilityArray;
+    }
     console.log('in booking_request, handleFormSubmit, delta, dataToBeSent: ', delta, dataToBeSent);
     // this.props.editProfile(data, () => {
     //   this.handleFormSubmitCallback();
@@ -461,8 +465,6 @@ class BookingRequest extends Component {
       if (eachBoxObject.constantFile[eachKey].category && eachBoxObject.constantFile[eachKey].category == eachBoxObject.category) {
         // console.log('in booking_request, renderEachInputField, eachKey, eachBoxObject.constantFile[eachKey]: ', eachKey, eachBoxObject.constantFile[eachKey].name);
         // const key = eachBoxObject.constantFile[eachKey].name;
-        const key = 'address1';
-        console.log('in booking_request, renderEachInputField, key, typeof key: ', key, typeof key);
         return (
           <fieldset key={i} className="form-group form-group-personal">
             <label className="create-flat-form-label">{eachBoxObject.constantFile[eachKey][this.props.appLanguageCode]}:</label>
@@ -555,7 +557,7 @@ const InputField = ({
   meta: { touched, error, warning },
   }) => (
       <div>
-          <input {...input} type={type} placeholder={placeholder} className="form-control" />
+          <input {...input} type={type} placeholder={placeholder} style={touched && error ? { borderColor: 'blue', borderWidth: '2px' } : {}} className="form-control" />
           {touched && error &&
             <div className="error">
               <span style={{ color: 'red' }}>* </span>{error}
@@ -565,50 +567,55 @@ const InputField = ({
     );
 
 function validate(values) {
-  console.log('in signin modal, validate values: ', values);
+  const { appLanguageCode, appLanguages } = values;
+
+  // console.log('in booking request, validate values: ', values);
+  // console.log('in booking request, validate values.appLanguageCode, values.appLanguages: ', values.appLanguageCode, values.appLanguages);
     const errors = {};
-    if (!values.first_name) {
-        errors.first_name = 'A first name is required';
-    }
-    if (!values.last_name) {
-        errors.last_name = 'A last name is required';
-    }
-    if (!values.birthday) {
-        errors.birthday = 'A birthday is required';
-    }
+    if (appLanguageCode && appLanguages) {
+      if (!values.first_name) {
+        errors.first_name = appLanguages.firstNameError[appLanguageCode];
+      }
+      if (!values.last_name) {
+        errors.last_name = appLanguages.lastNameError[appLanguageCode];
+      }
+      if (!values.birthday) {
+        errors.birthday = appLanguages.birthdayError[appLanguageCode];
+      }
 
-    if (!values.address1) {
-        errors.address1 = 'A Street address is required';
-    }
+      if (!values.address1) {
+        errors.address1 = appLanguages.address1Error[appLanguageCode];
+      }
 
-    if (!values.city) {
-        errors.city = 'A city, district or ward is required';
-    }
+      if (!values.city) {
+        errors.city = appLanguages.cityError[appLanguageCode];
+      }
 
-    if (!values.state) {
-        errors.state = 'A state or province is required';
-    }
+      if (!values.state) {
+        errors.state = appLanguages.stateError[appLanguageCode];
+      }
 
-    if (!values.zip) {
-        errors.zip = 'A zip or postal code is required';
-    }
+      if (!values.zip) {
+        errors.zip = appLanguages.zipError[appLanguageCode];
+      }
 
-    if (!values.country) {
-        errors.country = 'A country is required';
-    }
-    if (!values.emergency_contact_name) {
-        errors.emergency_contact_name = 'An emergency contact name is required';
-    }
-    if (!values.emergency_contact_phone) {
-        errors.emergency_contact_phone = 'An emergency contact phone is required';
-    }
+      if (!values.country) {
+        errors.country = appLanguages.countryError[appLanguageCode];
+      }
+      if (!values.emergency_contact_name) {
+        errors.emergency_contact_name = appLanguages.emergencyNameError[appLanguageCode];
+      }
+      if (!values.emergency_contact_phone) {
+        errors.emergency_contact_phone = appLanguages.emergencyPhoneError[appLanguageCode];
+      }
 
-    if (!values.emergency_contact_address) {
-        errors.emergency_contact_address = 'An emergency contact phone is required';
-    }
+      if (!values.emergency_contact_address) {
+        errors.emergency_contact_address = appLanguages.emergencyAddressError[appLanguageCode];
+      }
 
-    if (!values.emergency_contact_relationship) {
-        errors.emergency_contact_relationship = 'An emergency contact phone is required';
+      if (!values.emergency_contact_relationship) {
+        errors.emergency_contact_relationship = appLanguages.emergencyRelationshipError[appLanguageCode];
+      }
     }
     // console.log('in signin modal, validate errors: ', errors);
     return errors;
@@ -620,19 +627,32 @@ BookingRequest = reduxForm({
 })(BookingRequest);
 
 function mapStateToProps(state) {
-  console.log('in booking request, mapStateToProps, state: ', state);
-  return {
-    errorMessage: state.auth.message,
-    bookingData: state.bookingData.fetchBookingData,
-    bookingRequest: state.bookingData.bookingRequestData,
-    flat: state.selectedFlatFromParams.selectedFlatFromParams,
-    userProfile: state.auth.userProfile,
-    appLanguageCode: state.languages.appLanguageCode,
-    // review: state.reviews.reviewForBookingByUser,
-    // showEditReviewModal: state.modals.showEditReview
-    // flat: state.flat.selectedFlat
-    initialValues: state.auth.userProfile
-  };
+  // check if state has userProfile. Otherwise return empty object in mapStateToProps
+  if (state.auth.userProfile) {
+    // Populate initialValues with existing userProfile data
+    const initialValues = state.auth.userProfile;
+    // add appLanguages.js to initialvalues to add to state.form.BookingRequest.values
+    // which gets passed to function validate
+    initialValues.appLanguages = AppLanguages;
+    // also add appLanguageCode to form.BookingRequest.values for use in validate function
+    initialValues.appLanguageCode = state.languages.appLanguageCode;
+
+    console.log('in booking request, mapStateToProps, state: ', state);
+    return {
+      errorMessage: state.auth.message,
+      bookingData: state.bookingData.fetchBookingData,
+      bookingRequest: state.bookingData.bookingRequestData,
+      flat: state.selectedFlatFromParams.selectedFlatFromParams,
+      userProfile: state.auth.userProfile,
+      appLanguageCode: state.languages.appLanguageCode,
+      // review: state.reviews.reviewForBookingByUser,
+      // showEditReviewModal: state.modals.showEditReview
+      // flat: state.flat.selectedFlat
+      initialValues
+    };
+  } else {
+    return {};
+  }
 }
 
 export default connect(mapStateToProps, actions)(BookingRequest);

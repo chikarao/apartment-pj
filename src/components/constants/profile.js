@@ -44,7 +44,7 @@ const Profile = {
   birthday: {
     name: 'birthday',
     en: 'Birthday',
-    jp: '名字',
+    jp: '生年月日',
     component: 'input',
     type: 'date',
     className: 'form-control',
