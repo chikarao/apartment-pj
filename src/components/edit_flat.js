@@ -1011,7 +1011,7 @@ class EditFlat extends Component {
           <h4>{AppLanguages.addEditCalendars[appLanguageCode]}</h4>
             {this.renderIcalendarAddEdit()}
 
-          <h4>{AppLanguages.AddDeletePhotos[appLanguageCode]}  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
+          <h4>{AppLanguages.addDeletePhotos[appLanguageCode]}  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
           <div className="edit-flat-image-box">
             <div id="carousel-show-edit-flat">
               {this.renderImages(this.props.flat.images)}

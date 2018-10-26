@@ -123,8 +123,8 @@ class BookingRequest extends Component {
 
   renderEachDateLine() {
     const array = [
-      { title: 'Booking from:', data: this.formatDate(new Date(this.props.bookingRequest.date_start)) },
-      { title: 'Booking to:', data: this.formatDate(new Date(this.props.bookingRequest.date_end)) },
+      { title: AppLanguages.bookingFrom[this.props.appLanguageCode] + ': ', data: this.formatDate(new Date(this.props.bookingRequest.date_start)) },
+      { title: AppLanguages.bookingTo[this.props.appLanguageCode] + ': ', data: this.formatDate(new Date(this.props.bookingRequest.date_end)) },
     ];
 
     return _.map(array, (eachLine, i) => {
@@ -145,7 +145,7 @@ class BookingRequest extends Component {
     if (this.props.bookingRequest && this.props.flat) {
       return (
         <div>
-          <div className="booking-request-box-title">Booking Info</div>
+          <div className="booking-request-box-title">{AppLanguages.bookingInfo[this.props.appLanguageCode]}</div>
           <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + this.props.flat.images[0].publicid + '.jpg'} alt="" />
           <div>{this.props.flat.area}</div>
           <div>{this.props.flat.description.toUpperCase()}</div>
@@ -235,13 +235,13 @@ class BookingRequest extends Component {
       });
     } else {
       // if addedFacilityArray is empty, there are no options added so display "add"
-      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>{AppLanguages.addOption[this.props.appLanguageCode]}</div>
     }
     // if facility is included in state array, or optionCount > 0 return no button
     if (optionCount > 0) {
-      optionButton = <div value="no" name={facilityString} style={{ borderColor: 'red' }}className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Delete Option</div>;
+      optionButton = <div value="no" name={facilityString} style={{ borderColor: 'red' }}className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>{AppLanguages.deleteOption[this.props.appLanguageCode]}</div>;
     } else {
-      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>Add Option</div>
+      optionButton = <div value="yes" name={facilityString} className="booking-request-box-option-button" onClick={this.handleOptionButtonClick}>{AppLanguages.addOption[this.props.appLanguageCode]}</div>
     }
 
     // console.log('in booking_request, facilityButtonSwitch, optionButton: ', optionButton);
@@ -289,10 +289,10 @@ class BookingRequest extends Component {
               </div>
               <div className="booking-request-box-each-line-data-long">
                 <div className="booking-request-box-each-line-data-sib">
-                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.price_per_month ? 'Price Included' : `Price per month: $${eachFacility.price_per_month}`}
+                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.price_per_month ? AppLanguages.priceIncluded[this.props.appLanguageCode] : `${AppLanguages.pricePerMonthForRequest[this.props.appLanguageCode]}: $${eachFacility.price_per_month}`}
                 </div>
                 <div className="booking-request-box-each-line-data-sib">
-                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.facility_deposit ? '' : `Deposit: ${eachFacility.facility_deposit} month${this.singularOrPlural()}`}
+                {this.props.flat[facilityChoice.facilityObjectMap] || !eachFacility.facility_deposit ? '' : `${AppLanguages.depositForRequest[this.props.appLanguageCode]}: ${eachFacility.facility_deposit} ${AppLanguages.monthForRequest[this.props.appLanguageCode]}${this.singularOrPlural()}`}
                 </div>
               </div>
             </div>
@@ -310,14 +310,14 @@ class BookingRequest extends Component {
   renderFacilities() {
     return (
       <div>
-        <div className="booking-request-box-title">Facilities</div>
+        <div className="booking-request-box-title">{AppLanguages.facilities[this.props.appLanguageCode]}</div>
         {this.renderEachFacility()}
       </div>
     );
   }
 
   singularOrPlural(deposit) {
-    return deposit > 1 ? 's' : '';
+    return (deposit > 1) && (this.props.appLanguageCode == 'en') ? 's' : '';
   }
 
   renderInitialPayment() {
@@ -326,14 +326,14 @@ class BookingRequest extends Component {
     const facilityPaymentObject = this.getFacilityPayments();
 
     const paymentItems = [
-      { name: 'First Month Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
-      { name: `Deposit ${flat.deposit ? '(x' + parseInt(flat.deposit, 10) + ' month' + this.singularOrPlural(flat.deposit) + ' rent)' : ''}`, data: flat.deposit * flat.price_per_month, unit: '$', style: 'normal' },
-      { name: 'First Month Facility Fees (parking, etc)', data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
-      { name: 'Facilities Deposit', data: facilityPaymentObject.deposits, unit: '$', style: 'normal' },
-      { name: `Key Money ${flat.key_money ? '(x' + parseInt(flat.key_money, 10) + ' month(s) rent)' : ''}`, data: flat.key_money * flat.price_per_month, unit: '$', style: 'normal' },
-      { name: 'Others', data: 0, unit: '$', style: 'normal' },
+      { name: AppLanguages.firstMonthRent[this.props.appLanguageCode], data: flat.price_per_month, unit: '$', style: 'normal' },
+      { name: `${AppLanguages.depositForRequest[this.props.appLanguageCode]} ${flat.deposit ? '(x' + parseInt(flat.deposit, 10) + ' ' + AppLanguages.monthForRequest[this.props.appLanguageCode] + this.singularOrPlural(flat.deposit) + ' ' + AppLanguages.rent[this.props.appLanguageCode] + ')' : ''}`, data: flat.deposit * flat.price_per_month, unit: '$', style: 'normal' },
+      { name: AppLanguages.firstMonthFacility[this.props.appLanguageCode], data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
+      { name: AppLanguages.facilityDeposit[this.props.appLanguageCode], data: facilityPaymentObject.deposits, unit: '$', style: 'normal' },
+      { name: `${AppLanguages.keyMoney[this.props.appLanguageCode]} ${flat.key_money ? '(x' + parseInt(flat.key_money, 10) + ' ' + AppLanguages.monthForRequest[this.props.appLanguageCode] + this.singularOrPlural(flat.key_money) + ' ' + AppLanguages.rent[this.props.appLanguageCode] + ')' : ''}`, data: flat.key_money * flat.price_per_month, unit: '$', style: 'normal' },
+      { name: AppLanguages.others[this.props.appLanguageCode], data: 0, unit: '$', style: 'normal' },
       // { name: 'Due at contract signing', data: (parseInt((flat.deposit * flat.price_per_month), 10) + parseInt(flat.price_per_month, 10)), unit: '$', style: 'bold' },
-      { name: 'Due at contract signing', data: null, unit: '$', style: 'bold' },
+      { name: AppLanguages.initialPayment[this.props.appLanguageCode], data: null, unit: '$', style: 'bold' },
     ];
 
       return _.map(paymentItems, (eachItem, i) => {
@@ -385,11 +385,11 @@ class BookingRequest extends Component {
       const { flat } = this.props;
       const facilityPaymentObject = this.getFacilityPayments();
       const paymentItems = [
-        { name: 'Monthly Rent', data: flat.price_per_month, unit: '$', style: 'normal' },
-        { name: 'Facility Fees (parking, etc)', data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
-        { name: 'Management Fees', data: flat.management_fees, unit: '$', style: 'normal' },
-        { name: 'Others', data: 0, unit: '$', style: 'normal' },
-        { name: 'Total Monthly Payments', data: null, unit: '$', style: 'bold' },
+        { name: AppLanguages.monthlyRent[this.props.appLanguageCode], data: flat.price_per_month, unit: '$', style: 'normal' },
+        { name: AppLanguages.facilityFees[this.props.appLanguageCode], data: facilityPaymentObject.fees, unit: '$', style: 'normal' },
+        { name: AppLanguages.managementFees[this.props.appLanguageCode], data: flat.management_fees, unit: '$', style: 'normal' },
+        { name: AppLanguages.others[this.props.appLanguageCode], data: 0, unit: '$', style: 'normal' },
+        { name: AppLanguages.totalMonthlyPayments[this.props.appLanguageCode], data: null, unit: '$', style: 'bold' },
       ];
 
       return _.map(paymentItems, (eachItem, i) => {
@@ -413,7 +413,7 @@ class BookingRequest extends Component {
   renderBookingPaymentDetails() {
     return (
       <div>
-        <div className="booking-request-box-title">Payment Details</div>
+        <div className="booking-request-box-title">{AppLanguages.paymentDetails[this.props.appLanguageCode]}</div>
         {this.renderInitialPayment()}
         <br/>
         {this.renderMonthlyPayments()}
@@ -423,6 +423,27 @@ class BookingRequest extends Component {
 
   handleFormSubmit(data) {
     console.log('in booking_request, handleFormSubmit, data: ', data);
+
+    // get the delta of data from initialvalues
+    const delta = {};
+    _.each(Object.keys(data), each => {
+      // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
+      if (data[each] !== this.props.initialValues[each]) {
+        delta[each] = data[each];
+      }
+    });
+    // separate delta into profile and other tenants
+    const dataToBeSent = { profile: {}, other_tenants: {} };
+
+    _.each(Object.keys(delta), eachDeltaKey => {
+      if (eachDeltaKey in Profile) {
+        dataToBeSent.profile[eachDeltaKey] = delta[eachDeltaKey];
+      }
+      if (eachDeltaKey in OtherTenants) {
+        dataToBeSent.other_tenants[eachDeltaKey] = delta[eachDeltaKey];
+      }
+    });
+    console.log('in booking_request, handleFormSubmit, delta, dataToBeSent: ', delta, dataToBeSent);
     // this.props.editProfile(data, () => {
     //   this.handleFormSubmitCallback();
     // });
@@ -434,11 +455,14 @@ class BookingRequest extends Component {
   }
 
   renderEachInputField(eachBoxObject) {
-    // const profileKeyArray = ['first_name', 'last_name', 'birthday', 'address1', 'city', 'state', 'zip', 'country', 'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_address', 'co_tenant_name', 'co_tenant_age']
+    const profileKeyArray = ['first_name', 'last_name', 'birthday', 'address1', 'city', 'state', 'zip', 'country', 'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_address', 'co_tenant_name', 'co_tenant_age']
     // console.log('in booking_request, renderEachInputField　eachBoxObject.constantFile, Object.keys(): ', eachBoxObject.constantFile, Object.keys(eachBoxObject.constantFile));
     return _.map(Object.keys(eachBoxObject.constantFile), (eachKey, i) => {
       if (eachBoxObject.constantFile[eachKey].category && eachBoxObject.constantFile[eachKey].category == eachBoxObject.category) {
-        console.log('in booking_request, renderEachInputField, eachKey, eachBoxObject.constantFile[eachKey]: ', eachKey, eachBoxObject.constantFile[eachKey]);
+        // console.log('in booking_request, renderEachInputField, eachKey, eachBoxObject.constantFile[eachKey]: ', eachKey, eachBoxObject.constantFile[eachKey].name);
+        // const key = eachBoxObject.constantFile[eachKey].name;
+        const key = 'address1';
+        console.log('in booking_request, renderEachInputField, key, typeof key: ', key, typeof key);
         return (
           <fieldset key={i} className="form-group form-group-personal">
             <label className="create-flat-form-label">{eachBoxObject.constantFile[eachKey][this.props.appLanguageCode]}:</label>
@@ -451,10 +475,10 @@ class BookingRequest extends Component {
 
   renderEachPersonalBox() {
     const personalArray = [
-      { title: 'Basic Info', category: 'basic', constantFile: Profile },
-      { title: 'In Case of Emergency', category: 'emergency', constantFile: Profile },
-      { title: 'Other Tenants', category: 'otherTenants', constantFile: OtherTenants }
-    ]
+      { title: AppLanguages.basicInfoForTenant[this.props.appLanguageCode], category: 'basic', constantFile: Profile },
+      { title: AppLanguages.inCaseOfEmergency[this.props.appLanguageCode], category: 'emergency', constantFile: Profile },
+      { title: AppLanguages.otherTenants[this.props.appLanguageCode], category: 'otherTenants', constantFile: OtherTenants }
+    ];
     // const personalArray = [{ title: 'Personal Info', category: 'basic', constant: 'Profile' }, { title: 'In Case of Emergency', category: 'emergency', constant: 'Profile' }, { title: 'Your Dependents', category: 'dependent', constant: 'Dependent' }]
     return _.map(personalArray, (eachObject, i) => {
       return (
@@ -468,21 +492,25 @@ class BookingRequest extends Component {
 
   renderUpdatePersonalDetails() {
     const { handleSubmit } = this.props;
+    // <fieldset className="form-group form-group-personal">
+    // <label className="create-flat-form-label">Title:</label>
+    // <Field name={'title'} component={InputField} type="string" className="form-control" />
+    // </fieldset>
+    // <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
 
     return (
       <div>
-        <h4>Update Personal Details</h4>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-          <div className="booking-request-personal-container container">
-            <div className="booking-request-personal-row row">
-              {this.renderEachPersonalBox()}
+        <h4>Personal Details</h4>
+          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <div className="booking-request-personal-container container">
+              <div className="booking-request-personal-row row">
+                {this.renderEachPersonalBox()}
+              </div>
             </div>
-          </div>
-          <div className="confirm-change-and-button">
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.update[this.props.appLanguageCode]}</button>
-          </div>
-        </form>
-
+            <div className="confirm-change-and-button">
+              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.confirmReservationRequest[this.props.appLanguageCode]}</button>
+            </div>
+          </form>
       </div>
     );
   }
@@ -490,7 +518,7 @@ class BookingRequest extends Component {
   renderBookingRequest() {
     return (
       <div className="container booking-request-container">
-      <h3>Booking Request</h3>
+        <h3>{AppLanguages.bookingRequest[this.props.appLanguageCode]}</h3>
         <div className="row booking-request-row">
           <div className="booking-request-each-box">{this.renderBookingInfo()}</div>
           <div className="booking-request-each-box">{this.renderBookingPaymentDetails()}</div>
@@ -577,6 +605,10 @@ function validate(values) {
 
     if (!values.emergency_contact_address) {
         errors.emergency_contact_address = 'An emergency contact phone is required';
+    }
+
+    if (!values.emergency_contact_relationship) {
+        errors.emergency_contact_relationship = 'An emergency contact phone is required';
     }
     // console.log('in signin modal, validate errors: ', errors);
     return errors;

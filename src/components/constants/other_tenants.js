@@ -3,7 +3,7 @@
 const OtherTenants = {
   co_tenant_name: {
     name: 'co_tenant_name',
-    en: '1. Other Tenant Name',
+    en: '1. Tenant Name',
     jp: '1. 同居人名',
     component: 'input',
     type: 'string',
@@ -23,7 +23,7 @@ const OtherTenants = {
 
   co_tenant_name_1: {
     name: 'co_tenant_name_1',
-    en: '2. Other Tenant Name',
+    en: '2. Tenant Name',
     jp: '2. 同居人名',
     component: 'input',
     type: 'string',
@@ -43,8 +43,8 @@ const OtherTenants = {
 
   co_tenant_name_2: {
     name: 'co_tenant_name_2',
-    en: '2. Other Tenant Name',
-    jp: '2. 同居人名',
+    en: '3. Tenant Name',
+    jp: '3. 同居人名',
     component: 'input',
     type: 'string',
     className: 'form-control',
