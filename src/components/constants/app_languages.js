@@ -169,7 +169,7 @@ const appLanguages =
     userId: { en: 'User ID', jp: 'ユーザーID' },
     title: { en: 'Title', jp: '称号' },
     firstName: { en: 'First Name', jp: '名' },
-    lastName: { en: 'Last Name', jp: '性名' },
+    lastName: { en: 'Last Name', jp: '姓名' },
     birthday: { en: 'Birthday', jp: '生年月日' },
     address: { en: 'Address', jp: '住所' },
     selfIntro: { en: 'Self Intro', jp: '自己紹介' },

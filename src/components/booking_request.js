@@ -567,54 +567,54 @@ const InputField = ({
     );
 
 function validate(values) {
-  const { appLanguageCode, appLanguages } = values;
+  const { appLanguageCode } = values;
 
   // console.log('in booking request, validate values: ', values);
   // console.log('in booking request, validate values.appLanguageCode, values.appLanguages: ', values.appLanguageCode, values.appLanguages);
     const errors = {};
-    if (appLanguageCode && appLanguages) {
+    if (appLanguageCode && AppLanguages) {
       if (!values.first_name) {
-        errors.first_name = appLanguages.firstNameError[appLanguageCode];
+        errors.first_name = AppLanguages.firstNameError[appLanguageCode];
       }
       if (!values.last_name) {
-        errors.last_name = appLanguages.lastNameError[appLanguageCode];
+        errors.last_name = AppLanguages.lastNameError[appLanguageCode];
       }
       if (!values.birthday) {
-        errors.birthday = appLanguages.birthdayError[appLanguageCode];
+        errors.birthday = AppLanguages.birthdayError[appLanguageCode];
       }
 
       if (!values.address1) {
-        errors.address1 = appLanguages.address1Error[appLanguageCode];
+        errors.address1 = AppLanguages.address1Error[appLanguageCode];
       }
 
       if (!values.city) {
-        errors.city = appLanguages.cityError[appLanguageCode];
+        errors.city = AppLanguages.cityError[appLanguageCode];
       }
 
       if (!values.state) {
-        errors.state = appLanguages.stateError[appLanguageCode];
+        errors.state = AppLanguages.stateError[appLanguageCode];
       }
 
       if (!values.zip) {
-        errors.zip = appLanguages.zipError[appLanguageCode];
+        errors.zip = AppLanguages.zipError[appLanguageCode];
       }
 
       if (!values.country) {
-        errors.country = appLanguages.countryError[appLanguageCode];
+        errors.country = AppLanguages.countryError[appLanguageCode];
       }
       if (!values.emergency_contact_name) {
-        errors.emergency_contact_name = appLanguages.emergencyNameError[appLanguageCode];
+        errors.emergency_contact_name = AppLanguages.emergencyNameError[appLanguageCode];
       }
       if (!values.emergency_contact_phone) {
-        errors.emergency_contact_phone = appLanguages.emergencyPhoneError[appLanguageCode];
+        errors.emergency_contact_phone = AppLanguages.emergencyPhoneError[appLanguageCode];
       }
 
       if (!values.emergency_contact_address) {
-        errors.emergency_contact_address = appLanguages.emergencyAddressError[appLanguageCode];
+        errors.emergency_contact_address = AppLanguages.emergencyAddressError[appLanguageCode];
       }
 
       if (!values.emergency_contact_relationship) {
-        errors.emergency_contact_relationship = appLanguages.emergencyRelationshipError[appLanguageCode];
+        errors.emergency_contact_relationship = AppLanguages.emergencyRelationshipError[appLanguageCode];
       }
     }
     // console.log('in signin modal, validate errors: ', errors);
@@ -631,10 +631,8 @@ function mapStateToProps(state) {
   if (state.auth.userProfile) {
     // Populate initialValues with existing userProfile data
     const initialValues = state.auth.userProfile;
-    // add appLanguages.js to initialvalues to add to state.form.BookingRequest.values
+    // add appLanguageCode to initialvalues to add to state.form.BookingRequest.values
     // which gets passed to function validate
-    initialValues.appLanguages = AppLanguages;
-    // also add appLanguageCode to form.BookingRequest.values for use in validate function
     initialValues.appLanguageCode = state.languages.appLanguageCode;
 
     console.log('in booking request, mapStateToProps, state: ', state);

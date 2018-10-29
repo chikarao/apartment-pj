@@ -34,7 +34,7 @@ const Profile = {
   last_name: {
     name: 'last_name',
     en: 'Last Name',
-    jp: '名字',
+    jp: '姓名',
     component: 'input',
     type: 'string',
     className: 'form-control',

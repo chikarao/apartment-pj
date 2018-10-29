@@ -10,6 +10,7 @@ import GmStyle from './gm-style';
 // const INITIAL_ZOOM = 12;
 
 let MAP_DIMENSIONS = {};
+let idleListenerOn = true;
 
 // This component used for results page and showflat page;
 // Takes prop showFlat, flatEmpty in case map pans to location with no flat,
@@ -250,7 +251,7 @@ class GoogleMap extends Component {
       // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
       //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
-      if (!this.props.showFlat) {
+      if (!this.props.showFlat && idleListenerOn) {
         // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
         // console.log('in googlemap, fetchFlats call, this:', this);
         // !!!!!!don't need updateMapDimensions now that results calls googleMap by using
@@ -352,7 +353,7 @@ class GoogleMap extends Component {
       //infowindowArray for closing all open infowindows at map click
       infowindowArray.push(infowindow);
 
-      // to open infowindows
+      // !!!!!!!!!!!!!!!!!!!!!!!to open infowindow on marker click
       marker.addListener('click', () => {
         //close all open infowindows first
         for (let i = 0; i < infowindowArray.length; i++) {
@@ -361,7 +362,13 @@ class GoogleMap extends Component {
         // console.log('in google map, marker addlistener clicked');
         // console.log('in google map, marker addlistener clicked, marker.flatId', marker.flatId);
         // then open clicked infowindow
+        // to avoid triggering idle listener, turn off global variable idleListeron, open infowidow,
+        // then turn idleListenerOn to true after some time.
+        idleListenerOn = false;
         infowindow.open(map, marker);
+        setTimeout(() => {
+          idleListenerOn = true;
+          }, 2000); // restore functionality after 2 seconds
       });
 
       // not sure if need this, but gets latLng when click marker;

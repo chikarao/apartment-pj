@@ -271,10 +271,10 @@ class Header extends Component {
   }
 
   renderAppLanguageSelect() {
+    // <option className="header-language-option"></option>
     return (
       <div>
         <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange.bind(this)}>
-          <option className="header-language-option"></option>
           <option className="header-language-option" value="jp">{languages['jp'].flag} {languages['jp'].name}</option>
           <option className="header-language-option" value="en">{languages['en'].flag} {languages['en'].name}</option>
         </select>

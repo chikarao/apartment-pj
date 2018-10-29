@@ -5,6 +5,7 @@ const DocumentForm = {
   // fieldset for inputs takes absolute positioning
   // fieldset form-group-document, takes params.top, params.left, params.width
   // !!!! Only height needs to be px NOT %
+  // !!!add required: true for validation at submit
   1: {
     name: {
       name: 'name',

@@ -474,7 +474,8 @@ h3 {
 .header-language-selection-box-select {
    font-size: 15px;
    border: 2px solid #ccc;
-   height: 30px
+   height: 30px;
+   background-color: white;
 }
 
 .header-language-selection-box-select option {
@@ -874,6 +875,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   margin: 0 3px 0 3px;
   padding: 5px;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px !important;
+  background-color: white;
 }
 .search-criteria-increment-min-max:hover {
   background-color: lightgray;
@@ -961,6 +963,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: bold;
   margin: 3px 0 0 0;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px !important;
+  background-color: white;
 }
 
 .results-search-box-sub-tab:hover {
@@ -1205,6 +1208,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-decoration: none;
   border: 1px solid #ddd;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px !important;
+  background-color: white;
 }
 
 .pagination li.current {
