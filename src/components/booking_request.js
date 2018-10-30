@@ -8,7 +8,7 @@ import * as actions from '../actions';
 import AppLanguages from './constants/app_languages';
 import Facility from './constants/facility';
 import Profile from './constants/profile';
-import OtherTenants from './constants/other_tenants';
+import Tenants from './constants/tenants';
 
 class BookingRequest extends Component {
   constructor(props) {
@@ -421,8 +421,27 @@ class BookingRequest extends Component {
     );
   }
 
+  checkIfOtherAlreadyInArray(array, eachTenantKey) {
+    console.log('in booking_request, checkIfOtherAlreadyInArray, array, eachTenantKey, Tenants: ', array, eachTenantKey, Tenants);
+    let index = null;
+    _.each(array, (eachArrayObject, i) => {
+      // const objectKeys = Object.keys(eachArrayObject);
+      // const firstKey = objectKeys[0];
+      // console.log('in booking_request, checkIfOtherAlreadyInArray, firstKey: ', firstKey);
+      // console.log('in booking_request, checkIfOtherAlreadyInArray, Tenants[firstKey]: ', Tenants[firstKey]);
+      // console.log('in booking_request, checkIfOtherAlreadyInArray, Object.keys(eachArrayObject): ', Object.keys(eachArrayObject));
+      // console.log('in booking_request, checkIfOtherAlreadyInArray, Tenants[eachTenantKey]: ', Tenants[eachTenantKey]);
+      if (Tenants[eachTenantKey].index == eachArrayObject.index) {
+        index = i;
+      }
+    });
+    console.log('in booking_request, checkIfOtherAlreadyInArray, index: ', index);
+    return index;
+  }
+
   handleFormSubmit(data) {
     console.log('in booking_request, handleFormSubmit, data: ', data);
+    const tenantsArray = [];
 
     // get the delta of data from initialvalues
     const delta = {};
@@ -433,15 +452,40 @@ class BookingRequest extends Component {
       }
     });
     // separate delta into profile and other tenants
-    const dataToBeSent = { profile: {}, other_tenants: {}, facilities: [] };
+    const dataToBeSent = { profile: {}, tenants: {}, facilities: [] };
 
     _.each(Object.keys(delta), eachDeltaKey => {
+      // if delta key in Profile.js
       if (eachDeltaKey in Profile) {
         dataToBeSent.profile[eachDeltaKey] = delta[eachDeltaKey];
       }
-      if (eachDeltaKey in OtherTenants) {
-        dataToBeSent.other_tenants[eachDeltaKey] = delta[eachDeltaKey];
+      // if delta key in tenants.js
+      if (eachDeltaKey in Tenants) {
+        // go through each tenant.js element to match key
+        _.each(Object.keys(Tenants), (eachTenantKey) => {
+          let object = {}
+          // let count = 0;
+          if (eachDeltaKey == eachTenantKey) {
+            if (tenantsArray.length > 0) {
+              const otherKeyInArrayIndex = this.checkIfOtherAlreadyInArray(tenantsArray, eachTenantKey);
+              // if not null
+              if (otherKeyInArrayIndex !== null) {
+                tenantsArray[otherKeyInArrayIndex][Tenants[eachTenantKey].tenantObjectMap] = delta[eachTenantKey];
+              } else {
+                console.log('in booking_request, handleFormSubmit, else not null eachTenantKey: ', eachTenantKey);
+                object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], index: Tenants[eachTenantKey].index }
+                tenantsArray.push(object);
+              }
+            } else {
+              console.log('in booking_request, handleFormSubmit, if lenght > 0 null eachTenantKey: ', eachTenantKey);
+              object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], index: Tenants[eachTenantKey].index }
+              tenantsArray.push(object);
+            }
+          }
+        });
+        dataToBeSent.tenants = tenantsArray;
       }
+      //
     });
 
     if (this.state.addedFacilityArray.length > 0) {
@@ -479,7 +523,7 @@ class BookingRequest extends Component {
     const personalArray = [
       { title: AppLanguages.basicInfoForTenant[this.props.appLanguageCode], category: 'basic', constantFile: Profile },
       { title: AppLanguages.inCaseOfEmergency[this.props.appLanguageCode], category: 'emergency', constantFile: Profile },
-      { title: AppLanguages.otherTenants[this.props.appLanguageCode], category: 'otherTenants', constantFile: OtherTenants }
+      { title: AppLanguages.otherTenants[this.props.appLanguageCode], category: 'tenants', constantFile: Tenants }
     ];
     // const personalArray = [{ title: 'Personal Info', category: 'basic', constant: 'Profile' }, { title: 'In Case of Emergency', category: 'emergency', constant: 'Profile' }, { title: 'Your Dependents', category: 'dependent', constant: 'Dependent' }]
     return _.map(personalArray, (eachObject, i) => {

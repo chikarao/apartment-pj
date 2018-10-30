@@ -1,6 +1,6 @@
 // import React from 'react';
 
-const OtherTenants = {
+const Tenants = {
   co_tenant_name: {
     name: 'co_tenant_name',
     en: '1. Tenant Name',
@@ -8,7 +8,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_name',
+    index: 0
   },
 
   co_tenant_age: {
@@ -18,7 +20,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_age',
+    index: 0
   },
 
   co_tenant_name_1: {
@@ -28,7 +32,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_name',
+    index: 1
   },
 
   co_tenant_age_1: {
@@ -38,7 +44,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_age',
+    index: 1
   },
 
   co_tenant_name_2: {
@@ -48,7 +56,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_name',
+    index: 2
   },
 
   co_tenant_age_2: {
@@ -58,7 +68,9 @@ const OtherTenants = {
     component: 'input',
     type: 'string',
     className: 'form-control',
-    category: 'otherTenants'
+    category: 'tenants',
+    tenantObjectMap: 'tenant_age',
+    index: 2
   },
 
 
@@ -91,4 +103,4 @@ const OtherTenants = {
   // },
 };
 
-export default OtherTenants;
+export default Tenants;
