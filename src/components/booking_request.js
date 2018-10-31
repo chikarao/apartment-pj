@@ -431,7 +431,7 @@ class BookingRequest extends Component {
       // console.log('in booking_request, checkIfOtherAlreadyInArray, Tenants[firstKey]: ', Tenants[firstKey]);
       // console.log('in booking_request, checkIfOtherAlreadyInArray, Object.keys(eachArrayObject): ', Object.keys(eachArrayObject));
       // console.log('in booking_request, checkIfOtherAlreadyInArray, Tenants[eachTenantKey]: ', Tenants[eachTenantKey]);
-      if (Tenants[eachTenantKey].index == eachArrayObject.index) {
+      if (Tenants[eachTenantKey].group == eachArrayObject.group) {
         index = i;
       }
     });
@@ -452,7 +452,7 @@ class BookingRequest extends Component {
       }
     });
     // separate delta into profile and other tenants
-    const dataToBeSent = { profile: {}, tenants: {}, facilities: [] };
+    const dataToBeSent = { profile: {}, tenants: {}, facilities: [], booking: {} };
 
     _.each(Object.keys(delta), eachDeltaKey => {
       // if delta key in Profile.js
@@ -465,20 +465,23 @@ class BookingRequest extends Component {
         _.each(Object.keys(Tenants), (eachTenantKey) => {
           let object = {}
           // let count = 0;
+          // if each user input change matches key in tenant.js
           if (eachDeltaKey == eachTenantKey) {
+            // if tenant array has something in it
             if (tenantsArray.length > 0) {
+              // check the index of the group
               const otherKeyInArrayIndex = this.checkIfOtherAlreadyInArray(tenantsArray, eachTenantKey);
               // if not null
               if (otherKeyInArrayIndex !== null) {
                 tenantsArray[otherKeyInArrayIndex][Tenants[eachTenantKey].tenantObjectMap] = delta[eachTenantKey];
               } else {
                 console.log('in booking_request, handleFormSubmit, else not null eachTenantKey: ', eachTenantKey);
-                object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], index: Tenants[eachTenantKey].index }
+                object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], group: Tenants[eachTenantKey].group }
                 tenantsArray.push(object);
               }
             } else {
               console.log('in booking_request, handleFormSubmit, if lenght > 0 null eachTenantKey: ', eachTenantKey);
-              object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], index: Tenants[eachTenantKey].index }
+              object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], group: Tenants[eachTenantKey].group }
               tenantsArray.push(object);
             }
           }
@@ -491,15 +494,18 @@ class BookingRequest extends Component {
     if (this.state.addedFacilityArray.length > 0) {
       dataToBeSent.facilities = this.state.addedFacilityArray;
     }
+
+    dataToBeSent.booking = this.props.bookingRequest;
     console.log('in booking_request, handleFormSubmit, delta, dataToBeSent: ', delta, dataToBeSent);
-    // this.props.editProfile(data, () => {
-    //   this.handleFormSubmitCallback();
-    // });
+    this.props.requestBooking(dataToBeSent, (id) => {
+      this.handleFormSubmitCallback(id);
+    });
   }
 
-  handleFormSubmitCallback() {
-    console.log('in booking_request, handleFormSubmitCallback: ');
+  handleFormSubmitCallback(bookingId) {
+    console.log('in booking_request, handleFormSubmitCallback: ', bookingId);
     // showHideClassName = 'modal display-none';
+    this.props.history.push(`/BookingConfirmation/${bookingId}`);
   }
 
   renderEachInputField(eachBoxObject) {
@@ -553,6 +559,7 @@ class BookingRequest extends Component {
                 {this.renderEachPersonalBox()}
               </div>
             </div>
+            {this.renderAlert()}
             <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.confirmReservationRequest[this.props.appLanguageCode]}</button>
             </div>
@@ -681,7 +688,7 @@ function mapStateToProps(state) {
 
     console.log('in booking request, mapStateToProps, state: ', state);
     return {
-      errorMessage: state.auth.message,
+      errorMessage: state.auth.error,
       bookingData: state.bookingData.fetchBookingData,
       bookingRequest: state.bookingData.bookingRequestData,
       flat: state.selectedFlatFromParams.selectedFlatFromParams,

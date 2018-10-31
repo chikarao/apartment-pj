@@ -9,8 +9,9 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_name',
-    index: 0
+    // maps to tenant_name in api model tenant
+    tenantObjectMap: 'name',
+    group: 0
   },
 
   co_tenant_age: {
@@ -21,8 +22,8 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_age',
-    index: 0
+    tenantObjectMap: 'age',
+    group: 0
   },
 
   co_tenant_name_1: {
@@ -33,8 +34,8 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_name',
-    index: 1
+    tenantObjectMap: 'name',
+    group: 1
   },
 
   co_tenant_age_1: {
@@ -45,8 +46,8 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_age',
-    index: 1
+    tenantObjectMap: 'age',
+    group: 1
   },
 
   co_tenant_name_2: {
@@ -57,8 +58,8 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_name',
-    index: 2
+    tenantObjectMap: 'name',
+    group: 2
   },
 
   co_tenant_age_2: {
@@ -69,8 +70,8 @@ const Tenants = {
     type: 'string',
     className: 'form-control',
     category: 'tenants',
-    tenantObjectMap: 'tenant_age',
-    index: 2
+    tenantObjectMap: 'age',
+    group: 2
   },
 
 

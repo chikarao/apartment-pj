@@ -797,9 +797,10 @@ export function requestBooking(bookingRequest, callback) {
   console.log('in actions index, requestBooking, bookingRequest: ', bookingRequest);
   console.log('in actions index, requestBooking, localStorage.getItem : ', localStorage.getItem('token'));
 
-  const { flat_id, user_email, date_start, date_end, booking_by_owner } = bookingRequest;
+  // const { flat_id, user_email, date_start, date_end, booking_by_owner } = bookingRequest;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/bookings`, { booking: { flat_id, user_email, date_start, date_end, booking_by_owner } }, {
+    // axios.post(`${ROOT_URL}/api/v1/bookings`, { booking: { flat_id, user_email, date_start, date_end, booking_by_owner } }, {
+    axios.post(`${ROOT_URL}/api/v1/bookings`, bookingRequest, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
       .then(response => {
@@ -809,6 +810,11 @@ export function requestBooking(bookingRequest, callback) {
           type: REQUEST_BOOKING,
           payload: response.data.data
         });
+      })
+      .catch(error => {
+        console.log('in action index, catch error to requestBooking: ', error);
+        dispatch(authError(error.message));
+        // this.showloading();
       });
   };
 }
@@ -1056,6 +1062,7 @@ export function createLike(flatId, callback) {
     });
   };
 }
+
 export function createView(flatId) {
   console.log('in actions index, createView: localStorage.getItem, token: ', localStorage.getItem('token'));
   console.log('in actions index, createView: flatId: ', flatId);

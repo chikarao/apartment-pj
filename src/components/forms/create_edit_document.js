@@ -9,8 +9,9 @@ import DocumentForm from '../constants/document_form';
 
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
-import RentPayment from '../constants/rent_payment'
-import Facility from '../constants/facility'
+import RentPayment from '../constants/rent_payment';
+import Facility from '../constants/facility';
+import Tenants from '../constants/tenants';
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -401,6 +402,7 @@ function getChoice(facility) {
       return;
     }
   });
+  // returns the choice in facility.js facility_type object
   return array[0];
 }
 
@@ -518,7 +520,7 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
     // end of if flat.rent_payment_method
     // calculate number of facilties, car park, bicycle parking, etc
     // and get a string of their numbers 1A, 2D etc.
-    if (flat.facilities) {
+    if (booking.facilities) {
       // console.log('in create_edit_document, getInitialValueObject, flat.facilities: ', flat.facilities);
       // set up arrays for each facility
       const carParkingArray = [];
@@ -533,7 +535,7 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
       // iterate through each facility.js facility_type choices
       _.each(Facility.facility_type.choices, eachChoice => {
         // iterate over each facility assigned to flat
-        _.each(flat.facilities, eachFacility => {
+        _.each(booking.facilities, eachFacility => {
           if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
             // if there is a facility that match the choices and the types that we care about
             // push them in respective arrays
@@ -554,11 +556,14 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
         // console.log('in create_edit_document, getInitialValueObject, eachArray: ', eachArray);
         // if an array has something in it, count how many and form their strings
         if (eachArray.length > 0) {
+          // count for how many spaces (parking, bicycle, motorcyle)
           let count = 0;
+          // facilitySpaces for string showing space numbers 1A, 2B etc
           let facilitySpaces = ''
           _.each(eachArray, each => {
             // console.log('in create_edit_document, getInitialValueObject, each: ', each);
             // console.log('in create_edit_document, getInitialValueObject, each: ', each);
+            // forms string with facility numbers eg 1A, 2B etc
             if (count > 0) {
               facilitySpaces = facilitySpaces.concat(', ')
               facilitySpaces = facilitySpaces.concat(each.facility_number)
@@ -577,11 +582,15 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
               facilityUsageFeeCount += each.price_per_month;
             }
           })
-          // console.log('in create_edit_document, getInitialValueObject, facilitySpaces, count: ', facilitySpaces, count);
           // get the choice that corresponds to the facility_type
           const choice = getChoice(eachArray[0]);
+          console.log('in create_edit_document, getInitialValueObject, choice: ', choice);
           //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
+          // for some reason, parking_spaces gets assigned '0' in form initial, so assign empty string to start,
+          // then when choice is selected, assign a number.
+          object.parking_spaces = '';
           object[choice.documentFormMap1] = count;
+          // object[choice.documentFormMap1] = ((count > 0) ? count : '');
           object[choice.documentFormMap2] = facilitySpaces;
           object.facilities_usage_fee = facilityUsageFeeCount;
         }
@@ -592,6 +601,24 @@ function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode
       const fullName = userOwner.profile.last_name.concat(` ${userOwner.profile.first_name}`);
       object.owner_name = fullName;
       object.owner_phone = userOwner.profile.phone;
+    }
+
+    if (booking.tenants) {
+      let count = 0;
+      _.each(booking.tenants, (eachTenant) => {
+        _.each(Object.keys(Tenants), (eachTenantKey, i) => {
+          // const keys = Object.keys(eachTenant);
+          const keys = ['name', 'age'];
+          _.each(keys, key => {
+            if ((count == Tenants[eachTenantKey].group) && (key == Tenants[eachTenantKey].tenantObjectMap)) {
+              console.log('in create_edit_document, getInitialValueObject, eachTenant, key, eachTenantKey: ', eachTenant, key, eachTenantKey);
+              object[eachTenantKey] = eachTenant[key];
+            }
+          })
+        })
+        count++;
+      });
+      object.co_tenants = booking.tenants.length;
     }
 
     // form string for user tenant names
