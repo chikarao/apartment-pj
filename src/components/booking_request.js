@@ -18,6 +18,7 @@ class BookingRequest extends Component {
     };
     this.handleOptionButtonClick = this.handleOptionButtonClick.bind(this);
   }
+
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // const bookingId = parseInt(this.props.match.params.id, 10);
@@ -30,6 +31,8 @@ class BookingRequest extends Component {
 
     const bookingRequestEmpty = _.isEmpty(this.props.bookingRequest);
 
+    // when user first makes request and opens booking request, store props data in localStorage
+    // and get the data from storage to store data in state and props
     if (!bookingRequestEmpty) {
       localStorage.setItem('bookingRequestTo', this.props.bookingRequest.date_end);
       localStorage.setItem('bookingRequestFrom', this.props.bookingRequest.date_start);
@@ -41,23 +44,28 @@ class BookingRequest extends Component {
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
       // console.log('in booking_request, componentDidMount, in if !bookingRequestEmpty,   bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
       this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
+      // flat from backend api
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     } else {
+      // if user refreshes page, get booking data from localstorate
       bookingRequestTo = localStorage.getItem('bookingRequestTo');
       bookingRequestFrom = localStorage.getItem('bookingRequestFrom');
       bookingRequestUserEmail = localStorage.getItem('bookingRequestUserEmail');
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
       // console.log('in booking_request, componentDidMount, bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
+      // store booking request data in local state and props
       this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     }
+    // get profile for logged in user from backend api
     this.props.fetchProfileForUser(() => {});
   }
 
   componentDidUpdate() {
-    this.addNonOptionalFacilityToState();
+    // add facilities that are not optional or included for use when user confirms booking
+    this.addNonOptionalOrIncludedFacilityToState();
   }
-
+  // remove localstorage data when user closes page
   componentWillUnmount() {
     // console.log('in booking confirmation, componentWillUnmount');
     const bookingRequestTo = localStorage.removeItem('bookingRequestTo');
@@ -88,22 +96,29 @@ class BookingRequest extends Component {
     });
     return facilityIsInState;
   }
-
-  addNonOptionalFacilityToState() {
+  // add facilities that are not optional or included in price for use when user confirms booking
+  addNonOptionalOrIncludedFacilityToState() {
     if (this.props.flat) {
+      // iterate through each facility associated with flat
       _.each(this.props.flat.facilities, eachFacility => {
+        // form object for facility for use here since don't need all attributes
         const facilityObject = this.getFacilityObject(eachFacility);
+        // check if facility is already in addedFacilityArray
         const facilityInState = this.isFacilityInStateObject(eachFacility);
+        // get the choice associated with facility_type in constants/facility.js
         const facilityChoice = this.getFacilityChoice(eachFacility.facility_type);
-        // console.log('in booking_request, addNonOptionalFacilityToState, facilityChoice: ', facilityChoice);
-        // get whether facility included from props.flat mapped by Facility.js choice
+        // console.log('in booking_request, addNonOptionalOrIncludedFacilityToState, facilityChoice: ', facilityChoice);
+        // get whether facility included in flat price from props.flat mapped by Facility.js choice
         const facilityIncluded = this.props.flat[facilityChoice.facilityObjectMap];
+        // set facility_included boolean in local facility object
         facilityObject.facility_included = facilityIncluded;
+        // if facility is not optional or is included in price AND not already in addedFacilityArray
+        // add object to addedFacilityArray; cannot do .push since state is immutable
         if ((eachFacility.optional == false || facilityIncluded) && !facilityInState) {
           this.setState({
             addedFacilityArray: [...this.state.addedFacilityArray, facilityObject]
           }, () => {
-            // console.log('in booking_request, addNonOptionalFacilityToState, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+            // console.log('in booking_request, addNonOptionalOrIncludedFacilityToState, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
           });
         }
       });

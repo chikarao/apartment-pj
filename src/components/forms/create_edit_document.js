@@ -265,7 +265,7 @@ class CreateEditDocument extends Component {
       // console.log('in create_edit_document, renderDocument, page: ', page);
       return (
           <div key={page} value={page} id="document-background" className="test-image-pdf-jpg-background" style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${file}.jpg)` }}>
-              {this.renderEachDocumentField(page)}
+            {this.renderEachDocumentField(page)}
           </div>
       );
     });

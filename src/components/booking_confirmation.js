@@ -10,12 +10,13 @@ import ReviewCreateFrom from './forms/review_create';
 import CreateEditDocument from './forms/create_edit_document'
 
 class BookingConfirmation extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     showReviewEditModal: false
-  //   };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      showDocument: false
+    };
+    this.handleDocumentCreateLink = this.handleDocumentCreateLink.bind(this);
+  }
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
     const bookingId = parseInt(this.props.match.params.id, 10);
@@ -49,6 +50,75 @@ class BookingConfirmation extends Component {
       }
     }
 
+    renderEachBasicLine(bookingData) {
+      const { date_start, date_end, id } = bookingData;
+      const { description, area, beds } = bookingData.flat;
+      const lineArray = [
+        { title: 'Description', data: description },
+        { title: 'Area', data: area },
+        { title: 'Beds', data: beds },
+        { title: 'Date Start', data: date_start },
+        { title: 'Date End', data: date_end },
+        { title: 'Booking ID', data: id }
+      ];
+
+      return _.map(lineArray, (eachLine, i) => {
+        return (
+          <div key={i} className="booking-request-box-each-line">
+            <div className="booking-request-box-each-line-title">
+              {eachLine.title}:
+              </div>
+              <div className="booking-request-box-each-line-data">
+              {eachLine.data}
+            </div>
+          </div>
+        );
+      });
+    }
+
+    renderEachTenantLine() {
+      return (
+        <div>each line</div>
+      );
+    }
+
+    renderBookingBasicInformation(bookingData) {
+      return (
+        <div className="booking-confirmation-each-box">
+          <div className="booking-request-box-title">Basic Booking Information</div>
+          {this.renderEachBasicLine(bookingData)}
+        </div>
+      );
+    }
+
+    renderNameBox(bookingData) {
+      return (
+        <div className="booking-confirmation-name-box">
+          <div className="booking-confirmation-name-box-each-line">
+            First Name: {bookingData.user.profile.first_name}
+          </div>
+          <div className="booking-confirmation-name-box-each-line">
+            Last Name: {bookingData.user.profile.last_name}
+          </div>
+          <div className="booking-confirmation-name-box-each-line">
+          </div>
+        </div>
+      );
+    }
+
+    renderBookingTenantInformation(bookingData) {
+      return (
+        <div className="booking-confirmation-each-box">
+          <div className="booking-request-box-title">Tenant Information</div>
+            <div className="booking-confirmation-profile-top-box">
+              <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + bookingData.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
+              {this.renderNameBox(bookingData)}
+            </div>
+            {this.renderEachTenantLine()}
+        </div>
+      );
+    }
+
     renderBookingData() {
       const { bookingData } = this.props;
 
@@ -69,25 +139,11 @@ class BookingConfirmation extends Component {
             <div id="carousel-show" className="booking-confirmation-image">
               {this.renderImage(bookingData.flat.images)}
             </div>
-            <div className="booking-confirmation">
-              <div>
-                <strong>Description:</strong> {bookingData.flat.description}
-              </div>
-              <div>
-                <strong>Area:</strong> {bookingData.flat.area}
-              </div>
-              <div>
-                <strong>Beds:</strong> {bookingData.flat.beds}
-              </div>
-              <div>
-                <strong>Booking start:</strong> {bookingData.date_start}
-              </div>
-              <div>
-                <strong>Booking end:</strong> {bookingData.date_end}
-              </div>
-              <div>
-                <strong>Booking ID:</strong> {bookingData.id}
-              </div>
+            <div className="booking-confirmation container">
+            <div className="booking-confirmation-row">
+              {this.renderBookingBasicInformation(bookingData)}
+              {this.renderBookingTenantInformation(bookingData)}
+            </div>
             </div>
 
           </div>
@@ -237,13 +293,47 @@ class BookingConfirmation extends Component {
     }
   }
 
+  renderDocument() {
+    return (
+      <CreateEditDocument />
+    );
+  }
+
+  handleDocumentCreateLink() {
+    this.setState({ showDocument: true });
+  }
+
+  renderDocumentChoices() {
+    return (
+      <div className="booking-confirmation-create-document-box">
+        <h4>Create Document</h4>
+        <div onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">Teishaku</div>
+      </div>
+    );
+  }
+
+  // renderBookingRequest() {
+  //   return (
+  //     <div className="container booking-request-container">
+  //       <h3>{AppLanguages.bookingRequest[this.props.appLanguageCode]}</h3>
+  //       <div className="row booking-request-row">
+  //         <div className="booking-request-each-box">{this.renderBookingInfo()}</div>
+  //         <div className="booking-request-each-box">{this.renderBookingPaymentDetails()}</div>
+  //         <div className="booking-request-each-box">{this.renderFacilities()}</div>
+  //         <div className="booking-request-each-box-personal">{this.renderUpdatePersonalDetails()}</div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   render() {
     return (
       <div>
         {this.renderReviewEditModal()}
         {this.renderBookingData()}
         {this.renderReview()}
-        <CreateEditDocument />
+        {this.renderDocumentChoices()}
+        {this.state.showDocument ? this.renderDocument() : ''}
       </div>
     );
   }
