@@ -9,6 +9,7 @@ import ReviewCreateFrom from './forms/review_create';
 
 import CreateEditDocument from './forms/create_edit_document';
 import calculateAge from './functions/calculate_age';
+import Facility from './constants/facility';
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -51,24 +52,73 @@ class BookingConfirmation extends Component {
       }
     }
 
+    getFacilityChoice(facilityType) {
+      let facilityChoice = {};
+      _.each(Facility.facility_type.choices, eachChoice => {
+        if (eachChoice.value == facilityType) {
+          facilityChoice = eachChoice;
+          return;
+        }
+      });
+      return facilityChoice;
+    }
+
+    getFacilityStrings(facilitiesArray) {
+      const array = []
+      let facilityString = ''
+      _.each(facilitiesArray, eachFacility => {
+        const choice = this.getFacilityChoice(eachFacility.facility_type);
+        console.log('in booking_confirmation getFacilityStrings, choice: ', choice);
+
+        // if facility included
+        if (this.props.bookingData.flat[choice.facilityObjectMap]) {
+          facilityString = choice[this.props.appLanguageCode] + ', ' + 'Included'
+        } else {
+          facilityString = choice[this.props.appLanguageCode] + ', ' + '$' + eachFacility.price_per_month + '/mo'+ ', ' + 'Dep ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' mo'
+        }
+        array.push(facilityString)
+      })
+      return array;
+    }
+
+
     renderEachBasicLine() {
-      const { date_start, date_end, id } = this.props.bookingData;
-      const { description, area, beds } = this.props.bookingData.flat;
+      const { date_start, date_end, id, facilities } = this.props.bookingData;
+      const { description, area, beds, rooms, layout, city, state, country } = this.props.bookingData.flat;
+      const facilitiesInStringArray = this.getFacilityStrings(facilities);
+      console.log('in booking_confirmation renderEachBasicLine, facilitiesInStringArray: ', facilitiesInStringArray);
+      const addressString = city + ', ' + state
+      // const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
+
       const lineArray = [
-        { title: 'Description', data: description },
-        { title: 'Area', data: area },
-        { title: 'Beds', data: beds },
-        { title: 'Date Start', data: date_start },
-        { title: 'Date End', data: date_end },
-        { title: 'Booking ID', data: id },
-        { title: 'Listing ID', data: this.props.bookingData.flat.id }
+        { title: 'Description:', data: description },
+        { title: 'Area:', data: area },
+        { title: 'City/State:', data: addressString },
+        { title: 'Beds:', data: beds },
+        { title: 'Rooms:', data: rooms },
+        { title: 'Layout:', data: layout },
+        { title: 'Date Start:', data: date_start },
+        { title: 'Date End:', data: date_end },
+        { title: 'Booking ID:', data: id },
+        { title: 'Listing ID:', data: this.props.bookingData.flat.id }
       ];
+
+
+      if (facilitiesInStringArray.length > 0) {
+        const object = { title: 'Facilities:', data: '' };
+        lineArray.splice((lineArray.length - 2), 0, object);
+        _.each(facilitiesInStringArray, eachFacilityString => {
+          const facilityObject = { title: '', data: eachFacilityString };
+          // lineArray.push(facilityObject);
+          lineArray.splice((lineArray.length - 2), 0, facilityObject);
+        });
+      }
 
       return _.map(lineArray, (eachLine, i) => {
         return (
           <div key={i} className="booking-request-box-each-line">
             <div className="booking-request-box-each-line-title">
-              {eachLine.title}:
+              {eachLine.title}
               </div>
               <div className="booking-request-box-each-line-data">
               {eachLine.data}
@@ -124,7 +174,7 @@ class BookingConfirmation extends Component {
     renderBookingBasicInformation() {
       return (
         <div className="booking-confirmation-each-box">
-          <div className="booking-request-box-title">Basic Booking Information</div>
+          <div className="booking-request-box-title">Basic Booking Request Information</div>
           {this.renderEachBasicLine()}
         </div>
       );
@@ -159,7 +209,7 @@ class BookingConfirmation extends Component {
       // from this.props.bookingData; needs to be passed on by parameter
       return (
         <div className="booking-confirmation-each-box">
-          <div className="booking-request-box-title">Tenant Information</div>
+          <div className="booking-request-box-title">Proposed Tenant Information</div>
             <div className="booking-confirmation-profile-top-box">
               <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + bookingData.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
               {this.renderNameBox()}
@@ -175,7 +225,7 @@ class BookingConfirmation extends Component {
     renderBookingDocuments() {
       return (
         <div className="booking-confirmation-each-box">
-          <div className="booking-request-box-title">Documents</div>
+          <div className="booking-request-box-title">Rental Documents</div>
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
                 Create Documents:
@@ -206,7 +256,7 @@ class BookingConfirmation extends Component {
     renderBookingApprovals() {
       return (
         <div className="booking-confirmation-each-box">
-          <div className="booking-request-box-title">Approvals</div>
+          <div className="booking-request-box-title">Approvals and Checklist</div>
           Approvals
         </div>
       );
@@ -227,7 +277,7 @@ class BookingConfirmation extends Component {
         return (
           <div>
             <h3>
-              Thank you for your booking request!
+              Booking Request Workspace
             </h3>
             <div id="carousel-show" className="booking-confirmation-image">
               {this.renderImage(bookingData.flat.images)}
@@ -237,12 +287,12 @@ class BookingConfirmation extends Component {
                 Rental Progress
               </div>
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>Reservation Request</div>
-              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>Renter Approval</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>Tenant Approved</div>
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>Contract Delivered</div>
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%', padding: '10px' }}>Signed!</div>
               <div className="booking-confirmation-progress-box-contents">
                 <div className="booking-confirmation-progress-circle" />
-                <div className="booking-confirmation-progress-line" />
+                <div className="booking-confirmation-progress-line" style={{ backgroundColor: 'green' }} />
                 <div className="booking-confirmation-progress-circle" />
                 <div className="booking-confirmation-progress-line" />
                 <div className="booking-confirmation-progress-circle" />
@@ -455,7 +505,8 @@ function mapStateToProps(state) {
   return {
     bookingData: state.bookingData.fetchBookingData,
     review: state.reviews.reviewForBookingByUser,
-    showEditReviewModal: state.modals.showEditReview
+    showEditReviewModal: state.modals.showEditReview,
+    appLanguageCode: state.languages.appLanguageCode
     // flat: state.flat.selectedFlat
   };
 }

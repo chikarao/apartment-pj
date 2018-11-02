@@ -1351,6 +1351,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .booking-request-box-each-line-data {
   height: auto;
   text-align: right;
+  max-width: 75%;
 }
 
 .booking-request-box-each-line-data-long {
@@ -2657,7 +2658,7 @@ form {
   border: 1px solid #ccc;
   width: 350px;
   min-height: 350px;
-  max-height: 450px;
+  max-height: 500px;
   border-radius: 4px;
   margin: 10px 0 10px 10px;
   background-color: white;
@@ -2741,7 +2742,7 @@ form {
   width: auto;
   text-align: center;
   height: 70%;
-  padding: 40px 0 15px 0;
+  padding: 50px 0 15px 0;
   display: flex;
   justify-content: center;
   flex-direction: row;
