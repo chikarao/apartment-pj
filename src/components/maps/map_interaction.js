@@ -178,7 +178,7 @@ class MapInteraction extends Component {
       // push infowidow into array to enable close by clicking on map see addListener below
       infowindowArray.push(infowindow);
       const placeType = place.types[0];
-      console.log('in map_interaction, createMarker, place: ', place);
+      // console.log('in map_interaction, createMarker, place: ', place);
       const markerIcon = {
         // url: 'http://image.flaticon.com/icons/svg/252/252025.svg',
         // url: 'http://maps.google.com/mapfiles/ms/icons/blue.png',
@@ -352,7 +352,7 @@ class MapInteraction extends Component {
 
 
   getPlacesCallback(results) {
-    console.log('in map_interaction, getPlacesCallback, results ??: ', results);
+    // console.log('in map_interaction, getPlacesCallback, results ??: ', results);
     // first, clear out place results then set state with results
     this.setState({ placesResults: results });
   }
@@ -362,10 +362,10 @@ class MapInteraction extends Component {
     this.unhighlightClickedPlace();
     // set placeSearched to true so that the search list box renders different message
     this.setState({ placeSearched: true });
-    console.log('in map_interaction, handleSearchCriterionClick, clicked, event: ', event.target);
+    // console.log('in map_interaction, handleSearchCriterionClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     let elementVal = clickedElement.getAttribute('value');
-    console.log('in map_interaction, handleSearchCriterionClick, elementVal: ', elementVal);
+    // console.log('in map_interaction, handleSearchCriterionClick, elementVal: ', elementVal);
 
     this.getPlaces(elementVal);
   }
@@ -384,7 +384,7 @@ class MapInteraction extends Component {
     this.setState({ placeSearched: true });
     const selection = document.getElementById('typeSelection');
     const type = selection.options[selection.selectedIndex].value;
-    console.log('in map_interaction, handleSearchTypeSelect, type: ', type);
+    // console.log('in map_interaction, handleSearchTypeSelect, type: ', type);
     this.getPlaces(type, () => this.getPlacesCallback())
   }
 
@@ -404,7 +404,7 @@ class MapInteraction extends Component {
     }, (result, status) => {
       if (status === 'OK') {
         const markersArray = []
-        console.log('in map_interaction, createSelectedMarker, after if status, result: ', status, result);
+        // console.log('in map_interaction, createSelectedMarker, after if status, result: ', status, result);
         const pointA = this.createFlatMarker(flat, map);
         markersArray.push(pointA);
         // console.log('in map_interaction, createSelectedMarker, after if status, pointA: ', pointA);
@@ -484,7 +484,7 @@ class MapInteraction extends Component {
         const searchClick = true;
         this.calculateAndDisplayRoute(pointA, pointB, markersArray, map, searchClick);
       } else {
-        console.log('in map_interaction, createSelectedMarker, else status: ', status);
+        // console.log('in map_interaction, createSelectedMarker, else status: ', status);
       } // end of if status if else
     }); // end of callback
   } // end of createSelectedMarker
@@ -642,10 +642,13 @@ class MapInteraction extends Component {
   }
 
   getDistance(pointALatLng, pointBLatLng, pointB, map) {
-    // console.log('in map_interaction, getDistance, ointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
+    // console.log('in map_interaction, getDistance, pointALatLng, pointBLatLng, pointB, map: ', pointALatLng, pointBLatLng, pointB, map);
 
     const distanceService = new google.maps.DistanceMatrixService();
     let distance = '';
+    let duration = '';
+    // let distanceInMeters = ''
+    // let durationInSeconds = ''
     distanceService.getDistanceMatrix(
       {
         origins: [pointALatLng],
@@ -654,8 +657,12 @@ class MapInteraction extends Component {
       }, (response, status) => {
         if (status === 'OK') {
           // console.log('in map_interaction, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+          // console.log('in map_interaction, getDistance, after if status, distanceService response distance response: ', response);
 
           distance = { distance: response.rows[0].elements[0].distance.text };
+          // distanceInMeters = { distance: response.rows[0].elements[0].distance.value };
+          duration = { duration: response.rows[0].elements[0].distance.text };
+          // durationInSeconds = { duration: response.rows[0].elements[0].distance.value };
           const distanceText = response.rows[0].elements[0].distance.text;
           const marker = pointB;
           // console.log('in map_interaction, getDistance, after if status, distanceService after if, marker: ', marker);
@@ -690,7 +697,7 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, handlePlaceClick, elementVal: ', elementVal);
 
     // this.setState({ clickedclickedPlaceArray: this.state.clickedPlaceArray.push(clickedElement) });
-    // Don't know why but this works
+    // Do not .push to state element; Cannot morph state.
     // this.state.clickedPlaceArray.push(clickedElement);
     // Here is the recommented code for pushing into state array
     this.setState(prevState => ({
@@ -700,6 +707,33 @@ class MapInteraction extends Component {
     this.createSelectedMarker(elementVal);
   }
 
+  addPlaceGetDistance(pointALatLng, pointBLatLng, callback) {
+    // console.log('in map_interaction, addPlaceGetDistance, after if status, distanceService response distance pointALatLng, pointBLatLng: ', pointALatLng, pointBLatLng);
+    const distanceService = new google.maps.DistanceMatrixService();
+    let distance = '';
+    let duration = '';
+    let distanceInMeters = ''
+    let durationInSeconds = ''
+    distanceService.getDistanceMatrix(
+      {
+        origins: [pointALatLng],
+        destinations: [pointBLatLng],
+        travelMode: 'WALKING',
+      }, (response, status) => {
+        if (status === 'OK') {
+          // console.log('in map_interaction, getDistance, after if status, distanceService response distance response.rows[0].elements[0].distance: ', response.rows[0].elements[0].distance);
+          // console.log('in map_interaction, addPlaceGetDistance, after if status, distanceService response distance response: ', response);
+
+          // distance = { distance: response.rows[0].elements[0].distance.text };
+          distanceInMeters = { distance: response.rows[0].elements[0].distance.value };
+          // duration = { duration: response.rows[0].elements[0].duration.text };
+          durationInSeconds = { duration: response.rows[0].elements[0].duration.value };
+          callback(distanceInMeters.distance, durationInSeconds.duration);
+        }
+      }
+    );
+  }
+
   handleResultAddClick(event) {
     this.props.showLoading();
     this.unhighlightClickedPlace();
@@ -707,17 +741,33 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, handleResultAddClick, event.target, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementVal);
     const elementValArray = elementVal.split(',');
     const placeId = elementValArray[0];
-    const lat = elementValArray[1];
-    const lng = elementValArray[2];
+    // make float so that gmaps is passed a float, not a string, for lat lng
+    const lat = parseFloat(elementValArray[1]);
+    const lng = parseFloat(elementValArray[2]);
+    const placeType = elementValArray[3];
     const flatId = this.props.flat.id
-    // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementName);
-    // console.log('in map_interaction, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
-    this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, () => this.resultAddDeleteClickCallback());
-    //ChIJIenHT9eAhYARiop0hvjNTzU
-    //"9060163472ab6d69548873f75aba48278980c0ea"
+    // if place type is subway station or train statoin
+    // get distance in meters and duration in seconds by walking
+    // after callback, create place
+    // console.log('in map_interaction, handleResultAddClick, placeType, placeType == train_station: ', placeType, placeType == 'train_station');
+    // for some reason, will not work with if (placeType == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
+    if ((placeType == 'subway_station') || (placeType == 'train_station') || (placeType == 'transit_station') || (placeType == 'bus_station')) {
+      this.addPlaceGetDistance({ lat: this.props.flat.lat, lng: this.props.flat.lng }, { lat, lng }, (distance, duration) => {
+        console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
+        this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
+      });
+    } else {
+      // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementName);
+      // console.log('in map_interaction, handleResultAddClick, this.props.flat.id: ', this.props.flat.id);
+      // call create place with distance and duration as placeholders
+      const distance = '';
+      const duration = ''
+      this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
+      //ChIJIenHT9eAhYARiop0hvjNTzU
+      //"9060163472ab6d69548873f75aba48278980c0ea"
+    }
   }
 
   resultAddDeleteClickCallback() {
@@ -726,12 +776,13 @@ class MapInteraction extends Component {
   }
 
   createPlaceValueString(place) {
-    // console.log('in map_interaction, createPlaceValueString, places: ', place);
+    console.log('in map_interaction, createPlaceValueString, places: ', place);
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
     const id = place.place_id;
+    const type = place.types[0];
     // console.log('in map_interaction, createPlaceValueString, id lat lng: ', id + ',' + lat + ',' + lng);
-    return id + ',' + lat + ',' + lng;
+    return id + ',' + lat + ',' + lng + ',' + type;
   }
 
   renderSearchResultsList() {
