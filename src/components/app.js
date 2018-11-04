@@ -12,14 +12,25 @@ class App extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.loadMap();
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
+    if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
+      this.loadMap();
+    }
+  }
+
+  loadMap() {
     //make initMap callback global
     // console.log('in app.js, componentWillMount,  this.props.language: ', this.props.language);
     window.initMap = this.loadedMap;
     const API_KEY = process.env.GOOGLEMAP_API_KEY;
     // console.log('in app.js, componentWillMount, API_KEY: ', API_KEY)
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=en&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}&callback=initMap`;
     // added async and defer to make sure gmap loads before component...
     // https://medium.com/@nikjohn/speed-up-google-maps-and-everything-else-with-async-defer-7b9814efb2b
     // https://stackoverflow.com/questions/41289602/add-defer-or-async-attribute-to-dynamically-generated-script-tags-via-javascript/41289721
@@ -37,10 +48,6 @@ class App extends Component {
     // // fbScript.defer = true;
     // document.head.append(fbScript);
   }
-
-  // componentDidUpdate() {
-  //   console.log('in app.js, componentDidUpdate,  this.props.language: ', this.props.language);
-  // }
 
   loadedMap = () => {
       this.setState({ gmapLoaded: true });
@@ -78,13 +85,13 @@ class App extends Component {
   // }
 }
 //
-// function mapStateToProps(state) {
-//   console.log('in app.js, mapStateToProps, state: ', state);
-//   return {
-//     language: state.places.placeSearchLanguage
-//     // conversation: state.conversation.createMessage
-//   };
-// }
+function mapStateToProps(state) {
+  console.log('in app.js, mapStateToProps, state: ', state);
+  return {
+    placeSearchLanguageCode: state.languages.placeSearchLanguageCode
+    // conversation: state.conversation.createMessage
+  };
+}
 
-// export default connect(mapStateToProps)(App);
-export default App;
+export default connect(mapStateToProps)(App);
+// export default App;

@@ -794,6 +794,40 @@ to override imposed max by API div */
   display: none;
 }
 
+.map-interaction-language-select-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: auto;
+  width: auto;
+}
+.map-interaction-language-select-box-label {
+  width: 100%;
+  padding: 5px;
+  text-align: left;
+}
+
+.map-interaction-language-select {
+  width: 100px !important;
+  height: 30px;
+  margin: 10px 20px 10px 10px !important;
+  }
+
+.map-interaction-language-option-button-box {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0 5px 0;
+}
+.map-interaction-language-option-button {
+  height: 30px;
+  width: 80px;
+  border-color: lightgray;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
 
 /* ########## Removes all of google logo and copyright etc... But doing so will violate google's terms of use */
 /* a[href^="http://maps.google.com/maps"]{display:none !important}

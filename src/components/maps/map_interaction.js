@@ -9,6 +9,7 @@ import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
 import GmStyle from './gm-style';
+import Languages from '../constants/languages';
 
 // import * as images from '../../images';
 
@@ -45,6 +46,11 @@ class MapInteraction extends Component {
     // }
     //
     // this.props.fetchReviewsForFlat(this.props.match.params.id);
+    // handleSearchInput needs to be in cdm or
+    // does not work with applanguage change, for some reason
+    if (this.props.flat && !this.props.showFlat) {
+      this.handleSearchInput();
+    }
   }
 
   componentDidUpdate() {
@@ -52,9 +58,6 @@ class MapInteraction extends Component {
     // to handle error InvalidValueError: not an instance of HTMLInputElement
     // handleSearchInput was running before HTML was rendered
     //so input ID map-interaction-input was not getting picked up
-    if (this.props.flat && !this.props.showFlat) {
-      this.handleSearchInput();
-    }
   }
 
   createMap(location, zoom) {
@@ -348,8 +351,6 @@ class MapInteraction extends Component {
   //   this.getPlaces(input.value);
   //   input.value = '';
   // }
-
-
 
   getPlacesCallback(results) {
     // console.log('in map_interaction, getPlacesCallback, results ??: ', results);
@@ -755,7 +756,7 @@ class MapInteraction extends Component {
     // for some reason, will not work with if (placeType == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
     if ((placeType == 'subway_station') || (placeType == 'train_station') || (placeType == 'transit_station') || (placeType == 'bus_station')) {
       this.addPlaceGetDistance({ lat: this.props.flat.lat, lng: this.props.flat.lng }, { lat, lng }, (distance, duration) => {
-        console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
+        // console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
         this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
       });
     } else {
@@ -776,7 +777,7 @@ class MapInteraction extends Component {
   }
 
   createPlaceValueString(place) {
-    console.log('in map_interaction, createPlaceValueString, places: ', place);
+    // console.log('in map_interaction, createPlaceValueString, places: ', place);
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
     const id = place.place_id;
@@ -938,26 +939,50 @@ class MapInteraction extends Component {
     }
   }
   // Need to work o this... Cannot set language preference in app.js script after componentWillMount
-  handleSearchLanguageSelect() {
-    const selection = document.getElementById('mapInteractionLanguageSelect');
-    const language = selection.value;
-    // console.log('in map_interaction, handleSearchLanguageSelect, language: ', language);
+  handleSearchLanguageSelect(event) {
+    // const selection = document.getElementById('map-interaction-language-select');
+    // const language = selection.value;
+    const changedElement = event.target;
+    const elementVal = changedElement.getAttribute('value');
+    console.log('in map_interaction, handleSearchLanguageSelect, elementVal: ', elementVal);
+    console.log('in map_interaction, handleSearchLanguageSelect, changedElement: ', changedElement);
     // this.getPlaces(type, () => this.getPlacesCallback())
-    this.props.placeSearchLanguage(language, () => this.searchLanguageCallback());
+    this.props.placeSearchLanguage(elementVal, () => this.searchLanguageCallback());
   }
 
   searchLanguageCallback() {
-    // console.log('in map_interaction, searchLanguageCallback, this.props.language: ', this.props.language);
+    console.log('in map_interaction, searchLanguageCallback, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
+    // document.location.reload();
+  }
+
+  renderMapLanguageSelect() {
+    return (
+      <div className="map-interaction-language-select-box">
+        <div className="map-interaction-language-select-box-label">Search Output Language</div>
+          <select id="map-interaction-language-select" className="map-interaction-language-select" onChange={this.handleSearchLanguageSelect.bind(this)}>
+            <option className="map-interaction-language-option" value="en">{Languages.en.flag}{Languages.en.local}</option>
+            <option className="map-interaction-language-option" value="jp">{Languages.jp.flag}{Languages.jp.local}</option>
+          </ select>
+      </div>
+    );
+  }
+  renderMapLanguageSelectButtons() {
+    console.log('in MapInteraction, renderMapLanguageSelectButtons, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
+
+    return (
+      <div className="map-interaction-language-select-box">
+        <div className="map-interaction-language-select-box-label">Search Output Language</div>
+          <div className="map-interaction-language-option-button-box">
+            <div className="map-interaction-language-option-button" value="en" onClick={this.handleSearchLanguageSelect.bind(this)} style={this.props.placeSearchLanguageCode == 'en' ? { borderColor: 'black' } : {}}>{Languages.en.flag}{Languages.en.local}</div>
+            <div className="map-interaction-language-option-button" value="jp" onClick={this.handleSearchLanguageSelect.bind(this)} style={this.props.placeSearchLanguageCode == 'jp' ? { borderColor: 'black' } : {}}>{Languages.jp.flag}{Languages.jp.local}</div>
+          </div>
+      </div>
+    );
   }
 
   renderSearchBox() {
     // this.renderSearchSelection();
     // keep for when there is solution for language selection;
-    // <select id="mapInteractionLanguageSelect" className="map-interaction-input-area" onChange={this.handleSearchLanguageSelect.bind(this)}>
-    // <option>Select Search Output Language</option>
-    // <option value="en">English</option>
-    // <option value="jp">Japanese</option>
-    // </ select>
     return (
       <div className="map-interaction-box">
         <div className="map-interaction-title"><i className="fa fa-search"></i>  {AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
@@ -971,6 +996,8 @@ class MapInteraction extends Component {
           {this.renderSearchSelection()}
         </select>
         <input id="map-interaction-input" className="map-interaction-input-area" type="text" placeholder={AppLanguages.searchPlaceName[this.props.appLanguageCode]} />
+        {this.renderMapLanguageSelectButtons()}
+
       </div>
     );
   }
@@ -1039,7 +1066,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
+    placeSearchLanguageCode: state.languages.placeSearchLanguageCode
   };
 }
 
