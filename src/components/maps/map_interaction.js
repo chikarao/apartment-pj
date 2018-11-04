@@ -53,12 +53,43 @@ class MapInteraction extends Component {
     }
   }
 
-  componentDidUpdate() {
-    // this.scrollLastMessageIntoView();
-    // to handle error InvalidValueError: not an instance of HTMLInputElement
-    // handleSearchInput was running before HTML was rendered
-    //so input ID map-interaction-input was not getting picked up
-  }
+  // componentDidUpdate(prevProps) {
+  //   // this.scrollLastMessageIntoView();
+  //   // to handle error InvalidValueError: not an instance of HTMLInputElement
+  //   // handleSearchInput was running before HTML was rendered
+  //   //so input ID map-interaction-input was not getting picked up
+  //     if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
+  //       // theScript.parentNode.removeChild( theScript );
+  //       // this.removeGoogleMapScript(() => {
+  //       //   const API_KEY = process.env.GOOGLEMAP_API_KEY;
+  //       //   // console.log('in app.js, componentWillMount, API_KEY: ', API_KEY)
+  //       //   const script = document.createElement('script');
+  //       //   script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}`;
+  //       //   // script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}&callback=initMap`;
+  //       //   // added async and defer to make sure gmap loads before component...
+  //       //   // https://medium.com/@nikjohn/speed-up-google-maps-and-everything-else-with-async-defer-7b9814efb2b
+  //       //   // https://stackoverflow.com/questions/41289602/add-defer-or-async-attribute-to-dynamically-generated-script-tags-via-javascript/41289721
+  //       //   script.async = true;
+  //       //   script.defer = true;
+  //       //   document.head.append(script);
+  //       //   console.log('in map_interaction, componentDidUpdate, document.head: ', document.head);
+  //       // });
+  //     }
+  // }
+
+  // removeGoogleMapScript(callback) {
+  //   // const scripts = document.getElementsByTagName('script');
+  //   const scripts = document.querySelectorAll("script[src*='maps.googleapis.com/maps']");
+  //   for (let i = 0; i < scripts.length; i++) {
+  //      // if (scripts[i].src.match(/googleapis/gm)) {
+  //        console.log('in map_interaction, removeGoogleMapScript, scripts[i], scripts[i].src.match(/googleapis/gm): ', scripts[i], scripts[i].src.match(/googleapis/gm));
+  //        console.log('in map_interaction, removeGoogleMapScript, scripts[i].parentNode: ', scripts[i].parentNode);
+  //      // if (scripts[i].src.match(/https:\/\/maps\.googleapis/)) {
+  //        scripts[i].parentNode.removeChild(scripts[i]);
+  //      // }
+  //    }
+  //    callback();
+  // }
 
   createMap(location, zoom) {
     // console.log('in map_interaction, createMap, location: ', location);
@@ -748,6 +779,7 @@ class MapInteraction extends Component {
     const lat = parseFloat(elementValArray[1]);
     const lng = parseFloat(elementValArray[2]);
     const placeType = elementValArray[3];
+    const language = elementValArray[4];
     const flatId = this.props.flat.id
     // if place type is subway station or train statoin
     // get distance in meters and duration in seconds by walking
@@ -755,6 +787,7 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, handleResultAddClick, placeType, placeType == train_station: ', placeType, placeType == 'train_station');
     // for some reason, will not work with if (placeType == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
     if ((placeType == 'subway_station') || (placeType == 'train_station') || (placeType == 'transit_station') || (placeType == 'bus_station')) {
+      // get distance between flat and location and call action createPlace in callback 
       this.addPlaceGetDistance({ lat: this.props.flat.lat, lng: this.props.flat.lng }, { lat, lng }, (distance, duration) => {
         // console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
         this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
@@ -782,8 +815,9 @@ class MapInteraction extends Component {
     const lng = place.geometry.location.lng();
     const id = place.place_id;
     const type = place.types[0];
+    const language = this.props.placeSearchLanguageCode;
     // console.log('in map_interaction, createPlaceValueString, id lat lng: ', id + ',' + lat + ',' + lng);
-    return id + ',' + lat + ',' + lng + ',' + type;
+    return id + ',' + lat + ',' + lng + ',' + type + ',' + language;
   }
 
   renderSearchResultsList() {

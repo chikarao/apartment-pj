@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { Main } from '../main';
 import Header from './auth/header';
@@ -13,24 +14,42 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.loadMap();
-  }
-
-  componentDidUpdate(prevProps) {
-    console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
-    if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
-      this.loadMap();
+    // console.log('in app.js, componentDidUpdate, if this.props: ', this.props);
+    // placeSearchLanguageCode needed to reload google map api on to the page,
+    // otherwise, multiple googlemap scripts will be loaded and cause problems
+    // When user clicks on difference language, in map_interaction.js, sets state placeSearchLanguageCode,
+    // and componentDidUpdate is triggered. the language code is stored in localStorage,
+    // When page reloaged, state placeSearchLanguageCode is updated on index.js from localstorage
+    const placeSearchLanguageCode = localStorage.getItem('placeSearchLanguageCode');
+    if (placeSearchLanguageCode) {
+      console.log('in app.js, componentDidUpdate, if, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      this.loadMap(placeSearchLanguageCode);
+      // this.props.placeSearchLanguageCode(mapLanguage, () => {});
+      // localStorage.removeItem('placeSearchLanguageCode')
+    } else {
+      console.log('in app.js, componentDidUpdate, else, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      this.loadMap(this.props.placeSearchLanguageCode);
     }
   }
 
-  loadMap() {
+  componentDidUpdate(prevProps) {
+    if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
+      localStorage.setItem('placeSearchLanguageCode', this.props.placeSearchLanguageCode);
+      console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
+      // this.loadMap();
+      document.location.reload()
+    }
+  }
+
+  loadMap(language) {
     //make initMap callback global
     // console.log('in app.js, componentWillMount,  this.props.language: ', this.props.language);
     window.initMap = this.loadedMap;
     const API_KEY = process.env.GOOGLEMAP_API_KEY;
     // console.log('in app.js, componentWillMount, API_KEY: ', API_KEY)
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${language}&callback=initMap`;
+    // script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}&callback=initMap`;
     // added async and defer to make sure gmap loads before component...
     // https://medium.com/@nikjohn/speed-up-google-maps-and-everything-else-with-async-defer-7b9814efb2b
     // https://stackoverflow.com/questions/41289602/add-defer-or-async-attribute-to-dynamically-generated-script-tags-via-javascript/41289721
@@ -88,10 +107,11 @@ class App extends Component {
 function mapStateToProps(state) {
   console.log('in app.js, mapStateToProps, state: ', state);
   return {
-    placeSearchLanguageCode: state.languages.placeSearchLanguageCode
+    placeSearchLanguageCode: state.languages.placeSearchLanguageCode,
+    appLanguageCode: state.languages.appLanguageCode
     // conversation: state.conversation.createMessage
   };
 }
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));
 // export default App;

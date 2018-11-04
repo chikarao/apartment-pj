@@ -14,16 +14,18 @@ import { StripeProvider } from 'react-stripe-elements';
 
 import App from './components/app';
 import reducers from './reducers';
-import { AUTH_USER, SET_APP_LANGUAGE_CODE } from './actions/types';
+import { AUTH_USER, SET_APP_LANGUAGE_CODE, PLACE_SEARCH_LANGUAGE } from './actions/types';
 
 const PUBLISHABLE_KEY = 'pk_test_1EdOYEpMsLV8B9UJvV6mnPrS';
 
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');
 const appLanguage = localStorage.getItem('appLanguage');
+const placeSearchLanguageCode = localStorage.getItem('placeSearchLanguageCode');
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
+console.log('in index.js, placeSearchLanguageCode: ', placeSearchLanguageCode);
 
 // if token is in localstorate, call auth_user action
 if (token) {
@@ -37,6 +39,10 @@ if (appLanguage) {
   // we need to update application state
   // dispatch is s method of store!!!
   store.dispatch({ type: SET_APP_LANGUAGE_CODE, payload: appLanguage });
+}
+
+if (placeSearchLanguageCode) {
+  store.dispatch({ type: PLACE_SEARCH_LANGUAGE, payload: placeSearchLanguageCode });
 }
 
 ReactDOM.render(
