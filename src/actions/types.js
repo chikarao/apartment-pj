@@ -18,6 +18,7 @@ export const START_UP_INDEX = 'start_up_index';
 export const GET_PW_RESET_TOKEN = 'get_pw_reset_token';
 export const SELECTED_DATES = 'selected_dates';
 export const REQUEST_BOOKING = 'request_booking';
+export const EDIT_BOOKING = 'edit_booking';
 export const FETCH_BOOKING = 'fetch_booking';
 export const FETCH_BOOKINGS_BY_USER = 'fetch_bookings_by_user';
 export const DELETE_BOOKING = 'delete_booking';

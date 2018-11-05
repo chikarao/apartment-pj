@@ -26,10 +26,9 @@ class MapInteraction extends Component {
      autoCompletePlace: {},
      clickedPlaceArray: [],
      placeSearched: false,
-     placeCategory: '',
-     // initialCDMRun: false
+     placeCategory: ''
    };
-   console.log('in show flat, constructor');
+   // console.log('in show flat, constructor');
  }
 
   componentDidMount() {
@@ -846,6 +845,7 @@ class MapInteraction extends Component {
   }
 
   createPlaceValueString(place) {
+    // for createing strings to attach as value attribute on place add button
     // console.log('in map_interaction, createPlaceValueString, places: ', place);
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
@@ -1035,18 +1035,21 @@ class MapInteraction extends Component {
     localStorage.setItem('xPositionForMap', window.scrollX);
     localStorage.setItem('placeSearchLanguageCount', 0);
       // this.getPlaces(type, () => this.getPlacesCallback())
+      // sets language for place search results; triggers compoenentDidUpdate in app.js
+      // so that app.js can load a new googlemap api script with new language
     this.props.placeSearchLanguage(elementVal, () => this.searchLanguageCallback());
   }
 
   searchLanguageCallback() {
-    console.log('in map_interaction, searchLanguageCallback, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
+    // console.log('in map_interaction, searchLanguageCallback, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
     // document.location.reload();
   }
 
   renderMapLanguageSelect() {
+    // console.log('in map_interaction, renderMapLanguageSelect, AppLanguages.searchOutputLanguage[this.props.appLanguageCode]: ', AppLanguages.searchOutputLanguage[this.props.appLanguageCode]);
     return (
       <div className="map-interaction-language-select-box">
-        <div className="map-interaction-language-select-box-label">Search Output Language</div>
+        <div className="map-interaction-language-select-box-label">{AppLanguages.searchOutputLanguage[this.props.appLanguageCode]}</div>
           <select id="map-interaction-language-select" className="map-interaction-language-select" onChange={this.handleSearchLanguageSelect.bind(this)}>
             <option className="map-interaction-language-option" value="en">{Languages.en.flag}{Languages.en.local}</option>
             <option className="map-interaction-language-option" value="jp">{Languages.jp.flag}{Languages.jp.local}</option>
@@ -1059,7 +1062,7 @@ class MapInteraction extends Component {
 
     return (
       <div className="map-interaction-language-select-box">
-        <div className="map-interaction-language-select-box-label">Search Output Language</div>
+        <div className="map-interaction-language-select-box-label">{AppLanguages.searchOutputLanguage[this.props.appLanguageCode]}</div>
           <div className="map-interaction-language-option-button-box">
             <div className="map-interaction-language-option-button" value="en" onClick={this.handleSearchLanguageSelect.bind(this)} style={this.props.placeSearchLanguageCode == 'en' ? { borderColor: 'black' } : {}}>{Languages.en.flag}{Languages.en.local}</div>
             <div className="map-interaction-language-option-button" value="jp" onClick={this.handleSearchLanguageSelect.bind(this)} style={this.props.placeSearchLanguageCode == 'jp' ? { borderColor: 'black' } : {}}>{Languages.jp.flag}{Languages.jp.local}</div>
@@ -1073,7 +1076,7 @@ class MapInteraction extends Component {
     // keep for when there is solution for language selection;
     return (
       <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-search"></i>  {AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
+        <div className="map-interaction-title"><i className="fa fa-search"></i>{AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
         <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.schools[this.props.appLanguageCode]}</div>
         <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.convenientStores[this.props.appLanguageCode]}</div>
         <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.superMarkets[this.props.appLanguageCode]}</div>

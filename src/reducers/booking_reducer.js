@@ -6,7 +6,8 @@ import {
   FETCH_BOOKINGS_BY_USER,
   FETCH_ICAL,
   REQUIRED_FIELDS,
-  BOOKING_REQUEST_DATA
+  BOOKING_REQUEST_DATA,
+  EDIT_BOOKING
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -48,6 +49,10 @@ export default function (state = {
     case BOOKING_REQUEST_DATA:
     // console.log('in booking reducer, state: ', state);
     return { ...state, bookingRequestData: action.payload };
+
+    case EDIT_BOOKING:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, fetchBookingData: action.payload };
 
     // case SELECTED_ICALENDAR_ID:
     // // console.log('in booking reducer, state: ', state);

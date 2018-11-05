@@ -2807,6 +2807,15 @@ form {
   left: 3%; */
 }
 
+.booking-confirmation-approve-request-btn {
+  color: white;
+  background-color: blue;
+}
+
+.booking-confirmation-approve-request-btn:hover {
+  background-color: gray;
+}
+
 /* *************MAIN CARDS*************** */
 
 .card-row {

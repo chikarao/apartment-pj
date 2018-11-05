@@ -19,6 +19,7 @@ import {
   GET_PW_RESET_TOKEN,
   SELECTED_DATES,
   REQUEST_BOOKING,
+  EDIT_BOOKING,
   FETCH_BOOKING,
   FETCH_BOOKINGS_BY_USER,
   DELETE_BOOKING,
@@ -819,6 +820,29 @@ export function requestBooking(bookingRequest, callback) {
   };
 }
 
+export function editBooking(bookingAttributes, callback) {
+  const { id } = bookingAttributes;
+  console.log('in actions index, editBooking, bookingAttributes: ', bookingAttributes);
+  console.log('in actions index, editBooking: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/bookings/${id}`, { booking: bookingAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editBooking, response: ', response);
+      console.log('response to editBooking, response.data.data: ', response.data.data.booking);
+      dispatch({
+        type: EDIT_BOOKING,
+        payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
 //called when BookingConfirmation mounted; sent id from params
 export function fetchBooking(id) {
   console.log('in actions index, fetch booking: ', id);
@@ -947,6 +971,7 @@ export function editFlat(flatAttributes, callback) {
     });
   };
 }
+
 export function editProfile(profileAttributes, callback) {
   const { id } = profileAttributes;
   console.log('in actions index, editProfile, profileAttributes: ', profileAttributes);

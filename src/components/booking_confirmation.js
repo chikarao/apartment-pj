@@ -10,6 +10,7 @@ import ReviewCreateFrom from './forms/review_create';
 import CreateEditDocument from './forms/create_edit_document';
 import calculateAge from './functions/calculate_age';
 import Facility from './constants/facility';
+import AppLanguages from './constants/app_languages';
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class BookingConfirmation extends Component {
       showDocument: false
     };
     this.handleDocumentCreateLink = this.handleDocumentCreateLink.bind(this);
+    this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
   }
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
@@ -253,17 +255,35 @@ class BookingConfirmation extends Component {
       );
     }
 
+    handleBookingRequsetApprovalClick(event) {
+      const clickedElement = event.target;
+      const elementVal = clickedElement.getAttribute('value');
+      if (window.confirm('Approve booking request? The action cannot be undone unless you cancel the request.')) {
+        this.props.editBooking({ id: elementVal, approved: true }, () => {});
+      }
+    }
+
     renderBookingApprovals() {
       return (
         <div className="booking-confirmation-each-box">
           <div className="booking-request-box-title">Approvals and Checklist</div>
-          Approvals
+            <div className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title">
+                Approve Booking Request
+              </div>
+              <div className="booking-request-box-each-line-data">
+                {this.props.bookingData.approved ? 'Approved ✅'
+                :
+                <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Approve</div>
+               }
+              </div>
+            </div>
         </div>
       );
     }
 
     renderBookingData() {
-      const { bookingData } = this.props;
+      const { bookingData, appLanguageCode } = this.props;
 
       if (bookingData) {
         // const data = this.props.bookingData.id;
@@ -277,7 +297,7 @@ class BookingConfirmation extends Component {
         return (
           <div>
             <h3>
-              Booking Request Workspace
+              {AppLanguages.bookingRequestWorkspace[appLanguageCode]}
             </h3>
             <div id="carousel-show" className="booking-confirmation-image">
               {this.renderImage(bookingData.flat.images)}
@@ -292,7 +312,7 @@ class BookingConfirmation extends Component {
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%', padding: '10px' }}>Signed!</div>
               <div className="booking-confirmation-progress-box-contents">
                 <div className="booking-confirmation-progress-circle" />
-                <div className="booking-confirmation-progress-line" style={{ backgroundColor: 'green' }} />
+                <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
                 <div className="booking-confirmation-progress-circle" />
                 <div className="booking-confirmation-progress-line" />
                 <div className="booking-confirmation-progress-circle" />

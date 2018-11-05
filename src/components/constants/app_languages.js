@@ -249,6 +249,8 @@ const appLanguages =
     emergencyPhoneError: { en: 'An emergency contact phone is required', jp: '緊急連絡先の電話番号は必須です。' },
     emergencyAddressError: { en: 'An emergency contact address is required', jp: '緊急連絡先の住所は必須です。' },
     emergencyRelationshipError: { en: 'An relationship with the emergency contact is required', jp: '緊急連絡先とのご関係は必須です。' },
+    searchOutputLanguage: { en: 'Search Output Language', jp: '検索結果の言語' },
+    bookingRequestWorkspace: { en: 'Booking Request Workspace', jp: '契約ワークスペース' },
   };
 
 export default appLanguages;
