@@ -26,8 +26,10 @@ class MapInteraction extends Component {
      autoCompletePlace: {},
      clickedPlaceArray: [],
      placeSearched: false,
-     placeCategory: ''
+     placeCategory: '',
+     // initialCDMRun: false
    };
+   console.log('in show flat, constructor');
  }
 
   componentDidMount() {
@@ -51,13 +53,40 @@ class MapInteraction extends Component {
     if (this.props.flat && !this.props.showFlat) {
       this.handleSearchInput();
     }
-
+    // yPosition to get scroll position when user clicks placeSearchLanguageCode button;
+    // position of scroll persisited in localStorage in handleSearchLanguageSelect function;
+    // count is initiated in handler when clicked
     const xPosition = localStorage.getItem('xPositionForMap');
     const yPosition = localStorage.getItem('yPositionForMap');
+    let placeSearchLanguageCount = parseInt(localStorage.getItem('placeSearchLanguageCount'), 10);
+    // if positions in localstorage, scroll to y position
     if (xPosition && yPosition) {
       window.scrollTo(xPosition, yPosition);
+      // increment count when componentDidMount run with positions in localstorage;
+      // **distinguishes between user refresh and programatic reload after user click on button
+      placeSearchLanguageCount += 1;
+      localStorage.setItem('placeSearchLanguageCount', placeSearchLanguageCount);
+      placeSearchLanguageCount = parseInt(localStorage.getItem('placeSearchLanguageCount'), 10)
+      // since CDM is run right after user click, remove localstorage items if count > 1
+      // remove them after user is taken to y position
+      // console.log('in show flat, componentDidMount, if placeSearchLanguageCount', placeSearchLanguageCount);
+      if (placeSearchLanguageCount > 1) {
+        // setTimeout(this.removePositions(), 3000);
+        this.removePositions();
+      }
     }
   }
+
+  removePositions() {
+    localStorage.removeItem('xPositionForMap');
+    localStorage.removeItem('yPositionForMap');
+    localStorage.removeItem('placeSearchLanguageCount');
+  }
+
+  // componentDidUpdate() {
+  //   // localStorage.removeItem('xPositionForMap');
+  //   // localStorage.removeItem('yPositionForMap');
+  // }
 
   // componentDidUpdate(prevProps) {
   //   // this.scrollLastMessageIntoView();
@@ -895,7 +924,7 @@ class MapInteraction extends Component {
 
   getCategoriesArray(places) {
     const categoriesArray = [];
-    console.log('in map_interaction, getCategoriesArray, places: ', places);
+    // console.log('in map_interaction, getCategoriesArray, places: ', places);
     _.each(places, place => {
       if (!categoriesArray.includes(place.category) && place.language == this.props.appLanguageCode) {
         categoriesArray.push(place.category);
@@ -981,6 +1010,10 @@ class MapInteraction extends Component {
   }
   // Need to work o this... Cannot set language preference in app.js script after componentWillMount
   handleSearchLanguageSelect(event) {
+    const changedElement = event.target;
+    const elementVal = changedElement.getAttribute('value');
+    // console.log('in map_interaction, handleSearchLanguageSelect, elementVal: ', elementVal);
+    // console.log('in map_interaction, handleSearchLanguageSelect, changedElement: ', changedElement);
     // const selection = document.getElementById('map-interaction-language-select');
     // const language = selection.value;
     // Leave for cookie demonstration
@@ -1000,12 +1033,8 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, handleSearchLanguageSelect, yValue: ', yValue);
     localStorage.setItem('yPositionForMap', window.scrollY);
     localStorage.setItem('xPositionForMap', window.scrollX);
-
-    const changedElement = event.target;
-    const elementVal = changedElement.getAttribute('value');
-    console.log('in map_interaction, handleSearchLanguageSelect, elementVal: ', elementVal);
-    console.log('in map_interaction, handleSearchLanguageSelect, changedElement: ', changedElement);
-    // this.getPlaces(type, () => this.getPlacesCallback())
+    localStorage.setItem('placeSearchLanguageCount', 0);
+      // this.getPlaces(type, () => this.getPlacesCallback())
     this.props.placeSearchLanguage(elementVal, () => this.searchLanguageCallback());
   }
 
@@ -1026,7 +1055,7 @@ class MapInteraction extends Component {
     );
   }
   renderMapLanguageSelectButtons() {
-    console.log('in MapInteraction, renderMapLanguageSelectButtons, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
+    // console.log('in MapInteraction, renderMapLanguageSelectButtons, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
 
     return (
       <div className="map-interaction-language-select-box">

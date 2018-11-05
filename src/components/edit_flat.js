@@ -706,6 +706,10 @@ class EditFlat extends Component {
     }
   }
 
+  // <fieldset className="form-group">
+  // <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
+  // <Field name="station" component="input" type="string" className="form-control" />
+  // </fieldset>
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -884,29 +888,8 @@ class EditFlat extends Component {
               <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
             </fieldset>
             <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
-              <Field name="station" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
               <Field name="minutes_to_station" component="select" type="integer" className="form-control">
-                <option></option>
-                <option value="1">1 minute or less</option>
-                <option value="3">Under 3 minutes</option>
-                <option value="5">Under 5 minutes</option>
-                <option value="7">Under 7 minutes</option>
-                <option value="10">Under 10 minutes</option>
-                <option value="15">Under 15 minutes</option>
-                <option value="16">Over 15 minutes</option>
-              </Field>
-            </fieldset>
-            <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.nearestStation2[appLanguageCode]}:</label>
-              <Field name="station1" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}:</label>
-              <Field name="minutes_to_station1" component="select" type="integer" className="form-control">
                 <option></option>
                 <option value="1">1 minute or less</option>
                 <option value="3">Under 3 minutes</option>

@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { Main } from '../main';
 import Header from './auth/header';
 
+// let searchPlaceLanguageChanged = false;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -22,15 +24,23 @@ class App extends Component {
     // When page reloaged, state placeSearchLanguageCode is updated on index.js from localstorage
     const placeSearchLanguageCode = localStorage.getItem('placeSearchLanguageCode');
     if (placeSearchLanguageCode) {
-      console.log('in app.js, componentDidMount, if, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      // console.log('in app.js, componentDidMount, if, placeSearchLanguageCode: ', placeSearchLanguageCode);
       this.loadMap(placeSearchLanguageCode);
       // this.props.placeSearchLanguageCode(mapLanguage, () => {});
       // localStorage.removeItem('placeSearchLanguageCode')
     } else {
-      console.log('in app.js, componentDidMount, else, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      // console.log('in app.js, componentDidMount, else, placeSearchLanguageCode: ', placeSearchLanguageCode);
       this.loadMap(this.props.placeSearchLanguageCode);
     }
-    console.log('in app.js, componentDidMount, window, document: ', window, document);
+
+    const searchPlaceLanguageChanged = localStorage.getItem('searchPlaceLanguageChanged');
+
+    // if (!searchPlaceLanguageChanged) {
+    //   localStorage.removeItem('xPositionForMap');
+    //   localStorage.removeItem('yPositionForMap');
+    // }
+    // localStorage.setItem('searchPlaceLanguageChanged', false);
+    // console.log('in app.js, componentDidMount, window, document: ', window, document);
   }
 
   componentDidUpdate(prevProps) {
@@ -45,6 +55,7 @@ class App extends Component {
       document.location.reload(false);
       // window.location.reload(false);
       // window.location.assign();
+      // localStorage.setItem('searchPlaceLanguageChanged', true);
     }
   }
 
