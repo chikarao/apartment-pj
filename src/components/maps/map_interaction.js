@@ -51,6 +51,12 @@ class MapInteraction extends Component {
     if (this.props.flat && !this.props.showFlat) {
       this.handleSearchInput();
     }
+
+    const xPosition = localStorage.getItem('xPositionForMap');
+    const yPosition = localStorage.getItem('yPositionForMap');
+    if (xPosition && yPosition) {
+      window.scrollTo(xPosition, yPosition);
+    }
   }
 
   // componentDidUpdate(prevProps) {
@@ -787,7 +793,7 @@ class MapInteraction extends Component {
     // console.log('in map_interaction, handleResultAddClick, placeType, placeType == train_station: ', placeType, placeType == 'train_station');
     // for some reason, will not work with if (placeType == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
     if ((placeType == 'subway_station') || (placeType == 'train_station') || (placeType == 'transit_station') || (placeType == 'bus_station')) {
-      // get distance between flat and location and call action createPlace in callback 
+      // get distance between flat and location and call action createPlace in callback
       this.addPlaceGetDistance({ lat: this.props.flat.lat, lng: this.props.flat.lng }, { lat, lng }, (distance, duration) => {
         // console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
         this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
@@ -976,6 +982,24 @@ class MapInteraction extends Component {
   handleSearchLanguageSelect(event) {
     // const selection = document.getElementById('map-interaction-language-select');
     // const language = selection.value;
+    // Leave for cookie demonstration
+    // document.cookie = `y-position=${window.scrollY}`;
+    // const cookies = document.cookie;
+    // const cookiesArray = cookies.split(';')
+    // console.log('in map_interaction, handleSearchLanguageSelect, cookiesArray: ', cookiesArray);
+    // console.log('in map_interaction, handleSearchLanguageSelect, document.cookie: ', document.cookie);
+    // let yValue = 0;
+    // _.each(cookiesArray, eachCookie => {
+    //   console.log('in map_interaction, handleSearchLanguageSelect, eachCookie: ', eachCookie);
+    //   if (eachCookie.includes('y-position')) {
+    //       const array = eachCookie.split('=');
+    //       yValue = parseInt(array[1], 10);
+    //   }
+    // });
+    // console.log('in map_interaction, handleSearchLanguageSelect, yValue: ', yValue);
+    localStorage.setItem('yPositionForMap', window.scrollY);
+    localStorage.setItem('xPositionForMap', window.scrollX);
+
     const changedElement = event.target;
     const elementVal = changedElement.getAttribute('value');
     console.log('in map_interaction, handleSearchLanguageSelect, elementVal: ', elementVal);

@@ -22,22 +22,29 @@ class App extends Component {
     // When page reloaged, state placeSearchLanguageCode is updated on index.js from localstorage
     const placeSearchLanguageCode = localStorage.getItem('placeSearchLanguageCode');
     if (placeSearchLanguageCode) {
-      console.log('in app.js, componentDidUpdate, if, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      console.log('in app.js, componentDidMount, if, placeSearchLanguageCode: ', placeSearchLanguageCode);
       this.loadMap(placeSearchLanguageCode);
       // this.props.placeSearchLanguageCode(mapLanguage, () => {});
       // localStorage.removeItem('placeSearchLanguageCode')
     } else {
-      console.log('in app.js, componentDidUpdate, else, placeSearchLanguageCode: ', placeSearchLanguageCode);
+      console.log('in app.js, componentDidMount, else, placeSearchLanguageCode: ', placeSearchLanguageCode);
       this.loadMap(this.props.placeSearchLanguageCode);
     }
+    console.log('in app.js, componentDidMount, window, document: ', window, document);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
       localStorage.setItem('placeSearchLanguageCode', this.props.placeSearchLanguageCode);
-      console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
+      // console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
       // this.loadMap();
-      document.location.reload()
+      // document.location = document.URL;
+      // window.location.href;
+      // window.location = document.URL;
+      // console.log('in app.js, componentDidUpdate, window, document: ', window, document);
+      document.location.reload(false);
+      // window.location.reload(false);
+      // window.location.assign();
     }
   }
 
