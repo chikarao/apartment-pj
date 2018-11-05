@@ -776,10 +776,10 @@ class MapInteraction extends Component {
     this.props.showLoading();
     this.unhighlightClickedPlace();
     const clickedElement = event.target;
-    // console.log('in map_interaction, handleResultAddClick, event.target, clickedElement: ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
     const elementValArray = elementVal.split(',');
+    console.log('in map_interaction, handleResultAddClick elementValArray: ', elementValArray);
     const placeId = elementValArray[0];
     // make float so that gmaps is passed a float, not a string, for lat lng
     const lat = parseFloat(elementValArray[1]);
@@ -787,6 +787,7 @@ class MapInteraction extends Component {
     const placeType = elementValArray[3];
     const language = elementValArray[4];
     const flatId = this.props.flat.id
+    const category = this.state.placeCategory
     // if place type is subway station or train statoin
     // get distance in meters and duration in seconds by walking
     // after callback, create place
@@ -796,7 +797,7 @@ class MapInteraction extends Component {
       // get distance between flat and location and call action createPlace in callback
       this.addPlaceGetDistance({ lat: this.props.flat.lat, lng: this.props.flat.lng }, { lat, lng }, (distance, duration) => {
         // console.log('in map_interaction, handleResultAddClick, distance, duration: ', distance, duration);
-        this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
+        this.props.createPlace({ flatId, placeid: placeId, lat, lng, place_name: elementName, category, duration, distance, language }, () => this.resultAddDeleteClickCallback());
       });
     } else {
       // console.log('in map_interaction, handleResultAddClick, elementVal: ', elementName);
@@ -804,7 +805,7 @@ class MapInteraction extends Component {
       // call create place with distance and duration as placeholders
       const distance = '';
       const duration = ''
-      this.props.createPlace(flatId, placeId, lat, lng, elementName, this.state.placeCategory, duration, distance, () => this.resultAddDeleteClickCallback());
+      this.props.createPlace({ flatId, placeid: placeId, lat, lng, place_name: elementName, category, duration, distance, language }, () => this.resultAddDeleteClickCallback());
       //ChIJIenHT9eAhYARiop0hvjNTzU
       //"9060163472ab6d69548873f75aba48278980c0ea"
     }
@@ -896,7 +897,7 @@ class MapInteraction extends Component {
     const categoriesArray = [];
     console.log('in map_interaction, getCategoriesArray, places: ', places);
     _.each(places, place => {
-      if (!categoriesArray.includes(place.category)) {
+      if (!categoriesArray.includes(place.category) && place.language == this.props.appLanguageCode) {
         categoriesArray.push(place.category);
       }
     });
@@ -905,7 +906,7 @@ class MapInteraction extends Component {
 
   renderEachResult(places, category) {
     return _.map(places, (place, i) => {
-      if (place.category == category) {
+      if ((place.category == category) && (place.language == this.props.appLanguageCode)) {
         // console.log('in map_interaction, renderEachResult, .map, place: ', place);
         // console.log('in map_interaction, renderEachResult, .map, category: ', category);
         // add hide in first div to toggle

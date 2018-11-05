@@ -1207,16 +1207,18 @@ export function updateReview(reviewAttributes, callback) {
   };
 }
 
-export function createPlace(flatId, placeid, lat, lng, place_name, category, duration, distance, callback) {
-  console.log('in actions index, createPlace, localStorage.getItem, token: ', localStorage.getItem('token'));
-  console.log('in actions index, createPlace, flatId: ', flatId);
-  console.log('in actions index, createPlace, placeid: ', placeid);
-  console.log('in actions index, createPlace, lat: ', lat);
-  console.log('in actions index, createPlace, lng: ', lng);
-  console.log('in actions index, createPlace, category: ', category);
+export function createPlace(placeAttributes, callback) {
+  const { flatId, placeid, lat, lng, place_name, category, duration, distance, language } = placeAttributes;
+  // console.log('in actions index, createPlace, localStorage.getItem, token: ', localStorage.getItem('token'));
+  // console.log('in actions index, createPlace, flatId: ', flatId);
+  // console.log('in actions index, createPlace, placeid: ', placeid);
+  // console.log('in actions index, createPlace, lat: ', lat);
+  // console.log('in actions index, createPlace, lng: ', lng);
+  // console.log('in actions index, createPlace, category: ', category);
+  console.log('in actions index, createPlace, language: ', language);
 
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/places`, { place: { placeid, place_name, lat, lng, category, duration, distance } }, {
+    axios.post(`${ROOT_URL}/api/v1/flats/${flatId}/places`, { place: { placeid, place_name, lat, lng, category, duration, distance, language } }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
