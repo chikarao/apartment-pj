@@ -1470,6 +1470,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-size: 20px;
 }
 
+.show-flat-stations {
+  font-size: 17px;
+}
+
 .show-flat-beds {
   font-size: 25px;
 }

@@ -24,14 +24,14 @@ class EditProfileModal extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in signin, handleFormSubmit, data: ', data);
+    // console.log('in signin, handleFormSubmit, data: ', data);
     this.props.editProfile(data, () => {
       this.handleFormSubmitCallback();
     });
   }
 
   handleFormSubmitCallback() {
-    console.log('in signin, handleFormSubmitCallback: ');
+    // console.log('in signin, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ editProfileCompleted: true });
   }

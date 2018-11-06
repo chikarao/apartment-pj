@@ -240,6 +240,11 @@ class CreateFlat extends Component {
       );
     })
   }
+  //
+  // <fieldset key={'station'} className="form-group">
+  // <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
+  // <Field name="station" component="input" type="string" className="form-control" />
+  // </fieldset>
 
   renderFields() {
     const { handleSubmit, appLanguageCode } = this.props;
@@ -390,22 +395,18 @@ class CreateFlat extends Component {
             <option value="3">3 or more</option>
           </Field>
         </fieldset>
-        <fieldset key={'station'} className="form-group">
-        <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
-        <Field name="station" component="input" type="string" className="form-control" />
-        </fieldset>
         <fieldset className="form-group">
-        <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
-        <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
-          <option></option>
-          <option value="1">1 minute or less</option>
-          <option value="3">Under 3 minutes</option>
-          <option value="5">Under 5 minutes</option>
-          <option value="7">Under 7 minutes</option>
-          <option value="10">Under 10 minutes</option>
-          <option value="15">Under 15 minutes</option>
-          <option value="16">Under 15 minutes</option>
-        </Field>
+          <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
+            <option></option>
+            <option value="1">1 minute or less</option>
+            <option value="3">Under 3 minutes</option>
+            <option value="5">Under 5 minutes</option>
+            <option value="7">Under 7 minutes</option>
+            <option value="10">Under 10 minutes</option>
+            <option value="15">Under 15 minutes</option>
+            <option value="16">Under 15 minutes</option>
+          </Field>
         </fieldset>
         <fieldset key={'intro'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>

@@ -26,15 +26,15 @@ class ReviewEditModal extends Component {
   handleFormSubmit(data) {
     const dataWithRating = { id: data.id, comment: data.comment, title: data.title, rating: this.state.goldStarNum };
     // dataWithRating.rating = this.state.goldStarNum;
-    console.log('in ReviewEditModal, handleFormSubmit, dataWithRating: ', dataWithRating);
-    console.log('in ReviewEditModal, handleFormSubmit, data: ', data);
+    // console.log('in ReviewEditModal, handleFormSubmit, dataWithRating: ', dataWithRating);
+    // console.log('in ReviewEditModal, handleFormSubmit, data: ', data);
     this.props.updateReview(dataWithRating, () => {
       this.handleFormSubmitCallback();
     });
   }
 
   handleFormSubmitCallback() {
-    console.log('in ReviewEditModal, handleFormSubmitCallback: ');
+    // console.log('in ReviewEditModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ editReviewCompleted: true });
   }
@@ -59,12 +59,12 @@ class ReviewEditModal extends Component {
   handleStarClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in ReviewEditModal, handleStarClick, elementVal:', elementVal);
+    // console.log('in ReviewEditModal, handleStarClick, elementVal:', elementVal);
     const elementValNum = parseInt(elementVal, 10);
     this.setState({ clickedStar: elementValNum, starClicked: true }, () => {
-      console.log('in ReviewEditModal, handleStarClick, this.state.clickedStar:', this.state.clickedStar);
+      // console.log('in ReviewEditModal, handleStarClick, this.state.clickedStar:', this.state.clickedStar);
       this.setState({ goldStarNum: this.state.clickedStar + 1 }, () => {
-        console.log('in ReviewEditModal, handleStarClick, this.state.goldStarNum:', this.state.goldStarNum);
+        // console.log('in ReviewEditModal, handleStarClick, this.state.goldStarNum:', this.state.goldStarNum);
       })
     });
   }
@@ -73,27 +73,27 @@ class ReviewEditModal extends Component {
     const { rating } = this.props.review;
     const totalStars = 5;
     const grayStarsNum = 5 - rating;
-    console.log('in ReviewEditModal, renderStars, rating:', rating);
+    // console.log('in ReviewEditModal, renderStars, rating:', rating);
     //
     // for (let i = 0; i < rating; i++) {
     // }
     if (!this.state.starClicked) {
       return _.times(totalStars, (i) => {
         if (i < rating) {
-          console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+          // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
           return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
         } else {
-          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
           return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
         }
       });
     } else {
       return _.times(totalStars, (i) => {
         if (i < this.state.goldStarNum) {
-          console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+          // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
           return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
         } else {
-          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
           return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
         }
       });
@@ -104,10 +104,10 @@ class ReviewEditModal extends Component {
   renderEditReviewForm() {
     const { handleSubmit } = this.props;
     const reviewEmpty = _.isEmpty(this.props.review);
-    console.log('in ReviewEditModal, renderEditProfileForm, reviewEmpty: ', reviewEmpty);
+    // console.log('in ReviewEditModal, renderEditProfileForm, reviewEmpty: ', reviewEmpty);
     if (!reviewEmpty) {
-      console.log('in ReviewEditModal, renderEditProfileForm: ');
-      console.log('in ReviewEditModal, renderEditProfileForm, this.props.show: ', this.props.show);
+      // console.log('in ReviewEditModal, renderEditProfileForm: ');
+      // console.log('in ReviewEditModal, renderEditProfileForm, this.props.show: ', this.props.show);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // console.log('in modal, render showHideClassName:', showHideClassName);
       // console.log('in modal, render this.props.show:', this.props.show);
@@ -170,7 +170,7 @@ class ReviewEditModal extends Component {
 
   render() {
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
-    console.log('in ReviewEditModal, render, this.state.editReviewCompleted: ', this.state.editReviewCompleted);
+    // console.log('in ReviewEditModal, render, this.state.editReviewCompleted: ', this.state.editReviewCompleted);
     return (
       <div>
         {this.state.editReviewCompleted ? this.renderPostEditMessage() : this.renderEditReviewForm()}

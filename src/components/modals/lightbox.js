@@ -232,7 +232,7 @@ class Lightbox extends Component {
   }
 
   render() {
-    console.log('in Lightbox, render this.props.show:', this.props.show);
+    // console.log('in Lightbox, render this.props.show:', this.props.show);
 
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
     return (
@@ -245,7 +245,7 @@ class Lightbox extends Component {
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in Lightbox, mapStateToProps, state: ', state);
+  // console.log('in Lightbox, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
     successMessage: state.auth.success,

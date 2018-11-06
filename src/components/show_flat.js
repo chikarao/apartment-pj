@@ -143,6 +143,36 @@ class ShowFlat extends Component {
     return array[0] ? array[0] : null
   }
 
+  getFlatStationPlaces(flat) {
+    const array = [];
+    if (flat.places) {
+      _.each(flat.places, eachPlace => {
+        if (eachPlace.category == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
+          array.push(eachPlace);
+        }
+      })
+    }
+    return array;
+  }
+
+  renderStations(flatStationsArray) {
+    return _.map(flatStationsArray, (eachStation, i) => {
+      if (this.props.appLanguageCode == eachStation.language) {
+        const duration = parseInt(eachStation.duration / 60, 10);
+        const distance = eachStation.distance > 1000 ? _.round((eachStation.distance / 1000), 1).toFixed(1) +  'km' : _.round(eachStation.distance, -1) + 'm';
+        const stationString = duration + AppLanguages.minutes[this.props.appLanguageCode]　+ ' ' + distance;
+        return (
+          <div key={i}>
+            {eachStation.place_name}
+            &nbsp;
+            <i style={{ color: 'gray' }} className="fas fa-walking"></i>
+            &nbsp;
+            {stationString}
+          </div>);
+      }
+    });
+  }
+
   renderFlat() {
     // Multi languge: if flatLanaguge not null (user has created the appLangage), uses that language
     // if flatLanguage is null, uses base language
@@ -153,8 +183,8 @@ class ShowFlat extends Component {
         // const { flatLanguage } = this.props;
         // get language selected from this.props.flat sent from show flat
         const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
-
-        // console.log('in show_flat renderFlat, renderImages: ', this.renderImages(images));
+        const flatStationsArray = this.getFlatStationPlaces(this.props.flat);
+        console.log('in show_flat renderFlat, flatStationsArray: ', flatStationsArray);
         return (
           <div>
             <div key={1234} className="show-flat-image-box">
@@ -177,14 +207,15 @@ class ShowFlat extends Component {
 
               <div key={sales_point} className="show-flat-sales_point">
                 { flatLanguage ? flatLanguage.sales_point : sales_point }
-
               </div>
-
+              <div key={'stations'} className="show-flat-stations">
+                {flatStationsArray.length > 0 ? this.renderStations(flatStationsArray) : ''}
+              </div>
               <div key={price_per_month} className="show-flat-price">
                 ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
               <div key={this.props.match.params.id} className="show-flat-id">
-              <small>flat id: {this.props.match.params.id}</small>
+                <small>flat id: {this.props.match.params.id}</small>
               </div>
               <div key={intro} className="show-flat-intro">
                 { flatLanguage ? flatLanguage.intro : intro }

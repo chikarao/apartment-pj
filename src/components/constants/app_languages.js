@@ -251,6 +251,8 @@ const appLanguages =
     emergencyRelationshipError: { en: 'An relationship with the emergency contact is required', jp: '緊急連絡先とのご関係は必須です。' },
     searchOutputLanguage: { en: 'Search Output Language', jp: '検索結果の言語' },
     bookingRequestWorkspace: { en: 'Booking Request Workspace', jp: '契約ワークスペース' },
+    minutes: { en: ' minutes', jp: '分' },
+    meters: { en: ' meters', jp: 'メートル' },
   };
 
 export default appLanguages;

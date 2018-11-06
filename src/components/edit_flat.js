@@ -61,7 +61,7 @@ class EditFlat extends Component {
   }
 
   selectedFlatFromParamsCallback() {
-    console.log('in edit flat, selectedFlatFromParamsCallback, this.props.flat: ', this.props.flat);
+    // console.log('in edit flat, selectedFlatFromParamsCallback, this.props.flat: ', this.props.flat);
     if (this.props.flat) {
       if (!this.props.flat.building) {
         this.props.searchBuildings({ address1: this.props.flat.address1, city: this.props.flat.city });
@@ -105,7 +105,7 @@ class EditFlat extends Component {
     _.each(Object.keys(data), each => {
       // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
       if (data[each] !== this.props.initialValues[each]) {
-        console.log('in edit flat, getDelta, each: ', each);
+        // console.log('in edit flat, getDelta, each: ', each);
         delta[each] = data[each];
       }
     });
@@ -113,10 +113,10 @@ class EditFlat extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in edit flat, handleFormSubmit, data: ', data);
-    console.log('in edit flat, handleFormSubmit, this.props.initialValues: ', this.props.initialValues);
+    // console.log('in edit flat, handleFormSubmit, data: ', data);
+    // console.log('in edit flat, handleFormSubmit, this.props.initialValues: ', this.props.initialValues);
     const delta = this.getDelta(data);
-    console.log('in edit flat, handleFormSubmit, delta: ', delta);
+    // console.log('in edit flat, handleFormSubmit, delta: ', delta);
 
     if (this.state.confirmChecked) {
       const dataSeparated = this.separateFlatAndAmenities(delta);
@@ -277,7 +277,7 @@ class EditFlat extends Component {
   // Get the checkbox
     const checkBox = document.getElementById('editFlatConfirmCheck');
 
-    this.setState({ confirmChecked: !this.state.confirmChecked }, () => console.log('in edit flat, myfunction, handleConfirmCheck, this.state.confirmChecked: ', this.state.confirmChecked));
+    this.setState({ confirmChecked: !this.state.confirmChecked }, () => {});
   }
 
   renderAmenityInput() {
@@ -352,7 +352,7 @@ class EditFlat extends Component {
   handleEditIcalendarClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in show_flat, handleEditIcalendarClick, elementVal: ', elementVal);
+    // console.log('in show_flat, handleEditIcalendarClick, elementVal: ', elementVal);
     this.props.showIcalendarEditModal();
     // this.setState({ selectedLanguageCode: elementVal });
     this.props.selectedIcalendarId(elementVal);
@@ -447,7 +447,7 @@ class EditFlat extends Component {
 
   renderEachBuildingChoice() {
     return _.map(this.props.buildings, eachBuilding => {
-      console.log('in edit flat, renderEachBuilding, eachBuilding: ', eachBuilding);
+      // console.log('in edit flat, renderEachBuilding, eachBuilding: ', eachBuilding);
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
           {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
@@ -473,7 +473,7 @@ class EditFlat extends Component {
     //     this.props.searchBuildings({ address1: this.props.flat.address1 });
     //   }
       if (!this.props.flat.building && this.props.buildings.length > 0) {
-        console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
+        // console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
           <div className="edit-flat-language-box">
             <div>No building has been identified for your listing. <br/>Is one of these buildings for your listing?</div>
@@ -486,7 +486,7 @@ class EditFlat extends Component {
       }
 
       if (!this.props.flat.building && !this.props.buildings.length > 0) {
-        console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
+        // console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
           <div className="edit-flat-language-box">
             <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.addMyBuilding[this.props.appLanguageCode]}</div>
@@ -495,7 +495,7 @@ class EditFlat extends Component {
       }
 
       if (this.props.flat.building) {
-        console.log('in edit flat, renderBuildingAddEdit, this.props.flat.building: ', this.props.flat.building);
+        // console.log('in edit flat, renderBuildingAddEdit, this.props.flat.building: ', this.props.flat.building);
         return (
           <div className="edit-flat-language-box">
           <div>Here is your building information</div>
@@ -510,7 +510,7 @@ class EditFlat extends Component {
   handleBankAcccountDefaultCheck(event) {
     const checkedElement = event.target;
     const elementVal = checkedElement.getAttribute('value');
-    console.log('in edit flat, handleBankAcccountDefaultCheck, elementVal: ', elementVal);
+    // console.log('in edit flat, handleBankAcccountDefaultCheck, elementVal: ', elementVal);
     this.props.showLoading();
     this.props.editFlat({ flat_id: this.props.flat.id, flat: { bank_account_id: elementVal }, amenity: { basic: true } }, () => this.handleBankAcccountDefaultCheckCallback())
   }
@@ -525,8 +525,8 @@ class EditFlat extends Component {
       if (this.props.flat.bank_account && this.props.bankAccounts.length > 0) {
         //get index of flat bank account id
         // move index to top
-        console.log('in edit flat, renderEachBankAccountChoice, this.props.bankAccounts: ', this.props.bankAccounts);
-        console.log('in edit flat, renderEachBankAccountChoice, this.props.flat.bank_account: ', this.props.flat.bank_account);
+        // console.log('in edit flat, renderEachBankAccountChoice, this.props.bankAccounts: ', this.props.bankAccounts);
+        // console.log('in edit flat, renderEachBankAccountChoice, this.props.flat.bank_account: ', this.props.flat.bank_account);
         let index;
         _.each(this.props.bankAccounts, (each, i) => {
           // console.log('in edit flat, renderEachBankAccountChoice, this.props.bankAccounts, each: ', each);
@@ -556,7 +556,7 @@ class EditFlat extends Component {
   }
 
   renderSelectBankAccount() {
-    console.log('in edit flat, renderSelectBankAccount, this.props.bankAccounts: ', this.props.bankAccounts);
+    // console.log('in edit flat, renderSelectBankAccount, this.props.bankAccounts: ', this.props.bankAccounts);
     if (!this.props.bankAccounts) {
       return (
         <div className="edit-flat-language-box">
@@ -589,7 +589,7 @@ class EditFlat extends Component {
       dataToBeSent = { flat_id: this.props.flat.id, flat: delta, amenity: { basic: true } };
     }
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in BankAccountCreateModal, handlePaymentMethodFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in BankAccountCreateModal, handlePaymentMethodFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.editFlat(dataToBeSent, () => {
       this.handlePaymentMethodFormSubmitCallback();
@@ -638,7 +638,7 @@ class EditFlat extends Component {
   }
 
   handleAddEditFacilityClick(event) {
-    console.log('in edit flat, handleAddEditFacilityClick: ');
+    // console.log('in edit flat, handleAddEditFacilityClick: ');
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
@@ -667,7 +667,7 @@ class EditFlat extends Component {
   }
 
   renderEachFacility() {
-    console.log('in edit flat, renderEachFacility this.props.flat.facilities: ', this.props.flat.facilities);
+    // console.log('in edit flat, renderEachFacility this.props.flat.facilities: ', this.props.flat.facilities);
     // <input name={i} value={eachFacility.id} type="checkbox" className="my-page-card-default-checkbox" onChange={this.handleBankAcccountDefaultCheck.bind(this)} />
     return _.map(this.props.flat.facilities, (eachFacility, i) => {
       return (
@@ -680,7 +680,7 @@ class EditFlat extends Component {
   }
 
   renderFacilitiesAddEdit() {
-    console.log('in edit flat, renderFacilitiesAddEdit');
+    // console.log('in edit flat, renderFacilitiesAddEdit');
     if (this.props.flat) {
       if (!this.props.flat.facilities) {
         return (
@@ -1124,6 +1124,7 @@ class EditFlat extends Component {
       }
     }
   }
+
   renderFacilityCreateModal() {
     if (this.props.showFacilityCreate) {
       if (this.props.flat) {
@@ -1205,7 +1206,7 @@ function mapStateToProps(state) {
     // console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
-    console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
+    // console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
     return {
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
       buildings: state.flat.buildings,

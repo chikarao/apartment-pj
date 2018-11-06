@@ -32,7 +32,7 @@ class FacilityEditModal extends Component {
     dataToBeChanged.flat_id = this.props.flat.id;
     const dataToBeSent = { facility: dataToBeChanged };
     // send all data for account; gets assigned user_id on api based on token
-    console.log('in FacilityEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in FacilityEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.updateFacility(dataToBeSent, this.props.facilityId, () => {
       this.handleFormSubmitCallback();
@@ -40,7 +40,7 @@ class FacilityEditModal extends Component {
   }
 
   handleFormSubmitCallback() {
-    console.log('in FacilityEditModal, handleFormSubmitCallback: ');
+    // console.log('in FacilityEditModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ editFacilityCompleted: true });
     // this.resetAdvancedFilters();
@@ -61,7 +61,7 @@ class FacilityEditModal extends Component {
   // turn off showFacilityEditModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    console.log('in FacilityEditModal, handleClose, this.props.showFacilityEdit: ', this.props.showFacilityEdit);
+    // console.log('in FacilityEditModal, handleClose, this.props.showFacilityEdit: ', this.props.showFacilityEdit);
     if (this.props.showFacilityEdit) {
       this.props.showFacilityEditModal();
       this.setState({ editFacilityCompleted: false });
@@ -106,7 +106,7 @@ class FacilityEditModal extends Component {
   }
 
     handleDeleteFacilityCallback() {
-    console.log('in FacilityEditModal, handleDeleteFacilityCallback: ');
+    // console.log('in FacilityEditModal, handleDeleteFacilityCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ editFacilityCompleted: true, deleteFacilityCompleted: true });
     // this.resetAdvancedFilters();
@@ -117,7 +117,7 @@ class FacilityEditModal extends Component {
     const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
-      console.log('in bank_account_edit_modal, renderEditFacilityForm, this.props.show ', this.props.show );
+      // console.log('in bank_account_edit_modal, renderEditFacilityForm, this.props.show ', this.props.show );
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (

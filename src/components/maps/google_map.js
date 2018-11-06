@@ -136,7 +136,7 @@ class GoogleMap extends Component {
     }
     // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
     // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
-    console.log('in googlemap, renderMap, this.props.initialPosition:', this.props.initialPosition);
+    // console.log('in googlemap, renderMap, this.props.initialPosition:', this.props.initialPosition);
 
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component

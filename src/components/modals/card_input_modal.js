@@ -23,12 +23,12 @@ class CardInputModal extends Component {
   }
 
   componentDidMount() {
-    console.log('in CardInputModal, componentDidMount:');
+    // console.log('in CardInputModal, componentDidMount:');
     this.props.authError('');
   }
 
   componentDidUnMount() {
-    console.log('in CardInputModal, componentDidUnMount:');
+    // console.log('in CardInputModal, componentDidUnMount:');
     this.props.authError('');
     // this.props.selectedCard(undefined, () => {});
   }

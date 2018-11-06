@@ -123,7 +123,7 @@ class App extends Component {
 }
 //
 function mapStateToProps(state) {
-  console.log('in app.js, mapStateToProps, state: ', state);
+  // console.log('in app.js, mapStateToProps, state: ', state);
   return {
     placeSearchLanguageCode: state.languages.placeSearchLanguageCode,
     appLanguageCode: state.languages.appLanguageCode
