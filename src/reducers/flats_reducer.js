@@ -31,7 +31,11 @@ import {
   SELECTED_FACILITY_ID,
   UPDATE_FACILITY,
   CREATE_FACILITY,
-  DELETE_FACILITY
+  DELETE_FACILITY,
+  CREATE_INSPECTION,
+  UPDATE_INSPECTION,
+  DELETE_INSPECTION,
+  SELECTED_INSPECTION_ID
 } from '../actions/types';
 
 export default function (state = {
@@ -175,6 +179,18 @@ export default function (state = {
 
     case DELETE_FACILITY:
       return { ...state, selectedFlatFromParams: action.payload };
+
+    case CREATE_INSPECTION:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case UPDATE_INSPECTION:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_INSPECTION:
+      return { ...state, selectedFlatFromParams: action.payload };
+
+    case SELECTED_INSPECTION_ID:
+    return { ...state, selectedInspectionId: action.payload };
 
     default:
       return state;

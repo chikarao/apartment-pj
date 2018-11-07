@@ -6,17 +6,17 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
-import Building from '../constants/building';
+import Inspection from '../constants/inspection';
 import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
 
-class InspectionCreateModal extends Component {
+class InspectionEditModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createInspectionCompleted: false,
-      // deleteBuildingCompleted: false,
+      editInspectionCompleted: false,
+      deleteInspectionCompleted: false,
       selectedInspectionId: ''
     };
   }
@@ -35,19 +35,19 @@ class InspectionCreateModal extends Component {
     //     delta[each] = data[each]
     //   }
     // })
-    const dataToBeSent = { building: data, flat_id: this.props.flat.id };
+    const dataToBeSent = { Inspection: data, building_id: this.props.flat.building.id };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in InspectionCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    console.log('in InspectionEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.createBuilding(dataToBeSent, () => {
+    this.props.updateInspection(dataToBeSent, () => {
       this.handleFormSubmitCallback();
     });
   }
 
   handleFormSubmitCallback() {
-    console.log('in InspectionCreateModal, handleFormSubmitCallback: ');
+    console.log('in InspectionEditModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
-    this.setState({ createInspectionCompleted: true });
+    this.setState({ editInspectionCompleted: true });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
     this.props.showLoading();
@@ -63,25 +63,25 @@ class InspectionCreateModal extends Component {
     }
   }
 
-  // turn off showInspectionCreateModal app state
+  // turn off showInspectionEditModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    if (this.props.showInspectionCreate) {
-      this.props.showInspectionCreateModal();
-      this.setState({ createInspectionCompleted: false });
+    if (this.props.showInspectionEdit) {
+      this.props.showInspectionEditModal();
+      this.setState({ editInspectionCompleted: false });
     }
   }
 
-  renderEachBuildingField() {
+  renderEachInspectionField() {
     let fieldComponent = '';
-    return _.map(Building, (formField, i) => {
-      console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
+    return _.map(Inspection, (formField, i) => {
+      console.log('in inspection_edit_modal, renderEachInspectionField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in building_edit_modal, renderEachBuildingField, fieldComponent: ', fieldComponent);
+      // console.log('in inspection_edit_modal, renderEachInspectionField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
@@ -91,7 +91,7 @@ class InspectionCreateModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Building } : {}}
+            props={fieldComponent == FormChoices ? { model: Inspection } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -101,11 +101,25 @@ class InspectionCreateModal extends Component {
     });
   }
 
-  renderCreateBuildingForm() {
+  handleDeleteInspectionClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.props.showLoading()
+    this.props.deleteInspection(elementVal, () => this.handleDeleteInspectionCallback());
+  }
+
+  handleDeleteInspectionCallback() {
+    this.setState({ editInspectionCompleted: true, deleteInspectionCompleted: true });
+    // this.resetAdvancedFilters();
+    // this.emptyInputFields();
+    this.props.showLoading();
+  }
+
+  renderEditInspectionForm() {
     const { handleSubmit } = this.props;
 
     if (this.props.flat) {
-      console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
+      console.log('in inspection_edit_modal, renderEditInspectionForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -113,13 +127,15 @@ class InspectionCreateModal extends Component {
           <section className="modal-main">
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">Create Building</h3>
-
+            <h3 className="auth-modal-title">Edit Inspection</h3>
+            <div className="edit-flat-delete-language-button">
+              <button value={this.props.inspectionId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteInspectionClick.bind(this)}>Delete</button>
+            </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
               <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-                {this.renderEachBuildingField()}
+                {this.renderEachInspectionField()}
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
                 </div>
@@ -142,7 +158,11 @@ class InspectionCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">The building has been successfully created.</div>
+          {this.state.deleteInspectionCompleted ?
+            <div className="post-signup-message">The inspection has been successfully deleted.</div>
+            :
+            <div className="post-signup-message">The inspection has been successfully updated.</div>
+          }
         </div>
       </div>
     );
@@ -151,36 +171,45 @@ class InspectionCreateModal extends Component {
   render() {
     return (
       <div>
-        {this.state.createInspectionCompleted ? this.renderPostEditDeleteMessage() : this.renderCreateBuildingForm()}
+        {this.state.editInspectionCompleted ? this.renderPostEditDeleteMessage() : this.renderEditInspectionForm()}
       </div>
     );
   }
 }
 // enableReinitialize allow for edit modals to be closed and open with new initialValue props.
-InspectionCreateModal = reduxForm({
-  form: 'InspectionCreateModal',
+InspectionEditModal = reduxForm({
+  form: 'InspectionEditModal',
   enableReinitialize: true
-})(InspectionCreateModal);
+})(InspectionEditModal);
 
+function getInspection(building, id) {
+  // placeholder for when add lanauge
+  let inspection = {};
+    _.each(building.inspections, eachInspection => {
+      console.log('in edit flat, getInspection, eachInspection: ', eachInspection);
+      if (eachInspection.id == id) {
+        inspection = eachInspection;
+        return;
+      }
+    });
+
+  return inspection;
+}
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in InspectionCreateModal, mapStateToProps, state: ', state);
+  console.log('in InspectionEditModal, mapStateToProps, state: ', state);
   // get clicked calendar
   // const calendarArray = [];
   if (state.selectedFlatFromParams.selectedFlatFromParams) {
-    const initialValues = {};
-    const flat = state.selectedFlatFromParams.selectedFlatFromParams;
-  //   // console.log('in InspectionCreateModal, mapStateToProps, calendars, selectedInspectionId: ', calendars, selectedInspectionId);
-    _.each(Object.keys(flat), flatKeys => {
-      console.log('in InspectionCreateModal, mapStateToProps, flatAttribute, Building[flatKeys]: ', flatKeys, Building[flatKeys]);
-      if (Building[flatKeys]) {
-        initialValues[flatKeys] = flat[flatKeys]
-      }
-    });
-      console.log('in InspectionCreateModal, mapStateToProps, initialValues: ', initialValues);
-  // console.log('in InspectionCreateModal, mapStateToProps, calendarArray[0]: ', calendarArray[0]);
-  // const calendars = state.selectedFlatFromParams.selectedFlatFromParams.calendars
-  // const calendar =
+    let initialValues = {};
+    const { building } = state.selectedFlatFromParams.selectedFlatFromParams;
+    const inspection = getInspection(building, parseInt(state.flat.selectedInspectionId, 10));
+    const date = new Date(inspection.inspection_date);
+    const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
+    initialValues = inspection;
+    initialValues.inspection_date = dateString;
+    // console.log('in InspectionEditModal, initialValues: ', initialValues);
+
     return {
       auth: state.auth,
       successMessage: state.auth.success,
@@ -189,8 +218,9 @@ function mapStateToProps(state) {
       // userProfile: state.auth.userProfile
       // initialValues: state.auth.userProfile
       // languages: state.languages,
-      showInspectionCreate: state.modals.showInspectionCreateModal,
+      showInspectionEdit: state.modals.showInspectionEditModal,
       appLanguageCode: state.languages.appLanguageCode,
+      inspectionId: state.flat.selectedInspectionId,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedInspectionId
       initialValues
@@ -203,4 +233,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, actions)(InspectionCreateModal);
+export default connect(mapStateToProps, actions)(InspectionEditModal);

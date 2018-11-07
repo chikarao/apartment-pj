@@ -36,11 +36,13 @@ class InspectionCreateModal extends Component {
     //     delta[each] = data[each]
     //   }
     // })
-    const dataToBeSent = { building: data, flat_id: this.props.flat.id };
+    // data.inspection_language = this.props.appLanguageCode;
+    data.building_id = this.props.flat.building.id;
+    const dataToBeSent = { inspection: data, building_id: this.props.flat.building.id };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in InspectionCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in InspectionCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.createBuilding(dataToBeSent, () => {
+    this.props.createInspection(dataToBeSent, () => {
       this.handleFormSubmitCallback();
     });
   }
@@ -143,7 +145,7 @@ class InspectionCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">The building has been successfully created.</div>
+          <div className="post-signup-message">The inpection has been successfully created.</div>
         </div>
       </div>
     );

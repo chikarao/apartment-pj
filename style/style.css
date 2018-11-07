@@ -2530,6 +2530,24 @@ form {
   text-align: left;
   padding: 5px;
 }
+
+.edit-flat-inspection-each {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  border: 1px solid #ccc;
+  width: auto;
+  max-width: 200px;
+  border-radius: 5px;
+  margin: 3px auto 3px auto;
+}
+
+.edit-flat-inspection-each-edit-link {
+  color: blue;
+}
+.edit-flat-inspection-each-edit-link:hover {
+  color: blue;
+}
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {

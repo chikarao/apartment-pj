@@ -461,32 +461,69 @@ class EditFlat extends Component {
   handleAddEditInspectionClick(event) {
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
+    // elementVal is insection.id
     const elementVal = clickedElement.getAttribute('value')
-    console.log('in edit flat, handleAddEditInspectionClick, elementName, elementVal: ', elementName, elementVal);
     if (elementName == 'edit') {
       this.props.showInspectionEditModal();
+      this.props.selectedInspectionId(elementVal);
     }
     if (elementName == 'add') {
       this.props.showInspectionCreateModal();
     }
   }
 
+  formatDate(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    const strTime = `${hours}:${minutes}  ${ampm}`;
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+  }
+
+  getInspection(building) {
+    // placeholder for when add lanauge
+    const array = [];
+      _.each(building.inspections, eachInspection => {
+        console.log('in edit flat, getInspection, eachInspection: ', eachInspection);
+        array.push(eachInspection);
+      });
+
+    return array[0];
+  }
+
+  renderEachInspection() {
+    const { inspections } = this.props.flat.building;
+    return _.map(inspections, (eachInspection, i) => {
+      console.log('in edit flat, renderBuilding, eachInspection: ', eachInspection);
+      return (
+        <div key={i} className="edit-flat-inspection-each">
+          {this.formatDate(new Date(eachInspection.inspection_date))}
+           &nbsp;
+          {languages[eachInspection.inspection_language].flag}{languages[eachInspection.inspection_language].local}
+          &nbsp;
+          <div value={eachInspection.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+        </div>
+      );
+    });
+  }
+
   renderBuilding(building) {
+    const inspection = building.inspections ? this.getInspection(building) : '';
+    console.log('in edit flat, renderBuilding, inspection: ', inspection);
     return (
       <div key={building.name} className="edit-flat-building-choice">
        {building.name}, {building.address1}, {building.city}, {building.state}, {building.country}
       <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
-      {building.inpections ?
-        <div>Inspection: date</div>
+      {building.inspections ?
+        <div>Inspections: {this.renderEachInspection()}</div>
         :
         <div>No Inspection Information</div>
       }
-      {building.inpections ?
-        <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.editInspection[this.props.appLanguageCode]}</div>
-        :
-        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
-      }
+      <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
       </div>
     );
   }
@@ -1144,7 +1181,7 @@ class EditFlat extends Component {
           <div>
             <InspectionCreateModal
             // show
-            show={this.props.showInspectionCreate}
+              show={this.props.showInspectionCreate}
             />
           </div>
         );
@@ -1153,14 +1190,14 @@ class EditFlat extends Component {
   }
 
   renderInspectionEditModal() {
-    // <InspectionEditModal
-    // // show
-    // show={this.props.renderInspectionEdit}
-    // />
-    if (this.props.renderInspectionEdit) {
+    if (this.props.showInspectionEdit) {
       if (this.props.flat) {
         return (
           <div>
+            <InspectionEditModal
+            // show
+              show={this.props.showInspectionEdit}
+            />
           </div>
         );
       }

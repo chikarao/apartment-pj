@@ -120,7 +120,11 @@ import {
   REQUIRED_FIELDS,
   BOOKING_REQUEST_DATA,
   SHOW_INSPECTION_CREATE_MODAL,
-  SHOW_INSPECTION_EDIT_MODAL
+  SHOW_INSPECTION_EDIT_MODAL,
+  CREATE_INSPECTION,
+  UPDATE_INSPECTION,
+  DELETE_INSPECTION,
+  SELECTED_INSPECTION_ID,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2005,6 +2009,12 @@ export function selectedFacilityId(id) {
   //flip showResetPasswordModal
   return { type: SELECTED_FACILITY_ID, payload: id };
 }
+export function selectedInspectionId(id) {
+  console.log('in actions index, selectedInspectionId:');
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_INSPECTION_ID, payload: id };
+}
 
 export function requiredFields(array) {
   console.log('in actions index, requiredFields, array:', array);
@@ -2186,6 +2196,83 @@ export function createFacility(facilityAttributes, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to createFacility: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function createInspection(inspectionAttributes, callback) {
+  console.log('in action index, createInspection, inspectionAttributes: ', inspectionAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/inspections/`, inspectionAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createInspection: ', response);
+      console.log('in action index, response to createInspection: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_INSPECTION,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createInspection: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function updateInspection(inspectionAttributes, id, callback) {
+  console.log('in action index, updateInspection, inspectionAttributes: ', inspectionAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/inspections/${id}`, inspectionAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateInspection: ', response);
+      console.log('in action index, response to updateInspection: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_INSPECTION,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateInspection: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function deleteInspection(id, callback) {
+  // console.log('in action index, deleteInspection, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/inspections/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteInspection: ', response);
+      console.log('in action index, response to deleteInspection: ', response.data.data.flat);
+
+      dispatch({
+        type: DELETE_INSPECTION,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteInspection: ', error);
       // dispatch(authError(error));
       // this.showloading();
     });
