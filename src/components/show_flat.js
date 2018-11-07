@@ -147,7 +147,7 @@ class ShowFlat extends Component {
     const array = [];
     if (flat.places) {
       _.each(flat.places, eachPlace => {
-        if (eachPlace.category == ('subway_station' || 'train_station' || 'transit_station' || 'bus_station')) {
+        if ((eachPlace.category == 'subway_station') || (eachPlace.category == 'train_station') || (eachPlace.category =='transit_station') || (eachPlace.category == 'bus_station')) {
           array.push(eachPlace);
         }
       })
@@ -208,15 +208,15 @@ class ShowFlat extends Component {
               <div key={sales_point} className="show-flat-sales_point">
                 { flatLanguage ? flatLanguage.sales_point : sales_point }
               </div>
-              <div key={'stations'} className="show-flat-stations">
-                {flatStationsArray.length > 0 ? this.renderStations(flatStationsArray) : ''}
-              </div>
               <div key={price_per_month} className="show-flat-price">
                 ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
               <div key={this.props.match.params.id} className="show-flat-id">
                 <small>flat id: {this.props.match.params.id}</small>
               </div>
+                <div key={'stations'} className="show-flat-stations">
+                {flatStationsArray.length > 0 ? this.renderStations(flatStationsArray) : ''}
+                </div>
               <div key={intro} className="show-flat-intro">
                 { flatLanguage ? flatLanguage.intro : intro }
               </div>

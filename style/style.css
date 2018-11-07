@@ -1471,7 +1471,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .show-flat-stations {
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .show-flat-beds {
@@ -2498,7 +2498,8 @@ form {
 }
 
 .form-control-custom {
-  margin: 0 0 0 20px;
+  /* margin: 0 0 0 20px; */
+  margin: auto;
   width: 200px;
   max-width: 600px;
   display: flex;

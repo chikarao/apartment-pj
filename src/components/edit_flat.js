@@ -19,6 +19,8 @@ import BuildingEditModal from './modals/building_edit_modal';
 import BuildingCreateModal from './modals/building_create_modal';
 import FacilityEditModal from './modals/facility_edit_modal';
 import FacilityCreateModal from './modals/facility_create_modal';
+import InspectionCreateModal from './modals/inspection_create_modal';
+import InspectionEditModal from './modals/inspection_edit_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
@@ -447,7 +449,6 @@ class EditFlat extends Component {
 
   renderEachBuildingChoice() {
     return _.map(this.props.buildings, eachBuilding => {
-      // console.log('in edit flat, renderEachBuilding, eachBuilding: ', eachBuilding);
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
           {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
@@ -457,11 +458,35 @@ class EditFlat extends Component {
     });
   }
 
+  handleAddEditInspectionClick(event) {
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in edit flat, handleAddEditInspectionClick, elementName, elementVal: ', elementName, elementVal);
+    if (elementName == 'edit') {
+      this.props.showInspectionEditModal();
+    }
+    if (elementName == 'add') {
+      this.props.showInspectionCreateModal();
+    }
+  }
+
   renderBuilding(building) {
     return (
       <div key={building.name} className="edit-flat-building-choice">
        {building.name}, {building.address1}, {building.city}, {building.state}, {building.country}
-      <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>edit</div>
+      <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
+
+      {building.inpections ?
+        <div>Inspection: date</div>
+        :
+        <div>No Inspection Information</div>
+      }
+      {building.inpections ?
+        <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.editInspection[this.props.appLanguageCode]}</div>
+        :
+        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
+      }
       </div>
     );
   }
@@ -1037,9 +1062,9 @@ class EditFlat extends Component {
     if (this.props.showLanguageCreate) {
       return (
         <div>
-        <LanguageCreateModal
-          show={this.props.showLanguageCreate}
-        />
+          <LanguageCreateModal
+            show={this.props.showLanguageCreate}
+          />
         </div>
       );
     }
@@ -1049,9 +1074,9 @@ class EditFlat extends Component {
     if (this.props.showLanguageEdit) {
       return (
         <div>
-        <LanguageEditModal
-          show={this.props.showLanguageEdit}
-        />
+          <LanguageEditModal
+            show={this.props.showLanguageEdit}
+          />
         </div>
       );
     }
@@ -1061,9 +1086,9 @@ class EditFlat extends Component {
     if (this.props.showIcalendarCreate) {
       return (
         <div>
-        <IcalendarCreateModal
-          show={this.props.showIcalendarCreate}
-        />
+          <IcalendarCreateModal
+            show={this.props.showIcalendarCreate}
+          />
         </div>
       );
     }
@@ -1072,9 +1097,9 @@ class EditFlat extends Component {
     if (this.props.showIcalendarEdit) {
       return (
         <div>
-        <IcalendarEditModal
-          show={this.props.showIcalendarEdit}
-        />
+          <IcalendarEditModal
+            show={this.props.showIcalendarEdit}
+          />
         </div>
       );
     }
@@ -1086,10 +1111,10 @@ class EditFlat extends Component {
         if (this.props.flat.building) {
           return (
             <div>
-            <BuildingEditModal
-            // show
-              show={this.props.showBuildingEdit}
-            />
+              <BuildingEditModal
+              // show
+                show={this.props.showBuildingEdit}
+              />
             </div>
           );
         }
@@ -1101,24 +1126,56 @@ class EditFlat extends Component {
       if (this.props.flat) {
         return (
           <div>
-          <BuildingCreateModal
-          // show
-            show={this.props.showBuildingCreate}
-          />
+            <BuildingCreateModal
+            // show
+              show={this.props.showBuildingCreate}
+            />
           </div>
         );
       }
     }
   }
+
+  renderInspectionCreateModal() {
+    console.log('in edit flat, renderInspectionCreateModal, this.props.showInspectionCreate: ', this.props.showInspectionCreate);
+    if (this.props.showInspectionCreate) {
+      if (this.props.flat) {
+        return (
+          <div>
+            <InspectionCreateModal
+            // show
+            show={this.props.showInspectionCreate}
+            />
+          </div>
+        );
+      }
+    }
+  }
+
+  renderInspectionEditModal() {
+    // <InspectionEditModal
+    // // show
+    // show={this.props.renderInspectionEdit}
+    // />
+    if (this.props.renderInspectionEdit) {
+      if (this.props.flat) {
+        return (
+          <div>
+          </div>
+        );
+      }
+    }
+  }
+
   renderFacilityEditModal() {
     if (this.props.showFacilityEdit) {
       if (this.props.flat) {
         return (
           <div>
-          <FacilityEditModal
-          // show
-            show={this.props.showFacilityEdit}
-          />
+            <FacilityEditModal
+            // show
+              show={this.props.showFacilityEdit}
+            />
           </div>
         );
       }
@@ -1130,10 +1187,10 @@ class EditFlat extends Component {
       if (this.props.flat) {
         return (
           <div>
-          <FacilityCreateModal
-          // show
-            show={this.props.showFacilityCreate}
-          />
+            <FacilityCreateModal
+            // show
+              show={this.props.showFacilityCreate}
+            />
           </div>
         );
       }
@@ -1145,6 +1202,8 @@ class EditFlat extends Component {
       <div>
         {this.renderBuildingCreateModal()}
         {this.renderBuildingEditModal()}
+        {this.renderInspectionCreateModal()}
+        {this.renderInspectionEditModal()}
         {this.renderFacilityEditModal()}
         {this.renderFacilityCreateModal()}
         {this.renderLanguageCreateModal()}
@@ -1225,6 +1284,8 @@ function mapStateToProps(state) {
       selectedFacility: state.flat.selectedFacilityId,
       showFacilityEdit: state.modals.showFacilityEditModal,
       showFacilityCreate: state.modals.showFacilityCreateModal,
+      showInspectionEdit: state.modals.showInspectionEditModal,
+      showInspectionCreate: state.modals.showInspectionCreateModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

@@ -12,7 +12,9 @@ import {
   SHOW_BANK_ACCOUNT_EDIT_MODAL,
   SHOW_BANK_ACCOUNT_CREATE_MODAL,
   SHOW_FACILITY_EDIT_MODAL,
-  SHOW_FACILITY_CREATE_MODAL
+  SHOW_FACILITY_CREATE_MODAL,
+  SHOW_INSPECTION_CREATE_MODAL,
+  SHOW_INSPECTION_EDIT_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -30,6 +32,8 @@ export default function (
     showBuildingEditModal: false,
     showFacilityEditModal: false,
     showFacilityCreateModal: false,
+    showInspectionCreateModal: false,
+    showInspectionEditModal: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -73,6 +77,12 @@ export default function (
 
     case SHOW_FACILITY_EDIT_MODAL:
       return { ...state, showFacilityEditModal: !state.showFacilityEditModal };
+
+    case SHOW_INSPECTION_CREATE_MODAL:
+      return { ...state, showInspectionCreateModal: !state.showInspectionCreateModal };
+
+    case SHOW_INSPECTION_EDIT_MODAL:
+      return { ...state, showInspectionEditModal: !state.showInspectionEditModal };
 
     default:
       return state;

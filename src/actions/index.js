@@ -118,7 +118,9 @@ import {
   CREATE_FACILITY,
   DELETE_FACILITY,
   REQUIRED_FIELDS,
-  BOOKING_REQUEST_DATA
+  BOOKING_REQUEST_DATA,
+  SHOW_INSPECTION_CREATE_MODAL,
+  SHOW_INSPECTION_EDIT_MODAL
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1974,6 +1976,20 @@ export function showFacilityEditModal() {
 
   //flip showResetPasswordModal
   return { type: SHOW_FACILITY_EDIT_MODAL };
+}
+
+export function showInspectionCreateModal() {
+  console.log('in actions index, showInspectionCreateModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_INSPECTION_CREATE_MODAL };
+}
+
+export function showInspectionEditModal() {
+  console.log('in actions index, showInspectionEditModal:');
+
+  //flip showResetPasswordModal
+  return { type: SHOW_INSPECTION_EDIT_MODAL };
 }
 
 export function selectedBankAccountId(id) {

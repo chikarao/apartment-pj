@@ -11,13 +11,13 @@ import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
 
-class BuildingCreateModal extends Component {
+class InspectionCreateModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createBuildingCompleted: false,
+      createInspectionCompleted: false,
       // deleteBuildingCompleted: false,
-      selectedBuildingId: ''
+      selectedInspectionId: ''
     };
   }
   //
@@ -37,7 +37,7 @@ class BuildingCreateModal extends Component {
     // })
     const dataToBeSent = { building: data, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in BuildingCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    console.log('in InspectionCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.createBuilding(dataToBeSent, () => {
       this.handleFormSubmitCallback();
@@ -45,9 +45,9 @@ class BuildingCreateModal extends Component {
   }
 
   handleFormSubmitCallback() {
-    console.log('in BuildingCreateModal, handleFormSubmitCallback: ');
+    console.log('in InspectionCreateModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
-    this.setState({ createBuildingCompleted: true });
+    this.setState({ createInspectionCompleted: true });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
     this.props.showLoading();
@@ -63,12 +63,12 @@ class BuildingCreateModal extends Component {
     }
   }
 
-  // turn off showBuildingCreateModal app state
+  // turn off showInspectionCreateModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    if (this.props.showBuildingCreate) {
-      this.props.showBuildingCreateModal();
-      this.setState({ createBuildingCompleted: false });
+    if (this.props.showInspectionCreate) {
+      this.props.showInspectionCreateModal();
+      this.setState({ createInspectionCompleted: false });
     }
   }
 
@@ -151,34 +151,34 @@ class BuildingCreateModal extends Component {
   render() {
     return (
       <div>
-        {this.state.createBuildingCompleted ? this.renderPostEditDeleteMessage() : this.renderCreateBuildingForm()}
+        {this.state.createInspectionCompleted ? this.renderPostEditDeleteMessage() : this.renderCreateBuildingForm()}
       </div>
     );
   }
 }
 // enableReinitialize allow for edit modals to be closed and open with new initialValue props.
-BuildingCreateModal = reduxForm({
-  form: 'BuildingCreateModal',
+InspectionCreateModal = reduxForm({
+  form: 'InspectionCreateModal',
   enableReinitialize: true
-})(BuildingCreateModal);
+})(InspectionCreateModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in BuildingCreateModal, mapStateToProps, state: ', state);
+  console.log('in InspectionCreateModal, mapStateToProps, state: ', state);
   // get clicked calendar
   // const calendarArray = [];
   if (state.selectedFlatFromParams.selectedFlatFromParams) {
     const initialValues = {};
     const flat = state.selectedFlatFromParams.selectedFlatFromParams;
-  //   // console.log('in BuildingCreateModal, mapStateToProps, calendars, selectedBuildingId: ', calendars, selectedBuildingId);
+  //   // console.log('in InspectionCreateModal, mapStateToProps, calendars, selectedInspectionId: ', calendars, selectedInspectionId);
     _.each(Object.keys(flat), flatKeys => {
-      console.log('in BuildingCreateModal, mapStateToProps, flatAttribute, Building[flatKeys]: ', flatKeys, Building[flatKeys]);
+      console.log('in InspectionCreateModal, mapStateToProps, flatAttribute, Building[flatKeys]: ', flatKeys, Building[flatKeys]);
       if (Building[flatKeys]) {
         initialValues[flatKeys] = flat[flatKeys]
       }
     });
-      console.log('in BuildingCreateModal, mapStateToProps, initialValues: ', initialValues);
-  // console.log('in BuildingCreateModal, mapStateToProps, calendarArray[0]: ', calendarArray[0]);
+      console.log('in InspectionCreateModal, mapStateToProps, initialValues: ', initialValues);
+  // console.log('in InspectionCreateModal, mapStateToProps, calendarArray[0]: ', calendarArray[0]);
   // const calendars = state.selectedFlatFromParams.selectedFlatFromParams.calendars
   // const calendar =
     return {
@@ -189,12 +189,10 @@ function mapStateToProps(state) {
       // userProfile: state.auth.userProfile
       // initialValues: state.auth.userProfile
       // languages: state.languages,
-      showBuildingCreate: state.modals.showBuildingCreateModal,
+      showInspectionCreate: state.modals.showInspectionCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
-      // get the first calendar in array to match selectedBuildingId
-      // calendar: calendarArray[0],
       // language: state.languages.selectedLanguage,
-      // set initialValues to be first calendar in array to match selectedBuildingId
+      // set initialValues to be first calendar in array to match selectedInspectionId
       initialValues
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       // initialValues
@@ -205,4 +203,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, actions)(BuildingCreateModal);
+export default connect(mapStateToProps, actions)(InspectionCreateModal);

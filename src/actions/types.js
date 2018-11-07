@@ -115,4 +115,6 @@ export const CREATE_FACILITY = 'create_facility';
 export const DELETE_FACILITY = 'delete_facility';
 export const REQUIRED_FIELDS = 'required_fields';
 export const BOOKING_REQUEST_DATA = 'booking_request_data';
+export const SHOW_INSPECTION_CREATE_MODAL = 'show_inspection_create_modal';
+export const SHOW_INSPECTION_EDIT_MODAL = 'show_inspection_edit_modal';
 // export const SET_NEW_MESSAGES = 'set_new_messages';
