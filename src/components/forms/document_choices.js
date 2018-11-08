@@ -66,9 +66,7 @@ class DocumentChoices extends Component {
 
   getStyleOfInputElement(value, choice) {
     let elementStyle = {};
-
     // console.log('DocumentChoices, getStyleOfInputElement ');
-
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
       elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width };

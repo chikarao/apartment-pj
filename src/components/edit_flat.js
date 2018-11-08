@@ -519,7 +519,7 @@ class EditFlat extends Component {
       <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
       {building.inspections ?
-        <div>Inspections: {this.renderEachInspection()}</div>
+        <div className="edit-flat-inspection-box">Inspections: {this.renderEachInspection()}</div>
         :
         <div>No Inspection Information</div>
       }
@@ -1084,6 +1084,7 @@ class EditFlat extends Component {
               flat={this.props.flat}
               places={this.props.flat.places}
               currentUserIsOwner={this.currentUserIsOwner()}
+              showFlat={false}
             />
           </div>
 

@@ -2548,6 +2548,10 @@ form {
 .edit-flat-inspection-each-edit-link:hover {
   color: blue;
 }
+
+.edit-flat-inspection-box {
+  margin: 10px auto 10px auto;
+}
 /* ************Edit flat images************* */
 
 /* #carousel-show-edit-flat {

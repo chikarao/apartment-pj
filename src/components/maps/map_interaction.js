@@ -922,20 +922,20 @@ class MapInteraction extends Component {
     this.createSelectedMarker(elementVal);
   }
 
-  getCategoriesArray(places) {
+  getCategoriesArray(places, placeLanguageCode) {
     const categoriesArray = [];
     // console.log('in map_interaction, getCategoriesArray, places: ', places);
     _.each(places, place => {
-      if (!categoriesArray.includes(place.category) && place.language == this.props.appLanguageCode) {
+      if (!categoriesArray.includes(place.category) && place.language == placeLanguageCode) {
         categoriesArray.push(place.category);
       }
     });
     return categoriesArray;
   }
 
-  renderEachResult(places, category) {
+  renderEachResult(places, category, placeLanguageCode) {
     return _.map(places, (place, i) => {
-      if ((place.category == category) && (place.language == this.props.appLanguageCode)) {
+      if ((place.category == category) && (place.language == placeLanguageCode)) {
         // console.log('in map_interaction, renderEachResult, .map, place: ', place);
         // console.log('in map_interaction, renderEachResult, .map, category: ', category);
         // add hide in first div to toggle
@@ -974,7 +974,7 @@ class MapInteraction extends Component {
   //   });
   // }
 
-  renderSelectedResultsList() {
+  renderSelectedResultsList(placeLanguageCode) {
     // renders the places in the database with flat_id of show flat
     // 'remove' buttons do not show in showflat page
     const { places } = this.props;
@@ -982,23 +982,23 @@ class MapInteraction extends Component {
     const placesEmpty = _.isEmpty(places);
 
     if (!placesEmpty) {
-      const categories = this.getCategoriesArray(places);
-      // categories.sort();
+      const categoriesArray = this.getCategoriesArray(places, placeLanguageCode);
+      // categoriesArray.sort();
       // console.log('in map_interaction, renderSelectedResultsList, places: ', places);
-      // console.log('in map_interaction, renderSelectedResultsList, categories: ', categories);
+      // console.log('in map_interaction, renderSelectedResultsList, categoriesArray: ', categoriesArray);
       // console.log('in map_interaction, renderSelectedResultsList, searchTypeObject[category]: ', searchTypeObject[category]);
       // {this.renderEachResult(places, category)}
       // code for toggling category heading
       // <div value={category} className="search-result-category-heading" onClick={this.handleCategoryHeadingClick.bind(this)}>
-      return _.map(categories, category => {
+      return _.map(categoriesArray, category => {
         // const cat = category;
         // console.log('in map_interaction, renderSelectedResultsList,  SearchTypeList[category]: ', SearchTypeList[category]);
         return (
           <div key={category}>
             <div value={category} className="search-result-category-heading">
-              {SearchTypeList[category][this.props.appLanguageCode]}
+              {SearchTypeList[category][placeLanguageCode]}
             </div>
-            {this.renderEachResult(places, category)}
+            {this.renderEachResult(places, category, placeLanguageCode)}
           </div>
         );
       });
@@ -1105,14 +1105,38 @@ class MapInteraction extends Component {
   }
 
   renderPlacesBox() {
-    return (
-      <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}</div>
-        <ul>
-          {this.renderSelectedResultsList()}
-        </ul>
-      </div>
-    );
+    const { places } = this.props;
+    const placesEmpty = _.isEmpty(places);
+    // place each language code in places in an array if not in array already
+    const placeLanguageArray = [];
+    if (!placesEmpty) {
+      _.each(places, eachPlace => {
+        if (!placeLanguageArray.includes(eachPlace.language)) {
+          placeLanguageArray.push(eachPlace.language)
+        }
+      })
+    }
+    // console.log('in MapInteraction, renderPlacesBox, placeLanguageArray: ', placeLanguageArray);
+    // render places box for each language in places so that user can see
+    // each box for each place in a language that is added
+    return _.map(placeLanguageArray, eachPlaceLanguageCode => {
+      let renderIt = false;
+      // set flag true if user is on showflat and render only the language selected by user
+      this.props.showFlat && (this.props.appLanguageCode == eachPlaceLanguageCode) ? renderIt = true : '';
+      // if not on showflat, render all a box for each place language
+      !this.props.showFlat ? renderIt = true : '';
+
+      if (renderIt) {
+        return (
+          <div key={eachPlaceLanguageCode} className="map-interaction-box">
+            <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  {AppLanguages.nearbyPlaces[this.props.appLanguageCode]} &nbsp;{this.props.showFlat ? '' : Languages[eachPlaceLanguageCode].flag}</div>
+            <ul>
+              {this.renderSelectedResultsList(eachPlaceLanguageCode)}
+            </ul>
+          </div>
+        );
+      }
+    });
   }
 
   renderMapInteractiion() {
@@ -1122,7 +1146,9 @@ class MapInteraction extends Component {
     // !!!!!!Language selection for search results
     // {this.props.showFlat? '' : this.renderSearchSelection()}
     // <img src={images['apartment.jpg']} />
+
     if (this.props.flat) {
+
       return (
         <div className="map-interaction-container">
           {this.props.showFlat ? '' : this.renderSearchBox()}
