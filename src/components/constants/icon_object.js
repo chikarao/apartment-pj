@@ -2,6 +2,6 @@
 
 import supermarket from '../../assets/supermarket.png';
 
-const iconObject = { icon: supermarket }
+const iconObject = { icon: supermarket };
 
 export default iconObject;

@@ -1,6 +1,6 @@
 // import YesOrNo = './forms/document_yes_or_no'
 
-const DocumentForm = {
+const FixedTermRentalContract = {
   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
   // fieldset for inputs takes absolute positioning
   // fieldset form-group-document, takes params.top, params.left, params.width
@@ -1320,4 +1320,4 @@ const DocumentForm = {
   // end of page 2
 };
 
-export default DocumentForm;
+export default FixedTermRentalContract;

@@ -125,6 +125,7 @@ import {
   UPDATE_INSPECTION,
   DELETE_INSPECTION,
   SELECTED_INSPECTION_ID,
+  SET_CREATE_DOCUMENT_KEY,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2014,6 +2015,13 @@ export function selectedInspectionId(id) {
 
   //flip showResetPasswordModal
   return { type: SELECTED_INSPECTION_ID, payload: id };
+}
+
+export function setCreateDocumentKey(key, callback) {
+  console.log('in actions index, setCreateDocumentKey:', key);
+  callback();
+  //flip showResetPasswordModal
+  return { type: SET_CREATE_DOCUMENT_KEY, payload: key };
 }
 
 export function requiredFields(array) {

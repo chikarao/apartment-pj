@@ -121,4 +121,5 @@ export const CREATE_INSPECTION = 'create_inspection';
 export const UPDATE_INSPECTION = 'edit_inspection';
 export const DELETE_INSPECTION = 'delete_inspection';
 export const SELECTED_INSPECTION_ID = 'selected_inspection_id';
+export const SET_CREATE_DOCUMENT_KEY = 'set_create_document_key';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

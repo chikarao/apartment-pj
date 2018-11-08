@@ -256,6 +256,7 @@ const appLanguages =
     bookingRequestWorkspace: { en: 'Booking Request Workspace', jp: '契約ワークスペース' },
     minutes: { en: ' minutes', jp: '分' },
     meters: { en: ' meters', jp: 'メートル' },
+    fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
   };
 
 export default appLanguages;

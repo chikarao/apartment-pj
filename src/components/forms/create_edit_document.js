@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
 import * as actions from '../../actions';
-import DocumentForm from '../constants/document_form';
+// import DocumentForm from '../constants/document_form';
+import Documents from '../constants/documents';
 
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
@@ -73,11 +74,11 @@ class CreateEditDocument extends Component {
 
   getRequiredKeys() {
     const array = [];
-    _.each(Object.keys(DocumentForm), pageKey => {
+    _.each(Object.keys(this.props.documentFields), pageKey => {
       // if the object has the key, that is the page the key is on
       // so set page variable so we can get choices from input key
-      _.each(Object.keys(DocumentForm[pageKey]), eachKey => {
-        if (DocumentForm[pageKey][eachKey].required) {
+      _.each(Object.keys(this.props.documentFields[pageKey]), eachKey => {
+        if (this.props.documentFields[pageKey][eachKey].required) {
           array.push(eachKey);
         }
       });
@@ -131,20 +132,20 @@ class CreateEditDocument extends Component {
       let page = 0;
       // find out which page the key is on
       // iterate through Document form first level key to see if each object has key in quesiton
-      _.each(Object.keys(DocumentForm), pageKey => {
-        // console.log('in create_edit_document, handleFormSubmit, key, pageKey, (toString(key) in DocumentForm[pageKey]), pageKey: ', key, pageKey, (key in DocumentForm[pageKey]), DocumentForm[pageKey]);
+      _.each(Object.keys(this.props.documentFields), pageKey => {
+        // console.log('in create_edit_document, handleFormSubmit, key, pageKey, (toString(key) in this.props.documentFields[pageKey]), pageKey: ', key, pageKey, (key in this.props.documentFields[pageKey]), this.props.documentFields[pageKey]);
         // if the object has the key, that is the page the key is on
         // so set page variable so we can get choices from input key
-        if (key in DocumentForm[pageKey]) {
+        if (key in this.props.documentFields[pageKey]) {
           page = pageKey;
         }
       });
       // console.log('in create_edit_document, handleFormSubmit, key is on page: ', page);
       // console.log('in create_edit_document, handleFormSubmit, data[key]: ', data[key]);
-      // DocumentForm[key].params.value = data[key];
-      // paramsObject[key] = DocumentForm[key].params;
+      // this.props.documentFields[key].params.value = data[key];
+      // paramsObject[key] = this.props.documentFields[key].params;
       let choice = {};
-      _.each(DocumentForm[page][key].choices, eachChoice => {
+      _.each(this.props.documentFields[page][key].choices, eachChoice => {
         // console.log('in create_edit_document, handleFormSubmit, eachChoice: ', eachChoice);
         // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == 'inputFieldValue') {
@@ -152,11 +153,11 @@ class CreateEditDocument extends Component {
           // console.log('in create_edit_document, handleFormSubmit, choice for empty string val: ', choice);
           // add data[key] (user choice) as value in the object to send to API
           // check for other vals of choices if more than 1 choice
-          const otherChoicesHaveVal = Object.keys(DocumentForm[page][key].choices).length > 1 ? this.checkOtherChoicesVal(DocumentForm[page][key].choices, key, data) : false;
+          const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
           if (!otherChoicesHaveVal) {
             choice.params.value = data[key];
             choice.params.page = page;
-            choice.params.name = DocumentForm[page][key].name
+            choice.params.name = this.props.documentFields[page][key].name
             // add params object with the top, left, width etc. to object to send to api
             // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
             paramsObject[key] = choice.params;
@@ -167,7 +168,7 @@ class CreateEditDocument extends Component {
           // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
           choice.params.value = data[key];
           choice.params.page = page;
-          choice.params.name = DocumentForm[page][key].name
+          choice.params.name = this.props.documentFields[page][key].name
           paramsObject[key] = choice.params;
         }
       });
@@ -187,9 +188,9 @@ class CreateEditDocument extends Component {
 
   renderEachDocumentField(page) {
     let fieldComponent = '';
-    // if (DocumentForm[page]) {
-    // console.log('in create_edit_document, renderEachDocumentField, page, DocumentForm[page] ', page, DocumentForm[page]);
-      return _.map(DocumentForm[page], (formField, i) => {
+    // if (this.props.documentFields[page]) {
+    // console.log('in create_edit_document, renderEachDocumentField, page, this.props.documentFields[page] ', page, this.props.documentFields[page]);
+      return _.map(this.props.documentFields[page], (formField, i) => {
         // console.log('in create_edit_document, renderEachDocumentField, formField ', formField);
         if (formField.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
@@ -227,12 +228,12 @@ class CreateEditDocument extends Component {
       });
     // }
   }
-
+  // NOT USED; Experiment for creating new input fields
   renderNewElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     if (!documentEmpty) {
       const { newElement } = this.props.documents;
-      // console.log('in create_edit_document, renderNewElements, newElement: ', newElement);
+      console.log('in create_edit_document, renderNewElements, newElement: ', newElement);
       if (newElement.page == page) {
         // console.log('in create_edit_document, renderNewElements, newElement.page, page: ', newElement.page, page);
         return (
@@ -258,13 +259,19 @@ class CreateEditDocument extends Component {
     // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
     // {this.renderAlert()}
     // <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
-    const file = 'teishaku-saimuhosho';
+    const image = Documents[this.props.createDocumentKey].image;
     // const page = 1;
     // {this.renderNewElements(page)}
-    return _.map(Object.keys(DocumentForm), page => {
+    return _.map(Object.keys(this.props.documentFields), page => {
       // console.log('in create_edit_document, renderDocument, page: ', page);
       return (
-          <div key={page} value={page} id="document-background" className="test-image-pdf-jpg-background" style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${file}.jpg)` }}>
+          <div
+            key={page}
+            value={page}
+            id="document-background"
+            className="test-image-pdf-jpg-background"
+            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
+          >
             {this.renderEachDocumentField(page)}
           </div>
       );
@@ -418,10 +425,10 @@ function calculateAge(dateString) {
     return age;
 }
 
-function getInitialValueObject(flat, booking, userOwner, tenant, appLanguageCode) {
+function getInitialValueObject({ flat, booking, userOwner, tenant, appLanguageCode, documentFields }) {
   const object = {};
-  _.each(DocumentForm, eachPageObject => {
-    // for each page in DocumentForm
+  _.each(documentFields, eachPageObject => {
+    // for each page in this.props.documentFields
     _.each(Object.keys(flat), key => {
       // for each flat in boooking
       if (eachPageObject[key]) {
@@ -723,10 +730,18 @@ function mapStateToProps(state) {
     const flat = state.bookingData.fetchBookingData.flat;
     const booking = state.bookingData.fetchBookingData;
     const userOwner = state.bookingData.user;
-    const tenant = state.bookingData.fetchBookingData.user
+    const tenant = state.bookingData.fetchBookingData.user;
+    const appLanguageCode = state.languages.appLanguageCode;
+    // documentKey sent as state props from booking_cofirmation.js after user click
+    // setCreateDocumentKey action fired and app state set
+    const documentKey = state.documents.createDocumentKey;
+    // const documents = {
+    //   fixed_term_rental_contract_jp: { form: DocumentForm }
+    // };
+    const documentFields = Documents[documentKey].form;
     // console.log('in create_edit_document, mapStateToProps, flat: ', flat);
     // console.log('in create_edit_document, mapStateToProps, DocumentForm: ', DocumentForm);
-    const initialValues = getInitialValueObject(flat, booking, userOwner, tenant, state.languages.appLanguageCode);
+    const initialValues = getInitialValueObject({ flat, booking, userOwner, tenant, appLanguageCode, documentFields });
 
     console.log('in create_edit_document, mapStateToProps, state: ', state);
     return {
@@ -740,7 +755,9 @@ function mapStateToProps(state) {
       initialValues,
       // initialValues: testObject,
       documents: state.documents,
-      requiredFieldsNull: state.bookingData.requiredFields
+      requiredFieldsNull: state.bookingData.requiredFields,
+      createDocumentKey: state.documents.createDocumentKey,
+      documentFields
     };
   } else {
     return {};

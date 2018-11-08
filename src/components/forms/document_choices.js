@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import DocumentForm from '../constants/document_form';
+import FixedTermRentalContract from '../constants/fixed_term_rental_contract.js';
 
 class DocumentChoices extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class DocumentChoices extends Component {
 
   anyOfOtherValues(name, value) {
     const anyOtherValueArray = [];
-    _.each(DocumentForm[this.props.page][name].choices, choice => {
+    _.each(FixedTermRentalContract[this.props.page][name].choices, choice => {
       if (choice.params.val == value) {
         // console.log('DocumentChoices, anyOfOtherValues choice.params.val, value', choice.params.val, value);
         anyOtherValueArray.push(choice)
@@ -83,7 +83,7 @@ class DocumentChoices extends Component {
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
-    return _.map(DocumentForm[this.props.page][name].choices, choice => {
+    return _.map(FixedTermRentalContract[this.props.page][name].choices, choice => {
         // console.log('DocumentChoices, renderEachChoice this.props.required', this.props.required);
       // console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
       // console.log('DocumentChoices, renderEachChoice name', name);
@@ -138,8 +138,8 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, render value == undefined', value === undefined);
     // <div>The current value is {String(value)}.</div>
 
-    // <div type={DocumentForm[name].box.type} onClick={() => onChange(val)} className={DocumentForm[name].box.className} style={value == val ? { borderColor: 'black' } : { borderColor: 'lightgray' } }>Y</div>
-    // <div key={name} style={DocumentForm[name].box.style}>
+    // <div type={FixedTermRentalContract[name].box.type} onClick={() => onChange(val)} className={FixedTermRentalContract[name].box.className} style={value == val ? { borderColor: 'black' } : { borderColor: 'lightgray' } }>Y</div>
+    // <div key={name} style={FixedTermRentalContract[name].box.style}>
     return (
       <div key={name}>
          {this.renderEachChoice()}

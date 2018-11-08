@@ -11,6 +11,7 @@ import CreateEditDocument from './forms/create_edit_document';
 import calculateAge from './functions/calculate_age';
 import Facility from './constants/facility';
 import AppLanguages from './constants/app_languages';
+// import DocumentForm from './constants/document_form';
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -237,7 +238,7 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <div onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">定期借家契約</div>
+              <div value={'fixed_term_rental_contract_jp'} onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">{AppLanguages.fixedTermContract[this.props.appLanguageCode]}</div>
             </div>
 
             <div className="booking-request-box-each-line">
@@ -481,8 +482,14 @@ class BookingConfirmation extends Component {
     );
   }
 
-  handleDocumentCreateLink() {
-    this.setState({ showDocument: true });
+  handleDocumentCreateLink(event) {
+    const clickedElement = event.target;
+    // elementval is document key
+    const elementVal = clickedElement.getAttribute('value');
+  
+    this.props.setCreateDocumentKey(elementVal, () => {
+      this.setState({ showDocument: true });
+    });
   }
 
   // renderDocumentChoices() {

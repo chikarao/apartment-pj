@@ -5,7 +5,7 @@ import cloudinary from 'cloudinary-core';
 import _ from 'lodash';
 
 import { reduxForm, Field } from 'redux-form';
-import DocumentForm from './constants/document_form';
+// import DocumentForm from './constants/document_form';
 
 import DocumentChoices from './forms/document_choices';
 

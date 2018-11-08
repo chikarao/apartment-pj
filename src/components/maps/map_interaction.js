@@ -1076,7 +1076,7 @@ class MapInteraction extends Component {
     // keep for when there is solution for language selection;
     return (
       <div className="map-interaction-box">
-        <div className="map-interaction-title"><i className="fa fa-search"></i>{AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
+        <div className="map-interaction-title"><i className="fa fa-search"></i>&nbsp;{AppLanguages.searchNearest[this.props.appLanguageCode]}</div>
         <div value="school"className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.schools[this.props.appLanguageCode]}</div>
         <div value="convenience_store" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.convenientStores[this.props.appLanguageCode]}</div>
         <div value="supermarket" className="map-interaction-search-criterion" onClick={this.handleSearchCriterionClick.bind(this)}>{AppLanguages.superMarkets[this.props.appLanguageCode]}</div>
@@ -1129,7 +1129,12 @@ class MapInteraction extends Component {
       if (renderIt) {
         return (
           <div key={eachPlaceLanguageCode} className="map-interaction-box">
-            <div className="map-interaction-title"><i className="fa fa-chevron-circle-right"></i>  {AppLanguages.nearbyPlaces[this.props.appLanguageCode]} &nbsp;{this.props.showFlat ? '' : Languages[eachPlaceLanguageCode].flag}</div>
+            <div className="map-interaction-title">
+              <i className="fa fa-chevron-circle-right"></i>
+              &nbsp;
+              {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}
+              &nbsp;{this.props.showFlat ? '' : Languages[eachPlaceLanguageCode].flag}
+            </div>
             <ul>
               {this.renderSelectedResultsList(eachPlaceLanguageCode)}
             </ul>
