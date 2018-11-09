@@ -2703,6 +2703,7 @@ form {
 
 .booking-confirmation-document-create-link {
   color: blue;
+  margin: 0 0 10px 0;
 }
 .booking-confirmation-document-create-link:hover {
   color: gray;

@@ -257,6 +257,7 @@ const appLanguages =
     minutes: { en: ' minutes', jp: '分' },
     meters: { en: ' meters', jp: 'メートル' },
     fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
+    importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },
   };
 
 export default appLanguages;
