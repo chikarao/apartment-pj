@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object for use with bank account input and edit in mypaage
 
 const BankAccount = {
   account_name: {

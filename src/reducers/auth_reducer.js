@@ -27,7 +27,9 @@ import {
   FETCH_BANK_ACCOUNTS_BY_USER,
   CREATE_BANK_ACCOUNT,
   UPDATE_BANK_ACCOUNT,
-  SELECTED_BANK_ACCOUNT_ID
+  SELECTED_BANK_ACCOUNT_ID,
+  UPDATE_CONTRACTOR,
+  CREATE_CONTRACTOR,
  } from '../actions/types';
 
 export default function (state = {
@@ -93,7 +95,7 @@ export default function (state = {
       return { ...state, showEditProfileModal: !state.showEditProfileModal };
 
     case FETCH_PROFILE_FOR_USER:
-      return { ...state, userProfile: action.payload };
+      return { ...state, userProfile: action.payload.profile, user: action.payload.user };
 
     case EDIT_PROFILE:
       return { ...state, userProfile: action.payload };
@@ -139,6 +141,12 @@ export default function (state = {
 
     case SELECTED_BANK_ACCOUNT_ID:
       return { ...state, selectedBankAccountId: action.payload };
+
+    case UPDATE_CONTRACTOR:
+      return { ...state, user: action.payload };
+
+    case CREATE_CONTRACTOR:
+      return { ...state, user: action.payload };
 
     default:
       return state;

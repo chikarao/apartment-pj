@@ -1,5 +1,4 @@
-// import React from 'react';
-
+// object for input and edit of profile used in mypage 
 const Profile = {
   username: {
     name: 'username',

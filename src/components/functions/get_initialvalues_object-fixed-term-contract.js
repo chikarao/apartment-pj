@@ -10,7 +10,7 @@ export default (props) => {
 
   // takes booking and creates object of start date and end date years, months and days
   function getBookingDateObject(booking) {
-    // console.log('in create_edit_document, getBookingDateObject, booking: ', booking);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, booking: ', booking);
     const bookingEndArray = booking.date_end.split('-')
     const bookingStartArray = booking.date_start.split('-')
     const to_year = bookingEndArray[0];
@@ -19,14 +19,14 @@ export default (props) => {
     const from_year = bookingStartArray[0];
     const from_month = bookingStartArray[1];
     const from_day = bookingStartArray[2];
-    // console.log('in create_edit_document, getBookingDateObject, bookingEndArray: ', bookingEndArray);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, bookingEndArray: ', bookingEndArray);
     const object = { to_year, to_month, to_day, from_year, from_month, from_day }
-    // console.log('in create_edit_document, getBookingDateObject, object: ', object);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, object: ', object);
     return object;
   }
 
   function getContractLength(booking) {
-    // console.log('in create_edit_document, getContractLength, booking: ', booking);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, booking: ', booking);
     const dateFrom = new Date(booking.date_start);
     const dateTo = new Date(booking.date_end);
     const difference = Math.floor(dateTo - dateFrom);
@@ -41,9 +41,9 @@ export default (props) => {
     } else if (years >   2 && years < 3) {
       years = 2;
     }
-    // console.log('in create_edit_document, getContractLength, months, years: ', months, years);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, months, years: ', months, years);
     const object = { months, years };
-    // console.log('in create_edit_document, getContractLength, object: ', object);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, object: ', object);
     return object;
   }
 
@@ -66,24 +66,24 @@ export default (props) => {
     // const leapYearDay = 29;
     //
     // const leapYears = [2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2104, 2108, 2112, 2116, 2120]
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, booking: ', booking);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, booking: ', booking);
     const dateEndOneYear = new Date(booking.date_end);
     const dateEndSixMonths = new Date(booking.date_end);
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
     const oneYearBefore = new Date(dateEndOneYear.setFullYear(dateEndOneYear.getFullYear() - 1));
     const sixMonthsBefore = new Date(dateEndSixMonths.setMonth(dateEndSixMonths.getMonth() - 6));
     const oneYearBeforeDay = oneYearBefore.getDate() == (0 || 1) ? 30 : oneYearBefore.getDate() - 1;
     const sixMonthsBeforeDay = sixMonthsBefore.getDate() == (0 || 1) ? 30 : sixMonthsBefore.getDate() - 1;
     const oneYearBeforeMonth = oneYearBefore.getDate() == (0 || 1) ? oneYearBefore.getMonth() : oneYearBefore.getMonth() + 1;
     const sixMonthsBeforeMonth = sixMonthsBefore.getDate() == (0 || 1) ? sixMonthsBefore.getMonth() : sixMonthsBefore.getMonth() + 1;
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, oneYearBefore: ', oneYearBefore.getFullYear(), oneYearBefore.getMonth() + 1, oneYearBefore.getDate() - 1);
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, oneYearBefore: ', oneYearBefore.getFullYear(), oneYearBefore.getMonth() + 1, oneYearBefore.getDate() - 1);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
 
     const noticeObject = { from: { year: oneYearBefore.getFullYear(), month: oneYearBeforeMonth, day: oneYearBeforeDay }, to: { year: sixMonthsBefore.getFullYear(), month: sixMonthsBeforeMonth, day: sixMonthsBeforeDay }}
     return noticeObject;
-    // console.log('in create_edit_document, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
   }
 
   function createAddress(flat) {
@@ -98,20 +98,20 @@ export default (props) => {
     // const address = '';
     const addressArray = [];
     _.each(addressFieldArray, each => {
-      // console.log('in create_edit_document, createAddress, address: ', address);
-      // console.log('in create_edit_document, createAddress, each, type of flat[each]: ', each, typeof flat[each]);
+      // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, address: ', address);
+      // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, each, type of flat[each]: ', each, typeof flat[each]);
       if ((typeof flat[each]) == 'string') {
         // const addressString = address.concat(toString(flat[each]));
         addressArray.push(flat[each])
       }
     });
     const address = addressArray.join(', ')
-    // console.log('in create_edit_document, createAddress, address: ', address);
+    // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, address: ', address);
     return address;
   }
 
   function getChoice(facility) {
-    // console.log('in create_edit_document, getChoice, facility: ', facility);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getChoice, facility: ', facility);
     const array = [];
     _.each(Facility.facility_type.choices, eachChoice => {
       if (eachChoice.value == facility.facility_type) {
@@ -163,7 +163,7 @@ export default (props) => {
           //   eachBuildingKey = 'flat_building_name';
           // }
           if (eachPageObject[eachBuildingKey]) {
-            // console.log('in create_edit_document, getInitialValuesObject, eachBuildingKey: ', eachBuildingKey);
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachBuildingKey: ', eachBuildingKey);
             // if attributes in flat.building are on DocumentForm, add to initialValues objectReturned
             objectReturned[eachBuildingKey] = flat.building[eachBuildingKey];
           }
@@ -178,7 +178,7 @@ export default (props) => {
           //   eachBuildingKey = 'flat_bank_account_name';
           // }
           if (eachPageObject[eachBankAccountKey]) {
-            // console.log('in create_edit_document, getInitialValuesObject, eachBankAccountKey: ', eachBankAccountKey);
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachBankAccountKey: ', eachBankAccountKey);
             // if attributes in flat.bank_account are on DocumentForm, add to initialValues objectReturned
             // if key is account_number, add *** to initial value
             if (eachBankAccountKey == 'account_number') {
@@ -237,7 +237,7 @@ export default (props) => {
       // calculate number of facilties, car park, bicycle parking, etc
       // and get a string of their numbers 1A, 2D etc.
       if (booking.facilities) {
-        // console.log('in create_edit_document, getInitialValuesObject, flat.facilities: ', flat.facilities);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flat.facilities: ', flat.facilities);
         // set up arrays for each facility
         const carParkingArray = [];
         const bicycleParkingArray = [];
@@ -263,13 +263,13 @@ export default (props) => {
             }
           })
         })
-        // console.log('in create_edit_document, getInitialValuesObject, facilityArray: ', facilityArray);
-        // console.log('in create_edit_document, getInitialValuesObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilityArray: ', facilityArray);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
         // facilityUsageFeeCount to calculate total of all facilities to charge
         let facilityUsageFeeCount = 0;
         // iterate over each array in array of of arrays
         _.each(facilityArray, eachArray => {
-          // console.log('in create_edit_document, getInitialValuesObject, eachArray: ', eachArray);
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachArray: ', eachArray);
           // if an array has something in it, count how many and form their strings
           if (eachArray.length > 0) {
             // count for how many spaces (parking, bicycle, motorcyle)
@@ -277,22 +277,22 @@ export default (props) => {
             // facilitySpaces for string showing space numbers 1A, 2B etc
             let facilitySpaces = ''
             _.each(eachArray, each => {
-              // console.log('in create_edit_document, getInitialValuesObject, each: ', each);
-              // console.log('in create_edit_document, getInitialValuesObject, each: ', each);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
               // forms string with facility numbers eg 1A, 2B etc
               if (count > 0) {
                 facilitySpaces = facilitySpaces.concat(', ')
                 facilitySpaces = facilitySpaces.concat(each.facility_number)
-                // console.log('in create_edit_document, getInitialValuesObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
                 count++;
               } else {
                 facilitySpaces = facilitySpaces.concat(each.facility_number)
-                // console.log('in create_edit_document, getInitialValuesObject, facilitySpaces, count else: ', facilitySpaces, count);
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count else: ', facilitySpaces, count);
                 count++;
               }
               // get the choice that corresponds to each facility in facility types
               const choiceInEach = getChoice(each);
-              // console.log('in create_edit_document, getInitialValuesObject, choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]: ', choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]: ', choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]);
               // if facility NOT included, add up price_per_month
               if (!flat[choiceInEach.facilityObjectMap]) {
                 facilityUsageFeeCount += each.price_per_month;
@@ -300,11 +300,12 @@ export default (props) => {
             })
             // get the choice that corresponds to the facility_type
             const choice = getChoice(eachArray[0]);
-            console.log('in create_edit_document, getInitialValuesObject, choice: ', choice);
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choice: ', choice);
+            console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, count, facilitySpaces, choice: ', count, facilitySpaces, choice);
             //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
             // for some reason, parking_spaces gets assigned '0' in form initial, so assign empty string to start,
             // then when choice is selected, assign a number.
-            objectReturned.parking_spaces = '';
+            // objectReturned.parking_spaces = '';
             objectReturned[choice.documentFormMap1] = count;
             // objectReturned[choice.documentFormMap1] = ((count > 0) ? count : '');
             objectReturned[choice.documentFormMap2] = facilitySpaces;
@@ -327,7 +328,7 @@ export default (props) => {
             const keys = ['name', 'age'];
             _.each(keys, key => {
               if ((count == Tenants[eachTenantKey].group) && (key == Tenants[eachTenantKey].tenantObjectMap)) {
-                console.log('in create_edit_document, getInitialValuesObject, eachTenant, key, eachTenantKey: ', eachTenant, key, eachTenantKey);
+                console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachTenant, key, eachTenantKey: ', eachTenant, key, eachTenantKey);
                 objectReturned[eachTenantKey] = eachTenant[key];
               }
             })
@@ -365,7 +366,7 @@ export default (props) => {
         objectReturned.building_owner_phone = flat.building.building_owner_phone;
       }
 
-      console.log('in create_edit_document, getInitialValuesObject, tenant.profile: ', tenant.profile);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenant.profile: ', tenant.profile);
       if (tenant.profile.emergency_contact_name) {
         objectReturned.emergency_contact_name = tenant.profile.emergency_contact_name;
         objectReturned.emergency_contact_phone = tenant.profile.emergency_contact_phone;
@@ -387,7 +388,7 @@ export default (props) => {
       //     // count up a counter if one of the amenities is true
       //     let attributeBoolCount = 0;
       //     _.each(eachPageObject[documentPageKey].attributes.names, eachName => {
-      //       console.log('in create_edit_document, getInitialValuesObject, each attributes eachName, flat.amenity[eachName]: ', eachName, flat.amenity[eachName]);
+      //       console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each attributes eachName, flat.amenity[eachName]: ', eachName, flat.amenity[eachName]);
       //       if (flat.amenity[eachName]) {
       //         attributeBoolCount++;
       //       }
@@ -399,36 +400,36 @@ export default (props) => {
       //     }
       //   }
       // });
+      // deal with booking dates dates (separates year, month and day of to and from attributes)
+      const bookingDatesObject = getBookingDateObject(booking);
+      _.each(Object.keys(bookingDatesObject), dateKey => {
+        objectReturned[dateKey] = bookingDatesObject[dateKey];
+      });
+      // end of each bookingDatesObject
+      // get address1, city, state, zip in one string
+      const address = createAddress(flat);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, address: ', address);
+      // add address to initialvalues objectReturned
+      objectReturned.address = address;
+
+      // get contract length objectReturned with years and months
+      const contractLengthObject = getContractLength(booking);
+      objectReturned.contract_length_years = contractLengthObject.years;
+      objectReturned.contract_length_months = contractLengthObject.months;
+
+      if (contractLengthObject.years >= 1) {
+        const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
+        objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
+        objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
+        objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
+        objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
+        objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
+        objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
+      }
     });
     // end of documentForm eachPageObject
-    // deal with booking dates dates (separates year, month and day of to and from attributes)
-    const bookingDatesObject = getBookingDateObject(booking);
-    _.each(Object.keys(bookingDatesObject), dateKey => {
-      objectReturned[dateKey] = bookingDatesObject[dateKey];
-    });
-    // end of each bookingDatesObject
-    // get address1, city, state, zip in one string
-    const address = createAddress(flat);
-    // console.log('in create_edit_document, getInitialValuesObject, address: ', address);
-    // add address to initialvalues objectReturned
-    objectReturned.address = address;
 
-    // get contract length objectReturned with years and months
-    const contractLengthObject = getContractLength(booking);
-    objectReturned.contract_length_years = contractLengthObject.years;
-    objectReturned.contract_length_months = contractLengthObject.months;
-
-    if (contractLengthObject.years >= 1) {
-      const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
-      objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
-      objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
-      objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
-      objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
-      objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
-      objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
-    }
-
-    console.log('in create_edit_document, getInitialValuesObject, objectReturned: ', objectReturned);
+    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, objectReturned: ', objectReturned);
     // return objectReturned for assignment to initialValues in mapStateToProps
     return objectReturned;
   // }

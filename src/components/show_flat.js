@@ -270,8 +270,8 @@ class ShowFlat extends Component {
       } // end of if elementVal userBooking
 
       if (elementVal == 'ownerBooking') {
-        const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true }
-          this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
+        const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to, booking_by_owner: true, facilities: [], tenants: [], profile: { user_id: this.props.auth.id } }
+        this.props.requestBooking(bookingRequest, () => this.bookingRequestCallbackOwner());
       }
     } else {
       // console.log('in show_flat handleBookingClick, NO DATES SELECTED: ');
@@ -434,7 +434,11 @@ class ShowFlat extends Component {
     // switched  block (now name ownerBooking) to handleBooking click
     if (elementVal == 'sync') {
       console.log('in show_flat, handleDateBlockSyncClick elementVal: ', elementVal);
-      this.props.syncCalendars({ flat_id: this.props.flat.id });
+      if (this.props.flat.calendars.length > 0) {
+        this.props.syncCalendars({ flat_id: this.props.flat.id });
+      } else {
+        window.alert('You do not have any iCalendars registered. Please go to edit flat and add calendars')
+      }
     }
   }
 

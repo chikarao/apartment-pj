@@ -1,4 +1,5 @@
 // For edit flat languages box
+// objects related display of languages in various parts of the app
 const languages =
   {
     en: { name: 'English', flag: '🇬🇧', local: 'English' },

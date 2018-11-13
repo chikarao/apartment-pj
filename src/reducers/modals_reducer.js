@@ -14,7 +14,13 @@ import {
   SHOW_FACILITY_EDIT_MODAL,
   SHOW_FACILITY_CREATE_MODAL,
   SHOW_INSPECTION_CREATE_MODAL,
-  SHOW_INSPECTION_EDIT_MODAL
+  SHOW_INSPECTION_EDIT_MODAL,
+  SHOW_CONTRACTOR_CREATE_MODAL,
+  SHOW_CONTRACTOR_EDIT_MODAL,
+  SHOW_STAFF_CREATE_MODAL,
+  SHOW_STAFF_EDIT_MODAL,
+  SELECTED_STAFF_ID,
+  SELECTED_CONTRACTOR_ID,
 } from '../actions/types';
 //
 // const initialState = {
@@ -83,6 +89,24 @@ export default function (
 
     case SHOW_INSPECTION_EDIT_MODAL:
       return { ...state, showInspectionEditModal: !state.showInspectionEditModal };
+
+    case SHOW_CONTRACTOR_CREATE_MODAL:
+      return { ...state, showContractorCreateModal: !state.showContractorCreateModal };
+
+    case SHOW_CONTRACTOR_EDIT_MODAL:
+      return { ...state, showContractorEditModal: !state.showContractorEditModal };
+
+    case SHOW_STAFF_CREATE_MODAL:
+      return { ...state, showStaffCreateModal: !state.showStaffCreateModal };
+
+    case SHOW_STAFF_EDIT_MODAL:
+      return { ...state, showStaffEditModal: !state.showStaffEditModal };
+
+    case SELECTED_CONTRACTOR_ID:
+    return { ...state, selectedContractorId: action.payload };
+
+    case SELECTED_STAFF_ID:
+    return { ...state, selectedStaffId: action.payload };
 
     default:
       return state;

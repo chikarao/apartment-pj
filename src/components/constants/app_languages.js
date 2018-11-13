@@ -1,4 +1,7 @@
-//Rules: keys must be two three words (three max for disambiguation) that cononically describe the text on a page
+// Object for use with languages throughout the app;
+// Some constant files such as constants/docments.js and inspection.js have their own languages
+// Rules: keys must be two three words (three max for disambiguation)
+// that cononically describe the text on a page
 //in camelCase; leave out a, the, to, or and other words, no colons
 const appLanguages =
   {
@@ -256,8 +259,16 @@ const appLanguages =
     bookingRequestWorkspace: { en: 'Booking Request Workspace', jp: '契約ワークスペース' },
     minutes: { en: ' minutes', jp: '分' },
     meters: { en: ' meters', jp: 'メートル' },
-    fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
-    importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },
+    addNewContractor: { en: 'Add a New Contrator', jp: 'コントラクターを追加' },
+    contractors: { en: 'Contrators', jp: 'コントラクター' },
+    companyName: { en: 'Company Name', jp: '会社名' },
+    contractorType: { en: 'Contractor Type', jp: 'コントラクタータイプ' },
+    staff: { en: 'Staff', jp: 'スタッフ' },
+    addNewStaff: { en: 'Add New Staff', jp: 'スタッフを追加' },
+    viewStaff: { en: 'View Staff', jp: 'スタッフを表示' },
+    // staffTitle: { en: 'Title', jp: 'タイトル' },
+    // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
+    // importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },
   };
 
 export default appLanguages;

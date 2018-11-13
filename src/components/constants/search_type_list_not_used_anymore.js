@@ -1,4 +1,4 @@
-
+// Object for use in nearby place seach in edit flat; drop down search by category 
 const SearchTypeList = {
   accounting: 'Accounting Offices',
   airport: 'Airports',

@@ -1,4 +1,7 @@
-// import React from 'react';
+// Object for use in landing and results map search;
+// Dropdown of cities search shows these possible results;
+// latlng is used for search within those map bounds
+// zoom is for use in zooming map when shown
 
 const CitiesList =
   [

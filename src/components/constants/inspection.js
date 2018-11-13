@@ -1,5 +1,5 @@
 // import React from 'react';
-
+// object for input of inspections in edit flat, in building section
 
 const Inspection = {
   inspection_language: {

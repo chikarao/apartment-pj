@@ -126,6 +126,18 @@ import {
   DELETE_INSPECTION,
   SELECTED_INSPECTION_ID,
   SET_CREATE_DOCUMENT_KEY,
+  SHOW_CONTRACTOR_CREATE_MODAL,
+  SHOW_CONTRACTOR_EDIT_MODAL,
+  SHOW_STAFF_CREATE_MODAL,
+  SHOW_STAFF_EDIT_MODAL,
+  SELECTED_CONTRACTOR_ID,
+  SELECTED_STAFF_ID,
+  UPDATE_CONTRACTOR,
+  CREATE_CONTRACTOR,
+  DELETE_CONTRACTOR,
+  UPDATE_STAFF,
+  CREATE_STAFF,
+  DELETE_STAFF,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1168,14 +1180,14 @@ export function fetchProfileForUser(callback) {
     })
     .then(response => {
       console.log('response to fetchProfileForUser, response: ', response);
-      console.log('response to fetchProfileForUser, response.data.data.profile: ', response.data.data.profile);
+      console.log('response to fetchProfileForUser, response.data.data.profile: ', response.data.data);
       // callback to fetchCustomer
       if (response.data.data.profile.user.stripe_customer_id) {
         callback();
       }
       dispatch({
         type: FETCH_PROFILE_FOR_USER,
-        payload: response.data.data.profile
+        payload: response.data.data
       });
     });
   };
@@ -1997,6 +2009,33 @@ export function showInspectionEditModal() {
   return { type: SHOW_INSPECTION_EDIT_MODAL };
 }
 
+export function showContractorEditModal() {
+  console.log('in actions index, showContractorEditModal:');
+
+  //flip showContractorEditModal
+  return { type: SHOW_CONTRACTOR_EDIT_MODAL };
+}
+
+export function showContractorCreateModal() {
+  console.log('in actions index, showContractorCreateModal:');
+
+  //flip showContractorCreateModal
+  return { type: SHOW_CONTRACTOR_CREATE_MODAL };
+}
+export function showStaffEditModal() {
+  console.log('in actions index, showStaffEditModal:');
+
+  //flip showStaffEditModal
+  return { type: SHOW_STAFF_EDIT_MODAL };
+}
+
+export function showStaffCreateModal() {
+  console.log('in actions index, showStaffCreateModal:');
+
+  //flip showStaffCreateModal
+  return { type: SHOW_STAFF_CREATE_MODAL };
+}
+
 export function selectedBankAccountId(id) {
   console.log('in actions index, selectedBankAccountId:');
 
@@ -2015,6 +2054,20 @@ export function selectedInspectionId(id) {
 
   //flip showResetPasswordModal
   return { type: SELECTED_INSPECTION_ID, payload: id };
+}
+
+export function selectedContractorId(id) {
+  console.log('in actions index, selectedContractorId:');
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_CONTRACTOR_ID, payload: id };
+}
+
+export function selectedStaffId(id) {
+  console.log('in actions index, selectedStaffId:');
+
+  //flip showResetPasswordModal
+  return { type: SELECTED_STAFF_ID, payload: id };
 }
 
 export function setCreateDocumentKey(key, callback) {
@@ -2209,6 +2262,7 @@ export function createFacility(facilityAttributes, callback) {
     });
   };
 }
+
 export function createInspection(inspectionAttributes, callback) {
   console.log('in action index, createInspection, inspectionAttributes: ', inspectionAttributes);
   // const { building_id } = bankAccountAttributes;
@@ -2260,7 +2314,6 @@ export function updateInspection(inspectionAttributes, id, callback) {
     });
   };
 }
-
 export function deleteInspection(id, callback) {
   // console.log('in action index, deleteInspection, facilityAttributes: ', facilityAttributes);
   // const { building_id } = bankAccountAttributes;
@@ -2281,6 +2334,162 @@ export function deleteInspection(id, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to deleteInspection: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function createContractor(contractorAttributes, callback) {
+  console.log('in action index, createContractor, contractorAttributes: ', contractorAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/contractors/`, contractorAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createContractor: ', response);
+      console.log('in action index, response to createContractor: ', response.data.data.user);
+
+      dispatch({
+        type: CREATE_CONTRACTOR,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createContractor: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function updateContractor(contractorAttributes, callback) {
+  console.log('in action index, updateContractor, contractorAttributes: ', contractorAttributes);
+  const { id } = contractorAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/contractors/${id}`, contractorAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateContractor: ', response);
+      console.log('in action index, response to updateContractor: ', response.data.data.user);
+
+      dispatch({
+        type: UPDATE_CONTRACTOR,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateContractor: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function deleteContractor(id, callback) {
+  // console.log('in action index, deleteContractor, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/contractors/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteContractor: ', response);
+      console.log('in action index, response to deleteContractor: ', response.data.data.user);
+
+      dispatch({
+        type: DELETE_CONTRACTOR,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteContractor: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function createStaff(staffAttributes, callback) {
+  console.log('in action index, createStaff, staffAttributes: ', staffAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/staffs/`, staffAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createStaff: ', response);
+      console.log('in action index, response to createStaff: ', response.data.data.user);
+
+      dispatch({
+        type: CREATE_STAFF,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createStaff: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function updateStaff(staffAttributes, id, callback) {
+  console.log('in action index, updateStaff, staffAttributes: ', staffAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/staffs/${id}`, staffAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to updateStaff: ', response);
+      console.log('in action index, response to updateStaff: ', response.data.data.user);
+
+      dispatch({
+        type: UPDATE_STAFF,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to updateStaff: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function deleteStaff(id, callback) {
+  // console.log('in action index, deleteStaff, facilityAttributes: ', facilityAttributes);
+  // const { building_id } = bankAccountAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/staffs/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteStaff: ', response);
+      console.log('in action index, response to deleteStaff: ', response.data.data.user);
+
+      dispatch({
+        type: DELETE_STAFF,
+        payload: response.data.data.user
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteStaff: ', error);
       // dispatch(authError(error));
       // this.showloading();
     });

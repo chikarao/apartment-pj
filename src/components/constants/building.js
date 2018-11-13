@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object used for input and editing building info in edit flat 
 
 const Building = {
   name: {

@@ -2726,6 +2726,7 @@ form {
   background-color: white;
   overflow: auto;
   overflow-y: scroll;
+  padding: 0 0 10px 0;
 }
 
 .booking-confirmation-profile-top-box {
@@ -3265,6 +3266,14 @@ form {
   color: gray;
   background-color: white !important;
   border: 1px solid red;
+  /* box-shadow: inset 0 2px 2px rgba(0,0,0,.075); */
+  /* color: white; */
+}
+.my-page-card-button-box .btn-view{
+  /* background-color: ; */
+  color: gray;
+  background-color: white !important;
+  border: 1px solid blue;
   /* box-shadow: inset 0 2px 2px rgba(0,0,0,.075); */
   /* color: white; */
 }

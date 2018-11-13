@@ -1,5 +1,5 @@
 // import React from 'react';
-
+// object for input of facility in edit flat
 const Facility = {
   facility_type: {
     name: 'facility_type',

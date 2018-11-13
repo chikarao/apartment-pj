@@ -95,7 +95,7 @@ class SignupModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops!  </strong> {this.props.errorMessage}
+          <strong>  </strong> {this.props.errorMessage}
         </div>
       );
     }

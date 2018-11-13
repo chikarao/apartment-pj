@@ -12,7 +12,7 @@ const ImportantPointsExplanation = {
         type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '10.3%', left: '28.8%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '11.6%', left: '28.4%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'

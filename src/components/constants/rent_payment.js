@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object for input of rent payment methods in edit flat 
 
 const RentPayment = {
   rent_payment_method: {

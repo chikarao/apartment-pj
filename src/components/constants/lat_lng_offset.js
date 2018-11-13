@@ -1,5 +1,4 @@
-// import React from 'react';
-
+// offset for use in googlemap use components for setting bounds of map for search
 const latLngOffset =
   {
     latOffsetNorth: 0.06629999999999825,

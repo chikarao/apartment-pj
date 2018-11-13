@@ -1,4 +1,6 @@
-// import React from 'react';
+// Object for rendering amenities in respective appLanguageCode;
+// Corresponds to attributes in the Amenity model in the api.
+// Need to add if attribute added in api
 
 const Amenities = {
     lockbox: { en: 'Lock box', jp: '金庫' },

@@ -1,3 +1,4 @@
+// Object for use with Stripe; 
 const CardTypes =
   {
     Amex: 'amex',

@@ -4,6 +4,7 @@ import ImportantPointsExplanation from './important_points_explanation.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
 import getInitialValuesObjectImportantPointsExplanation from '../functions/get_initialvalues_object_important_points_explanation.js';
 
+// ADD NEW DOCUMENTS FOR CREATION HERE!!!!!
 // form for setting inputs and buttons with absolute position top and left attributes
 // on the image for the contract
 // contains all the params needed to render PDF on the back end

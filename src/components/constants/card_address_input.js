@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object for use with Stripe; input and edit card holder information
 
 // const cardAddressInputObject = {
 //   name: 'Name on Card',

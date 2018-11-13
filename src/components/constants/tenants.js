@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object for configuring input and edit of tenants in booking_request.js
 
 const Tenants = {
   co_tenant_name: {

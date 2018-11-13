@@ -112,7 +112,7 @@ class SigninModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! &nbsp;</strong> {this.props.errorMessage}
+          <strong> &nbsp;</strong> {this.props.errorMessage}
         </div>
       );
     }

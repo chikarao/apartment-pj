@@ -11,6 +11,9 @@ import UploadForProfile from './images/upload_for_profile';
 import CardInputModal from './modals/card_input_modal';
 import BankAccountCreateModal from './modals/bank_account_create_modal';
 import BankAccountEditModal from './modals/bank_account_edit_modal';
+import ContractorEditModal from './modals/contractor_edit_modal';
+import ContractorCreateModal from './modals/contractor_create_modal';
+import Contractor from './constants/contractor';
 
 import CardTypes from './constants/card_types'
 
@@ -30,7 +33,11 @@ class MyPage extends Component {
       // showConversation: true,
       conversationToShow: {},
       // yourFlat: false,
-      conversationId: ''
+      conversationId: '',
+      selectedContractorId: '',
+      selectedContractor: {},
+      selectedStaffId: '',
+      showStaffBox: false
       // actionType: 'Add a Card'
     };
   }
@@ -665,7 +672,7 @@ formatDate(date) {
     return (
       <div className="my-page-profile-image-box">
         <div className="my-page-profile-image-box-image">
-          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.image + '.jpg'} alt="Profile Image" />
+          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.image + '.jpg'} alt={"No profile picture"} />
         </div>
           <div className="my-page-change-profile-picture-link">
             <UploadForProfile
@@ -955,6 +962,165 @@ formatDate(date) {
     );
   }
 
+  handleAddContractorClick(event) {
+    this.props.showContractorCreateModal();
+  }
+
+  handleContratorEditDeleteClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    const elementName = clickedElement.getAttribute('name');
+    if (elementVal == 'viewStaff') {
+      // console.log('in mypage, handleContratorEditDeleteClick, viewStaff: ');
+      this.setState({ selectedContractorId: elementName, showStaffBox: true });
+    }
+
+    if (elementVal == 'edit') {
+      console.log('in mypage, handleContratorEditDeleteClick, edit: ');
+      this.props.showContractorEditModal();
+      this.props.selectedContractorId(elementName);
+      this.setState({ selectedContractorId: elementName });
+    }
+
+    // if (elementVal == 'delete') {
+    //   console.log('in mypage, handleContratorEditDeleteClick, delete: ');
+    // }
+  }
+
+  // handleContractorClick() {
+  //   console.log('in mypage, renderExistingBankAccountDetails: ');
+  //
+  // }
+
+  getContractorTypeObject(contractor) {
+    let object = {};
+    _.each(Contractor.contractor_type.choices, eachChoice => {
+      if (eachChoice.value == contractor.contractor_type) {
+        object = eachChoice;
+        return;
+      }
+    });
+    return object;
+  }
+
+  renderExistingContractorDetails() {
+      // <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+    // <div className="my-page-placeholder-btn"></div>
+
+    if (this.props.auth.user) {
+      return _.map(this.props.auth.user.contractors, (eachContractor, i) => {
+        const contractorTypeObject = this.getContractorTypeObject(eachContractor);
+        return (
+          <li key={i} className="my-page-each-card">
+              <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+              <div className="my-page-details">
+                <ul>
+                  <li>{eachContractor.company_name}</li>
+                  <li>{contractorTypeObject[this.props.appLanguageCode]}</li>
+                </ul>
+              </div>
+              <div className="my-page-card-button-box">
+                <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+                <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[this.props.appLanguageCode]}</button>
+              </div>
+            </div>
+          </li>
+        );
+      })
+    }
+  }
+
+  renderContractors() {
+    // {this.renderExistingContractorDetails()}
+    // <div className="my-page-enter-new-card-link" onClick={this.handleAddNewBankAccountClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewBankAccount[this.props.appLanguageCode]}</div>
+    return (
+      <div>
+        <div className="my-page-category-title">
+          <div className="my-page-category-left"></div>
+          <div>{AppLanguages.contractors[this.props.appLanguageCode]}</div>
+          <div className="my-page-category-right"></div>
+        </div>
+        <ul>
+          {this.renderExistingContractorDetails()}
+        <div className="my-page-enter-new-card-link" onClick={this.handleAddContractorClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewContractor[this.props.appLanguageCode]}</div>
+        </ul>
+      </div>
+    );
+  }
+
+  handleStaffEditDeleteClick(event) {
+    const clickedElement = event.target;
+    // edit or not
+    const elementValue = clickedElement.getAttribute('value');
+    // staff id
+    const elementName = clickedElement.getAttribute('name');
+    this.props.showStaffEditModal();
+    // set staff id for use in mapStateToProps in staffEditModal
+    this.props.selectedContractorId(elementName);
+    this.setState({ selectedStaffId: elementValue });
+  }
+
+  getContractor() {
+    let object = {};
+    _.each(this.props.auth.user.contractors, eachContractor => {
+      console.log('in mypage, getContractor, eachContractor, this.state.selectedContractorId: ', eachContractor, this.state.selectedContractorId);
+      if (eachContractor.id == parseInt(this.state.selectedContractorId, 10)) {
+        object = eachContractor;
+        return;
+      }
+    });
+    return object;
+  }
+
+  renderExistingStaffDetails(selectedContractor) {
+    // const selectedContractor = this.getContractor();
+    console.log('in mypage, renderExistingStaffDetails, selectedContractor: ', selectedContractor);
+    // <button name={eachStaff.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+
+    return _.map(selectedContractor.staffs, (eachStaff, i) => {
+      return (
+        <li key={i} className="my-page-each-card">
+          <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+            <div className="my-page-details">
+              <ul>
+                <li>{eachStaff.last_name},&nbsp;{eachStaff.first_name}</li>
+                <li>{eachStaff.title}</li>
+                <li>ph {eachStaff.phone}</li>
+                <li>id: {eachStaff.id}</li>
+              </ul>
+            </div>
+            <div className="my-page-card-button-box">
+              <button name={eachStaff.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+            </div>
+          </div>
+        </li>
+      );
+    });
+  }
+
+  handleAddStaffClick() {
+    this.props.showStaffCreateModal();
+  }
+
+  renderStaffs() {
+    if (this.props.auth.user) {
+      const selectedContractor = this.getContractor();
+      return (
+        <div>
+          <div className="my-page-category-title">
+            <div className="my-page-category-left"></div>
+            <div>{AppLanguages.staff[this.props.appLanguageCode]} <br/> {selectedContractor.company_name}</div>
+            <div className="my-page-category-right"></div>
+          </div>
+          <ul>
+            {this.renderExistingStaffDetails(selectedContractor)}
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddStaffClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewStaff[this.props.appLanguageCode]}</div>
+          </ul>
+        </div>
+      );
+    }
+  }
+
   renderCardInputModal() {
     if (this.props.showCardInput) {
       return (
@@ -976,6 +1142,7 @@ formatDate(date) {
       );
     }
   }
+
   renderEditBankAccountForm() {
     if (this.props.showBankAccountEdit) {
       return (
@@ -986,6 +1153,25 @@ formatDate(date) {
     }
   }
 
+  renderContractorEditForm() {
+    console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
+
+    return (
+      <ContractorEditModal
+        show={this.props.showContractorEdit}
+      />
+    );
+  }
+  renderContractorCreateForm() {
+    console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
+
+    return (
+      <ContractorCreateModal
+        show={this.props.showContractorCreate}
+      />
+    );
+  }
+
   render() {
     // <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
     return (
@@ -993,6 +1179,8 @@ formatDate(date) {
         {this.renderCardInputModal()}
         {this.renderCreateBankAccountForm()}
         {this.renderEditBankAccountForm()}
+        {this.props.showContractorEdit ? this.renderContractorEditForm() : ''}
+        {this.props.showContractorCreate ? this.renderContractorCreateForm() : ''}
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
@@ -1003,6 +1191,8 @@ formatDate(date) {
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBankAccounts()}</div>
+            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderContractors()}</div>
+            {this.state.selectedContractorId && this.state.showStaffBox ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderStaffs()}</div> : ''}
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}</button></Link>
@@ -1031,7 +1221,11 @@ function mapStateToProps(state) {
     customer: state.auth.customer,
     charge: state.auth.charge,
     appLanguageCode: state.languages.appLanguageCode,
-    bankAccounts: state.auth.bankAccounts
+    bankAccounts: state.auth.bankAccounts,
+    showStaffEdit: state.modals.showStaffEditModal,
+    showStaffCreate: state.modals.showStaffCreateModal,
+    showContractorEdit: state.modals.showContractorEditModal,
+    showContractorCreate: state.modals.showContractorCreateModal,
   };
 }
 

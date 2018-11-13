@@ -1,4 +1,4 @@
-// import React from 'react';
+// Object for configuring map markers according to category of place returned in gmaps
 import supermarket from '../../assets/supermarket.png';
 import school from '../../assets/school.png';
 import convenienceStore from '../../assets/conveniencestore.png';
