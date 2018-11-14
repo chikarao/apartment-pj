@@ -34,14 +34,11 @@ class FormChoices extends Component {
       // console.log('FormChoices, handleInputChange this.state.inputValue', this.state.inputValue)
     });
   }
-  // <button type="button" onClick={() => onChange(value + 1)}>Inc</button>
-  // <button type="button" onClick={() => onChange(value - 1)}>Dec</button>
-
   anyOfOtherValues(name, value) {
     const anyOtherValueArray = [];
     _.each(this.props.model[name].choices, choice => {
       if (choice.value == value) {
-        console.log('FormChoices, anyOfOtherValues choice.val, value', choice.val, value);
+        // console.log('FormChoices, anyOfOtherValues choice.val, value', choice.val, value);
         anyOtherValueArray.push(choice)
       }
     });
@@ -51,24 +48,18 @@ class FormChoices extends Component {
 
   renderEachChoice() {
     const { input: { value, onChange, name } } = this.props;
-    // console.log('FormChoices, renderEachChoice this.props.page', this.props.page)
-    // Field has choices in document_form object; iterate through choices
-    // For some reason, cannot destructure page from this.props!!!!!!
+    // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
-    // console.log('FormChoices, renderEachChoice name', name);
-    return _.map(this.props.model[name].choices, choice => {
-      // console.log('FormChoices, renderEachChoice choice, value', choice, value);
-      // console.log('FormChoices, renderEachChoice this.props', this.props);
+    return _.map(this.props.model[name].choices, (choice, i) => {
+      // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
+      // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record);
       // define button element for user to click to set value in submission
-      // console.log('FormChoices, renderEachChoice inside onClick, choice[this.props.appLanguageCode]', choice[this.props.appLanguageCode]);
-      // console.log('FormChoices, renderEachChoice inside onClick, this.props.appLanguageCode', this.props.appLanguageCode);
       const buttonElement =
         <div
-          key={choice.value}
+          key={i}
           type={choice.type}
           onClick={() => {
             onChange(choice.value);
-            // console.log('FormChoices, renderEachChoice inside onClick, choice.value, value', choice.value, value);
             this.emptyInput();
           }}
           className={choice.className}
@@ -78,35 +69,52 @@ class FormChoices extends Component {
         </div>
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
-      // const inputElement = <input id="valueInput" value={value} key={choice.val} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }} />
-      // console.log('FormChoices, renderEachChoice choice.val, value, this.anyOfOtherValues(name, value)', choice.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
       const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.value} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''} />
-      // const inputElement = <input id="valueInput" name={name} key={choice.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }} />
       // if choice type is string, use input element above and button if not string
-      if (choice.type == 'string') {
-        return inputElement;
+      // const anotherValue = value;
+      // console.log('FormChoices, renderEachChoice choice, choice.value, value, choice[value]: ', choice, choice.value, value, choice[anotherValue]);
+      // choice.type can be string (input) or button element
+      // if (this.props.addLanguageInput) {
+      // if (this.props.model[name].limit_choices && this.props.record[this.props.model[name].map_to_record] != value) {
+      console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
+      // if there is record and language_code in object; ie do not allow imput
+      // make sure to read the respective objects in constant such as staff or contractor
+      if (this.props.record && this.props.model[name].map_to_record) {
+        // if the language code or map_to_record  does not equal the choice value
+        // ie the choice is something other than the language code that already exists in the db
+        if (choice.value != this.props.record[this.props.model[name].map_to_record]) {
+          // if the input form is a create form
+          if (this.props.create) {
+            // render an input button or input field
+            return choice.type == 'string' ? inputElement : buttonElement;
+            // return <div>{choice[this.props.appLanguageCode]}</div>
+          } else {
+            // if not on create form, do nothing
+            return;
+          }
+          // return choice.type == 'string' ? inputElement : buttonElement;
+        // if the choice value already exists
+        } else {
+            if (this.props.create) {
+              // do nothing render nothing in create form
+              return;
+            } else {
+              // just render choice en or jp, not an input button or field
+              return <div key={i}>{choice[this.props.appLanguageCode]}</div>
+            }
+        }
       } else {
-        return buttonElement;
+        // if there is no record (db record) or model map to, ie a regular field
+        return choice.type == 'string' ? inputElement : buttonElement;
       }
-    })
+    });
   }
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { value, onChange, name } } = this.props;
-    // console.log('FormChoices, render this.props', this.props);
-    // console.log('FormChoices, render value', value);
-    // console.log('FormChoices, render name', name);
-    // console.log('FormChoices, render onChange', onChange);
-    // console.log('FormChoices, render value !== null', value !== null);
-    // console.log('FormChoices, render value === ', value === '');
-    // console.log('FormChoices, render value == undefined', value === undefined);
-    // <div>The current value is {String(value)}.</div>
-
-    // <div type={DocumentForm[name].box.type} onClick={() => onChange(val)} className={DocumentForm[name].box.className} style={value == val ? { borderColor: 'black' } : { borderColor: 'lightgray' } }>Y</div>
-    // <div key={name} style={DocumentForm[name].box.style}>
-    return (
+      return (
       <div className="container form-control-custom-container" key={name}>
         <div className="row form-control-custom">
           {this.renderEachChoice()}
@@ -120,6 +128,7 @@ function mapStateToProps(state) {
   console.log('in form_choices, mapStateToProps, state: ', state);
   return {
     appLanguageCode: state.languages.appLanguageCode,
+    addLanguageInput: state.modals.addLanguage
   };
 }
 

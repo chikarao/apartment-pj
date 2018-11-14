@@ -1,4 +1,4 @@
-// Object used for input and editing building info in edit flat 
+// Object used for input and editing building info in edit flat
 
 const Building = {
   name: {
@@ -27,6 +27,7 @@ const Building = {
     type: 'string',
     className: 'form-control'
   },
+
   state: {
     name: 'state',
     en: 'State',
@@ -35,6 +36,7 @@ const Building = {
     type: 'string',
     className: 'form-control'
   },
+
   zip: {
     name: 'zip',
     en: 'Zip',
@@ -43,6 +45,7 @@ const Building = {
     type: 'string',
     className: 'form-control'
   },
+
   country: {
     name: 'country',
     en: 'Country',

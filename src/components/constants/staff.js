@@ -20,6 +20,78 @@ const Staff = {
     className: 'form-control'
   },
 
+  title: {
+    name: 'title',
+    en: 'Title',
+    jp: '役職',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  registration: {
+    name: 'registration',
+    en: 'Registration Number',
+    jp: '登録番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  phone: {
+    name: 'phone',
+    en: 'Phone',
+    jp: '電話番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  address1: {
+    name: 'address1',
+    en: 'Street Address',
+    jp: '町村番地',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+  // address2: { en: 'Street Address2', jp: '' },
+  city: {
+    name: 'city',
+    en: 'City',
+    jp: '市区',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  state: {
+    name: 'state',
+    en: 'State',
+    jp: '都道府県',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  zip: {
+    name: 'zip',
+    en: 'Zip',
+    jp: '郵便番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  country: {
+    name: 'country',
+    en: 'Country',
+    jp: '国',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
   // contractor_type: {
   //   name: 'contractor_type',
   //   en: 'Staff Type',

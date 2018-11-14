@@ -188,28 +188,46 @@ StaffCreateModal = reduxForm({
   enableReinitialize: true
 })(StaffCreateModal);
 
-// function getStaff(staffs, id) {
-//   // placeholder for when add lanauge
-//   let staff = {};
-//     _.each(staffs, eachStaff => {
-//       console.log('in staff_create_modal, getStaff, eachStaff: ', eachStaff);
-//       if (eachStaff.id == id) {
-//         staff = eachStaff;
-//         return;
-//       }
-//     });
-//
-//   return staff;
-// }
+function getContractor(contractors, id) {
+  // placeholder for when add lanauge
+  let contractor = {};
+    _.each(contractors, eachContractor => {
+      console.log('in contractor_create_modal, getStaff, eachContractor: ', eachContractor);
+      if (eachContractor.id == id) {
+        contractor = eachContractor;
+        return;
+      }
+    });
+
+  return contractor;
+}
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in StaffCreateModal, mapStateToProps, state: ', state);
   // get clicked calendar
   // const calendarArray = [];
   if (state.auth.user) {
-    // let initialValues = {};
+    let initialValues = {};
+
     // // console.log('in StaffCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    // const { staffs } = state.auth.user;
+    const contractor = getContractor(state.auth.user.contractors, parseInt(state.modals.selectedContractorId, 10));
+    const { staffs } = contractor;
+    if (staffs.length > 0) {
+      const staff = staffs[0];
+      initialValues.address1 = staff.address1;
+      initialValues.city = staff.city;
+      initialValues.state = staff.state;
+      initialValues.zip = staff.zip;
+      initialValues.country = staff.country;
+      initialValues.phone = staff.phone;
+    }　else {
+      initialValues.address1 = contractor.address1;
+      initialValues.city = contractor.city;
+      initialValues.state = contractor.state;
+      initialValues.zip = contractor.zip;
+      initialValues.country = contractor.country;
+      initialValues.phone = contractor.phone;
+    }
     // const staff = getStaff(staffs, parseInt(state.modals.selectedStaffId, 10));
     // // const date = new Date(staff.staff_date);
     // // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
@@ -232,7 +250,7 @@ function mapStateToProps(state) {
       contractorId: state.modals.selectedContractorId,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedStaffId
-      // initialValues
+      initialValues
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       // initialValues
     };

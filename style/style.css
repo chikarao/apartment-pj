@@ -2508,7 +2508,7 @@ form {
   flex-wrap: wrap;
 }
 .form-control-custom-container {
-  width: 90%  
+  width: 90%
 }
 
 .form-rectangle {
@@ -3538,6 +3538,15 @@ text-decoration: underline;
 
 .my-page-card-no-picture-box {
   justify-content: space-between !important;
+}
+
+.my-page-add-language-link {
+  color: blue;
+  font-size: 12px;
+}
+
+.my-page-add-language-link:hover {
+  color: gray;
 }
 
 

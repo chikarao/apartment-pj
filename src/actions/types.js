@@ -134,4 +134,5 @@ export const CREATE_STAFF = 'create_staff';
 export const UPDATE_STAFF = 'edit_staff';
 export const DELETE_STAFF = 'delete_staff';
 export const SELECTED_STAFF_ID = 'selected_staff_id';
+export const ADD_LANGUAGE = 'add_language';
 // export const SET_NEW_MESSAGES = 'set_new_messages';

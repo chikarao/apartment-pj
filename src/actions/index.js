@@ -138,6 +138,7 @@ import {
   UPDATE_STAFF,
   CREATE_STAFF,
   DELETE_STAFF,
+  ADD_LANGUAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2034,6 +2035,13 @@ export function showStaffCreateModal() {
 
   //flip state boolean showStaffCreateModal
   return { type: SHOW_STAFF_CREATE_MODAL };
+}
+
+export function addLanguage() {
+  console.log('in actions index, addLanguage:');
+
+  //flip state boolean showStaffCreateModal
+  return { type: ADD_LANGUAGE };
 }
 
 export function selectedBankAccountId(id) {

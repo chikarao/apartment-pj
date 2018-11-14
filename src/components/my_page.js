@@ -536,7 +536,6 @@ formatDate(date) {
         <div className="my-page-no-category-items">{AppLanguages.noMyBooked[this.props.appLanguageCode]}</div>
       );
     }
-
       // }
   }
 
@@ -554,7 +553,6 @@ formatDate(date) {
            _.map(bookings, (booking, index) => {
             // console.log('in mypage, renderOwnBookings, in second each, booking: ', booking);
             // console.log('in mypage, renderOwnBookings, in second each, flat: ', flat);
-
             bookingsList[booking.id] = { id: booking.id, user_id: booking.user_id, date_start: booking.date_start, date_end: booking.date_end, booking_by_owner: booking.booking_by_owner, booking_by_ical: booking.booking_by_ical, flat }
             // console.log('in mypage, renderOwnBookings, bookingsList: ', bookingsList);
           });
@@ -712,32 +710,33 @@ formatDate(date) {
         emergency_contact_relationship,
         introduction
       } = this.props.auth.userProfile;
+      const { appLanguageCode } = this.props;
       // console.log('in mypage, renderProfile, user_id: ', user_id);
       return (
         <div>
           <div className="my-page-category-title">
           <div className="my-page-category-left"></div>
-          <div>{AppLanguages.myProfile[this.props.appLanguageCode]}</div>
+          <div>{AppLanguages.myProfile[appLanguageCode]}</div>
           <div className="my-page-category-right"><div id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></div></div>
           </div>
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">
-            <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[this.props.appLanguageCode]}:</div> <div>{username}</div></li>
-            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[this.props.appLanguageCode]}:</div> <div>{user_id}</div></li>
-            <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[this.props.appLanguageCode]}:</div> <div>{title}</div></li>
-            <li value="first_name"className="my-page-profile-attribute"><div>{AppLanguages.firstName[this.props.appLanguageCode]}:</div> <div>{first_name}</div></li>
-            <li value="last_name"className="my-page-profile-attribute"><div>{AppLanguages.lastName[this.props.appLanguageCode]}:</div> <div>{last_name}</div></li>
-            <li value="birthday"className="my-page-profile-attribute"><div>{AppLanguages.birthday[this.props.appLanguageCode]}:</div> <div>{birthday}</div></li>
-            <li value="address1"className="my-page-profile-attribute"><div>{AppLanguages.streetAddress[this.props.appLanguageCode]}:</div> <div>{address1}</div></li>
-            <li value="city"className="my-page-profile-attribute"><div>{AppLanguages.city[this.props.appLanguageCode]}:</div> <div>{city}</div></li>
-            <li value="state"className="my-page-profile-attribute"><div>{AppLanguages.state[this.props.appLanguageCode]}:</div> <div>{state}</div></li>
-            <li value="zip"className="my-page-profile-attribute"><div>{AppLanguages.zip[this.props.appLanguageCode]}:</div> <div>{zip}</div></li>
-            <li value="country"className="my-page-profile-attribute"><div>{AppLanguages.country[this.props.appLanguageCode]}:</div> <div>{country}</div></li>
-            <li value="emergency_contact_name"className="my-page-profile-attribute"><div>{AppLanguages.emergencyName[this.props.appLanguageCode]}:</div> <div>{emergency_contact_name}</div></li>
-            <li value="emergency_contact_phone"className="my-page-profile-attribute"><div>{AppLanguages.emergencyPhone[this.props.appLanguageCode]}:</div> <div>{emergency_contact_phone}</div></li>
-            <li value="emergency_contact_address"className="my-page-profile-attribute"><div>{AppLanguages.emergencyAddress[this.props.appLanguageCode]}:</div> <div>{emergency_contact_address}</div></li>
-            <li value="emergency_contact_relationship"className="my-page-profile-attribute"><div>{AppLanguages.emergencyRelationship[this.props.appLanguageCode]}:</div> <div>{emergency_contact_relationship}</div></li>
-            <li value=""className="my-page-profile-attribute"><div>{AppLanguages.selfIntro[this.props.appLanguageCode]}:</div> <div></div></li>
+            <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[appLanguageCode]}:</div> <div>{username}</div></li>
+            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[appLanguageCode]}:</div> <div>{user_id}</div></li>
+            <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[appLanguageCode]}:</div> <div>{title}</div></li>
+            <li value="first_name"className="my-page-profile-attribute"><div>{AppLanguages.firstName[appLanguageCode]}:</div> <div>{first_name}</div></li>
+            <li value="last_name"className="my-page-profile-attribute"><div>{AppLanguages.lastName[appLanguageCode]}:</div> <div>{last_name}</div></li>
+            <li value="birthday"className="my-page-profile-attribute"><div>{AppLanguages.birthday[appLanguageCode]}:</div> <div>{birthday}</div></li>
+            <li value="address1"className="my-page-profile-attribute"><div>{AppLanguages.streetAddress[appLanguageCode]}:</div> <div>{address1}</div></li>
+            <li value="city"className="my-page-profile-attribute"><div>{AppLanguages.city[appLanguageCode]}:</div> <div>{city}</div></li>
+            <li value="state"className="my-page-profile-attribute"><div>{AppLanguages.state[appLanguageCode]}:</div> <div>{state}</div></li>
+            <li value="zip"className="my-page-profile-attribute"><div>{AppLanguages.zip[appLanguageCode]}:</div> <div>{zip}</div></li>
+            <li value="country"className="my-page-profile-attribute"><div>{AppLanguages.country[appLanguageCode]}:</div> <div>{country}</div></li>
+            <li value="emergency_contact_name"className="my-page-profile-attribute"><div>{AppLanguages.emergencyName[appLanguageCode]}:</div> <div>{emergency_contact_name}</div></li>
+            <li value="emergency_contact_phone"className="my-page-profile-attribute"><div>{AppLanguages.emergencyPhone[appLanguageCode]}:</div> <div>{emergency_contact_phone}</div></li>
+            <li value="emergency_contact_address"className="my-page-profile-attribute"><div>{AppLanguages.emergencyAddress[appLanguageCode]}:</div> <div>{emergency_contact_address}</div></li>
+            <li value="emergency_contact_relationship"className="my-page-profile-attribute"><div>{AppLanguages.emergencyRelationship[appLanguageCode]}:</div> <div>{emergency_contact_relationship}</div></li>
+            <li value=""className="my-page-profile-attribute"><div>{AppLanguages.selfIntro[appLanguageCode]}:</div> <div></div></li>
             <div value="introduction"className="my-page-profile-introduction">{introduction}</div>
           </ul>
         </div>
@@ -920,6 +919,7 @@ formatDate(date) {
   }
 
   renderExistingBankAccountDetails() {
+    const { appLanguageCode } = this.props;
     return _.map(this.props.bankAccounts, (eachAccount, i) => {
       console.log('in mypage, renderExistingBankAccountDetails, eachAccount.account_type: ', eachAccount.account_type);
       return (
@@ -927,15 +927,15 @@ formatDate(date) {
           <div className="my-page-each-card-click-box my-page-card-no-picture-box">
             <div className="my-page-details">
               <ul>
-                <li>{AppLanguages.accountName[this.props.appLanguageCode]}:  {eachAccount.account_name}</li>
-                <li>{AppLanguages.bankName[this.props.appLanguageCode]}: {eachAccount.bank_name}</li>
-                <li>{AppLanguages.accountNumber[this.props.appLanguageCode]}: {eachAccount.account_number}***</li>
-                <li>{AppLanguages.accountType[this.props.appLanguageCode]}: {AppLanguages[eachAccount.account_type][this.props.appLanguageCode]}</li>
+                <li>{AppLanguages.accountName[appLanguageCode]}:  {eachAccount.account_name}</li>
+                <li>{AppLanguages.bankName[appLanguageCode]}: {eachAccount.bank_name}</li>
+                <li>{AppLanguages.accountNumber[appLanguageCode]}: {eachAccount.account_number}***</li>
+                <li>{AppLanguages.accountType[appLanguageCode]}: {AppLanguages[eachAccount.account_type][appLanguageCode]}</li>
               </ul>
             </div>
             <div className="my-page-card-button-box">
-              <button name={eachAccount.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
-              <button name={eachAccount.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <button name={eachAccount.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
+              <button name={eachAccount.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.delete[appLanguageCode]}</button>
             </div>
           </div>
         </li>
@@ -985,6 +985,14 @@ formatDate(date) {
       this.setState({ selectedContractorId: elementName });
     }
 
+    if (elementVal == 'addLangugae') {
+      console.log('in mypage, handleContratorEditDeleteClick, edit: ');
+      this.props.showContractorCreateModal();
+      this.props.selectedContractorId(elementName);
+      this.props.addLanguage();
+      this.setState({ selectedContractorId: elementName });
+    }
+
     // if (elementVal == 'delete') {
     //   console.log('in mypage, handleContratorEditDeleteClick, delete: ');
     // }
@@ -1009,6 +1017,7 @@ formatDate(date) {
   renderExistingContractorDetails() {
       // <div className="my-page-each-card-click-box my-page-card-no-picture-box">
     // <div className="my-page-placeholder-btn"></div>
+    const { appLanguageCode } = this.props;
 
     if (this.props.auth.user) {
       return _.map(this.props.auth.user.contractors, (eachContractor, i) => {
@@ -1019,12 +1028,15 @@ formatDate(date) {
               <div className="my-page-details">
                 <ul>
                   <li>{eachContractor.company_name}</li>
-                  <li>{contractorTypeObject[this.props.appLanguageCode]}</li>
+                  <li>{contractorTypeObject[appLanguageCode]}</li>
                 </ul>
               </div>
               <div className="my-page-card-button-box">
-                <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
-                <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[this.props.appLanguageCode]}</button>
+                <div name={eachContractor.id} value="addLangugae" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.addLanguage[appLanguageCode]}</div>
+              </div>
+              <div className="my-page-card-button-box">
+                <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
+                <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[appLanguageCode]}</button>
               </div>
             </div>
           </li>

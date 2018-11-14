@@ -21,6 +21,7 @@ import {
   SHOW_STAFF_EDIT_MODAL,
   SELECTED_STAFF_ID,
   SELECTED_CONTRACTOR_ID,
+  ADD_LANGUAGE
 } from '../actions/types';
 //
 // const initialState = {
@@ -107,6 +108,9 @@ export default function (
 
     case SELECTED_STAFF_ID:
     return { ...state, selectedStaffId: action.payload };
+
+    case ADD_LANGUAGE:
+    return { ...state, addLanguage: !state.addLanguage };
 
     default:
       return state;

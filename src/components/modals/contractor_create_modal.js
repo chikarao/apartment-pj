@@ -78,26 +78,24 @@ class ContractorCreateModal extends Component {
   renderEachContractorField() {
     let fieldComponent = '';
     return _.map(Contractor, (formField, i) => {
-      console.log('in contractor_create_modal, renderEachContractorField, formField: ', formField);
+      // console.log('in contractor_create_modal, renderEachContractorField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in contractor_create_modal, renderEachContractorField, fieldComponent: ', fieldComponent);
+      console.log('in contractor_create_modal, renderEachContractorField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
           <label className="create-flat-form-label">{formField.en}:</label>
           <Field
             name={formField.name}
-            // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Contractor } : {}}
+            props={fieldComponent == FormChoices ? { model: Contractor, record: this.props.contractor, create: true } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
-            // style={eachKey.component == 'input' ? }
           />
         </fieldset>
       );
@@ -132,7 +130,7 @@ class ContractorCreateModal extends Component {
           <section className="modal-main">
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">Edit Contractor</h3>
+            <h3 className="auth-modal-title">Create Contractor</h3>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
@@ -185,6 +183,12 @@ ContractorCreateModal = reduxForm({
   enableReinitialize: true
 })(ContractorCreateModal);
 
+// function getExistingLanguages(contractors) {
+//   const array = []
+//   // _.each()
+//   return array;
+// }
+
 function getContractor(contractors, id) {
   // placeholder for when add lanauge
   let contractor = {};
@@ -205,11 +209,12 @@ function mapStateToProps(state) {
   // const calendarArray = [];
   if (state.auth.user) {
     // let initialValues = {};
+    // initialValues.language_code = 'en';
     // // console.log('in ContractorCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    // const { contractors } = state.auth.user;
-    // const contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
-    // // const date = new Date(contractor.contractor_date);
-    // // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
+    const { contractors } = state.auth.user;
+    const contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
+    console.log('in ContractorCreateModal, mapStateToProps, contractor: ', contractor);
+    // const existingLanguagesArray = getExistingLanguages(contractors);
     // console.log('in ContractorCreateModal, mapStateToProps, contractor: ', contractor);
     // initialValues = contractor;
     // // initialValues.contractor_date = dateString;
@@ -226,6 +231,7 @@ function mapStateToProps(state) {
       showContractorEdit: state.modals.showContractorCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
       contractorId: state.modals.selectedContractorId,
+      contractor
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedContractorId
       // initialValues

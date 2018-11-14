@@ -93,7 +93,7 @@ class ContractorEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Contractor } : {}}
+            props={fieldComponent == FormChoices ? { model: Contractor, record: this.props.contractor, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -230,6 +230,7 @@ function mapStateToProps(state) {
       showContractorEdit: state.modals.showContractorEditModal,
       appLanguageCode: state.languages.appLanguageCode,
       contractorId: state.modals.selectedContractorId,
+      contractor,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedContractorId
       initialValues
