@@ -13,6 +13,8 @@ import BankAccountCreateModal from './modals/bank_account_create_modal';
 import BankAccountEditModal from './modals/bank_account_edit_modal';
 import ContractorEditModal from './modals/contractor_edit_modal';
 import ContractorCreateModal from './modals/contractor_create_modal';
+import StaffEditModal from './modals/staff_edit_modal';
+import StaffCreateModal from './modals/staff_create_modal';
 import Contractor from './constants/contractor';
 
 import CardTypes from './constants/card_types'
@@ -973,6 +975,7 @@ formatDate(date) {
     if (elementVal == 'viewStaff') {
       // console.log('in mypage, handleContratorEditDeleteClick, viewStaff: ');
       this.setState({ selectedContractorId: elementName, showStaffBox: true });
+      this.props.selectedContractorId(elementName);
     }
 
     if (elementVal == 'edit') {
@@ -1056,7 +1059,7 @@ formatDate(date) {
     const elementName = clickedElement.getAttribute('name');
     this.props.showStaffEditModal();
     // set staff id for use in mapStateToProps in staffEditModal
-    this.props.selectedContractorId(elementName);
+    this.props.selectedStaffId(elementName);
     this.setState({ selectedStaffId: elementValue });
   }
 
@@ -1076,7 +1079,6 @@ formatDate(date) {
     // const selectedContractor = this.getContractor();
     console.log('in mypage, renderExistingStaffDetails, selectedContractor: ', selectedContractor);
     // <button name={eachStaff.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
-
     return _.map(selectedContractor.staffs, (eachStaff, i) => {
       return (
         <li key={i} className="my-page-each-card">
@@ -1162,12 +1164,28 @@ formatDate(date) {
       />
     );
   }
+
   renderContractorCreateForm() {
-    console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
+    // console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
 
     return (
       <ContractorCreateModal
         show={this.props.showContractorCreate}
+      />
+    );
+  }
+
+  renderStaffEditForm() {
+    return (
+      <StaffEditModal
+        show={this.props.showStaffEdit}
+      />
+    );
+  }
+  renderStaffCreateForm() {
+    return (
+      <StaffCreateModal
+        show={this.props.showStaffCreate}
       />
     );
   }
@@ -1181,6 +1199,8 @@ formatDate(date) {
         {this.renderEditBankAccountForm()}
         {this.props.showContractorEdit ? this.renderContractorEditForm() : ''}
         {this.props.showContractorCreate ? this.renderContractorCreateForm() : ''}
+        {this.props.showStaffEdit ? this.renderStaffEditForm() : ''}
+        {this.props.showStaffCreate ? this.renderStaffCreateForm() : ''}
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">

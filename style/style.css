@@ -2507,6 +2507,9 @@ form {
   justify-content: center;
   flex-wrap: wrap;
 }
+.form-control-custom-container {
+  width: 90%  
+}
 
 .form-rectangle {
   height: 35px;
@@ -3660,6 +3663,7 @@ text-decoration: underline;
   position:fixed;
   background: white;
   width: 80%;
+  max-width: 700px;
   height: auto;
   max-height: 700px;
   min-height: 350px;

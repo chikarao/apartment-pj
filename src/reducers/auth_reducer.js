@@ -30,6 +30,10 @@ import {
   SELECTED_BANK_ACCOUNT_ID,
   UPDATE_CONTRACTOR,
   CREATE_CONTRACTOR,
+  DELETE_CONTRACTOR,
+  UPDATE_STAFF,
+  CREATE_STAFF,
+  DELETE_STAFF
  } from '../actions/types';
 
 export default function (state = {
@@ -146,6 +150,18 @@ export default function (state = {
       return { ...state, user: action.payload };
 
     case CREATE_CONTRACTOR:
+      return { ...state, user: action.payload };
+
+    case DELETE_CONTRACTOR:
+      return { ...state, user: action.payload };
+
+    case UPDATE_STAFF:
+      return { ...state, user: action.payload };
+
+    case CREATE_STAFF:
+      return { ...state, user: action.payload };
+
+    case DELETE_STAFF:
       return { ...state, user: action.payload };
 
     default:

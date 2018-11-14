@@ -27,15 +27,15 @@ class ContractorEditModal extends Component {
   handleFormSubmit(data) {
     // const { code } = data;
     // this.setState({ selectedLanguage: languages[code].name });
-    // const delta = {}
-    // _.each(Object.keys(data), each => {
-    //   // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
-    //   if (data[each] !== this.props.initialValues[each]) {
-    //     console.log('in edit flat, handleFormSubmit, each: ', each);
-    //     delta[each] = data[each]
-    //   }
-    // })
-    const dataToBeSent = { contractor: data, id: this.props.contractorId };
+    const delta = {}
+    _.each(Object.keys(data), each => {
+      // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
+      if (data[each] !== this.props.initialValues[each]) {
+        console.log('in edit flat, handleFormSubmit, each: ', each);
+        delta[each] = data[each]
+      }
+    })
+    const dataToBeSent = { contractor: delta, id: this.props.contractorId };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in ContractorEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
@@ -106,8 +106,10 @@ class ContractorEditModal extends Component {
   handleDeleteContractorClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    this.props.showLoading()
-    this.props.deleteContractor(elementVal, () => this.handleDeleteContractorCallback());
+    if (window.confirm('Are you sure you want to delete this contractor?')) {
+      this.props.showLoading()
+      this.props.deleteContractor(elementVal, () => this.handleDeleteContractorCallback());
+    }
   }
 
   handleDeleteContractorCallback() {

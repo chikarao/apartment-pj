@@ -67,7 +67,7 @@ class ContractorCreateModal extends Component {
   // turn off showContractorCreateModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    console.log('in contractor_edit_modal, handleClose, this.props.showContractorEdit: ', this.props.showContractorEdit);
+    console.log('in contractor_create_modal, handleClose, this.props.showContractorEdit: ', this.props.showContractorEdit);
 
     // if (this.props.showContractorEdit) {
       this.props.showContractorCreateModal();
@@ -78,13 +78,13 @@ class ContractorCreateModal extends Component {
   renderEachContractorField() {
     let fieldComponent = '';
     return _.map(Contractor, (formField, i) => {
-      console.log('in contractor_edit_modal, renderEachContractorField, formField: ', formField);
+      console.log('in contractor_create_modal, renderEachContractorField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in contractor_edit_modal, renderEachContractorField, fieldComponent: ', fieldComponent);
+      // console.log('in contractor_create_modal, renderEachContractorField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
@@ -119,12 +119,12 @@ class ContractorCreateModal extends Component {
   }
 
   renderEditContractorForm() {
-    console.log('in contractor_edit_modal, renderEditContractorForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
+    console.log('in contractor_create_modal, renderEditContractorForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
 
     const { handleSubmit } = this.props;
 
     if (this.props.auth) {
-      console.log('in contractor_edit_modal, renderEditContractorForm, this.props.flat: ', this.props.flat);
+      console.log('in contractor_create_modal, renderEditContractorForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -133,9 +133,6 @@ class ContractorCreateModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Contractor</h3>
-            <div className="edit-flat-delete-language-button">
-              <button value={this.props.contractorId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteContractorClick.bind(this)}>Delete</button>
-            </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
@@ -166,7 +163,7 @@ class ContractorCreateModal extends Component {
           {this.state.deleteContractorCompleted ?
             <div className="post-signup-message">The contractor has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The contractor has been successfully updated.</div>
+            <div className="post-signup-message">The contractor has been successfully created.</div>
           }
         </div>
       </div>
@@ -174,7 +171,7 @@ class ContractorCreateModal extends Component {
   }
   // render the form or a message based on whether edit language (including delete) has been completed
   render() {
-    console.log('in contractor_edit_modal, render this.state.createContractorCompleted: ', this.state.createContractorCompleted);
+    console.log('in contractor_create_modal, render this.state.createContractorCompleted: ', this.state.createContractorCompleted);
     return (
       <div>
         {this.state.createContractorCompleted ? this.renderPostEditDeleteMessage() : this.renderEditContractorForm()}
@@ -192,7 +189,7 @@ function getContractor(contractors, id) {
   // placeholder for when add lanauge
   let contractor = {};
     _.each(contractors, eachContractor => {
-      console.log('in contractor_edit_modal, getContractor, eachContractor: ', eachContractor);
+      console.log('in contractor_create_modal, getContractor, eachContractor: ', eachContractor);
       if (eachContractor.id == id) {
         contractor = eachContractor;
         return;

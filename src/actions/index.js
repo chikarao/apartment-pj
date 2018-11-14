@@ -331,7 +331,7 @@ export function authError(error) {
 export function signoutUser(callback) {
   console.log('in actions index, signoutUser:');
 
-  //flip authenticated to false
+  //flip state boolean authenticated to false
   // delete token from local storage
   localStorage.removeItem('token');
   localStorage.removeItem('email');
@@ -345,60 +345,60 @@ export function signoutUser(callback) {
 export function showSigninModal() {
   console.log('in actions index, showSigninModal:');
 
-  //flip showSigninModal
+  //flip state boolean showSigninModal
   return { type: SHOW_SIGNIN_MODAL };
 }
 export function showSignupModal() {
   console.log('in actions index, showSigninModal:');
 
-  //flip showSigninModal
+  //flip state boolean showSigninModal
   return { type: SHOW_SIGNUP_MODAL };
 }
 
 export function showAuthModal() {
   console.log('in actions index, showAuthModal:');
 
-  //flip showAuthModal
+  //flip state boolean showAuthModal
   return { type: SHOW_AUTH_MODAL };
 }
 
 export function showResetPasswordModal() {
   console.log('in actions index, showResetPasswordModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_RESET_PASSWORD_MODAL };
 }
 
 export function showEditProfileModal() {
   console.log('in actions index, showEditProfileModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_EDIT_PROFILE_MODAL };
 }
 
 export function showLoading(fromWhere) {
   console.log('in actions index, showLoading:', fromWhere);
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_LOADING };
 }
 
 export function showLightbox() {
   console.log('in actions index, showLightbox:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_LIGHTBOX };
 }
 export function showEditReview() {
   console.log('in actions index, showEditReview:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_EDIT_REVIEW_MODAL };
 }
 
 export function searchFlatParameters(searchParameters) {
   console.log('in actions searchFlatParameters, searchParameters:', searchParameters);
-  //flip showResetPasswordModal
+  //flip state boolean
   // callback();
   return {
     type: SEARCH_FLAT_PARAMENTERS,
@@ -1573,19 +1573,19 @@ export function fetchStripeUserCredentials(info, callback) {
 export function showCardInputModal() {
   console.log('in actions index, showCardInputModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_CARD_INPUT_MODAL };
 }
 export function selectedCard(card, callback) {
   console.log('in actions index, selectedcard:', card);
   callback();
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_CARD, payload: card };
 }
 export function actionTypeCard(action) {
   console.log('in actions index, actionTypeCard:', action);
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: ACTION_TYPE_CARD, payload: action };
 }
 export function selectedLanguage(language) {
@@ -1602,13 +1602,13 @@ export function setAppLanguageCode(languageCode) {
 export function showLanguageCreateModal() {
   console.log('in actions index, showLanguageCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_LANGUAGE_CREATE_MODAL };
 }
 export function showLanguageEditModal() {
   console.log('in actions index, showLanguageCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_LANGUAGE_EDIT_MODAL };
 }
 
@@ -1785,13 +1785,13 @@ export function selectedIcalendarId(id) {
 export function showIcalendarCreateModal() {
   console.log('in actions index, showIcalendarCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_ICALENDAR_CREATE_MODAL };
 }
 export function showIcalendarEditModal() {
   console.log('in actions index, showIcalendarEditModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_ICALENDAR_EDIT_MODAL };
 }
 
@@ -1957,123 +1957,123 @@ export function searchBuildings(buildingAttributes) {
 export function showBuildingEditModal() {
   console.log('in actions index, showBuildingEditModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_BUILDING_EDIT_MODAL };
 }
 export function showBuildingCreateModal() {
   console.log('in actions index, showBuildingCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_BUILDING_CREATE_MODAL };
 }
 
 export function showBankAccountEditModal() {
   console.log('in actions index, showBankAccountEditModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_BANK_ACCOUNT_EDIT_MODAL };
 }
 
 export function showBankAccountCreateModal() {
   console.log('in actions index, showBankAccountCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_BANK_ACCOUNT_CREATE_MODAL };
 }
 
 export function showFacilityCreateModal() {
   console.log('in actions index, showFacilityCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_FACILITY_CREATE_MODAL };
 }
 
 export function showFacilityEditModal() {
   console.log('in actions index, showFacilityEditModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_FACILITY_EDIT_MODAL };
 }
 
 export function showInspectionCreateModal() {
   console.log('in actions index, showInspectionCreateModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_INSPECTION_CREATE_MODAL };
 }
 
 export function showInspectionEditModal() {
   console.log('in actions index, showInspectionEditModal:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SHOW_INSPECTION_EDIT_MODAL };
 }
 
 export function showContractorEditModal() {
   console.log('in actions index, showContractorEditModal:');
 
-  //flip showContractorEditModal
+  //flip state boolean showContractorEditModal
   return { type: SHOW_CONTRACTOR_EDIT_MODAL };
 }
 
 export function showContractorCreateModal() {
   console.log('in actions index, showContractorCreateModal:');
 
-  //flip showContractorCreateModal
+  //flip state boolean showContractorCreateModal
   return { type: SHOW_CONTRACTOR_CREATE_MODAL };
 }
 export function showStaffEditModal() {
   console.log('in actions index, showStaffEditModal:');
 
-  //flip showStaffEditModal
+  //flip state boolean showStaffEditModal
   return { type: SHOW_STAFF_EDIT_MODAL };
 }
 
 export function showStaffCreateModal() {
   console.log('in actions index, showStaffCreateModal:');
 
-  //flip showStaffCreateModal
+  //flip state boolean showStaffCreateModal
   return { type: SHOW_STAFF_CREATE_MODAL };
 }
 
 export function selectedBankAccountId(id) {
   console.log('in actions index, selectedBankAccountId:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_BANK_ACCOUNT_ID, payload: id };
 }
 
 export function selectedFacilityId(id) {
   console.log('in actions index, selectedFacilityId:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_FACILITY_ID, payload: id };
 }
 export function selectedInspectionId(id) {
   console.log('in actions index, selectedInspectionId:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_INSPECTION_ID, payload: id };
 }
 
 export function selectedContractorId(id) {
   console.log('in actions index, selectedContractorId:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_CONTRACTOR_ID, payload: id };
 }
 
 export function selectedStaffId(id) {
   console.log('in actions index, selectedStaffId:');
 
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SELECTED_STAFF_ID, payload: id };
 }
 
 export function setCreateDocumentKey(key, callback) {
   console.log('in actions index, setCreateDocumentKey:', key);
   callback();
-  //flip showResetPasswordModal
+  //flip state boolean
   return { type: SET_CREATE_DOCUMENT_KEY, payload: key };
 }
 
@@ -2444,9 +2444,9 @@ export function createStaff(staffAttributes, callback) {
   };
 }
 
-export function updateStaff(staffAttributes, id, callback) {
+export function updateStaff(staffAttributes, callback) {
   console.log('in action index, updateStaff, staffAttributes: ', staffAttributes);
-  // const { building_id } = bankAccountAttributes;
+  const { id } = staffAttributes;
 
   return function (dispatch) {
     axios.patch(`${ROOT_URL}/api/v1/staffs/${id}`, staffAttributes, {
