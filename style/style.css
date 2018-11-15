@@ -3549,6 +3549,17 @@ text-decoration: underline;
   color: gray;
 }
 
+.my-page-card-button-box-language {
+  justify-content: center !important;
+}
+
+.my-page-card-button-box-language-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 
 /* ***********MODAL****************** */
 
@@ -3790,6 +3801,30 @@ text-decoration: underline;
 
 .oauth-button-box {
   margin: 50px auto 0 auto;
+}
+/* *******************MODAL********************* */
+
+.modal-edit-delete-edit-button-box {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  padding: 0 25px 0 25px;
+}
+
+.modal-edit-language-link-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 50%
+}
+
+.modal-edit-language-link {
+  color: blue;
+  margin: 10px;
+}
+
+.modal-edit-language-link:hover {
+  color: gray;
 }
 
 /* *******************EDIT PROFILE********************* */

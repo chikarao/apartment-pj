@@ -3,7 +3,7 @@
 const languages =
   {
     en: { name: 'English', flag: '🇬🇧', local: 'English' },
-    jp: { name: '日本語', flag: '🇯🇵', local: '日本語' },
+    jp: { name: 'Japanese', flag: '🇯🇵', local: '日本語' },
     fr: { name: 'French', flag: '🇫🇷', local: 'français' },
     ge: { name: 'German', flag: '🇩🇪', local: 'Deutsch' },
     sp: { name: 'Spanish', flag: '🇪🇸', local: 'Español' },

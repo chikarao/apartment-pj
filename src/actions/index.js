@@ -138,7 +138,8 @@ import {
   UPDATE_STAFF,
   CREATE_STAFF,
   DELETE_STAFF,
-  ADD_LANGUAGE
+  ADD_NEW_CONTRACTOR,
+  CONTRACTOR_TO_EDIT_ID
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2037,11 +2038,11 @@ export function showStaffCreateModal() {
   return { type: SHOW_STAFF_CREATE_MODAL };
 }
 
-export function addLanguage() {
-  console.log('in actions index, addLanguage:');
+export function addNewContractor() {
+  console.log('in actions index, addNewContractor:');
 
   //flip state boolean showStaffCreateModal
-  return { type: ADD_LANGUAGE };
+  return { type: ADD_NEW_CONTRACTOR };
 }
 
 export function selectedBankAccountId(id) {
@@ -2068,7 +2069,14 @@ export function selectedContractorId(id) {
   console.log('in actions index, selectedContractorId:');
 
   //flip state boolean
-  return { type: SELECTED_CONTRACTOR_ID, payload: id };
+  return { type: SELECTED_CONTRACTOR_ID, payload: parseInt(id, 10) };
+}
+
+export function contractorToEditId(id) {
+  console.log('in actions index, contractorToEditId:');
+
+  //flip state boolean
+  return { type: CONTRACTOR_TO_EDIT_ID, payload: parseInt(id, 10) };
 }
 
 export function selectedStaffId(id) {

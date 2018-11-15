@@ -21,7 +21,8 @@ import {
   SHOW_STAFF_EDIT_MODAL,
   SELECTED_STAFF_ID,
   SELECTED_CONTRACTOR_ID,
-  ADD_LANGUAGE
+  CONTRACTOR_TO_EDIT_ID,
+  ADD_NEW_CONTRACTOR
 } from '../actions/types';
 //
 // const initialState = {
@@ -41,6 +42,8 @@ export default function (
     showFacilityCreateModal: false,
     showInspectionCreateModal: false,
     showInspectionEditModal: false,
+    selectedContractorId: '',
+    contractorToEditId: ''
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -106,11 +109,14 @@ export default function (
     case SELECTED_CONTRACTOR_ID:
     return { ...state, selectedContractorId: action.payload };
 
+    case CONTRACTOR_TO_EDIT_ID:
+    return { ...state, contractorToEditId: action.payload };
+
     case SELECTED_STAFF_ID:
     return { ...state, selectedStaffId: action.payload };
 
-    case ADD_LANGUAGE:
-    return { ...state, addLanguage: !state.addLanguage };
+    case ADD_NEW_CONTRACTOR:
+    return { ...state, addNewContractor: !state.addNewContractor };
 
     default:
       return state;

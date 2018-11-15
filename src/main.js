@@ -20,6 +20,7 @@ import StripeRedirect from './components/payments/stripe_redirect';
 
 import RequireAuth from './components/auth/require_auth';
 
+// pages that are no longer used after implementing modals in /auth
 // <Route path='/signup' component={Signup} />
 // <Route path='/signin' component={Signin} />
 // <Route path='/resetpassword' component={ResetPassword} />

@@ -15,10 +15,12 @@ const Contractor = {
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
-    // for rendering when fields are language indepedent
+    // for rendering when fields are language indepedent.
+    // ie needs to inputted in new language in create contractor modal
     language_independent: true,
-    // for rendering only choices that do not exist
+    // for rendering in forms only choices that do not exist
     limit_choices: true,
+    // map to column in backend code
     map_to_record: 'language_code'
 
   },

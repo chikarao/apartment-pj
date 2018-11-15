@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
-import languages from '../constants/languages';
+import Languages from '../constants/languages';
 import Contractor from '../constants/contractor';
+import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
@@ -35,7 +36,7 @@ class ContractorEditModal extends Component {
         delta[each] = data[each]
       }
     })
-    const dataToBeSent = { contractor: delta, id: this.props.contractorId };
+    const dataToBeSent = { contractor: delta, id: this.props.contractor.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in ContractorEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
@@ -46,6 +47,7 @@ class ContractorEditModal extends Component {
 
   handleFormSubmitCallback() {
     console.log('in ContractorEditModal, handleFormSubmitCallback: ');
+    this.props.selectedContractorId('');
     // showHideClassName = 'modal display-none';
     this.setState({ editContractorCompleted: true });
     // this.resetAdvancedFilters();
@@ -70,6 +72,8 @@ class ContractorEditModal extends Component {
 
     // if (this.props.showContractorEdit) {
       this.props.showContractorEditModal();
+      this.props.selectedContractorId('');
+      this.props.contractorToEditId('');
       this.setState({ editContractorCompleted: false });
     // }
   }
@@ -106,9 +110,17 @@ class ContractorEditModal extends Component {
   handleDeleteContractorClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    if (window.confirm('Are you sure you want to delete this contractor?')) {
-      this.props.showLoading()
-      this.props.deleteContractor(elementVal, () => this.handleDeleteContractorCallback());
+    // if the contractor is the base contractor, give warking
+    if (!this.props.contractor.base_record_id) {
+      if (window.confirm('Are you sure you want to delete this contractor? Deleting this record will delete all languages associated with the contractor')) {
+        this.props.showLoading()
+        this.props.deleteContractor(elementVal, () => this.handleDeleteContractorCallback());
+      }
+    } else {
+      if (window.confirm('Are you sure you want to delete this language?')) {
+        this.props.showLoading()
+        this.props.deleteContractor(elementVal, () => this.handleDeleteContractorCallback());
+      }
     }
   }
 
@@ -119,13 +131,52 @@ class ContractorEditModal extends Component {
     this.props.showLoading();
   }
 
+  handleEditLanguageClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.props.contractorToEditId(elementVal);
+  }
+
+  getContractorGroup() {
+    const array = [];
+    _.each(this.props.auth.user.contractors, eachContractor => {
+      // console.log('in contractor_edit_modal, getContractorGroup, eachContractor.id, this.props.selectedContractorId, eachContractor.base_record_id, this.props.selectedContractorId: ', eachContractor.id, this.props.contractorId, eachContractor.base_record_id, this.props.contractorId);
+      if ((eachContractor.id == this.props.contractorId) || (eachContractor.base_record_id == this.props.contractorId)) {
+        array.push(eachContractor);
+      }
+    })
+    return array;
+  }
+
+  renderEditLanguageLink() {
+    // get contractors with same id and base_record_id, or same contractor group of languages
+    const contractorGroup = this.getContractorGroup();
+    // return _.map(this.props.auth.user.contractors, (eachContractor, i) => {
+    console.log('in contractor_edit_modal, renderEditLanguageLink, contractorGroup: ', contractorGroup);
+    return _.map(contractorGroup, (eachContractor, i) => {
+      // const baseRecordOrNot = this.baseRecordOrNot(eachContractor);
+      if (this.props.contractor.id !== eachContractor.id) {
+        return (
+          <div
+            key={i}
+            value={eachContractor.id}
+            className="modal-edit-language-link"
+            onClick={this.handleEditLanguageClick.bind(this)}
+          >
+            {Languages[eachContractor.language_code].flag}&nbsp;{Languages[eachContractor.language_code].name}
+          </div>
+        );
+      }
+    });
+  }
+
   renderEditContractorForm() {
-    console.log('in contractor_edit_modal, renderEditContractorForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
 
     const { handleSubmit } = this.props;
+    // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
 
     if (this.props.auth) {
-      console.log('in contractor_edit_modal, renderEditContractorForm, this.props.flat: ', this.props.flat);
+      // console.log('in contractor_edit_modal, renderEditContractorForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -134,12 +185,14 @@ class ContractorEditModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Contractor</h3>
-            <div className="edit-flat-delete-language-button">
-              <button value={this.props.contractorId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteContractorClick.bind(this)}>Delete</button>
+            <div className="modal-edit-delete-edit-button-box">
+              <button value={this.props.contractor.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteContractorClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <div className="modal-edit-language-link-box">
+                  {this.renderEditLanguageLink()}
+              </div>
             </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-
               <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                 {this.renderEachContractorField()}
                 <div className="confirm-change-and-button">
@@ -202,6 +255,20 @@ function getContractor(contractors, id) {
 
   return contractor;
 }
+
+function getEditContractor(contractors, id) {
+  // placeholder for when add lanauge
+  let contractor = {};
+    _.each(contractors, eachContractor => {
+      console.log('in contractor_edit_modal, getContractor, eachContractor: ', eachContractor);
+      if (eachContractor.id == id) {
+        contractor = eachContractor;
+        return;
+      }
+    });
+
+  return contractor;
+}
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in ContractorEditModal, mapStateToProps, state: ', state);
@@ -211,10 +278,14 @@ function mapStateToProps(state) {
     let initialValues = {};
     // console.log('in ContractorEditModal, mapStateToProps, state.auth.user: ', state.auth.user);
     const { contractors } = state.auth.user;
-    const contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
+    let contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
+    const editContractor = getEditContractor(contractors, parseInt(state.modals.contractorToEditId, 10));
     // const date = new Date(contractor.contractor_date);
     // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
     console.log('in ContractorEditModal, mapStateToProps, contractor: ', contractor);
+    if (state.modals.contractorToEditId) {
+      contractor = editContractor;
+    }
     initialValues = contractor;
     // initialValues.contractor_date = dateString;
     console.log('in ContractorEditModal, mapStateToProps, initialValues: ', initialValues);
@@ -231,6 +302,8 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode,
       contractorId: state.modals.selectedContractorId,
       contractor,
+      // editContractorId: state.modals.contractorToEditId,
+      // editContractor,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedContractorId
       initialValues

@@ -78,17 +78,27 @@ class FormChoices extends Component {
       // choice.type can be string (input) or button element
       // if (this.props.addLanguageInput) {
       // if (this.props.model[name].limit_choices && this.props.record[this.props.model[name].map_to_record] != value) {
-      console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
       // if there is record and language_code in object; ie do not allow imput
       // make sure to read the respective objects in constant such as staff or contractor
       if (this.props.record && this.props.model[name].map_to_record) {
+        console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
         // if the language code or map_to_record  does not equal the choice value
         // ie the choice is something other than the language code that already exists in the db
-        if (choice.value != this.props.record[this.props.model[name].map_to_record]) {
+        if (choice.value !== this.props.record[this.props.model[name].map_to_record]) {
           // if the input form is a create form
           if (this.props.create) {
-            // render an input button or input field
-            return choice.type == 'string' ? inputElement : buttonElement;
+            // if an array with existing contractor language is true
+            if (this.props.existingLanguageArray) {
+              // if choice language is not included in the array, render the choice else return
+              if (!this.props.existingLanguageArray.includes(choice.value)) {
+                return choice.type == 'string' ? inputElement : buttonElement;
+              } else {
+                return;
+              }
+            } else {
+              // render an input button or input field
+              return choice.type == 'string' ? inputElement : buttonElement;
+            }
             // return <div>{choice[this.props.appLanguageCode]}</div>
           } else {
             // if not on create form, do nothing

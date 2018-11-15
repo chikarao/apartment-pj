@@ -16,6 +16,7 @@ import ContractorCreateModal from './modals/contractor_create_modal';
 import StaffEditModal from './modals/staff_edit_modal';
 import StaffCreateModal from './modals/staff_create_modal';
 import Contractor from './constants/contractor';
+import Languages from './constants/languages';
 
 import CardTypes from './constants/card_types'
 
@@ -203,7 +204,7 @@ class MyPage extends Component {
   }
 
   renderBookings() {
-    console.log('in mypage, renderBookings, this.props.bookingsByUser: ', this.props.bookingsByUser);
+    // console.log('in mypage, renderBookings, this.props.bookingsByUser: ', this.props.bookingsByUser);
     return (
       <div>
       <div className="my-page-category-title">
@@ -371,7 +372,7 @@ formatDate(date) {
   // }
 
   renderMessages() {
-    console.log('in mypage, renderMessages: this.props.conversationId', this.props.conversationId);
+    // console.log('in mypage, renderMessages: this.props.conversationId', this.props.conversationId);
     return (
       <div className="my-page-message-box">
       <Messaging
@@ -406,7 +407,7 @@ formatDate(date) {
   }
 
   handleMessageRefreshClick() {
-    console.log('in mypage, handleMessageRefreshClick: ');
+    // console.log('in mypage, handleMessageRefreshClick: ');
     this.props.showLoading();
     this.props.fetchConversationsByUser(() => { this.loadingCallback(); });
   }
@@ -650,12 +651,12 @@ formatDate(date) {
   // }
 
   handleEditProfileClick() {
-    console.log('in header, handleEditProfileClick: ');
+    // console.log('in header, handleEditProfileClick: ');
     this.props.showEditProfileModal();
   }
 
   handleImageUploadClick() {
-    console.log('in header, handleImageUploadClick: ');
+    // console.log('in header, handleImageUploadClick: ');
   }
 
   handleRemoveProfileImage() {
@@ -664,7 +665,7 @@ formatDate(date) {
   }
 
   handleRemoveProfileImageCallback() {
-    console.log('in header, handleRemoveProfileImageCallback: ');
+    // console.log('in header, handleRemoveProfileImageCallback: ');
   }
 
   renderProfileImage() {
@@ -830,7 +831,7 @@ formatDate(date) {
       if (sources.data[0]) {
         return _.map(sources.data, (card, i) => {
           const isThisCardDefault = (defaultCardId == card.id);
-          console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
+          // console.log('in mypage, renderExistingCardDetails, isThisCardDefault, : ', isThisCardDefault);
           return (
             <div key={card.id}>
               <li className="my-page-each-card each-card-payments">
@@ -908,7 +909,7 @@ formatDate(date) {
     const clickedElement = event.target;
     const editOrDelete = clickedElement.getAttribute('value');
     const bankAccountId = clickedElement.getAttribute('name');
-    console.log('in mypage, handleBankAccountEditDeleteClick, editOrDelete, bankAccountId: ', editOrDelete, bankAccountId);
+    // console.log('in mypage, handleBankAccountEditDeleteClick, editOrDelete, bankAccountId: ', editOrDelete, bankAccountId);
     if (editOrDelete == 'edit') {
       this.props.showBankAccountEditModal()
       this.props.selectedBankAccountId(bankAccountId);
@@ -921,7 +922,7 @@ formatDate(date) {
   renderExistingBankAccountDetails() {
     const { appLanguageCode } = this.props;
     return _.map(this.props.bankAccounts, (eachAccount, i) => {
-      console.log('in mypage, renderExistingBankAccountDetails, eachAccount.account_type: ', eachAccount.account_type);
+      // console.log('in mypage, renderExistingBankAccountDetails, eachAccount.account_type: ', eachAccount.account_type);
       return (
         <li key={i} className="my-page-each-card">
           <div className="my-page-each-card-click-box my-page-card-no-picture-box">
@@ -966,6 +967,11 @@ formatDate(date) {
 
   handleAddContractorClick(event) {
     this.props.showContractorCreateModal();
+    // addNewContractor app state to distinguish in contractor_create_modal
+    // between create to add contractor language vs create to add brand new contractor
+    // modal.addNewContractor used in mapStateToProps to decide whether to
+    // call getContractor function
+    this.props.addNewContractor();
   }
 
   handleContratorEditDeleteClick(event) {
@@ -979,17 +985,16 @@ formatDate(date) {
     }
 
     if (elementVal == 'edit') {
-      console.log('in mypage, handleContratorEditDeleteClick, edit: ');
+      // console.log('in mypage, handleContratorEditDeleteClick, edit: ');
       this.props.showContractorEditModal();
       this.props.selectedContractorId(elementName);
       this.setState({ selectedContractorId: elementName });
     }
 
-    if (elementVal == 'addLangugae') {
-      console.log('in mypage, handleContratorEditDeleteClick, edit: ');
+    if (elementVal == 'addLanguage') {
+      // console.log('in mypage, handleContratorEditDeleteClick, edit: ');
       this.props.showContractorCreateModal();
       this.props.selectedContractorId(elementName);
-      this.props.addLanguage();
       this.setState({ selectedContractorId: elementName });
     }
 
@@ -999,7 +1004,6 @@ formatDate(date) {
   }
 
   // handleContractorClick() {
-  //   console.log('in mypage, renderExistingBankAccountDetails: ');
   //
   // }
 
@@ -1014,6 +1018,26 @@ formatDate(date) {
     return object;
   }
 
+  getContractorLanguages(baseContractor) {
+    const arrayReturned = [];
+    _.each(this.props.auth.user.contractors, eachContractor => {
+      if (eachContractor.base_record_id == baseContractor.id) {
+        arrayReturned.push(eachContractor.language_code);
+      }
+      if (!arrayReturned.includes(baseContractor.language_code)) {
+        arrayReturned.push(baseContractor.language_code);
+      }
+    });
+    // console.log('in mypage, getContractorLanguages, arrayReturned: ', arrayReturned);
+    return arrayReturned;
+  }
+
+  renderEachContractorLanguage(languageCodeArray) {
+    return _.map(languageCodeArray, (eachCode, i) => {
+      return <div key={i}>{Languages[eachCode].flag}</div>;
+    });
+  }
+
   renderExistingContractorDetails() {
       // <div className="my-page-each-card-click-box my-page-card-no-picture-box">
     // <div className="my-page-placeholder-btn"></div>
@@ -1022,25 +1046,32 @@ formatDate(date) {
     if (this.props.auth.user) {
       return _.map(this.props.auth.user.contractors, (eachContractor, i) => {
         const contractorTypeObject = this.getContractorTypeObject(eachContractor);
-        return (
-          <li key={i} className="my-page-each-card">
-              <div className="my-page-each-card-click-box my-page-card-no-picture-box">
-              <div className="my-page-details">
-                <ul>
-                  <li>{eachContractor.company_name}</li>
-                  <li>{contractorTypeObject[appLanguageCode]}</li>
-                </ul>
+        // render contractor only if it does not have a base_record_id, that is, it is the base record
+        if (!eachContractor.base_record_id) {
+          const contractorLanguagesArray = this.getContractorLanguages(eachContractor);
+          return (
+            <li key={i} className="my-page-each-card">
+                <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+                <div className="my-page-details">
+                  <ul>
+                    <li>{eachContractor.company_name}</li>
+                    <li>{contractorTypeObject[appLanguageCode]}</li>
+                  </ul>
+                </div>
+                <div className="my-page-card-button-box my-page-card-button-box-language">
+                  <div name={eachContractor.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.addLanguage[appLanguageCode]}</div>
+                  <div className="my-page-card-button-box-language-box">
+                    {this.renderEachContractorLanguage(contractorLanguagesArray)}
+                  </div>
+                </div>
+                <div className="my-page-card-button-box">
+                  <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
+                  <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[appLanguageCode]}</button>
+                </div>
               </div>
-              <div className="my-page-card-button-box">
-                <div name={eachContractor.id} value="addLangugae" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.addLanguage[appLanguageCode]}</div>
-              </div>
-              <div className="my-page-card-button-box">
-                <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
-                <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[appLanguageCode]}</button>
-              </div>
-            </div>
-          </li>
-        );
+            </li>
+          );
+        }
       })
     }
   }
@@ -1078,7 +1109,7 @@ formatDate(date) {
   getContractor() {
     let object = {};
     _.each(this.props.auth.user.contractors, eachContractor => {
-      console.log('in mypage, getContractor, eachContractor, this.state.selectedContractorId: ', eachContractor, this.state.selectedContractorId);
+      // console.log('in mypage, getContractor, eachContractor, this.state.selectedContractorId: ', eachContractor, this.state.selectedContractorId);
       if (eachContractor.id == parseInt(this.state.selectedContractorId, 10)) {
         object = eachContractor;
         return;
@@ -1089,7 +1120,7 @@ formatDate(date) {
 
   renderExistingStaffDetails(selectedContractor) {
     // const selectedContractor = this.getContractor();
-    console.log('in mypage, renderExistingStaffDetails, selectedContractor: ', selectedContractor);
+    // console.log('in mypage, renderExistingStaffDetails, selectedContractor: ', selectedContractor);
     // <button name={eachStaff.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
     return _.map(selectedContractor.staffs, (eachStaff, i) => {
       return (
@@ -1168,8 +1199,7 @@ formatDate(date) {
   }
 
   renderContractorEditForm() {
-    console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
-
+    // console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
     return (
       <ContractorEditModal
         show={this.props.showContractorEdit}
@@ -1179,7 +1209,6 @@ formatDate(date) {
 
   renderContractorCreateForm() {
     // console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
-
     return (
       <ContractorCreateModal
         show={this.props.showContractorCreate}

@@ -47,6 +47,7 @@ class ContractorCreateModal extends Component {
 
   handleFormSubmitCallback() {
     console.log('in ContractorCreateModal, handleFormSubmitCallback: ');
+    this.props.selectedContractorId('');
     // showHideClassName = 'modal display-none';
     this.setState({ createContractorCompleted: true });
     // this.resetAdvancedFilters();
@@ -71,6 +72,8 @@ class ContractorCreateModal extends Component {
 
     // if (this.props.showContractorEdit) {
       this.props.showContractorCreateModal();
+      this.props.selectedContractorId('');
+      this.props.addNew ? this.props.addNewContractor() : '';
       this.setState({ createContractorCompleted: false });
     // }
   }
@@ -93,7 +96,7 @@ class ContractorCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Contractor, record: this.props.contractor, create: true } : {}}
+            props={fieldComponent == FormChoices ? { model: Contractor, record: this.props.contractor, create: true, existingLanguageArray: this.props.contractorLanguageArray } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
           />
@@ -202,18 +205,55 @@ function getContractor(contractors, id) {
 
   return contractor;
 }
+
+function getInitialValues(contractor) {
+  const objectReturned = {};
+  _.each(Object.keys(Contractor), eachAttribute => {
+    // if attribute is indepedent of language (just numbers or buttons)
+    if (Contractor[eachAttribute].language_independent) {
+      // add to object to be assiged to initialValues
+      objectReturned[eachAttribute] = contractor[eachAttribute];
+    }
+  });
+  // add base_record_id that references the original contractor that was created
+  objectReturned.base_record_id = contractor.id;
+  return objectReturned;
+}
+
+function getLanguageArray(contractors, baseContractor) {
+  let array = [];
+  _.each(contractors, eachContractor => {
+    if (eachContractor.base_record_id == baseContractor.id) {
+      if (!array.includes(eachContractor.language_code)) {
+        array.push(eachContractor.language_code);
+      }
+      if (!array.includes(baseContractor.language_code)) {
+        array.push(baseContractor.language_code);
+      }
+    }
+  });
+  return array;
+}
+
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in ContractorCreateModal, mapStateToProps, state: ', state);
   // get clicked calendar
   // const calendarArray = [];
   if (state.auth.user) {
-    // let initialValues = {};
+    let initialValues = {};
     // initialValues.language_code = 'en';
     // // console.log('in ContractorCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
     const { contractors } = state.auth.user;
-    const contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
-    console.log('in ContractorCreateModal, mapStateToProps, contractor: ', contractor);
+    let contractor = {};
+    let contractorLanguageArray = []
+    // if user click is not to create a brand new contractor; ie add a language
+    if (!state.modals.addNewContractor) {
+      contractor = getContractor(contractors, state.modals.selectedContractorId);
+      contractorLanguageArray = getLanguageArray(contractors, contractor);
+      initialValues = getInitialValues(contractor);
+    }
+    // console.log('in ContractorCreateModal, mapStateToProps, contractor: ', contractor);
     // const existingLanguagesArray = getExistingLanguages(contractors);
     // console.log('in ContractorCreateModal, mapStateToProps, contractor: ', contractor);
     // initialValues = contractor;
@@ -225,18 +265,15 @@ function mapStateToProps(state) {
       successMessage: state.auth.success,
       errorMessage: state.auth.error,
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
-      // userProfile: state.auth.userProfile
-      // initialValues: state.auth.userProfile
-      // languages: state.languages,
       showContractorEdit: state.modals.showContractorCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
       contractorId: state.modals.selectedContractorId,
-      contractor
-      // language: state.languages.selectedLanguage,
+      contractor,
+      addNew: state.modals.addNewContractor,
+      contractorLanguageArray,
       // set initialValues to be first calendar in array to match selectedContractorId
-      // initialValues
+      initialValues
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
-      // initialValues
     };
   } else {
     return {};

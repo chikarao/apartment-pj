@@ -40,7 +40,7 @@ if (appLanguage) {
   // dispatch is s method of store!!!
   store.dispatch({ type: SET_APP_LANGUAGE_CODE, payload: appLanguage });
 }
-
+// for setting in app.js the language code to be passed in the google maps script 
 if (placeSearchLanguageCode) {
   store.dispatch({ type: PLACE_SEARCH_LANGUAGE, payload: placeSearchLanguageCode });
 }
