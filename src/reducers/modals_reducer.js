@@ -23,6 +23,7 @@ import {
   SELECTED_CONTRACTOR_ID,
   CONTRACTOR_TO_EDIT_ID,
   STAFF_TO_EDIT_ID,
+  PROFILE_TO_EDIT_ID,
   ADD_NEW_CONTRACTOR,
   ADD_NEW_STAFF,
   SHOW_PROFILE_EDIT_MODAL,
@@ -52,6 +53,7 @@ export default function (
     contractorToEditId: '',
     addNewContractor: false,
     addNewStaff: false,
+    profileToEditId: ''
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -122,6 +124,9 @@ export default function (
 
     case STAFF_TO_EDIT_ID:
     return { ...state, staffToEditId: action.payload };
+
+    case PROFILE_TO_EDIT_ID:
+    return { ...state, profileToEditId: action.payload };
 
     case SELECTED_STAFF_ID:
     return { ...state, selectedStaffId: action.payload };

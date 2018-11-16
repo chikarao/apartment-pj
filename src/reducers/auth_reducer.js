@@ -98,7 +98,7 @@ export default function (state = {
       return { ...state, userProfile: action.payload.profile, user: action.payload.user };
 
     case EDIT_PROFILE:
-      return { ...state, userProfile: action.payload };
+      return { ...state, user: action.payload };
 
     case SHOW_LOADING:
       return { ...state, showLoading: !state.showLoading };

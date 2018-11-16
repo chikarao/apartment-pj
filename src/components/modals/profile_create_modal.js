@@ -122,7 +122,7 @@ class CreateProfileModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">Your profile has been successfully updated.</div>
         </div>
@@ -187,6 +187,7 @@ function mapStateToProps(state) {
     appLanguageCode: state.languages.appLanguageCode,
     profile,
     profileLanguageArray,
+    showProfileCreate: state.modals.showProfileCreateModal,
     initialValues
   };
 }

@@ -7,6 +7,8 @@ import _ from 'lodash';
 import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
+import Languages from '../constants/languages';
+
 import Profile from '../constants/profile';
 import FormChoices from '../forms/form_choices';
 
@@ -34,6 +36,7 @@ class EditProfileModal extends Component {
         delta[each] = data[each]
       }
     })
+    delta.id = this.props.initialValues.id;
     this.props.editProfile(delta, () => {
       this.handleFormSubmitCallback();
     });
@@ -55,8 +58,39 @@ class EditProfileModal extends Component {
     }
   }
 
+  handleDeleteProfileClick() {
+
+  }
+
+  handleEditLanguageClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.props.profileToEditId(elementVal);
+  }
+
+  renderEditLanguageLink() {
+    // get staffs with same id and base_record_id, or same staff group of languages
+    // return _.map(this.props.auth.user.staffs, (eachProfile, i) => {
+    console.log('in staff_edit_modal, renderEditLanguageLink, this.props.auth.user.profiles: ', this.props.auth.user.profiles);
+    return _.map(this.props.auth.user.profiles, (eachProfile, i) => {
+      // const baseRecordOrNot = this.baseRecordOrNot(eachProfile);
+      if (this.props.profile.id !== eachProfile.id) {
+        return (
+          <div
+            key={i}
+            value={eachProfile.id}
+            className="modal-edit-language-link"
+            onClick={this.handleEditLanguageClick.bind(this)}
+          >
+            {Languages[eachProfile.language_code].flag}&nbsp;{Languages[eachProfile.language_code].name}
+          </div>
+        );
+      }
+    });
+  }
+
   handleClose() {
-    // console.log('in profile_edit_modal, handleClose, this.props.showProfileEdit: ', this.props.showProfileEdit);
+    console.log('in profile_edit_modal, handleClose, this.props.showProfileEdit: ', this.props.showProfileEdit);
       this.props.showProfileEditModal();
       this.props.selectedProfileId('');
       this.setState({ editProfileCompleted: false });
@@ -90,7 +124,7 @@ class EditProfileModal extends Component {
 
   renderEditProfileForm() {
     const { handleSubmit } = this.props;
-    const profileEmpty = _.isEmpty(this.props.auth.userProfile);
+    const profileEmpty = _.isEmpty(this.props.auth.user.profiles[0]);
     if (!profileEmpty) {
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // console.log('in modal, render showHideClassName:', showHideClassName);
@@ -101,6 +135,12 @@ class EditProfileModal extends Component {
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">{AppLanguages.editProfile[this.props.appLanguageCode]}</h3>
+          <div className="modal-edit-delete-edit-button-box">
+            <button value={this.props.profile.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteProfileClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+            <div className="modal-edit-language-link-box">
+                {this.renderEditLanguageLink()}
+            </div>
+          </div>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
             <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
@@ -122,7 +162,7 @@ class EditProfileModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">Your profile has been successfully updated.</div>
         </div>
@@ -141,20 +181,64 @@ class EditProfileModal extends Component {
 }
 
 EditProfileModal = reduxForm({
-  form: 'EditProfileModal'
+  form: 'EditProfileModal',
+  enableReinitialize: true
 })(EditProfileModal);
+
+function getProfile(profiles, id) {
+  // placeholder for when add lanauge
+  let profile = {};
+    _.each(profiles, eachProfile => {
+      console.log('in staff_create_modal, getProfile, eachProfile: ', eachProfile);
+      if (eachProfile.id == id) {
+        profile = eachProfile;
+        return;
+      }
+    });
+
+  return profile;
+}
+
+function getEditProfile(profiles, id) {
+  // placeholder for when add lanauge
+  let profile = {};
+    _.each(profiles, eachProfile => {
+      console.log('in profile_edit_modal, getEditProfile, eachProfile: ', eachProfile);
+      if (eachProfile.id == id) {
+        profile = eachProfile;
+        return;
+      }
+    });
+
+  return profile;
+}
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in show_flat, mapStateToProps, state: ', state);
+  let initialValues = {};
+  // console.log('in profile_edit_modal, mapStateToProps, state: ', state);
+  const { profiles } = state.auth.user;
+  let profile = getProfile(profiles, state.modals.selectedProfileId);
+  const editProfile = getEditProfile(profiles, parseInt(state.modals.profileToEditId, 10));
+
+  if (state.modals.profileToEditId) {
+    console.log('in profile_edit_modal, mapStateToProps, editProfile: ', editProfile);
+    profile = editProfile;
+  }
+
+  initialValues = profile;
+  console.log('in profile_edit_modal, mapStateToProps, initialValues: ', initialValues);
+
   return {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
-    // userProfile: state.auth.userProfile
+    // user: state.auth.user,
     appLanguageCode: state.languages.appLanguageCode,
-    profile: state.auth.userProfile,
-    initialValues: state.auth.userProfile
+    profile,
+    profileId: state.modals.selectedProfileId,
+    showProfileEdit: state.modals.showProfileEditModal,
+    initialValues
   };
 }
 

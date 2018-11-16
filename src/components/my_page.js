@@ -708,8 +708,24 @@ formatDate(date) {
     );
   }
 
+  getProfile(profiles) {
+    let objectReturned = {};
+    if (profiles.length > 1) {
+      _.each(profiles, eachProfile => {
+        if (eachProfile.language_code == this.props.appLanguageCode) {
+          objectReturned = eachProfile;
+          return
+        }
+      })
+    } else {
+      objectReturned = profiles[0];
+    }
+    return objectReturned;
+  }
+
   renderProfile() {
-    if (this.props.auth.userProfile) {
+    if (this.props.auth.user) {
+      const profileToRender = this.getProfile(this.props.auth.user.profiles);
       const {
         id,
         username,
@@ -731,9 +747,9 @@ formatDate(date) {
         emergency_contact_address,
         emergency_contact_relationship,
         introduction
-      } = this.props.auth.userProfile;
+      } = profileToRender;
       const { appLanguageCode } = this.props;
-      console.log('in mypage, renderProfile, id: ', id);
+      // console.log('in mypage, renderProfile, id: ', id);
       return (
         <div>
           <div className="my-page-category-title">
@@ -1347,6 +1363,8 @@ function mapStateToProps(state) {
     selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,
     auth: state.auth,
+    // userProfiles: state.auth.userProfiles,
+    user: state.auth.user,
     conversations: state.conversation.conversationByUserAndFlat,
     noConversation: state.conversation.noConversation,
     conversationId: state.conversation.conversationToShow,

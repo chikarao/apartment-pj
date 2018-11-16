@@ -55,6 +55,8 @@ import {
   FETCH_PROFILE_FOR_USER,
   SHOW_PROFILE_EDIT_MODAL,
   EDIT_PROFILE,
+  CREATE_PROFILE,
+  DELETE_PROFILE,
   SHOW_LOADING,
   SHOW_LIGHTBOX,
   CREATE_REVIEW,
@@ -142,6 +144,7 @@ import {
   ADD_NEW_STAFF,
   CONTRACTOR_TO_EDIT_ID,
   STAFF_TO_EDIT_ID,
+  PROFILE_TO_EDIT_ID,
   SHOW_PROFILE_CREATE_MODAL,
   SELECTED_PROFILE_ID
 } from './types';
@@ -1016,10 +1019,56 @@ export function editProfile(profileAttributes, callback) {
     })
     .then(response => {
       console.log('response to editProfile, response: ', response);
-      console.log('response to editProfile, response.data.data: ', response.data.data.profile);
+      console.log('response to editProfile, response.data.data: ', response.data.data.user);
       dispatch({
         type: EDIT_PROFILE,
-        payload: response.data.data.profile
+        payload: response.data.data.user
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function createProfile(profileAttributes, callback) {
+  // const { id } = profileAttributes;
+  console.log('in actions index, createProfile, profileAttributes: ', profileAttributes);
+  console.log('in actions index, createProfile: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/profiles`, { profile: profileAttributes }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createProfile, response: ', response);
+      console.log('response to createProfile, response.data.data: ', response.data.data.profile);
+      dispatch({
+        type: CREATE_PROFILE,
+        payload: response.data.data.user
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function deleteProfile(id, callback) {
+  // const { id } = profileAttributes;
+  console.log('in actions index, deleteProfile, profileAttributes: ', profileAttributes);
+  console.log('in actions index, deleteProfile: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/profiles${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteProfile, response: ', response);
+      console.log('response to deleteProfile, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_PROFILE,
+        payload: response.data.data.user
       });
       // sends back to createflat.js the flat_id and the images
       callback();
@@ -2101,6 +2150,13 @@ export function staffToEditId(id) {
 
   //flip state boolean
   return { type: STAFF_TO_EDIT_ID, payload: parseInt(id, 10) };
+}
+
+export function profileToEditId(id) {
+  console.log('in actions index, profileToEditId:');
+
+  //flip state boolean
+  return { type: PROFILE_TO_EDIT_ID, payload: parseInt(id, 10) };
 }
 
 export function selectedProfileId(id) {
