@@ -34,6 +34,7 @@ class FormChoices extends Component {
       // console.log('FormChoices, handleInputChange this.state.inputValue', this.state.inputValue)
     });
   }
+
   anyOfOtherValues(name, value) {
     const anyOtherValueArray = [];
     _.each(this.props.model[name].choices, choice => {
@@ -71,7 +72,17 @@ class FormChoices extends Component {
       // value is value passed from Field and needs to be specified for initialValues
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
-      const inputElement = <input id="valueInput" value={this.anyOfOtherValues(name, value) ? '' : value} key={choice.value} onChange={this.handleInputChange.bind(this)} type={choice.type} className={choice.className} style={{ borderColor: 'lightgray' }} placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''} />
+      const inputElement =
+        <input
+          id="valueInput"
+          value={this.anyOfOtherValues(name, value) ? '' : value}
+          key={choice.value}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.type}
+          className={choice.className}
+          style={{ borderColor: 'lightgray' }}
+          placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
+        />
       // if choice type is string, use input element above and button if not string
       // const anotherValue = value;
       // console.log('FormChoices, renderEachChoice choice, choice.value, value, choice[value]: ', choice, choice.value, value, choice[anotherValue]);
@@ -80,8 +91,9 @@ class FormChoices extends Component {
       // if (this.props.model[name].limit_choices && this.props.record[this.props.model[name].map_to_record] != value) {
       // if there is record and language_code in object; ie do not allow imput
       // make sure to read the respective objects in constant such as staff or contractor
+      console.log('FormChoices, renderEachChoice, this.props.model[name], this.props.record: ', this.props.model[name], this.props.record);
       if (this.props.record && this.props.model[name].map_to_record) {
-        console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
+        // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
         // if the language code or map_to_record  does not equal the choice value
         // ie the choice is something other than the language code that already exists in the db
         if (choice.value !== this.props.record[this.props.model[name].map_to_record]) {

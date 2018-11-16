@@ -13,11 +13,11 @@ import FormChoices from '../forms/form_choices';
 // Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
 
-class EditProfileModal extends Component {
+class CreateProfileModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editProfileCompleted: false
+      createProfileCompleted: false
     };
   }
 
@@ -34,7 +34,7 @@ class EditProfileModal extends Component {
         delta[each] = data[each]
       }
     })
-    this.props.editProfile(delta, () => {
+    this.props.createProfile(delta, () => {
       this.handleFormSubmitCallback();
     });
   }
@@ -42,7 +42,7 @@ class EditProfileModal extends Component {
   handleFormSubmitCallback() {
     // console.log('in signin, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
-    this.setState({ editProfileCompleted: true });
+    this.setState({ createProfileCompleted: true });
   }
 
   renderAlert() {
@@ -57,9 +57,9 @@ class EditProfileModal extends Component {
 
   handleClose() {
     // console.log('in profile_edit_modal, handleClose, this.props.showProfileEdit: ', this.props.showProfileEdit);
-      this.props.showProfileEditModal();
+      this.props.showProfileCreateModal();
       this.props.selectedProfileId('');
-      this.setState({ editProfileCompleted: false });
+      this.setState({ createProfileCompleted: false });
   }
 
   renderEachInputField() {
@@ -79,7 +79,7 @@ class EditProfileModal extends Component {
           <Field
             name={formField.name}
             component={fieldComponent}
-            props={fieldComponent == FormChoices ? { model: Profile, record: this.props.profile, create: false } : {}}
+            props={fieldComponent == FormChoices ? { model: Profile, record: this.props.profile, create: true, existingLanguageArray: this.props.profileLanguageArray } : {}}
             type={formField.type}
             className={formField.component == 'input' || 'textarea' ? 'form-control' : ''}
             />
@@ -88,7 +88,7 @@ class EditProfileModal extends Component {
     })
   }
 
-  renderEditProfileForm() {
+  renderCreateProfileForm() {
     const { handleSubmit } = this.props;
     const profileEmpty = _.isEmpty(this.props.auth.userProfile);
     if (!profileEmpty) {
@@ -100,7 +100,7 @@ class EditProfileModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title">{AppLanguages.editProfile[this.props.appLanguageCode]}</h3>
+          <h3 className="auth-modal-title">{AppLanguages.createProfile[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
             <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
@@ -134,29 +134,62 @@ class EditProfileModal extends Component {
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
     return (
       <div>
-        {this.state.editProfileCompleted ? this.renderPostEditMessage() : this.renderEditProfileForm()}
+        {this.state.createProfileCompleted ? this.renderPostEditMessage() : this.renderCreateProfileForm()}
       </div>
     );
   }
 }
 
-EditProfileModal = reduxForm({
-  form: 'EditProfileModal'
-})(EditProfileModal);
+CreateProfileModal = reduxForm({
+  form: 'CreateProfileModal'
+})(CreateProfileModal);
+
+function getLanguageArray(profiles) {
+  let array = [];
+  _.each(profiles, eachProfile => {
+    if (!array.includes(eachProfile.language_code)) {
+      array.push(eachProfile.language_code)
+    }
+  });
+  return array;
+}
+
+function getInitialValues(profile) {
+  const objectReturned = {};
+  _.each(Object.keys(Profile), eachAttribute => {
+    // if attribute is indepedent of language (just numbers or buttons)
+    if (Profile[eachAttribute].language_independent) {
+      // add to object to be assiged to initialValues
+      objectReturned[eachAttribute] = profile[eachAttribute];
+    }
+  });
+  // add base_record_id that references the original profile that was created
+  // having this identifies profile group to which profile belongs
+  // objectReturned.base_record_id = profile.id;
+  return objectReturned;
+}
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  console.log('in show_flat, mapStateToProps, state: ', state);
+  let initialValues = {};
+  const { profiles } = state.auth.user;
+  console.log('in profile_create_modal, mapStateToProps, profiles: ', profiles);
+  const profile = state.auth.user.profiles[0];
+  const profileLanguageArray = getLanguageArray(profiles);
+  initialValues = getInitialValues(profile);
+
+  console.log('in profile_create_modal, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
     // userProfile: state.auth.userProfile
     appLanguageCode: state.languages.appLanguageCode,
-    profile: state.auth.userProfile,
-    initialValues: state.auth.userProfile
+    profile,
+    profileLanguageArray,
+    initialValues
   };
 }
 
 
-export default connect(mapStateToProps, actions)(EditProfileModal);
+export default connect(mapStateToProps, actions)(CreateProfileModal);

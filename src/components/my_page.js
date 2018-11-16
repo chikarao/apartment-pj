@@ -15,6 +15,8 @@ import ContractorEditModal from './modals/contractor_edit_modal';
 import ContractorCreateModal from './modals/contractor_create_modal';
 import StaffEditModal from './modals/staff_edit_modal';
 import StaffCreateModal from './modals/staff_create_modal';
+import ProfileEditModal from './modals/profile_edit_modal';
+import ProfileCreateModal from './modals/profile_create_modal';
 import Contractor from './constants/contractor';
 import Languages from './constants/languages';
 
@@ -650,9 +652,23 @@ formatDate(date) {
   //   }
   // }
 
-  handleEditProfileClick() {
-    // console.log('in header, handleEditProfileClick: ');
-    this.props.showEditProfileModal();
+  handleAddEditProfileClick(event) {
+    const clickedElement = event.target;
+    // value is profile id
+    const elementVal = clickedElement.getAttribute('value')
+    // name is edit or add language
+    const elementName = clickedElement.getAttribute('name')
+    console.log('in header, handleAddEditProfileClick, elementName, elementVal: ', elementName, elementVal);
+    if (elementName == 'addLanguage') {
+      this.props.showProfileCreateModal();
+    }
+
+    if (elementName == 'edit') {
+      // if (!this.props.showProfileEdit) {
+        this.props.showProfileEditModal();
+        this.props.selectedProfileId(elementVal)
+      // }
+    }
   }
 
   handleImageUploadClick() {
@@ -666,6 +682,10 @@ formatDate(date) {
 
   handleRemoveProfileImageCallback() {
     // console.log('in header, handleRemoveProfileImageCallback: ');
+  }
+
+  handleAddProfileLanguageClick(event) {
+    this.props.showProfileCreateModal();
   }
 
   renderProfileImage() {
@@ -682,7 +702,7 @@ formatDate(date) {
           </div>
           {this.props.auth.image == BLANK_PROFILE_PICTURE ? '' :
           <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
-          {AppLanguages.removeProfilePicture[this.props.appLanguageCode]}
+            {AppLanguages.removeProfilePicture[this.props.appLanguageCode]}
           </div> }
       </div>
     );
@@ -691,6 +711,7 @@ formatDate(date) {
   renderProfile() {
     if (this.props.auth.userProfile) {
       const {
+        id,
         username,
         user_id,
         title,
@@ -712,13 +733,22 @@ formatDate(date) {
         introduction
       } = this.props.auth.userProfile;
       const { appLanguageCode } = this.props;
-      // console.log('in mypage, renderProfile, user_id: ', user_id);
+      console.log('in mypage, renderProfile, id: ', id);
       return (
         <div>
           <div className="my-page-category-title">
-          <div className="my-page-category-left"></div>
-          <div>{AppLanguages.myProfile[appLanguageCode]}</div>
-          <div className="my-page-category-right"><div id="my-page-profile-edit-link" onClick={this.handleEditProfileClick.bind(this)}><i className="fa fa-edit"></i></div></div>
+            <div className="my-page-category-left">
+              <div className="my-page-add-language-link" style={{ width: '100px', fontSize: '13px' }} name="addLanguage" onClick={this.handleAddEditProfileClick.bind(this)}>
+                <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
+                &nbsp;
+                {AppLanguages.language[this.props.appLanguageCode]}
+                </div>
+            </div>
+            <div>{AppLanguages.myProfile[appLanguageCode]}</div>
+            <div className="my-page-category-right">
+              <div id="my-page-profile-edit-link"><i className="fa fa-edit" value={id} name="edit" onClick={this.handleAddEditProfileClick.bind(this)}></i>
+              </div>
+            </div>
           </div>
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">
@@ -1018,21 +1048,21 @@ formatDate(date) {
     return object;
   }
 
-  getContractorLanguages(baseContractor) {
+  getLanguages(records, baseRecord) {
+    console.log('in mypage, getContractorLanguages, records, baseRecord: ', records, baseRecord);
     const arrayReturned = [];
-    _.each(this.props.auth.user.contractors, eachContractor => {
-      if (eachContractor.base_record_id == baseContractor.id) {
-        arrayReturned.push(eachContractor.language_code);
+    _.each(records, eachRecord => {
+      if (eachRecord.base_record_id == baseRecord.id) {
+        arrayReturned.push(eachRecord.language_code);
       }
-      if (!arrayReturned.includes(baseContractor.language_code)) {
-        arrayReturned.push(baseContractor.language_code);
+      if (!arrayReturned.includes(baseRecord.language_code)) {
+        arrayReturned.push(baseRecord.language_code);
       }
     });
-    // console.log('in mypage, getContractorLanguages, arrayReturned: ', arrayReturned);
     return arrayReturned;
   }
 
-  renderEachContractorLanguage(languageCodeArray) {
+  renderEachLanguage(languageCodeArray) {
     return _.map(languageCodeArray, (eachCode, i) => {
       return <div key={i}>{Languages[eachCode].flag}</div>;
     });
@@ -1048,7 +1078,7 @@ formatDate(date) {
         const contractorTypeObject = this.getContractorTypeObject(eachContractor);
         // render contractor only if it does not have a base_record_id, that is, it is the base record
         if (!eachContractor.base_record_id) {
-          const contractorLanguagesArray = this.getContractorLanguages(eachContractor);
+          const contractorLanguagesArray = this.getLanguages(this.props.auth.user.contractors, eachContractor);
           return (
             <li key={i} className="my-page-each-card">
                 <div className="my-page-each-card-click-box my-page-card-no-picture-box">
@@ -1059,9 +1089,13 @@ formatDate(date) {
                   </ul>
                 </div>
                 <div className="my-page-card-button-box my-page-card-button-box-language">
-                  <div name={eachContractor.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.addLanguage[appLanguageCode]}</div>
+                  <div name={eachContractor.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>
+                    <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
+                    &nbsp;
+                    {AppLanguages.language[this.props.appLanguageCode]}
+                  </div>
                   <div className="my-page-card-button-box-language-box">
-                    {this.renderEachContractorLanguage(contractorLanguagesArray)}
+                    {this.renderEachLanguage(contractorLanguagesArray)}
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
@@ -1097,13 +1131,23 @@ formatDate(date) {
   handleStaffEditDeleteClick(event) {
     const clickedElement = event.target;
     // edit or not
-    const elementValue = clickedElement.getAttribute('value');
+    const elementVal = clickedElement.getAttribute('value');
     // staff id
     const elementName = clickedElement.getAttribute('name');
-    this.props.showStaffEditModal();
-    // set staff id for use in mapStateToProps in staffEditModal
-    this.props.selectedStaffId(elementName);
-    this.setState({ selectedStaffId: elementValue });
+
+    if (elementVal == 'edit') {
+      this.props.showStaffEditModal();
+      // set staff id for use in mapStateToProps in staffEditModal
+      this.props.selectedStaffId(elementName);
+      this.setState({ selectedStaffId: elementVal });
+    }
+
+    if (elementVal == 'addLanguage') {
+      this.props.showStaffCreateModal();
+      // set staff id for use in mapStateToProps in staffEditModal
+      this.props.selectedStaffId(elementName);
+      this.setState({ selectedStaffId: elementVal });
+    }
   }
 
   getContractor() {
@@ -1120,31 +1164,45 @@ formatDate(date) {
 
   renderExistingStaffDetails(selectedContractor) {
     // const selectedContractor = this.getContractor();
-    // console.log('in mypage, renderExistingStaffDetails, selectedContractor: ', selectedContractor);
     // <button name={eachStaff.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
     return _.map(selectedContractor.staffs, (eachStaff, i) => {
-      return (
-        <li key={i} className="my-page-each-card">
-          <div className="my-page-each-card-click-box my-page-card-no-picture-box">
-            <div className="my-page-details">
-              <ul>
-                <li>{eachStaff.last_name},&nbsp;{eachStaff.first_name}</li>
-                <li>{eachStaff.title}</li>
-                <li>ph {eachStaff.phone}</li>
-                <li>id: {eachStaff.id}</li>
-              </ul>
+      if (!eachStaff.base_record_id) {
+        const staffLanguagesArray = this.getLanguages(selectedContractor.staffs, eachStaff);
+        console.log('in mypage, renderExistingStaffDetails, staffLanguagesArray: ', staffLanguagesArray);
+        return (
+          <li key={i} className="my-page-each-card">
+            <div className="my-page-each-card-click-box my-page-card-no-picture-box">
+              <div className="my-page-details">
+                <ul>
+                  <li>{eachStaff.last_name},&nbsp;{eachStaff.first_name}</li>
+                  <li>{eachStaff.title}</li>
+                  <li>ph {eachStaff.phone}</li>
+                  <li>id: {eachStaff.id}</li>
+                </ul>
+              </div>
+              <div className="my-page-card-button-box my-page-card-button-box-language">
+                <div name={eachStaff.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleStaffEditDeleteClick.bind(this)}>
+                  <i className="fa fa-plus-circle" style={{ fontSize: '12px' }}></i>
+                  &nbsp;
+                  {AppLanguages.language[this.props.appLanguageCode]}
+                </div>
+                <div className="my-page-card-button-box-language-box">
+                {this.renderEachLanguage(staffLanguagesArray)}
+                </div>
+              </div>
+              <div className="my-page-card-button-box">
+                <button name={eachStaff.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+              </div>
             </div>
-            <div className="my-page-card-button-box">
-              <button name={eachStaff.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
-            </div>
-          </div>
-        </li>
-      );
+          </li>
+        );
+      }
     });
   }
 
   handleAddStaffClick() {
     this.props.showStaffCreateModal();
+    this.props.addNewStaff();
   }
 
   renderStaffs() {
@@ -1223,10 +1281,27 @@ formatDate(date) {
       />
     );
   }
+
   renderStaffCreateForm() {
     return (
       <StaffCreateModal
         show={this.props.showStaffCreate}
+      />
+    );
+  }
+
+  renderProfileEditForm() {
+    return (
+      <ProfileEditModal
+        show={this.props.showProfileEdit}
+      />
+    );
+  }
+
+  renderProfileCreateForm() {
+    return (
+      <ProfileCreateModal
+        show={this.props.showProfileCreate}
       />
     );
   }
@@ -1242,6 +1317,8 @@ formatDate(date) {
         {this.props.showContractorCreate ? this.renderContractorCreateForm() : ''}
         {this.props.showStaffEdit ? this.renderStaffEditForm() : ''}
         {this.props.showStaffCreate ? this.renderStaffCreateForm() : ''}
+        {this.props.showProfileEdit ? this.renderProfileEditForm() : ''}
+        {this.props.showProfileCreate ? this.renderProfileCreateForm() : ''}
         <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
         <div className="container my-page-container">
           <div className="row">
@@ -1287,6 +1364,8 @@ function mapStateToProps(state) {
     showStaffCreate: state.modals.showStaffCreateModal,
     showContractorEdit: state.modals.showContractorEditModal,
     showContractorCreate: state.modals.showContractorCreateModal,
+    showProfileCreate: state.modals.showProfileCreateModal,
+    showProfileEdit: state.modals.showProfileEditModal,
   };
 }
 

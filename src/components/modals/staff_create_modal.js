@@ -35,10 +35,10 @@ class StaffCreateModal extends Component {
     //     delta[each] = data[each]
     //   }
     // })
-    const dataToChange = data;
+    // const dataToBeSent = { staff: data };
+    let dataToChange = data;
     dataToChange.contractor_id = this.props.contractorId;
     const dataToBeSent = { staff: dataToChange };
-    // const dataToBeSent = { staff: data, id: this.props.staffId };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in StaffCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
@@ -49,6 +49,7 @@ class StaffCreateModal extends Component {
 
   handleFormSubmitCallback() {
     console.log('in StaffCreateModal, handleFormSubmitCallback: ');
+    this.props.selectedStaffId('');
     // showHideClassName = 'modal display-none';
     this.setState({ createStaffCompleted: true });
     // this.resetAdvancedFilters();
@@ -69,10 +70,12 @@ class StaffCreateModal extends Component {
   // turn off showStaffCreateModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    console.log('in staff_create_modal, handleClose, this.props.showStaffCreate: ', this.props.showStaffCreate);
+    console.log('in staff_create_modal, handleClose, this.props.showStaffEdit: ', this.props.showStaffEdit);
 
-    // if (this.props.showStaffCreate) {
+    // if (this.props.showStaffEdit) {
       this.props.showStaffCreateModal();
+      this.props.selectedStaffId('');
+      this.props.addNew ? this.props.addNewStaff() : '';
       this.setState({ createStaffCompleted: false });
     // }
   }
@@ -80,26 +83,24 @@ class StaffCreateModal extends Component {
   renderEachStaffField() {
     let fieldComponent = '';
     return _.map(Staff, (formField, i) => {
-      console.log('in staff_create_modal, renderEachStaffField, formField: ', formField);
+      // console.log('in staff_create_modal, renderEachStaffField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in staff_create_modal, renderEachStaffField, fieldComponent: ', fieldComponent);
+      console.log('in staff_create_modal, renderEachStaffField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
           <label className="create-flat-form-label">{formField.en}:</label>
           <Field
             name={formField.name}
-            // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Staff } : {}}
+            props={fieldComponent == FormChoices ? { model: Staff, record: this.props.staff, create: true, existingLanguageArray: this.props.staffLanguageArray } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
-            // style={eachKey.component == 'input' ? }
           />
         </fieldset>
       );
@@ -120,13 +121,13 @@ class StaffCreateModal extends Component {
     this.props.showLoading();
   }
 
-  renderCreateStaffForm() {
-    console.log('in staff_create_modal, renderCreateStaffForm, this.props.showStaffCreate: ', this.props.showStaffCreate);
+  renderEditStaffForm() {
+    console.log('in staff_create_modal, renderEditStaffForm, this.props.showStaffEdit: ', this.props.showStaffEdit);
 
     const { handleSubmit } = this.props;
 
     if (this.props.auth) {
-      console.log('in staff_create_modal, renderCreateStaffForm, this.props.flat: ', this.props.flat);
+      console.log('in staff_create_modal, renderEditStaffForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -135,7 +136,6 @@ class StaffCreateModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Create Staff</h3>
-
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
@@ -154,7 +154,7 @@ class StaffCreateModal extends Component {
   }
 
 
-  renderPostCreateDeleteMessage() {
+  renderPostEditDeleteMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
@@ -177,7 +177,7 @@ class StaffCreateModal extends Component {
     console.log('in staff_create_modal, render this.state.createStaffCompleted: ', this.state.createStaffCompleted);
     return (
       <div>
-        {this.state.createStaffCompleted ? this.renderPostCreateDeleteMessage() : this.renderCreateStaffForm()}
+        {this.state.createStaffCompleted ? this.renderPostEditDeleteMessage() : this.renderEditStaffForm()}
       </div>
     );
   }
@@ -188,11 +188,17 @@ StaffCreateModal = reduxForm({
   enableReinitialize: true
 })(StaffCreateModal);
 
+// function getExistingLanguages(staffs) {
+//   const array = []
+//   // _.each()
+//   return array;
+// }
+
 function getContractor(contractors, id) {
   // placeholder for when add lanauge
+  console.log('in staff_create_modal, getContractor, contractors, id: ', contractors, id);
   let contractor = {};
     _.each(contractors, eachContractor => {
-      console.log('in contractor_create_modal, getStaff, eachContractor: ', eachContractor);
       if (eachContractor.id == id) {
         contractor = eachContractor;
         return;
@@ -201,6 +207,51 @@ function getContractor(contractors, id) {
 
   return contractor;
 }
+
+function getStaff(staffs, id) {
+  // placeholder for when add lanauge
+  let staff = {};
+    _.each(staffs, eachStaff => {
+      console.log('in staff_create_modal, getStaff, eachStaff: ', eachStaff);
+      if (eachStaff.id == id) {
+        staff = eachStaff;
+        return;
+      }
+    });
+
+  return staff;
+}
+
+function getInitialValues(staff) {
+  const objectReturned = {};
+  _.each(Object.keys(Staff), eachAttribute => {
+    // if attribute is indepedent of language (just numbers or buttons)
+    if (Staff[eachAttribute].language_independent) {
+      // add to object to be assiged to initialValues
+      objectReturned[eachAttribute] = staff[eachAttribute];
+    }
+  });
+  // add base_record_id that references the original staff that was created
+  // having this identifies staff group to which staff belongs
+  objectReturned.base_record_id = staff.id;
+  return objectReturned;
+}
+
+function getLanguageArray(staffs, baseStaff) {
+  let array = [];
+  _.each(staffs, eachStaff => {
+    if (eachStaff.base_record_id == baseStaff.id) {
+      if (!array.includes(eachStaff.language_code)) {
+        array.push(eachStaff.language_code);
+      }
+      if (!array.includes(baseStaff.language_code)) {
+        array.push(baseStaff.language_code);
+      }
+    }
+  });
+  return array;
+}
+
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in StaffCreateModal, mapStateToProps, state: ', state);
@@ -208,29 +259,21 @@ function mapStateToProps(state) {
   // const calendarArray = [];
   if (state.auth.user) {
     let initialValues = {};
-
-    // // console.log('in StaffCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    const contractor = getContractor(state.auth.user.contractors, parseInt(state.modals.selectedContractorId, 10));
+    // initialValues.language_code = 'en';
+    const contractor = getContractor(state.auth.user.contractors, state.modals.selectedContractorId);
     const { staffs } = contractor;
-    if (staffs.length > 0) {
-      const staff = staffs[0];
-      initialValues.address1 = staff.address1;
-      initialValues.city = staff.city;
-      initialValues.state = staff.state;
-      initialValues.zip = staff.zip;
-      initialValues.country = staff.country;
-      initialValues.phone = staff.phone;
-    }　else {
-      initialValues.address1 = contractor.address1;
-      initialValues.city = contractor.city;
-      initialValues.state = contractor.state;
-      initialValues.zip = contractor.zip;
-      initialValues.country = contractor.country;
-      initialValues.phone = contractor.phone;
+    let staff = {};
+    let staffLanguageArray = [];
+    // if user click is not to create a brand new staff; ie to add a language not a new staff
+    if (!state.modals.addNewStaff) {
+      staff = getStaff(staffs, state.modals.selectedStaffId);
+      console.log('in StaffCreateModal, mapStateToProps, staff: ', staff);
+      staffLanguageArray = getLanguageArray(staffs, staff);
+      console.log('in StaffCreateModal, mapStateToProps, staffLanguageArray: ', staffLanguageArray);
+      initialValues = getInitialValues(staff);
     }
-    // const staff = getStaff(staffs, parseInt(state.modals.selectedStaffId, 10));
-    // // const date = new Date(staff.staff_date);
-    // // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
+    // console.log('in StaffCreateModal, mapStateToProps, staff: ', staff);
+    // const existingLanguagesArray = getExistingLanguages(staffs);
     // console.log('in StaffCreateModal, mapStateToProps, staff: ', staff);
     // initialValues = staff;
     // // initialValues.staff_date = dateString;
@@ -241,18 +284,16 @@ function mapStateToProps(state) {
       successMessage: state.auth.success,
       errorMessage: state.auth.error,
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
-      // userProfile: state.auth.userProfile
-      // initialValues: state.auth.userProfile
-      // languages: state.languages,
-      showStaffCreate: state.modals.showStaffCreateModal,
+      showStaffEdit: state.modals.showStaffCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
-      staffId: state.modals.selectedStaffId,
       contractorId: state.modals.selectedContractorId,
-      // language: state.languages.selectedLanguage,
+      staffId: state.modals.selectedStaffId,
+      staff,
+      addNew: state.modals.addNewStaff,
+      staffLanguageArray,
       // set initialValues to be first calendar in array to match selectedStaffId
       initialValues
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
-      // initialValues
     };
   } else {
     return {};

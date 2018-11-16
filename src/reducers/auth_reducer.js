@@ -12,7 +12,6 @@ import {
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
-  SHOW_EDIT_PROFILE_MODAL,
   EDIT_PROFILE,
   SHOW_LOADING,
   SHOW_LIGHTBOX,
@@ -94,9 +93,6 @@ export default function (state = {
 
     case SHOW_RESET_PASSWORD_MODAL:
       return { ...state, showResetPasswordModal: !state.showResetPasswordModal };
-
-    case SHOW_EDIT_PROFILE_MODAL:
-      return { ...state, showEditProfileModal: !state.showEditProfileModal };
 
     case FETCH_PROFILE_FOR_USER:
       return { ...state, userProfile: action.payload.profile, user: action.payload.user };

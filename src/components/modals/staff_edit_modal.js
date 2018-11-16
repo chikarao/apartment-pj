@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
-import languages from '../constants/languages';
+import Languages from '../constants/languages';
 import Staff from '../constants/staff';
+import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
@@ -35,7 +36,7 @@ class StaffEditModal extends Component {
         delta[each] = data[each]
       }
     })
-    const dataToBeSent = { staff: delta, id: this.props.staffId };
+    const dataToBeSent = { staff: delta, id: this.props.staff.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in StaffEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
@@ -46,6 +47,7 @@ class StaffEditModal extends Component {
 
   handleFormSubmitCallback() {
     console.log('in StaffEditModal, handleFormSubmitCallback: ');
+    this.props.selectedStaffId('');
     // showHideClassName = 'modal display-none';
     this.setState({ editStaffCompleted: true });
     // this.resetAdvancedFilters();
@@ -70,6 +72,8 @@ class StaffEditModal extends Component {
 
     // if (this.props.showStaffEdit) {
       this.props.showStaffEditModal();
+      this.props.selectedStaffId('');
+      this.props.staffToEditId('');
       this.setState({ editStaffCompleted: false });
     // }
   }
@@ -93,7 +97,7 @@ class StaffEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Staff } : {}}
+            props={fieldComponent == FormChoices ? { model: Staff, record: this.props.staff, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -106,9 +110,17 @@ class StaffEditModal extends Component {
   handleDeleteStaffClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    if (window.confirm('Are you sure you want to delete this staff?')) {
-      this.props.showLoading()
-      this.props.deleteStaff(elementVal, () => this.handleDeleteStaffCallback());
+    // if the staff is the base staff, give warking
+    if (!this.props.staff.base_record_id) {
+      if (window.confirm('Are you sure you want to delete this staff? Deleting this record will delete all languages associated with the staff')) {
+        this.props.showLoading()
+        this.props.deleteStaff(elementVal, () => this.handleDeleteStaffCallback());
+      }
+    } else {
+      if (window.confirm('Are you sure you want to delete this language?')) {
+        this.props.showLoading()
+        this.props.deleteStaff(elementVal, () => this.handleDeleteStaffCallback());
+      }
     }
   }
 
@@ -119,13 +131,52 @@ class StaffEditModal extends Component {
     this.props.showLoading();
   }
 
+  handleEditLanguageClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.props.staffToEditId(elementVal);
+  }
+
+  getStaffGroup() {
+    const array = [];
+    _.each(this.props.contractor.staffs, eachStaff => {
+      // console.log('in staff_edit_modal, getStaffGroup, eachStaff.id, this.props.selectedStaffId, eachStaff.base_record_id, this.props.selectedStaffId: ', eachStaff.id, this.props.staffId, eachStaff.base_record_id, this.props.staffId);
+      if ((eachStaff.id == this.props.staffId) || (eachStaff.base_record_id == this.props.staffId)) {
+        array.push(eachStaff);
+      }
+    })
+    return array;
+  }
+
+  renderEditLanguageLink() {
+    // get staffs with same id and base_record_id, or same staff group of languages
+    const staffGroup = this.getStaffGroup();
+    // return _.map(this.props.auth.user.staffs, (eachStaff, i) => {
+    console.log('in staff_edit_modal, renderEditLanguageLink, staffGroup: ', staffGroup);
+    return _.map(staffGroup, (eachStaff, i) => {
+      // const baseRecordOrNot = this.baseRecordOrNot(eachStaff);
+      if (this.props.staff.id !== eachStaff.id) {
+        return (
+          <div
+            key={i}
+            value={eachStaff.id}
+            className="modal-edit-language-link"
+            onClick={this.handleEditLanguageClick.bind(this)}
+          >
+            {Languages[eachStaff.language_code].flag}&nbsp;{Languages[eachStaff.language_code].name}
+          </div>
+        );
+      }
+    });
+  }
+
   renderEditStaffForm() {
-    console.log('in staff_edit_modal, renderEditStaffForm, this.props.showStaffEdit: ', this.props.showStaffEdit);
 
     const { handleSubmit } = this.props;
-    //!!!!!!! Make sure to change this if condition when adapting model to new modal
+    // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
+
     if (this.props.auth) {
-      console.log('in staff_edit_modal, renderEditStaffForm, this.props.flat: ', this.props.flat);
+      // console.log('in staff_edit_modal, renderEditStaffForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -134,12 +185,14 @@ class StaffEditModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Staff</h3>
-            <div className="edit-flat-delete-language-button">
-              <button value={this.props.staffId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteStaffClick.bind(this)}>Delete</button>
+            <div className="modal-edit-delete-edit-button-box">
+              <button value={this.props.staff.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteStaffClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <div className="modal-edit-language-link-box">
+                  {this.renderEditLanguageLink()}
+              </div>
             </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-
               <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                 {this.renderEachStaffField()}
                 <div className="confirm-change-and-button">
@@ -191,9 +244,9 @@ StaffEditModal = reduxForm({
 
 function getContractor(contractors, id) {
   // placeholder for when add lanauge
+  console.log('in staff_create_modal, getContractor, contractors, id: ', contractors, id);
   let contractor = {};
     _.each(contractors, eachContractor => {
-      console.log('in staff_edit_modal, getContractor, eachContractor, id: ', eachContractor, id);
       if (eachContractor.id == id) {
         contractor = eachContractor;
         return;
@@ -207,7 +260,21 @@ function getStaff(staffs, id) {
   // placeholder for when add lanauge
   let staff = {};
     _.each(staffs, eachStaff => {
-      console.log('in staff_edit_modal, getStaff, eachStaff, id: ', eachStaff, id);
+      console.log('in staff_edit_modal, getStaff, eachStaff: ', eachStaff);
+      if (eachStaff.id == id) {
+        staff = eachStaff;
+        return;
+      }
+    });
+
+  return staff;
+}
+
+function getEditStaff(staffs, id) {
+  // placeholder for when add lanauge
+  let staff = {};
+    _.each(staffs, eachStaff => {
+      console.log('in staff_edit_modal, getStaff, eachStaff: ', eachStaff);
       if (eachStaff.id == id) {
         staff = eachStaff;
         return;
@@ -223,17 +290,20 @@ function mapStateToProps(state) {
   // const calendarArray = [];
   if (state.auth.user) {
     let initialValues = {};
-    const { contractors } = state.auth.user;
-    const contractor = getContractor(contractors, parseInt(state.modals.selectedContractorId, 10));
-    console.log('in StaffEditModal, mapStateToProps, contractor: ', contractor);
-    const staff = getStaff(contractor.staffs, parseInt(state.modals.selectedStaffId, 10));
+    // console.log('in StaffEditModal, mapStateToProps, state.auth.user: ', state.auth.user);
+    const contractor = getContractor(state.auth.user.contractors, state.modals.selectedContractorId);
+    const { staffs } = contractor;
+    let staff = getStaff(staffs, parseInt(state.modals.selectedStaffId, 10));
+    const editStaff = getEditStaff(staffs, parseInt(state.modals.staffToEditId, 10));
+    // const date = new Date(staff.staff_date);
+    // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
     console.log('in StaffEditModal, mapStateToProps, staff: ', staff);
-    // // const date = new Date(staff.staff_date);
-    // // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
-    // console.log('in StaffEditModal, mapStateToProps, staff: ', staff);
+    if (state.modals.staffToEditId) {
+      staff = editStaff;
+    }
     initialValues = staff;
-    // // initialValues.staff_date = dateString;
-    // console.log('in StaffEditModal, mapStateToProps, initialValues: ', initialValues);
+    // initialValues.staff_date = dateString;
+    console.log('in StaffEditModal, mapStateToProps, initialValues: ', initialValues);
 
     return {
       auth: state.auth,
@@ -245,7 +315,12 @@ function mapStateToProps(state) {
       // languages: state.languages,
       showStaffEdit: state.modals.showStaffEditModal,
       appLanguageCode: state.languages.appLanguageCode,
+      contractorId: state.modals.selectedContractorId,
       staffId: state.modals.selectedStaffId,
+      staff,
+      contractor,
+      // editStaffId: state.modals.staffToEditId,
+      // editStaff,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedStaffId
       initialValues

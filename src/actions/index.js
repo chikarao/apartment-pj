@@ -53,7 +53,7 @@ import {
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
-  SHOW_EDIT_PROFILE_MODAL,
+  SHOW_PROFILE_EDIT_MODAL,
   EDIT_PROFILE,
   SHOW_LOADING,
   SHOW_LIGHTBOX,
@@ -139,7 +139,11 @@ import {
   CREATE_STAFF,
   DELETE_STAFF,
   ADD_NEW_CONTRACTOR,
-  CONTRACTOR_TO_EDIT_ID
+  ADD_NEW_STAFF,
+  CONTRACTOR_TO_EDIT_ID,
+  STAFF_TO_EDIT_ID,
+  SHOW_PROFILE_CREATE_MODAL,
+  SELECTED_PROFILE_ID
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -371,11 +375,18 @@ export function showResetPasswordModal() {
   return { type: SHOW_RESET_PASSWORD_MODAL };
 }
 
-export function showEditProfileModal() {
+export function showProfileEditModal() {
   console.log('in actions index, showEditProfileModal:');
 
   //flip state boolean
-  return { type: SHOW_EDIT_PROFILE_MODAL };
+  return { type: SHOW_PROFILE_EDIT_MODAL };
+}
+
+export function showProfileCreateModal() {
+  console.log('in actions index, showCreateProfileModal:');
+
+  //flip state boolean
+  return { type: SHOW_PROFILE_CREATE_MODAL };
 }
 
 export function showLoading(fromWhere) {
@@ -2044,6 +2055,12 @@ export function addNewContractor() {
   //flip state boolean showStaffCreateModal
   return { type: ADD_NEW_CONTRACTOR };
 }
+export function addNewStaff() {
+  console.log('in actions index, addNewStaff:');
+
+  //flip state boolean addNewStaff
+  return { type: ADD_NEW_STAFF };
+}
 
 export function selectedBankAccountId(id) {
   console.log('in actions index, selectedBankAccountId:');
@@ -2079,11 +2096,25 @@ export function contractorToEditId(id) {
   return { type: CONTRACTOR_TO_EDIT_ID, payload: parseInt(id, 10) };
 }
 
+export function staffToEditId(id) {
+  console.log('in actions index, staffToEditId:');
+
+  //flip state boolean
+  return { type: STAFF_TO_EDIT_ID, payload: parseInt(id, 10) };
+}
+
+export function selectedProfileId(id) {
+  console.log('in actions index, selectedProfileId:', id);
+
+  //flip state boolean
+  return { type: SELECTED_PROFILE_ID, payload: parseInt(id, 10) };
+}
+
 export function selectedStaffId(id) {
   console.log('in actions index, selectedStaffId:');
 
   //flip state boolean
-  return { type: SELECTED_STAFF_ID, payload: id };
+  return { type: SELECTED_STAFF_ID, payload: parseInt(id, 10) };
 }
 
 export function setCreateDocumentKey(key, callback) {

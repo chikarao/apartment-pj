@@ -10,7 +10,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import SigninModal from './signin_modal';
 import SignupModal from './signup_modal';
 import ResetPasswordModal from './reset_password_modal';
-import EditProfileModal from '../modals/profile_edit_modal';
+// import EditProfileModal from '../modals/profile_edit_modal';
 import Loading from '../modals/loading';
 // import Lightbox from '../modals/lightbox';
 
@@ -131,14 +131,14 @@ class Header extends Component {
         this.props.authError('')
       }
 
-      if (this.props.auth.showEditProfileModal) {
-        // if reset password opened, switch off showResetPasswordModal to hide reset modal
-        // so if sign in clicked, sign in opens since showResetPasswordModal is false
-        // switch off showEditProfileModal boolean
-        this.props.showEditProfileModal();
-        // document.location.reload();
-        this.props.history.push('/myPage');
-      }
+      // if (this.props.auth.showEditProfileModal) {
+      //   // if reset password opened, switch off showResetPasswordModal to hide reset modal
+      //   // so if sign in clicked, sign in opens since showResetPasswordModal is false
+      //   // switch off showEditProfileModal boolean
+      //   this.props.showEditProfileModal();
+      //   // document.location.reload();
+      //   this.props.history.push('/myPage');
+      // }
     };
 
     renderLoadingScreen() {

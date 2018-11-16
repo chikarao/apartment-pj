@@ -22,7 +22,12 @@ import {
   SELECTED_STAFF_ID,
   SELECTED_CONTRACTOR_ID,
   CONTRACTOR_TO_EDIT_ID,
-  ADD_NEW_CONTRACTOR
+  STAFF_TO_EDIT_ID,
+  ADD_NEW_CONTRACTOR,
+  ADD_NEW_STAFF,
+  SHOW_PROFILE_EDIT_MODAL,
+  SHOW_PROFILE_CREATE_MODAL,
+  SELECTED_PROFILE_ID
 } from '../actions/types';
 //
 // const initialState = {
@@ -43,7 +48,10 @@ export default function (
     showInspectionCreateModal: false,
     showInspectionEditModal: false,
     selectedContractorId: '',
-    contractorToEditId: ''
+    selectedProfileId: '',
+    contractorToEditId: '',
+    addNewContractor: false,
+    addNewStaff: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -112,11 +120,27 @@ export default function (
     case CONTRACTOR_TO_EDIT_ID:
     return { ...state, contractorToEditId: action.payload };
 
+    case STAFF_TO_EDIT_ID:
+    return { ...state, staffToEditId: action.payload };
+
     case SELECTED_STAFF_ID:
     return { ...state, selectedStaffId: action.payload };
 
+    case SELECTED_PROFILE_ID:
+    return { ...state, selectedProfileId: action.payload };
+
     case ADD_NEW_CONTRACTOR:
     return { ...state, addNewContractor: !state.addNewContractor };
+
+    case ADD_NEW_STAFF:
+    return { ...state, addNewStaff: !state.addNewStaff };
+
+    case SHOW_PROFILE_EDIT_MODAL:
+      return { ...state, showProfileEditModal: !state.showProfileEditModal };
+
+    case SHOW_PROFILE_CREATE_MODAL:
+      return { ...state, showProfileCreateModal: !state.showProfileCreateModal };
+
 
     default:
       return state;

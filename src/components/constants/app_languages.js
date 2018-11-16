@@ -209,6 +209,7 @@ const appLanguages =
     // edit profile
     noConversationsYet: { en: 'You have no conversations.', jp: 'まだメッセージはありません。' },
     editProfile: { en: 'Edit Profile', jp: 'プロフィールの編集' },
+    createProfile: { en: 'Create Profile', jp: 'プロフィールの作成' },
     // payment modal
     makePayment: { en: 'Make a Payment', jp: 'お支払い' },
     paymentAmount: { en: 'Payment Amount', jp: 'お支払い額' },
@@ -267,6 +268,7 @@ const appLanguages =
     addNewStaff: { en: 'Add New Staff', jp: 'スタッフを追加' },
     viewStaff: { en: 'View Staff', jp: 'スタッフ' },
     addLanguage: { en: 'Add Language', jp: '言語を追加' },
+    language: { en: 'Language', jp: '言語' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
     // importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },
