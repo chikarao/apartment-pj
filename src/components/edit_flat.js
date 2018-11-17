@@ -513,8 +513,22 @@ class EditFlat extends Component {
     });
   }
 
-  handleAddEditBuildingLangugaeClick() {
+  handleAddEditBuildingLanguageClick(event) {
+    const clickedElement = event.target;
+    // buildingLanguage.id when edit and building.id when add
+    const elementVal = clickedElement.getAttribute('value');
+    // add or edit
+    const elementName = clickedElement.getAttribute('name');
 
+    if (elementName == 'edit') {
+      this.props.selectedBuildingLanguageId(elementVal);
+      this.props.showBuildingLanguageEditModal();
+    }
+
+    if (elementName == 'add') {
+      this.props.showBuildingLanguageCreateModal();
+      this.props.selectedBuildingId(elementVal);
+    }
   }
 
   renderEachBuildingLanguage() {
@@ -524,7 +538,7 @@ class EditFlat extends Component {
         <div key={i} className="edit-flat-inspection-each">
           {Languages[eachBuildingLanguage.language_code].flag}{Languages[eachBuildingLanguage.language_code].name}
           &nbsp;
-          <div value={eachBuildingLanguage.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditBuildingLangugaeClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+          <div value={eachBuildingLanguage.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditBuildingLanguageClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -550,7 +564,7 @@ class EditFlat extends Component {
         :
         <div>No Other Building Languages</div>
       }
-      <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addBuildingLanguage[this.props.appLanguageCode]}</div>
+      <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditBuildingLanguageClick.bind(this)}>{AppLanguages.addBuildingLanguage[this.props.appLanguageCode]}</div>
       </div>
     );
   }
@@ -1355,6 +1369,10 @@ function mapStateToProps(state) {
       showFacilityCreate: state.modals.showFacilityCreateModal,
       showInspectionEdit: state.modals.showInspectionEditModal,
       showInspectionCreate: state.modals.showInspectionCreateModal,
+      showBuildingLanguageCreate: state.modals.showBuildingLanguageCreateModal,
+      showBuildingLanguageEdit: state.modals.showBuildingLanguageEditModal,
+      buildingId: state.modals.buildingId,
+      buildingLanguageId: state.modals.buildingLanguageId,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

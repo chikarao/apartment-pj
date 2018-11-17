@@ -146,7 +146,11 @@ import {
   STAFF_TO_EDIT_ID,
   PROFILE_TO_EDIT_ID,
   SHOW_PROFILE_CREATE_MODAL,
-  SELECTED_PROFILE_ID
+  SELECTED_PROFILE_ID,
+  SHOW_BUILDING_LANGUAGE_CREATE_MODAL,
+  SHOW_BUILDING_LANGUAGE_EDIT_MODAL,
+  SELECTED_BUILDING_LANGUAGE_ID,
+  SELECTED_BUILDING_ID,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -390,6 +394,20 @@ export function showProfileCreateModal() {
 
   //flip state boolean
   return { type: SHOW_PROFILE_CREATE_MODAL };
+}
+
+export function showBuildingLanguageCreateModal() {
+  console.log('in actions index, showBuildingLanguageCreateModal:');
+
+  //flip state boolean
+  return { type: SHOW_BUILDING_LANGUAGE_CREATE_MODAL };
+}
+
+export function showBuildingLanguageEditModal() {
+  console.log('in actions index, showBuildingLanguageEditModal:');
+
+  //flip state boolean
+  return { type: SHOW_BUILDING_LANGUAGE_EDIT_MODAL };
 }
 
 export function showLoading(fromWhere) {
@@ -2157,6 +2175,20 @@ export function profileToEditId(id) {
 
   //flip state boolean
   return { type: PROFILE_TO_EDIT_ID, payload: parseInt(id, 10) };
+}
+
+export function selectedBuildingLanguageId(id) {
+  console.log('in actions index, selectedBuildingLanguageId:');
+
+  //flip state boolean
+  return { type: SELECTED_BUILDING_LANGUAGE_ID, payload: parseInt(id, 10) };
+}
+
+export function selectedBuildingId(id) {
+  console.log('in actions index, selectedBuildingId:');
+
+  //flip state boolean
+  return { type: SELECTED_BUILDING_ID, payload: parseInt(id, 10) };
 }
 
 export function selectedProfileId(id) {

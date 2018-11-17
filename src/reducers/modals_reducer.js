@@ -28,7 +28,11 @@ import {
   ADD_NEW_STAFF,
   SHOW_PROFILE_EDIT_MODAL,
   SHOW_PROFILE_CREATE_MODAL,
-  SELECTED_PROFILE_ID
+  SELECTED_PROFILE_ID,
+  SHOW_BUILDING_LANGUAGE_CREATE_MODAL,
+  SHOW_BUILDING_LANGUAGE_EDIT_MODAL,
+  SELECTED_BUILDING_LANGUAGE_ID,
+  SELECTED_BUILDING_ID,
 } from '../actions/types';
 //
 // const initialState = {
@@ -53,7 +57,9 @@ export default function (
     contractorToEditId: '',
     addNewContractor: false,
     addNewStaff: false,
-    profileToEditId: ''
+    profileToEditId: '',
+    selectedBuildingId: '',
+    selectedBuildingLanguageId: ''
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -145,6 +151,18 @@ export default function (
 
     case SHOW_PROFILE_CREATE_MODAL:
       return { ...state, showProfileCreateModal: !state.showProfileCreateModal };
+
+    case SHOW_BUILDING_LANGUAGE_CREATE_MODAL:
+      return { ...state, showBuildingLanguageCreateModal: !state.showBuildingLanguageCreateModal };
+
+    case SHOW_BUILDING_LANGUAGE_EDIT_MODAL:
+      return { ...state, showBuildingLanguageEditModal: !state.showBuildingLanguageEditModal };
+
+    case SELECTED_BUILDING_LANGUAGE_ID:
+    return { ...state, selectedBuildingLanguageId: action.payload };
+
+    case SELECTED_BUILDING_ID:
+    return { ...state, selectedBuildingId: action.payload };
 
 
     default:
