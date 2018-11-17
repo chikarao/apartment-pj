@@ -10,7 +10,7 @@ import Amenities from './constants/amenities';
 import GoogleMap from './maps/google_map';
 import MapInteraction from './maps/map_interaction';
 import globalConstants from './constants/global_constants';
-import languages from './constants/languages';
+import Languages from './constants/languages';
 import LanguageCreateModal from './modals/language_create_modal';
 import LanguageEditModal from './modals/language_edit_modal';
 import IcalendarCreateModal from './modals/icalendar_create_modal';
@@ -364,7 +364,7 @@ class EditFlat extends Component {
     return _.map(this.props.flat.flat_languages, language => {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
-          {languages[language.code].flag} {languages[language.code].name}
+          {Languages[language.code].flag} {Languages[language.code].name}
           <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
@@ -394,7 +394,7 @@ class EditFlat extends Component {
   renderLanguages() {
     return (
       <div className="edit-flat-language-box">
-        <div className="edit-flat-base-language-box">{AppLanguages.baseLanguage[this.props.appLanguageCode]}: {languages[this.props.flat.language_code].flag}<span style={{ fontStyle: 'italic' }}> {languages[this.props.flat.language_code].name}</span></div>
+        <div className="edit-flat-base-language-box">{AppLanguages.baseLanguage[this.props.appLanguageCode]}: {Languages[this.props.flat.language_code].flag}<span style={{ fontStyle: 'italic' }}> {Languages[this.props.flat.language_code].name}</span></div>
         <div className="edit-flat-available-language-box">
           <h5>{AppLanguages.availableLanguages[this.props.appLanguageCode]}</h5>
           {this.props.flat.flat_languages.length > 0 ?
@@ -415,7 +415,7 @@ class EditFlat extends Component {
       <div className="edit-flat-language-box">
         <div className="edit-flat-available-language-box">
           <h5>{AppLanguages.addedIcalendars[this.props.appLanguageCode]}</h5>
-          {this.props.flat.flat_languages.length > 0 ?
+          {this.props.flat.calendars.length > 0 ?
             <div className="edit-flat-available-languages-box-container container">
               <div className="edit-flat-available-languages-box-row row">
                 {this.renderAvailableICalendars()}
@@ -423,7 +423,11 @@ class EditFlat extends Component {
             </div>
             : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noIcalendarsAdded[this.props.appLanguageCode]}</div> }
         </div>
-        <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnotherICalendar[this.props.appLanguageCode]}</div>
+        {this.props.flat.calendars.length > 0 ?
+          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnotherICalendar[this.props.appLanguageCode]}</div>
+          :
+          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnICalendar[this.props.appLanguageCode]}</div> }
+
       </div>
     );
   }
@@ -451,7 +455,7 @@ class EditFlat extends Component {
     return _.map(this.props.buildings, eachBuilding => {
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
-          {eachBuilding.name}, {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
+          {eachBuilding.name}{eachBuilding.name ? ', ' : ''} {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
           <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.yesAssignThisBuilding[this.props.appLanguageCode]}</div>
         </div>
       );
@@ -487,7 +491,7 @@ class EditFlat extends Component {
     // placeholder for when add lanauge
     const array = [];
       _.each(building.inspections, eachInspection => {
-        console.log('in edit flat, getInspection, eachInspection: ', eachInspection);
+        // console.log('in edit flat, getInspection, eachInspection: ', eachInspection);
         array.push(eachInspection);
       });
 
@@ -497,14 +501,30 @@ class EditFlat extends Component {
   renderEachInspection() {
     const { inspections } = this.props.flat.building;
     return _.map(inspections, (eachInspection, i) => {
-      console.log('in edit flat, renderBuilding, eachInspection: ', eachInspection);
       return (
         <div key={i} className="edit-flat-inspection-each">
           {this.formatDate(new Date(eachInspection.inspection_date))}
            &nbsp;
-          {languages[eachInspection.inspection_language].flag}{languages[eachInspection.inspection_language].local}
+          {Languages[eachInspection.inspection_language].flag}{Languages[eachInspection.inspection_language].local}
           &nbsp;
           <div value={eachInspection.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+        </div>
+      );
+    });
+  }
+
+  handleAddEditBuildingLangugaeClick() {
+
+  }
+
+  renderEachBuildingLanguage() {
+    const { building_languages } = this.props.flat.building;
+    return _.map(building_languages, (eachBuildingLanguage, i) => {
+      return (
+        <div key={i} className="edit-flat-inspection-each">
+          {Languages[eachBuildingLanguage.language_code].flag}{Languages[eachBuildingLanguage.language_code].name}
+          &nbsp;
+          <div value={eachBuildingLanguage.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditBuildingLangugaeClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -515,15 +535,22 @@ class EditFlat extends Component {
     console.log('in edit flat, renderBuilding, inspection: ', inspection);
     return (
       <div key={building.name} className="edit-flat-building-choice">
-       {building.name}, {building.address1}, {building.city}, {building.state}, {building.country}
+       {building.name}{building.name ? ', ' : ''} {building.address1}, {building.city}, {building.state}, {building.country}
       <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
-      {building.inspections ?
-        <div className="edit-flat-inspection-box">Inspections: {this.renderEachInspection()}</div>
+      {building.inspections.length > 0 ?
+        <div className="edit-flat-inspection-box">{AppLanguages.inspections[this.props.appLanguageCode]}: {this.renderEachInspection()}</div>
         :
         <div>No Inspection Information</div>
       }
       <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
+
+      {building.building_languages.length > 0 ?
+        <div className="edit-flat-inspection-box">{AppLanguages.otherLanguages[this.props.appLanguageCode]}: {this.renderEachBuildingLanguage()}</div>
+        :
+        <div>No Other Building Languages</div>
+      }
+      <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addBuildingLanguage[this.props.appLanguageCode]}</div>
       </div>
     );
   }
@@ -786,12 +813,12 @@ class EditFlat extends Component {
           <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
           <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
-              <div className="edit-flat-address">{this.props.flat.address1}</div>
+              <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{Languages[this.props.flat.language_code].flag}{Languages[this.props.flat.language_code].name}</div>
             </fieldset>
             <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.unit[appLanguageCode]}:</label>
-              <div className="edit-flat-address">{this.props.flat.unit}</div>
+              <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.address1}</div>
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}:</label>
@@ -811,6 +838,10 @@ class EditFlat extends Component {
             </fieldset>
             <fieldset>
             <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.requiredFieldsEdit[appLanguageCode]}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.unit[appLanguageCode]}:</label>
+              <Field name="unit" component="input" type="string" className="form-control" />
             </fieldset>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>

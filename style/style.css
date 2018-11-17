@@ -2469,7 +2469,8 @@ form {
 
 .edit-flat-building-choice-scroll-box {
   width: auto;
-  min-height: 85px;
+  margin: 10px auto 0 auto;
+  /* min-height: 85px; */
   overflow: hidden;
   overflow-y: scroll;
 }
@@ -2490,7 +2491,7 @@ form {
   color: blue;
   width: auto;
   max-width: 250px;
-  margin: 0 auto 0 auto;
+  margin: 5px auto 5px auto;
 }
 
 .edit-flat-building-add-link:hover {
@@ -3543,6 +3544,7 @@ text-decoration: underline;
 .my-page-add-language-link {
   color: blue;
   font-size: 12px;
+  text-align: right;
 }
 
 .my-page-add-language-link:hover {
@@ -3558,6 +3560,11 @@ text-decoration: underline;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.my-page-available-language-box {
+  display: flex;
+  flex-direction: row;
 }
 
 

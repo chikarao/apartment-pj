@@ -91,7 +91,7 @@ class FormChoices extends Component {
       // if (this.props.model[name].limit_choices && this.props.record[this.props.model[name].map_to_record] != value) {
       // if there is record and language_code in object; ie do not allow imput
       // make sure to read the respective objects in constant such as staff or contractor
-      console.log('FormChoices, renderEachChoice, this.props.model[name], this.props.record: ', this.props.model[name], this.props.record);
+      // console.log('FormChoices, renderEachChoice, this.props.model[name], this.props.record: ', this.props.model[name], this.props.record);
       if (this.props.record && this.props.model[name].map_to_record) {
         // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
         // if the language code or map_to_record  does not equal the choice value

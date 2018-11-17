@@ -37,7 +37,7 @@ class BuildingCreateModal extends Component {
     // })
     const dataToBeSent = { building: data, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in BuildingCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in BuildingCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.createBuilding(dataToBeSent, () => {
       this.handleFormSubmitCallback();
@@ -45,7 +45,7 @@ class BuildingCreateModal extends Component {
   }
 
   handleFormSubmitCallback() {
-    console.log('in BuildingCreateModal, handleFormSubmitCallback: ');
+    // console.log('in BuildingCreateModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ createBuildingCompleted: true });
     // this.resetAdvancedFilters();
@@ -75,13 +75,13 @@ class BuildingCreateModal extends Component {
   renderEachBuildingField() {
     let fieldComponent = '';
     return _.map(Building, (formField, i) => {
-      console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
+      // console.log('in building_create_modal, renderEachBuildingField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in building_edit_modal, renderEachBuildingField, fieldComponent: ', fieldComponent);
+      // console.log('in building_create_modal, renderEachBuildingField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
@@ -105,7 +105,7 @@ class BuildingCreateModal extends Component {
     const { handleSubmit } = this.props;
 
     if (this.props.flat) {
-      console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
+      // console.log('in building_create_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -172,12 +172,12 @@ function mapStateToProps(state) {
     const flat = state.selectedFlatFromParams.selectedFlatFromParams;
   //   // console.log('in BuildingCreateModal, mapStateToProps, calendars, selectedBuildingId: ', calendars, selectedBuildingId);
     _.each(Object.keys(flat), flatKeys => {
-      console.log('in BuildingCreateModal, mapStateToProps, flatAttribute, Building[flatKeys]: ', flatKeys, Building[flatKeys]);
+      // console.log('in BuildingCreateModal, mapStateToProps, flatAttribute, Building[flatKeys]: ', flatKeys, Building[flatKeys]);
       if (Building[flatKeys]) {
         initialValues[flatKeys] = flat[flatKeys]
       }
     });
-      console.log('in BuildingCreateModal, mapStateToProps, initialValues: ', initialValues);
+      // console.log('in BuildingCreateModal, mapStateToProps, initialValues: ', initialValues);
   // console.log('in BuildingCreateModal, mapStateToProps, calendarArray[0]: ', calendarArray[0]);
   // const calendars = state.selectedFlatFromParams.selectedFlatFromParams.calendars
   // const calendar =

@@ -36,7 +36,7 @@ class BuildingEditModal extends Component {
     })
     const dataToBeSent = { building: delta, building_id: this.props.flat.building.id, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in BuildingEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in BuildingEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
     this.props.updateBuilding(dataToBeSent, () => {
       this.handleFormSubmitCallback();
@@ -44,7 +44,7 @@ class BuildingEditModal extends Component {
   }
 
   handleFormSubmitCallback() {
-    console.log('in BuildingEditModal, handleFormSubmitCallback: ');
+    // console.log('in BuildingEditModal, handleFormSubmitCallback: ');
     // showHideClassName = 'modal display-none';
     this.setState({ editBuildingCompleted: true });
     // this.resetAdvancedFilters();
@@ -56,7 +56,7 @@ class BuildingEditModal extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // const elementName = clickedElement.getAttsribute('name');
-    console.log('in building_edit_modal, handleDeleteBuildingClick, elementVal: ', elementVal);
+    // console.log('in building_edit_modal, handleDeleteBuildingClick, elementVal: ', elementVal);
     this.props.showLoading();
     // this.setState({ languageCode: elementName });
     // this.props.deleteBuilding({ id: elementVal }, () => this.handleDeleteCallback());
@@ -93,7 +93,7 @@ class BuildingEditModal extends Component {
   renderEachBuildingField() {
     let fieldComponent = '';
     return _.map(Building, (formField, i) => {
-      console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
+      // console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
@@ -124,7 +124,7 @@ class BuildingEditModal extends Component {
     const { handleSubmit } = this.props;
 
     if (this.props.flat) {
-      console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
+      // console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (

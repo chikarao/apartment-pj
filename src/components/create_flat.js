@@ -9,6 +9,7 @@ import sha1 from 'sha1';
 
 import * as actions from '../actions';
 import Amenities from './constants/amenities';
+import Languages from './constants/languages';
 import RenderDropzoneInput from './images/render_dropzone_input';
 import AppLanguages from './constants/app_languages';
 
@@ -245,6 +246,15 @@ class CreateFlat extends Component {
   // <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
   // <Field name="station" component="input" type="string" className="form-control" />
   // </fieldset>
+  renderEachSelectLanguageOption(languagesObject) {
+    return _.map(Object.keys(languagesObject), (eachKey, i) => {
+      // if (languagesObject[eachKey].implemented) {
+        return (
+          <option key={i} value={eachKey}>{languagesObject[eachKey].flag} {languagesObject[eachKey].name}</option>
+        );
+      // }
+    });
+  }
 
   renderFields() {
     const { handleSubmit, appLanguageCode } = this.props;
@@ -253,6 +263,12 @@ class CreateFlat extends Component {
     // handle submit came from redux form; fields came from below
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+        <fieldset key={'language_code'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="language_code" component={SelectField} type="string" className="form-control">
+            {this.renderEachSelectLanguageOption(Languages)}
+          </Field>
+        </fieldset>
         <fieldset key={'address1'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="address1" component={InputField} type="string" className="form-control" />
@@ -503,6 +519,10 @@ const InputField = ({
 function validate(values) {
   console.log('in signin modal, validate values: ', values);
     const errors = {};
+    if (!values.language_code) {
+        errors.language_code = 'A language is required';
+    }
+
     if (!values.address1) {
         errors.address1 = 'A Street address is required';
     }
@@ -555,10 +575,14 @@ CreateFlat = reduxForm({
 
 function mapStateToProps(state) {
   console.log('in feature mapStateToProps: ', state);
+  const initialValues = {};
+  initialValues.language_code = state.languages.appLanguageCode;
+
   return {
     errorMessage: state.auth.message,
     flat: state.flat,
     appLanguageCode: state.languages.appLanguageCode,
+    initialValues
    };
 }
 

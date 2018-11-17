@@ -2,12 +2,12 @@
 // objects related display of languages in various parts of the app
 const languages =
   {
-    en: { name: 'English', flag: '🇬🇧', local: 'English' },
-    jp: { name: 'Japanese', flag: '🇯🇵', local: '日本語' },
+    en: { name: 'English', flag: '🇬🇧', local: 'English', implemented: true },
+    jp: { name: 'Japanese', flag: '🇯🇵', local: '日本語', implemented: true },
     fr: { name: 'French', flag: '🇫🇷', local: 'français' },
     ge: { name: 'German', flag: '🇩🇪', local: 'Deutsch' },
     sp: { name: 'Spanish', flag: '🇪🇸', local: 'Español' },
-    po: { name: 'Portuguese', flag: '🇵🇹', local: 'Português' },
+    po: { name: 'Portuguese', flag: '🇵🇹', local: 'Português', implemented: true },
     chS: { name: 'Chinese Simplified', flag: '🇨🇳', local: '中文（简体）' },
     ch: { name: 'Chinese Traditional', flag: '🇨🇳', local: '中文 (繁體）' },
     kr: { name: 'Korean', flag: '🇰🇷', local: '한국어' },

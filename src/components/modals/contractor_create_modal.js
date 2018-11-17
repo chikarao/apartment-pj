@@ -7,6 +7,7 @@ import _ from 'lodash';
 import * as actions from '../../actions';
 import languages from '../constants/languages';
 import Contractor from '../constants/contractor';
+import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
@@ -133,7 +134,7 @@ class ContractorCreateModal extends Component {
           <section className="modal-main">
 
             <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">Create Contractor</h3>
+            <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createContractor[this.props.appLanguageCode] : AppLanguages.addContractorLanguage[this.props.appLanguageCode]}</h3>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 

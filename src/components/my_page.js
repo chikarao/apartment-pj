@@ -677,7 +677,9 @@ formatDate(date) {
 
   handleRemoveProfileImage() {
     // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
-    this.props.updateUser({ image: BLANK_PROFILE_PICTURE }, () => this.handleRemoveProfileImageCallback());
+    if (window.confirm('Are you sure you want to remove your profile picture?')) {
+      this.props.updateUser({ image: BLANK_PROFILE_PICTURE }, () => this.handleRemoveProfileImageCallback());
+    }
   }
 
   handleRemoveProfileImageCallback() {
@@ -723,6 +725,16 @@ formatDate(date) {
     return objectReturned;
   }
 
+  getProfileLanguages(profiles) {
+    const array = [];
+    _.each(profiles, eachProfile => {
+      if (!array.includes(eachProfile.language_code)) {
+        array.push(eachProfile.language_code)
+      }
+    });
+    return array;
+  }
+
   renderProfile() {
     if (this.props.auth.user) {
       const profileToRender = this.getProfile(this.props.auth.user.profiles);
@@ -750,15 +762,12 @@ formatDate(date) {
       } = profileToRender;
       const { appLanguageCode } = this.props;
       // console.log('in mypage, renderProfile, id: ', id);
+      const profileLanguagesArray = this.getProfileLanguages(this.props.auth.user.profiles);
+
       return (
         <div>
           <div className="my-page-category-title">
             <div className="my-page-category-left">
-              <div className="my-page-add-language-link" style={{ width: '100px', fontSize: '13px' }} name="addLanguage" onClick={this.handleAddEditProfileClick.bind(this)}>
-                <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
-                &nbsp;
-                {AppLanguages.language[this.props.appLanguageCode]}
-                </div>
             </div>
             <div>{AppLanguages.myProfile[appLanguageCode]}</div>
             <div className="my-page-category-right">
@@ -768,6 +777,15 @@ formatDate(date) {
           </div>
             {this.renderProfileImage()}
           <ul className="my-page-profile-ul">
+            <li className="my-page-profile-attribute"><div>{AppLanguages.availableLanguages[appLanguageCode]}:</div> <div className="my-page-available-language-box">{this.renderEachLanguage(profileLanguagesArray)}</div></li>
+            <li className="my-page-profile-attribute">
+              <div></div>
+              <div className="my-page-add-language-link" style={{ width: '100px', fontSize: '13px' }} name="addLanguage" onClick={this.handleAddEditProfileClick.bind(this)}>
+              <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
+              &nbsp;
+              {AppLanguages.language[this.props.appLanguageCode]}
+              </div>
+            </li>
             <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[appLanguageCode]}:</div> <div>{username}</div></li>
             <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[appLanguageCode]}:</div> <div>{user_id}</div></li>
             <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[appLanguageCode]}:</div> <div>{title}</div></li>
