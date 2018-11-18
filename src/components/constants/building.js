@@ -1,6 +1,28 @@
 // Object used for input and editing building info in edit flat
 
 const Building = {
+  language_code: {
+    name: 'language_code',
+    en: 'Language',
+    jp: '言語',
+    component: 'FormChoices',
+    type: 'string',
+    choices: {
+      0: { value: 'en', en: '🇬🇧 English', jp: '🇬🇧 English', type: 'button', className: 'form-rectangle' },
+      1: { value: 'jp', en: '🇯🇵 Japanese', jp: '🇯🇵 日本語', type: 'button', className: 'form-rectangle' },
+      2: { value: 'po', en: '🇵🇹 Portuguese', jp: '🇵🇹 Português', type: 'button', className: 'form-rectangle' },
+      // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
+      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+    },
+    // for rendering when fields are language indepedent.
+    // ie needs to inputted in new language in create contractor modal
+    // language_independent: true,
+    // for rendering in forms only choices that do not exist
+    limit_choices: true,
+    // map to column in backend code
+    map_to_record: 'language_code'
+  },
+
   name: {
     name: 'name',
     en: 'Building Name',
@@ -61,7 +83,8 @@ const Building = {
     jp: '戸数',
     component: 'input',
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    language_independent: true,
   },
 
   year_built: {
@@ -113,8 +136,8 @@ const Building = {
     choices: {
       0: { value: 'Wooden', en: 'Wooden', jp: '木造', type: 'button', className: 'form-rectangle' },
       1: { value: 'SRC', en: 'Steel Reinforced Concrete', jp: 'SRC', type: 'button', className: 'form-rectangle' },
-      1: { value: 'RC', en: 'Reinforced Concrete', jp: 'RC', type: 'button', className: 'form-rectangle' },
-      2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+      2: { value: 'RC', en: 'Reinforced Concrete', jp: 'RC', type: 'button', className: 'form-rectangle' },
+      3: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
   },
 
@@ -130,6 +153,7 @@ const Building = {
       2: { value: 'single_family', en: 'Single Family', jp: '一戸建', type: 'button', className: 'form-rectangle' },
       3: { value: 'other', en: 'Other', jp: 'その他', type: 'button', className: 'form-rectangle' }
     },
+    language_independent: true,
   },
 
   building_management_company: {

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-// import FixedTermRentalContract from '../constants/fixed_term_rental_contract.js';
-// import Documents from '../constants/documents.js'
-
+// custom field component based on redux forms used for creating
+// input and button inputs for forms
 class DocumentChoices extends Component {
   constructor(props) {
     super(props);

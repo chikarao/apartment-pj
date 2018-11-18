@@ -147,3 +147,7 @@ export const SHOW_BUILDING_LANGUAGE_CREATE_MODAL = 'show_building_language_creat
 export const SHOW_BUILDING_LANGUAGE_EDIT_MODAL = 'show_building_language_edit_modal';
 export const SELECTED_BUILDING_LANGUAGE_ID = 'selected_building_language_id';
 export const SELECTED_BUILDING_ID = 'selected_building_id';
+export const BUILDING_LANGUAGE_TO_EDIT_ID = 'building_language_to_edit_id';
+export const UPDATE_BUILDING_LANGUAGE = 'update_building_language';
+export const CREATE_BUILDING_LANGUAGE = 'create_building_language';
+export const DELETE_BUILDING_LANGUAGE = 'delete_building_language';

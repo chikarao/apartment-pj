@@ -151,6 +151,10 @@ import {
   SHOW_BUILDING_LANGUAGE_EDIT_MODAL,
   SELECTED_BUILDING_LANGUAGE_ID,
   SELECTED_BUILDING_ID,
+  BUILDING_LANGUAGE_TO_EDIT_ID,
+  UPDATE_BUILDING_LANGUAGE,
+  CREATE_BUILDING_LANGUAGE,
+  DELETE_BUILDING_LANGUAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2177,6 +2181,13 @@ export function profileToEditId(id) {
   return { type: PROFILE_TO_EDIT_ID, payload: parseInt(id, 10) };
 }
 
+export function buildingLanguageToEditId(id) {
+  console.log('in actions index, buildingLanguageToEditId:');
+
+  //flip state boolean
+  return { type: BUILDING_LANGUAGE_TO_EDIT_ID, payload: parseInt(id, 10) };
+}
+
 export function selectedBuildingLanguageId(id) {
   console.log('in actions index, selectedBuildingLanguageId:');
 
@@ -2625,6 +2636,85 @@ export function deleteStaff(id, callback) {
     })
     .catch(error => {
       console.log('in action index, catch error to deleteStaff: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function editBuildingLanguage(buildingLanguageAttributes, callback) {
+  console.log('in action index, editBuildingLanguage, buildingLanguageAttributes: ', buildingLanguageAttributes);
+  const { building_id, id } = buildingLanguageAttributes.building_language;
+
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/buildings/${building_id}/building_languages/${id}`, buildingLanguageAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to editBuildingLanguage: ', response);
+      console.log('in action index, response to editBuildingLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: UPDATE_BUILDING_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to editBuildingLanguage: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+
+export function createBuildingLanguage(buildingLanguageAttributes, callback) {
+  console.log('in action index, createBuildingLanguage, buildingLanguageAttributes: ', buildingLanguageAttributes);
+  const { building_id } = buildingLanguageAttributes.building_language;
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/buildings/${building_id}/building_languages`, buildingLanguageAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to createBuildingLanguage: ', response);
+      console.log('in action index, response to createBuildingLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: CREATE_BUILDING_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createBuildingLanguage: ', error);
+      // dispatch(authError(error));
+      // this.showloading();
+    });
+  };
+}
+export function deleteBuildingLanguage(buildingLanguageAttributes, callback) {
+  console.log('in action index, deleteBuildingLanguage, buildingLanguageAttributes: ', buildingLanguageAttributes);
+  const { building_id, id } = buildingLanguageAttributes;
+
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/buildings/${building_id}/building_languages/${id}`, {
+      // !!!!! in axios delete, send params as data in config which includes header
+      data: { flat_id: buildingLanguageAttributes.flat_id },
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in action index, response to deleteBuildingLanguage: ', response);
+      console.log('in action index, response to deleteBuildingLanguage: ', response.data.data.flat);
+
+      dispatch({
+        type: DELETE_BUILDING_LANGUAGE,
+        payload: response.data.data.flat
+      });
+      callback();
+    })
+    .catch(error => {
+      console.log('in action index, catch error to deleteBuildingLanguage: ', error);
       // dispatch(authError(error));
       // this.showloading();
     });

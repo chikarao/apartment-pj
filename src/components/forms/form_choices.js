@@ -6,6 +6,8 @@ import * as actions from '../../actions';
 import Building from '../constants/building';
 // import BankAccount from '../constants/bank_account';
 
+// custom field component based on redux forms used for creating
+// input and button inputs for forms
 class FormChoices extends Component {
   constructor(props) {
     super(props);
@@ -84,14 +86,11 @@ class FormChoices extends Component {
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
       // if choice type is string, use input element above and button if not string
-      // const anotherValue = value;
       // console.log('FormChoices, renderEachChoice choice, choice.value, value, choice[value]: ', choice, choice.value, value, choice[anotherValue]);
       // choice.type can be string (input) or button element
       // if (this.props.addLanguageInput) {
-      // if (this.props.model[name].limit_choices && this.props.record[this.props.model[name].map_to_record] != value) {
       // if there is record and language_code in object; ie do not allow imput
-      // make sure to read the respective objects in constant such as staff or contractor
-      // console.log('FormChoices, renderEachChoice, this.props.model[name], this.props.record: ', this.props.model[name], this.props.record);
+      // make sure to read the respective objects in src/components/constants such as staff or contractor
       if (this.props.record && this.props.model[name].map_to_record) {
         // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
         // if the language code or map_to_record  does not equal the choice value

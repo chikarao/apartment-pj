@@ -22,8 +22,8 @@ const Staff = {
     limit_choices: true,
     // map to column in backend code
     map_to_record: 'language_code'
-
   },
+  
   first_name: {
     name: 'first_name',
     en: 'First Name',

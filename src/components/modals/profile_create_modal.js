@@ -13,7 +13,7 @@ import FormChoices from '../forms/form_choices';
 // Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
 
-class CreateProfileModal extends Component {
+class ProfileCreateModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -124,7 +124,7 @@ class CreateProfileModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your profile has been successfully updated.</div>
+          <div className="post-signup-message">Your profile has been successfully created.</div>
         </div>
       </div>
     )
@@ -140,9 +140,9 @@ class CreateProfileModal extends Component {
   }
 }
 
-CreateProfileModal = reduxForm({
-  form: 'CreateProfileModal'
-})(CreateProfileModal);
+ProfileCreateModal = reduxForm({
+  form: 'ProfileCreateModal'
+})(ProfileCreateModal);
 
 function getLanguageArray(profiles) {
   let array = [];
@@ -193,4 +193,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, actions)(CreateProfileModal);
+export default connect(mapStateToProps, actions)(ProfileCreateModal);

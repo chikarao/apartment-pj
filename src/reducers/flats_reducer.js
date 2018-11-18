@@ -35,7 +35,10 @@ import {
   CREATE_INSPECTION,
   UPDATE_INSPECTION,
   DELETE_INSPECTION,
-  SELECTED_INSPECTION_ID
+  SELECTED_INSPECTION_ID,
+  UPDATE_BUILDING_LANGUAGE,
+  CREATE_BUILDING_LANGUAGE,
+  DELETE_BUILDING_LANGUAGE
 } from '../actions/types';
 
 export default function (state = {
@@ -191,6 +194,16 @@ export default function (state = {
 
     case SELECTED_INSPECTION_ID:
     return { ...state, selectedInspectionId: action.payload };
+
+    //put building language here so that flat is updated when building updated
+    case CREATE_BUILDING_LANGUAGE:
+    return { ...state, selectedFlatFromParams: action.payload };
+
+    case UPDATE_BUILDING_LANGUAGE:
+    return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_BUILDING_LANGUAGE:
+    return { ...state, selectedFlatFromParams: action.payload };
 
     default:
       return state;

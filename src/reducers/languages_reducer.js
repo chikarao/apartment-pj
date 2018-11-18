@@ -4,7 +4,7 @@ import {
   SELECTED_LANGUAGE,
   UPDATE_FLAT_LANGUAGE,
   SET_APP_LANGUAGE_CODE,
-  PLACE_SEARCH_LANGUAGE
+  PLACE_SEARCH_LANGUAGE,
 } from '../actions/types';
 
 export default function (state = {

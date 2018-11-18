@@ -110,7 +110,7 @@ class BuildingEditModal extends Component {
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
             // props={{ appLanguageCode: this.props.appLanguageCode }}
-            props={fieldComponent == FormChoices ? { model: Building } : {}}
+            props={fieldComponent == FormChoices ? { model: Building, record: this.props.flat.building, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }

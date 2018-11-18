@@ -33,6 +33,7 @@ import {
   SHOW_BUILDING_LANGUAGE_EDIT_MODAL,
   SELECTED_BUILDING_LANGUAGE_ID,
   SELECTED_BUILDING_ID,
+  BUILDING_LANGUAGE_TO_EDIT_ID
 } from '../actions/types';
 //
 // const initialState = {
@@ -58,8 +59,11 @@ export default function (
     addNewContractor: false,
     addNewStaff: false,
     profileToEditId: '',
+    buildingLanguageToEditId: '',
     selectedBuildingId: '',
-    selectedBuildingLanguageId: ''
+    selectedBuildingLanguageId: '',
+    showBuildingLanguageCreateModal: false,
+    showBuildingLanguageEditModal: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -133,6 +137,9 @@ export default function (
 
     case PROFILE_TO_EDIT_ID:
     return { ...state, profileToEditId: action.payload };
+
+    case BUILDING_LANGUAGE_TO_EDIT_ID:
+    return { ...state, buildingLanguageToEditId: action.payload };
 
     case SELECTED_STAFF_ID:
     return { ...state, selectedStaffId: action.payload };

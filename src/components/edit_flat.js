@@ -21,6 +21,8 @@ import FacilityEditModal from './modals/facility_edit_modal';
 import FacilityCreateModal from './modals/facility_create_modal';
 import InspectionCreateModal from './modals/inspection_create_modal';
 import InspectionEditModal from './modals/inspection_edit_modal';
+import BuildingLanguageEditModal from './modals/building_language_edit_modal';
+import BuildingLanguageCreateModal from './modals/building_language_create_modal';
 import AppLanguages from './constants/app_languages';
 import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
@@ -549,7 +551,7 @@ class EditFlat extends Component {
     console.log('in edit flat, renderBuilding, inspection: ', inspection);
     return (
       <div key={building.name} className="edit-flat-building-choice">
-       {building.name}{building.name ? ', ' : ''} {building.address1}, {building.city}, {building.state}, {building.country}
+       {building.name}{building.name ? ', ' : ''} {building.address1}, {building.city}, {building.state}, {building.country} &nbsp; Language: {Languages[building.language_code].flag}
       <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
       {building.inspections.length > 0 ?
@@ -1280,6 +1282,23 @@ class EditFlat extends Component {
     }
   }
 
+  renderBuildingLanguageEditForm() {
+    return (
+      <BuildingLanguageEditModal
+        show={this.props.showBuildingLanguageEdit}
+      />
+    );
+  }
+
+  renderBuildingLanguageCreateForm() {
+    console.log('in mypage, renderBuildingLanguageCreateForm, this.props.showBuildingLanguageCreate: ', this.props.showBuildingLanguageCreate);
+    return (
+      <BuildingLanguageCreateModal
+        show={this.props.showBuildingLanguageCreate}
+      />
+    );
+  }
+
   render() {
     return (
       <div>
@@ -1294,6 +1313,8 @@ class EditFlat extends Component {
         {this.renderIcalendarCreateModal()}
         {this.renderIcalendarEditModal()}
         {this.renderEditForm()}
+        {this.props.showBuildingLanguageEdit ? this.renderBuildingLanguageEditForm() : ''}
+        {this.props.showBuildingLanguageCreate ? this.renderBuildingLanguageCreateForm() : ''}
       </div>
     );
   }

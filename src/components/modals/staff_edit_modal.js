@@ -171,7 +171,6 @@ class StaffEditModal extends Component {
   }
 
   renderEditStaffForm() {
-
     const { handleSubmit } = this.props;
     // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
 

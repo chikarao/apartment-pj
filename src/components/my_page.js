@@ -1300,7 +1300,6 @@ formatDate(date) {
   }
 
   renderContractorCreateForm() {
-    // console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
     return (
       <ContractorCreateModal
         show={this.props.showContractorCreate}

@@ -15,7 +15,7 @@ import FormChoices from '../forms/form_choices';
 // Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
 
-class EditProfileModal extends Component {
+class ProfileEditModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -180,10 +180,10 @@ class EditProfileModal extends Component {
   }
 }
 
-EditProfileModal = reduxForm({
-  form: 'EditProfileModal',
+ProfileEditModal = reduxForm({
+  form: 'ProfileEditModal',
   enableReinitialize: true
-})(EditProfileModal);
+})(ProfileEditModal);
 
 function getProfile(profiles, id) {
   // placeholder for when add lanauge
@@ -243,4 +243,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, actions)(EditProfileModal);
+export default connect(mapStateToProps, actions)(ProfileEditModal);
