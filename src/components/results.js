@@ -192,13 +192,17 @@ class Results extends Component {
     // 2. There are no flats but user searches city and
     // there is latlng in this.props.searchFlatParams (state.flat.searchFlatParameters)
     // 3. There are no flat and user did not search; Most likely page was refreshed
+    // this.props.flats is all the flats regardless of building relationship
+    // this.props.flatBuildings is divided in to flats with same buildings
+    // and those without buildings shared; Send both to GoogleMap 
     const flatsEmpty = _.isEmpty(this.props.flats);
+    const flatBuildingsEmpty = _.isEmpty(this.props.flatBuildings);
     // const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     // console.log('in results renderMap, flats empty: ', flatsEmpty);
     // console.log('in results renderMap, mapDimensions empty: ', mapDimensionsEmpty);
     // console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
 
-    if (!flatsEmpty) {
+    if (!flatsEmpty && !flatBuildingsEmpty) {
       // gets average of latlng of returned flats
       const latLngAve = this.calculateLatLngAve(this.props.flats);
       // gets latlng and zoom of map stored after user searches on landing or results page
@@ -215,6 +219,7 @@ class Results extends Component {
           // key={'1'}
           flatsEmpty={flatsEmpty}
           flats={this.props.flats}
+          flatBuildings={this.props.flatBuildings}
           initialPosition={latLngAve || initialPosition}
           // initialZoom={11}
           currency='$'
@@ -237,6 +242,7 @@ class Results extends Component {
         <GoogleMap
           flatsEmpty={flatsEmpty}
           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
+          flatBuildings={this.props.flatBuildings}
           initialPosition={emptyMapLatLngCenter}
           // initialZoom={this.props.mapDimensions.mapZoom}
         />
@@ -254,6 +260,7 @@ class Results extends Component {
           <GoogleMap
             flatsEmpty={flatsEmpty}
             flats={this.props.flats}
+            flatBuildings={this.props.flatBuildings}
             initialPosition={initialPosition}
             // initialZoom={12}
           />
@@ -1603,6 +1610,7 @@ function mapStateToProps(state) {
   return {
     message: state.auth.message,
     flats: state.flats.flatsResults,
+    flatBuildings: state.flats.flatBuildingsResults,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions.mapDimensions,
     // likes: state.likes.userLikes,

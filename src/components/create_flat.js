@@ -357,7 +357,7 @@ class CreateFlat extends Component {
           <Field name="sales_point" component="input" type="string" className="form-control" />
         </fieldset>
         <fieldset key={'rooms'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}:</label>
+          <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="rooms" component="select" type="float" className="form-control">
             <option></option>
             <option value="1">1</option>
@@ -548,6 +548,10 @@ function validate(values) {
 
     if (!values.size) {
         errors.size = 'Floor space is required';
+    }
+
+    if (!values.rooms) {
+        errors.rooms = 'Number of rooms is required';
     }
     if (!values.minutes_to_station) {
         errors.minutes_to_station = 'Minutes to station is required';

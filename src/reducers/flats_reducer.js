@@ -51,7 +51,9 @@ export default function (state = {
 
   switch (action.type) {
     case FETCH_FLATS:
-      return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
+      // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'), flatBuildingsResults: action.payload.flat_buildings };
+      return { ...state, flatsResults: action.payload.flat_buildings ? _.mapKeys(action.payload.flat_buildings.flats_no_building, 'id') : {}, reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'), flatBuildingsResults: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats : [] };
+      // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
 
     case CLEAR_FLATS:
       return { ...state, flatsResults: {} };

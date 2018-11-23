@@ -95,8 +95,8 @@ class ShowFlat extends Component {
           if (image) {
             // console.log('in show_flat renderImages, image: ', image.publicid);
             return (
-              <div key={index} className="slide-show">
-              <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+              <div key={image.id} className="slide-show">
+                <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
               </div>
             );
           }
@@ -115,12 +115,12 @@ class ShowFlat extends Component {
       // console.log('in show_flat renderAmenities, AMENTIES: ', AMENTIES);
       const { amenity } = this.props.flat;
 
-      return _.map(Object.keys(amenity), key => {
+      return _.map(Object.keys(amenity), (key, i) => {
         console.log('in show_flat renderAmenities, key: ', key);
         if (amenity[key] === true) {
           // console.log('in show_flat renderAmenities: ', this.props.flat.amenity);
           return (
-            <div key={key} className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
+            <div key={i} className="show-flat-amenity-show-each col-xs-11 col-sm-3 col-md-3">
               <div className="amenity-radio-show-page">{AMENTIES[key][this.props.appLanguageCode]}</div>
             </div>
           );
@@ -188,7 +188,7 @@ class ShowFlat extends Component {
         return (
           <div>
             <div key={1234} className="show-flat-image-box">
-              <div key={12345} id="carousel-show">
+              <div id="carousel-show">
                 {this.renderImages(images)}
               </div>
             </div>
@@ -201,11 +201,11 @@ class ShowFlat extends Component {
                 { flatLanguage ? flatLanguage.area.toUpperCase() : area.toUpperCase() }
               </div>
 
-              <div key={beds} className="show-flat-beds">
+              <div key={beds ? beds : 100} className="show-flat-beds">
                 Beds: { beds } <small>{(beds >= 1 && king_or_queen_bed > 0) ? `(${king_or_queen_bed} king or queen sized)` : ''}</small>
               </div>
 
-              <div key={sales_point} className="show-flat-sales_point">
+              <div key={sales_point ? sales_point : 101} className="show-flat-sales_point">
                 { flatLanguage ? flatLanguage.sales_point : sales_point }
               </div>
               <div key={price_per_month} className="show-flat-price">
@@ -673,7 +673,7 @@ class ShowFlat extends Component {
           // bookingCount++;
         }
       });
-      console.log('in show_flat, readIcal, bookingsArray: ', bookingsArray);
+      // console.log('in show_flat, readIcal, bookingsArray: ', bookingsArray);
       return bookingsArray;
     }
   }
