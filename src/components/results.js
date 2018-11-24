@@ -194,7 +194,7 @@ class Results extends Component {
     // 3. There are no flat and user did not search; Most likely page was refreshed
     // this.props.flats is all the flats regardless of building relationship
     // this.props.flatBuildings is divided in to flats with same buildings
-    // and those without buildings shared; Send both to GoogleMap 
+    // and those without buildings shared; Send both to GoogleMap
     const flatsEmpty = _.isEmpty(this.props.flats);
     const flatBuildingsEmpty = _.isEmpty(this.props.flatBuildings);
     // const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
@@ -219,6 +219,8 @@ class Results extends Component {
           // key={'1'}
           flatsEmpty={flatsEmpty}
           flats={this.props.flats}
+          flatsId={this.props.flatsId}
+          flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
           initialPosition={latLngAve || initialPosition}
           // initialZoom={11}
@@ -242,6 +244,8 @@ class Results extends Component {
         <GoogleMap
           flatsEmpty={flatsEmpty}
           flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
+          flatsId={flatsEmpty ? this.props.flatsId : emptyMapLatLngCenter}
+          flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
           initialPosition={emptyMapLatLngCenter}
           // initialZoom={this.props.mapDimensions.mapZoom}
@@ -260,6 +264,8 @@ class Results extends Component {
           <GoogleMap
             flatsEmpty={flatsEmpty}
             flats={this.props.flats}
+            flatsId={this.props.flatsId}
+            flatBuildingsId={this.props.flatBuildingsId}
             flatBuildings={this.props.flatBuildings}
             initialPosition={initialPosition}
             // initialZoom={12}
@@ -1610,7 +1616,9 @@ function mapStateToProps(state) {
   return {
     message: state.auth.message,
     flats: state.flats.flatsResults,
+    flatsId: state.flats.flatsResultsId,
     flatBuildings: state.flats.flatBuildingsResults,
+    flatBuildingsId: state.flats.flatBuildingsResultsId,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions.mapDimensions,
     // likes: state.likes.userLikes,
