@@ -248,6 +248,7 @@ class Results extends Component {
           flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
           initialPosition={emptyMapLatLngCenter}
+          currency='$'
           // initialZoom={this.props.mapDimensions.mapZoom}
         />
         </div>
@@ -268,6 +269,7 @@ class Results extends Component {
             flatBuildingsId={this.props.flatBuildingsId}
             flatBuildings={this.props.flatBuildings}
             initialPosition={initialPosition}
+            currency='$'
             // initialZoom={12}
           />
           </div>

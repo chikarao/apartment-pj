@@ -54,6 +54,7 @@ export default function (state = {
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'), flatBuildingsResults: action.payload.flat_buildings };
       return {
         ...state,
+        justFlats: _.mapKeys(action.payload.flats, 'id'),
         flatsResults: action.payload.flat_buildings ? _.mapKeys(action.payload.flat_buildings.flats_no_building, 'id') : {},
         flatsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.flats_no_building_id : {},
         reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'),
