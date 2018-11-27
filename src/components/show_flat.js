@@ -187,37 +187,37 @@ class ShowFlat extends Component {
         console.log('in show_flat renderFlat, flatStationsArray: ', flatStationsArray);
         return (
           <div>
-            <div key={1234} className="show-flat-image-box">
+            <div key={97} className="show-flat-image-box">
               <div id="carousel-show">
                 {this.renderImages(images)}
               </div>
             </div>
             <div className="show-flat-container">
-              <div key={description} className="show-flat-description">
+              <div key={98} className="show-flat-description">
                 { flatLanguage ? flatLanguage.description : description }
               </div>
 
-              <div key={area} className="show-flat-area">
+              <div key={99} className="show-flat-area">
                 { flatLanguage ? flatLanguage.area.toUpperCase() : area.toUpperCase() }
               </div>
 
-              <div key={beds ? beds : 100} className="show-flat-beds">
+              <div key={100} className="show-flat-beds">
                 Beds: { beds } <small>{(beds >= 1 && king_or_queen_bed > 0) ? `(${king_or_queen_bed} king or queen sized)` : ''}</small>
               </div>
 
-              <div key={sales_point ? sales_point : 101} className="show-flat-sales_point">
+              <div key={101} className="show-flat-sales_point">
                 { flatLanguage ? flatLanguage.sales_point : sales_point }
               </div>
-              <div key={price_per_month} className="show-flat-price">
+              <div key={102} className="show-flat-price">
                 ${ parseFloat(price_per_month).toFixed(0) } per month
               </div>
               <div key={this.props.match.params.id} className="show-flat-id">
                 <small>flat id: {this.props.match.params.id}</small>
               </div>
-                <div key={'stations'} className="show-flat-stations">
+                <div key={104} className="show-flat-stations">
                 {flatStationsArray.length > 0 ? this.renderStations(flatStationsArray) : ''}
                 </div>
-              <div key={intro} className="show-flat-intro">
+              <div key={105} className="show-flat-intro">
                 { flatLanguage ? flatLanguage.intro : intro }
               </div>
             </div>
