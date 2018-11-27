@@ -591,13 +591,13 @@ to override imposed max by API div */
   align-content: center;
   width: 60% !important;
   height: auto;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 
 .infowindow-box-detail-arrow-box {
   width: 15% !important;
   height: auto !important;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 
 .iw-back-link {
