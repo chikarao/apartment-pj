@@ -518,7 +518,7 @@ h3 {
 /* rename .gm-style-iw so it does not clash with others */
 .google-map-gm-style-iw {
   width: 350px !important;
-  top: -67px !important;
+  top: -50px !important;
   /* bottom: 0px !important; */
   left: 0px !important;
 }
@@ -549,7 +549,7 @@ to override imposed max by API div */
 } */
 
 #infowindow-box-image-box {
-  height: 220px !important;
+  height: 200px !important;
   /* width: 330px !important; */
   width: 100%;
   display: flex;
@@ -636,7 +636,7 @@ to override imposed max by API div */
 
 #infowindow-box-building-box {
   background-color: white !important;
-  height: 240px !important;
+  height: 225px !important;
   /* height: 80% !important; */
   /* width: 330px !important; */
   width: 100%;

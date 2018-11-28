@@ -388,9 +388,9 @@ class GoogleMap extends Component {
     iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
     // !!!!if no image is available for the flat
     if (flat.images[this.props.imageIndex.count]) {
-      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
+      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
     } else {
-      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/no_image_placeholder_5.jpg)`);
+      iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/no_image_placeholder_5.jpg)`);
     }
     // divs to contain the arrows, clicks on this will move carousel, addDomListener is assigned
     // increments image index in redux
@@ -606,9 +606,9 @@ class GoogleMap extends Component {
       iwEachFlatBoxImage.setAttribute('class', 'infowindow-box-building-each-flat-box-image');
       // in case no image is available for flat
       if (eachFlat.images) {
-        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${eachFlat.images[0].publicid}.jpg);`);
+        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_150,h_100/${eachFlat.images[0].publicid}.jpg);`);
       } else {
-        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/no_image_placeholder_5.jpg)`);
+        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_150,h_100/no_image_placeholder_5.jpg)`);
       }
       // make iwEachFlatBoxText and image a child of iwEachFlatBox
       // make iwEachFlatBoxText and image a child of iwBuildingDiv
