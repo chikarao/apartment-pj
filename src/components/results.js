@@ -222,6 +222,7 @@ class Results extends Component {
           flatsId={this.props.flatsId}
           flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
+          buildingsJustId={this.props.buildingsJustId}
           initialPosition={latLngAve || initialPosition}
           // initialZoom={11}
           currency='$'
@@ -247,6 +248,7 @@ class Results extends Component {
           flatsId={flatsEmpty ? this.props.flatsId : emptyMapLatLngCenter}
           flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
+          buildingsJustId={this.props.buildingsJustId}
           initialPosition={emptyMapLatLngCenter}
           currency='$'
           // initialZoom={this.props.mapDimensions.mapZoom}
@@ -268,6 +270,7 @@ class Results extends Component {
             flatsId={this.props.flatsId}
             flatBuildingsId={this.props.flatBuildingsId}
             flatBuildings={this.props.flatBuildings}
+            buildingsJustId={this.props.buildingsJustId}
             initialPosition={initialPosition}
             currency='$'
             // initialZoom={12}
@@ -1621,6 +1624,7 @@ function mapStateToProps(state) {
     flatsId: state.flats.flatsResultsId,
     flatBuildings: state.flats.flatBuildingsResults,
     flatBuildingsId: state.flats.flatBuildingsResultsId,
+    buildingsJustId: state.flats.buildingsJustId,
     startUpCount: state.startUpCount,
     mapDimensions: state.mapDimensions.mapDimensions,
     // likes: state.likes.userLikes,

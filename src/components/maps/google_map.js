@@ -23,9 +23,7 @@ class GoogleMap extends Component {
     this.state = {
       map: {},
       flatMarkersArray: [],
-      buildingMarkersArray: [],
-      // initialFlats: {},
-      // initialRerenderMap: true
+      buildingMarkersArray: []
     };
 
     // this.createMarkers = this.createMarkers.bind(this);
@@ -36,24 +34,21 @@ class GoogleMap extends Component {
     // flatsEmpty is prop passed in map render
     // and is true if there are no search results for the map area or criteria
     this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
-    // this.createMarkers();
-
-    // console.log('in googlemaps componentDidMount, this.props: ', this.props);
-    // this.setState({ initialFlats: this.props.flats });
   }
-  //*********************************************************
   //end of componentDidMount
 
-  // CDU called After createMarkers setState and change in this.props.flat;
+  // CDU called After createMarkers setState or change in this.props.flat
+  // or this.props.flatBuildings;
   // Takes flatMarkersArray from state (updated in createMarkers, as markers on map)
-  // flat from prevProps and prevState compared to get newFlatsArray (this.props.flat not in prevProops.flat)
-  // and oldFlatMarkersArray (prevProps.flat not in this.props.flat)
-  // takes newFlatsArray and calls createMarkers() passing flat array and oldFlatMarkersArray, and also setMap null
+  // flat from prevProps and prevState compared to get newFlatsArray
+  // (this.props.flat not in prevProops.flat); same for flatBuildings (flats sharing building)
+  // and oldFlatMarkersArray (prevProps.flat not in this.props.flat); same for flatBuildings
+  // takes newFlatsArray and calls createMarkers() passing flat array and oldFlatMarkersArray,
+  // and also setMap null; same for flatBuildings
 
   componentDidUpdate(prevProps) {
     // takes state flatMarkersArray updated in this.createMarkers
     // and creates array of markers on map with just IDs so that easy to compare this and prev props
-    //
     // and creates array of prev flats with just IDs so that easy to compare this and prev props
     const prevPropsFlatIdArray = [];
     _.each(prevProps.flats, flat => {
@@ -61,6 +56,8 @@ class GoogleMap extends Component {
     });
 
     // and creates array of current flats with just IDs so that easy to compare this and prev props
+    // Somehow, will not work by using this.props. and prevProps flatsId
+    // probably due to timing of props update???? Get error length of undefined
     const currentPropsFlatIdArray = [];
     const currentPropsFlatArray = [];
     _.each(this.props.flats, flat => {
@@ -122,7 +119,8 @@ class GoogleMap extends Component {
      });
 
      //  ****************BUILDINGS ****************
-     // need to check flatBuildings for Object.keys
+     // ********************************************
+     //
      if (this.props.flatBuildings) {
        const buildingMarkersArrayIds = [];
        _.each(this.state.buildingMarkersArray, marker => {
@@ -130,23 +128,25 @@ class GoogleMap extends Component {
        });
 
        const prevPropsBuildingIdArray = [];
-       const prevPropsBuildingObject = {};
+       // const prevPropsBuildingObject = {};
        _.each(prevProps.flatBuildings, building => {
          prevPropsBuildingIdArray.push(building[0].building.id);
-         prevPropsBuildingObject[building[0].building.id] = building;
+         // prevPropsBuildingObject[building[0].building.id] = building;
        });
 
        const currentPropsBuildingIdArray = [];
-       const currentPropsBuildingArray = [];
-       const currentPropsBuildingObject = {};
+       // const currentPropsBuildingArray = [];
+       // const currentPropsBuildingObject = {};
        _.each(this.props.flatBuildings, building => {
          currentPropsBuildingIdArray.push(building[0].building.id);
          // since this.props.flats is an object of objects
-         currentPropsBuildingArray.push(building);
-         currentPropsBuildingObject[building[0].building.id] = building;
+         // currentPropsBuildingArray.push(building);
+         // currentPropsBuildingObject[building[0].building.id] = building;
        });
        // console.log('in googlemaps componentDidUpdate, currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray: ', currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray);
+       // Object for creating new buildings
        let newBuildingsObject = {};
+       // Array for deleting old markers
        let oldBuildingsIdArray = []
 
        _.each(Object.keys(this.props.flatBuildings), (buildingKey) => {
@@ -376,17 +376,16 @@ class GoogleMap extends Component {
 
   createEachIWFlatContent({ flat, infowindow, marker, buildingWithFlats, flatMarker, fromBuilding }) {
     //************ INFOWINDOW create element ***************
-    //Parent Div has image div and detaildiv as immediate children
+    // Calls function to create the main parent div inside the infowindow
+    // with images, arrows and text; content set as infowindow content
+    // Parent Div has image div and detail div as immediate children
     const iwDivParent = document.createElement('div');
-    // iwDivParent.id = 'infowindow-box-parent-div';
-
     // Image div
     // console.log('in googlemaps, infowindow create elements, flat.images: ', flat.images);
     const iwImageDiv = document.createElement('div');
     iwImageDiv.id = 'infowindow-box-image-box';
     iwImageDiv.setAttribute('class', 'infowindow-box-image-box');
     iwImageDiv.setAttribute('ref', 'infowindow-box-image-box-ref');
-
     // !!!!if no image is available for the flat
     if (flat.images[this.props.imageIndex.count]) {
       iwImageDiv.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
@@ -484,10 +483,7 @@ class GoogleMap extends Component {
         this.props.decrementImageIndex(indexAtZero, maxImageIndex);
         // console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
       }
-      // console.log('in googlemap, iwImageLeftArrow, imageIndex, after if statement:', this.props.imageIndex.count)
-      // console.log('in googlemap, map iwImageLeftArrow clicked, t
-      //his.props.imageIndex', this.props.imageIndex);
-      // infowindowClickHandler(flat);
+
       document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
     }); // end of addListener
 
@@ -496,9 +492,6 @@ class GoogleMap extends Component {
       // console.log('in googlemap, map iwImageRightArrow clicked');
       // const maxNumOfImages = infowindowClickHandler(flat);
       const maxImageIndex = flat.images.length - 1;
-
-      // console.log('in googlemap, iwImageRightArrow, maxImageIndex:', maxImageIndex);
-      // console.log('in googlemap, iwImageRightArrow, this.props.imageIndex.count before if statement:', this.props.imageIndex.count);
 
       if (this.props.imageIndex.count >= maxImageIndex) {
         // console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
@@ -516,10 +509,6 @@ class GoogleMap extends Component {
     // opens up new tab when IW details clicked and passes flat id in params to the new tab
     // google.maps.event.addDomListener(iwDetailDiv, 'click', () => {
     google.maps.event.addDomListener(iwDetailTextBoxDiv, 'click', () => {
-      // console.log('in googlemap, map iwDetailDiv clicked, marker', iwDetailDiv);
-      // console.log('in googlemap, map iwDetailDiv clicked, marker', marker.flatId);
-      // infowindowClickHandler(flat);
-      // const win = window.open(`/show/${marker.flatId}`, '_blank');
       const win = window.open(`/show/${flat.id}`, '_blank');
       win.focus();
     });
@@ -531,7 +520,6 @@ class GoogleMap extends Component {
         this.setInfowindowContent({ flat, infowindow, marker, buildingWithFlats, flatMarker: false, fromBuilding })
       });
     }
-
     // infowindow.setContent(iwDivParent);
     // !!!!!!!!!!!RETURN parent div
     return iwDivParent;
@@ -600,111 +588,63 @@ class GoogleMap extends Component {
     const iwBuildingDiv = document.createElement('div');
     iwBuildingDiv.id = 'infowindow-box-building-box';
     iwBuildingDiv.setAttribute('class', 'infowindow-box-building-box');
+    // create each flat within infowindow
     let iwEachFlatBox;
     let iwEachFlatBoxText;
     let iwEachFlatBoxImage;
-    //
-    // const array = [1, 2, 3, 4, 5, 6];
-    // const array = [43, 202];
+    // iterate through each flat within building of infowindow
     _.each(buildingWithFlats, eachFlat => {
+      // create box for each flat; position:relative
       iwEachFlatBox = document.createElement('div');
-      iwEachFlatBoxText = document.createElement('div');
-      iwEachFlatBoxImage = document.createElement('div');
       iwEachFlatBox.setAttribute('class', 'infowindow-box-building-each-flat-box');
-      iwEachFlatBoxImage.setAttribute('class', 'infowindow-box-building-each-flat-box-image');
-      iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${eachFlat.images[0].publicid}.jpg);`);
       iwEachFlatBox.value = eachFlat.id;
+      // create box for text of each flat; posiiton:absolute top:0, left:0
+      iwEachFlatBoxText = document.createElement('div');
       iwEachFlatBoxText.innerHTML = `<div key="${eachFlat.id}" value="${eachFlat.id}" style="color: white; padding-top: 15px; " class="iw-building-flat-text">${eachFlat.description} <br />${this.props.currency}${parseInt(eachFlat.price_per_month, 10)}</div>`;
-      // make iwEachFlatBox a child of iwBuildingDiv
+      // create separate box for image of flat; ; posiiton:absolute top:0, left:0
+      iwEachFlatBoxImage = document.createElement('div');
+      iwEachFlatBoxImage.setAttribute('class', 'infowindow-box-building-each-flat-box-image');
+      // in case no image is available for flat
+      if (eachFlat.images) {
+        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/${eachFlat.images[0].publicid}.jpg);`);
+      } else {
+        iwEachFlatBoxImage.setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_210,h_140/no_image_placeholder_5.jpg)`);
+      }
+      // make iwEachFlatBoxText and image a child of iwEachFlatBox
+      // make iwEachFlatBoxText and image a child of iwBuildingDiv
       iwEachFlatBox.appendChild(iwEachFlatBoxText);
       iwEachFlatBox.appendChild(iwEachFlatBoxImage);
       iwBuildingDiv.appendChild(iwEachFlatBox);
-
+      // add listener for each flat to change view to each flat infowindow
       google.maps.event.addDomListener(iwEachFlatBoxText, 'click', (event) => {
-        console.log('in googlemap, createEachIWBuildingContent, addDomListener click, event.target:', event.target)
+        // console.log('in googlemap, createEachIWBuildingContent, addDomListener click, event.target:', event.target)
         const clickedElement = event.target;
+        // get flat id from value prop
         const elementVal = clickedElement.getAttribute('value');
+        // get flat object from this.props.flatBuildings
         const flatForIw = this.getFlatForIW(elementVal);
-        console.log('in googlemap, createEachIWBuildingContent, addDomListener click, flatForIw:', flatForIw)
+        // call setInfowindowContent to set content of infowindow to flat infowindow
+        // from building infowindow
         this.setInfowindowContent({ flat: flatForIw, buildingWithFlats, infowindow, marker, flatMarker: true, fromBuilding: true })
       });// end of addListener
-    }); // end of each array
-
+    }); // end of each building array
+    // create div for building details at bottom of infowindow
     const iwDetailDiv = document.createElement('div');
     iwDetailDiv.id = 'infowindow-box-detail-box';
+    // create div for showing area of building
     const iwDetailAreaDiv = document.createElement('div');
+    // set inside of details area
     iwDetailAreaDiv.innerHTML = `<div style="color: gray; padding-top: 10px; font-size: 13px;" class="iw-building-details-text">${buildingWithFlats[0].area}</div>`;
+    // make iwDetailAreaDiv a child of iwDetailDiv
     iwDetailDiv.appendChild(iwDetailAreaDiv);
 
+    // append building div and detail div to parent div
     iwDivParent.appendChild(iwBuildingDiv);
     iwDivParent.appendChild(iwDetailDiv);
     // get igm-style-iw ready for iw to open
     this.setIwDomReadyAddListener(infowindow);
-    // google.maps.event.addListener(infowindow, 'domready', () => {
-    //   // this addDomListener takes display nones some divs in google maps
-    //   // so that gm-style-iw can be styled enable image to be panned across IW
-    //   // gets infowindow element, returns array of HTML so get the first element in array
-    //   // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-    //   const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-    //   // !!!!!!gmStyleIwAlt to deal with previousSibling of undefined error;
-    //   // somehow, building marker clicks trigger this error
-    //   const gmStyleIwAlt = document.getElementsByClassName('google-map-gm-style-iw');
-    //   const iwBackground = gmStyleIw[0] ? gmStyleIw[0].previousSibling : gmStyleIwAlt[0].previousSibling;
-    //   const nextSibling = gmStyleIw[0] ? gmStyleIw[0].nextSibling : gmStyleIwAlt[0].nextSibling;
-    //   //gets the element with the white background and assign style of display none
-    //   const iwBackgroundWhite = iwBackground.lastChild;
-    //   iwBackgroundWhite.style.display = 'none';
-    //   // get element with shadow behind the IW and assign style of display none;
-    //   //item number is index
-    //   const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
-    //   iwBackgroundShadow.style.display = 'none';
-    //
-    //   // name class so that .gm-style-iw styling does not clash with others
-    //   gmStyleIw[0] ? gmStyleIw[0].setAttribute('class', 'google-map-gm-style-iw') : '';
-    //   // for taking out close button img that is standard with google map
-    //   nextSibling.setAttribute('class', 'google-map-gm-style-iw-next');
-    // }); // end of addlistener
 
-    // google.maps.event.addDomListener(iwEachFlatBox, 'click', () => {
-    //   console.log('in googlemap, addDomListener iwEachFlatBox click:', iwEachFlatBox)
-    // }); // end of addListener
-    // const flatsArray = document.querySelectorAll('.infowindow-box-building-each-flat-box');
-    // HTMLCollection.prototype.forEach = Array.prototype.forEach;
-    // NodeList.prototype.forEach = Array.prototype.forEach;
-    // const htmlCollection = document.getElementsByClassName('infowindow-box-building-each-flat-box');
-    // console.log('in googlemap, createEachIWBuildingContent click, typeof htmlCollection, Object.keys(htmlCollection), htmlCollection[5]:', typeof htmlCollection, Object.keys(htmlCollection), htmlCollection[5])
-    // let flatsArray = []
-    // _.each(Object.keys(htmlCollection), eachKey => {
-    //   console.log('in googlemap, createEachIWBuildingContent click, htmlCollection eachKey:', eachKey)
-    //   flatsArray.push(htmlCollection[eachKey]);
-    // })
-    //
-    // htmlCollection.forEach((element, i) => {
-    //   console.log('in googlemap, createEachIWBuildingContent click, htmlCollection element, i:', element, i)
-    //   //do your stuffs
-    // });
-    //
-    // Array.prototype.slice.call(document.getElementsByClassName('infowindow-box-building-each-flat-box')).forEach(function (key) {
-    //   console.log('in googlemap, createEachIWBuildingContent click, htmlCollection key', key)
-    //     // console.log(key.id);
-    // });
-    // // for (let i = 0; i < htmlCollection.length; i++) {
-    // //   // flatsArray.push(htmlCollection[i]);
-    // //   console.log('in googlemap, createEachIWBuildingContent click, for loop htmlCollection[i]:', htmlCollection[i])
-    // // }
-    // // const flatsArray = [...htmlCollection];
-    // // const flatsArray = Array.from(htmlCollection);
-    // // const flatsArray = [].slice.call(htmlCollection);
-    // console.log('in googlemap, createEachIWBuildingContent click, htmlCollection:', htmlCollection);
-    // console.log('in googlemap, createEachIWBuildingContent click, flatsArray:', flatsArray);
-    // // console.log('in googlemap, createEachIWBuildingContent click, google.maps.event:', google.maps.event)
-    // _.each(flatsArray, eachFlat => {
-    //   console.log('in googlemap, createEachIWBuildingContent, each flat click, eachFlat:', eachFlat)
-    //   google.maps.event.addDomListener(eachFlat, 'click', () => {
-    //       console.log('in googlemap, createEachIWBuildingContent, addDomListener click, eachFlat.value:', eachFlat.value)
-    //   });// end of addListener
-    // })
-
+    // !!!!return parent div with all content for building infowidow
     return iwDivParent;
   }
 
@@ -723,31 +663,38 @@ class GoogleMap extends Component {
   }
 
   setInfowindowContent({ flat, infowindow, marker, buildingWithFlats, flatMarker, fromBuilding }) {
+    // sets content of infowindow depending on user click
+    // click on flat marker and iw content is set as flat iw without back button of building iw
+    // if not flatMarker ie a building marker, create iw with building content
     let infowidowContent;
+    // If calling for flat show infowindow (can be from building marker to show one of the flats)
     if (flatMarker) {
+      // returns iwDivParent; can be called from building marker
       infowidowContent = this.createEachIWFlatContent({ flat, infowindow, marker, buildingWithFlats, flatMarker, fromBuilding });
-      // And sets the content as that parent div
     } else {
+      // returns iwDivParent; only called from building marker
       infowidowContent = this.createEachIWBuildingContent({ flat, infowindow, marker, buildingWithFlats, flatMarker, fromBuilding });
     }
+    // And sets the content as that parent div
+    // set content for infowindow
     infowindow.setContent(infowidowContent);
   }
 
   handleMarkerClickOpenCloseIw({ marker, map, buildingWithFlats, infowindow, flat, flatMarker, fromBuilding }) {
-    // !!!!!!!!!!!!!!!!!!!!!!!to open infowindow on marker click
+    // !!listens for marker click to open infowindow on marker click
     marker.addListener('click', () => {
-      //close all open infowindows first
+      //close all open infowindows first before opening clicked marker
+      // infowindowArray is populated within create flat and building marker functions
+      // using for loop for variety
       for (let i = 0; i < infowindowArray.length; i++) {
         infowindowArray[i].close();
       }
-      console.log('in google map, handleMarkerClickOpenCloseIw marker addlistener clicked, buildingWithFlats', buildingWithFlats);
-
+      // console.log('in google map, handleMarkerClickOpenCloseIw marker addlistener clicked, buildingWithFlats', buildingWithFlats);
+      // call set content for infowindow
       this.setInfowindowContent({ flat, buildingWithFlats, infowindow, marker, flatMarker, fromBuilding });
-      // const flatMarker = true;
       // then open clicked infowindow
       // to avoid triggering idle listener, turn off global variable idleListeron, open infowidow,
       // then turn idleListenerOn to true after some time.
-
       idleListenerOn = false;
       infowindow.open(map, marker);
       setTimeout(() => {
@@ -757,13 +704,12 @@ class GoogleMap extends Component {
   }
 
   createEachFlatMarker(flat, map) {
-    console.log('in google map, createEachFlatMarker, flat', flat);
-
+    // console.log('in google map, createEachFlatMarker, flat', flat);
     const markerLabel = this.props.showFlat ? 'Here is the listing' : `$${parseFloat(flat.price_per_month).toFixed(0)}`;
     // Marker sizes are expressed as a Size of X,Y where the origin of the image
     // (0,0) is located in the top left of the image.
     const markerIcon = this.createMarkerIcon()
-
+    // create marker
     const marker = new google.maps.Marker({
       key: flat.id,
       position: {
@@ -783,7 +729,7 @@ class GoogleMap extends Component {
       // labelClass: 'gm-marker-label', // your desired CSS class
       // labelInBackground: true
     }); // end of marker new
-
+    // create infowindow content of which to be set in setInfowindowContent function
     const infowindow = new google.maps.InfoWindow({
       maxWidth: 300,
       key: flat.id
@@ -792,31 +738,18 @@ class GoogleMap extends Component {
     //infowindowArray for closing all open infowindows at map click
     infowindowArray.push(infowindow);
 
-    // !!!!!!!!!!!!!!!!!!!!!!!to open infowindow on marker click, create and set iw content
-    // const flatMarker = true;
+    // to open infowindow on marker click, create and set iw content
     this.handleMarkerClickOpenCloseIw({ marker, map, infowindow, flat, flatMarker: true, fromBuilding: false });
 
     // not sure if need this, but gets latLng when click marker;
     // leave just to show event parameter working
-    marker.addListener('click', (event) => {
-      const latitude = event.latLng.lat();
-      const longitude = event.latLng.lng();
-      // console.log('in googlemaps clicked marker latitude: ', latitude);
-      // console.log('in googlemaps clicked marker longitude: ', longitude);
-    });
-
-    //************ INFOWINDOW create element ***************
-    // Calls function to create the main parent div inside the infowindow
-    // with images, arrows and text
-    // const flatMarker = true;
-    // const iwDivParent = this.createEachIWFlatContent(flat, infowindow, marker, flatMarker);
-    // // And sets the content as that parent div
-    // infowindow.setContent(iwDivParent);
-    // flatIWDivClasses = ['infowindow-box-image-box', 'infowindow-box-detail-box']
-
-    // console.log('in google map, createEachFlatMarker, marker', marker);
-
-    // !!!! This works with componentDidUpdate
+    // marker.addListener('click', (event) => {
+    //   const latitude = event.latLng.lat();
+    //   const longitude = event.latLng.lng();
+    //   // console.log('in googlemaps clicked marker latitude: ', latitude);
+    //   // console.log('in googlemaps clicked marker longitude: ', longitude);
+    // });
+    // !!!! This works with componentDidUpdate to take off old markers upon props update
     // adds new marker to state; Cannot do this.state.flatMarkersArray.push as it mutates state
     this.setState(prevState => ({
       flatMarkersArray: [...prevState.flatMarkersArray, marker]
@@ -824,6 +757,7 @@ class GoogleMap extends Component {
   }
 
   getPriceRange(building) {
+    // get range of flat prices for buildings
     building.sort((a, b) => {
       return a.price_per_month - b.price_per_month
     })
@@ -836,16 +770,15 @@ class GoogleMap extends Component {
 
   createEachBuildingMarker(buildingWithFlats, map) {
     // console.log('in googlemaps createEachBuildingMarker buildingWithFlats: ', buildingWithFlats);
-    // let markerLabel = `${buildingWithFlats.length}` + ' Units' + '\n' + `$${parseFloat(buildingWithFlats[0].price_per_month).toFixed(0)}`;
-    // let markerLabel = `${buildingWithFlats.length}` + ' Units' + '\n' + `$${parseFloat(buildingWithFlats[0].price_per_month).toFixed(0)}`;
-
+    // create building markers with multiple flats
     const priceRange = this.getPriceRange(buildingWithFlats);
     // let markerLabel = `${buildingWithFlats.length}` + ' Units' + '\n' + `$${parseFloat(buildingWithFlats[0].price_per_month).toFixed(0)}`;
     let markerLabel = `$${(parseFloat(priceRange.min) / 1000).toFixed(1)}k` + '~' + `$${(parseFloat(priceRange.max) / 1000).toFixed(1)}k`;
     // Marker sizes are expressed as a Size of X,Y where the origin of the image
     // (0,0) is located in the top left of the image.
     const markerIcon = this.createBuildingMarkerIcon()
-
+    // create markers for buildings; use first in array of
+    // buildingWithFlats to get building id, latlng
     const marker = new google.maps.Marker({
       key: buildingWithFlats[0].building.id,
       position: {
@@ -866,20 +799,19 @@ class GoogleMap extends Component {
       // labelClass: 'gm-marker-label', // your desired CSS class
       // labelInBackground: true
     }); // end of marker new
-
+    // create infowidow, content to be set in setInfowindowContent funciton
     const infowindow = new google.maps.InfoWindow({
       maxWidth: 300,
       key: buildingWithFlats[0].building.id
     });
-    // }
 
     //infowindowArray for closing all open infowindows at map click
     infowindowArray.push(infowindow);
     // To open infowindow on marker click
-    // const flatMarker = false;
     this.handleMarkerClickOpenCloseIw({ marker, map, infowindow, buildingWithFlats, flatMarker: false, fromBuilding: true });
 
-    // console.log('in googlemaps createEachBuildingMarker marker: ', marker);
+    // !!!! This works with componentDidUpdate to take off old markers upon props update
+    // adds new marker to state; Cannot do this.state.flatMarkersArray.push as it mutates state
     this.setState(prevState => ({
       buildingMarkersArray: [...prevState.buildingMarkersArray, marker]
     })); // end of setState
@@ -887,47 +819,47 @@ class GoogleMap extends Component {
 
   createMarkers(flats, oldFlatMarkersArray, buildings, oldBuildingMarkersArray) {
     // console.log('in googlemaps createMarkers flats, oldFlatMarkersArray, buildings, oldBuildingMarkersArray: ', flats, oldFlatMarkersArray, buildings, oldBuildingMarkersArray);
-    // required infowindowArray to close infowindow on map click
-    // const infowindowArray = [];
+    // create markers for both flats and buildings
     const map = this.state.map;
-
     // !!!! This works with componentDidUpdate
     // deletes old markers that went off the map from state
+    // called before create each marker to avoid confution with componentDidUpdate
+    // being called on state update before markers added to flatMarkersArray
     if (oldFlatMarkersArray.length > 0) {
       const flatNewArray = [...this.state.flatMarkersArray]; // make a separate copy of the array
       _.each(oldFlatMarkersArray, oldMarker => {
-        const index = flatNewArray.indexOf(oldMarker);
+        // iterate through array popualted in componentDidUpdate
+        const index = flatNewArray.indexOf(oldMarker); // get index of marker to be deleted
         flatNewArray.splice(index, 1); // remove one element at index
       });
       this.setState({ flatMarkersArray: flatNewArray }, () => {
-        // console.log('in googlemaps create  Markers, this.state.flatMarkersArray: ', this.state.flatMarkersArray);
+        // assign new array to state array
       });
     }
 
     if (oldBuildingMarkersArray.length > 0) {
       const buildingNewArray = [...this.state.buildingMarkersArray]; // make a separate copy of the array
       _.each(oldBuildingMarkersArray, oldMarker => {
-        const index = buildingNewArray.indexOf(oldMarker);
+        // iterate through array popualted in componentDidUpdate
+        const index = buildingNewArray.indexOf(oldMarker);// get index of marker to be deleted
         buildingNewArray.splice(index, 1); // remove one element at index
       });
+      // assign new array to state array
       this.setState({ buildingMarkersArray: buildingNewArray });
     }
-
-    //flats from props in results and new flats in componentDidUpdate
+    // After deleting old markers, create markers
+    // Iterate through flats from props in results OR new flats in componentDidUpdate
     _.each(flats, (flat) => {
-      this.createEachFlatMarker(flat, map, () => {
-      }); // end of createEachFlatMarker
+      this.createEachFlatMarker(flat, map); // end of createEachFlatMarker
     });// end of each flat
 
-    //buildings from props in results and new buildings in componentDidUpdate
+    // Iterate through buildings from props in results OR new buildings in componentDidUpdate
     if (buildings) {
       _.each(buildings, eachBuildingWithFlats => {
         this.createEachBuildingMarker(eachBuildingWithFlats, map);
       }); // end of each buildings
     } // end of if buildings
-
-    //****************************************
-    //end of _.each flat create markers etc...
+    // if user click on map, close any open infowindows
     google.maps.event.addListener(map, 'click', () => {
       // const latitude = event.latLng.lat();
       // const longitude = event.latLng.lng();

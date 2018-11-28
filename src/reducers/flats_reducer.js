@@ -59,7 +59,9 @@ export default function (state = {
         flatsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.flats_no_building_id : {},
         reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'),
         flatBuildingsResults: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats : [],
-        flatBuildingsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats_id : []
+        flatBuildingsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats_id : [],
+        flatBuildingsResultsJustId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats_just_id : [],
+        buildingsJustId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_just_id : []
       };
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
 
