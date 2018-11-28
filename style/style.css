@@ -519,6 +519,7 @@ h3 {
 .google-map-gm-style-iw {
   width: 350px !important;
   top: -67px !important;
+  /* bottom: 0px !important; */
   left: 0px !important;
 }
 /* change to GM API 10.2018 need to increase max-height on first child
@@ -602,6 +603,7 @@ to override imposed max by API div */
 
 .iw-back-link {
   color: blue;
+  font-size: 13px;
 }
 .iw-back-link:hover {
   color: gray;
@@ -635,6 +637,7 @@ to override imposed max by API div */
 #infowindow-box-building-box {
   background-color: white !important;
   height: 240px !important;
+  /* height: 80% !important; */
   /* width: 330px !important; */
   width: 100%;
 
@@ -647,15 +650,46 @@ to override imposed max by API div */
   flex-wrap: wrap;
   overflow: hidden;
   overflow-y: scroll;
-
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+  border-radius: 5px 5px 0 0;
 }
 
 .infowindow-box-building-each-flat-box {
   width: 50% !important;
-  height: 50% !important;
+  height: 120px !important;
   border: 1px solid #ccc;
-  font-size: 20px;
+  font-size: 15px;
   padding: 5%;
+  position: relative;
+  /* -webkit-filter: brightness(80%);
+  filter: brightness(80%);  */
+  /* filter: grayscale(100%); */
+  /* filter: blur(13px); */
+}
+
+.infowindow-box-building-each-flat-box-image {
+  position: absolute;
+  filter: brightness(80%);
+  top: 0;
+  left: 0;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.iw-building-flat-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  padding-top: 15px;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* *************MAP INTERACTTION ****************/
