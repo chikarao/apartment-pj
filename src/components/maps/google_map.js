@@ -68,14 +68,16 @@ class GoogleMap extends Component {
     // });
 
     // and creates array of markers on map with just IDs so that easy to compare this and prev props
-    const flatMarkersArrayIds = [];
-    _.each(this.state.flatMarkersArray, marker => {
-      flatMarkersArrayIds.push(marker.flatId);
-    });
+    // const flatMarkersArrayIds = [];
+    // _.each(this.state.flatMarkersArray, marker => {
+    //   flatMarkersArrayIds.push(marker.flatId);
+    // });
 
     // and creates array of prev flats with just IDs so that easy to compare this and prev props
-    const prevPropsFlatIdArray = (prevProps.flatsId === undefined) || (prevProps.flatsId === null) ? [] : prevProps.flatsId;
-    const currentPropsFlatIdArray = (this.props.flatsId === undefined) || (this.props.flatsId === null) ? [] : this.props.flatsId;
+    const prevPropsFlatIdArray = prevProps.flatsId;
+    const currentPropsFlatIdArray = this.props.flatsId;
+    // const prevPropsFlatIdArray = (prevProps.flatsId === undefined) || (prevProps.flatsId === null) ? [] : prevProps.flatsId;
+    // const currentPropsFlatIdArray = (this.props.flatsId === undefined) || (this.props.flatsId === null) ? [] : this.props.flatsId;
 
     const newFlatsArray = [];
     // iterate over this.props.flats to get array of new flats and flat ids
@@ -97,37 +99,46 @@ class GoogleMap extends Component {
 
      // if current markers in state is NOT included in this.props.flats then they are old markers
      // Note: id array
-     const oldFlatMarkerIdArray = [];
-     _.each(flatMarkersArrayIds, markerId => {
-       // console.log('in googlemaps componentWillReceiveProps, oldFlatMarkerIdArray each, markerId: ', markerId);
-       if (!currentPropsFlatIdArray.includes(markerId)) {
-         oldFlatMarkerIdArray.push(markerId);
-       }
-     });
-     // Note: NOT id array, marker array
+     // const oldFlatMarkerIdArray = [];
+     // _.each(flatMarkersArrayIds, markerId => {
+     //   // console.log('in googlemaps componentWillReceiveProps, oldFlatMarkerIdArray each, markerId: ', markerId);
+     //   if (!currentPropsFlatIdArray.includes(markerId)) {
+     //     oldFlatMarkerIdArray.push(markerId);
+     //   }
+     // });
+     // // Note: NOT id array, marker array
+     // // console.log('in googlemaps componentDidUpdate, oldFlatMarkersArray: ', oldFlatMarkersArray);
+     // // iterate over oldMarkerArray to get the actual markers in state with id
+     // _.each(oldFlatMarkerIdArray, markerId => {
+     //    const oldMarker = this.state.flatMarkersArray.filter(flatMarker => {
+     //      // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
+     //     return flatMarker.flatId === markerId;
+     //   });
+     //   oldFlatMarkersArray.push(oldMarker[0]);
+     // });
+     // // take oldFlatMarkersArray and setMap null to remove from map
+     // _.each(oldFlatMarkersArray, marker => {
+     //   marker.setMap(null);
+     //   // clearMarkers(marker);
+     // });
      const oldFlatMarkersArray = [];
-     // console.log('in googlemaps componentDidUpdate, oldFlatMarkersArray: ', oldFlatMarkersArray);
-     // iterate over oldMarkerArray to get the actual markers in state with id
-     _.each(oldFlatMarkerIdArray, markerId => {
-        const oldMarker = this.state.flatMarkersArray.filter(flatMarker => {
-          // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
-         return flatMarker.flatId === markerId;
-       });
-       oldFlatMarkersArray.push(oldMarker[0]);
-     });
-     // take oldFlatMarkersArray and setMap null to remove from map
-     _.each(oldFlatMarkersArray, marker => {
-       marker.setMap(null);
-       // clearMarkers(marker);
+
+     _.each(this.state.flatMarkersArray, marker => {
+       // flatMarkersArrayIds.push(marker.flatId);
+       if (!currentPropsFlatIdArray.includes(marker.flatId)) {
+      //     oldFlatMarkerIdArray.push(markerId);
+        oldFlatMarkersArray.push(marker);
+        marker.setMap(null);
+        }
      });
 
      //  ****************BUILDINGS ****************
      // ********************************************
      //
-       const buildingMarkersArrayIds = [];
-       _.each(this.state.buildingMarkersArray, marker => {
-         buildingMarkersArrayIds.push(marker.buildingId);
-       });
+       // const buildingMarkersArrayIds = [];
+       // _.each(this.state.buildingMarkersArray, marker => {
+       //   buildingMarkersArrayIds.push(marker.buildingId);
+       // });
 
        // const prevPropsBuildingIdArray = [];
        // // const prevPropsBuildingObject = {};
@@ -151,8 +162,10 @@ class GoogleMap extends Component {
        // Array for deleting old markers
        const oldBuildingsIdArray = []
        // Gets buildingsJustId from backend api so obviates need to iterate through this.props and prevProps.flatBuildings
-       const prevPropsBuildingIdArray = (prevProps.buildingsJustId === undefined) || (prevProps.buildingsJustId === null) ? [] : prevProps.buildingsJustId;
-       const currentPropsBuildingIdArray = (this.props.buildingsJustId === undefined) || (this.props.buildingsJustId === null) ? [] : this.props.buildingsJustId;
+       // const prevPropsBuildingIdArray = (prevProps.buildingsJustId === undefined) || (prevProps.buildingsJustId === null) ? [] : prevProps.buildingsJustId;
+       // const currentPropsBuildingIdArray = (this.props.buildingsJustId === undefined) || (this.props.buildingsJustId === null) ? [] : this.props.buildingsJustId;
+       const prevPropsBuildingIdArray = prevProps.buildingsJustId;
+       const currentPropsBuildingIdArray = this.props.buildingsJustId;
 
        _.each(Object.keys(this.props.flatBuildings), (buildingKey) => {
          // if prev props had building ids
@@ -177,30 +190,39 @@ class GoogleMap extends Component {
            newBuildingsObject[buildingKey] = this.props.flatBuildings[buildingKey];
          }
        });
-
-       _.each(buildingMarkersArrayIds, markerId => {
-         if (!currentPropsBuildingIdArray.includes(markerId)) {
-           oldBuildingsIdArray.push(markerId);
-         }
-       });
-
+       // condensed three loops into one below
+       // _.each(buildingMarkersArrayIds, markerId => {
+       //   if (!currentPropsBuildingIdArray.includes(markerId)) {
+       //     oldBuildingsIdArray.push(markerId);
+       //   }
+       // });
+       //
+       // _.each(oldBuildingsIdArray, markerId => {
+       //    const oldMarker = this.state.buildingMarkersArray.filter(buildingMarker => {
+       //      // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
+       //     return buildingMarker.buildingId === markerId;
+       //   });
+       //   oldBuildingMarkersArray.push(oldMarker[0]);
+       // });
+       //
+       // // take oldFlatMarkersArray and setMap null to remove from map
+       // _.each(oldBuildingMarkersArray, marker => {
+       //   marker.setMap(null);
+       // });
        const oldBuildingMarkersArray = []
-       _.each(oldBuildingsIdArray, markerId => {
-          const oldMarker = this.state.buildingMarkersArray.filter(buildingMarker => {
-            // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
-           return buildingMarker.buildingId === markerId;
-         });
-         oldBuildingMarkersArray.push(oldMarker[0]);
-       });
 
-       // take oldFlatMarkersArray and setMap null to remove from map
-       _.each(oldBuildingMarkersArray, marker => {
-         marker.setMap(null);
+       _.each(this.state.buildingMarkersArray, marker => {
+         // flatMarkersArrayIds.push(marker.flatId);
+         if (!currentPropsBuildingIdArray.includes(marker.buildingId)) {
+        //     oldFlatMarkerIdArray.push(markerId);
+          oldBuildingMarkersArray.push(marker);
+          marker.setMap(null);
+          }
        });
-
+       // Call create markers with all parameters prepared above 
        this.createMarkers(newFlatsArray, oldFlatMarkersArray, newBuildingsObject, oldBuildingMarkersArray);
      }
-     // END of if this.props.flatBuildings
+     // END of if this.props.flatBuildings && flats
      // create markers passing array of new flats and
      // array of old markers where old markers will be taken out of state flatMarkersArray
   }

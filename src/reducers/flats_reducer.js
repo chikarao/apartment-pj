@@ -45,6 +45,8 @@ export default function (state = {
   searchFlatParameters: {},
   buildings: [],
   flatsResultsId: [],
+  flatBuildingsResults: [],
+  buildingsJustId: [],
 }, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
 
