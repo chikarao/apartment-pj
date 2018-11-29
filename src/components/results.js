@@ -220,8 +220,8 @@ class Results extends Component {
           flatsEmpty={flatsEmpty}
           flats={this.props.flats}
           flatsId={this.props.flatsId}
-          flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
+          flatBuildingsId={this.props.flatBuildingsId}
           buildingsJustId={this.props.buildingsJustId}
           initialPosition={latLngAve || initialPosition}
           // initialZoom={11}

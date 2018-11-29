@@ -36,7 +36,7 @@ export default function (AuthRequiredComponent) {
       if (!nextProps.authenticated) {
         // do not use this.nextProps
         // this.context.router.push('/');
-        console.log('require_auth, componentDidUpdate, nextProps: ', nextProps);
+        // console.log('require_auth, componentDidUpdate, nextProps: ', nextProps);
         this.context.router.history.push('/');
       }
     }

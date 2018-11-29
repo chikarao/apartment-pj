@@ -43,7 +43,8 @@ import {
 
 export default function (state = {
   searchFlatParameters: {},
-  buildings: []
+  buildings: [],
+  flatsResultsId: [],
 }, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
 
@@ -54,14 +55,14 @@ export default function (state = {
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'), flatBuildingsResults: action.payload.flat_buildings };
       return {
         ...state,
-        justFlats: _.mapKeys(action.payload.flats, 'id'),
         flatsResults: action.payload.flat_buildings ? _.mapKeys(action.payload.flat_buildings.flats_no_building, 'id') : {},
-        flatsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.flats_no_building_id : {},
+        flatsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.flats_no_building_id : [],
         reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id'),
         flatBuildingsResults: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats : [],
         flatBuildingsResultsId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats_id : [],
         flatBuildingsResultsJustId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_with_flats_just_id : [],
-        buildingsJustId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_just_id : []
+        buildingsJustId: action.payload.flat_buildings ? action.payload.flat_buildings.buildings_just_id : [],
+        justFlats: _.mapKeys(action.payload.flats, 'id'),
       };
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
 

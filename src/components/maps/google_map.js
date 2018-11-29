@@ -47,35 +47,38 @@ class GoogleMap extends Component {
   // and also setMap null; same for flatBuildings
 
   componentDidUpdate(prevProps) {
+    if (this.props.flatBuildings && this.props.flats) {
     // takes state flatMarkersArray updated in this.createMarkers
-    // and creates array of markers on map with just IDs so that easy to compare this and prev props
-    // and creates array of prev flats with just IDs so that easy to compare this and prev props
-    const prevPropsFlatIdArray = [];
-    _.each(prevProps.flats, flat => {
-      prevPropsFlatIdArray.push(flat.id);
-    });
+    // KEEP in case code below does not work
+    // Back end api does the logic for prevPropsFlatIdArray and currentPropsFlatArray
+    // const prevPropsFlatIdArray = [];
+    // _.each(prevProps.flats, flat => {
+    //   prevPropsFlatIdArray.push(flat.id);
+    // });
 
     // and creates array of current flats with just IDs so that easy to compare this and prev props
     // Somehow, will not work by using this.props. and prevProps flatsId
     // probably due to timing of props update???? Get error length of undefined
-    const currentPropsFlatIdArray = [];
-    const currentPropsFlatArray = [];
-    _.each(this.props.flats, flat => {
-      currentPropsFlatIdArray.push(flat.id);
-      // since this.props.flats is an object of objects
-      currentPropsFlatArray.push(flat);
-    });
+    // const currentPropsFlatIdArray = [];
+    // // const currentPropsFlatArray = [];
+    // _.each(this.props.flats, flat => {
+    //   currentPropsFlatIdArray.push(flat.id);
+    //   // since this.props.flats is an object of objects
+    //   // currentPropsFlatArray.push(flat);
+    // });
 
+    // and creates array of markers on map with just IDs so that easy to compare this and prev props
     const flatMarkersArrayIds = [];
     _.each(this.state.flatMarkersArray, marker => {
       flatMarkersArrayIds.push(marker.flatId);
     });
-    console.log('in googlemaps componentDidUpdate, prevPropsFlatIdArray currentPropsFlatIdArray, this.state.flatMarkersArray: ', prevPropsFlatIdArray, currentPropsFlatIdArray, this.state.flatMarkersArray);
 
-    // iterate over this.props.flats to get array of new flats and flat ids
-    // const newFlatsIdArray = [];
+    // and creates array of prev flats with just IDs so that easy to compare this and prev props
+    const prevPropsFlatIdArray = (prevProps.flatsId === undefined) || (prevProps.flatsId === null) ? [] : prevProps.flatsId;
+    const currentPropsFlatIdArray = (this.props.flatsId === undefined) || (this.props.flatsId === null) ? [] : this.props.flatsId;
+
     const newFlatsArray = [];
-
+    // iterate over this.props.flats to get array of new flats and flat ids
     _.each(this.props.flats, (flat) => {
       // if prev props had flat ids
        if (prevPropsFlatIdArray.length > 0) {
@@ -121,33 +124,35 @@ class GoogleMap extends Component {
      //  ****************BUILDINGS ****************
      // ********************************************
      //
-     if (this.props.flatBuildings) {
        const buildingMarkersArrayIds = [];
        _.each(this.state.buildingMarkersArray, marker => {
          buildingMarkersArrayIds.push(marker.buildingId);
        });
 
-       const prevPropsBuildingIdArray = [];
-       // const prevPropsBuildingObject = {};
-       _.each(prevProps.flatBuildings, building => {
-         prevPropsBuildingIdArray.push(building[0].building.id);
-         // prevPropsBuildingObject[building[0].building.id] = building;
-       });
-
-       const currentPropsBuildingIdArray = [];
-       // const currentPropsBuildingArray = [];
-       // const currentPropsBuildingObject = {};
-       _.each(this.props.flatBuildings, building => {
-         currentPropsBuildingIdArray.push(building[0].building.id);
-         // since this.props.flats is an object of objects
-         // currentPropsBuildingArray.push(building);
-         // currentPropsBuildingObject[building[0].building.id] = building;
-       });
+       // const prevPropsBuildingIdArray = [];
+       // // const prevPropsBuildingObject = {};
+       // _.each(prevProps.flatBuildings, building => {
+       //   prevPropsBuildingIdArray.push(building[0].building.id);
+       //   // prevPropsBuildingObject[building[0].building.id] = building;
+       // });
+       //
+       // const currentPropsBuildingIdArray = [];
+       // // const currentPropsBuildingArray = [];
+       // // const currentPropsBuildingObject = {};
+       // _.each(this.props.flatBuildings, building => {
+       //   currentPropsBuildingIdArray.push(building[0].building.id);
+       //   // since this.props.flats is an object of objects
+       //   // currentPropsBuildingArray.push(building);
+       //   // currentPropsBuildingObject[building[0].building.id] = building;
+       // });
        // console.log('in googlemaps componentDidUpdate, currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray: ', currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray);
        // Object for creating new buildings
-       let newBuildingsObject = {};
+       const newBuildingsObject = {};
        // Array for deleting old markers
-       let oldBuildingsIdArray = []
+       const oldBuildingsIdArray = []
+       // Gets buildingsJustId from backend api so obviates need to iterate through this.props and prevProps.flatBuildings
+       const prevPropsBuildingIdArray = (prevProps.buildingsJustId === undefined) || (prevProps.buildingsJustId === null) ? [] : prevProps.buildingsJustId;
+       const currentPropsBuildingIdArray = (this.props.buildingsJustId === undefined) || (this.props.buildingsJustId === null) ? [] : this.props.buildingsJustId;
 
        _.each(Object.keys(this.props.flatBuildings), (buildingKey) => {
          // if prev props had building ids
@@ -161,7 +166,7 @@ class GoogleMap extends Component {
              // stringify the array for each building flat ids and compare if same flats
              if (prevProps.flatBuildingsId[buildingKey].sort().toString() !== this.props.flatBuildingsId[buildingKey].sort().toString()) {
                oldBuildingsIdArray.push(parseInt(buildingKey, 10));
-              newBuildingsObject[buildingKey] = this.props.flatBuildings[buildingKey];
+               newBuildingsObject[buildingKey] = this.props.flatBuildings[buildingKey];
                // console.log('in googlemaps componentDidUpdate, each oldBuildingsIdArray: ', oldBuildingsIdArray);
              }
            }
