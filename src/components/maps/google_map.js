@@ -121,8 +121,11 @@ class GoogleMap extends Component {
      //   marker.setMap(null);
      //   // clearMarkers(marker);
      // });
+     
+     // go through each flat marker and if they are not included in
+     // current props of flats, push into oldFlatMarkersArray to send to createMarkers
+     // set map of null to take off of map
      const oldFlatMarkersArray = [];
-
      _.each(this.state.flatMarkersArray, marker => {
        // flatMarkersArrayIds.push(marker.flatId);
        if (!currentPropsFlatIdArray.includes(marker.flatId)) {
@@ -210,16 +213,16 @@ class GoogleMap extends Component {
        //   marker.setMap(null);
        // });
        const oldBuildingMarkersArray = []
-
+       // go through each building marker and if they are not included in
+       // current props of buildings, push into oldBuildingMarkersArray to send to createMarkers
+       // set map of null to take off of map
        _.each(this.state.buildingMarkersArray, marker => {
-         // flatMarkersArrayIds.push(marker.flatId);
          if (!currentPropsBuildingIdArray.includes(marker.buildingId)) {
-        //     oldFlatMarkerIdArray.push(markerId);
-          oldBuildingMarkersArray.push(marker);
-          marker.setMap(null);
+            oldBuildingMarkersArray.push(marker);
+            marker.setMap(null);
           }
        });
-       // Call create markers with all parameters prepared above 
+       // Call create markers with all parameters prepared above
        this.createMarkers(newFlatsArray, oldFlatMarkersArray, newBuildingsObject, oldBuildingMarkersArray);
      }
      // END of if this.props.flatBuildings && flats

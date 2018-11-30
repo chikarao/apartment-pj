@@ -14,7 +14,7 @@ import {
 export default function (state = {
   selectedBookingDates: { to: null, from: null },
   requiredFields: [],
-  bookingRequest: {}
+  bookingRequestData: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -47,7 +47,7 @@ export default function (state = {
     return { ...state, requiredFields: action.payload };
 
     case BOOKING_REQUEST_DATA:
-    // console.log('in booking reducer, state: ', state);
+    // console.log('in booking reducer, BOOKING_REQUEST_DATA state, action.payload, state.bookingRequestData : ', state, action.payload, state.bookingRequestData);
     return { ...state, bookingRequestData: action.payload };
 
     case EDIT_BOOKING:

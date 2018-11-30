@@ -20,6 +20,11 @@ class BookingRequest extends Component {
   }
 
   componentDidMount() {
+    // get profile for logged in user from backend api
+    this.props.fetchProfileForUser(() => {});
+  }
+
+  componentDidUpdate() {
     // gets flat id from params set in click of main_cards or infowindow detail click
     // const bookingId = parseInt(this.props.match.params.id, 10);
     // this.props.fetchBooking(bookingId);
@@ -30,6 +35,8 @@ class BookingRequest extends Component {
     let bookingRequestFrom = '';
 
     const bookingRequestEmpty = _.isEmpty(this.props.bookingRequest);
+    // console.log('in booking_request, componentDidUpdate, this.props.bookingRequest, bookingRequestEmpty: ', this.props.bookingRequest, bookingRequestEmpty);
+    // console.log('in booking_request, componentDidUpdate, this.props: ', this.props);
 
     // when user first makes request and opens booking request, store props data in localStorage
     // and get the data from storage to store data in state and props
@@ -42,8 +49,8 @@ class BookingRequest extends Component {
       bookingRequestFrom = localStorage.getItem('bookingRequestFrom');
       bookingRequestUserEmail = localStorage.getItem('bookingRequestUserEmail');
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
-      // console.log('in booking_request, componentDidMount, in if !bookingRequestEmpty,   bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
-      this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
+      // console.log('in booking_request, componentDidUpdate, in if !bookingRequestEmpty,   bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
+      // this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
       // flat from backend api
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     } else {
@@ -52,16 +59,11 @@ class BookingRequest extends Component {
       bookingRequestFrom = localStorage.getItem('bookingRequestFrom');
       bookingRequestUserEmail = localStorage.getItem('bookingRequestUserEmail');
       bookingRequestFlatId = localStorage.getItem('bookingRequestFlatId');
-      // console.log('in booking_request, componentDidMount, bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
+      // console.log('in booking_request, componentDidUpdate, bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail: ', bookingRequestTo, bookingRequestFrom, bookingRequestFlatId, bookingRequestUserEmail);
       // store booking request data in local state and props
       this.props.bookingRequestData({ date_start: bookingRequestFrom, date_end: bookingRequestTo, user_email: bookingRequestUserEmail, flat_id: bookingRequestFlatId }, () => {})
       this.props.selectedFlatFromParams(bookingRequestFlatId, () => {});
     }
-    // get profile for logged in user from backend api
-    this.props.fetchProfileForUser(() => {});
-  }
-
-  componentDidUpdate() {
     // add facilities that are not optional or included for use when user confirms booking
     this.addNonOptionalOrIncludedFacilityToState();
   }
@@ -188,7 +190,7 @@ class BookingRequest extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
     const elementNameSplit = elementName.split(',')
-    console.log('in booking_request, handleOptionButtonClick, elementNameSplit: ', elementNameSplit);
+    // console.log('in booking_request, handleOptionButtonClick, elementNameSplit: ', elementNameSplit);
     const facilityObject = {
       facility_type: elementNameSplit[0],
       facility_number: elementNameSplit[1],
@@ -203,7 +205,7 @@ class BookingRequest extends Component {
       this.setState({
         addedFacilityArray: [...this.state.addedFacilityArray, facilityObject]
       }, () => {
-        console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+        // console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
       })
     }
     // if button is to delete or value 'no', copy state array, get index of clicked facility
@@ -229,7 +231,7 @@ class BookingRequest extends Component {
       this.setState({
         addedFacilityArray: array
       }, () => {
-        console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
+        // console.log('in booking_request, handleOptionButtonClick, this.state.addedFacilityArray: ', this.state.addedFacilityArray);
       })
     }
   }
@@ -272,7 +274,7 @@ class BookingRequest extends Component {
     let facilityString = ''
     _.each(facilityArray, (eachAttribute, i) => {
       if (facility[eachAttribute]) {
-        console.log('in booking_request, getFacilityString, eachAttribute, facility[eachAttribute].toString(): ', eachAttribute, facility[eachAttribute].toString());
+        // console.log('in booking_request, getFacilityString, eachAttribute, facility[eachAttribute].toString(): ', eachAttribute, facility[eachAttribute].toString());
         facilityString = facilityString.concat(`${facility[eachAttribute].toString()},`)
       } else {
         facilityString = facilityString.concat(',')
@@ -293,7 +295,7 @@ class BookingRequest extends Component {
         // form the string to be sent to handleOptionButtonClick when user clicks to add or delete option
         facilityString = this.getFacilityString(eachFacility)
         // facilityString =  eachFacility.facility_type.toString() + ',' + eachFacility.facility_number.toString() + ',' + eachFacility.optional.toString() + ',' + eachFacility.price_per_month.toString() + ',' + eachFacility.id.toString() + ',' + eachFacility.facility_deposit.toString()
-        console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
+        // console.log('in booking_request, renderEachFacility, facilityString: ', facilityString);
         //this.props.flat[facilityChoice.facilityObjectMap] to check if faciity included in price
         // check if price included or no deposit or price_per_month available
         return (
@@ -437,7 +439,7 @@ class BookingRequest extends Component {
   }
 
   checkIfOtherAlreadyInArray(array, eachTenantKey) {
-    console.log('in booking_request, checkIfOtherAlreadyInArray, array, eachTenantKey, Tenants: ', array, eachTenantKey, Tenants);
+    // console.log('in booking_request, checkIfOtherAlreadyInArray, array, eachTenantKey, Tenants: ', array, eachTenantKey, Tenants);
     let index = null;
     _.each(array, (eachArrayObject, i) => {
       // const objectKeys = Object.keys(eachArrayObject);
@@ -450,7 +452,7 @@ class BookingRequest extends Component {
         index = i;
       }
     });
-    console.log('in booking_request, checkIfOtherAlreadyInArray, index: ', index);
+    // console.log('in booking_request, checkIfOtherAlreadyInArray, index: ', index);
     return index;
   }
 
@@ -490,12 +492,12 @@ class BookingRequest extends Component {
               if (otherKeyInArrayIndex !== null) {
                 tenantsArray[otherKeyInArrayIndex][Tenants[eachTenantKey].tenantObjectMap] = delta[eachTenantKey];
               } else {
-                console.log('in booking_request, handleFormSubmit, else not null eachTenantKey: ', eachTenantKey);
+                // console.log('in booking_request, handleFormSubmit, else not null eachTenantKey: ', eachTenantKey);
                 object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], group: Tenants[eachTenantKey].group }
                 tenantsArray.push(object);
               }
             } else {
-              console.log('in booking_request, handleFormSubmit, if lenght > 0 null eachTenantKey: ', eachTenantKey);
+              // console.log('in booking_request, handleFormSubmit, if lenght > 0 null eachTenantKey: ', eachTenantKey);
               object = { [Tenants[eachTenantKey].tenantObjectMap]: delta[eachTenantKey], group: Tenants[eachTenantKey].group }
               tenantsArray.push(object);
             }
@@ -511,14 +513,16 @@ class BookingRequest extends Component {
     }
 
     dataToBeSent.booking = this.props.bookingRequest;
-    console.log('in booking_request, handleFormSubmit, delta, dataToBeSent: ', delta, dataToBeSent);
+    // just to make there is something in profile
+    dataToBeSent.profile.first_name = data.first_name;
+    // console.log('in booking_request, handleFormSubmit, delta, dataToBeSent: ', delta, dataToBeSent);
     this.props.requestBooking(dataToBeSent, (id) => {
       this.handleFormSubmitCallback(id);
     });
   }
 
   handleFormSubmitCallback(bookingId) {
-    console.log('in booking_request, handleFormSubmitCallback: ', bookingId);
+    // console.log('in booking_request, handleFormSubmitCallback: ', bookingId);
     // showHideClassName = 'modal display-none';
     this.props.history.push(`/BookingConfirmation/${bookingId}`);
   }

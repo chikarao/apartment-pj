@@ -204,7 +204,8 @@ class Results extends Component {
 
     if (!flatsEmpty && !flatBuildingsEmpty) {
       // gets average of latlng of returned flats
-      const latLngAve = this.calculateLatLngAve(this.props.flats);
+      const latLngAve = this.calculateLatLngAve(this.props.justFlats);
+      // const latLngAve = this.calculateLatLngAve(this.props.flats);
       // gets latlng and zoom of map stored after user searches on landing or results page
       const storedLat = localStorage.getItem('lat');
       const storedLng = localStorage.getItem('lng');
@@ -640,7 +641,8 @@ class Results extends Component {
 
   renderPagination() {
       // check if flats is empty of objects
-      const flatsEmpty = _.isEmpty(this.props.flats);
+      // const flatsEmpty = _.isEmpty(this.props.flats);
+      const flatsEmpty = _.isEmpty(this.props.justFlats);
       // console.log('in results renderPagination, outside of if, flatsEmpty: ', flatsEmpty);
     if (!flatsEmpty) {
       // destructure initialized state variables
@@ -649,7 +651,8 @@ class Results extends Component {
       // console.log('in results renderPagination, currentPage: ', currentPage);
       // console.log('in results renderPagination, cardsPerPage: ', cardsPerPage);
       // cards are for flats
-      const cards = this.props.flats;
+      const cards = this.props.justFlats;
+      // const cards = this.props.flats;
       // console.log('in results renderPagination, cards: ', cards);
       // reference: https://stackoverflow.com/questions/39336556/how-can-i-slice-an-object-in-javascript/45195659
       // slicing the first two values
@@ -702,8 +705,8 @@ class Results extends Component {
 
   renderFlats() {
     let index = 1;
-    // console.log('in results renderFlats, flats data length: ', this.props.flats);
-    const flatsEmpty = _.isEmpty(this.props.flats);
+    // const flatsEmpty = _.isEmpty(this.props.flats);
+    const flatsEmpty = _.isEmpty(this.props.justFlats);
     const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
     // console.log('in results renderFlats, flats empty: ', flatsEmpty);
     // console.log('in results renderFlats, this.props.startUpCount.startUpCount: ', this.props.startUpCount.startUpCount);
@@ -712,6 +715,7 @@ class Results extends Component {
 
       // if (!flatsEmpty && randomNum === 1) {
       if (!flatsEmpty) {
+        // console.log('in results renderFlats, this.props.justFlats : ', this.props.justFlats);
         // console.log('in results renderFlats, this.props.flats.rooms: ', this.props.flats.rooms);
         // const { id } = this.props.flats[0];
         // console.log('in results renderFlats, id: ', id);
@@ -719,7 +723,8 @@ class Results extends Component {
         // console.log('in results renderPagination, flatsEmpty: ', flatsEmpty);
         // console.log('in results renderPagination, currentPage: ', currentPage);
         // console.log('in results renderPagination, cardsPerPage: ', cardsPerPage);
-        const cards = this.props.flats;
+        // const cards = this.props.flats;
+        const cards = this.props.justFlats;
         // console.log('in results renderPagination, cards: ', cards);
         // Logic for displaying todos
         const indexOfLastCard = currentPage * cardsPerPage;
@@ -1621,6 +1626,7 @@ function mapStateToProps(state) {
   return {
     message: state.auth.message,
     flats: state.flats.flatsResults,
+    justFlats: state.flats.justFlats,
     flatsId: state.flats.flatsResultsId,
     flatBuildings: state.flats.flatBuildingsResults,
     flatBuildingsId: state.flats.flatBuildingsResultsId,

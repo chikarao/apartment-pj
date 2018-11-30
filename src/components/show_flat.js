@@ -261,7 +261,7 @@ class ShowFlat extends Component {
         // const bookingConfirm = window.confirm(`Book reservation from ${this.formatDate(this.props.selectedBookingDates.from)} to ${this.formatDate(this.props.selectedBookingDates.to)}?`)
         // if (bookingConfirm) {
           const bookingRequest = { flat_id: this.props.flat.id, user_email: this.props.auth.email, date_start: this.props.selectedBookingDates.from, date_end: this.props.selectedBookingDates.to }
-          // console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
+          console.log('in show_flat handleBookingClick, bookingRequest: ', bookingRequest);
           this.props.bookingRequestData(bookingRequest, () => this.props.history.push('/bookingrequest'))
           // calls action craetor and sends callback to action to go to the booking confiramtion page
           // this.props.requestBooking(bookingRequest, () => this.props.history.push('/bookingconfirmation'));
@@ -289,9 +289,9 @@ class ShowFlat extends Component {
     // So need to adjust dates with setDate and getDate
     const bookingsEmpty = _.isEmpty(this.props.flat.bookings);
     const daysList = [];
+    console.log('in show_flat, disabledDays, bookingsEmpty ', bookingsEmpty);
 
     if (!bookingsEmpty) {
-      // console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_start);
       // console.log('in show_flat, disabledDays, days from ', this.props.flat.bookings[0].date_end);
 
       _.each(bookings, (booking) => {
@@ -352,7 +352,7 @@ class ShowFlat extends Component {
         daysList.push(eachRange);
       });
     }
-    // console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
+    console.log('in show_flat, disabledDays, after _.each, daysList ', daysList);
     // daylist array gets fed inot react-date-picker as props
     return daysList;
   }

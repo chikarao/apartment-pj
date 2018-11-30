@@ -2232,7 +2232,7 @@ export function requiredFields(array) {
 
 export function bookingRequestData(object, callback) {
   console.log('in actions index, bookingRequestData, object:', object);
-  callback();
+  callback()
   // payload goes to booking reducer
   return { type: BOOKING_REQUEST_DATA, payload: object };
 }

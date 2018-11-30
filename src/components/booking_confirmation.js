@@ -8,7 +8,7 @@ import ReviewEditModal from './modals/review_edit_modal';
 import ReviewCreateFrom from './forms/review_create';
 
 import CreateEditDocument from './forms/create_edit_document';
-import calculateAge from './functions/calculate_age';
+import CalculateAge from './functions/calculate_age';
 import Facility from './constants/facility';
 import Documents from './constants/documents';
 import AppLanguages from './constants/app_languages';
@@ -23,7 +23,7 @@ class BookingConfirmation extends Component {
     this.handleDocumentCreateLink = this.handleDocumentCreateLink.bind(this);
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
   }
-  
+
   componentDidMount() {
     // gets flat id from params set in click of main_cards or infowindow detail click
     const bookingId = parseInt(this.props.match.params.id, 10);
@@ -32,9 +32,9 @@ class BookingConfirmation extends Component {
     this.props.fetchReviewForBookingByUser(bookingId);
   }
 
-  componentWillUnmount() {
-    console.log('in booking confirmation, componentWillUnmount');
-  }
+  // componentWillUnmount() {
+  //   console.log('in booking confirmation, componentWillUnmount');
+  // }
 
   renderImage(images) {
     const imagesEmpty = _.isEmpty(images);
@@ -133,27 +133,27 @@ class BookingConfirmation extends Component {
     });
   }
 
-  getNumberOfTenants(bookingData) {
+  getNumberOfTenants(bookingData, profile) {
     const { tenants } = bookingData;
     let otherTenants = 0;
     if (tenants) {
       if (tenants.length > 0) {
         otherTenants += tenants.length;
       }
-      if (!bookingData.user.profile.corporate) {
+      if (!profile.corporation) {
         otherTenants += 1;
       }
     }
     return otherTenants;
   }
 
-  renderEachTenantLine() {
-    const { birthday, city, state, country } = this.props.bookingData.user.profile;
+  renderEachTenantLine(profile) {
+    const { birthday, city, state, country } = profile;
     // const { description, area, beds } = bookingData.flat;
-    const age = calculateAge(birthday);
+    const age = CalculateAge(birthday);
     console.log('in booking_confirmation renderEachTenantLine, age: ', age);
     const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
-    const numberOfTenants = this.getNumberOfTenants(this.props.bookingData)
+    const numberOfTenants = this.getNumberOfTenants(this.props.bookingData, profile)
 
     const lineArray = [
       { title: 'Age', data: age },
@@ -185,43 +185,67 @@ class BookingConfirmation extends Component {
     );
   }
 
-  renderNameBox() {
+  renderNameBox(profile) {
     return (
       <div className="booking-confirmation-name-box">
         <div className="booking-confirmation-name-box-each-line">
-          First Name: {this.props.bookingData.user.profile.first_name}
+          First Name: {profile.first_name}
         </div>
         <div className="booking-confirmation-name-box-each-line">
-          Last Name: {this.props.bookingData.user.profile.last_name}
+          Last Name: {profile.last_name}
         </div>
       </div>
     );
   }
 
-  renderTenantIntroduction() {
+  renderTenantIntroduction(profile) {
     return (
       <div className="booking-confirmation-profile-introduction">
         <div className="booking-request-box-each-line-title">
           Introduction:
         </div>
-        {this.props.bookingData.user.profile.introduction}
+        {profile.introduction}
       </div>
     );
+  }
+
+  getProfileToUse(profiles) {
+    let returnedProfile = null;
+    _.each(profiles, eachProfile => {
+      if (eachProfile.language_code == this.props.appLanguageCode) {
+        returnedProfile = eachProfile;
+      }
+    });
+
+    if (profiles.length == 1) {
+      returnedProfile = profiles[0]
+    }
+
+    if (!returnedProfile) {
+      _.each(profiles, eachProfile => {
+        if (eachProfile.language_code == 'en') {
+          returnedProfile = eachProfile;
+        }
+      });
+    }
+
+    return returnedProfile;
   }
 
   renderBookingTenantInformation(bookingData) {
     // for some reason, cloudinary image does not render correctly if image obtained
     // from this.props.bookingData; needs to be passed on by parameter
+    const profileToUse = this.getProfileToUse(bookingData.user.profiles)
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">Proposed Tenant Information</div>
           <div className="booking-confirmation-profile-top-box">
             <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + bookingData.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
-            {this.renderNameBox()}
+            {this.renderNameBox(profileToUse)}
           </div>
           <div className="booking-confirmation-profile-scrollbox">
-            {this.renderEachTenantLine()}
-            {this.renderTenantIntroduction()}
+            {this.renderEachTenantLine(profileToUse)}
+            {this.renderTenantIntroduction(profileToUse)}
           </div>
       </div>
     );
