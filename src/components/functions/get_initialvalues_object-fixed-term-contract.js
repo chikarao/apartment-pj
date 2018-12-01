@@ -7,7 +7,16 @@ import Tenants from '../constants/tenants';
 // fixed_term_rental_contract.js
 export default (props) => {
   const { flat, booking, userOwner, tenant, appLanguageCode, documentFields } = props;
-
+  function getProfile(personProfiles, language) {
+    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
+    let returnedProfile;
+    _.each(personProfiles, eachProfile => {
+      if (eachProfile.language_code == language) {
+        returnedProfile = eachProfile;
+      }
+    });
+    return returnedProfile;
+  }
   // takes booking and creates object of start date and end date years, months and days
   function getBookingDateObject(booking) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, booking: ', booking);
@@ -313,11 +322,16 @@ export default (props) => {
           }
         });
       }
+      const language = 'jp'
+      const ownerProfile = getProfile(userOwner.profiles, language);
+      const tenantProfile = getProfile(booking.user.profiles, language);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile, booking.user.profiles: ', tenantProfile, booking.user.profiles);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, ownerProfile, userOwner.profiles: ', ownerProfile, userOwner.profiles);
       // form string for user owner names
-      if (userOwner.profile.first_name && userOwner.profile.last_name) {
-        const fullName = userOwner.profile.last_name.concat(` ${userOwner.profile.first_name}`);
+      if (ownerProfile.first_name && ownerProfile.last_name) {
+        const fullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
         objectReturned.owner_name = fullName;
-        objectReturned.owner_phone = userOwner.profile.phone;
+        objectReturned.owner_phone = ownerProfile.phone;
       }
 
       if (booking.tenants) {
@@ -339,24 +353,24 @@ export default (props) => {
       }
 
       // form string for user tenant names
-      if (booking.user.profile.first_name && booking.user.profile.last_name) {
-        const fullName = booking.user.profile.last_name.concat(` ${booking.user.profile.first_name}`);
+      if (tenantProfile.first_name && tenantProfile.last_name) {
+        const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
         objectReturned.tenant_name = fullName;
-        objectReturned.tenant_phone = tenant.profile.phone;
+        objectReturned.tenant_phone = tenantProfile.phone;
       }
 
       // form string for address of user owner
-      if (userOwner.profile.address1 && userOwner.profile.city) {
-        if (userOwner.profile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+      if (ownerProfile.address1 && ownerProfile.city) {
+        if (ownerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
           let fullAddress = ''
-          fullAddress = fullAddress.concat(`${userOwner.profile.zip}${userOwner.profile.state}${userOwner.profile.state}${userOwner.profile.city}${userOwner.profile.address1}`);
+          fullAddress = fullAddress.concat(`${ownerProfile.zip}${ownerProfile.state}${ownerProfile.state}${ownerProfile.city}${ownerProfile.address1}`);
           objectReturned.owner_address = fullAddress;
         }
       }
 
       // form get age of tenant
-      if (tenant.profile.birthday) {
-        const age = calculateAge(tenant.profile.birthday);
+      if (tenantProfile.birthday) {
+        const age = calculateAge(tenantProfile.birthday);
         objectReturned.tenant_age = age;
       }
 
@@ -366,12 +380,12 @@ export default (props) => {
         objectReturned.building_owner_phone = flat.building.building_owner_phone;
       }
 
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenant.profile: ', tenant.profile);
-      if (tenant.profile.emergency_contact_name) {
-        objectReturned.emergency_contact_name = tenant.profile.emergency_contact_name;
-        objectReturned.emergency_contact_phone = tenant.profile.emergency_contact_phone;
-        objectReturned.emergency_contact_address = tenant.profile.emergency_contact_address;
-        objectReturned.emergency_contact_relationship = tenant.profile.emergency_contact_relationship;
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile: ', tenantProfile);
+      if (tenantProfile.emergency_contact_name) {
+        objectReturned.emergency_contact_name = tenantProfile.emergency_contact_name;
+        objectReturned.emergency_contact_phone = tenantProfile.emergency_contact_phone;
+        objectReturned.emergency_contact_address = tenantProfile.emergency_contact_address;
+        objectReturned.emergency_contact_relationship = tenantProfile.emergency_contact_relationship;
       }
 
 

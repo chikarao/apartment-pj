@@ -10,6 +10,16 @@ export default (props) => {
   // destructure from props assigned in mapStateToProps
   const { flat, booking, userOwner, tenant, appLanguageCode, documentFields } = props;
 
+  function getProfile(personProfiles, language) {
+    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
+    let returnedProfile;
+    _.each(personProfiles, eachProfile => {
+      if (eachProfile.language_code == language) {
+        returnedProfile = eachProfile;
+      }
+    });
+    return returnedProfile;
+  }
   // takes booking and creates object of start date and end date years, months and days
   function getBookingDateObject() {
     // console.log('in create_edit_document, getBookingDateObject, booking: ', booking);
@@ -340,12 +350,15 @@ export default (props) => {
       //   });
       //   objectReturned.co_tenants = booking.tenants.length;
       // }
+      const language = 'jp'
+      const ownerProfile = getProfile(userOwner.profiles, language);
+      const tenantProfile = getProfile(booking.user.profiles, language);
 
       // form string for user tenant names
-      if (booking.user.profile.first_name && booking.user.profile.last_name) {
-        const fullName = booking.user.profile.last_name.concat(` ${booking.user.profile.first_name}`);
+      if (tenantProfile.first_name && tenantProfile.last_name) {
+        const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
         objectReturned.tenant_name = fullName;
-        objectReturned.tenant_phone = tenant.profile.phone;
+        objectReturned.tenant_phone = tenantProfile.phone;
       }
 
       // form string for address of user owner
