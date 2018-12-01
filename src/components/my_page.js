@@ -1097,8 +1097,13 @@ formatDate(date) {
   }
 
   renderEachLanguage(languageCodeArray) {
+    console.log('in mypage, renderEachLanguage, languageCodeArray: ', languageCodeArray);
     return _.map(languageCodeArray, (eachCode, i) => {
-      return <div key={i}>{Languages[eachCode].flag}</div>;
+      if (eachCode) {
+        return <div key={i}>{Languages[eachCode].flag}</div>;
+      } else {
+        return '';
+      }
     });
   }
 
@@ -1113,6 +1118,7 @@ formatDate(date) {
         // render contractor only if it does not have a base_record_id, that is, it is the base record
         if (!eachContractor.base_record_id) {
           const contractorLanguagesArray = this.getLanguages(this.props.auth.user.contractors, eachContractor);
+          console.log('in mypage, renderExistingContractorDetails, contractorLanguagesArray: ', contractorLanguagesArray);
           return (
             <li key={i} className="my-page-each-card">
                 <div className="my-page-each-card-click-box my-page-card-no-picture-box">

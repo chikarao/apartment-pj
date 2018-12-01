@@ -555,14 +555,14 @@ class EditFlat extends Component {
           {building.name}{building.name ? ', ' : ''} {building.address1}, {building.city}, {building.state}, {building.country} &nbsp; Language: {Languages[building.language_code].flag}
         <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
-        {building.inspections.length > 0 ?
+        {building.inspections && (building.inspections.length > 0) ?
           <div className="edit-flat-inspection-box">{AppLanguages.inspections[this.props.appLanguageCode]}: {this.renderEachInspection()}</div>
           :
           <div>No Inspection Information</div>
         }
         <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
 
-        {building.building_languages.length > 0 ?
+        {building.building_languages && (building.building_languages.length > 0) ?
           <div className="edit-flat-inspection-box">{AppLanguages.otherLanguages[this.props.appLanguageCode]}: {this.renderEachBuildingLanguage()}</div>
           :
           <div>No Other Building Languages</div>

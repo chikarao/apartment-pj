@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {
+  UNAUTH_USER,
   FETCH_FLATS,
   FETCH_FLATS_BY_USER,
   SELECTED_FLAT,
@@ -41,13 +42,15 @@ import {
   DELETE_BUILDING_LANGUAGE
 } from '../actions/types';
 
-export default function (state = {
+const INITIAL_STATE = {
   searchFlatParameters: {},
   buildings: [],
   flatsResultsId: [],
   flatBuildingsResults: [],
   buildingsJustId: [],
-}, action) {
+  flatsResults: {}
+};
+export default function (state = INITIAL_STATE, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
 
   const flatsArray = [];
@@ -67,6 +70,8 @@ export default function (state = {
         justFlats: _.mapKeys(action.payload.flats, 'id'),
       };
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
+    case UNAUTH_USER:
+      return { ...state, INITIAL_STATE };
 
     case CLEAR_FLATS:
       return { ...state, flatsResults: {} };

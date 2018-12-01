@@ -13,7 +13,8 @@ const Inspection = {
       1: { value: 'jp', en: '🇯🇵　Japanese', jp: '🇯🇵　日本語', type: 'button', className: 'form-rectangle' },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    },
+    map_to_record: 'language_code'
   },
   inspection_date: {
     name: 'inspection_date',

@@ -29,17 +29,17 @@ class InspectionEditModal extends Component {
     // this.setState({ selectedLanguage: languages[code].name });
     const delta = {}
     _.each(Object.keys(data), each => {
-      // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
+      console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
       if (data[each] !== this.props.initialValues[each]) {
         console.log('in edit flat, handleFormSubmit, each: ', each);
         delta[each] = data[each]
       }
     })
-    const dataToBeSent = { Inspection: delta, building_id: this.props.flat.building.id };
+    const dataToBeSent = { inspection: delta, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in InspectionEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.updateInspection(dataToBeSent, () => {
+    this.props.updateInspection(dataToBeSent, this.props.inspectionId, () => {
       this.handleFormSubmitCallback();
     });
   }
@@ -91,7 +91,7 @@ class InspectionEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: Inspection } : {}}
+            props={fieldComponent == FormChoices ? { model: Inspection, record: this.props.inspection, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -220,7 +220,9 @@ function mapStateToProps(state) {
       // languages: state.languages,
       showInspectionEdit: state.modals.showInspectionEditModal,
       appLanguageCode: state.languages.appLanguageCode,
-      inspectionId: state.flat.selectedInspectionId,
+      // inspectionId: state.flat.selectedInspectionId,
+      inspection,
+      inspectionId: inspection.id,
       // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedInspectionId
       initialValues
