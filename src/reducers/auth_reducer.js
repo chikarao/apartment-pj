@@ -12,7 +12,9 @@ import {
   SHOW_AUTH_MODAL,
   SHOW_RESET_PASSWORD_MODAL,
   FETCH_PROFILE_FOR_USER,
+  CREATE_PROFILE,
   EDIT_PROFILE,
+  DELETE_PROFILE,
   SHOW_LOADING,
   SHOW_LIGHTBOX,
   FETCH_CUSTOMER,
@@ -97,7 +99,14 @@ export default function (state = {
     case FETCH_PROFILE_FOR_USER:
       return { ...state, userProfile: action.payload.profile, user: action.payload.user };
 
+    case CREATE_PROFILE:
+      // return { ...state, userProfile: action.payload.profile, user: action.payload };
+      return { ...state, user: action.payload };
+
     case EDIT_PROFILE:
+      return { ...state, user: action.payload };
+
+    case DELETE_PROFILE:
       return { ...state, user: action.payload };
 
     case SHOW_LOADING:

@@ -4263,6 +4263,13 @@ text-decoration: underline;
   position: absolute;
 }
 
+.wrap-textarea {
+  display: block !important;
+  white-space: normal !important;
+  /* word-wrap: break-word !important; */
+  word-break: break-all;
+}
+
 /* .document-submit-button {
   position: absolute;
   top: 90%;

@@ -19,7 +19,8 @@ class ProfileEditModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editProfileCompleted: false
+      editProfileCompleted: false,
+      deleteProfileCompleted: false
     };
   }
 
@@ -58,8 +59,17 @@ class ProfileEditModal extends Component {
     }
   }
 
-  handleDeleteProfileClick() {
+  handleDeleteProfileClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in staff_edit_modal, renderEditLanguageLink, elementVal: ', elementVal);
+    this.props.deleteProfile(elementVal, () => this.handleDeleteProfileCallback());
+  }
 
+  handleDeleteProfileCallback() {
+    // console.log('in signin, handleFormSubmitCallback: ');
+    // showHideClassName = 'modal display-none';
+    this.setState({ deleteProfileCompleted: true, editProfileCompleted: true });
   }
 
   handleEditLanguageClick(event) {
@@ -67,6 +77,7 @@ class ProfileEditModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
     this.props.profileToEditId(elementVal);
   }
+
 
   renderEditLanguageLink() {
     // get staffs with same id and base_record_id, or same staff group of languages
@@ -136,9 +147,13 @@ class ProfileEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">{AppLanguages.editProfile[this.props.appLanguageCode]}</h3>
           <div className="modal-edit-delete-edit-button-box">
-            <button value={this.props.profile.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteProfileClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+            {this.props.auth.user.profiles.length > 1 ?
+              <button value={this.props.profile.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteProfileClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              :
+              ''
+            }
             <div className="modal-edit-language-link-box">
-                {this.renderEditLanguageLink()}
+              {this.renderEditLanguageLink()}
             </div>
           </div>
           {this.renderAlert()}
@@ -164,10 +179,14 @@ class ProfileEditModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your profile has been successfully updated.</div>
+          {this.state.deleteProfileCompleted ?
+            <div className="post-signup-message">Your profile has been successfully deleted.</div>
+            :
+            <div className="post-signup-message">Your profile has been successfully updated.</div>
+          }
         </div>
       </div>
-    )
+    );
   }
 
   render() {

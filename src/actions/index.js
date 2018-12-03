@@ -1077,12 +1077,12 @@ export function createProfile(profileAttributes, callback) {
 
 export function deleteProfile(id, callback) {
   // const { id } = profileAttributes;
-  console.log('in actions index, deleteProfile, profileAttributes: ', profileAttributes);
+  // console.log('in actions index, deleteProfile, profileAttributes: ', profileAttributes);
   console.log('in actions index, deleteProfile: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {
-    axios.delete(`${ROOT_URL}/api/v1/profiles${id}`, {
+    axios.delete(`${ROOT_URL}/api/v1/profiles/${id}`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

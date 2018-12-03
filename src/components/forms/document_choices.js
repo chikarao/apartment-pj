@@ -69,9 +69,9 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, getStyleOfInputElement ');
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
-      elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+      elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
     } else {
-      elementStyle = { borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+      elementStyle = { borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
     }
 
     return elementStyle;
@@ -117,10 +117,24 @@ class DocumentChoices extends Component {
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
         />
+
+      const textareaElement =
+        <textarea
+          id="valueTextarea"
+          value={this.anyOfOtherValues(name, value) ? '' : value}
+          key={choice.params.val}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.params.type}
+          className={choice.params.className}
+          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
+          style={this.getStyleOfInputElement(value, choice)}
+        />
       // const inputElement = <input id="valueInput" name={name} key={choice.params.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // if choice type is string, use input element above and button if not string
       if (choice.params.type == 'string') {
         return inputElement;
+      } else if (choice.params.type == 'text')  {
+        return textareaElement;
       } else {
         return buttonElement;
       }

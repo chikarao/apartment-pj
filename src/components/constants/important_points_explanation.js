@@ -122,7 +122,7 @@ const ImportantPointsExplanation = {
         height: '23px',
         component: 'DocumentChoices'
       },
-      // address of of listing; use address for consistency with rental contract 
+      // address of of listing; use address for consistency with rental contract
       address: {
         name: 'address',
         type: 'string',
@@ -163,6 +163,16 @@ const ImportantPointsExplanation = {
         component: 'DocumentChoices'
       },
 
+      size_registered: {
+        name: 'size_registered',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '57.8%', left: '67.4%', width: '10%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
       construction: {
         name: 'construction',
         type: 'string',
@@ -172,6 +182,78 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices'
       },
+      // owner is the renter building owner is the actual owner of the listing
+      owner_name: {
+        name: 'owner_name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '64%', left: '24.4%', width: '64.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      owner_address: {
+        name: 'owner_address',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '66%', left: '24.4%', width: '64.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      building_owner_name: {
+        name: 'building_owner_name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '82.3%', left: '22.4%', width: '27%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      building_owner_address1: {
+        name: 'building_owner_address1',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '85.3%', left: '22.4%', width: '27%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      building_owner_address2: {
+        name: 'building_owner_address2',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '86.9%', left: '22.4%', width: '27%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      building_ownership_notes: {
+        name: 'building_ownership_notes',
+        type: 'text',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '82.1%', left: '50.4%', width: '18%', height: '6.4%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      building_ownership_other_notes: {
+        name: 'building_ownership_other_notes',
+        type: 'text',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '82.1%', left: '69%', width: '21.8%', height: '6.4%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+
   },
   2: {},
   // 3: {},

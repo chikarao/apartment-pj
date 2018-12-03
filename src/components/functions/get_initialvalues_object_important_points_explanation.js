@@ -11,7 +11,7 @@ export default (props) => {
   const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts } = props;
 
   function getProfile(personProfiles, language) {
-    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
+    console.log('in get_initialvalues_object-fixed-term-contract, personProfiles: ', personProfiles);
     let returnedProfile;
     _.each(personProfiles, eachProfile => {
       if (eachProfile.language_code == language) {
@@ -208,6 +208,7 @@ export default (props) => {
       const language = 'jp'
       const ownerProfile = getProfile(userOwner.profiles, language);
       const tenantProfile = getProfile(booking.user.profiles, language);
+      console.log('in get_initialvalues_object_important_points_explanation, ownerProfile: ', ownerProfile);
 
       // form string for user tenant names
       if (tenantProfile.first_name && tenantProfile.last_name) {
@@ -215,7 +216,6 @@ export default (props) => {
         objectReturned.tenant_name = fullName;
         objectReturned.tenant_phone = tenantProfile.phone;
       }
-      // console.log('in get_initialvalues_object_important_points_explanation, assignments: ', assignments);
       const broker = getContractor(booking.contracts, 'rental_broker');
 
       objectReturned.broker_company_name = broker.company_name;
@@ -238,6 +238,10 @@ export default (props) => {
       objectReturned.broker_staff_registration = brokerStaff.registration;
       const contract = getContract('rental_broker');
       objectReturned.contract_work_sub_type = contract.work_sub_type;
+      objectReturned.contract_work_sub_type = contract.work_sub_type;
+      const notes = 'Here are some not that need to be long to see if the text wraps in the text box.'
+      // max number of characters 60!!!!!
+      objectReturned.building_ownership_notes = notes;
 
 
       // for each page in props.documentFields
@@ -251,6 +255,12 @@ export default (props) => {
         // iterate through flat amenity
         // end of each flat amenity
       });
+
+      if (ownerProfile.first_name && ownerProfile.last_name) {
+        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        objectReturned.owner_name = ownerFullName;
+        objectReturned.owner_address = createAddress(ownerProfile);
+      }
       objectReturned.address = createAddress(flat);
 
       // end of Object.keys flat
