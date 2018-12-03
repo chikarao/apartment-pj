@@ -308,6 +308,8 @@ function mapStateToProps(state) {
     const userOwner = state.bookingData.user;
     const tenant = state.bookingData.fetchBookingData.user;
     const appLanguageCode = state.languages.appLanguageCode;
+    const assignments = state.bookingData.assignments;
+    const contracts = state.bookingData.contracts;
     // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
     // setCreateDocumentKey action fired and app state set
     // define new documents in constants/documents.js by identifying
@@ -316,7 +318,7 @@ function mapStateToProps(state) {
     const documentFields = Documents[documentKey].form;
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
-    const initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields });
+    const initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts });
 
     console.log('in create_edit_document, mapStateToProps, state: ', state);
     return {

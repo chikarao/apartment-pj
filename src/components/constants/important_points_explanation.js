@@ -11,21 +11,176 @@ const ImportantPointsExplanation = {
         name: 'tenant_name',
         type: 'string',
         choices: {
-          // add 1.5% to top
           0: { params: { val: 'inputFieldValue', top: '11.6%', left: '28.4%', width: '15.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_company_name: {
+        name: 'broker_company_name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '20%', left: '19.4%', width: '30%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_representative_name: {
+        name: 'broker_representative_name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '22.7%', left: '19.4%', width: '30%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_address_hq: {
+        name: 'broker_address_hq',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '24.5%', left: '19.4%', width: '60%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_registration_number: {
+        name: 'broker_registration_number',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '25.9%', left: '19.4%', width: '30%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_registration_date: {
+        name: 'broker_registration_date',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '27.4%', left: '19.4%', width: '30%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+
+      broker_staff_name: {
+        name: 'broker_staff_name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '32.6%', left: '45.4%', width: '35%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_staff_registration: {
+        name: 'broker_staff_registration',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '35.4%', left: '60.4%', width: '15%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_staff_address: {
+        name: 'broker_staff_address',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '38.6%', left: '45.4%', width: '45.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      broker_staff_phone: {
+        name: 'broker_staff_phone',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '41.3%', left: '68.4%', width: '20.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      contract_work_sub_type: {
+        name: 'contract_work_sub_type',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'broker', top: '44.9%', left: '59%', width: '7%', className: 'document-rectangle', type: 'button' } },
+          1: { params: { val: 'representative', top: '44.9%', left: '74.8%', width: '7%', className: 'document-rectangle', type: 'button' } },
+          // 2: { params: { val: 'single_family', top: '25.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
+          // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+        },
+        box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+      },
+      // address of of listing; use address for consistency with rental contract 
+      address: {
+        name: 'address',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '51.9%', left: '24.4%', width: '64.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      name: {
+        name: 'name',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '48.9%', left: '24.4%', width: '64.5%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      unit: {
+        name: 'unit',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '55%', left: '24.4%', width: '10%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      size: {
+        name: 'size',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '57.8%', left: '24.4%', width: '10%', className: 'document-rectangle', type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      construction: {
+        name: 'construction',
+        type: 'string',
+        choices: {
+          0: { params: { val: 'inputFieldValue', top: '61%', left: '24.4%', width: '20.5%', className: 'document-rectangle', type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'
       },
   },
   2: {},
-  3: {},
-  4: {},
-  5: {},
-  6: {},
-  7: {},
-  8: {},
-  9: {}
+  // 3: {},
+  // 4: {},
+  // 5: {},
+  // 6: {},
+  // 7: {},
+  // 8: {},
+  // 9: {}
 
 //     name: {
 //       name: 'name',
@@ -74,20 +229,6 @@ const ImportantPointsExplanation = {
 //       // required: true
 //     },
 //
-//     flat_type: {
-//       name: 'flat_type',
-//       type: 'string',
-//       choices: {
-//         0: { params: { val: 'flat_in_building', top: '22.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-//         1: { params: { val: 'town_house', top: '24.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-//         2: { params: { val: 'single_family', top: '25.8%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } },
-//         3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
-//       },
-//       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//     },
 //
 //     construction: {
 //       name: 'construction',
