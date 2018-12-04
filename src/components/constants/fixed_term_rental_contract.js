@@ -1062,6 +1062,7 @@ const FixedTermRentalContract = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
+
     management_registration_number: {
       name: 'management_registration_number',
       type: 'string',
@@ -1072,9 +1073,9 @@ const FixedTermRentalContract = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
-
-    building_owner_address: {
-      name: 'building_owner_address',
+    // chnaged from building_owner_name address and phone; 
+    flat_owner_address: {
+      name: 'flat_owner_address',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -1084,8 +1085,8 @@ const FixedTermRentalContract = {
       component: 'DocumentChoices'
     },
 
-    building_owner_name: {
-      name: 'building_owner_name',
+    flat_owner_name: {
+      name: 'flat_owner_name',
       type: 'string',
       choices: {
         // add 1.5% to top
@@ -1095,8 +1096,8 @@ const FixedTermRentalContract = {
       component: 'DocumentChoices'
     },
 
-    building_owner_phone: {
-      name: 'building_owner_phone',
+    flat_owner_phone: {
+      name: 'flat_owner_phone',
       type: 'string',
       choices: {
         // add 1.5% to top

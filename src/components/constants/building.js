@@ -194,6 +194,16 @@ const Building = {
     language_independent: true,
   },
 
+  electricity: {
+    name: 'electricity',
+    en: 'Electric Company',
+    jp: '電気会社',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    // language_independent: true,
+  },
+
   sewage: {
     name: 'sewage',
     en: 'Sewage',
@@ -203,7 +213,7 @@ const Building = {
     choices: {
       0: { value: 'Public Sewer', en: 'Public Sewer', jp: '公共下水道', type: 'button', className: 'form-rectangle' },
       1: { value: 'Septic Tank', en: 'Septic Tank', jp: '浄化槽', type: 'button', className: 'form-rectangle' },
-      2: { value: 'none', en: 'None', jp: '無し', type: 'button', component: 'button', className: 'form-rectangle' }
+      2: { value: 'None', en: 'None', jp: '無し', type: 'button', component: 'button', className: 'form-rectangle' }
     },
     language_independent: true,
   },

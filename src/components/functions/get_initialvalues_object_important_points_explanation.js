@@ -3,6 +3,7 @@ import _ from 'lodash';
 import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
+import Building from '../constants/building';
 
 // get_initialvalues_object_important_points_explanation.js
 export default (props) => {
@@ -167,7 +168,7 @@ export default (props) => {
   //     return age;
   // }
 
-  function getContractor(contracts, workType) {
+  function getContractor(workType) {
     let returnedContractor;
     _.each(contracts, eachContract => {
       if (eachContract.work_type == workType) {
@@ -197,13 +198,25 @@ export default (props) => {
         returnedContract = eachContract;
       }
     });
-    console.log('in get_initialvalues_object_important_points_explanation, returnedContract: ', returnedContract);
     return returnedContract;
   }
+
+  function getChoice(choices, value) {
+    console.log('in get_initialvalues_object_important_points_explanation, choices, value: ', choices, value);
+    let returnedChoice;
+    _.each(choices, eachChoice => {
+      if (eachChoice.val == value) {
+        returnedChoice = eachChoice
+      }
+    })
+    return returnedChoice;
+  }
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! Start of instructions!!!!!!!!!!!!!!!
+  // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // define object to be returned to mapStateToProps in CreateEditDocument
     const objectReturned = {};
+    // iterate throught each page of documentFields eg ImportantPointsExplanation
+    // this will enable checking of whether flat or building object contains keys to assign
     _.each(documentFields, eachPageObject => {
       const language = 'jp'
       const ownerProfile = getProfile(userOwner.profiles, language);
@@ -216,7 +229,13 @@ export default (props) => {
         objectReturned.tenant_name = fullName;
         objectReturned.tenant_phone = tenantProfile.phone;
       }
-      const broker = getContractor(booking.contracts, 'rental_broker');
+      // assign today's date
+      const today = new Date();
+      objectReturned.date_year = today.getFullYear();
+      objectReturned.date_month = today.getMonth() + 1;
+      objectReturned.date_day = today.getDate();
+      // get the contractor that is assigned to be the rental broker
+      const broker = getContractor('rental_broker');
 
       objectReturned.broker_company_name = broker.company_name;
       if (broker.first_name && broker.last_name) {
@@ -239,10 +258,11 @@ export default (props) => {
       const contract = getContract('rental_broker');
       objectReturned.contract_work_sub_type = contract.work_sub_type;
       objectReturned.contract_work_sub_type = contract.work_sub_type;
-      const notes = 'Here are some not that need to be long to see if the text wraps in the text box.'
+      // just a place holder for notes; need to create column in flat or new model for ownership
+      const notes = '12345.'
+      // const notes = 'Only sixty four characters fit in this box. This is sixty four. The end.'
       // max number of characters 60!!!!!
       objectReturned.building_ownership_notes = notes;
-
 
       // for each page in props.documentFields
       _.each(Object.keys(flat), key => {
@@ -255,13 +275,25 @@ export default (props) => {
         // iterate through flat amenity
         // end of each flat amenity
       });
-
+      // assumes party to the rental agreement is the user
       if (ownerProfile.first_name && ownerProfile.last_name) {
         const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
         objectReturned.owner_name = ownerFullName;
         objectReturned.owner_address = createAddress(ownerProfile);
       }
+      // if user is the owner, use user profile
+      if (flat.owner_name == 'user') {
+        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        objectReturned.flat_owner_name = ownerFullName;
+        objectReturned.flat_owner_address = createAddress(ownerProfile);
+      } else {
+        // else use the owner in flat
+        objectReturned.flat_owner_name = flat.owner_name;
+        objectReturned.flat_owner_address = flat.owner_address;
+      }
+      // flat address
       objectReturned.address = createAddress(flat);
+
 
       // end of Object.keys flat
       // _.each(Object.keys(flat.amenity), eachAmenityKey => {
@@ -278,8 +310,12 @@ export default (props) => {
           //   eachBuildingKey = 'flat_building_name';
           // }
           if (eachPageObject[eachBuildingKey]) {
-            // console.log('in create_edit_document, getInitialValuesObject, eachBuildingKey: ', eachBuildingKey);
             // if attributes in flat.building are on DocumentForm, add to initialValues objectReturned
+            // if (documentFields[eachPageObject][eachBuildingKey].component == 'select') {
+            //   const choice = getChoice(Building[eachBuildingKey].choices, flat.building[eachBuildingKey])
+            //   console.log('in create_edit_document, getInitialValuesObject, choice: ', choice);
+            //   // objectReturned[eachBuildingKey] = choice['jp'];
+            // }
             objectReturned[eachBuildingKey] = flat.building[eachBuildingKey];
           }
         });

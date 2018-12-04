@@ -374,10 +374,22 @@ export default (props) => {
         objectReturned.tenant_age = age;
       }
 
-      if (flat.building.building_owner_name) {
-        objectReturned.building_owner_name = flat.building.building_owner_name;
-        objectReturned.building_owner_address = flat.building.building_owner_address;
-        objectReturned.building_owner_phone = flat.building.building_owner_phone;
+      // if (flat.building.building_owner_name) {
+      //   objectReturned.building_owner_name = flat.building.building_owner_name;
+      //   objectReturned.building_owner_address = flat.building.building_owner_address;
+      //   objectReturned.building_owner_phone = flat.building.building_owner_phone;
+      // }
+      // if flat_owner_name is user use the user profile for user 
+      if (flat.owner_name == 'user') {
+        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        objectReturned.flat_owner_name = ownerFullName;
+        objectReturned.flat_owner_address = createAddress(ownerProfile);
+        objectReturned.flat_owner_phone = ownerProfile.phone;
+      } else {
+        // else use the owner in flat
+        objectReturned.flat_owner_name = flat.owner_name;
+        objectReturned.flat_owner_address = flat.owner_address;
+        objectReturned.flat_owner_phone = flat.owner_phone;
       }
 
       console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile: ', tenantProfile);

@@ -7,6 +7,8 @@ import cloudinary from 'cloudinary-core';
 import * as actions from '../../actions';
 // import DocumentForm from '../constants/document_form';
 import Documents from '../constants/documents';
+import Building from '../constants/building';
+import SelectField from '../forms/select_field';
 
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
@@ -179,7 +181,6 @@ class CreateEditDocument extends Component {
     if (nullRequiredKeys.length > 0) {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('The fields highlighted in blue are required.');
-      // console.log('in create_edit_document, handleFormSubmit, required keys empty!!!: ', nullRequiredKeys);
       this.props.requiredFields(nullRequiredKeys);
     } else {
       this.props.authError('');
@@ -187,6 +188,30 @@ class CreateEditDocument extends Component {
       this.props.createContract(paramsObject, () => {});
     }
   }
+
+  getModelChoice(model, choice, name) {
+    let returnedChoice;
+    _.each(model[name].choices, eachChoice => {
+      console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
+      if (eachChoice.value == choice.params.val) {
+        returnedChoice = eachChoice;
+      }
+    });
+    return returnedChoice;
+  }
+
+  renderSelectChoices(choices, model, name) {
+  return _.map(Object.keys(choices), (eachKey, i) => {
+    // if (languagesObject[eachKey].implemented) {
+    const modelChoice = this.getModelChoice(model, choices[eachKey], name);
+    // <option key={i} value={eachKey}>{choices[eachKey].params.val}</option>
+    console.log('in create_edit_document, renderSelectChoices, modelChoice: ', modelChoice);
+      return (
+        <option key={i} value={eachKey}>{modelChoice['jp']}</option>
+      );
+    // }
+  });
+}
 
   renderEachDocumentField(page) {
     let fieldComponent = '';
@@ -215,18 +240,41 @@ class CreateEditDocument extends Component {
           console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
         }
 
-        return (
-          <Field
-            key={i}
-            name={formField.name}
-            component={fieldComponent}
-            // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form } : {}}
-            type={formField.type}
-            className={formField.component == 'input' ? 'form-control' : ''}
-            style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height } : {}}
-          />
-        );
+        if (fieldComponent == 'select') {
+          return (
+            <div
+              style={{ position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height }}
+              key={i}
+            >
+              <Field
+                key={i}
+                name={formField.name}
+                component={fieldComponent}
+                // pass page to custom compoenent, if component is input then don't pass
+                // props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
+                type={formField.type}
+                className={'form-control'}
+                style={{ height: formField.choices[0].params.height }}
+                // className={formField.component == 'input' ? 'form-control' : ''}
+              >
+                {this.renderSelectChoices(formField.choices, formField.mapToModel, formField.name)}
+              </Field>
+            </div>
+          );
+        } else {
+          return (
+            <Field
+              key={i}
+              name={formField.name}
+              component={fieldComponent}
+              // pass page to custom compoenent, if component is input then don't pass
+              props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
+              type={formField.type}
+              className={formField.component == 'input' ? 'form-control' : ''}
+              style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height } : {}}
+            />
+          );
+        }
       });
     // }
   }
@@ -244,6 +292,7 @@ class CreateEditDocument extends Component {
             name={newElement.name}
             component={newElement.component}
             // pass page to custom compoenent, if component is input then don't pass
+            props={fieldComponent == DocumentChoices ? { page } : {}}
             // props={fieldComponent == DocumentChoices ? { page } : {}}
             type={newElement.type}
             className={newElement.component == 'input' ? 'form-control' : ''}
@@ -297,7 +346,8 @@ class CreateEditDocument extends Component {
 }
 
 CreateEditDocument = reduxForm({
-  form: 'CreateEditDocument'
+  form: 'CreateEditDocument',
+  enableReinitialize: true
 })(CreateEditDocument);
 
 function mapStateToProps(state) {

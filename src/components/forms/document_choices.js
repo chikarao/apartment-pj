@@ -17,13 +17,27 @@ class DocumentChoices extends Component {
     // value is what is submitted in submit form data
     // onChange sets value of Field
     // name is the Field name that corresponds to DB column name
+    // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name } } = this.props;
+    // console.log('DocumentChoices, handleInputChange this.props.charLimit', this.props.charLimit)
     // sets state to give value to input field
-    return this.setState({ inputValue: event.target.value }, () => {
-      // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
-      // sets value in this.props and for submission of form
-      onChange(this.state.inputValue);
-    });
+    // check if input field has a character limit and
+    // if so, update state and do onChange if less than limit
+    if (this.props.charLimit) {
+      if (event.target.value.length <= this.props.charLimit) {
+        return this.setState({ inputValue: event.target.value }, () => {
+          // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
+          // sets value in this.props and for submission of form
+          onChange(this.state.inputValue);
+        });
+      }
+    } else {
+      return this.setState({ inputValue: event.target.value }, () => {
+        // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
+        // sets value in this.props and for submission of form
+        onChange(this.state.inputValue);
+      });
+    }
   }
   // empty input element when user clicks on button
   emptyInput() {
@@ -35,6 +49,8 @@ class DocumentChoices extends Component {
   // <button type="button" onClick={() => onChange(value - 1)}>Dec</button>
 
   anyOfOtherValues(name, value) {
+    // function to check if value corresponds to other choice values
+    // if so, leave input field blank since the input was made by a user button click 
     const anyOtherValueArray = [];
     _.each(this.props.formFields[this.props.page][name].choices, choice => {
       if (choice.params.val == value) {
@@ -69,9 +85,9 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, getStyleOfInputElement ');
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
-      elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
+      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
     } else {
-      elementStyle = { borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
+      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
     }
 
     return elementStyle;
@@ -121,6 +137,7 @@ class DocumentChoices extends Component {
       const textareaElement =
         <textarea
           id="valueTextarea"
+          name={choice.params.name}
           value={this.anyOfOtherValues(name, value) ? '' : value}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
