@@ -111,7 +111,7 @@ class CreateEditDocument extends Component {
   checkOtherChoicesVal(choices, key, data) {
     let haveOrNot = false;
     _.each(choices, choice => {
-      console.log('in create_edit_document, checkOtherChoicesVal, choice, key, data[key]: ', choice, key, data[key]);
+      // console.log('in create_edit_document, checkOtherChoicesVal, choice, key, data[key]: ', choice, key, data[key]);
       if (choice.params.val == data[key]) {
         haveOrNot = true;
       }
@@ -120,7 +120,7 @@ class CreateEditDocument extends Component {
   }
 
   handleFormSubmit(data) {
-    console.log('in create_edit_document, handleFormSubmit, data: ', data);
+    // console.log('in create_edit_document, handleFormSubmit, data: ', data);
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
@@ -194,7 +194,8 @@ class CreateEditDocument extends Component {
     let returnedChoice;
     _.each(model[name].choices, eachChoice => {
       // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
-      if (eachChoice.value == choice.params.val) {
+      console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
+      if (eachChoice.value === choice.params.val) {
         returnedChoice = eachChoice;
         return;
       }
@@ -206,10 +207,10 @@ class CreateEditDocument extends Component {
     // rendering options for select fields
   return _.map(Object.keys(choices), (eachKey, i) => {
     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
-    // console.log('in create_edit_document, renderSelectChoices, modelChoice: ', modelChoice);
+    // console.log('in create_edit_document, renderSelectChoices, name, modelChoice: ', name, modelChoice);
     const languageCode = this.props.documentLanguageCode;
         return (
-        <option key={i} value={eachKey}>{modelChoice[languageCode]}</option>
+        <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]}</option>
       );
     // }
   });
@@ -256,7 +257,7 @@ class CreateEditDocument extends Component {
                 // props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
                 type={formField.type}
                 className={'form-control'}
-                style={{ height: formField.choices[0].params.height }}
+                style={{ height: formField.choices[0].params.height, margin: formField.choices[0].params.margin }}
                 // className={formField.component == 'input' ? 'form-control' : ''}
               >
                 {this.renderSelectChoices(formField.choices, formField.mapToModel, formField.name)}
@@ -360,6 +361,7 @@ function mapStateToProps(state) {
     const userOwner = state.bookingData.user;
     const tenant = state.bookingData.fetchBookingData.user;
     const appLanguageCode = state.languages.appLanguageCode;
+    const documentLanguageCode = state.languages.documentLanguageCode;
     const assignments = state.bookingData.assignments;
     const contracts = state.bookingData.contracts;
     // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
@@ -370,7 +372,7 @@ function mapStateToProps(state) {
     const documentFields = Documents[documentKey].form;
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
-    const initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts });
+    const initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
 
     console.log('in create_edit_document, mapStateToProps, state: ', state);
     return {

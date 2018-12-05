@@ -9,7 +9,7 @@ import Building from '../constants/building';
 export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode } = props;
 
   function getProfile(personProfiles, language) {
     console.log('in get_initialvalues_object-fixed-term-contract, personProfiles: ', personProfiles);
@@ -211,6 +211,29 @@ export default (props) => {
     })
     return returnedChoice;
   }
+
+  function getInspection(inspections) {
+    const sortedInspections = inspections.sort((a, b) => {
+      return a.inspection_date - b.inspection_date;
+    });
+    let inspectionReturned;
+    _.each(sortedInspections, eachInspection => {
+      if (eachInspection.language_code == documentLanguageCode) {
+        inspectionReturned = eachInspection;
+        // console.log('in get_initialvalues_object_important_points_explanation, sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode: ', sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode);
+        return;
+      }
+    });
+    return inspectionReturned;
+  }
+
+  function getAmenityInput(amenityKey) {
+    if (flat.amenity[amenityKey]) {
+      return '有り'
+    }　else {
+      return '無し'
+    }
+  }
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // define object to be returned to mapStateToProps in CreateEditDocument
@@ -266,6 +289,7 @@ export default (props) => {
 
       // for each page in props.documentFields
       _.each(Object.keys(flat), key => {
+        // console.log('in create_edit_document, getInitialValuesObject, key, flat[key]: ', key, flat[key]);
         // for each flat in boooking
         if (eachPageObject[key]) {
           // if flat key is in one of the pages, on DocumentForm
@@ -293,15 +317,29 @@ export default (props) => {
       }
       // flat address
       objectReturned.address = createAddress(flat);
+      if (flat.building) {
+        if (flat.building.inspections) {
+          const inspection = getInspection(flat.building.inspections);
+          console.log('in create_edit_document, getInitialValuesObject, inspection: ', inspection);
+          inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
+        }
+      }
+      // for evaluating if has toilet or not!!!
+      objectReturned.toilet = flat.toilet;
 
 
       // end of Object.keys flat
-      // _.each(Object.keys(flat.amenity), eachAmenityKey => {
-      //   if (eachPageObject[eachAmenityKey]) {
-      //     // if attributes in flat.amenity are on DocumentForm, add to initialValues objectReturned
-      //     objectReturned[eachAmenityKey] = flat.amenity[eachAmenityKey];
-      //   }
-      // });
+      // const importantAmenityArray = ['kitchen', 'bath_tub', 'shower', 'water_heater', 'hot_water', 'ac', 'heater', 'kitchen_grill']
+      _.each(Object.keys(flat.amenity), eachAmenityKey => {
+        if (eachPageObject[eachAmenityKey]) {
+          // if attributes in flat.amenity are on DocumentForm, add to initialValues objectReturned
+          // if (importantAmenityArray.includes(eachAmenityKey)) {
+            // objectReturned[eachAmenityKey] = getAmenityInput(eachAmenityKey);
+          // } else {
+            objectReturned[eachAmenityKey] = flat.amenity[eachAmenityKey];
+          // }
+        }
+      });
       // end of each Object.keys flat.amenity
       if (flat.building) {
         objectReturned.electricity = 'add column';

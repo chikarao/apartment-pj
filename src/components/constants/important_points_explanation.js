@@ -1,5 +1,7 @@
 import SelectField from '../forms/select_field.js'
 import Building from '../constants/building.js'
+import Amenities from '../constants/amenities.js'
+import FlatForDocuments from '../constants/flat_for_documents.js'
 // constant file referred to as 'model'; record refers to backend records flat, profile, user
 
 const ImportantPointsExplanation = {
@@ -290,6 +292,7 @@ const ImportantPointsExplanation = {
       },
   },
   // end of page 1
+  // start of page 2
   2: {
     regulation_name: {
       name: 'regulation_name',
@@ -528,12 +531,12 @@ const ImportantPointsExplanation = {
       type: 'string',
       choices: {
         // 0: { params: { val: 'inputFieldValue', top: '27.3%', left: '17.1%', width: '10.5%', className: 'document-rectangle', type: 'string' } },
-        0: { params: { val: 'Public Sewer', top: '27%', left: '14.4%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
-        1: { params: { val: 'Septic Tank', top: '27%', left: '14.4%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
-        2: { params: { val: 'None', top: '27%', left: '14.4%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
+        0: { params: { val: 'Public Sewer', top: '27%', left: '16.9%', width: '16%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+        1: { params: { val: 'Septic Tank', top: '27%', left: '16.9%', width: '16%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+        2: { params: { val: 'None', top: '27%', left: '16.9%', width: '16%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
-      height: '23px',
+      // height: '23px',
       // component: 'SelectField'
       // component: 'DocumentChoices'
       component: 'select',
@@ -610,6 +613,141 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 21,
+    },
+
+    construction_uncompleted: {
+      name: 'construction_uncompleted',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '32.3%', left: '27%', width: '63%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    construction_uncompleted_general: {
+      name: 'construction_uncompleted_general',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '34.8%', left: '27%', width: '63%', height: '3.3%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 130,
+    },
+
+    facilities_uncompleted_summary: {
+      name: 'facilities_uncompleted_summary',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '38.3%', left: '27%', width: '63%', height: '3.2%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 130,
+    },
+
+    building_inspection_conducted: {
+      name: 'building_inspection_conducted',
+      type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '44%', left: '57.3%', width: '5%', className: 'document-rectangle', type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '44%', left: '78.1%', width: '5%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    building_inspection_summary: {
+      name: 'building_inspection_summary',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.1%', left: '49.3%', width: '41.5%', height: '4.2%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    kitchen: {
+      name: 'kitchen',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    toilet: {
+      name: 'toilet',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: FlatForDocuments,
+    },
+
+    bath_tub: {
+      name: 'bath_tub',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    hot_water: {
+      name: 'hot_water',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    kitchen_grill: {
+      name: 'kitchen_grill',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    ac: {
+      name: 'ac',
+      type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } },
+             1: { valName: 'N', params: { val: false, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', className: 'document-rectangle', type: 'string' } }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
     },
   },
   // end of page 2
