@@ -4,12 +4,14 @@ import {
   SELECTED_LANGUAGE,
   UPDATE_FLAT_LANGUAGE,
   SET_APP_LANGUAGE_CODE,
+  SET_DOCUMENT_LANGUAGE_CODE,
   PLACE_SEARCH_LANGUAGE,
 } from '../actions/types';
 
 export default function (state = {
   createdLanguage: {},
   appLanguageCode: 'en',
+  documentLanguageCode: 'jp',
   placeSearchLanguageCode: 'en' }, action) {
   // console.log('in language reducer, action.payload: ', action.payload);
 
@@ -25,6 +27,9 @@ export default function (state = {
 
     case SET_APP_LANGUAGE_CODE:
       return { ...state, appLanguageCode: action.payload };
+
+    case SET_DOCUMENT_LANGUAGE_CODE:
+      return { ...state, documentLanguageCode: action.payload };
 
     case PLACE_SEARCH_LANGUAGE:
       return { ...state, placeSearchLanguageCode: action.payload };

@@ -1,11 +1,12 @@
 import SelectField from '../forms/select_field.js'
 import Building from '../constants/building.js'
+// constant file referred to as 'model'; record refers to backend records flat, profile, user
 
 const ImportantPointsExplanation = {
   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
   // fieldset for inputs takes absolute positioning
   // fieldset form-group-document, takes params.top, params.left, params.width
-  // !!!! Only height needs to be px NOT %
+  // !!!! Only height needs to be px NOT %; however, textarea height works with %
   // !!!add required: true for validation at submit
   1: {
       tenant_name: {
@@ -318,12 +319,132 @@ const ImportantPointsExplanation = {
       choices: {
         0: { params: { val: 'Public Water', top: '20.2%', left: '16.5%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
         1: { params: { val: 'Tank', top: '20.2%', left: '21.9%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
-        2: { params: { val: 'Well', top: '20.2%', left: '27.4%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Well', top: '20.2%', left: '27.4%', width: '5%', className: 'document-rectangle', type: 'button' } },
       },
       className: 'form-control-document',
       height: '23px',
       component: 'DocumentChoices'
       // borderColor: 'blue'
+    },
+
+    water_year: {
+      name: 'water_year',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20.2%', left: '33%', width: '4.9%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    water_month: {
+      name: 'water_month',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20.2%', left: '40.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    water_day: {
+      name: 'water_day',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20.2%', left: '45.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    water_scheduled: {
+      name: 'water_scheduled',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Public Water', top: '20.2%', left: '50%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Tank', top: '20.2%', left: '55.5%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Well', top: '20.2%', left: '60.9%', width: '5%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      // if click on active button, turn off active in case user mistakenly clicks
+      // and attribute is not required such as with water.
+      second_click_off: true,
+      // borderColor: 'blue'
+    },
+
+    water_notes: {
+      name: 'water_notes',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20.2%', left: '67.9%', width: '22.8%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
+    },
+
+    electricity: {
+      name: 'electricity',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.6%', left: '16.4%', width: '15.7%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    electricity_year: {
+      name: 'electricity_year',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.55%', left: '33%', width: '4.9%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    electricity_month: {
+      name: 'electricity_month',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.55%', left: '40.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    electricity_day: {
+      name: 'electricity_day',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.55%', left: '45.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    electricity_scheduled: {
+      name: 'electricity_scheduled',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.55%', left: '50%', width: '17.3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
+    },
+
+    electricity_notes: {
+      name: 'electricity_notes',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.55%', left: '67.9%', width: '22.8%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
     },
 
     gas: {
@@ -338,11 +459,71 @@ const ImportantPointsExplanation = {
       },
       className: 'form-control-document',
       height: '23px',
+      component: 'DocumentChoices',
+      second_click_off: true,
+      // borderColor: 'blue',
+    },
+
+    gas_year: {
+      name: 'gas_year',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '33%', width: '4.9%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
       component: 'DocumentChoices'
+    },
+
+    gas_month: {
+      name: 'gas_month',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '40.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    gas_day: {
+      name: 'gas_day',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '45.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    gas_scheduled: {
+      name: 'gas_scheduled',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Public Gas', top: '24.95%', left: '50.1%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Propane Gas', top: '24.95%', left: '56.1%', width: '7.6%', className: 'document-rectangle', type: 'button' } },
+        // 1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', className: 'document-rectangle', type: 'string', textAlign: 'right' } }
+
+        // 2: { params: { val: 'None', top: '24.95%', left: '64.4%', width: '4%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      second_click_off: true,
       // borderColor: 'blue'
     },
 
+    gas_notes: {
+      name: 'gas_notes',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '67.9%', width: '22.8%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
+    },
+
     sewage: {
+      // !!! SELECT
       name: 'sewage',
       type: 'string',
       choices: {
@@ -360,6 +541,76 @@ const ImportantPointsExplanation = {
       // borderColor: 'blue'
     },
 
+    sewage_year: {
+      name: 'sewage_year',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.25%', left: '33%', width: '4.9%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    sewage_month: {
+      name: 'sewage_month',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.25%', left: '40.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    sewage_day: {
+      name: 'sewage_day',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.25%', left: '45.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    sewage_scheduled: {
+      name: 'sewage_scheduled',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.3%', left: '50%', width: '17.3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
+    },
+    // this will not work since there is no sewage_scheduled on the Building model
+    // sewage_scheduled: {
+    //   // !!! SELECT
+    //   name: 'sewage_scheduled',
+    //   type: 'string',
+    //   choices: {
+    //     // 0: { params: { val: 'inputFieldValue', top: '27.3%', left: '17.1%', width: '10.5%', className: 'document-rectangle', type: 'string' } },
+    //     0: { params: { val: 'Public Sewer', top: '27%', left: '50%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
+    //     1: { params: { val: 'Septic Tank', top: '27%', left: '50%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
+    //     2: { params: { val: 'None', top: '27%', left: '50%', width: '16%', height: '24px', className: 'document-rectangle', type: 'string' } },
+    //   },
+    //   className: 'form-control-document',
+    //   height: '23px',
+    //   // component: 'SelectField'
+    //   // component: 'DocumentChoices'
+    //   component: 'select',
+    //   mapToModel: Building,
+    //   // borderColor: 'blue'
+    // },
+
+    sewage_notes: {
+      name: 'sewage_notes',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.25%', left: '67.9%', width: '22.8%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 21,
+    },
   },
   // end of page 2
   // 3: {},

@@ -190,24 +190,26 @@ class CreateEditDocument extends Component {
   }
 
   getModelChoice(model, choice, name) {
+    // model refers to a constants file eg building.js
     let returnedChoice;
     _.each(model[name].choices, eachChoice => {
-      console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
+      // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
       if (eachChoice.value == choice.params.val) {
         returnedChoice = eachChoice;
+        return;
       }
     });
     return returnedChoice;
   }
 
   renderSelectChoices(choices, model, name) {
+    // rendering options for select fields
   return _.map(Object.keys(choices), (eachKey, i) => {
-    // if (languagesObject[eachKey].implemented) {
     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
-    // <option key={i} value={eachKey}>{choices[eachKey].params.val}</option>
-    console.log('in create_edit_document, renderSelectChoices, modelChoice: ', modelChoice);
-      return (
-        <option key={i} value={eachKey}>{modelChoice['jp']}</option>
+    // console.log('in create_edit_document, renderSelectChoices, modelChoice: ', modelChoice);
+    const languageCode = this.props.documentLanguageCode;
+        return (
+        <option key={i} value={eachKey}>{modelChoice[languageCode]}</option>
       );
     // }
   });
@@ -376,6 +378,7 @@ function mapStateToProps(state) {
       errorMessage: state.auth.error,
       auth: state.auth,
       appLanguageCode: state.languages.appLanguageCode,
+      documentLanguageCode: state.languages.documentLanguageCode,
       bookingData: state.bookingData.fetchBookingData.flat,
       userOwner: state.bookingData.user,
       tenant: state.bookingData.fetchBookingData.user,

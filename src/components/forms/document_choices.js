@@ -50,7 +50,7 @@ class DocumentChoices extends Component {
 
   anyOfOtherValues(name, value) {
     // function to check if value corresponds to other choice values
-    // if so, leave input field blank since the input was made by a user button click 
+    // if so, leave input field blank since the input was made by a user button click
     const anyOtherValueArray = [];
     _.each(this.props.formFields[this.props.page][name].choices, choice => {
       if (choice.params.val == value) {
@@ -109,8 +109,12 @@ class DocumentChoices extends Component {
           key={choice.params.val}
           type={choice.params.type}
           onClick={() => {
-            onChange(choice.params.val);
-            this.emptyInput();
+            if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
+              onChange('');
+            } else {
+              onChange(choice.params.val);
+              this.emptyInput();
+            }
           }}
           className={choice.params.className}
           // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}

@@ -304,6 +304,7 @@ export default (props) => {
       // });
       // end of each Object.keys flat.amenity
       if (flat.building) {
+        objectReturned.electricity = 'add column';
         // test if building has been added to flat
         _.each(Object.keys(flat.building), eachBuildingKey => {
           // if (eachBuildingKey == 'name') {

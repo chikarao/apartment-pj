@@ -86,6 +86,7 @@ export const SELECTED_LANGUAGE = 'selected_language';
 export const UPDATE_FLAT_LANGUAGE = 'update_flat_language';
 export const DELETE_FLAT_LANGUAGE = 'update_flat_language';
 export const SET_APP_LANGUAGE_CODE = 'set_app_language_code';
+export const SET_DOCUMENT_LANGUAGE_CODE = 'set_document_language_code';
 export const FETCH_ICAL = 'fetch_ical';
 export const SYNC_CALENDARS = 'sync_calendars';
 export const SELECTED_ICALENDAR_ID = 'selected_icalendar_id';
