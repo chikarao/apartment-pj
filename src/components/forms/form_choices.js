@@ -50,7 +50,7 @@ class FormChoices extends Component {
   }
 
   renderEachChoice() {
-    const { input: { value, onChange, name } } = this.props;
+    const { input: { value, onChange, name }, meta } = this.props;
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(this.props.model[name].choices, (choice, i) => {
@@ -74,10 +74,11 @@ class FormChoices extends Component {
       // value is value passed from Field and needs to be specified for initialValues
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
+      const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
       const inputElement =
         <input
           id="valueInput"
-          value={this.anyOfOtherValues(name, value) ? '' : value}
+          value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           key={choice.value}
           onChange={this.handleInputChange.bind(this)}
           type={choice.type}

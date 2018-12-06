@@ -13,6 +13,11 @@ html, body {
 /* font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif;  */
 }
 
+/* input {
+  ime-mode: active;
+  ime-mode: inactive;
+} */
+
 .stop-scrolling {
   height: 100%;
   overflow: hidden;
@@ -4261,7 +4266,10 @@ text-decoration: underline;
   border: 1.5px solid #ccc;
   background-color: transparent;
   position: absolute;
+  /* ime-mode: active; */
+    /* ime-mode: inactive; */
 }
+
 
 .wrap-textarea {
   display: block !important;

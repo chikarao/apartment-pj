@@ -194,7 +194,7 @@ class CreateEditDocument extends Component {
     let returnedChoice;
     _.each(model[name].choices, eachChoice => {
       // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
-      console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
+      // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
       if (eachChoice.value === choice.params.val) {
         returnedChoice = eachChoice;
         return;
@@ -240,8 +240,18 @@ class CreateEditDocument extends Component {
           }
         }
         if (nullRequiredField) {
-          console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
+          // console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
         }
+        let otherChoiceValues = [];
+        if (fieldComponent == DocumentChoices) {
+          _.each(formField.choices, eachChoice => {
+            // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
+            if ((eachChoice.params.val !== 'inputFieldValue') && (formField.type != 'boolean')) {
+              otherChoiceValues.push(eachChoice.params.val.toLowerCase());
+            }
+          })
+        }
+        // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
 
         if (fieldComponent == 'select') {
           return (
@@ -271,7 +281,7 @@ class CreateEditDocument extends Component {
               name={formField.name}
               component={fieldComponent}
               // pass page to custom compoenent, if component is input then don't pass
-              props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
+              props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
               type={formField.type}
               className={formField.component == 'input' ? 'form-control' : ''}
               style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height } : {}}

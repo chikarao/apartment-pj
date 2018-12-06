@@ -19,25 +19,26 @@ class DocumentChoices extends Component {
     // name is the Field name that corresponds to DB column name
     // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name } } = this.props;
-    // console.log('DocumentChoices, handleInputChange this.props.charLimit', this.props.charLimit)
+    console.log('DocumentChoices, handleInputChange this.props', this.props);
     // sets state to give value to input field
     // check if input field has a character limit and
     // if so, update state and do onChange if less than limit
-    if (this.props.charLimit) {
-      if (event.target.value.length <= this.props.charLimit) {
-        return this.setState({ inputValue: event.target.value }, () => {
-          // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
-          // sets value in this.props and for submission of form
-          onChange(this.state.inputValue);
-        });
-      }
-    } else {
+    // if (this.props.charLimit) {
+    //   if (event.target.value.length <= this.props.charLimit) {
+    //     return this.setState({ inputValue: event.target.value }, () => {
+    //       // console.log('DocumentChoices, handleInputChange value, this.state.inputValue', value, this.state.inputValue);
+    //       // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
+    //       // sets value in this.props and for submission of form
+    //       onChange(this.state.inputValue);
+    //     });
+    //   }
+    // } else {
       return this.setState({ inputValue: event.target.value }, () => {
         // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue)
         // sets value in this.props and for submission of form
         onChange(this.state.inputValue);
       });
-    }
+    // }
   }
   // empty input element when user clicks on button
   emptyInput() {
@@ -66,7 +67,7 @@ class DocumentChoices extends Component {
     let elementStyle = {};
 
     // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
-    if (value == choice.params.val) {
+    if (value.toString().toLowerCase() == choice.params.val.toString().toLowerCase()) {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
     } else {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width };
@@ -85,17 +86,18 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, getStyleOfInputElement ');
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
-      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
+      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.fontSize };
     } else {
-      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height };
+      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.fontSize };
     }
 
     return elementStyle;
   }
 
   renderEachChoice() {
-    const { input: { value, onChange, name } } = this.props;
-    // console.log('DocumentChoices, renderEachChoice this.props.page', this.props.page)
+    const { input: { value, onChange, name }, meta } = this.props;
+    // console.log('DocumentChoices, renderEachChoice name, meta', name, meta)
+    console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
@@ -126,10 +128,15 @@ class DocumentChoices extends Component {
       // console.log('DocumentChoices, renderEachChoice choice.params.val, value, this.anyOfOtherValues(name, value)', choice.params.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
+      const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
       const inputElement =
         <input
           id="valueInput"
-          value={this.anyOfOtherValues(name, value) ? '' : value}
+          maxLength={this.props.charLimit}
+          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
+          // value={dirtyValue}
+          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
           type={choice.params.type}
@@ -142,7 +149,10 @@ class DocumentChoices extends Component {
         <textarea
           id="valueTextarea"
           name={choice.params.name}
-          value={this.anyOfOtherValues(name, value) ? '' : value}
+          maxLength={this.props.charLimit}
+          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
+          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
           type={choice.params.type}
@@ -163,7 +173,7 @@ class DocumentChoices extends Component {
   }
   render() {
     // destructure local props set by redux forms Field compoenent
-    const { input: { value, onChange, name } } = this.props;
+    const { input: { name } } = this.props;
     // console.log('DocumentChoices, render this.props', this.props);
     // console.log('DocumentChoices, render value', value);
     // console.log('DocumentChoices, render name', name);
