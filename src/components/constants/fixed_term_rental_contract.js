@@ -79,7 +79,9 @@ const FixedTermRentalContract = {
       className: 'form-control-document',
       height: '23px',
       component: 'DocumentChoices',
-      required: true
+      required: true,
+      // hybrid_field if there are multipe types of fields eg button and input 
+      hybrid_field: true,
     },
 
     floors: {
@@ -1073,7 +1075,7 @@ const FixedTermRentalContract = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
-    // chnaged from building_owner_name address and phone; 
+    // chnaged from building_owner_name address and phone;
     flat_owner_address: {
       name: 'flat_owner_address',
       type: 'string',

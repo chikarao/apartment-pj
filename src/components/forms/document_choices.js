@@ -19,7 +19,7 @@ class DocumentChoices extends Component {
     // name is the Field name that corresponds to DB column name
     // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name } } = this.props;
-    console.log('DocumentChoices, handleInputChange this.props', this.props);
+    // console.log('DocumentChoices, handleInputChange this.props', this.props);
     // sets state to give value to input field
     // check if input field has a character limit and
     // if so, update state and do onChange if less than limit
@@ -48,20 +48,20 @@ class DocumentChoices extends Component {
   }
   // <button type="button" onClick={() => onChange(value + 1)}>Inc</button>
   // <button type="button" onClick={() => onChange(value - 1)}>Dec</button>
-
-  anyOfOtherValues(name, value) {
-    // function to check if value corresponds to other choice values
-    // if so, leave input field blank since the input was made by a user button click
-    const anyOtherValueArray = [];
-    _.each(this.props.formFields[this.props.page][name].choices, choice => {
-      if (choice.params.val == value) {
-        // console.log('DocumentChoices, anyOfOtherValues choice.params.val, value', choice.params.val, value);
-        anyOtherValueArray.push(choice)
-      }
-    });
-    // return true if any other values in choices match, so value does not show in input field
-    return anyOtherValueArray.length > 0;
-  }
+  // no longer used; keep for now until tested over some time.
+  // anyOfOtherValues(name, value) {
+  //   // function to check if value corresponds to other choice values
+  //   // if so, leave input field blank since the input was made by a user button click
+  //   const anyOtherValueArray = [];
+  //   _.each(this.props.formFields[this.props.page][name].choices, choice => {
+  //     if (choice.params.val == value) {
+  //       // console.log('DocumentChoices, anyOfOtherValues choice.params.val, value', choice.params.val, value);
+  //       anyOtherValueArray.push(choice)
+  //     }
+  //   });
+  //   // return true if any other values in choices match, so value does not show in input field
+  //   return anyOtherValueArray.length > 0;
+  // }
 
   getStyleOfButtonElement(required, value, choice) {
     let elementStyle = {};
@@ -97,7 +97,7 @@ class DocumentChoices extends Component {
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
     // console.log('DocumentChoices, renderEachChoice name, meta', name, meta)
-    console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
+    // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
