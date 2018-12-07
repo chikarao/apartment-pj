@@ -3,6 +3,8 @@ import _ from 'lodash';
 import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
+import getBookingDateObject from './get_booking_date_object';
+import getContractLength from './get_contract_length';
 
 // fixed_term_rental_contract.js
 export default (props) => {
@@ -18,43 +20,43 @@ export default (props) => {
     return returnedProfile;
   }
   // takes booking and creates object of start date and end date years, months and days
-  function getBookingDateObject(booking) {
-    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, booking: ', booking);
-    const bookingEndArray = booking.date_end.split('-')
-    const bookingStartArray = booking.date_start.split('-')
-    const to_year = bookingEndArray[0];
-    const to_month = bookingEndArray[1];
-    const to_day = bookingEndArray[2];
-    const from_year = bookingStartArray[0];
-    const from_month = bookingStartArray[1];
-    const from_day = bookingStartArray[2];
-    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, bookingEndArray: ', bookingEndArray);
-    const object = { to_year, to_month, to_day, from_year, from_month, from_day }
-    // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, object: ', object);
-    return object;
-  }
+  // function getBookingDateObject(booking) {
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, booking: ', booking);
+  //   const bookingEndArray = booking.date_end.split('-')
+  //   const bookingStartArray = booking.date_start.split('-')
+  //   const to_year = bookingEndArray[0];
+  //   const to_month = bookingEndArray[1];
+  //   const to_day = bookingEndArray[2];
+  //   const from_year = bookingStartArray[0];
+  //   const from_month = bookingStartArray[1];
+  //   const from_day = bookingStartArray[2];
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, bookingEndArray: ', bookingEndArray);
+  //   const object = { to_year, to_month, to_day, from_year, from_month, from_day }
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, object: ', object);
+  //   return object;
+  // }
 
-  function getContractLength(booking) {
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, booking: ', booking);
-    const dateFrom = new Date(booking.date_start);
-    const dateTo = new Date(booking.date_end);
-    const difference = Math.floor(dateTo - dateFrom);
-    const day = 1000 * 60 * 60 * 24;
-    const days = Math.floor(difference / day);
-    const months = days / 30;
-    let years = months / 12;
-    if (years < 1) {
-      years = '';
-    } else if (years > 1 && years < 2) {
-      years = 1;
-    } else if (years >   2 && years < 3) {
-      years = 2;
-    }
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, months, years: ', months, years);
-    const object = { months, years };
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, object: ', object);
-    return object;
-  }
+  // function getContractLength(booking) {
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, booking: ', booking);
+  //   const dateFrom = new Date(booking.date_start);
+  //   const dateTo = new Date(booking.date_end);
+  //   const difference = Math.floor(dateTo - dateFrom);
+  //   const day = 1000 * 60 * 60 * 24;
+  //   const days = Math.floor(difference / day);
+  //   const months = days / 30;
+  //   let years = months / 12;
+  //   if (years < 1) {
+  //     years = '';
+  //   } else if (years > 1 && years < 2) {
+  //     years = 1;
+  //   } else if (years >   2 && years < 3) {
+  //     years = 2;
+  //   }
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, months, years: ', months, years);
+  //   const object = { months, years };
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractLength, object: ', object);
+  //   return object;
+  // }
 
   function getContractEndNoticePeriodObject(booking) {
     // const daysInMonth = {
@@ -379,7 +381,7 @@ export default (props) => {
       //   objectReturned.building_owner_address = flat.building.building_owner_address;
       //   objectReturned.building_owner_phone = flat.building.building_owner_phone;
       // }
-      // if flat_owner_name is user use the user profile for user 
+      // if flat_owner_name is user use the user profile for user
       if (flat.owner_name == 'user') {
         const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
         objectReturned.flat_owner_name = ownerFullName;

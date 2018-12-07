@@ -4,6 +4,11 @@ import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
 import Building from '../constants/building';
+// imported constants are upper camel case
+// imported functions are lower camel case
+import getBookingDateObject from './get_booking_date_object';
+import getContractLength from './get_contract_length';
+
 
 // get_initialvalues_object_important_points_explanation.js
 export default (props) => {
@@ -326,6 +331,19 @@ export default (props) => {
       }
       // for evaluating if has toilet or not!!!
       objectReturned.toilet = flat.toilet;
+
+      objectReturned.escrow_for_deposit = false;
+
+      const bookingDatesObject = getBookingDateObject(booking);
+      _.each(Object.keys(bookingDatesObject), dateKey => {
+        objectReturned[dateKey] = bookingDatesObject[dateKey];
+      });
+
+      const contractLengthObject = getContractLength(booking);
+      objectReturned.contract_length_years = contractLengthObject.years;
+      objectReturned.contract_length_months = contractLengthObject.months;
+
+      objectReturned.contract_type = 'fixed_term_rental_contract';
 
 
       // end of Object.keys flat

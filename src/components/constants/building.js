@@ -225,9 +225,11 @@ const Building = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Public Water', en: 'Public Water', jp: '水道本管より直結', type: 'button', className: 'form-rectangle' },
-      1: { value: 'Water Tank', en: 'Water Tank', jp: '受水槽', type: 'button', className: 'form-rectangle' },
-      2: { value: 'none', en: 'None', jp: '無し', type: 'button', component: 'button', className: 'form-rectangle' }
+      0: { value: 'Public Water', en: 'Public Water', jp: '公営水道本管より直結', type: 'button', className: 'form-rectangle' },
+      1: { value: 'Private Water', en: 'Private Water', jp: '市営水道', type: 'button', className: 'form-rectangle' },
+      2: { value: 'Water Tank', en: 'Water Tank', jp: '受水槽', type: 'button', className: 'form-rectangle' },
+      2: { value: 'Well', en: 'Well', jp: '井戸', type: 'button', className: 'form-rectangle' },
+      3: { value: 'none', en: 'None', jp: '無し', type: 'button', component: 'button', className: 'form-rectangle' }
     },
     language_independent: true,
   },

@@ -66,8 +66,13 @@ class DocumentChoices extends Component {
   getStyleOfButtonElement(required, value, choice) {
     let elementStyle = {};
 
+    // console.log('DocumentChoices, getStyleOfButtonElement, value.toString().toLowerCase(), choice.params.val.toString().toLowerCase() ', value.toString().toLowerCase(), choice.params.val.toString().toLowerCase());
+    console.log('DocumentChoices, getStyleOfButtonElement, value, value.toString().toLowerCase() ', value, value.toString().toLowerCase());
+    // console.log('DocumentChoices, getStyleOfButtonElement, false.toString().toLowerCase() ', false.toString().toLowerCase());
+    // console.log('DocumentChoices, getStyleOfButtonElement, choice.params.val.toString().toLowerCase() ', choice.params.val.toString().toLowerCase());
     // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
-    if (value.toString().toLowerCase() == choice.params.val.toString().toLowerCase()) {
+    // if (value.toString().toLowerCase() == choice.params.val.toString().toLowerCase()) {
+    if (value.toString().toLowerCase() === choice.params.val.toString().toLowerCase()) {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
     } else {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width };
@@ -96,7 +101,7 @@ class DocumentChoices extends Component {
 
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
-    // console.log('DocumentChoices, renderEachChoice name, meta', name, meta)
+    console.log('DocumentChoices, renderEachChoice name, value', name, value)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
@@ -104,7 +109,6 @@ class DocumentChoices extends Component {
     return _.map(this.props.formFields[this.props.page][name].choices, choice => {
         // console.log('DocumentChoices, renderEachChoice this.props.required', this.props.required);
       // console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
-      // console.log('DocumentChoices, renderEachChoice name', name);
       // define button element for user to click to set value in submission
       const buttonElement =
         <div
@@ -114,6 +118,8 @@ class DocumentChoices extends Component {
             if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
               onChange('');
             } else {
+              console.log('DocumentChoices, renderEachChoice name, value, choice.params.val', name, value, choice.params.val);
+              // this.handleInputChange.bind(this)
               onChange(choice.params.val);
               this.emptyInput();
             }

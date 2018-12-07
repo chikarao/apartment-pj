@@ -80,7 +80,7 @@ const FixedTermRentalContract = {
       height: '23px',
       component: 'DocumentChoices',
       required: true,
-      // hybrid_field if there are multipe types of fields eg button and input 
+      // hybrid_field if there are multipe types of fields eg button and input
       hybrid_field: true,
     },
 

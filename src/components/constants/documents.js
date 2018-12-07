@@ -18,7 +18,8 @@ const Documents =
         en: 'Fixed Term Rental Contract',
         jp: '定期借家契約',
         file: 'teishaku-saimuhosho',
-        method: getInitialValuesObjectFixedTermContract
+        method: getInitialValuesObjectFixedTermContract,
+        type: 'fixed_term_rental_contract'
       },
 
     important_points_explanation_jp: {
@@ -26,7 +27,7 @@ const Documents =
         en: 'Important Points Explanation Form',
         jp: '重要事項説明書',
         file: 'juyoujikou-setsumei-jp',
-        method: getInitialValuesObjectImportantPointsExplanation
+        method: getInitialValuesObjectImportantPointsExplanation,
       }
   };
 

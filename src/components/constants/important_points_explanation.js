@@ -3,13 +3,15 @@ import Building from '../constants/building.js'
 import Amenities from '../constants/amenities.js'
 import FlatForDocuments from '../constants/flat_for_documents.js'
 // constant file referred to as 'model'; record refers to backend records flat, profile, user
+// fieldset for inputs takes absolute positioning
+// fieldset form-group-document, takes params.top, params.left, params.width
+// !!!! Only height needs to be px NOT %; however, textarea height works with %
+// !!!add required: true for validation at submit
+// !!! when there is a boolean params.val, there needs to be an initial value of true of false,
+// otherwise, first click on false will not work since there is no value in document choices
+// can make params.val boolean a string but need to make consistent for all
 
 const ImportantPointsExplanation = {
-  // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
-  // fieldset for inputs takes absolute positioning
-  // fieldset form-group-document, takes params.top, params.left, params.width
-  // !!!! Only height needs to be px NOT %; however, textarea height works with %
-  // !!!add required: true for validation at submit
   1: {
       tenant_name: {
         name: 'tenant_name',
@@ -321,7 +323,7 @@ const ImportantPointsExplanation = {
       type: 'string',
       choices: {
         0: { params: { val: 'Public Water', top: '20.2%', left: '16.5%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'Tank', top: '20.2%', left: '21.9%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Private Water', top: '20.2%', left: '21.9%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
         2: { params: { val: 'Well', top: '20.2%', left: '27.4%', width: '5%', className: 'document-rectangle', type: 'button' } },
       },
       className: 'form-control-document',
@@ -365,7 +367,7 @@ const ImportantPointsExplanation = {
       type: 'string',
       choices: {
         0: { params: { val: 'Public Water', top: '20.2%', left: '50%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'Tank', top: '20.2%', left: '55.5%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Private Water', top: '20.2%', left: '55.5%', width: '5.5%', className: 'document-rectangle', type: 'button' } },
         2: { params: { val: 'Well', top: '20.2%', left: '60.9%', width: '5%', className: 'document-rectangle', type: 'button' } },
       },
       className: 'form-control-document',
@@ -1233,7 +1235,177 @@ const ImportantPointsExplanation = {
   },
   // end of page 3
   // start of page 4
-  4: {},
+  4: {
+    from_year: {
+      name: 'from_year',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '8.5%', left: '31.6%', width: '5%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    from_month: {
+      name: 'from_month',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '8.5%', left: '39%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    from_day: {
+      name: 'from_day',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '8.5%', left: '44.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_year: {
+      name: 'to_year',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '11.1%', left: '31.6%', width: '5%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_month: {
+      name: 'to_month',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '11.1%', left: '39%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_day: {
+      name: 'to_day',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '11.1%', left: '44.5%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_length_years: {
+      name: 'contract_length_years',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '8.45%', left: '56.1%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_length_months: {
+      name: 'contract_length_months',
+      type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '8.45%', left: '63.6%', width: '3%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_type: {
+      name: 'contract_type',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'ordinary_rental_contract', top: '8%', left: '73%', width: '17.5%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'fixed_term_rental_contract', top: '10.35%', left: '73%', width: '17.5%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'end_of_life_rental_contract', top: '12.8%', left: '73%', width: '17.5%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices'
+      // borderColor: 'blue'
+    },
+
+    contract_renewal_terms: {
+      name: 'contract_renewal_terms',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '15.1%', left: '24%', width: '27.5%', height: '6.2%', fontSize: '12px', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use: {
+      name: 'restrictions_use',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '29.4%', left: '23.8%', width: '33.1%', height: '5%', fontSize: '12px', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use_other: {
+      name: 'restrictions_use_other',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '29.4%', left: '57.5%', width: '33.1%', height: '5%', fontSize: '12px', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    deposit_return_terms: {
+      name: 'deposit_return_terms',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '36.5%', left: '8.8%', width: '82.5%', height: '14.1%', fontSize: '12px', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    building_management_company: {
+      name: 'building_management_company',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '57%', left: '35%', width: '55.5%', height: '1.8%', margin: '0', className: 'document-rectangle', type: 'string', textAlign: 'center' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+
+    building_management_company_address: {
+      name: 'building_management_company_address',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '63.2%', left: '35%', width: '55.5%', height: '1.8%', margin: '0', className: 'document-rectangle', type: 'string', textAlign: 'center' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+  },
   // 5: {},
   // 6: {},
   // 7: {},
