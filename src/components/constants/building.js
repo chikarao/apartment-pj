@@ -135,9 +135,10 @@ const Building = {
     type: 'string',
     choices: {
       0: { value: 'Wooden', en: 'Wooden', jp: '木造', type: 'button', className: 'form-rectangle' },
-      1: { value: 'SRC', en: 'Steel Reinforced Concrete', jp: 'SRC', type: 'button', className: 'form-rectangle' },
+      1: { value: 'S', en: 'Steel Frame', jp: 'S', type: 'button', className: 'form-rectangle' },
       2: { value: 'RC', en: 'Reinforced Concrete', jp: 'RC', type: 'button', className: 'form-rectangle' },
-      3: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+      3: { value: 'SRC', en: 'Steel Reinforced Concrete', jp: 'SRC', type: 'button', className: 'form-rectangle' },
+      4: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
   },
 

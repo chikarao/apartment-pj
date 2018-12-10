@@ -239,6 +239,15 @@ export default (props) => {
       return '無し'
     }
   }
+
+  const overlappedkeysMapped = { address: ['address_1'], size: ['size_1'], building_name: ['building_name_1'], unit: ['unit_1'], construction: ['construction_1'] };
+
+  function assignOverLappedKeys(key, value) {
+    _.each(overlappedkeysMapped[key], each => {
+      objectReturned[each] = value;
+    });
+  }
+
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // define object to be returned to mapStateToProps in CreateEditDocument
@@ -294,12 +303,18 @@ export default (props) => {
 
       // for each page in props.documentFields
       _.each(Object.keys(flat), key => {
-        // console.log('in create_edit_document, getInitialValuesObject, key, flat[key]: ', key, flat[key]);
         // for each flat in boooking
         if (eachPageObject[key]) {
           // if flat key is in one of the pages, on DocumentForm
           // add to objectReturned to be returned as initialValues
           objectReturned[key] = flat[key];
+        }
+
+        console.log('in create_edit_document, getInitialValuesObject, key, flat[key], overlappedkeysMapped[key]: ', key, flat[key], overlappedkeysMapped[key]);
+        if (overlappedkeysMapped[key]) {
+          _.each(overlappedkeysMapped[key], eachMappedKey => {
+            objectReturned[eachMappedKey] = flat[key];
+          });
         }
         // iterate through flat amenity
         // end of each flat amenity
@@ -321,7 +336,14 @@ export default (props) => {
         objectReturned.flat_owner_address = flat.owner_address;
       }
       // flat address
-      objectReturned.address = createAddress(flat);
+      const address = createAddress(flat);
+      objectReturned.address = address;
+      assignOverLappedKeys('address', address);
+
+      if (address) {
+        objectReturned.address_check = 'address_exists';
+      }
+
       if (flat.building) {
         if (flat.building.inspections) {
           const inspection = getInspection(flat.building.inspections);

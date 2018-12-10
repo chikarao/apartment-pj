@@ -4266,8 +4266,8 @@ text-decoration: underline;
   border: 1.5px solid #ccc;
   background-color: transparent;
   position: absolute;
-  /* ime-mode: active; */
-    /* ime-mode: inactive; */
+  text-align: left;
+
 }
 
 
