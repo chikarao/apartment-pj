@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 // custom field component based on redux forms used for creating
 // input and button inputs for forms
@@ -139,10 +141,14 @@ class DocumentChoices extends Component {
               // this.setState({ enclosedText: '' });
               onChange('');
             } else {
-              console.log('DocumentChoices, renderEachChoice name, value, choice.params.enclosedText', name, value, choice.params.enclosedText);
               // this.handleInputChange.bind(this)
               // this.setState({ enclosedText: choice.params.enclosedText });
               onChange(choice.params.val);
+              if (choice.params.otherValueNull) {
+                console.log('DocumentChoices, renderEachChoice name, value, choice.params.otherValueNull, this.props', name, value, choice.params.otherValueNull, this.props);
+                // this.props.allValues[choice.params.otherValueNull].onChange('');
+                // this.props.change(choice.params.otherValueNull, '');
+              }
               this.emptyInput();
             }
           }}
@@ -224,4 +230,10 @@ class DocumentChoices extends Component {
   }
 }
 
-export default DocumentChoices;
+function mapStateToProps(state) {
+  return {
+    allValues: state.form.CreateEditDocument.values
+  };
+}
+
+export default connect(mapStateToProps, actions)(DocumentChoices);

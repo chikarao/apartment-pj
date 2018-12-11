@@ -168,7 +168,7 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices'
       },
-
+      // name is building name
       name: {
         name: 'name',
         type: 'string',
@@ -1506,15 +1506,15 @@ const ImportantPointsExplanation = {
       // charLimit: 50,
     },
 
-    building_name_1: {
-      name: 'building_name_1',
+    building_name_2: {
+      name: 'building_name_2',
       type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '13%', left: '31.9%', width: '53.5%', className: 'document-rectangle', type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      parentAttribute: 'building_name'
+      baseKey: 'name'
     },
 
     address_1: {
@@ -1526,7 +1526,7 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 100,
-      parentAttribute: 'construction',
+      baseKey: 'address',
     },
     // button, text hybrid input; when clicked, text toggles on and off with enclosedText
     address_check: {
@@ -1567,17 +1567,20 @@ const ImportantPointsExplanation = {
       charLimit: 100,
     },
 
-    building_name_multi: {
-      name: 'building_name_multi',
+    building_name_1: {
+      name: 'building_name_1',
       type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '20.4%', left: '43.5%', width: '24.5%', height: '3%', className: 'document-rectangle wrap-textarea', type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
+      baseKey: 'name',
       charLimit: 100,
     },
-
+    // unit_1 means the key overlaps with unit from flat, so assign 'unit' to baseKey
+    // so that it gets picked up by the function getOverlappedkeysMapped
+    // for processing in assignOverLappedKeys
     unit_1: {
       name: 'unit_1',
       type: 'string',
@@ -1586,7 +1589,7 @@ const ImportantPointsExplanation = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      parentAttribute: 'construction'
+      baseKey: 'unit'
       // charLimit: 10,
     },
 
@@ -1601,7 +1604,7 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       height: '23px',
       component: 'DocumentChoices',
-      parentAttribute: 'construction'
+      baseKey: 'construction'
       // borderColor: 'blue'
     },
 
@@ -1636,7 +1639,52 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       // charLimit: 10,
-      parentAttribute: 'size'
+      baseKey: 'size'
+    },
+
+    inspection_date: {
+      name: 'inspection_date',
+      type: 'date',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '31.1%', left: '33%', width: '16%', height: '1.8%', margin: '0', fontSize: '13px', className: 'document-rectangle', type: 'date' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // charLimit: 10,
+      // baseKey: 'size'
+    },
+
+    flat_type: {
+      name: 'flat_type',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'single_family', enclosedText: 'X', top: '33.5%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button', otherValueNull: 'flat_sub_type' } },
+        1: { params: { val: 'flat_in_building', enclosedText: 'X', top: '36%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'town_house', enclosedText: 'X', top: '36%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      // box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+    },
+
+    flat_sub_type: {
+      name: 'flat_sub_type',
+      type: 'string',
+      choices: {
+        // 0: { params: { val: 'single_family', enclosedText: 'X', top: '33.5%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        0: { params: { val: 'town_house', enclosedText: 'X', top: '36%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'flat_in_building', enclosedText: 'X', top: '36%', left: '70.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      // box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'flat_type',
+      dependentValue: 'single_family'
+      // changeBaseKey: true,
     },
 
     // address_type: {

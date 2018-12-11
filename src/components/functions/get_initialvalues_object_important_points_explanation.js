@@ -149,6 +149,10 @@ export default (props) => {
     return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
   }
 
+  function formatDateForForm(date) {
+    return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+  }
+
   // function getChoice(facility) {
   //   const array = [];
   //   _.each(Facility.facility_type.choices, eachChoice => {
@@ -240,7 +244,28 @@ export default (props) => {
     }
   }
 
-  const overlappedkeysMapped = { address: ['address_1'], size: ['size_1'], building_name: ['building_name_1'], unit: ['unit_1'], construction: ['construction_1'] };
+  function getOverlappedkeysMapped() {
+    const object = {};
+    _.each(documentFields, eachPageObject => {
+      _.each(Object.keys(eachPageObject), eachKey => {
+        // const baseKey = eachPageObject[eachKey].baseKey;
+        if (eachPageObject[eachKey].baseKey) {
+          const baseKey = eachPageObject[eachKey].baseKey;
+          // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, eachPageObject[eachKey].baseKey, eachKey: ', eachPageObject[eachKey].baseKey, eachKey);
+          if (!object[baseKey]) {
+            // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, if object[baseKey], eachKey: ', object[baseKey], eachKey);
+            object[baseKey] = [];
+            object[baseKey].push(eachKey);
+          } else {
+            // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, else object[baseKey], eachKey: ', object[baseKey], eachKey);
+            object[baseKey].push(eachKey);
+          }
+        }
+      });
+    });
+    // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, object: ', object);
+    return object;
+  }
 
   function assignOverLappedKeys(key, value) {
     _.each(overlappedkeysMapped[key], each => {
@@ -250,7 +275,11 @@ export default (props) => {
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
+  // get keys that overlap in documentFields e.g. address and address_1;
+  // they have the save value but appear in different parts of the document
+    const overlappedkeysMapped = getOverlappedkeysMapped();
   // define object to be returned to mapStateToProps in CreateEditDocument
+  // const overlappedkeysMapped = { address: ['address_1'], size: ['size_1'], building_name: ['building_name_1'], unit: ['unit_1'], construction: ['construction_1'] };
     const objectReturned = {};
     // iterate throught each page of documentFields eg ImportantPointsExplanation
     // this will enable checking of whether flat or building object contains keys to assign
@@ -349,7 +378,16 @@ export default (props) => {
           const inspection = getInspection(flat.building.inspections);
           console.log('in create_edit_document, getInitialValuesObject, inspection: ', inspection);
           inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
+          const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
+          inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
         }
+      }
+
+      if (eachPageObject.date_prepared) {
+        // if flat key is in one of the pages, on DocumentForm
+        // add to objectReturned to be returned as initialValues
+        const dateTodayFormatted = formatDateForForm(new Date());
+        objectReturned.date_prepared = dateTodayFormatted;
       }
       // for evaluating if has toilet or not!!!
       objectReturned.toilet = flat.toilet;
@@ -396,6 +434,7 @@ export default (props) => {
             //   // objectReturned[eachBuildingKey] = choice['jp'];
             // }
             objectReturned[eachBuildingKey] = flat.building[eachBuildingKey];
+            assignOverLappedKeys(eachBuildingKey, flat.building[eachBuildingKey])
           }
         });
         // end of each Object.keys flat.building
