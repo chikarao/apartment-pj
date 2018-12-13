@@ -14,6 +14,12 @@ class DocumentChoices extends Component {
       enclosedText: ''
     };
   }
+
+  shouldComponentUpdate(nextProps) {
+    // checks to find out if each field value has changed, and if not will not call componentDidUpdate
+      // console.log('DocumentChoices, shouldComponentUpdate nextProps, nextProps.input.value, this.props.input.value, nextProps.input.value == this.props.input.value', nextProps, nextProps.input.value, this.props.input.value, nextProps.input.value == this.props.input.value);
+    return nextProps.input.value != this.props.input.value;
+  }
   // Take user input in input element
   handleInputChange(event) {
     // destructure local props from Field element of Redux Forms
@@ -23,6 +29,7 @@ class DocumentChoices extends Component {
     // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name } } = this.props;
     // console.log('DocumentChoices, handleInputChange this.props', this.props);
+    // console.log('DocumentChoices, handleInputChange this.props, this.props.change', this.props, this.props.change);
     // sets state to give value to input field
     // check if input field has a character limit and
     // if so, update state and do onChange if less than limit
@@ -70,7 +77,7 @@ class DocumentChoices extends Component {
     let elementStyle = {};
 
     // console.log('DocumentChoices, getStyleOfButtonElement, value.toString().toLowerCase(), choice.params.val.toString().toLowerCase() ', value.toString().toLowerCase(), choice.params.val.toString().toLowerCase());
-    console.log('DocumentChoices, getStyleOfButtonElement, value, value.toString().toLowerCase() ', value, value.toString().toLowerCase());
+    // console.log('DocumentChoices, getStyleOfButtonElement, value, value.toString().toLowerCase() ', value, value.toString().toLowerCase());
     // console.log('DocumentChoices, getStyleOfButtonElement, false.toString().toLowerCase() ', false.toString().toLowerCase());
     // console.log('DocumentChoices, getStyleOfButtonElement, choice.params.val.toString().toLowerCase() ', choice.params.val.toString().toLowerCase());
     // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
@@ -102,9 +109,77 @@ class DocumentChoices extends Component {
     return elementStyle;
   }
 
+  createButtonElement(choice, onChange, value) {
+    return (
+      <div
+        key={choice.params.val}
+        type={choice.params.type}
+        onClick={() => {
+          if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
+            // this.setState({ enclosedText: '' });
+            onChange('');
+          } else {
+            // this.handleInputChange.bind(this)
+            // this.setState({ enclosedText: choice.params.enclosedText });
+            onChange(choice.params.val);
+            if (choice.params.otherValueNull) {
+              console.log('DocumentChoices, renderEachChoice name, value, choice.params.otherValueNull, this.props', name, value, choice.params.otherValueNull, this.props);
+              // this.props.allValues[choice.params.otherValueNull].onChange('');
+              // this.props.change(choice.params.otherValueNull, '');
+            }
+            this.emptyInput();
+          }
+        }}
+        className={choice.params.className}
+        // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
+        style={this.getStyleOfButtonElement(this.props.required, value, choice)}
+      >{(choice.params.enclosedText) && (value == choice.params.val) ? choice.params.enclosedText : ''}</div>
+    );
+  }
+
+  createInputElement(choice, meta, value) {
+    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    return (
+        <input
+          id="valueInput"
+          maxLength={this.props.charLimit}
+          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
+          // value={dirtyValue}
+          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          key={choice.params.val}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.params.type}
+          className={choice.params.className}
+          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
+          style={this.getStyleOfInputElement(value, choice)}
+        />
+    );
+  }
+
+  createTextareaElement(choice, meta, value) {
+    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    return (
+        <textarea
+          id="valueTextarea"
+          name={choice.params.name}
+          maxLength={this.props.charLimit}
+          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
+          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          key={choice.params.val}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.params.type}
+          className={choice.params.className}
+          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
+          style={this.getStyleOfInputElement(value, choice)}
+        />
+    );
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
-    console.log('DocumentChoices, renderEachChoice name, value', name, value)
+    console.log('DocumentChoices, renderEachChoice name, value, this.props', name, value, this.props)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
@@ -132,78 +207,30 @@ class DocumentChoices extends Component {
       //     style={this.getStyleOfButtonElement(this.props.required, value, choice)}
       //   />
 
-      const buttonElement =
-        <div
-          key={choice.params.val}
-          type={choice.params.type}
-          onClick={() => {
-            if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
-              // this.setState({ enclosedText: '' });
-              onChange('');
-            } else {
-              // this.handleInputChange.bind(this)
-              // this.setState({ enclosedText: choice.params.enclosedText });
-              onChange(choice.params.val);
-              if (choice.params.otherValueNull) {
-                console.log('DocumentChoices, renderEachChoice name, value, choice.params.otherValueNull, this.props', name, value, choice.params.otherValueNull, this.props);
-                // this.props.allValues[choice.params.otherValueNull].onChange('');
-                // this.props.change(choice.params.otherValueNull, '');
-              }
-              this.emptyInput();
-            }
-          }}
-          className={choice.params.className}
-          // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
-          style={this.getStyleOfButtonElement(this.props.required, value, choice)}
-        >{(choice.params.enclosedText) && (value == choice.params.val) ? choice.params.enclosedText : ''}</div>
+
       // define input element for user to input
       // value is value passed from Field and needs to be specified for initialValues
       // const inputElement = <input id="valueInput" value={value} key={choice.params.val} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // console.log('DocumentChoices, renderEachChoice choice.params.val, value, this.anyOfOtherValues(name, value)', choice.params.val, value, this.anyOfOtherValues(name, value));
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
-      const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
-      const inputElement =
-        <input
-          id="valueInput"
-          maxLength={this.props.charLimit}
-          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
-          // value={dirtyValue}
-          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
-          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
-          key={choice.params.val}
-          onChange={this.handleInputChange.bind(this)}
-          type={choice.params.type}
-          className={choice.params.className}
-          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
-          style={this.getStyleOfInputElement(value, choice)}
-        />
 
-      const textareaElement =
-        <textarea
-          id="valueTextarea"
-          name={choice.params.name}
-          maxLength={this.props.charLimit}
-          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
-          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
-          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
-          key={choice.params.val}
-          onChange={this.handleInputChange.bind(this)}
-          type={choice.params.type}
-          className={choice.params.className}
-          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
-          style={this.getStyleOfInputElement(value, choice)}
-        />
+
+
       // const inputElement = <input id="valueInput" name={name} key={choice.params.val} value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} type={choice.params.type} className={choice.params.className} style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }} />
       // if choice type is string, use input element above and button if not string
       if (choice.params.type == 'string' || choice.params.type == 'date') {
+        const inputElement = this.createInputElement(choice, meta, value)
         return inputElement;
-      } else if (choice.params.type == 'text')  {
+      }
+      else if (choice.params.type == 'text')  {
+        const textareaElement = this.createTextareaElement(choice, meta, value)
         return textareaElement;
       } else {
         // if (choice.params.enclosedText) {
         //   return buttonWithTextElement;
         // }
+        const buttonElement = this.createButtonElement(choice, onChange, value)
         return buttonElement;
       }
     });
@@ -231,6 +258,7 @@ class DocumentChoices extends Component {
 }
 
 function mapStateToProps(state) {
+  // console.log('in document_choices, mapStateToProps, state: ', state);
   return {
     allValues: state.form.CreateEditDocument.values
   };

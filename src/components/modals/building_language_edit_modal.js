@@ -237,7 +237,7 @@ function mapStateToProps(state) {
     let initialValues = {};
     const { building_languages } = state.flat.selectedFlatFromParams.building;
     const buildingLanguage = getBuildingLanguage(building_languages, state.modals.selectedBuildingLanguageId);
-    // console.log('in buildingLanguage_edit_modal, mapStateToProps, buildingLanguage: ', buildingLanguage);
+    console.log('in buildingLanguage_edit_modal, mapStateToProps, buildingLanguage: ', buildingLanguage);
     // const editBuildingLanguage = getEditBuildingLanguage(building_languages, parseInt(state.modals.buildingLanguageToEditId, 10));
     //
     // if (state.modals.buildingLanguageToEditId) {

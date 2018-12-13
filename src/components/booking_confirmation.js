@@ -491,7 +491,6 @@ renderReview() {
   } else {
     if(this.props.bookingData) {
       const today = new Date()
-      // console.log('in booking confirmation, renderReview, today:', today);
       // console.log('in booking confirmation, renderReview, this.props.bookingData.date_end:', this.props.bookingData.date_end);
       const bookingEnd = new Date(this.props.bookingData.date_end)
       const pastBookingEnd = bookingEnd < today;
@@ -512,6 +511,7 @@ renderReview() {
 }
 
 renderDocument() {
+  console.log('in booking confirmation, renderDocument:');
   return (
     <CreateEditDocument />
   );

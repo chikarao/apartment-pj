@@ -16,19 +16,49 @@ import AppLanguages from '../constants/app_languages';
 // import Facility from '../constants/facility';
 // import Tenants from '../constants/tenants';
 // import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
+// let updateCount = 0;
 
 class CreateEditDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // set up state to take input from user
-      clickedInfo: { elementX: '', elementY: '', page: '' }
+      clickedInfo: { elementX: '', elementY: '', page: '' },
     };
   }
 
-  componentDidMount() {
+  // componentDidMount() {
     // document.addEventListener('click', this.printMousePos);
     // document.addEventListener('click', this.printMousePos1);
+  // }
+
+  // initialValues section implement after redux form v7.4.2 updgrade
+  // started to force mapStateToProps to be called for EACH Field element;
+  // so to avoid Documents[documentKey].method to be called in each msp call
+  //(over 100! for important ponts form) use componentDidUpdate;
+  // Then to avoid .method to be called after each user input into input field,
+  // use shouldComponentUpdate in document_choices; if return false, will not call cdu
+  componentDidUpdate() {
+    // if (updateCount < 2) {
+      // console.log('in create_edit_document, componentDidUpdate');
+      const {
+        flat,
+        booking,
+        userOwner,
+        tenant,
+        appLanguageCode,
+        // documentFields,
+        documentLanguageCode,
+        assignments,
+        contracts,
+        documentKey
+      } = this.props;
+      const documentFields = Documents[documentKey].form
+      // const documentKey = state.documents.createDocumentKey;
+      const initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+      this.props.setInitialValuesObject(initialValuesObject);
+      // updateCount++;
+    // }
   }
 
   // printMousePos1 = (event) => {
@@ -36,7 +66,6 @@ class CreateEditDocument extends Component {
   //   // position of click inside container and takes difference to
   //   // get the coorindates of click inside container on page
   //   // yielded same as layerX and layerY
-  //   console.log('in create_edit_document, printMousePos1', event);
   //   const clickedElement = event.target;
   //   const elementVal = clickedElement.getAttribute('value');
   //   // const documentContainerArray = document.getElementById('document-background')
@@ -219,8 +248,9 @@ class CreateEditDocument extends Component {
   renderEachDocumentField(page) {
     let fieldComponent = '';
     // if (this.props.documentFields[page]) {
-    // console.log('in create_edit_document, renderEachDocumentField, page, this.props.documentFields[page] ', page, this.props.documentFields[page]);
       return _.map(this.props.documentFields[page], (formField, i) => {
+        console.log('in create_edit_document, renderEachDocumentField');
+        // console.log('in create_edit_document, renderEachDocumentField, page, this.props.documentFields[page], formField ', page, this.props.documentFields[page], formField);
         // console.log('in create_edit_document, renderEachDocumentField, formField ', formField);
         if (formField.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
@@ -319,33 +349,36 @@ class CreateEditDocument extends Component {
   }
 
   renderDocument() {
-    //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
-    // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
-    // {this.renderAlert()}
-    // <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
-    const image = Documents[this.props.createDocumentKey].file;
-    // const page = 1;
-    // {this.renderNewElements(page)}
-    return _.map(Object.keys(this.props.documentFields), page => {
-      // console.log('in create_edit_document, renderDocument, page: ', page);
-      return (
-          <div
-            key={page}
-            value={page}
-            id="document-background"
-            className="test-image-pdf-jpg-background"
-            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
-          >
-            {this.renderEachDocumentField(page)}
-          </div>
-      );
-    });
+    const initialValuesEmpty = _.isEmpty(this.props.initialValues);
+    if (!initialValuesEmpty) {
+      //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
+      // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
+      // {this.renderAlert()}
+      // <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
+      const image = Documents[this.props.createDocumentKey].file;
+      // const page = 1;
+      // {this.renderNewElements(page)}
+      return _.map(Object.keys(this.props.documentFields), page => {
+        console.log('in create_edit_document, renderDocument, page: ', page);
+        return (
+            <div
+              key={page}
+              value={page}
+              id="document-background"
+              className="test-image-pdf-jpg-background"
+              style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
+            >
+              {this.renderEachDocumentField(page)}
+            </div>
+        );
+      });
+    }
   }
 
 
   render() {
     const { handleSubmit, appLanguageCode } = this.props;
-    // console.log('CreateEditDocument, render value === ', value === '');
+    // console.log('CreateEditDocument, render, this.props', this.props);
     return (
       <div className="test-image-pdf-jpg">
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
@@ -360,46 +393,69 @@ class CreateEditDocument extends Component {
 
 CreateEditDocument = reduxForm({
   form: 'CreateEditDocument',
-  enableReinitialize: true
+  enableReinitialize: true,
+  // keepDirtyOnReinitialize: true
 })(CreateEditDocument);
 
 function mapStateToProps(state) {
+  // const initialValuesObjectEmpty = _.isEmpty(state.documents.initialValuesObject);
   if (state.bookingData.fetchBookingData) {
+    let initialValues = {};
     // bookingData.flat gives access to flat.building.inspections
-    const flat = state.bookingData.flat;
-    const booking = state.bookingData.fetchBookingData;
-    const userOwner = state.bookingData.user;
-    const tenant = state.bookingData.fetchBookingData.user;
-    const appLanguageCode = state.languages.appLanguageCode;
-    const documentLanguageCode = state.languages.documentLanguageCode;
-    const assignments = state.bookingData.assignments;
-    const contracts = state.bookingData.contracts;
-    // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
-    // setCreateDocumentKey action fired and app state set
-    // define new documents in constants/documents.js by identifying
-    // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
-    const documentKey = state.documents.createDocumentKey;
-    const documentFields = Documents[documentKey].form;
+    // const flat = state.bookingData.flat;
+    // const booking = state.bookingData.fetchBookingData;
+    // const userOwner = state.bookingData.user;
+    // const tenant = state.bookingData.fetchBookingData.user;
+    // const appLanguageCode = state.languages.appLanguageCode;
+    // const documentLanguageCode = state.languages.documentLanguageCode;
+    // const assignments = state.bookingData.assignments;
+    // const contracts = state.bookingData.contracts;
+    // // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
+    // // setCreateDocumentKey action fired and app state set
+    // // define new documents in constants/documents.js by identifying
+    // // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
+    let documentKey = state.documents.createDocumentKey;
+    let documentFields = Documents[documentKey].form;
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
-    const initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+    // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+    // initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+    initialValues = state.documents.initialValuesObject;
+    // const initialValues = { address: '1 Never never land' }
 
-    console.log('in create_edit_document, mapStateToProps, state: ', state);
+    // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
+    // console.log('in create_edit_document, mapStateToProps, state: ', state);
+    console.log('in create_edit_document, mapStateToProps only:');
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
       errorMessage: state.auth.error,
       auth: state.auth,
-      appLanguageCode: state.languages.appLanguageCode,
-      documentLanguageCode: state.languages.documentLanguageCode,
+      // appLanguageCode: state.languages.appLanguageCode,
+      // documentLanguageCode: state.languages.documentLanguageCode,
       bookingData: state.bookingData.fetchBookingData.flat,
-      userOwner: state.bookingData.user,
-      tenant: state.bookingData.fetchBookingData.user,
+      // userOwner: state.bookingData.user,
+      // tenant: state.bookingData.fetchBookingData.user,
+      // initialValues: state.documents.initialValuesObject,
       initialValues,
       // initialValues: testObject,
       documents: state.documents,
       requiredFieldsNull: state.bookingData.requiredFields,
       createDocumentKey: state.documents.createDocumentKey,
-      documentFields
+      // !!!!!!for initialValues to be used in componentDidMount
+      documentFields,
+      flat: state.bookingData.flat,
+      booking: state.bookingData.fetchBookingData,
+      userOwner: state.bookingData.user,
+      tenant: state.bookingData.fetchBookingData.user,
+      appLanguageCode: state.languages.appLanguageCode,
+      documentLanguageCode: state.languages.documentLanguageCode,
+      assignments: state.bookingData.assignments,
+      contracts: state.bookingData.contracts,
+      // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
+      // setCreateDocumentKey action fired and app state set
+      // define new documents in constants/documents.js by identifying
+      // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
+      documentKey: state.documents.createDocumentKey,
     };
   } else {
     return {};

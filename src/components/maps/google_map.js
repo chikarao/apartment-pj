@@ -121,7 +121,7 @@ class GoogleMap extends Component {
      //   marker.setMap(null);
      //   // clearMarkers(marker);
      // });
-     
+
      // go through each flat marker and if they are not included in
      // current props of flats, push into oldFlatMarkersArray to send to createMarkers
      // set map of null to take off of map
@@ -327,11 +327,12 @@ class GoogleMap extends Component {
       // got error of type error property f of undefined;
       // Looks like google maps changed its API so
       // change from b.f f.f to j.l and l.l
+      // changed again 12/12/18 to ea.l and j and la.l and j 
       const mapBounds = {
-        east: bounds.j.l,
-        west: bounds.j.j,
-        north: bounds.l.l,
-        south: bounds.l.j
+        east: bounds.ea.l,
+        west: bounds.ea.j,
+        north: bounds.la.l,
+        south: bounds.la.j
       };
       // const mapBounds = {
       //   east: bounds.b.f,

@@ -155,7 +155,8 @@ import {
   BUILDING_LANGUAGE_TO_EDIT_ID,
   UPDATE_BUILDING_LANGUAGE,
   CREATE_BUILDING_LANGUAGE,
-  DELETE_BUILDING_LANGUAGE
+  DELETE_BUILDING_LANGUAGE,
+  SET_INITIAL_VALUES_OBJECT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2726,4 +2727,14 @@ export function deleteBuildingLanguage(buildingLanguageAttributes, callback) {
       // this.showloading();
     });
   };
+}
+
+export function setInitialValuesObject(initialValuesObject) {
+  console.log('in actions setInitialValuesObject, initialValuesObject:', initialValuesObject);
+  //flip state boolean
+  // callback();
+  return {
+    type: SET_INITIAL_VALUES_OBJECT,
+    payload: initialValuesObject
+   };
 }

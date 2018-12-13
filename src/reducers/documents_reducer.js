@@ -1,11 +1,14 @@
 import _ from 'lodash';
 import {
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
-  SET_CREATE_DOCUMENT_KEY
+  SET_CREATE_DOCUMENT_KEY,
+  SET_INITIAL_VALUES_OBJECT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
-export default function (state = {}, action) {
+export default function (state = {
+  initialValuesObject: {},
+}, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
   switch (action.type) {
@@ -17,6 +20,10 @@ export default function (state = {}, action) {
     case SET_CREATE_DOCUMENT_KEY:
       // console.log('in booking reducer, state: ', state);
       return { ...state, createDocumentKey: action.payload };
+
+    case SET_INITIAL_VALUES_OBJECT:
+      return { ...state, initialValuesObject: action.payload };
+
 
     default:
       return state;

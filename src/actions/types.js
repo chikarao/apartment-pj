@@ -152,3 +152,4 @@ export const BUILDING_LANGUAGE_TO_EDIT_ID = 'building_language_to_edit_id';
 export const UPDATE_BUILDING_LANGUAGE = 'update_building_language';
 export const CREATE_BUILDING_LANGUAGE = 'create_building_language';
 export const DELETE_BUILDING_LANGUAGE = 'delete_building_language';
+export const SET_INITIAL_VALUES_OBJECT = 'set_initial_values_object';

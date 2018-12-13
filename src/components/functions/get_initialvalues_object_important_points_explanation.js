@@ -14,10 +14,9 @@ import getContractLength from './get_contract_length';
 export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
+  console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
   const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode } = props;
-
   function getProfile(personProfiles, language) {
-    console.log('in get_initialvalues_object-fixed-term-contract, personProfiles: ', personProfiles);
     let returnedProfile;
     _.each(personProfiles, eachProfile => {
       if (eachProfile.language_code == language) {
@@ -267,10 +266,21 @@ export default (props) => {
     return object;
   }
 
-  function assignOverLappedKeys(key, value) {
+  function assignOverLappedKeys(key, keyValue) {
     _.each(overlappedkeysMapped[key], each => {
-      objectReturned[each] = value;
+      objectReturned[each] = keyValue;
     });
+  }
+
+  function assignMultipleOverLappedKeys(overlappedkeysMapped, key, recordValue) {
+    // if (overlappedkeysMapped[key]) {
+      // console.log('in create_edit_document, getInitialValuesObject, key, flat[key], overlappedkeysMapped[key]: ', key, flat[key], overlappedkeysMapped[key]);
+      _.each(overlappedkeysMapped[key], eachMappedKey => {
+        // console.log('in create_edit_document, getInitialValuesObject, key, eachMappedKey: ', key, eachMappedKey);
+        objectReturned[eachMappedKey] = recordValue;
+      });
+      // console.log('in create_edit_document, getInitialValuesObject, objectReturned: ', objectReturned);
+    // }
   }
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -278,6 +288,7 @@ export default (props) => {
   // get keys that overlap in documentFields e.g. address and address_1;
   // they have the save value but appear in different parts of the document
     const overlappedkeysMapped = getOverlappedkeysMapped();
+    console.log('in get_initialvalues_object_important_points_explanation, overlappedkeysMapped: ', overlappedkeysMapped);
   // define object to be returned to mapStateToProps in CreateEditDocument
   // const overlappedkeysMapped = { address: ['address_1'], size: ['size_1'], building_name: ['building_name_1'], unit: ['unit_1'], construction: ['construction_1'] };
     const objectReturned = {};
@@ -287,7 +298,7 @@ export default (props) => {
       const language = 'jp'
       const ownerProfile = getProfile(userOwner.profiles, language);
       const tenantProfile = getProfile(booking.user.profiles, language);
-      console.log('in get_initialvalues_object_important_points_explanation, ownerProfile: ', ownerProfile);
+      console.log('in get_initialvalues_object_important_points_explanation, ownerProfile, flat, booking, tenant, userOwner, documentLanguageCode: ', ownerProfile, flat, booking, tenant, userOwner, documentLanguageCode);
 
       // form string for user tenant names
       if (tenantProfile.first_name && tenantProfile.last_name) {
@@ -338,12 +349,9 @@ export default (props) => {
           // add to objectReturned to be returned as initialValues
           objectReturned[key] = flat[key];
         }
-
-        console.log('in create_edit_document, getInitialValuesObject, key, flat[key], overlappedkeysMapped[key]: ', key, flat[key], overlappedkeysMapped[key]);
+        // handle overlapped keys ie flat size and size_1, size_2, unit, unit_1, unit_2
         if (overlappedkeysMapped[key]) {
-          _.each(overlappedkeysMapped[key], eachMappedKey => {
-            objectReturned[eachMappedKey] = flat[key];
-          });
+          assignMultipleOverLappedKeys(overlappedkeysMapped, key, flat[key]);
         }
         // iterate through flat amenity
         // end of each flat amenity
@@ -366,11 +374,13 @@ export default (props) => {
       }
       // flat address
       const address = createAddress(flat);
-      objectReturned.address = address;
-      assignOverLappedKeys('address', address);
 
       if (address) {
+        objectReturned.address = address;
         objectReturned.address_check = 'address_exists';
+        if (overlappedkeysMapped.address) {
+          assignMultipleOverLappedKeys(overlappedkeysMapped, 'address', address);
+        }
       }
 
       if (flat.building) {
@@ -434,9 +444,13 @@ export default (props) => {
             //   // objectReturned[eachBuildingKey] = choice['jp'];
             // }
             objectReturned[eachBuildingKey] = flat.building[eachBuildingKey];
-            assignOverLappedKeys(eachBuildingKey, flat.building[eachBuildingKey])
+            // assignOverLappedKeys(eachBuildingKey, flat.building[eachBuildingKey])
+          }
+          if (overlappedkeysMapped[eachBuildingKey]) {
+            assignMultipleOverLappedKeys(overlappedkeysMapped, eachBuildingKey, flat.building[eachBuildingKey]);
           }
         });
+
         // end of each Object.keys flat.building
       }
 

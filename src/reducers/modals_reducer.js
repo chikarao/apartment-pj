@@ -33,7 +33,7 @@ import {
   SHOW_BUILDING_LANGUAGE_EDIT_MODAL,
   SELECTED_BUILDING_LANGUAGE_ID,
   SELECTED_BUILDING_ID,
-  BUILDING_LANGUAGE_TO_EDIT_ID
+  BUILDING_LANGUAGE_TO_EDIT_ID,
 } from '../actions/types';
 //
 // const initialState = {
@@ -170,7 +170,6 @@ export default function (
 
     case SELECTED_BUILDING_ID:
     return { ...state, selectedBuildingId: action.payload };
-
 
     default:
       return state;

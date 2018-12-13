@@ -148,6 +148,7 @@ export default (props) => {
 
     const objectReturned = {};
     _.each(documentFields, eachPageObject => {
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
       // for each page in this.props.documentFields
       _.each(Object.keys(flat), key => {
         // for each flat in boooking
@@ -189,7 +190,6 @@ export default (props) => {
           //   eachBuildingKey = 'flat_bank_account_name';
           // }
           if (eachPageObject[eachBankAccountKey]) {
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachBankAccountKey: ', eachBankAccountKey);
             // if attributes in flat.bank_account are on DocumentForm, add to initialValues objectReturned
             // if key is account_number, add *** to initial value
             if (eachBankAccountKey == 'account_number') {
