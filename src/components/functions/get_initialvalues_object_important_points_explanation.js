@@ -276,7 +276,7 @@ export default (props) => {
     // if (overlappedkeysMapped[key]) {
       // console.log('in create_edit_document, getInitialValuesObject, key, flat[key], overlappedkeysMapped[key]: ', key, flat[key], overlappedkeysMapped[key]);
       _.each(overlappedkeysMapped[key], eachMappedKey => {
-        // console.log('in create_edit_document, getInitialValuesObject, key, eachMappedKey: ', key, eachMappedKey);
+        console.log('in create_edit_document, getInitialValuesObject, assignMultipleOverLappedKeys, key, eachMappedKey, recordValue: ', key, eachMappedKey, recordValue);
         objectReturned[eachMappedKey] = recordValue;
       });
       // console.log('in create_edit_document, getInitialValuesObject, objectReturned: ', objectReturned);
@@ -389,6 +389,7 @@ export default (props) => {
       if (address) {
         objectReturned.address = address;
         objectReturned.address_check = 'address_exists';
+        assignMultipleOverLappedKeys(overlappedkeysMapped, 'address_check', 'address_exists');
         if (overlappedkeysMapped.address) {
           assignMultipleOverLappedKeys(overlappedkeysMapped, 'address', address);
         }
@@ -397,10 +398,11 @@ export default (props) => {
       if (flat.building) {
         if (flat.building.inspections) {
           const inspection = getInspection(flat.building.inspections);
-          console.log('in create_edit_document, getInitialValuesObject, inspection: ', inspection);
           inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
           const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
           inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
+          // console.log('in create_edit_document, getInitialValuesObject, inspectionDateFormatted: ', inspectionDateFormatted);
+
           if (inspection) {
             _.each(Object.keys(inspection), key => {
               // for each inspection in boooking
@@ -420,6 +422,9 @@ export default (props) => {
               objectReturned.degradation_exists_wooden = getDegradationSummaryBoolean({ eachPageObject, wooden: true, inspection });
             }
           }
+          // need to have inspectionDateFormatted after iteration above so that date format is correct for
+          // date input element to be able to read it ie 2018-01-01
+          inspection ? assignMultipleOverLappedKeys(overlappedkeysMapped, 'inspection_date', inspectionDateFormatted) : '';
         }
       }
 
@@ -428,6 +433,7 @@ export default (props) => {
         // add to objectReturned to be returned as initialValues
         const dateTodayFormatted = formatDateForForm(new Date());
         objectReturned.date_prepared = dateTodayFormatted;
+        assignMultipleOverLappedKeys(overlappedkeysMapped, 'date_prepared', dateTodayFormatted);
       }
       // for evaluating if has toilet or not!!!
       objectReturned.toilet = flat.toilet;

@@ -2025,7 +2025,99 @@ const ImportantPointsExplanation = {
       // attributes: { names: ['bath_tub'], type: 'boolean' }
     },
 
+    inspector_name: {
+      name: 'inspector_name',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '74.5%', left: '32%', width: '47%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
 
+    inspector_trainer: {
+      name: 'inspector_trainer',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '79%', left: '32%', width: '34.4%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    inspector_certificate_number: {
+      name: 'inspector_certificate_number',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '79%', left: '67%', width: '23.4%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_qualification_type: {
+      name: 'architect_qualification_type',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Class 1', enclosedText: 'X', top: '82.7%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Class 2', enclosedText: 'X', top: '82.7%', left: '45.9%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Wooden Strcture', enclosedText: 'X', top: '82.7%', left: '58.3%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+    },
+
+    architect_type: {
+      name: 'architect_type',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Minister Registration', enclosedText: 'X', top: '85.4%', left: '51.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Governor Registration', enclosedText: 'X', top: '87.8%', left: '51.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 2: { params: { val: 'Wooden Strcture', enclosedText: 'X', top: '82.7%', left: '58.3%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+    },
+
+    architect_registration_number: {
+      name: 'architect_registration_number',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '86.5%', left: '69%', width: '16%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_name: {
+      name: 'architect_office_name',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '90.5%', left: '32%', width: '50%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_registration: {
+      name: 'architect_office_registration',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '93.85%', left: '69%', width: '16%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
     // address_type: {
     //   name: 'address_type',
     //   type: 'string',
@@ -2041,7 +2133,310 @@ const ImportantPointsExplanation = {
     // },
   },
   7: {},
-  8: {},
+  8: {
+    date_prepared_1: {
+      name: 'date_prepared_1',
+      type: 'date',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '9.7%', left: '74.2%', width: '16%', height: '1.8%', margin: '0', fontSize: '13px', className: 'document-rectangle', type: 'date' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      baseKey: 'date_prepared',
+      // charLimit: 50,
+    },
+
+    building_name_3: {
+      name: 'building_name_3',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '13%', left: '31.9%', width: '53.5%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'name'
+    },
+
+    address_2: {
+      name: 'address_2',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '15.9%', left: '31.9%', width: '47%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'address',
+    },
+    // button, text hybrid input; when clicked, text toggles on and off with enclosedText
+    address_check_1: {
+      name: 'address_check_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'address_exists', enclosedText: 'X', top: '15.6%', left: '79.9%', width: '3%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 1,
+      // xbox mean check box toggle with x inside button div
+      // xbox: true,
+      second_click_off: true,
+      baseKey: 'address_check',
+    },
+
+    address_site_check_1: {
+      name: 'address_site_check_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'address_sit_exists', enclosedText: 'X', top: '17.3%', left: '79.9%', width: '3%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 1,
+      // xbox: true,
+      second_click_off: true,
+      baseKey: 'address_site_check',
+    },
+
+    address_site_1: {
+      name: 'address_site_1',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '17.9%', left: '31.9%', width: '47%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'address_site',
+    },
+
+    building_name_2: {
+      name: 'building_name_2',
+      type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20.4%', left: '43.5%', width: '24.5%', height: '3%', className: 'document-rectangle wrap-textarea', type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'name',
+      charLimit: 100,
+    },
+    // unit_1 means the key overlaps with unit from flat, so assign 'unit' to baseKey
+    // so that it gets picked up by the function getOverlappedkeysMapped
+    // for processing in assignOverLappedKeys
+    unit_2: {
+      name: 'unit_2',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '21%', left: '79%', width: '6%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'unit'
+      // charLimit: 10,
+    },
+
+    construction_2: {
+      name: 'construction_2',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'RC', enclosedText: 'X', top: '24.2%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'SRC', enclosedText: 'X', top: '24.2%', left: '44%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Other', enclosedText: 'X', top: '24.2%', left: '57.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'construction'
+      // borderColor: 'blue'
+    },
+
+    floors_1: {
+      name: 'floors_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.8%', left: '38%', width: '4%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'floors'
+      // charLimit: 10,
+    },
+
+    floors_underground_1: {
+      name: 'floors_underground_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.8%', left: '51%', width: '4%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'floors_underground'
+      // charLimit: 10,
+    },
+
+    size_2: {
+      name: 'size_2',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.8%', left: '81%', width: '6%', className: 'document-rectangle', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // charLimit: 10,
+      baseKey: 'size'
+    },
+
+    inspection_date_1: {
+      name: 'inspection_date_1',
+      type: 'date',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '31.1%', left: '33%', width: '16%', height: '1.8%', margin: '0', fontSize: '13px', className: 'document-rectangle', type: 'date' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'inspection_date'
+      // charLimit: 10,
+    },
+
+    flat_type_1: {
+      name: 'flat_type_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'single_family', enclosedText: 'X', top: '33.5%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' }, dependentKeys: { fields: ['flat_sub_type_1'], value: '' } },
+        1: { params: { val: 'flat_in_building', enclosedText: 'X', top: '36%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' }, inactive: true },
+        2: { params: { val: 'town_house', enclosedText: 'X', top: '36%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' }, inactive: true },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      // box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'flat_type',
+    },
+
+    // dependentKeys changes other fields to value (self is its own val); eg if below single_family clicked, field flat_sub_types turns to ''
+    flat_sub_type_1: {
+      name: 'flat_sub_type_1',
+      type: 'string',
+      choices: {
+        // 0: { params: { val: 'single_family', enclosedText: 'X', top: '33.5%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        0: { params: { val: 'town_house', enclosedText: 'X', top: '36%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' }, dependentKeys: { fields: ['flat_type_1'], value: 'self' } },
+        1: { params: { val: 'flat_in_building', enclosedText: 'X', top: '36%', left: '70.6%', width: '2%', className: 'document-rectangle', type: 'button' }, dependentKeys: { fields: ['flat_type_1'], value: 'self' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      // box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'flat_type',
+      // dependentValue: 'single_family'
+      // changeBaseKey: true,
+    },
+
+    inspector_name_1: {
+      name: 'inspector_name_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '74.5%', left: '32%', width: '47%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'inspector_name',
+    },
+
+    inspector_trainer_1: {
+      name: 'inspector_trainer_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '79%', left: '32%', width: '34.4%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'inspector_trainer',
+    },
+
+    inspector_certificate_number_1: {
+      name: 'inspector_certificate_number_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '79%', left: '67%', width: '23.4%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'inspector_certificate_number',
+    },
+
+    architect_qualification_type_1: {
+      name: 'architect_qualification_type_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Class 1', enclosedText: 'X', top: '82.7%', left: '33.5%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Class 2', enclosedText: 'X', top: '82.7%', left: '45.9%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Wooden Strcture', enclosedText: 'X', top: '82.7%', left: '58.3%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'architect_qualification_type',
+    },
+
+    architect_type_1: {
+      name: 'architect_type_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'Minister Registration', enclosedText: 'X', top: '85.4%', left: '51.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'Governor Registration', enclosedText: 'X', top: '87.8%', left: '51.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 2: { params: { val: 'Wooden Strcture', enclosedText: 'X', top: '82.7%', left: '58.3%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+      baseKey: 'architect_type',
+    },
+
+    architect_registration_number_1: {
+      name: 'architect_registration_number_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '86.5%', left: '69%', width: '16%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'architect_registration_number',
+    },
+
+    architect_office_name_1: {
+      name: 'architect_office_name_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '90.5%', left: '32%', width: '50%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'architect_office_name',
+    },
+
+    architect_office_registration_1: {
+      name: 'architect_office_registration_1',
+      type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '93.85%', left: '69%', width: '16%', className: 'document-rectangle wrap-textarea', type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'architect_office_registration',
+    },
+  },
   9: {}
 
 //     name: {
