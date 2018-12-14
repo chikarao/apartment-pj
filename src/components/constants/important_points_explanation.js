@@ -1828,6 +1828,62 @@ const ImportantPointsExplanation = {
       // attributes: { names: ['bath_tub'], type: 'boolean' }
     },
 
+    termite_damage: {
+      name: 'termite_damage',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '65.1%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '65.1%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '65.1%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    corrosion: {
+      name: 'corrosion',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '66.5%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '66.5%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '66.5%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    reinforcement: {
+      name: 'reinforcement',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '67.9%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '67.9%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '67.9%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    concrete_compression: {
+      name: 'concrete_compression',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '68.3%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '68.3%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '68.3%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
 
     // address_type: {
     //   name: 'address_type',
