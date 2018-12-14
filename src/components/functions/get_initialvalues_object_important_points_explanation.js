@@ -304,7 +304,7 @@ export default (props) => {
       if (tenantProfile.first_name && tenantProfile.last_name) {
         const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
         objectReturned.tenant_name = fullName;
-        objectReturned.tenant_phone = tenantProfile.phone;
+        // objectReturned.tenant_phone = tenantProfile.phone;
       }
       // assign today's date
       const today = new Date();
@@ -390,6 +390,22 @@ export default (props) => {
           inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
           const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
           inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
+          if (inspection) {
+            _.each(Object.keys(inspection), key => {
+              // for each inspection in boooking
+              if (eachPageObject[key]) {
+                // if inspection key is in one of the pages, on DocumentForm
+                // add to objectReturned to be returned as initialValues
+                objectReturned[key] = inspection[key];
+              }
+              // handle overlapped keys ie inspection size and size_1, size_2, unit, unit_1, unit_2
+              if (overlappedkeysMapped[key]) {
+                assignMultipleOverLappedKeys(overlappedkeysMapped, key, inspection[key]);
+              }
+              // iterate through inspection amenity
+              // end of each inspection amenity
+            });
+          }
         }
       }
 

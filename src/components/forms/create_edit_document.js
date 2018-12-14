@@ -27,20 +27,17 @@ class CreateEditDocument extends Component {
     };
   }
 
-  // componentDidMount() {
-    // document.addEventListener('click', this.printMousePos);
-    // document.addEventListener('click', this.printMousePos1);
-  // }
-
   // initialValues section implement after redux form v7.4.2 updgrade
   // started to force mapStateToProps to be called for EACH Field element;
   // so to avoid Documents[documentKey].method to be called in each msp call
   //(over 100! for important ponts form) use componentDidUpdate;
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
-  componentDidUpdate() {
-    // if (updateCount < 2) {
-      // console.log('in create_edit_document, componentDidUpdate');
+  componentDidMount() {
+    // document.addEventListener('click', this.printMousePos);
+    // document.addEventListener('click', this.printMousePos1);
+    // console.log('in create_edit_document, componentDidUpdate');
+    if (this.props.bookingData) {
       const {
         flat,
         booking,
@@ -57,9 +54,14 @@ class CreateEditDocument extends Component {
       // const documentKey = state.documents.createDocumentKey;
       const initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
       this.props.setInitialValuesObject(initialValuesObject);
+    }
+  }
+
+  // componentDidUpdate() {
+    // if (updateCount < 2) {
       // updateCount++;
     // }
-  }
+  // }
 
   // printMousePos1 = (event) => {
   //   // custom version of layerX; takes position of container and
@@ -149,17 +151,17 @@ class CreateEditDocument extends Component {
   }
 
   handleFormSubmit(data) {
-    // console.log('in create_edit_document, handleFormSubmit, data: ', data);
+    console.log('in create_edit_document, handleFormSubmit, data: ', data);
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
-    const paramsObject = { flat_id: this.props.flat, contract_name: contractName }
+    const paramsObject = { flat_id: this.props.flat.id, contract_name: contractName }
     // iterate through each key in data from form
 
     const requiredKeysArray = this.getRequiredKeys();
     // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
     const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
-    // console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys: ', nullRequiredKeys);
+    console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys, contractName, requiredKeysArray : ', nullRequiredKeys, contractName, requiredKeysArray );
 
     _.each(Object.keys(data), key => {
       let page = 0;
@@ -206,7 +208,7 @@ class CreateEditDocument extends Component {
         }
       });
     });
-    // console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
+    console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
     if (nullRequiredKeys.length > 0) {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('The fields highlighted in blue are required.');
@@ -214,7 +216,7 @@ class CreateEditDocument extends Component {
     } else {
       this.props.authError('');
       this.props.requiredFields([]);
-      this.props.createContract(paramsObject, () => {});
+      // this.props.createContract(paramsObject, () => {});
     }
   }
 
@@ -414,8 +416,8 @@ function mapStateToProps(state) {
     // // setCreateDocumentKey action fired and app state set
     // // define new documents in constants/documents.js by identifying
     // // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
-    let documentKey = state.documents.createDocumentKey;
-    let documentFields = Documents[documentKey].form;
+    const documentKey = state.documents.createDocumentKey;
+    const documentFields = Documents[documentKey].form;
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
