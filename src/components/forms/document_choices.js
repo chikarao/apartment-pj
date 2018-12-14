@@ -43,7 +43,7 @@ class DocumentChoices extends Component {
     });
   }
 
-  getStyleOfButtonElement(required, value, choice) {
+  getStyleOfButtonElement(required, value, choice, inactive) {
     let elementStyle = {};
 
     // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
@@ -55,6 +55,10 @@ class DocumentChoices extends Component {
 
     if (this.props.nullRequiredField && !value) {
       elementStyle = { borderColor: 'blue', top: choice.params.top, left: choice.params.left, width: choice.params.width };
+    }
+
+    if (inactive) {
+      elementStyle = { borderColor: 'transparent', top: choice.params.top, left: choice.params.left, width: choice.params.width };
     }
 
     return elementStyle;
@@ -72,7 +76,7 @@ class DocumentChoices extends Component {
 
     return elementStyle;
   }
-
+  // https://stackoverflow.com/questions/37189881/how-to-clear-some-fields-in-form-redux-form
   changeOtherFieldValues(fields, meta, val) {
     _.each(fields, eachFieldName => {
       meta.dispatch({
@@ -83,27 +87,71 @@ class DocumentChoices extends Component {
     });
   }
 
+  getSummaryKey(pageObject, wooden) {
+    let objectReturned;
+    _.each(Object.keys(pageObject), eachKey => {
+      if ((pageObject[eachKey].wooden == wooden) && pageObject[eachKey].summaryKey) {
+        objectReturned = pageObject[eachKey];
+      }
+    });
+    // console.log('DocumentChoices, getSummaryKey objectReturned: ', objectReturned)
+    return objectReturned;
+  }
+
+  checkOverAllDegradation({ pageObject, wooden, meta, lastClickedValue, name }) {
+    let count = 0;
+    _.each(pageObject, eachField => {
+      // console.log('DocumentChoices, checkOverAllDegradation eachField: ', eachField)
+      if (eachField.degradationKey && this.props.allValues[eachField.name] == 'Yes') {
+        count++;
+      }
+    });
+    count == 0 && lastClickedValue == 'Yes' ? count++ : '';
+    // lastClickedValue == 'No' && count == 1 ? count-- : '';
+    count == 1 && this.props.allValues[name] == 'Yes' && (lastClickedValue == 'Could not be investigated' || lastClickedValue == 'No') ? count-- : '';
+
+    const summaryObject = this.getSummaryKey(pageObject, wooden);
+    console.log('DocumentChoices, checkOverAllDegradation summaryObject, count, this.props.allValues: ', summaryObject, count, this.props.allValues)
+
+    if (count > 0) {
+      this.changeOtherFieldValues([summaryObject.name], meta, true);
+    } else {
+      this.changeOtherFieldValues([summaryObject.name], meta, false);
+    }
+  }
+
   createButtonElement({ choice, meta, onChange, value, name }) {
+    const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
     return (
       <div
         key={choice.params.val}
         type={choice.params.type}
         onClick={() => {
-          if (!choice.inactive) {
+          // check if inactive key
+          // console.log('DocumentChoices, createButtonElement this.props.formFields[this.props.page][name]', this.props.formFields[this.props.page][name])
+          if (!fieldInactive) {
             if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
               // this.setState({ enclosedText: '' });
               onChange('');
             } else {
+              // check if click of button needs to change value of other keys
               if (choice.dependentKeys) {
                 onChange(choice.params.val);
                 if (choice.dependentKeys.value == 'self') {
+                  // if value is 'self', change other field value to its own value
                   this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.params.val);
                 } else {
                   this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value);
                 }
+              } else if (this.props.formFields[this.props.page][name].degradationKey) {
+                // console.log('DocumentChoices, createButtonElement degradationKey true')
+                onChange(choice.params.val);
+                this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][name].wooden, meta, lastClickedValue: choice.params.val, name })
               } else {
+                // if no need to change other field values, just chnage own field value
                 onChange(choice.params.val);
               }
+              // empty iput value of input field of same key
               this.emptyInput();
             } // end of first if value == choice.params.val
           } // end of if !inactive
@@ -111,35 +159,7 @@ class DocumentChoices extends Component {
         className={choice.params.className}
         // || (choice.params.val == this.props.allValues[choice.dependentKey])
         // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
-        style={this.getStyleOfButtonElement(this.props.required, value, choice)}
-      >{(choice.params.enclosedText) && (value == choice.params.val) ? choice.params.enclosedText : ''}</div>
-    );
-  }
-
-  createInactiveButtonElement({ choice, onChange, value, name }) {
-    return (
-      <div
-        key={choice.params.val}
-        type={choice.params.type}
-        // onClick={() => {
-        //   if (value == choice.params.val && this.props.formFields[this.props.page][name].second_click_off) {
-        //     // this.setState({ enclosedText: '' });
-        //     onChange('');
-        //   } else {
-        //     // this.handleInputChange.bind(this)
-        //     // this.setState({ enclosedText: choice.params.enclosedText });
-        //     onChange(choice.params.val);
-        //     if (choice.params.otherValueNull) {
-        //       // console.log('DocumentChoices, renderEachChoice name, value, choice.params.otherValueNull, this.props', name, value, choice.params.otherValueNull, this.props);
-        //     }
-        //     this.emptyInput();
-        //   }
-        // }}
-        className={choice.params.className}
-        // || (choice.params.val == this.props.allValues[choice.dependentKey])
-        // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
-        style={this.getStyleOfButtonElement(this.props.required, value, choice)}
-      // >{(choice.params.enclosedText) && (value == this.props.allValues[choice.dependentKey]) ? choice.params.enclosedText : ''}</div>
+        style={this.getStyleOfButtonElement(this.props.required, value, choice, fieldInactive)}
       >{(choice.params.enclosedText) && (value == choice.params.val) ? choice.params.enclosedText : ''}</div>
     );
   }
@@ -150,9 +170,6 @@ class DocumentChoices extends Component {
         <input
           id="valueInput"
           maxLength={this.props.charLimit}
-          // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
-          // value={dirtyValue}
-          // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
@@ -206,14 +223,8 @@ class DocumentChoices extends Component {
         const textareaElement = this.createTextareaElement({ choice, meta, value })
         return textareaElement;
       } else {
-        // define button element for user to click to set value in submission
-        // if (choice.dependentKey) {
-        //   const buttonElement = this.createInactiveButtonElement({ choice, onChange, value, name })
-        //   return buttonElement;
-        // } else {
-        const buttonElement = this.createButtonElement({ choice, onChange, meta, value, name })
+        const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, name })
         return buttonElement;
-        // }
       }
     });
   }

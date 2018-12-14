@@ -283,6 +283,17 @@ export default (props) => {
     // }
   }
 
+  function getDegradationSummaryBoolean({ eachPageObject, wooden, inspection }) {
+    let count = 0;
+    _.each(eachPageObject, eachField => {
+      // console.log('DocumentChoices, checkOverAllDegradation eachField: ', eachField)
+      if (eachField.degradationKey && inspection[eachField.name] == 'Yes') {
+        count++;
+      }
+    });
+    return count > 0;
+  }
+
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // get keys that overlap in documentFields e.g. address and address_1;
@@ -405,6 +416,9 @@ export default (props) => {
               // iterate through inspection amenity
               // end of each inspection amenity
             });
+            if (eachPageObject.degradation_exists_wooden) {
+              objectReturned.degradation_exists_wooden = getDegradationSummaryBoolean({ eachPageObject, wooden: true, inspection });
+            }
           }
         }
       }
