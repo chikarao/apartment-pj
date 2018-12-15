@@ -2335,6 +2335,257 @@ const ImportantPointsExplanation = {
       // changeBaseKey: true,
     },
 
+    degradation_exists_concrete: {
+      name: 'degradation_exists_concrete',
+      type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, enclosedText: 'X', top: '39.7%', left: '78.7%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { valName: 'N', params: { val: false, enclosedText: 'X', top: '39.7%', left: '85.1%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      wooden: false,
+      summaryKey: true,
+      inactive: true,
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    foundation_1: {
+      name: 'foundation_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '50%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '50%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '50%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'foundation',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    floor_1: {
+      name: 'floor_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '51.4%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '51.4%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '51.4%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'floor',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    pillars_1: {
+      name: 'pillars_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '52.8%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '52.8%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '52.8%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'pillars',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    exterior_walls_1: {
+      name: 'exterior_walls_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '54.2%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '54.2%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '54.2%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'exterior_walls',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    balcony_1: {
+      name: 'balcony_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '55.6%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '55.6%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '55.6%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'balcony',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    // interior_walls_1: {
+    //   name: 'interior_walls_1',
+    //   type: 'boolean',
+    //   choices: {
+    //     0: { params: { val: 'Yes', enclosedText: 'X', top: '57%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+    //     1: { params: { val: 'No', enclosedText: 'X', top: '57%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+    //     2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '57%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices',
+    //   degradationKey: true,
+    //   wooden: false,
+    //   // attributes; keep just in case
+    //   // attributes: { names: ['bath_tub'], type: 'boolean' }
+    // },
+
+    interior_walls_1: {
+      name: 'interior_walls_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '58.4%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '58.4%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '58.4%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'interior_walls',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    ceilings_1: {
+      name: 'ceilings_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '59.8%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '59.8%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '59.8%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'ceilings',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    reinforcement: {
+      name: 'reinforcement',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '63%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '63%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '63%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    concrete_compression: {
+      name: 'concrete_compression',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '64.4%', left: '48.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '64.4%', left: '51.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '64.4%', left: '55.2%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    exterior_walls_rain_1: {
+      name: 'exterior_walls_rain_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '50%', left: '76.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '50%', left: '80.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '50%', left: '83.6%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'exterior_walls_rain',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    interior_walls_rain_1: {
+      name: 'interior_walls_rain_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '51.4%', left: '76.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '51.4%', left: '80.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '51.4%', left: '83.6%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'interior_walls_rain',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    ceilings_rain_1: {
+      name: 'ceilings_rain_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '52.8%', left: '76.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '52.8%', left: '80.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '52.8%', left: '83.6%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'ceilings_rain',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
+    roof_1: {
+      name: 'roof_1',
+      type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosedText: 'X', top: '54.2%', left: '76.6%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        1: { params: { val: 'No', enclosedText: 'X', top: '54.2%', left: '80.1%', width: '2%', className: 'document-rectangle', type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosedText: 'X', top: '54.2%', left: '83.6%', width: '2%', className: 'document-rectangle', type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
+      baseKey: 'roof',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], type: 'boolean' }
+    },
+
     inspector_name_1: {
       name: 'inspector_name_1',
       type: 'string',

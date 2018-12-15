@@ -8,6 +8,7 @@ import {
 
 export default function (state = {
   initialValuesObject: {},
+  overlappedkeysMapped: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -22,8 +23,7 @@ export default function (state = {
       return { ...state, createDocumentKey: action.payload };
 
     case SET_INITIAL_VALUES_OBJECT:
-      return { ...state, initialValuesObject: action.payload };
-
+      return { ...state, initialValuesObject: action.payload.initialValuesObject, overlappedkeysMapped: action.payload.overlappedkeysMapped };
 
     default:
       return state;

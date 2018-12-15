@@ -418,8 +418,9 @@ export default (props) => {
               // iterate through inspection amenity
               // end of each inspection amenity
             });
-            if (eachPageObject.degradation_exists_wooden) {
+            if (eachPageObject.degradation_exists_wooden || eachPageObject.degradation_exists_concrete) {
               objectReturned.degradation_exists_wooden = getDegradationSummaryBoolean({ eachPageObject, wooden: true, inspection });
+              objectReturned.degradation_exists_concrete = getDegradationSummaryBoolean({ eachPageObject, wooden: false, inspection });
             }
           }
           // need to have inspectionDateFormatted after iteration above so that date format is correct for
@@ -741,5 +742,5 @@ export default (props) => {
 
     console.log('in create_edit_document, getInitialValuesObject, objectReturned: ', objectReturned);
     // !!!!!!!!!!return objectReturned for assignment to initialValues in mapStateToProps
-    return objectReturned;
+    return { initialValuesObject: objectReturned, overlappedkeysMapped };
 };
