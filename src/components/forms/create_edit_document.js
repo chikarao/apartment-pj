@@ -36,7 +36,6 @@ class CreateEditDocument extends Component {
   componentDidMount() {
     // document.addEventListener('click', this.printMousePos);
     // document.addEventListener('click', this.printMousePos1);
-    // console.log('in create_edit_document, componentDidUpdate');
     if (this.props.bookingData) {
       const {
         flat,
@@ -51,6 +50,7 @@ class CreateEditDocument extends Component {
         documentKey
       } = this.props;
       const documentFields = Documents[documentKey].form
+      console.log('in create_edit_document, componentDidUpdate, flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode', flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode);
       // const documentKey = state.documents.createDocumentKey;
       const initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
       this.props.setInitialValuesObject(initialValuesObject);

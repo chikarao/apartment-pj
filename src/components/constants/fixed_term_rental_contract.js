@@ -1,4 +1,4 @@
-// import YesOrNo = './forms/document_yes_or_no'
+import Building from './building.js'
 
 const FixedTermRentalContract = {
   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
@@ -73,7 +73,7 @@ const FixedTermRentalContract = {
       type: 'string',
       choices: {
         0: { params: { val: 'Wooden', top: '21.6%', left: '45%', width: '10%', className: 'document-rectangle', type: 'button' } },
-        1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', className: 'document-rectangle', type: 'string', textAlign: 'right' } }
+        1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', className: 'document-rectangle', type: 'string', textAlign: 'right' }, selectChoices: Building.construction.choices }
       },
       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
       className: 'form-control-document',

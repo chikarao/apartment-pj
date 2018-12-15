@@ -181,6 +181,37 @@ class DocumentChoices extends Component {
     );
   }
 
+  renderSelectOptions(choice) {
+    console.log('DocumentChoices, renderSelectOptions choice', choice);
+    const emptyChoice = { value: '', en: '', jp: '' };
+    const choiceToChange = choice.selectChoices;
+    choiceToChange[10] = emptyChoice;
+    return _.map(choiceToChange, (eachChoice, i) => {
+      // if (eachChoice.value != 'Wooden') {
+        return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[this.props.documentLanguageCode] : eachChoice.value}</option>;
+      // }
+    });
+  }
+
+  createSelectElement({ choice, meta, value }) {
+    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    return (
+        <select
+          id="valueInput"
+          maxLength={this.props.charLimit}
+          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          key={choice.params.val}
+          onChange={this.handleInputChange.bind(this)}
+          type={choice.params.type}
+          className={choice.params.className}
+          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
+          style={this.getStyleOfInputElement(value, choice)}
+        >
+        {this.renderSelectOptions(choice)}
+        </select>
+    );
+  }
+
   createTextareaElement({ choice, meta, value }) {
     const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
@@ -201,27 +232,30 @@ class DocumentChoices extends Component {
     );
   }
 
-  renderEachChoice() {
+  renderEachChoice(choices) {
     const { input: { value, onChange, name }, meta } = this.props;
-    console.log('DocumentChoices, renderEachChoice name, value, this.props', name, value, this.props)
+    // console.log('DocumentChoices, renderEachChoice name, value, this.props', name, value, this.props)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
-    return _.map(this.props.formFields[this.props.page][name].choices, choice => {
+    return _.map(choices, choice => {
         // console.log('DocumentChoices, renderEachChoice this.props.required', this.props.required);
       // console.log('DocumentChoices, renderEachChoice name, choice.params.val, value, choice.params.val == value', name, choice.params.val, value, choice.params.val == value);
       // value is value passed from Field and needs to be specified for initialValues
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
       // if choice type is string, use input element above and button if not string
-      if (choice.params.type == 'string' || choice.params.type == 'date') {
+      if ((choice.params.type == 'string' || choice.params.type == 'date') && !choice.selectChoices ) {
         // define input element for user to input
         const inputElement = this.createInputElement({ choice, meta, value })
         return inputElement;
       } else if (choice.params.type == 'text')  {
         const textareaElement = this.createTextareaElement({ choice, meta, value })
         return textareaElement;
+      } else if (choice.selectChoices) {
+        const selectElement = this.createSelectElement({ choice, meta, value })
+        return selectElement;
       } else {
         const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, name })
         return buttonElement;
@@ -233,7 +267,7 @@ class DocumentChoices extends Component {
     const { input: { name } } = this.props;
     return (
       <div key={name}>
-         {this.renderEachChoice()}
+         {this.renderEachChoice(this.props.formFields[this.props.page][name].choices)}
         </div>
     );
   }
@@ -243,7 +277,8 @@ function mapStateToProps(state) {
   // console.log('in document_choices, mapStateToProps, state: ', state);
   return {
     allValues: state.form.CreateEditDocument.values,
-    registeredFields: state.form.CreateEditDocument.registeredFields
+    registeredFields: state.form.CreateEditDocument.registeredFields,
+    documentLanguageCode: state.languages.documentLanguageCode
   };
 }
 

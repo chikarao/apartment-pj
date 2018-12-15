@@ -459,7 +459,7 @@ export default (props) => {
 
     console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, objectReturned: ', objectReturned);
     // return objectReturned for assignment to initialValues in mapStateToProps
-    return objectReturned;
+    return { initialValuesObject: objectReturned };
   // }
 };
 // breaks text with reverse slash n into separate lines

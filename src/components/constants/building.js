@@ -19,7 +19,7 @@ const Building = {
     // language_independent: true,
     // for rendering in forms only choices that do not exist
     limit_choices: true,
-    // map to column in backend code
+    // map to column in backend database
     map_to_record: 'language_code'
   },
 
@@ -134,11 +134,14 @@ const Building = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Wooden', en: 'Wooden', jp: '木造', type: 'button', className: 'form-rectangle' },
-      1: { value: 'S', en: 'Steel Frame', jp: 'S', type: 'button', className: 'form-rectangle' },
-      2: { value: 'RC', en: 'Reinforced Concrete', jp: 'RC', type: 'button', className: 'form-rectangle' },
-      3: { value: 'SRC', en: 'Steel Reinforced Concrete', jp: 'SRC', type: 'button', className: 'form-rectangle' },
-      4: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+      0: { value: 'RC', en: 'RC (Reinforced Concrete)', jp: 'RC (鉄筋コンクリート)', type: 'button', className: 'form-rectangle' },
+      1: { value: 'SRC', en: 'SRC (Steel Reinforced Concrete)', jp: 'SRC (鉄骨鉄筋コンクリート)', type: 'button', className: 'form-rectangle' },
+      2: { value: 'CFT', en: 'CFT (Concrete Filled Steel Tube)', jp: 'CFT (コンクリート充填鋼管)', type: 'button', className: 'form-rectangle' },
+      3: { value: 'S', en: 'S (Steel Frame)', jp: 'S (軽量鉄骨造)', type: 'button', className: 'form-rectangle' },
+      4: { value: 'Aluminum', en: 'AL (Alminium)', jp: 'AL (アルミ)', type: 'button', className: 'form-rectangle' },
+      5: { value: 'Wooden', en: 'W (Wooden)', jp: 'W (木造)', type: 'button', className: 'form-rectangle' },
+      // 5: { value: 'Other', en: 'Other', jp: 'その他', type: 'button', className: 'form-rectangle' },
+      // 4: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
   },
 
