@@ -2939,6 +2939,23 @@ form {
   background-color: gray;
 }
 
+.document-floating-button {
+  position: fixed;
+  width: 100px;
+  /* height: 50px; */
+  top: 90%;
+  /* left: 50%; */
+  /* background-color: blue; */
+  color: white;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+/* .document-floating-button:hover {
+  background-color: lightgray;
+  color: white;
+} */
+
 /* *************MAIN CARDS*************** */
 
 .card-row {

@@ -150,6 +150,20 @@ class CreateEditDocument extends Component {
     return haveOrNot;
   }
 
+  getSelectChoice(choices, value) {
+    // model refers to a constants file eg building.js
+    console.log('in create_edit_document, getSelectChoice choices, value: ', choices, value);
+    let returnedChoice;
+    _.each(choices, eachChoice => {
+      // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
+      if (eachChoice.value === value) {
+        returnedChoice = eachChoice;
+        return;
+      }
+    });
+    return returnedChoice;
+  }
+
   handleFormSubmit(data) {
     console.log('in create_edit_document, handleFormSubmit, data: ', data);
     // object to send to API; set flat_id
@@ -185,7 +199,6 @@ class CreateEditDocument extends Component {
         // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
-          // console.log('in create_edit_document, handleFormSubmit, choice for empty string val: ', choice);
           // add data[key] (user choice) as value in the object to send to API
           // check for other vals of choices if more than 1 choice
           const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
@@ -193,9 +206,19 @@ class CreateEditDocument extends Component {
             choice.params.value = data[key];
             choice.params.page = page;
             choice.params.name = this.props.documentFields[page][key].name
-            // add params object with the top, left, width etc. to object to send to api
-            // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
-            paramsObject[key] = choice.params;
+            // if need to show full local language text on PDF, use documentLanguageCode from model choice
+            if (choice.showLocalLanguage) {
+              // console.log('in create_edit_document, handleFormSubmit, choice, choice.selectChoices : ', choice, choice.selectChoices);
+              // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
+              const selectChoice = this.getSelectChoice(choice.selectChoices, data[key]);
+              // assign display as an attribute in choice params
+              choice.params.display_text = selectChoice[this.props.documentLanguageCode];
+              paramsObject[key] = choice.params;
+            } else {
+              // add params object with the top, left, width etc. to object to send to api
+              // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
+              paramsObject[key] = choice.params;
+            }
           }
         }
         if (eachChoice.params.val == data[key]) {
@@ -216,6 +239,7 @@ class CreateEditDocument extends Component {
     } else {
       this.props.authError('');
       this.props.requiredFields([]);
+      // !!!!!!!
       // this.props.createContract(paramsObject, () => {});
     }
   }
@@ -377,16 +401,26 @@ class CreateEditDocument extends Component {
     }
   }
 
+  handleFormCloseSaveClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
+    if (elementVal == 'close') {
+      this.props.showDocument();
+    }
+  }
 
   render() {
     const { handleSubmit, appLanguageCode } = this.props;
     // console.log('CreateEditDocument, render, this.props', this.props);
     return (
       <div className="test-image-pdf-jpg">
+        <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Close</div>
+        <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Save</div>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderDocument()}
             {this.renderAlert()}
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg document-submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+          <button action="submit" id="submit-all" className="btn document-floating-button" style={{ left: '30%', backgroundColor: 'blue' }}>{AppLanguages.submit[appLanguageCode]}</button>
         </form>
       </div>
     );

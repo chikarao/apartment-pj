@@ -187,20 +187,16 @@ class Results extends Component {
   }
 
   renderMap() {
-    // renders map based on 3 scenarios (if else):
-    // 1. There are flats
-    // 2. There are no flats but user searches city and
+    // Renders map based on 3 scenarios (if, if else, and else):
+    // 1. There are already flats and flatBuildings
+    // 2. There are no flats and flatBuildings but user searches city and
     // there is latlng in this.props.searchFlatParams (state.flat.searchFlatParameters)
-    // 3. There are no flat and user did not search; Most likely page was refreshed
+    // 3. There are no flat and flatBuildings and user did not search; Most likely page was refreshed
     // this.props.flats is all the flats regardless of building relationship
     // this.props.flatBuildings is divided in to flats with same buildings
     // and those without buildings shared; Send both to GoogleMap
     const flatsEmpty = _.isEmpty(this.props.flats);
     const flatBuildingsEmpty = _.isEmpty(this.props.flatBuildings);
-    // const mapDimensionsEmpty = _.isEmpty(this.props.mapDimensions);
-    // console.log('in results renderMap, flats empty: ', flatsEmpty);
-    // console.log('in results renderMap, mapDimensions empty: ', mapDimensionsEmpty);
-    // console.log('in results renderMap, this.props.mapDimensions: ', this.props.mapDimensions);
 
     if (!flatsEmpty && !flatBuildingsEmpty) {
       // gets average of latlng of returned flats
@@ -245,8 +241,8 @@ class Results extends Component {
         <div>
         <GoogleMap
           flatsEmpty={flatsEmpty}
-          flats={flatsEmpty ? this.props.flats : emptyMapLatLngCenter}
-          flatsId={flatsEmpty ? this.props.flatsId : emptyMapLatLngCenter}
+          flats={this.props.flats}
+          flatsId={this.props.flatsId}
           flatBuildingsId={this.props.flatBuildingsId}
           flatBuildings={this.props.flatBuildings}
           buildingsJustId={this.props.buildingsJustId}
@@ -257,7 +253,7 @@ class Results extends Component {
         </div>
       );
     } else {
-      // if no flat or latlng in saerchFlatParams; called when page refreshed
+      // if no flat and building or latlng in searchFlatParams; called when page refreshed
         const storedLat = parseFloat(localStorage.getItem('lat'));
         const storedLng = parseFloat(localStorage.getItem('lng'));
         const storedZoom = parseFloat(localStorage.getItem('zoom'));

@@ -76,6 +76,8 @@ class GoogleMap extends Component {
     // and creates array of prev flats with just IDs so that easy to compare this and prev props
     const prevPropsFlatIdArray = prevProps.flatsId;
     const currentPropsFlatIdArray = this.props.flatsId;
+    console.log('in googlemaps componentDidUpdate, currentPropsFlatIdArray: ', currentPropsFlatIdArray);
+
     // const prevPropsFlatIdArray = (prevProps.flatsId === undefined) || (prevProps.flatsId === null) ? [] : prevProps.flatsId;
     // const currentPropsFlatIdArray = (this.props.flatsId === undefined) || (this.props.flatsId === null) ? [] : this.props.flatsId;
 
@@ -327,7 +329,7 @@ class GoogleMap extends Component {
       // got error of type error property f of undefined;
       // Looks like google maps changed its API so
       // change from b.f f.f to j.l and l.l
-      // changed again 12/12/18 to ea.l and j and la.l and j 
+      // changed again 12/12/18 to ea.l and j and la.l and j
       const mapBounds = {
         east: bounds.ea.l,
         west: bounds.ea.j,

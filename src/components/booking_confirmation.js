@@ -235,7 +235,7 @@ class BookingConfirmation extends Component {
   renderBookingTenantInformation(bookingData) {
     // for some reason, cloudinary image does not render correctly if image obtained
     // from this.props.bookingData; needs to be passed on by parameter
-    const profileToUse = this.getProfileToUse(bookingData.user.profiles)
+    const profileToUse = this.getProfileToUse(bookingData.user.profiles);
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">Proposed Tenant Information</div>
@@ -320,7 +320,7 @@ class BookingConfirmation extends Component {
 
   renderBookingData() {
     const { bookingData, appLanguageCode } = this.props;
-
+    // if (bookingData && !this.state.showDocument) {
     if (bookingData) {
       // const data = this.props.bookingData.id;
       // localStorage.setItem('data', data);
@@ -513,7 +513,9 @@ renderReview() {
 renderDocument() {
   console.log('in booking confirmation, renderDocument:');
   return (
-    <CreateEditDocument />
+    <CreateEditDocument
+      showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+    />
   );
 }
 
@@ -521,10 +523,20 @@ handleDocumentCreateLink(event) {
   const clickedElement = event.target;
   // elementval is document key
   const elementVal = clickedElement.getAttribute('value');
-
-  this.props.setCreateDocumentKey(elementVal, () => {
-    this.setState({ showDocument: true });
-  });
+  // if showDocument is false, just create document key with the document code
+  if (!this.state.showDocument) {
+    this.props.setCreateDocumentKey(elementVal, () => {
+      this.setState({ showDocument: true });
+    });
+  } else {
+    // if showDocument is true (currently showing document),
+    // close document first then show new document
+    this.setState({ showDocument: false }, () => {
+      this.props.setCreateDocumentKey(elementVal, () => {
+        this.setState({ showDocument: true });
+      });
+    });
+  }
 }
 
 // renderDocumentChoices() {
