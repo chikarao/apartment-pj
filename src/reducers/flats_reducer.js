@@ -48,7 +48,10 @@ const INITIAL_STATE = {
   flatsResultsId: [],
   flatBuildingsResults: [],
   buildingsJustId: [],
-  flatsResults: {}
+  flatsResults: {},
+  justFlats: {},
+  flatBuildingsResultsId: {},
+  flatBuildingsResultsJustId: []
 };
 export default function (state = INITIAL_STATE, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
@@ -71,10 +74,29 @@ export default function (state = INITIAL_STATE, action) {
       };
       // return { ...state, flatsResults: _.mapKeys(action.payload.flats, 'id'), reviewsForFlatResults: _.mapKeys(action.payload.reviews, 'id') };
     case UNAUTH_USER:
-      return { ...state, INITIAL_STATE };
+      return { ...state,
+        searchFlatParameters: {},
+        buildings: [],
+        flatsResultsId: [],
+        flatBuildingsResults: [],
+        buildingsJustId: [],
+        flatsResults: {},
+        justFlats: {},
+        flatBuildingsResultsId: {},
+        flatBuildingsResultsJustId: []
+       };
 
     case CLEAR_FLATS:
-      return { ...state, flatsResults: {} };
+      return { ...state,
+        buildings: [],
+        flatsResultsId: [],
+        flatBuildingsResults: [],
+        buildingsJustId: [],
+        flatsResults: {},
+        justFlats: {},
+        flatBuildingsResultsId: {},
+        flatBuildingsResultsJustId: []
+    };
 
     case FETCH_FLATS_BY_USER:
       return { ...state, flatsByUser: _.mapKeys(action.payload, 'id') };

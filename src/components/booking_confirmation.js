@@ -18,9 +18,12 @@ class BookingConfirmation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDocument: false
+      showDocument: false,
+      agreementId: '',
+      showSavedDocument: false,
     };
-    this.handleDocumentCreateLink = this.handleDocumentCreateLink.bind(this);
+    this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
+    this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
   }
 
@@ -251,44 +254,52 @@ class BookingConfirmation extends Component {
     );
   }
 
-  renderEachContractToCreate() {
-    // <div value={'important_points_explanation_jp'} onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
+  renderEachAgreementToCreate() {
+    // <div value={'important_points_explanation_jp'} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
     return _.map(Object.keys(Documents), (eachDocumentKey, i) => {
       return (
-        <div key={i} value={eachDocumentKey} onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
+        <div key={i} value={eachDocumentKey} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
       );
     })
   }
 
-  renderBookingDocuments() {
-    return (
-      <div className="booking-confirmation-each-box">
-        <div className="booking-request-box-title">Rental Documents</div>
-          <div className="booking-request-box-each-line">
-            <div className="booking-request-box-each-line-title">
-              Create Documents:
-            </div>
-            <div className="booking-request-box-each-line-data">
-            </div>
-          </div>
-          <br/>
-          <div className="booking-confirmation-document-box">
-            {this.renderEachContractToCreate()}
-          </div>
+  renderEachAgreementSaved() {
+    return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
+      return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
+    });
+  }
 
-          <div className="booking-request-box-each-line">
-            <div className="booking-request-box-each-line-title">
-              Documents on File:
+  renderBookingDocuments() {
+    if (this.props.bookingData) {
+      return (
+        <div className="booking-confirmation-each-box">
+          <div className="booking-request-box-title">Rental Documents</div>
+            <div className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title">
+                Create Documents:
+              </div>
+              <div className="booking-request-box-each-line-data">
+              </div>
             </div>
-            <div className="booking-request-box-each-line-data">
+            <br/>
+            <div className="booking-confirmation-document-box">
+              {this.renderEachAgreementToCreate()}
             </div>
-          </div>
-          <br/>
-          <div className="booking-confirmation-document-box">
-            No documents on file
-          </div>
-      </div>
-    );
+
+            <div className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title">
+                Documents on File:
+              </div>
+              <div className="booking-request-box-each-line-data">
+              </div>
+            </div>
+            <br/>
+            <div className="booking-confirmation-document-box">
+              {this.props.bookingData.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
+            </div>
+        </div>
+      );
+    }
   }
 
   handleBookingRequsetApprovalClick(event) {
@@ -494,7 +505,6 @@ renderReview() {
       // console.log('in booking confirmation, renderReview, this.props.bookingData.date_end:', this.props.bookingData.date_end);
       const bookingEnd = new Date(this.props.bookingData.date_end)
       const pastBookingEnd = bookingEnd < today;
-      // console.log('in booking confirmation, renderReview, pastBookingEnd:', pastBookingEnd);
       if (pastBookingEnd) {
         return (
           <div>
@@ -511,18 +521,24 @@ renderReview() {
 }
 
 renderDocument() {
-  console.log('in booking confirmation, renderDocument:');
+  // console.log('in booking confirmation, renderDocument:');
+  const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
   return (
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+      showSavedDocument={this.state.showSavedDocument}
+      agreementId={this.state.agreementId}
+      agreement={agreementArray[0]}
     />
   );
 }
 
-handleDocumentCreateLink(event) {
+handleDocumentCreateClick(event) {
   const clickedElement = event.target;
   // elementval is document key
   const elementVal = clickedElement.getAttribute('value');
+  // console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
+
   // if showDocument is false, just create document key with the document code
   if (!this.state.showDocument) {
     this.props.setCreateDocumentKey(elementVal, () => {
@@ -531,9 +547,31 @@ handleDocumentCreateLink(event) {
   } else {
     // if showDocument is true (currently showing document),
     // close document first then show new document
-    this.setState({ showDocument: false }, () => {
+    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
       this.props.setCreateDocumentKey(elementVal, () => {
         this.setState({ showDocument: true });
+      });
+    });
+  }
+}
+
+handleSavedDocumentShowClick(event) {
+  const clickedElement = event.target;
+  // elementVal is documentCode or document key in documents.js
+  const elementVal = clickedElement.getAttribute('value');
+  // elementName is agreement id
+  const elementName = clickedElement.getAttribute('name');
+  if (!this.state.showDocument) {
+    this.props.setCreateDocumentKey(elementVal, () => {
+      this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+    });
+  } else {
+    // if showDocument is true (currently showing document),
+    // close document first then show new document, turn off and null out other state attributes
+    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+      this.props.setCreateDocumentKey(elementVal, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+        // this.setState({ showDocument: true });
       });
     });
   }
@@ -543,7 +581,7 @@ handleDocumentCreateLink(event) {
 //   return (
 //     <div className="booking-confirmation-create-document-box">
 //       <h4>Create Document</h4>
-//       <div onClick={this.handleDocumentCreateLink} className="booking-confirmation-document-create-link">Teishaku</div>
+//       <div onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">Teishaku</div>
 //     </div>
 //   );
 // }
@@ -576,13 +614,18 @@ render() {
 
 function mapStateToProps(state) {
   console.log('in booking confirmation, mapStateToProps, state: ', state);
-  return {
-    bookingData: state.bookingData.fetchBookingData,
-    review: state.reviews.reviewForBookingByUser,
-    showEditReviewModal: state.modals.showEditReview,
-    appLanguageCode: state.languages.appLanguageCode
-    // flat: state.flat.selectedFlat
-  };
+  if (state.bookingData.fetchBookingData) {
+    return {
+      bookingData: state.bookingData.fetchBookingData,
+      review: state.reviews.reviewForBookingByUser,
+      showEditReviewModal: state.modals.showEditReview,
+      appLanguageCode: state.languages.appLanguageCode,
+      // agreements: state.fetchBookingData.agreements
+      // flat: state.flat.selectedFlat
+    };
+  } else {
+    return {};
+  }
 }
 
 export default connect(mapStateToProps, actions)(BookingConfirmation);

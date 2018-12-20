@@ -36,6 +36,8 @@ class Landing extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize.bind(this));
     // this.facebookLogin()
+    // clear out all this.props.flats state attributes 
+    this.props.clearFlats();
   }
 
   componentDidUpdate() {

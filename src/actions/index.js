@@ -157,6 +157,9 @@ import {
   CREATE_BUILDING_LANGUAGE,
   DELETE_BUILDING_LANGUAGE,
   SET_INITIAL_VALUES_OBJECT,
+  CREATE_AGREEMENT,
+  EDIT_AGREEMENT,
+  DELETE_AGREEMENT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2737,4 +2740,68 @@ export function setInitialValuesObject(initialValuesObject) {
     type: SET_INITIAL_VALUES_OBJECT,
     payload: initialValuesObject
    };
+}
+
+export function createAgreement(agreementAttributes, callback) {
+  console.log('in actions index, createAgreement, agreementAttributes: ', agreementAttributes);
+  console.log('in actions index, createAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = agreementAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/agreements`, agreementAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createAgreement, response: ', response);
+      console.log('response to createAgreement, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_AGREEMENT,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+export function editAgreement(agreementAttributes, callback) {
+  console.log('in actions index, editAgreement, agreementAttributes: ', agreementAttributes);
+  console.log('in actions index, editAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = agreementAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/agreements/${id}`, agreementAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editAgreement, response: ', response);
+      console.log('response to editAgreement, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_AGREEMENT,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+export function deleteAgreement(id, callback) {
+  console.log('in actions index, deleteAgreement, agreementAttributes: ', agreementAttributes);
+  console.log('in actions index, deleteAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = agreementAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/agreements/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteAgreement, response: ', response);
+      console.log('response to deleteAgreement, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_AGREEMENT,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
 }

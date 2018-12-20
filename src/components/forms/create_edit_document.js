@@ -25,6 +25,8 @@ class CreateEditDocument extends Component {
       // set up state to take input from user
       clickedInfo: { elementX: '', elementY: '', page: '' },
     };
+
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -50,12 +52,37 @@ class CreateEditDocument extends Component {
         documentKey
       } = this.props;
       const documentFields = Documents[documentKey].form
-      console.log('in create_edit_document, componentDidUpdate, flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode', flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode);
+      let initialValuesObject = {};
+      // console.log('in create_edit_document, componentDidMount, flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode', flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode);
       // const documentKey = state.documents.createDocumentKey;
-      const initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+      if (this.props.showSavedDocument) {
+        // get values of each agreement document field
+        // const agreement = this.getAgreement(this.props.agreementId)
+        console.log('in create_edit_document, componentDidMount, this.props.agreement, initialValuesObject', this.props.agreement, initialValuesObject);
+        const returnedObject = this.getSavedInitialValuesObject(this.props.agreement);
+        initialValuesObject = { initialValuesObject: returnedObject }
+      } else {
+        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+      }
+      console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
+
+  getSavedInitialValuesObject(agreement) {
+    let objectReturned = {};
+    _.each(agreement.document_fields, eachField => {
+      if (eachField.value == 'f') {
+        objectReturned[eachField.name] = false;
+      } else if (eachField.value == 't') {
+        objectReturned[eachField.name] = true;
+      } else {
+        objectReturned[eachField.name] = eachField.value;
+      }
+    });
+    return objectReturned;
+  }
+
 
   // componentDidUpdate() {
     // if (updateCount < 2) {
@@ -164,35 +191,44 @@ class CreateEditDocument extends Component {
     return returnedChoice;
   }
 
-  handleFormSubmit(data) {
-    console.log('in create_edit_document, handleFormSubmit, data: ', data);
+  // handleFormSubmitSave(dataPassed) {
+  //   console.log('in create_edit_document, handleFormSubmitSave, data: ', data);
+  //   const data = dataPassed.data;
+  //   const contractName = Documents[this.props.createDocumentKey].file;
+  //   const paramsObject = { flat_id: this.props.flat.id, contract_name: contractName }
+  //
+  // }
+
+  handleFormSubmit({ data, submitAction }) {
+    console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
-    const paramsObject = { flat_id: this.props.flat.id, contract_name: contractName }
+    const paramsObject = { flat_id: this.props.flat.id, template_file_name: contractName, document_code: this.props.createDocumentKey, booking_id: this.props.booking.id, document_field: [] }
     // iterate through each key in data from form
 
     const requiredKeysArray = this.getRequiredKeys();
     // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
     const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
-    console.log('in create_edit_document, handleFormSubmit, nullRequiredKeys, contractName, requiredKeysArray : ', nullRequiredKeys, contractName, requiredKeysArray );
 
-    _.each(Object.keys(data), key => {
+    // _.each(Object.keys(data), key => {
+    _.each(this.props.allFields, key => {
+      // console.log('in create_edit_document, handleFormSubmit, key : ', key);
       let page = 0;
       // find out which page the key is on
       // iterate through Document form first level key to see if each object has key in quesiton
-      _.each(Object.keys(this.props.documentFields), pageKey => {
-        // console.log('in create_edit_document, handleFormSubmit, key, pageKey, (toString(key) in this.props.documentFields[pageKey]), pageKey: ', key, pageKey, (key in this.props.documentFields[pageKey]), this.props.documentFields[pageKey]);
+      _.each(Object.keys(this.props.documentFields), eachPageKey => {
+        // console.log('in create_edit_document, handleFormSubmit, key, eachPageKey, (toString(key) in this.props.documentFields[eachPageKey]), eachPageKey: ', key, eachPageKey, (key in this.props.documentFields[eachPageKey]), this.props.documentFields[eachPageKey]);
         // if the object has the key, that is the page the key is on
         // so set page variable so we can get choices from input key
-        if (key in this.props.documentFields[pageKey]) {
-          page = pageKey;
+        if (key in this.props.documentFields[eachPageKey]) {
+          page = eachPageKey;
         }
       });
       // console.log('in create_edit_document, handleFormSubmit, key is on page: ', page);
       // console.log('in create_edit_document, handleFormSubmit, data[key]: ', data[key]);
       // this.props.documentFields[key].params.value = data[key];
-      // paramsObject[key] = this.props.documentFields[key].params;
+      // paramsObject.document_field.push(this.props.do)cumentFields[key].params;
       let choice = {};
       _.each(this.props.documentFields[page][key].choices, eachChoice => {
         // console.log('in create_edit_document, handleFormSubmit, eachChoice: ', eachChoice);
@@ -203,21 +239,25 @@ class CreateEditDocument extends Component {
           // check for other vals of choices if more than 1 choice
           const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
           if (!otherChoicesHaveVal) {
-            choice.params.value = data[key];
+            if (key in data) {
+              choice.params.value = data[key]
+            } else {
+              choice.params.value = '';
+            }
             choice.params.page = page;
             choice.params.name = this.props.documentFields[page][key].name
             // if need to show full local language text on PDF, use documentLanguageCode from model choice
-            if (choice.showLocalLanguage) {
+            if (choice.showLocalLanguage && key in data) {
               // console.log('in create_edit_document, handleFormSubmit, choice, choice.selectChoices : ', choice, choice.selectChoices);
               // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
               const selectChoice = this.getSelectChoice(choice.selectChoices, data[key]);
               // assign display as an attribute in choice params
               choice.params.display_text = selectChoice[this.props.documentLanguageCode];
-              paramsObject[key] = choice.params;
+              paramsObject.document_field.push(choice.params);
             } else {
               // add params object with the top, left, width etc. to object to send to api
               // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
-              paramsObject[key] = choice.params;
+              paramsObject.document_field.push(choice.params);
             }
           }
         }
@@ -227,20 +267,26 @@ class CreateEditDocument extends Component {
           choice.params.value = data[key];
           choice.params.page = page;
           choice.params.name = this.props.documentFields[page][key].name
-          paramsObject[key] = choice.params;
+          paramsObject.document_field.push(choice.params);
         }
-      });
-    });
+      }); // end of documentFields each choice
+    }); // end of each Object.keys(data)
     console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
     if (nullRequiredKeys.length > 0) {
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('The fields highlighted in blue are required.');
       this.props.requiredFields(nullRequiredKeys);
-    } else {
+    } else if (submitAction == 'create') {
       this.props.authError('');
       this.props.requiredFields([]);
       // !!!!!!!
       // this.props.createContract(paramsObject, () => {});
+    } else if (submitAction == 'save') {
+      // console.log('in create_edit_document, handleFormSubmit, count for documentFields: ', paramsObject.document_field.length);
+
+      this.props.authError('');
+      this.props.requiredFields([]);
+      this.props.createAgreement(paramsObject, () => {});
     }
   }
 
@@ -302,7 +348,7 @@ class CreateEditDocument extends Component {
         if (fieldComponent == DocumentChoices) {
           _.each(formField.choices, eachChoice => {
             // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
-            if ((eachChoice.params.val !== 'inputFieldValue') && (formField.type != 'boolean')) {
+            if ((eachChoice.params.val !== 'inputFieldValue') && (formField.input_type != 'boolean')) {
               otherChoiceValues.push(eachChoice.params.val.toLowerCase());
             }
           })
@@ -321,7 +367,7 @@ class CreateEditDocument extends Component {
                 component={fieldComponent}
                 // pass page to custom compoenent, if component is input then don't pass
                 // props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
-                type={formField.type}
+                type={formField.input_type}
                 className={'form-control'}
                 style={{ height: formField.choices[0].params.height, margin: formField.choices[0].params.margin }}
                 // className={formField.component == 'input' ? 'form-control' : ''}
@@ -338,7 +384,7 @@ class CreateEditDocument extends Component {
               component={fieldComponent}
               // pass page to custom compoenent, if component is input then don't pass
               props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
-              type={formField.type}
+              type={formField.input_type}
               className={formField.component == 'input' ? 'form-control' : ''}
               style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding } : {}}
             />
@@ -416,15 +462,53 @@ class CreateEditDocument extends Component {
     return (
       <div className="test-image-pdf-jpg">
         <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Close</div>
-        <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Save</div>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
             {this.renderDocument()}
             {this.renderAlert()}
-          <button action="submit" id="submit-all" className="btn document-floating-button" style={{ left: '30%', backgroundColor: 'blue' }}>{AppLanguages.submit[appLanguageCode]}</button>
-        </form>
+            <button
+              value='save'
+              onClick={
+                handleSubmit(data =>
+                  this.handleFormSubmit({
+                      data,
+                      submitAction: 'save'
+                  }))
+              }
+              className="btn document-floating-button"
+              style={{ left: '60%', backgroundColor: 'cornflowerblue' }}
+            >
+            Save
+            </button>
+            <button
+              onClick={
+                handleSubmit(data =>
+                  this.handleFormSubmit({
+                      data,
+                      submitAction: 'create'
+                  }))
+              }
+              className="btn document-floating-button"
+              style={{ left: '30%', backgroundColor: 'blue' }}
+            >
+              {AppLanguages.submit[appLanguageCode]}
+            </button>
       </div>
     );
   }
+  // render() {
+  //   const { handleSubmit, appLanguageCode } = this.props;
+  //   // console.log('CreateEditDocument, render, this.props', this.props);
+  //   return (
+  //     <div className="test-image-pdf-jpg">
+  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Close</div>
+  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Save</div>
+  //       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+  //           {this.renderDocument()}
+  //           {this.renderAlert()}
+  //         <button action="submit" id="submit-all" className="btn document-floating-button" style={{ left: '30%', backgroundColor: 'blue' }}>{AppLanguages.submit[appLanguageCode]}</button>
+  //       </form>
+  //     </div>
+  //   );
+  // }
 }
 
 CreateEditDocument = reduxForm({
@@ -459,9 +543,9 @@ function mapStateToProps(state) {
     initialValues = state.documents.initialValuesObject;
     // const initialValues = { address: '1 Never never land' }
 
-    // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
-    // console.log('in create_edit_document, mapStateToProps, state: ', state);
-    console.log('in create_edit_document, mapStateToProps only:');
+    console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
+    console.log('in create_edit_document, mapStateToProps, state: ', state);
+    // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
       errorMessage: state.auth.error,
@@ -477,6 +561,7 @@ function mapStateToProps(state) {
       documents: state.documents,
       requiredFieldsNull: state.bookingData.requiredFields,
       createDocumentKey: state.documents.createDocumentKey,
+      allFields: state.documents.allFields,
       // !!!!!!for initialValues to be used in componentDidMount
       documentFields,
       flat: state.bookingData.flat,
@@ -487,6 +572,7 @@ function mapStateToProps(state) {
       documentLanguageCode: state.languages.documentLanguageCode,
       assignments: state.bookingData.assignments,
       contracts: state.bookingData.contracts,
+      // agreements: state.bookingData.agreements,
       // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
       // setCreateDocumentKey action fired and app state set
       // define new documents in constants/documents.js by identifying

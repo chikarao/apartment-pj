@@ -145,11 +145,18 @@ export default (props) => {
 
       return age;
   }
-
+    // object to return to create_edit_document.js
     const objectReturned = {};
+    // object to be used in handleFormSubmit
+    const allFields = [];
+
     _.each(documentFields, eachPageObject => {
       console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
       // for each page in this.props.documentFields
+      _.each(eachPageObject, eachField => {
+        allFields.push(eachField.name);
+      });
+
       _.each(Object.keys(flat), key => {
         // for each flat in boooking
         if (eachPageObject[key]) {
@@ -459,7 +466,7 @@ export default (props) => {
 
     console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, objectReturned: ', objectReturned);
     // return objectReturned for assignment to initialValues in mapStateToProps
-    return { initialValuesObject: objectReturned };
+    return { initialValuesObject: objectReturned, allFields };
   // }
 };
 // breaks text with reverse slash n into separate lines

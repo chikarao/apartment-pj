@@ -47,7 +47,7 @@ class DocumentChoices extends Component {
     let elementStyle = {};
 
     // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
-    if ((value.toString().toLowerCase() === choice.params.val.toString().toLowerCase()) && !choice.params.enclosedText) {
+    if ((value.toString().toLowerCase() === choice.params.val.toString().toLowerCase()) && !choice.params.enclosed_text) {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
     } else {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width };
@@ -69,9 +69,9 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, getStyleOfInputElement ');
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
-      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.fontSize };
+      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size };
     } else {
-      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.fontSize };
+      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size };
     }
 
     return elementStyle;
@@ -125,7 +125,7 @@ class DocumentChoices extends Component {
     return (
       <div
         key={choice.params.val}
-        type={choice.params.type}
+        type={choice.params.input_type}
         onClick={() => {
           // check if inactive key
           // console.log('DocumentChoices, createButtonElement this.props.formFields[this.props.page][name]', this.props.formFields[this.props.page][name])
@@ -156,15 +156,16 @@ class DocumentChoices extends Component {
             } // end of first if value == choice.params.val
           } // end of if !inactive
         }}
-        className={choice.params.className}
+        className={choice.params.class_name}
         // || (choice.params.val == this.props.allValues[choice.dependentKey])
         // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
         style={this.getStyleOfButtonElement(this.props.required, value, choice, fieldInactive)}
-      >{(choice.params.enclosedText) && (value == choice.params.val) ? choice.params.enclosedText : ''}</div>
+      >{(choice.params.enclosed_text) && (value == choice.params.val) ? choice.params.enclosed_text : ''}</div>
     );
   }
 
   createInputElement({ choice, meta, value }) {
+    console.log('DocumentChoices, createInputElement choice', choice);
     const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <input
@@ -173,8 +174,8 @@ class DocumentChoices extends Component {
           value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
-          type={choice.params.type}
-          className={choice.params.className}
+          type={choice.params.input_type}
+          className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
         />
@@ -182,7 +183,7 @@ class DocumentChoices extends Component {
   }
 
   renderSelectOptions(choice) {
-    console.log('DocumentChoices, renderSelectOptions choice', choice);
+    // console.log('DocumentChoices, renderSelectOptions choice', choice);
     const emptyChoice = { value: '', en: '', jp: '' };
     const choiceToChange = choice.selectChoices;
     choiceToChange[10] = emptyChoice;
@@ -202,8 +203,8 @@ class DocumentChoices extends Component {
           value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
-          type={choice.params.type}
-          className={choice.params.className}
+          type={choice.params.input_type}
+          className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
         >
@@ -224,8 +225,8 @@ class DocumentChoices extends Component {
           value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
-          type={choice.params.type}
-          className={choice.params.className}
+          type={choice.params.input_type}
+          className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
         />
@@ -246,11 +247,11 @@ class DocumentChoices extends Component {
       // this.anyOfOtherValues checks if any of the other choice.params.val matches value,
       // if so do not use as value, use ''
       // if choice type is string, use input element above and button if not string
-      if ((choice.params.type == 'string' || choice.params.type == 'date') && !choice.selectChoices ) {
+      if ((choice.params.input_type == 'string' || choice.params.input_type == 'date') && !choice.selectChoices ) {
         // define input element for user to input
         const inputElement = this.createInputElement({ choice, meta, value })
         return inputElement;
-      } else if (choice.params.type == 'text')  {
+      } else if (choice.params.input_type == 'text')  {
         const textareaElement = this.createTextareaElement({ choice, meta, value })
         return textareaElement;
       } else if (choice.selectChoices) {
