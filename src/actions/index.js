@@ -159,6 +159,7 @@ import {
   SET_INITIAL_VALUES_OBJECT,
   CREATE_AGREEMENT,
   EDIT_AGREEMENT,
+  EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT,
 } from './types';
 
@@ -2784,6 +2785,28 @@ export function editAgreement(agreementAttributes, callback) {
     });
   };
 }
+
+export function editAgreementFields(agreementFieldAttributes, callback) {
+  console.log('in actions index, editAgreementFields, agreementFieldAttributes: ', agreementFieldAttributes);
+  console.log('in actions index, editAgreementFields: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/update_agreement_fields`, agreementFieldAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editAgreementFields, response: ', response);
+      console.log('response to editAgreementFields, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_AGREEMENT_FIELDS,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
 export function deleteAgreement(id, callback) {
   console.log('in actions index, deleteAgreement, agreementAttributes: ', agreementAttributes);
   console.log('in actions index, deleteAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));

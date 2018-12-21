@@ -28,7 +28,9 @@ export default function (state = {
         ...state,
         initialValuesObject: action.payload.initialValuesObject,
         overlappedkeysMapped: action.payload.overlappedkeysMapped,
-        allFields: action.payload.allFields
+        allFields: action.payload.allFields,
+        agreementMappedById: action.payload.agreementMappedById,
+        agreementMappedByName: action.payload.agreementMappedByName,
       };
 
     default:

@@ -29,9 +29,9 @@ class DocumentChoices extends Component {
     // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name } } = this.props;
     // console.log('DocumentChoices, handleInputChange this.props', this.props);
-    // console.log('DocumentChoices, handleInputChange this.props, this.props.change', this.props, this.props.change);
     // sets state to give value to input field
-    return this.setState({ inputValue: event.target.value }, () => {
+    return this.setState({ ...this.state, inputValue: event.target.value }, () => {
+      console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue);
       // sets value in this.props and for submission of form
       onChange(this.state.inputValue);
     });
@@ -164,20 +164,24 @@ class DocumentChoices extends Component {
     );
   }
 
-  createInputElement({ choice, meta, value }) {
-    console.log('DocumentChoices, createInputElement choice', choice);
+  createInputElement({ choice, meta, value, input }) {
+    console.log('DocumentChoices, createInputElement choice, meta, input', choice, meta, input);
+    // const dirtyValue = this.state.inputValue || value;
     const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <input
           id="valueInput"
           maxLength={this.props.charLimit}
           value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          // value={dirtyValue}
           key={choice.params.val}
           onChange={this.handleInputChange.bind(this)}
           type={choice.params.input_type}
           className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
+          // ... passes all input attributes onChange, onBlur, onFocus etc allows foreign language input 
+          {...input}
         />
     );
   }
@@ -249,7 +253,7 @@ class DocumentChoices extends Component {
       // if choice type is string, use input element above and button if not string
       if ((choice.params.input_type == 'string' || choice.params.input_type == 'date') && !choice.selectChoices ) {
         // define input element for user to input
-        const inputElement = this.createInputElement({ choice, meta, value })
+        const inputElement = this.createInputElement({ choice, meta, value, input: this.props.input })
         return inputElement;
       } else if (choice.params.input_type == 'text')  {
         const textareaElement = this.createTextareaElement({ choice, meta, value })

@@ -10,6 +10,7 @@ import {
   EDIT_BOOKING,
   CREATE_AGREEMENT,
   EDIT_AGREEMENT,
+  EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
@@ -40,6 +41,10 @@ export default function (state = {
       return { ...state, fetchBookingData: action.payload.booking };
 
     case EDIT_AGREEMENT:
+      // console.log('in booking reducer, state: ', state);
+      return { ...state, fetchBookingData: action.payload.booking };
+
+    case EDIT_AGREEMENT_FIELDS:
       // console.log('in booking reducer, state: ', state);
       return { ...state, fetchBookingData: action.payload.booking };
 
