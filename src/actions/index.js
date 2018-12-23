@@ -161,6 +161,7 @@ import {
   EDIT_AGREEMENT,
   EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT,
+  EDIT_HISTORY_ARRAY,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2797,6 +2798,7 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
     .then(response => {
       console.log('response to editAgreementFields, response: ', response);
       console.log('response to editAgreementFields, response.data.data: ', response.data.data);
+      // EDIT_AGREEMENT_FIELDS called in booking and document reducer
       dispatch({
         type: EDIT_AGREEMENT_FIELDS,
         payload: response.data.data
@@ -2827,4 +2829,16 @@ export function deleteAgreement(id, callback) {
       callback();
     });
   };
+}
+
+export function editHistoryArray(editHistoryObject) {
+  console.log('in actions editHistoryArray, editHistoryObject:', editHistoryObject);
+  //flip state boolean
+  // callback();
+  // payload is {newEditHistoryItem: {ITEM}, action: 'add or delete_last or delete_first'}
+  // payload sent to documents reducer
+  return {
+    type: EDIT_HISTORY_ARRAY,
+    payload: editHistoryObject
+   };
 }

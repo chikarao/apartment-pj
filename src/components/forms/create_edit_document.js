@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { reduxForm, Field } from 'redux-form';
+// gettting proptypes warning with isDirty
+// import { isDirty } from 'redux-form/immutable'
 import { connect } from 'react-redux';
 import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 import cloudinary from 'cloudinary-core';
@@ -240,7 +242,7 @@ class CreateEditDocument extends Component {
     } else {
       fields = this.props.allFields;
     }
-    console.log('in create_edit_document, handleFormSubmit, fields: ', fields);
+      console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
     // iterate through all fields or just delta fields depending on showSavedDocument
     // ie user is editing an already saved document
     _.each(Object.keys(fields), key => {
@@ -271,7 +273,9 @@ class CreateEditDocument extends Component {
           // in case input has the same value as other buttons
           const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
           if (!otherChoicesHaveVal) {
-            choice.params.id = this.props.agreementMappedByName[key].id
+            if (this.props.showSavedDocument) {
+              choice.params.id = this.props.agreementMappedByName[key].id
+            }
             choice.params.page = page;
             choice.params.name = this.props.documentFields[page][key].name
             if (key in data) {
@@ -296,7 +300,9 @@ class CreateEditDocument extends Component {
         if (eachChoice.params.val == data[key]) {
           choice = eachChoice;
           // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
-          choice.params.id = this.props.agreementMappedByName[key].id
+          if (this.props.showSavedDocument) {
+            choice.params.id = this.props.agreementMappedByName[key].id
+          }
           choice.params.value = data[key];
           choice.params.page = page;
           choice.params.name = this.props.documentFields[page][key].name
@@ -315,25 +321,34 @@ class CreateEditDocument extends Component {
     }); // end of each Object.keys(data)
     console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
     if (nullRequiredKeys.length > 0) {
+      // if required keys that are null exist
       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
       this.props.authError('The fields highlighted in blue are required.');
       this.props.requiredFields(nullRequiredKeys);
     } else if (submitAction == 'create') {
       this.props.authError('');
       this.props.requiredFields([]);
-      // !!!!!!!
-      this.props.createContract(paramsObject, () => {});
+      // !!!!!!!create contract is creating a pdf
+      this.props.createContract(paramsObject, () => { this.props.showLoading(); });
+      this.props.showLoading();
+    } else if (submitAction == 'save_and_create') {
+      paramsObject.save_and_create = true;
+      this.props.editAgreementFields(paramsObject, () => { this.props.showLoading(); });
+      this.props.showLoading();
     } else if (submitAction == 'save') {
       // console.log('in create_edit_document, handleFormSubmit, count for documentFields: ', paramsObject.document_field.length);
       if (!this.props.showSavedDocument) {
         this.props.authError('');
         this.props.requiredFields([]);
+        // !!!!!!!createAgreement is creating an agreement instance and document fields
         this.props.createAgreement(paramsObject, () => {});
       } else {
         this.props.authError('');
         this.props.requiredFields([]);
         // if showSavedDocument set in booking_confirmation, editAgreement
-        this.props.editAgreementFields(paramsObject, () => { this.props.showLoading(); });
+        this.props.editAgreementFields(paramsObject, () => {
+          this.props.showLoading();
+        });
         this.props.showLoading();
       }
     }
@@ -498,48 +513,68 @@ class CreateEditDocument extends Component {
 
   handleFormCloseSaveClick(event) {
     const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value')
+    const elementVal = clickedElement.getAttribute('value');
     console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
     if (elementVal == 'close') {
       this.props.showDocument();
+      this.props.editHistoryArray({ editHistoryItem: {}, action: 'clear' })
     }
   }
 
-  render() {
+  renderDocumentButtons() {
     const { handleSubmit, appLanguageCode } = this.props;
+    const saveButtonActive = (this.props.editHistoryArrayProp.length > 0 && this.props.showSavedDocument) || !this.props.showSavedDocument;
+
+    return (
+      <div className="document-floating-button-box">
+        <button
+          onClick={
+          handleSubmit(data =>
+            this.handleFormSubmit({
+              data,
+              submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
+            }))
+          }
+          className="btn document-floating-button"
+          style={{ backgroundColor: 'blue' }}
+        >
+          {AppLanguages.createPdf[appLanguageCode]}
+        </button>
+        <button
+          value='close'
+          className="btn document-floating-button"
+          style={{ backgroundColor: 'gray' }}
+          onClick={this.handleFormCloseSaveClick.bind(this)}
+        >
+          {AppLanguages.close[appLanguageCode]}
+        </button>
+        <button
+            value='save'
+            onClick={saveButtonActive ?
+              handleSubmit(data =>
+                this.handleFormSubmit({
+                  data,
+                  submitAction: 'save'
+                }))
+                :
+                () => {}
+            }
+            className="btn document-floating-button"
+            style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', borderColor: 'lightgray', color: 'lightgray' }}
+          >
+            {AppLanguages.save[appLanguageCode]}
+          </button>
+      </div>
+    );
+  }
+
+  render() {
     // console.log('CreateEditDocument, render, this.props', this.props);
     return (
       <div className="test-image-pdf-jpg">
-        <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Close</div>
             {this.renderDocument()}
             {this.renderAlert()}
-            <button
-              value='save'
-              onClick={
-                handleSubmit(data =>
-                  this.handleFormSubmit({
-                      data,
-                      submitAction: 'save'
-                  }))
-              }
-              className="btn document-floating-button"
-              style={{ left: '60%', backgroundColor: 'cornflowerblue' }}
-            >
-            Save
-            </button>
-            <button
-              onClick={
-                handleSubmit(data =>
-                  this.handleFormSubmit({
-                      data,
-                      submitAction: 'create'
-                  }))
-              }
-              className="btn document-floating-button"
-              style={{ left: '30%', backgroundColor: 'blue' }}
-            >
-              {AppLanguages.submit[appLanguageCode]}
-            </button>
+            {this.renderDocumentButtons()}
       </div>
     );
   }
@@ -592,8 +627,9 @@ function mapStateToProps(state) {
     initialValues = state.documents.initialValuesObject;
     // const initialValues = { address: '1 Never never land' }
 
-    console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
-    console.log('in create_edit_document, mapStateToProps, state: ', state);
+    // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
+    // console.log('in create_edit_document, mapStateToProps, state: ', state);
+    // console.log('in create_edit_document, mapStateToProps, isDirty(CreateEditDocument)(state): ', isDirty('CreateEditDocument')(state));
     // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
@@ -611,6 +647,7 @@ function mapStateToProps(state) {
       requiredFieldsNull: state.bookingData.requiredFields,
       createDocumentKey: state.documents.createDocumentKey,
       allFields: state.documents.allFields,
+      editHistoryArrayProp: state.documents.editHistoryArray,
       // !!!!!!for initialValues to be used in componentDidMount
       documentFields,
       flat: state.bookingData.flat,
@@ -628,6 +665,7 @@ function mapStateToProps(state) {
       // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
       documentKey: state.documents.createDocumentKey,
       agreementMappedByName: state.documents.agreementMappedByName,
+      // isDirty: isDirty('CreateEditDocument')(state)
     };
   } else {
     return {};

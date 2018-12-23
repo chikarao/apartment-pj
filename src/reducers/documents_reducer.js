@@ -3,13 +3,16 @@ import {
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
   SET_CREATE_DOCUMENT_KEY,
   SET_INITIAL_VALUES_OBJECT,
+  EDIT_HISTORY_ARRAY,
+  EDIT_AGREEMENT_FIELDS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
 export default function (state = {
   initialValuesObject: {},
   overlappedkeysMapped: {},
-  allFields: []
+  allFields: [],
+  editHistoryArray: []
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -32,6 +35,19 @@ export default function (state = {
         agreementMappedById: action.payload.agreementMappedById,
         agreementMappedByName: action.payload.agreementMappedByName,
       };
+
+    case EDIT_HISTORY_ARRAY:
+      let array = [];
+      if (action.payload.action == 'add') {
+        array = [...state.editHistoryArray, action.payload.newEditHistoryItem];
+      } else if (action.payload.action == 'clear') {
+        array = [];
+      }
+      return { ...state, editHistoryArray: array };
+
+    case EDIT_AGREEMENT_FIELDS:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, editHistoryArray: [] };
 
     default:
       return state;

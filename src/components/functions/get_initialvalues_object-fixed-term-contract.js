@@ -148,13 +148,13 @@ export default (props) => {
     // object to return to create_edit_document.js
     const objectReturned = {};
     // object to be used in handleFormSubmit
-    const allFields = [];
+    const allFields = {};
 
     _.each(documentFields, eachPageObject => {
       console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
       // for each page in this.props.documentFields
-      _.each(eachPageObject, eachField => {
-        allFields.push(eachField.name);
+      _.each(eachPageObject, (eachField, i) => {
+        allFields[eachField.name] = i;
       });
 
       _.each(Object.keys(flat), key => {

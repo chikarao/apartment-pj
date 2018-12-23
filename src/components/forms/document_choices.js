@@ -11,15 +11,32 @@ class DocumentChoices extends Component {
     this.state = {
       // set up state to take input from user
       inputValue: '',
-      enclosedText: ''
+      enclosedText: '',
+      focusedInput: {},
+      blurredInput: {},
+      valueWhenInputFocused: '',
+      editHistoryArray: [],
     };
+
+    this.handleOnBlur = this.handleOnBlur.bind(this);
+    this.handleOnFocus = this.handleOnFocus.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
+
 
   shouldComponentUpdate(nextProps) {
     // checks to find out if each field value has changed, and if not will not call componentDidUpdate
-    // console.log('DocumentChoices, shouldComponentUpdate nextProps.input, this.props.input, nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value', nextProps.input, this.props.input, nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value);
+    // console.log('DocumentChoices, shouldComponentUpdate nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value', nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value);
+    // console.log('DocumentChoices, shouldComponentUpdate nextProps.input, this.props.input', nextProps.input.value, this.props.input.value);
     return nextProps.input.value != this.props.input.value;
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('DocumentChoices, componentDidUpdate prevState.focusedInput', prevState.focusedInput);
+  //   console.log('DocumentChoices, componentDidUpdate this.state.focusedInput', this.state.focusedInput);
+  //   console.log('DocumentChoices, componentDidUpdate this.state.blurredInput', this.state.blurredInput);
+  //   console.log('DocumentChoices, componentDidUpdate prevState.blurredInput', prevState.blurredInput);
+  // }
   // Take user input in input element
   handleInputChange(event) {
     // destructure local props from Field element of Redux Forms
@@ -27,14 +44,16 @@ class DocumentChoices extends Component {
     // onChange sets value of Field
     // name is the Field name that corresponds to DB column name
     // custom props eg charLimit does not destructure for some reason
-    const { input: { value, onChange, name } } = this.props;
-    // console.log('DocumentChoices, handleInputChange this.props', this.props);
+    const { input: { value, onChange, name }, meta, input } = this.props;
+    console.log('DocumentChoices, handleInputChange event.target.value', event.target.value);
+    // !!!!No need to use input element value props; update value directly with onChange in handleInputChange in RFv7.4.2
+    onChange(event.target.value);
+    console.log('DocumentChoices, handleInputChange input, meta', input, meta);
+    // return this.setState({ ...this.state, inputValue: event.target.value }, () => {
     // sets state to give value to input field
-    return this.setState({ ...this.state, inputValue: event.target.value }, () => {
-      console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue);
+      // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue);
       // sets value in this.props and for submission of form
-      onChange(this.state.inputValue);
-    });
+    // });
   }
   // empty input element when user clicks on button
   emptyInput() {
@@ -111,7 +130,7 @@ class DocumentChoices extends Component {
     count == 1 && this.props.allValues[name] == 'Yes' && (lastClickedValue == 'Could not be investigated' || lastClickedValue == 'No') ? count-- : '';
 
     const summaryObject = this.getSummaryKey(pageObject, wooden);
-    console.log('DocumentChoices, checkOverAllDegradation summaryObject, count, this.props.allValues: ', summaryObject, count, this.props.allValues)
+    // console.log('DocumentChoices, checkOverAllDegradation summaryObject, count, this.props.allValues: ', summaryObject, count, this.props.allValues)
 
     if (count > 0) {
       this.changeOtherFieldValues([summaryObject.name], meta, true);
@@ -121,6 +140,8 @@ class DocumentChoices extends Component {
   }
 
   createButtonElement({ choice, meta, onChange, value, name }) {
+    console.log('DocumentChoices, createButtonElement');
+
     const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
     return (
       <div
@@ -145,10 +166,12 @@ class DocumentChoices extends Component {
                 }
               } else if (this.props.formFields[this.props.page][name].degradationKey) {
                 // console.log('DocumentChoices, createButtonElement degradationKey true')
+                this.props.editHistoryArray({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
                 onChange(choice.params.val);
                 this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][name].wooden, meta, lastClickedValue: choice.params.val, name })
               } else {
                 // if no need to change other field values, just chnage own field value
+                this.props.editHistoryArray({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
                 onChange(choice.params.val);
               }
               // empty iput value of input field of same key
@@ -160,28 +183,55 @@ class DocumentChoices extends Component {
         // || (choice.params.val == this.props.allValues[choice.dependentKey])
         // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
         style={this.getStyleOfButtonElement(this.props.required, value, choice, fieldInactive)}
-      >{(choice.params.enclosed_text) && (value == choice.params.val) ? choice.params.enclosed_text : ''}</div>
+      >
+        {(choice.params.enclosed_text) && (value == choice.params.val) ? choice.params.enclosed_text : ''}
+      </div>
     );
   }
 
+  handleOnBlur(event) {
+    const blurredInput = event.target
+    // console.log('DocumentChoices, handleOnBlur, blurredInput', blurredInput);
+    // console.log('DocumentChoices, handleOnBlur, this.state.valueWhenInputFocused', this.state.valueWhenInputFocused);
+    if (blurredInput.value != this.state.valueWhenInputFocused) {
+      const newEditHistoryItem = { before: { value: this.state.valueWhenInputFocused, name: blurredInput.name }, after: { value: blurredInput.value, name: blurredInput.name } }
+      // this.setState(prevState => ({
+      //   editHistoryArray: [...prevState.editHistoryArray, editHistoryItem]
+      // })); // end of setState
+      this.props.editHistoryArray({ newEditHistoryItem, action: 'add' });
+    }
+  }
+
+  handleOnFocus(event) {
+    const focusedInput = event.target
+    const valueWhenInputFocused = event.target.value
+    this.setState({ focusedInput, valueWhenInputFocused }, () => {
+      // console.log('DocumentChoices, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
+    })
+  }
+
   createInputElement({ choice, meta, value, input }) {
-    console.log('DocumentChoices, createInputElement choice, meta, input', choice, meta, input);
-    // const dirtyValue = this.state.inputValue || value;
-    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    // console.log('DocumentChoices, createInputElement, dirtyValue', dirtyValue);
+
     return (
         <input
+          // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
+          // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          // place {...input } above so input props won't override custom props
+          // ... passes all input attributes onChange, onBlur, onFocus name, value etc allows foreign language input
+          {...input}
+          // override standard input props below
+          onChange={this.handleInputChange.bind(this)}
           id="valueInput"
           maxLength={this.props.charLimit}
-          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
-          // value={dirtyValue}
+          // value with this.state.inputValue is no longer need in RF v7.4.2;
           key={choice.params.val}
-          onChange={this.handleInputChange.bind(this)}
+          onBlur={this.handleOnBlur}
+          onFocus={this.handleOnFocus}
           type={choice.params.input_type}
           className={choice.params.class_name}
-          // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
-          // ... passes all input attributes onChange, onBlur, onFocus etc allows foreign language input 
-          {...input}
         />
     );
   }
@@ -193,20 +243,24 @@ class DocumentChoices extends Component {
     choiceToChange[10] = emptyChoice;
     return _.map(choiceToChange, (eachChoice, i) => {
       // if (eachChoice.value != 'Wooden') {
-        return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[this.props.documentLanguageCode] : eachChoice.value}</option>;
+      return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[this.props.documentLanguageCode] : eachChoice.value}</option>;
       // }
     });
   }
 
-  createSelectElement({ choice, meta, value }) {
+  createSelectElement({ choice, meta, value, input }) {
+    console.log('DocumentChoices, createSelectElement');
     const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <select
+        // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          {...input}
           id="valueInput"
           maxLength={this.props.charLimit}
-          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
-          onChange={this.handleInputChange.bind(this)}
+          onChange={this.handleInputChange}
+          onBlur={this.handleOnBlur}
+          onFocus={this.handleOnFocus}
           type={choice.params.input_type}
           className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
@@ -217,19 +271,23 @@ class DocumentChoices extends Component {
     );
   }
 
-  createTextareaElement({ choice, meta, value }) {
-    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+  createTextareaElement({ choice, value, input }) {
+    console.log('DocumentChoices, createTextareaElement');
+    // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <textarea
+          {...input}
           id="valueTextarea"
           name={choice.params.name}
           maxLength={this.props.charLimit}
           // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
           // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
-          value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
+          // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
-          onChange={this.handleInputChange.bind(this)}
+          // onChange={this.handleInputChange.bind(this)}
           type={choice.params.input_type}
+          onBlur={this.handleOnBlur}
+          onFocus={this.handleOnFocus}
           className={choice.params.class_name}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
@@ -238,7 +296,7 @@ class DocumentChoices extends Component {
   }
 
   renderEachChoice(choices) {
-    const { input: { value, onChange, name }, meta } = this.props;
+    const { input: { value, onChange, name, onBlur }, meta } = this.props;
     // console.log('DocumentChoices, renderEachChoice name, value, this.props', name, value, this.props)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
@@ -253,20 +311,21 @@ class DocumentChoices extends Component {
       // if choice type is string, use input element above and button if not string
       if ((choice.params.input_type == 'string' || choice.params.input_type == 'date') && !choice.selectChoices ) {
         // define input element for user to input
-        const inputElement = this.createInputElement({ choice, meta, value, input: this.props.input })
+        const inputElement = this.createInputElement({ choice, meta, value, onBlur, input: this.props.input })
         return inputElement;
       } else if (choice.params.input_type == 'text')  {
-        const textareaElement = this.createTextareaElement({ choice, meta, value })
+        const textareaElement = this.createTextareaElement({ choice, meta, value, input: this.props.input })
         return textareaElement;
       } else if (choice.selectChoices) {
-        const selectElement = this.createSelectElement({ choice, meta, value })
+        const selectElement = this.createSelectElement({ choice, meta, value, input: this.props.input })
         return selectElement;
       } else {
-        const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, name })
+        const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, input: this.props.input })
         return buttonElement;
       }
     });
   }
+
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { name } } = this.props;
@@ -283,7 +342,8 @@ function mapStateToProps(state) {
   return {
     allValues: state.form.CreateEditDocument.values,
     registeredFields: state.form.CreateEditDocument.registeredFields,
-    documentLanguageCode: state.languages.documentLanguageCode
+    documentLanguageCode: state.languages.documentLanguageCode,
+    editHistoryArrayProp: state.documents.editHistoryArray
   };
 }
 

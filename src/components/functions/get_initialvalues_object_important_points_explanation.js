@@ -303,7 +303,7 @@ export default (props) => {
   // define object to be returned to mapStateToProps in CreateEditDocument
   // const overlappedkeysMapped = { address: ['address_1'], size: ['size_1'], building_name: ['building_name_1'], unit: ['unit_1'], construction: ['construction_1'] };
     const objectReturned = {};
-    const allFields = [];
+    const allFields = {};
     // iterate throught each page of documentFields eg ImportantPointsExplanation
     // this will enable checking of whether flat or building object contains keys to assign
     _.each(documentFields, eachPageObject => {
@@ -312,8 +312,8 @@ export default (props) => {
       const tenantProfile = getProfile(booking.user.profiles, language);
       console.log('in get_initialvalues_object_important_points_explanation, ownerProfile, flat, booking, tenant, userOwner, documentLanguageCode: ', ownerProfile, flat, booking, tenant, userOwner, documentLanguageCode);
       // get all fiels names in one array; used in handleFormSubmit
-      _.each(eachPageObject, eachField => {
-        allFields.push(eachField.name);
+      _.each(eachPageObject, (eachField, i) => {
+        allFields[eachField.name] = i;
       });
       // form string for user tenant names
       if (tenantProfile.first_name && tenantProfile.last_name) {

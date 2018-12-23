@@ -216,7 +216,7 @@ const ImportantPointsExplanation = {
         name: 'construction',
         input_type: 'string',
         choices: {
-          0: { params: { val: 'inputFieldValue', top: '61%', left: '24.4%', width: '40.5%', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Building.construction.choices, showLocalLanguage: true },
+          0: { params: { val: 'inputFieldValue', top: '61%', left: '24.4%', width: '40.5%', height: '2%', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Building.construction.choices, showLocalLanguage: true },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'

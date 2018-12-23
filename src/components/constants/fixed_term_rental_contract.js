@@ -74,7 +74,7 @@ const FixedTermRentalContract = {
       input_type: 'string',
       choices: {
         0: { params: { val: 'Wooden', top: '21.6%', left: '45%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' }, selectChoices: Building.construction.choices }
+        1: { params: { val: 'inputFieldValue', top: '24%', left: '54.5%', width: '10%', height: '1.8%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' }, selectChoices: Building.construction.choices }
       },
       box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
       className: 'form-control-document',
