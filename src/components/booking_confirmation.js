@@ -266,7 +266,8 @@ class BookingConfirmation extends Component {
 
   renderEachAgreementSaved() {
     return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
-      return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
+      // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
+      return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{eachAgreement.document_name}</div>
     });
   }
 
@@ -289,7 +290,7 @@ class BookingConfirmation extends Component {
 
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
-                Documents on File:
+                Documents Saved:
               </div>
               <div className="booking-request-box-each-line-data">
               </div>
@@ -527,6 +528,13 @@ renderDocument() {
   return (
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+      goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+          console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+        this.setState({ showDocument: !this.state.showDocument }, () => {
+          console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+        });
+      })}
+      setAgreementId={(id) => this.setState({ agreementId: id })}
       showSavedDocument={this.state.showSavedDocument}
       agreementId={this.state.agreementId}
       agreement={agreementArray[0]}

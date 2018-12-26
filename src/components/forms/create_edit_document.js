@@ -26,10 +26,12 @@ class CreateEditDocument extends Component {
     this.state = {
       // set up state to take input from user
       clickedInfo: { elementX: '', elementY: '', page: '' },
+      valueWhenInputFocused: '',
+      inputFocused: {}
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
+    // this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleFormCloseSaveClick = this.handleFormCloseSaveClick.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
@@ -66,11 +68,11 @@ class CreateEditDocument extends Component {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
         const returnedObject = this.getSavedInitialValuesObject(this.props.agreement);
-        initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-        console.log('in create_edit_document, componentDidMount, in if showSavedDocument documentKey, initialValuesObject', documentKey, initialValuesObject);
+        initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
+        // console.log('in create_edit_document, componentDidMount, in if showSavedDocument documentKey, initialValuesObject', documentKey, initialValuesObject);
       } else {
-        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
-        console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
+        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey });
+        // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
       }
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
@@ -84,6 +86,8 @@ class CreateEditDocument extends Component {
     // populate initialValues object with backend persisted data;
     // true and false need to be set again since agreement.value is a string column
     // and cannot persist boolean in backend
+    initialValuesObject.document_name = agreement.document_name;
+
     _.each(agreement.document_fields, eachField => {
       if (eachField.value == 'f') {
         initialValuesObject[eachField.name] = false;
@@ -231,7 +235,7 @@ class CreateEditDocument extends Component {
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
-    const paramsObject = { flat_id: this.props.flat.id, template_file_name: contractName, document_code: this.props.createDocumentKey, booking_id: this.props.booking.id, document_field: [] }
+    const paramsObject = { flat_id: this.props.flat.id, template_file_name: contractName, document_code: this.props.createDocumentKey, booking_id: this.props.booking.id, document_name: data.document_name, document_field: [] }
     // iterate through each key in data from form
 
     const requiredKeysArray = this.getRequiredKeys();
@@ -345,9 +349,12 @@ class CreateEditDocument extends Component {
       this.props.authError('');
       this.props.requiredFields([]);
       // !!!!!!!create contract is creating a pdf
-      this.props.createContract(paramsObject, () => { this.props.showLoading(); });
       this.props.showLoading();
+      this.props.createContract(paramsObject, () => { this.props.showLoading(); });
     } else if (submitAction == 'save_and_create') {
+      this.props.authError('');
+      this.props.requiredFields([]);
+      // sets flag save_and_create for the backend API to save documentFields first before create PDF
       paramsObject.save_and_create = true;
       this.props.editAgreementFields(paramsObject, () => { this.props.showLoading(); });
       this.props.showLoading();
@@ -355,27 +362,25 @@ class CreateEditDocument extends Component {
       if (!this.props.showSavedDocument) {
         this.props.authError('');
         this.props.requiredFields([]);
-        // !!!!!!!createAgreement is creating an agreement instance and document fields
-        this.props.createAgreement(paramsObject, () => {});
+        // !!!!!!!createAgreement is creating an agreement and document fields in backend API
+        this.props.createAgreement(paramsObject, (id) => {
+          // clear out editHistory and initialValuesObject; keep documentKey!!!!!
+          this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
+          this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+          // calls setState({ agreementId: id }) in BookingConfirmation
+          // sets agreementId with id of new agreement and same documentKey sent back from API
+          this.props.setAgreementId(id);
+          // calls setState({ showSavedDocument: true, showDocument: false }) in BookingConfirmation
+          // after agreementId is set, unmount create agreement template
+          // by this.state showDocument: false, and mount new by showSavedDocument: true
+          this.props.goToSavedDocument();
+        });
       } else {
         this.props.authError('');
         this.props.requiredFields([]);
         // if showSavedDocument set in booking_confirmation, editAgreement
         this.props.editAgreementFields(paramsObject, (agreement) => {
           this.props.showLoading();
-          // const {
-          //   // flat,
-          //   // booking,
-          //   // userOwner,
-          //   // tenant,
-          //   // appLanguageCode,
-          //   // // documentFields,
-          //   // documentLanguageCode,
-          //   // assignments,
-          //   // contracts,
-          //   documentKey
-          // } = this.props;
-          // const documentFields = Documents[documentKey].form
           let initialValuesObject = {};
           const returnedObject = this.getSavedInitialValuesObject(agreement);
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
@@ -415,21 +420,34 @@ class CreateEditDocument extends Component {
   });
 }
 
-handleSelectChange(event) {
-  console.log('in create_edit_document, handleSelectChange, event.target.value: ', event.target.value);
-}
 handleOnBlur(event) {
   console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
+  const blurredInput = event.target
+  // console.log('DocumentChoices, handleOnBlur, blurredInput', blurredInput);
+  // console.log('DocumentChoices, handleOnBlur, this.state.valueWhenInputFocused', this.state.valueWhenInputFocused);
+  if (blurredInput.value != this.state.valueWhenInputFocused) {
+    const newEditHistoryItem = { before: { value: this.state.valueWhenInputFocused, name: blurredInput.name }, after: { value: blurredInput.value, name: blurredInput.name } }
+    // this.setState(prevState => ({
+      //   editHistory: [...prevState.editHistory, editHistoryItem]
+      // })); // end of setState
+      this.props.editHistory({ newEditHistoryItem, action: 'add' });
+    }
 }
+
 handleOnFocus(event) {
   console.log('in create_edit_document, handleOnFocus, event.target.value: ', event.target.value);
+  const focusedInput = event.target
+  const valueWhenInputFocused = event.target.value
+  this.setState({ focusedInput, valueWhenInputFocused }, () => {
+    // console.log('DocumentChoices, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
+  })
 }
 
 renderEachDocumentField(page) {
   let fieldComponent = '';
   // if (this.props.documentFields[page]) {
     return _.map(this.props.documentFields[page], (formField, i) => {
-      console.log('in create_edit_document, renderEachDocumentField, formField', formField);
+      // console.log('in create_edit_document, renderEachDocumentField, formField', formField);
       if (formField.component == 'DocumentChoices') {
         fieldComponent = DocumentChoices;
       } else {
@@ -464,7 +482,6 @@ renderEachDocumentField(page) {
               key={i}
               name={formField.name}
               component={fieldComponent}
-              onChange={this.handleSelectChange}
               onBlur={this.handleOnBlur}
               onFocus={this.handleOnFocus}
               // pass page to custom compoenent, if component is input then don't pass
@@ -533,7 +550,7 @@ renderEachDocumentField(page) {
       // const page = 1;
       // {this.renderNewElements(page)}
       return _.map(Object.keys(this.props.documentFields), page => {
-        console.log('in create_edit_document, renderDocument, page: ', page);
+        // console.log('in create_edit_document, renderDocument, page: ', page);
         return (
             <div
               key={page}
@@ -552,7 +569,7 @@ renderEachDocumentField(page) {
   handleFormCloseSaveClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
+    // console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
     if (elementVal == 'close') {
       this.props.showDocument();
       this.props.editHistory({ editHistoryItem: {}, action: 'clear' })

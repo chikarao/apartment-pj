@@ -16,6 +16,30 @@ import Building from './building.js';
 
 const ImportantPointsExplanation = {
   1: {
+      document_name: {
+        name: 'document_name',
+        // className: 'form-control-document',
+        // change from input componnet use DocumentChoices
+        component: 'DocumentChoices',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'documentAttributes',
+              top: '2%',
+              left: '37%',
+              width: '25%',
+              // change from input componnet use document-rectange
+              class_name: 'document-rectangle',
+              // !!! height works only with px
+              // height: '23px',
+              input_type: 'string',
+            }
+          }
+        },
+        required: true
+      },
+
       tenant_name: {
         name: 'tenant_name',
         input_type: 'string',

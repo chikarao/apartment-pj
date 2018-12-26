@@ -4,6 +4,7 @@ import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
 import Building from '../constants/building';
+import Documents from '../constants/documents';
 // imported constants are upper camel case
 // imported functions are lower camel case
 import getBookingDateObject from './get_booking_date_object';
@@ -15,7 +16,7 @@ export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
   console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode } = props;
   function getProfile(personProfiles, language) {
     let returnedProfile;
     _.each(personProfiles, eachProfile => {
@@ -321,6 +322,8 @@ export default (props) => {
         objectReturned.tenant_name = fullName;
         // objectReturned.tenant_phone = tenantProfile.phone;
       }
+      // Name of document; Not printed PDF but associated with documnt in agreement.document_name
+      objectReturned.document_name = Documents[documentKey][documentLanguageCode];
       // assign today's date
       const today = new Date();
       objectReturned.date_year = today.getFullYear();

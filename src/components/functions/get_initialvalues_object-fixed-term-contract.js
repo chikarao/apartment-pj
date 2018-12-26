@@ -3,12 +3,13 @@ import _ from 'lodash';
 import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
+import Documents from '../constants/documents';
 import getBookingDateObject from './get_booking_date_object';
 import getContractLength from './get_contract_length';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode } = props;
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
     let returnedProfile;
@@ -151,11 +152,13 @@ export default (props) => {
     const allFields = {};
 
     _.each(documentFields, eachPageObject => {
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
       // for each page in this.props.documentFields
       _.each(eachPageObject, (eachField, i) => {
         allFields[eachField.name] = i;
       });
+
+      objectReturned.document_name = Documents[documentKey][documentLanguageCode]
 
       _.each(Object.keys(flat), key => {
         // for each flat in boooking

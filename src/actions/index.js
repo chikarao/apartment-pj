@@ -2761,7 +2761,7 @@ export function createAgreement(agreementAttributes, callback) {
         payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
-      callback();
+      callback(response.data.data.agreement.id);
     });
   };
 }

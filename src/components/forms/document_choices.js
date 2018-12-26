@@ -223,13 +223,6 @@ class DocumentChoices extends Component {
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     // console.log('DocumentChoices, createInputElement, dirtyValue', dirtyValue);
     // console.log('DocumentChoices, createInputElement input, meta.dirty, value, this.props.dirtyFields', input, meta.dirty, value, this.props.dirtyFields);
-    // if (this.props.dirtyFields[name]) {
-    //    if (this.props.dirtyFields[name] != meta.dirty) {
-    //      this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty });
-    //    }
-    // } else if (meta.dirty) {
-    //   this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty });
-    // }
     return (
         <input
           // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
@@ -255,6 +248,7 @@ class DocumentChoices extends Component {
   renderSelectOptions(choice) {
     // console.log('DocumentChoices, renderSelectOptions choice', choice);
     const emptyChoice = { value: '', en: '', jp: '' };
+    // choice is mapped to a model in ../constant/
     const choiceToChange = choice.selectChoices;
     choiceToChange[10] = emptyChoice;
     return _.map(choiceToChange, (eachChoice, i) => {
