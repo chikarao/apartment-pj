@@ -151,8 +151,8 @@ const ImportantPointsExplanation = {
         name: 'contract_work_sub_type',
         input_type: 'string',
         choices: {
-          0: { params: { val: 'broker', top: '44.9%', left: '59%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
-          1: { params: { val: 'representative', top: '44.9%', left: '74.8%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
+          0: { params: { val: 'representative', top: '44.9%', left: '59%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'broker', top: '44.9%', left: '74.8%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
           // 2: { params: { val: 'single_family', top: '25.8%', left: '27%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } },
           // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
         },

@@ -2958,6 +2958,7 @@ form {
   border-radius: 10px;
   z-index: 2;
   margin-left: 8%;
+  padding: 5px;
 }
 
 /* .document-floating-button:hover {

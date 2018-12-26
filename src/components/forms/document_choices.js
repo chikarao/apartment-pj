@@ -15,7 +15,7 @@ class DocumentChoices extends Component {
       focusedInput: {},
       blurredInput: {},
       valueWhenInputFocused: '',
-      editHistoryArray: [],
+      // editHistoryArray: [],
     };
 
     this.handleOnBlur = this.handleOnBlur.bind(this);
@@ -27,6 +27,10 @@ class DocumentChoices extends Component {
   shouldComponentUpdate(nextProps) {
     // checks to find out if each field value has changed, and if not will not call componentDidUpdate
     // console.log('DocumentChoices, shouldComponentUpdate nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value', nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value);
+    // console.log('DocumentChoices, shouldComponentUpdate, nextProps, this.props', nextProps, this.props);
+    // if (nextProps.meta.initial != this.props.meta.initial) {
+    //   this.props.editHistory({ action: 'dirtyFieldCount', count: 1 })
+    // }
     // console.log('DocumentChoices, shouldComponentUpdate nextProps.input, this.props.input', nextProps.input.value, this.props.input.value);
     return nextProps.input.value != this.props.input.value;
   }
@@ -45,10 +49,14 @@ class DocumentChoices extends Component {
     // name is the Field name that corresponds to DB column name
     // custom props eg charLimit does not destructure for some reason
     const { input: { value, onChange, name }, meta, input } = this.props;
-    console.log('DocumentChoices, handleInputChange event.target.value', event.target.value);
+    // console.log('DocumentChoices, handleInputChange event.target.value', event.target.value);
     // !!!!No need to use input element value props; update value directly with onChange in handleInputChange in RFv7.4.2
     onChange(event.target.value);
-    console.log('DocumentChoices, handleInputChange input, meta', input, meta);
+    console.log('DocumentChoices, handleInputChange input, meta, meta.dirty, value, event.target.value, this.props.dirtyFields', input,meta,  meta.dirty, value, event.target.value, this.props.dirtyFields);
+    // check if name is false in dirtyFields in state; if so flip
+    // if (this.props.dirtyFields[name] != meta.dirty) {
+    //   this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty })
+    // }
     // return this.setState({ ...this.state, inputValue: event.target.value }, () => {
     // sets state to give value to input field
       // console.log('DocumentChoices, handleInputChange this.state.inputValue', this.state.inputValue);
@@ -166,12 +174,12 @@ class DocumentChoices extends Component {
                 }
               } else if (this.props.formFields[this.props.page][name].degradationKey) {
                 // console.log('DocumentChoices, createButtonElement degradationKey true')
-                this.props.editHistoryArray({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
+                this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
                 onChange(choice.params.val);
                 this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][name].wooden, meta, lastClickedValue: choice.params.val, name })
               } else {
                 // if no need to change other field values, just chnage own field value
-                this.props.editHistoryArray({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
+                this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.params.val, name } }, action: 'add' })
                 onChange(choice.params.val);
               }
               // empty iput value of input field of same key
@@ -196,9 +204,9 @@ class DocumentChoices extends Component {
     if (blurredInput.value != this.state.valueWhenInputFocused) {
       const newEditHistoryItem = { before: { value: this.state.valueWhenInputFocused, name: blurredInput.name }, after: { value: blurredInput.value, name: blurredInput.name } }
       // this.setState(prevState => ({
-      //   editHistoryArray: [...prevState.editHistoryArray, editHistoryItem]
+      //   editHistory: [...prevState.editHistory, editHistoryItem]
       // })); // end of setState
-      this.props.editHistoryArray({ newEditHistoryItem, action: 'add' });
+      this.props.editHistory({ newEditHistoryItem, action: 'add' });
     }
   }
 
@@ -210,19 +218,26 @@ class DocumentChoices extends Component {
     })
   }
 
-  createInputElement({ choice, meta, value, input }) {
+  createInputElement({ choice, meta, value, input, name }) {
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     // console.log('DocumentChoices, createInputElement, dirtyValue', dirtyValue);
-
+    // console.log('DocumentChoices, createInputElement input, meta.dirty, value, this.props.dirtyFields', input, meta.dirty, value, this.props.dirtyFields);
+    // if (this.props.dirtyFields[name]) {
+    //    if (this.props.dirtyFields[name] != meta.dirty) {
+    //      this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty });
+    //    }
+    // } else if (meta.dirty) {
+    //   this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty });
+    // }
     return (
         <input
           // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
-          // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           // place {...input } above so input props won't override custom props
           // ... passes all input attributes onChange, onBlur, onFocus name, value etc allows foreign language input
           {...input}
+          // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
           // override standard input props below
-          onChange={this.handleInputChange.bind(this)}
+          onChange={this.handleInputChange}
           id="valueInput"
           maxLength={this.props.charLimit}
           // value with this.state.inputValue is no longer need in RF v7.4.2;
@@ -250,11 +265,11 @@ class DocumentChoices extends Component {
 
   createSelectElement({ choice, meta, value, input }) {
     console.log('DocumentChoices, createSelectElement');
-    const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <select
-        // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           {...input}
+          value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
           id="valueInput"
           maxLength={this.props.charLimit}
           key={choice.params.val}
@@ -311,7 +326,7 @@ class DocumentChoices extends Component {
       // if choice type is string, use input element above and button if not string
       if ((choice.params.input_type == 'string' || choice.params.input_type == 'date') && !choice.selectChoices ) {
         // define input element for user to input
-        const inputElement = this.createInputElement({ choice, meta, value, onBlur, input: this.props.input })
+        const inputElement = this.createInputElement({ choice, meta, value, onBlur, name, input: this.props.input })
         return inputElement;
       } else if (choice.params.input_type == 'text')  {
         const textareaElement = this.createTextareaElement({ choice, meta, value, input: this.props.input })
@@ -339,11 +354,13 @@ class DocumentChoices extends Component {
 
 function mapStateToProps(state) {
   // console.log('in document_choices, mapStateToProps, state: ', state);
+  // console.log('in document_choices, mapStateToProps: ');
   return {
     allValues: state.form.CreateEditDocument.values,
     registeredFields: state.form.CreateEditDocument.registeredFields,
     documentLanguageCode: state.languages.documentLanguageCode,
-    editHistoryArrayProp: state.documents.editHistoryArray
+    editHistoryProp: state.documents.editHistory,
+    dirtyFields: state.documents.dirtyObject,
   };
 }
 

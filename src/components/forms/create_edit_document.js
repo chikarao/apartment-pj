@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { reduxForm, Field } from 'redux-form';
+import { reduxForm, Field, isDirty } from 'redux-form';
 // gettting proptypes warning with isDirty
 // import { isDirty } from 'redux-form/immutable'
 import { connect } from 'react-redux';
@@ -29,6 +29,10 @@ class CreateEditDocument extends Component {
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleFormCloseSaveClick = this.handleFormCloseSaveClick.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
+    this.handleOnFocus = this.handleOnFocus.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -264,7 +268,7 @@ class CreateEditDocument extends Component {
       // paramsObject.document_field.push(this.props.do)cumentFields[key].params;
       let choice = {};
       _.each(this.props.documentFields[page][key].choices, eachChoice => {
-        // console.log('in create_edit_document, handleFormSubmit, eachChoice: ', eachChoice);
+        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice: ', key, eachChoice);
         // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
@@ -297,9 +301,20 @@ class CreateEditDocument extends Component {
           }
         }
         // in case of button and there is data[key]
-        if (eachChoice.params.val == data[key]) {
+        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice.params.val == data[key] eachChoice.params.val, data[key] eachChoice, eachChoice.params: ', key, eachChoice.params.val == data[key], eachChoice.params.val, data[key], eachChoice, eachChoice.params);
+        // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val == data[k]: ', eachChoice.params.val == data[key]);
+        // console.log('in create_edit_document, handleFormSubmit, typeof eachChoice.params.val, typeof data[k]: ', typeof eachChoice.params.val, typeof data[key]);
+        let dataRefined = ''
+        if (data[key] == 'true') {
+          dataRefined = true;
+        } else if (data[key] == 'false') {
+          dataRefined = false;
+        } else {
+          dataRefined = data[key];
+        }
+
+        if (eachChoice.params.val == dataRefined) {
           choice = eachChoice;
-          // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
           if (this.props.showSavedDocument) {
             choice.params.id = this.props.agreementMappedByName[key].id
           }
@@ -336,7 +351,6 @@ class CreateEditDocument extends Component {
       this.props.editAgreementFields(paramsObject, () => { this.props.showLoading(); });
       this.props.showLoading();
     } else if (submitAction == 'save') {
-      // console.log('in create_edit_document, handleFormSubmit, count for documentFields: ', paramsObject.document_field.length);
       if (!this.props.showSavedDocument) {
         this.props.authError('');
         this.props.requiredFields([]);
@@ -346,8 +360,28 @@ class CreateEditDocument extends Component {
         this.props.authError('');
         this.props.requiredFields([]);
         // if showSavedDocument set in booking_confirmation, editAgreement
-        this.props.editAgreementFields(paramsObject, () => {
+        this.props.editAgreementFields(paramsObject, (agreement) => {
           this.props.showLoading();
+          // const {
+          //   // flat,
+          //   // booking,
+          //   // userOwner,
+          //   // tenant,
+          //   // appLanguageCode,
+          //   // // documentFields,
+          //   // documentLanguageCode,
+          //   // assignments,
+          //   // contracts,
+          //   documentKey
+          // } = this.props;
+          // const documentFields = Documents[documentKey].form
+          let initialValuesObject = {};
+          const returnedObject = this.getSavedInitialValuesObject(agreement);
+          initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
+          // console.log('in create_edit_document, handleFormSubmit, initialValuesObject.initialValuesObject: ', initialValuesObject.initialValuesObject);
+          this.props.setInitialValuesObject(initialValuesObject);
+          // initialize if a redux form action creator to set initialValues again, but don't need here
+          // this.props.initialize(initialValuesObject.initialValuesObject);
         });
         this.props.showLoading();
       }
@@ -372,7 +406,6 @@ class CreateEditDocument extends Component {
     // rendering options for select fields
   return _.map(Object.keys(choices), (eachKey, i) => {
     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
-    // console.log('in create_edit_document, renderSelectChoices, name, modelChoice: ', name, modelChoice);
     const languageCode = this.props.documentLanguageCode;
         return (
         <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]}</option>
@@ -381,80 +414,84 @@ class CreateEditDocument extends Component {
   });
 }
 
-  renderEachDocumentField(page) {
-    let fieldComponent = '';
-    // if (this.props.documentFields[page]) {
-      return _.map(this.props.documentFields[page], (formField, i) => {
-        console.log('in create_edit_document, renderEachDocumentField');
-        // console.log('in create_edit_document, renderEachDocumentField, page, this.props.documentFields[page], formField ', page, this.props.documentFields[page], formField);
-        // console.log('in create_edit_document, renderEachDocumentField, formField ', formField);
-        if (formField.component == 'DocumentChoices') {
-          fieldComponent = DocumentChoices;
-        } else {
-          fieldComponent = formField.component;
-        }
-        // <fieldset key={formField.name} className="form-group document-form-group" style={{ top: formField.top, left: formField.left, borderColor: formField.borderColor }}>
-        // <fieldset key={formField.name} className={formField.component == 'input' ? 'form-group form-group-document' : 'form-group'} style={{ borderColor: formField.borderColor, top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width }}>
-        // </fieldset>
+handleSelectChange(event) {
+  console.log('in create_edit_document, handleSelectChange, event.target.value: ', event.target.value);
+}
+handleOnBlur(event) {
+  console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
+}
+handleOnFocus(event) {
+  console.log('in create_edit_document, handleOnFocus, event.target.value: ', event.target.value);
+}
 
-        let nullRequiredField = false;
-        if (this.props.requiredFieldsNull) {
-          if (this.props.requiredFieldsNull.length > 0) {
-            nullRequiredField = this.props.requiredFieldsNull.includes(formField.name);
-            // console.log('in create_edit_document, renderEachDocumentField, this.props.requiredFieldsNull: ', this.props.requiredFieldsNull);
-            // console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
+renderEachDocumentField(page) {
+  let fieldComponent = '';
+  // if (this.props.documentFields[page]) {
+    return _.map(this.props.documentFields[page], (formField, i) => {
+      // console.log('in create_edit_document, renderEachDocumentField');
+      if (formField.component == 'DocumentChoices') {
+        fieldComponent = DocumentChoices;
+      } else {
+        fieldComponent = formField.component;
+      }
+
+      let nullRequiredField = false;
+      if (this.props.requiredFieldsNull) {
+        if (this.props.requiredFieldsNull.length > 0) {
+          nullRequiredField = this.props.requiredFieldsNull.includes(formField.name);
+        }
+      }
+
+      let otherChoiceValues = [];
+      if (fieldComponent == DocumentChoices) {
+        _.each(formField.choices, eachChoice => {
+          // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
+          if ((eachChoice.params.val !== 'inputFieldValue') && (formField.input_type != 'boolean')) {
+            otherChoiceValues.push(eachChoice.params.val.toLowerCase());
           }
-        }
-        if (nullRequiredField) {
-          // console.log('in create_edit_document, renderEachDocumentField, formField.name this.props.requiredFieldsNull, nullRequiredField: ', formField.name, this.props.requiredFieldsNull, nullRequiredField);
-        }
-        let otherChoiceValues = [];
-        if (fieldComponent == DocumentChoices) {
-          _.each(formField.choices, eachChoice => {
-            // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
-            if ((eachChoice.params.val !== 'inputFieldValue') && (formField.input_type != 'boolean')) {
-              otherChoiceValues.push(eachChoice.params.val.toLowerCase());
-            }
-          })
-        }
-        // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
+        })
+      }
+      // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
 
-        if (fieldComponent == 'select') {
-          return (
-            <div
-              style={{ position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height }}
-              key={i}
-            >
-              <Field
-                key={i}
-                name={formField.name}
-                component={fieldComponent}
-                // pass page to custom compoenent, if component is input then don't pass
-                // props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
-                type={formField.input_type}
-                className={'form-control'}
-                style={{ height: formField.choices[0].params.height, margin: formField.choices[0].params.margin }}
-                // className={formField.component == 'input' ? 'form-control' : ''}
-              >
-                {this.renderSelectChoices(formField.choices, formField.mapToModel, formField.name)}
-              </Field>
-            </div>
-          );
-        } else {
-          return (
+      if (fieldComponent == 'select') {
+        return (
+          <div
+            style={{ position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height }}
+            key={i}
+          >
             <Field
               key={i}
               name={formField.name}
               component={fieldComponent}
+              onChange={this.handleSelectChange}
+              onBlur={this.handleOnBlur}
+              onFocus={this.handleOnFocus}
               // pass page to custom compoenent, if component is input then don't pass
-              props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
+              // props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit } : {}}
               type={formField.input_type}
-              className={formField.component == 'input' ? 'form-control' : ''}
-              style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding } : {}}
-            />
-          );
-        }
-      });
+              className={'form-control'}
+              style={{ height: formField.choices[0].params.height, margin: formField.choices[0].params.margin }}
+              // className={formField.component == 'input' ? 'form-control' : ''}
+            >
+              {this.renderSelectChoices(formField.choices, formField.mapToModel, formField.name)}
+            </Field>
+          </div>
+        );
+      } else {
+        return (
+          <Field
+            key={i}
+            name={formField.name}
+            component={fieldComponent}
+            // pass page to custom compoenent, if component is input then don't pass
+            props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
+            type={formField.input_type}
+            className={formField.component == 'input' ? 'form-control' : ''}
+            style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding } : {}}
+          />
+        );
+      }
+    });
     // }
   }
   // NOT USED; Experiment for creating new input fields
@@ -517,14 +554,19 @@ class CreateEditDocument extends Component {
     console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
     if (elementVal == 'close') {
       this.props.showDocument();
-      this.props.editHistoryArray({ editHistoryItem: {}, action: 'clear' })
+      this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
     }
   }
 
   renderDocumentButtons() {
     const { handleSubmit, appLanguageCode } = this.props;
-    const saveButtonActive = (this.props.editHistoryArrayProp.length > 0 && this.props.showSavedDocument) || !this.props.showSavedDocument;
-
+    let saveButtonActive = false;
+    if (this.props.formIsDirty && this.props.showSavedDocument) {
+      saveButtonActive = true;
+    }
+    if (!this.props.showSavedDocument) {
+      saveButtonActive = true;
+    }
     return (
       <div className="document-floating-button-box">
         <button
@@ -544,12 +586,13 @@ class CreateEditDocument extends Component {
           value='close'
           className="btn document-floating-button"
           style={{ backgroundColor: 'gray' }}
-          onClick={this.handleFormCloseSaveClick.bind(this)}
+          onClick={this.handleFormCloseSaveClick}
         >
           {AppLanguages.close[appLanguageCode]}
         </button>
-        <button
+        <div
             value='save'
+            // submit save only if formIsDirty
             onClick={saveButtonActive ?
               handleSubmit(data =>
                 this.handleFormSubmit({
@@ -559,17 +602,16 @@ class CreateEditDocument extends Component {
                 :
                 () => {}
             }
-            className="btn document-floating-button"
-            style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', borderColor: 'lightgray', color: 'lightgray' }}
+            className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
+            style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
           >
             {AppLanguages.save[appLanguageCode]}
-          </button>
+          </div>
       </div>
     );
   }
 
   render() {
-    // console.log('CreateEditDocument, render, this.props', this.props);
     return (
       <div className="test-image-pdf-jpg">
             {this.renderDocument()}
@@ -626,10 +668,10 @@ function mapStateToProps(state) {
     // initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
     initialValues = state.documents.initialValuesObject;
     // const initialValues = { address: '1 Never never land' }
-
+    // selector from redux form; true if any field on form is dirty
+    const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
-    // console.log('in create_edit_document, mapStateToProps, state: ', state);
-    // console.log('in create_edit_document, mapStateToProps, isDirty(CreateEditDocument)(state): ', isDirty('CreateEditDocument')(state));
+    // console.log('in create_edit_document, mapStateToProps, state: ');
     // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
@@ -665,6 +707,7 @@ function mapStateToProps(state) {
       // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
       documentKey: state.documents.createDocumentKey,
       agreementMappedByName: state.documents.agreementMappedByName,
+      formIsDirty,
       // isDirty: isDirty('CreateEditDocument')(state)
     };
   } else {

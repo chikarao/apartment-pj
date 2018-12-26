@@ -161,7 +161,7 @@ import {
   EDIT_AGREEMENT,
   EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT,
-  EDIT_HISTORY_ARRAY,
+  EDIT_HISTORY,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2804,7 +2804,7 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
         payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
-      callback();
+      callback(response.data.data.agreement);
     });
   };
 }
@@ -2831,14 +2831,14 @@ export function deleteAgreement(id, callback) {
   };
 }
 
-export function editHistoryArray(editHistoryObject) {
-  console.log('in actions editHistoryArray, editHistoryObject:', editHistoryObject);
+export function editHistory(editHistoryObject) {
+  console.log('in actions editHistory, editHistoryObject:', editHistoryObject);
   //flip state boolean
   // callback();
   // payload is {newEditHistoryItem: {ITEM}, action: 'add or delete_last or delete_first'}
   // payload sent to documents reducer
   return {
-    type: EDIT_HISTORY_ARRAY,
+    type: EDIT_HISTORY,
     payload: editHistoryObject
    };
 }

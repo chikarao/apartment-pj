@@ -157,4 +157,4 @@ export const CREATE_AGREEMENT = 'create_agreement';
 export const EDIT_AGREEMENT = 'edit_agreement';
 export const EDIT_AGREEMENT_FIELDS = 'edit_agreement_fields';
 export const DELETE_AGREEMENT = 'delete_agreement';
-export const EDIT_HISTORY_ARRAY = 'edit_history_array';
+export const EDIT_HISTORY = 'edit_history';
