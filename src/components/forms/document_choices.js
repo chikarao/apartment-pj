@@ -70,11 +70,12 @@ class DocumentChoices extends Component {
     });
   }
 
-  getStyleOfButtonElement(required, value, choice, inactive) {
+  getStyleOfButtonElement({ required, value, choice, inactive, name }) {
     let elementStyle = {};
 
-    // console.log('DocumentChoices, getStyleOfButtonElement, required, value, choice.val ', required, value, choice.params.val);
-    if ((value.toString().toLowerCase() === choice.params.val.toString().toLowerCase()) && !choice.params.enclosed_text) {
+    // console.log('DocumentChoices, getStyleOfButton, name, typeof value, value, typeof choice.params.val, choice.params.val ', name, typeof value, value, typeof choice.params.val, choice.params.val);
+    console.log('DocumentChoices, getStyleOfButton, name, value ', name, value);
+    if ((value.toString().toLowerCase() == choice.params.val.toString().toLowerCase()) && !choice.params.enclosed_text) {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width };
     } else {
       elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width };
@@ -148,7 +149,7 @@ class DocumentChoices extends Component {
   }
 
   createButtonElement({ choice, meta, onChange, value, name }) {
-    console.log('DocumentChoices, createButtonElement');
+    console.log('DocumentChoices, createButtonElement, name, choice, value', name, choice, value);
 
     const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
     return (
@@ -190,7 +191,7 @@ class DocumentChoices extends Component {
         className={choice.params.class_name}
         // || (choice.params.val == this.props.allValues[choice.dependentKey])
         // style={value == choice.params.val ? { top: choice.params.top, left: choice.params.left, borderColor: 'black', width: choice.params.width } : { top: choice.params.top, left: choice.params.left, borderColor: 'lightgray', width: choice.params.width }}
-        style={this.getStyleOfButtonElement(this.props.required, value, choice, fieldInactive)}
+        style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
       >
         {(choice.params.enclosed_text) && (value == choice.params.val) ? choice.params.enclosed_text : ''}
       </div>
@@ -311,8 +312,8 @@ class DocumentChoices extends Component {
   }
 
   renderEachChoice(choices) {
-    const { input: { value, onChange, name, onBlur }, meta } = this.props;
-    // console.log('DocumentChoices, renderEachChoice name, value, this.props', name, value, this.props)
+    const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
+    console.log('DocumentChoices, renderEachChoice name, value, input', name, value, input)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!

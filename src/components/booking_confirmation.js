@@ -25,6 +25,7 @@ class BookingConfirmation extends Component {
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
+    this.handleEditReviewClick = this.handleEditReviewClick.bind(this);
   }
 
   componentDidMount() {
@@ -491,7 +492,7 @@ renderReview() {
                   {this.renderStars()}
                 </div>
                 </div>
-                <div value={review.id} className="review-bottom-details-edit" onClick={this.handleEditReviewClick.bind(this)}>
+                <div value={review.id} className="review-bottom-details-edit" onClick={this.handleEditReviewClick}>
                   Edit
                 </div>
 
@@ -521,8 +522,8 @@ renderReview() {
 }
 
 renderDocument() {
-  // console.log('in booking confirmation, renderDocument:');
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
+  console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   return (
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
@@ -542,7 +543,7 @@ handleDocumentCreateClick(event) {
   // if showDocument is false, just create document key with the document code
   if (!this.state.showDocument) {
     this.props.setCreateDocumentKey(elementVal, () => {
-      this.setState({ showDocument: true });
+      this.setState({ showDocument: true, showSavedDocument: false, agreementId: '' });
     });
   } else {
     // if showDocument is true (currently showing document),

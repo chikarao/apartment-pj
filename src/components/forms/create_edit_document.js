@@ -65,11 +65,12 @@ class CreateEditDocument extends Component {
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
-        // console.log('in create_edit_document, componentDidMount, this.props.agreement, initialValuesObject', this.props.agreement, initialValuesObject);
         const returnedObject = this.getSavedInitialValuesObject(this.props.agreement);
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
+        console.log('in create_edit_document, componentDidMount, in if showSavedDocument documentKey, initialValuesObject', documentKey, initialValuesObject);
       } else {
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+        console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
       }
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
@@ -428,7 +429,7 @@ renderEachDocumentField(page) {
   let fieldComponent = '';
   // if (this.props.documentFields[page]) {
     return _.map(this.props.documentFields[page], (formField, i) => {
-      // console.log('in create_edit_document, renderEachDocumentField');
+      console.log('in create_edit_document, renderEachDocumentField, formField', formField);
       if (formField.component == 'DocumentChoices') {
         fieldComponent = DocumentChoices;
       } else {
@@ -452,7 +453,7 @@ renderEachDocumentField(page) {
         })
       }
       // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
-
+      // select objects that are not DocumentChoices components
       if (fieldComponent == 'select') {
         return (
           <div
@@ -555,6 +556,8 @@ renderEachDocumentField(page) {
     if (elementVal == 'close') {
       this.props.showDocument();
       this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
+      this.props.setCreateDocumentKey('', () => {});
+      this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
     }
   }
 
@@ -671,7 +674,7 @@ function mapStateToProps(state) {
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
-    // console.log('in create_edit_document, mapStateToProps, state: ');
+    console.log('in create_edit_document, mapStateToProps, state: ', state);
     // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,

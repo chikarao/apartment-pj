@@ -15,6 +15,8 @@ export default function (state = {
   editHistoryArray: [],
   dirtyObject: {},
   dirtyFieldExists: false,
+  agreementMappedById: {},
+  agreementMappedByName: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -29,6 +31,7 @@ export default function (state = {
       return { ...state, createDocumentKey: action.payload };
 
     case SET_INITIAL_VALUES_OBJECT:
+    console.log('in booking reducer, action.payload: ', action.payload);
       return {
         ...state,
         initialValuesObject: action.payload.initialValuesObject,
