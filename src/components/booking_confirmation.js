@@ -529,9 +529,9 @@ renderDocument() {
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
       goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
-          console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          // console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
         this.setState({ showDocument: !this.state.showDocument }, () => {
-          console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
         });
       })}
       setAgreementId={(id) => this.setState({ agreementId: id })}

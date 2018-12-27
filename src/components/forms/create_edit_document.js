@@ -32,7 +32,7 @@ class CreateEditDocument extends Component {
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     // this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleFormCloseSaveClick = this.handleFormCloseSaveClick.bind(this);
+    this.handleFormCloseSaveDeleteClick = this.handleFormCloseSaveDeleteClick.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
   }
@@ -235,7 +235,15 @@ class CreateEditDocument extends Component {
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
-    const paramsObject = { flat_id: this.props.flat.id, template_file_name: contractName, document_code: this.props.createDocumentKey, booking_id: this.props.booking.id, document_name: data.document_name, document_field: [] }
+    const paramsObject = {
+      flat_id: this.props.flat.id,
+      template_file_name: contractName,
+      document_code: this.props.createDocumentKey,
+      booking_id: this.props.booking.id,
+      document_name: data.document_name,
+      document_field: [],
+      agreement_id: this.props.agreement ? this.props.agreement.id : null
+    };
     // iterate through each key in data from form
 
     const requiredKeysArray = this.getRequiredKeys();
@@ -363,6 +371,7 @@ class CreateEditDocument extends Component {
         this.props.authError('');
         this.props.requiredFields([]);
         // !!!!!!!createAgreement is creating an agreement and document fields in backend API
+        this.props.showLoading();
         this.props.createAgreement(paramsObject, (id) => {
           // clear out editHistory and initialValuesObject; keep documentKey!!!!!
           this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
@@ -374,6 +383,7 @@ class CreateEditDocument extends Component {
           // after agreementId is set, unmount create agreement template
           // by this.state showDocument: false, and mount new by showSavedDocument: true
           this.props.goToSavedDocument();
+          this.props.showLoading();
         });
       } else {
         this.props.authError('');
@@ -383,8 +393,9 @@ class CreateEditDocument extends Component {
           this.props.showLoading();
           let initialValuesObject = {};
           const returnedObject = this.getSavedInitialValuesObject(agreement);
+          console.log('in create_edit_document, handleFormSubmit, in callback editAgreementFields agreement: ', agreement);
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-          // console.log('in create_edit_document, handleFormSubmit, initialValuesObject.initialValuesObject: ', initialValuesObject.initialValuesObject);
+          console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
           this.props.setInitialValuesObject(initialValuesObject);
           // initialize if a redux form action creator to set initialValues again, but don't need here
           // this.props.initialize(initialValuesObject.initialValuesObject);
@@ -566,15 +577,29 @@ renderEachDocumentField(page) {
     }
   }
 
-  handleFormCloseSaveClick(event) {
+  handleFormCloseSaveDeleteClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in create_edit_document, handleFormCloseSaveClick, elementVal: ', elementVal);
+    // console.log('in create_edit_document, handleFormCloseSaveDeleteClick, elementVal: ', elementVal);
     if (elementVal == 'close') {
       this.props.showDocument();
       this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
       this.props.setCreateDocumentKey('', () => {});
       this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+    }
+    if (elementVal == 'delete') {
+      if (window.confirm('Are you sure you want to delete this agreement?')) {
+        this.props.showLoading()
+        this.props.deleteAgreement(this.props.agreement.id, () => {
+          this.props.showLoading();
+        });
+        this.props.showDocument();
+        this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
+        this.props.setCreateDocumentKey('', () => {});
+        this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+        this.props.showDocument();
+        this.props.setAgreementId(null);
+      }
     }
   }
 
@@ -602,11 +627,22 @@ renderEachDocumentField(page) {
         >
           {AppLanguages.createPdf[appLanguageCode]}
         </button>
+        {this.props.showSavedDocument ?
+          <button
+            value='delete'
+            className="btn document-floating-button"
+            style={{ backgroundColor: 'red' }}
+            onClick={this.handleFormCloseSaveDeleteClick}
+          >
+            {AppLanguages.delete[appLanguageCode]}
+          </button>
+          : ''
+        }
         <button
           value='close'
           className="btn document-floating-button"
           style={{ backgroundColor: 'gray' }}
-          onClick={this.handleFormCloseSaveClick}
+          onClick={this.handleFormCloseSaveDeleteClick}
         >
           {AppLanguages.close[appLanguageCode]}
         </button>
@@ -645,8 +681,8 @@ renderEachDocumentField(page) {
   //   // console.log('CreateEditDocument, render, this.props', this.props);
   //   return (
   //     <div className="test-image-pdf-jpg">
-  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Close</div>
-  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveClick.bind(this)}>Save</div>
+  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveDeleteClick.bind(this)}>Close</div>
+  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveDeleteClick.bind(this)}>Save</div>
   //       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
   //           {this.renderDocument()}
   //           {this.renderAlert()}

@@ -2810,8 +2810,7 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
 }
 
 export function deleteAgreement(id, callback) {
-  console.log('in actions index, deleteAgreement, agreementAttributes: ', agreementAttributes);
-  console.log('in actions index, deleteAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, deleteAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = agreementAttributes;
   return function (dispatch) {
