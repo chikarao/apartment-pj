@@ -27,14 +27,16 @@ class CreateEditDocument extends Component {
       // set up state to take input from user
       clickedInfo: { elementX: '', elementY: '', page: '' },
       valueWhenInputFocused: '',
-      inputFocused: {}
+      inputFocused: {},
+      showDocumentPdf: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     // this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleFormCloseSaveDeleteClick = this.handleFormCloseSaveDeleteClick.bind(this);
+    this.handleFormCloseDeleteClick = this.handleFormCloseDeleteClick.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
+    this.handleViewPDFClick = this.handleViewPDFClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -231,7 +233,7 @@ class CreateEditDocument extends Component {
   }
 
   handleFormSubmit({ data, submitAction }) {
-    console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
+    // console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
@@ -259,7 +261,7 @@ class CreateEditDocument extends Component {
     } else {
       fields = this.props.allFields;
     }
-      console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
+      // console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
     // iterate through all fields or just delta fields depending on showSavedDocument
     // ie user is editing an already saved document
     _.each(Object.keys(fields), key => {
@@ -281,7 +283,7 @@ class CreateEditDocument extends Component {
       // paramsObject.document_field.push(this.props.do)cumentFields[key].params;
       let choice = {};
       _.each(this.props.documentFields[page][key].choices, eachChoice => {
-        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice: ', key, eachChoice);
+        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data[key]: ', key, eachChoice, data[key]);
         // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
@@ -303,7 +305,7 @@ class CreateEditDocument extends Component {
                 const selectChoice = this.getSelectChoice(choice.selectChoices, data[key]);
                 // assign display as an attribute in choice params
                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
-                paramsObject.document_field.push(choice.params);
+                // paramsObject.document_field.push(choice.params);
               }
             } else {
               choice.params.value = '';
@@ -312,7 +314,7 @@ class CreateEditDocument extends Component {
               // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
             paramsObject.document_field.push(choice.params);
           }
-        }
+        } // end of if inputFieldValue
         // in case of button and there is data[key]
         // console.log('in create_edit_document, handleFormSubmit, key, eachChoice.params.val == data[key] eachChoice.params.val, data[key] eachChoice, eachChoice.params: ', key, eachChoice.params.val == data[key], eachChoice.params.val, data[key], eachChoice, eachChoice.params);
         // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val == data[k]: ', eachChoice.params.val == data[key]);
@@ -327,9 +329,16 @@ class CreateEditDocument extends Component {
         }
 
         if (eachChoice.params.val == dataRefined) {
+          console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
           choice = eachChoice;
           if (this.props.showSavedDocument) {
             choice.params.id = this.props.agreementMappedByName[key].id
+          }
+          if (choice.showLocalLanguage) {
+            // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
+            const selectChoice = this.getSelectChoice(choice.selectChoices, dataRefined);
+            // assign display as an attribute in choice params
+            choice.params.display_text = selectChoice[this.props.documentLanguageCode];
           }
           choice.params.value = data[key];
           choice.params.page = page;
@@ -364,7 +373,10 @@ class CreateEditDocument extends Component {
       this.props.requiredFields([]);
       // sets flag save_and_create for the backend API to save documentFields first before create PDF
       paramsObject.save_and_create = true;
-      this.props.editAgreementFields(paramsObject, () => { this.props.showLoading(); });
+      this.props.editAgreementFields(paramsObject, () => {
+        this.setState({ showDocumentPdf: true });
+        this.props.showLoading();
+      });
       this.props.showLoading();
     } else if (submitAction == 'save') {
       if (!this.props.showSavedDocument) {
@@ -557,7 +569,12 @@ renderEachDocumentField(page) {
       // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
       // {this.renderAlert()}
       // <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
-      const image = Documents[this.props.createDocumentKey].file;
+      let image;
+      if (this.state.showDocumentPdf) {
+        image = this.props.agreement.document_publicid;
+      } else {
+        image = Documents[this.props.createDocumentKey].file;
+      }
       // const page = 1;
       // {this.renderNewElements(page)}
       return _.map(Object.keys(this.props.documentFields), page => {
@@ -570,19 +587,18 @@ renderEachDocumentField(page) {
               className="test-image-pdf-jpg-background"
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
             >
-              {this.renderEachDocumentField(page)}
+              {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
             </div>
         );
       });
     }
   }
 
-  handleFormCloseSaveDeleteClick(event) {
+  handleFormCloseDeleteClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in create_edit_document, handleFormCloseSaveDeleteClick, elementVal: ', elementVal);
     if (elementVal == 'close') {
-      this.props.showDocument();
+      this.props.showSavedDocument ? this.props.closeSavedDocument() : this.props.showDocument();
       this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
       this.props.setCreateDocumentKey('', () => {});
       this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
@@ -593,46 +609,69 @@ renderEachDocumentField(page) {
         this.props.deleteAgreement(this.props.agreement.id, () => {
           this.props.showLoading();
         });
-        this.props.showDocument();
         this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
         this.props.setCreateDocumentKey('', () => {});
         this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
-        this.props.showDocument();
+        this.props.closeSavedDocument();
         this.props.setAgreementId(null);
       }
     }
   }
 
+  handleViewPDFClick() {
+    this.setState({ showDocumentPdf: !this.state.showDocumentPdf }, () => {
+      console.log('in create_edit_document, handleViewPDFClick, this.state.showDocumentPdf: ', this.state.showDocumentPdf);
+    })
+  }
+
   renderDocumentButtons() {
     const { handleSubmit, appLanguageCode } = this.props;
     let saveButtonActive = false;
+    let agreementHasPdf = false;
     if (this.props.formIsDirty && this.props.showSavedDocument) {
       saveButtonActive = true;
     }
     if (!this.props.showSavedDocument) {
       saveButtonActive = true;
     }
+    if (this.props.agreement) {
+      if (this.props.agreement.document_publicid) {
+        agreementHasPdf = true;
+      }
+    }
+
     return (
       <div className="document-floating-button-box">
-        <button
-          onClick={
-          handleSubmit(data =>
-            this.handleFormSubmit({
-              data,
-              submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
-            }))
-          }
-          className="btn document-floating-button"
-          style={{ backgroundColor: 'blue' }}
-        >
-          {AppLanguages.createPdf[appLanguageCode]}
-        </button>
+        {agreementHasPdf ?
+          <button
+            onClick={this.handleViewPDFClick}
+            className="btn document-floating-button"
+            style={{ backgroundColor: 'blue' }}
+          >
+            {this.state.showDocumentPdf ? AppLanguages.edit[appLanguageCode] : AppLanguages.viewPdf[appLanguageCode]}
+          </button>
+          :
+          <button
+            onClick={
+            handleSubmit(data =>
+              this.handleFormSubmit({
+                data,
+                submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
+              }))
+            }
+            className="btn document-floating-button"
+            style={{ backgroundColor: 'blue' }}
+          >
+            {AppLanguages.createPdf[appLanguageCode]}
+          </button>
+        }
+
         {this.props.showSavedDocument ?
           <button
             value='delete'
             className="btn document-floating-button"
             style={{ backgroundColor: 'red' }}
-            onClick={this.handleFormCloseSaveDeleteClick}
+            onClick={this.handleFormCloseDeleteClick}
           >
             {AppLanguages.delete[appLanguageCode]}
           </button>
@@ -642,7 +681,7 @@ renderEachDocumentField(page) {
           value='close'
           className="btn document-floating-button"
           style={{ backgroundColor: 'gray' }}
-          onClick={this.handleFormCloseSaveDeleteClick}
+          onClick={this.handleFormCloseDeleteClick}
         >
           {AppLanguages.close[appLanguageCode]}
         </button>
@@ -681,8 +720,8 @@ renderEachDocumentField(page) {
   //   // console.log('CreateEditDocument, render, this.props', this.props);
   //   return (
   //     <div className="test-image-pdf-jpg">
-  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseSaveDeleteClick.bind(this)}>Close</div>
-  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseSaveDeleteClick.bind(this)}>Save</div>
+  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseDeleteClick.bind(this)}>Close</div>
+  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseDeleteClick.bind(this)}>Save</div>
   //       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
   //           {this.renderDocument()}
   //           {this.renderAlert()}

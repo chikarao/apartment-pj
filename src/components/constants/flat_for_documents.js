@@ -21,7 +21,7 @@ const FlatForDocuments = {
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
   },
-  
+
   flat_type: {
     name: 'flat_type',
     en: 'Flat Type',

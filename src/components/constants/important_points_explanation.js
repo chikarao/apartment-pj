@@ -1,6 +1,6 @@
 import SelectField from '../forms/select_field.js';
 // import Building from '../constants/building.js';
-import Amenities from '../constants/amenities.js';
+import Amenities from './amenities.js';
 import FlatForDocuments from '../constants/flat_for_documents.js';
 import Building from './building.js';
 
@@ -705,8 +705,8 @@ const ImportantPointsExplanation = {
       name: 'kitchen',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '57.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -742,8 +742,8 @@ const ImportantPointsExplanation = {
       name: 'toilet',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '59.9%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -779,8 +779,8 @@ const ImportantPointsExplanation = {
       name: 'bath_tub',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '62.1%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -816,8 +816,8 @@ const ImportantPointsExplanation = {
       name: 'hot_water',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '64.5%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -853,8 +853,8 @@ const ImportantPointsExplanation = {
       name: 'kitchen_grill',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '66.85%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -890,8 +890,8 @@ const ImportantPointsExplanation = {
       name: 'ac',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
-             1: { valName: 'N', params: { val: false, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+             0: { valName: 'Y', params: { val: true, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '69.15%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true }
            },
       className: 'form-control-document',
       component: 'select',

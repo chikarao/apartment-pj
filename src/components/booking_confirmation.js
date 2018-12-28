@@ -12,6 +12,7 @@ import CalculateAge from './functions/calculate_age';
 import Facility from './constants/facility';
 import Documents from './constants/documents';
 import AppLanguages from './constants/app_languages';
+import Languages from './constants/languages';
 // import DocumentForm from './constants/document_form';
 
 class BookingConfirmation extends Component {
@@ -26,6 +27,7 @@ class BookingConfirmation extends Component {
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
     this.handleEditReviewClick = this.handleEditReviewClick.bind(this);
+    this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
   }
 
   componentDidMount() {
@@ -256,18 +258,59 @@ class BookingConfirmation extends Component {
   }
 
   renderEachAgreementToCreate() {
+    // console.log('in booking confirmation, renderEachAgreementToCreate:');
     // <div value={'important_points_explanation_jp'} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
     return _.map(Object.keys(Documents), (eachDocumentKey, i) => {
       return (
-        <div key={i} value={eachDocumentKey} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
+        <div
+          key={i}
+          value={eachDocumentKey}
+          onClick={this.handleDocumentCreateClick}
+          className="booking-confirmation-document-create-link"
+        >
+          {Documents[eachDocumentKey][this.props.appLanguageCode]}
+        </div>
       );
-    })
+    });
   }
 
   renderEachAgreementSaved() {
+    // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.jpg`}>Link</a>
+
     return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
-      return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{eachAgreement.document_name}</div>
+      return <div
+        key={i}
+        value={eachAgreement.document_code}
+        name={eachAgreement.id}
+        onClick={this.handleSavedDocumentShowClick}
+        className="booking-confirmation-document-create-link"
+      >
+        {eachAgreement.document_name} &nbsp;
+        {eachAgreement.document_publicid ? <i className="far fa-file-pdf"></i> : ''}
+      </div>
+    });
+  }
+
+  handleDocumentLanguageSelect(event) {
+    const clickedElement = event.target;
+    console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
+    // this.props.setDocumentLanguageCode(elementVal);
+  }
+
+  renderDocumentLanguageSelect() {
+    return _.map(Object.keys(Languages), (key, i) => {
+      if (Languages[key].implemented) {
+        return (
+          <option
+            key={i}
+            value={key}
+            className="booking-confirmation-document-create-link"
+          >
+            {Languages[key].flag} {Languages[key].name}
+          </option>
+        );
+      }
     });
   }
 
@@ -284,6 +327,11 @@ class BookingConfirmation extends Component {
               </div>
             </div>
             <br/>
+            <div className="booking-confirmation-document-box">
+              <select type="string" className="booking-request-box-document-language-select" onChange={this.handleDocumentLanguageSelect}>
+              {this.renderDocumentLanguageSelect()}
+              </select>
+            </div>
             <div className="booking-confirmation-document-box">
               {this.renderEachAgreementToCreate()}
             </div>
@@ -528,6 +576,7 @@ renderDocument() {
   return (
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+      closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
       goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
           // console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
         this.setState({ showDocument: !this.state.showDocument }, () => {

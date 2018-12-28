@@ -279,6 +279,7 @@ const appLanguages =
     editBuildingLanguage: { en: 'Edit Building Language', jp: '建物の言語を編集' },
     createBuildingLanguage: { en: 'Create Building Language', jp: '建物の言語を作成' },
     createPdf: { en: 'Create PDF', jp: 'PDFを作成' },
+    viewPdf: { en: 'View PDF', jp: 'PDFをみる' },
     save: { en: 'Save', jp: '保存' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },

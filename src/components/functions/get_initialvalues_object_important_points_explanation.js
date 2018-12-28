@@ -444,7 +444,10 @@ export default (props) => {
         assignMultipleOverLappedKeys(overlappedkeysMapped, 'date_prepared', dateTodayFormatted);
       }
       // for evaluating if has toilet or not!!!
-      objectReturned.toilet = flat.toilet;
+      if (flat.toilet) {
+        objectReturned.toilet = true;
+        // objectReturned.toilet_other = flat.toilet;
+      }
 
       objectReturned.escrow_for_deposit = false;
 

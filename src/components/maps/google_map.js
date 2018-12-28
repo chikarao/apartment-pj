@@ -330,11 +330,12 @@ class GoogleMap extends Component {
       // Looks like google maps changed its API so
       // change from b.f f.f to j.l and l.l
       // changed again 12/12/18 to ea.l and j and la.l and j
+      // changed again 12/26/18 to fa.l and j ma.l and j
       const mapBounds = {
-        east: bounds.ea.l,
-        west: bounds.ea.j,
-        north: bounds.la.l,
-        south: bounds.la.j
+        east: bounds.fa.l,
+        west: bounds.fa.j,
+        north: bounds.ma.l,
+        south: bounds.ma.j
       };
       // const mapBounds = {
       //   east: bounds.b.f,
