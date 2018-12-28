@@ -69,9 +69,9 @@ class CreateEditDocument extends Component {
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
-        const returnedObject = this.getSavedInitialValuesObject(this.props.agreement);
+        const agreement = this.props.agreement || {};
+        const returnedObject = this.getSavedInitialValuesObject({ agreement });
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
-        // console.log('in create_edit_document, componentDidMount, in if showSavedDocument documentKey, initialValuesObject', documentKey, initialValuesObject);
       } else {
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
@@ -81,7 +81,8 @@ class CreateEditDocument extends Component {
     }
   }
 
-  getSavedInitialValuesObject(agreement) {
+  getSavedInitialValuesObject({ agreement }) {
+    // console.log('in create_edit_document, getSavedInitialValuesObject, agreement: ', agreement);
     const initialValuesObject = {};
     const agreementMappedByName = {}
     const agreementMappedById = {}
@@ -373,9 +374,15 @@ class CreateEditDocument extends Component {
       this.props.requiredFields([]);
       // sets flag save_and_create for the backend API to save documentFields first before create PDF
       paramsObject.save_and_create = true;
-      this.props.editAgreementFields(paramsObject, () => {
-        this.setState({ showDocumentPdf: true });
+      this.props.editAgreementFields(paramsObject, (agreement) => {
         this.props.showLoading();
+        this.setState({ showDocumentPdf: true });
+        let initialValuesObject = {};
+        // console.log('in create_edit_document, handleFormSubmit, else if save_and_create in callback editAgreementFields agreement: ', agreement);
+        const returnedObject = this.getSavedInitialValuesObject({ agreement });
+        initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
+        // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
+        this.props.setInitialValuesObject(initialValuesObject);
       });
       this.props.showLoading();
     } else if (submitAction == 'save') {
@@ -404,10 +411,10 @@ class CreateEditDocument extends Component {
         this.props.editAgreementFields(paramsObject, (agreement) => {
           this.props.showLoading();
           let initialValuesObject = {};
-          const returnedObject = this.getSavedInitialValuesObject(agreement);
-          console.log('in create_edit_document, handleFormSubmit, in callback editAgreementFields agreement: ', agreement);
+          const returnedObject = this.getSavedInitialValuesObject({ agreement });
+          console.log('in create_edit_document, handleFormSubmit, else in callback editAgreementFields agreement: ', agreement);
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-          console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
+          // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
           this.props.setInitialValuesObject(initialValuesObject);
           // initialize if a redux form action creator to set initialValues again, but don't need here
           // this.props.initialize(initialValuesObject.initialValuesObject);
@@ -624,6 +631,29 @@ renderEachDocumentField(page) {
     })
   }
 
+  swithCreatePDFButton(saveButtonActive, agreementHasPdf) {
+    const { handleSubmit, appLanguageCode } = this.props;
+    if (this.props.showSavedDocument) {
+      return <button
+              onClick={
+              handleSubmit(data =>
+                this.handleFormSubmit({
+                  data,
+                  submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
+                }))
+              }
+              className={'btn document-floating-button'}
+              style={{ backgroundColor: 'green' }}
+              // className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
+              // style={saveButtonActive ? { backgroundColor: 'green' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
+            >
+              {agreementHasPdf ? AppLanguages.updatePdf[appLanguageCode] : AppLanguages.createPdf[appLanguageCode]}
+            </button>
+    } else {
+      return '';
+    }
+  }
+
   renderDocumentButtons() {
     const { handleSubmit, appLanguageCode } = this.props;
     let saveButtonActive = false;
@@ -648,19 +678,7 @@ renderEachDocumentField(page) {
             {this.state.showDocumentPdf ? AppLanguages.edit[appLanguageCode] : AppLanguages.viewPdf[appLanguageCode]}
           </button>
           :
-          <button
-            onClick={
-            handleSubmit(data =>
-              this.handleFormSubmit({
-                data,
-                submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
-              }))
-            }
-            className="btn document-floating-button"
-            style={{ backgroundColor: 'blue' }}
-          >
-            {AppLanguages.createPdf[appLanguageCode]}
-          </button>
+          this.swithCreatePDFButton(saveButtonActive, agreementHasPdf)
         }
 
         {this.state.showDocumentPdf ?
@@ -674,19 +692,7 @@ renderEachDocumentField(page) {
           Download
           </a>
           :
-          <button
-            onClick={
-            handleSubmit(data =>
-              this.handleFormSubmit({
-                data,
-                submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
-              }))
-            }
-            className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
-            style={saveButtonActive ? { backgroundColor: 'green' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
-          >
-            {agreementHasPdf ? AppLanguages.updatePdf[appLanguageCode] : AppLanguages.createPdf[appLanguageCode]}
-          </button>
+          this.swithCreatePDFButton(saveButtonActive, agreementHasPdf)
         }
 
         {this.props.showSavedDocument ?
