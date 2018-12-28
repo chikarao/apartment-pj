@@ -275,7 +275,7 @@ class BookingConfirmation extends Component {
   }
 
   renderEachAgreementSaved() {
-    // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.jpg`}>Link</a>
+    // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.pdf`}>Link</a>
 
     return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
@@ -287,7 +287,7 @@ class BookingConfirmation extends Component {
         className="booking-confirmation-document-create-link"
       >
         {eachAgreement.document_name} &nbsp;
-        {eachAgreement.document_publicid ? <i className="far fa-file-pdf"></i> : ''}
+        {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}
       </div>
     });
   }
@@ -471,13 +471,13 @@ renderStars() {
 handleEditReviewClick(event) {
   const clickedElement = event.target;
   const elementVal = clickedElement.getAttribute('value');
-  console.log('in booking confirmation, handleEditReviewClick, elementVal:', elementVal);
+  // console.log('in booking confirmation, handleEditReviewClick, elementVal:', elementVal);
   // this.props.updateReview(elementVal);
   this.props.showEditReview();
 }
 
 renderReviewEditModal() {
-  console.log('in booking confirmation, renderReviewEditModal, this.props.showEditReview:', this.props.showEditReviewModal);
+  // console.log('in booking confirmation, renderReviewEditModal, this.props.showEditReview:', this.props.showEditReviewModal);
   return (
     <div>
     <ReviewEditModal

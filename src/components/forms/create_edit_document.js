@@ -444,7 +444,7 @@ class CreateEditDocument extends Component {
 }
 
 handleOnBlur(event) {
-  console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
+  // console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
   const blurredInput = event.target
   // console.log('DocumentChoices, handleOnBlur, blurredInput', blurredInput);
   // console.log('DocumentChoices, handleOnBlur, this.state.valueWhenInputFocused', this.state.valueWhenInputFocused);
@@ -458,7 +458,7 @@ handleOnBlur(event) {
 }
 
 handleOnFocus(event) {
-  console.log('in create_edit_document, handleOnFocus, event.target.value: ', event.target.value);
+  // console.log('in create_edit_document, handleOnFocus, event.target.value: ', event.target.value);
   const focusedInput = event.target
   const valueWhenInputFocused = event.target.value
   this.setState({ focusedInput, valueWhenInputFocused }, () => {
@@ -620,7 +620,7 @@ renderEachDocumentField(page) {
 
   handleViewPDFClick() {
     this.setState({ showDocumentPdf: !this.state.showDocumentPdf }, () => {
-      console.log('in create_edit_document, handleViewPDFClick, this.state.showDocumentPdf: ', this.state.showDocumentPdf);
+      // console.log('in create_edit_document, handleViewPDFClick, this.state.showDocumentPdf: ', this.state.showDocumentPdf);
     })
   }
 
@@ -628,16 +628,13 @@ renderEachDocumentField(page) {
     const { handleSubmit, appLanguageCode } = this.props;
     let saveButtonActive = false;
     let agreementHasPdf = false;
-    if (this.props.formIsDirty && this.props.showSavedDocument) {
-      saveButtonActive = true;
-    }
-    if (!this.props.showSavedDocument) {
-      saveButtonActive = true;
-    }
+
+    if (this.props.formIsDirty && this.props.showSavedDocument) { saveButtonActive = true; }
+
+    if (!this.props.showSavedDocument) { saveButtonActive = true; }
+
     if (this.props.agreement) {
-      if (this.props.agreement.document_publicid) {
-        agreementHasPdf = true;
-      }
+      if (this.props.agreement.document_publicid) { agreementHasPdf = true; }
     }
 
     return (
@@ -663,6 +660,32 @@ renderEachDocumentField(page) {
             style={{ backgroundColor: 'blue' }}
           >
             {AppLanguages.createPdf[appLanguageCode]}
+          </button>
+        }
+
+        {this.state.showDocumentPdf ?
+          <a
+            className="btn document-floating-button"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ backgroundColor: 'lightgray' }}
+            href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
+          >
+          Download
+          </a>
+          :
+          <button
+            onClick={
+            handleSubmit(data =>
+              this.handleFormSubmit({
+                data,
+                submitAction: this.props.showSavedDocument ? 'save_and_create' : 'create'
+              }))
+            }
+            className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
+            style={saveButtonActive ? { backgroundColor: 'green' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
+          >
+            {agreementHasPdf ? AppLanguages.updatePdf[appLanguageCode] : AppLanguages.createPdf[appLanguageCode]}
           </button>
         }
 
