@@ -130,7 +130,7 @@ class MyPage extends Component {
     // console.log('in mypage, handleFlatCardClick, clicked, event: ', event.target);
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
+    console.log('in mypage, handleFlatCardClick, clicked, elementVal: ', elementVal);
     this.props.history.push(`/show/${elementVal}`);
   }
 

@@ -17,6 +17,7 @@ class BookingRequest extends Component {
       addedFacilityArray: []
     };
     this.handleOptionButtonClick = this.handleOptionButtonClick.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -572,7 +573,7 @@ class BookingRequest extends Component {
     return (
       <div>
         <h4>Personal Details</h4>
-          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <div className="booking-request-personal-container container">
               <div className="booking-request-personal-row row">
                 {this.renderEachPersonalBox()}

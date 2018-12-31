@@ -34,25 +34,31 @@ const AMENTIES = Amenities;
 // let RESULTS_ARRAY = []
 
 class ShowFlat extends Component {
- //  constructor(props) {
- //   super(props);
- //   this.state = { placesResults: [], map: {}, autoCompletePlace: {}, clickedPlaceArray: [] };
- // }
+  constructor(props) {
+   super(props);
+   this.state = {
+     // placesResults: [],
+     // map: {},
+     // autoCompletePlace: {},
+     // clickedPlaceArray: []
+   };
+ }
   componentDidMount() {
-    // console.log('in show flat, componentDidMount, params', this.props.match.params);
+    console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
-    this.props.selectedFlatFromParams(this.props.match.params.id, () => {});
+    this.props.selectedFlatFromParams(this.props.match.params.id, () => {
+      if (this.props.auth.authenticated) {
+        this.props.getCurrentUser();
+        this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
+      }
+
+      this.props.fetchReviewsForFlat(this.props.match.params.id);
+      // this.props.fetchPlaces(this.props.match.params.id);
+    });
     // init
     // this.props.setNoConversation();
     //fetchConversationByFlatAndUser is match.params, NOT match.params.id
-    if (this.props.auth.authenticated) {
-      this.props.getCurrentUser();
-      this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
-    }
-
-    this.props.fetchReviewsForFlat(this.props.match.params.id);
-    // this.props.fetchPlaces(this.props.match.params.id);
   }
 
   // componentDidUpdate() {
@@ -551,7 +557,9 @@ class ShowFlat extends Component {
   }
 
   renderLightboxScreen() {
-    if (this.props.flat) {
+    const flatEmpty = _.isEmpty(this.props.flat);
+    // if (this.props.flat) {
+    if (!flatEmpty) {
       // console.log('in show_flat, renderLightboxScreen, ');
       return (
         <div>
@@ -572,44 +580,48 @@ class ShowFlat extends Component {
     const { reviews } = this.props;
     // all review classnames and styles are shared with booking confirmation reviewsEmpty
     // unless they start with "show-flat"
-    return _.map(reviews, review => {
-      return (
-        <div key={review.id} className="show-flat-review-details col-xs-12 col-md-6">
-        <div className="review-top-box">
+    if (reviews.length > 0) {
+      return _.map(reviews, review => {
+        console.log('in show_flat, renderEachReview, review : ', review);
+        return (
+          <div key={review.id} className="show-flat-review-details col-xs-12 col-md-6">
+          <div className="review-top-box">
 
-        <div className="review-user-box">
-        <div className="review-avatar">
-        <img
-          src={review.user.image ?
-            'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.image + '.jpg'
-          :
-           'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + 'blank_profile_picture_4' + '.jpg'
-              }
-          alt=""
-          />
-        </div>
-        <div className="review-username">
-          {review.user.profile.username}
-        </div>
-        </div>
-        <div className="show-flat-review-title">
-          {review.title}
-        </div>
-        </div>
+          <div className="review-user-box">
+          <div className="review-avatar">
+          <img
+            src={review.user.image ?
+              'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + review.user.image + '.jpg'
+            :
+             'http://res.cloudinary.com/chikarao/image/upload/w_50,h_50/' + 'blank_profile_picture_4' + '.jpg'
+                }
+            alt=""
+            />
+          </div>
+          <div className="review-username">
+            {review.user.profile.username}
+          </div>
+          </div>
+          <div className="show-flat-review-title">
+            {review.title}
+          </div>
+          </div>
 
-        <div className="review-comment-box">
-        <p className="review-comment-text">
-          {review.comment}
-        </p>
-        </div>
-        </div>
-      );
-    })
+          <div className="review-comment-box">
+          <p className="review-comment-text">
+            {review.comment}
+          </p>
+          </div>
+          </div>
+        );
+      })
+    }
   }
 
   renderReviews() {
-    const reviewsEmpty = _.isEmpty(this.props.reviews)
-    if (!reviewsEmpty) {
+    // const reviewsEmpty = _.isEmpty(this.props.reviews)
+    const flatEmpty = _.isEmpty(this.props.flat);
+    if (!flatEmpty) {
       // console.log('in show_flat, renderReviews, : ', this.props.reviews);
       return (
         <div className="container show-flat-review-container">
@@ -680,11 +692,12 @@ class ShowFlat extends Component {
 
   render() {
   // !!!!!map needs to be id=map for the interaction to work
+  // {this.renderFlat(this.props.match.params.id)}
     return (
       <div className="show-flat-body">
           {this.renderLightboxScreen()}
         <div>
-          {this.renderFlat(this.props.match.params.id)}
+          {this.renderFlat()}
         </div>
         <div>
           {this.renderDatePicker()}

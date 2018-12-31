@@ -42,7 +42,24 @@ class EditFlat extends Component {
       confirmChecked: false,
       selectedLanguageCode: ''
     };
-    // this.handleAssignEditBuildingClick = this.handleAssignEditBuildingClick.bind(this);
+
+    this.deleteCheckedImages = this.deleteCheckedImages.bind(this);
+    this.uncheckAllImages = this.uncheckAllImages.bind(this);
+    this.checkAllImages = this.checkAllImages.bind(this);
+    this.handleImageDeleteCheck = this.handleImageDeleteCheck.bind(this);
+    this.handleEditLanguageClick = this.handleEditLanguageClick.bind(this);
+    this.handleEditIcalendarClick = this.handleEditIcalendarClick.bind(this);
+    this.handleAddLanguageClick = this.handleAddLanguageClick.bind(this);
+    this.handleAddIcalendarClick = this.handleAddIcalendarClick.bind(this);
+    this.handleAssignEditBuildingClick = this.handleAssignEditBuildingClick.bind(this);
+    this.handleAddEditInspectionClick = this.handleAddEditInspectionClick.bind(this);
+    this.handleAddEditBuildingLanguageClick = this.handleAddEditBuildingLanguageClick.bind(this);
+    this.handleBankAcccountDefaultCheck = this.handleBankAcccountDefaultCheck.bind(this);
+    this.handlePaymentMethodFormSubmit = this.handlePaymentMethodFormSubmit.bind(this);
+    this.handleAddEditFacilityClick = this.handleAddEditFacilityClick.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleConfirmCheck = this.handleConfirmCheck.bind(this);
+    this.handleBackToShowButton = this.handleBackToShowButton.bind(this);
   }
 // reference for checkbox
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
@@ -242,9 +259,9 @@ class EditFlat extends Component {
     // console.log('in edit flat, renderDeleteImageButtons: ');
     return (
       <div>
-        <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages.bind(this)}>{AppLanguages.deleteCheckedImages[this.props.appLanguageCode]}</button>
-        <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages.bind(this)}>{AppLanguages.uncheckAllImages[this.props.appLanguageCode]}</button>
-        <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages.bind(this)}>{AppLanguages.checkAllImages[this.props.appLanguageCode]}</button>
+        <button className="btn btn-danger btn-sm btn-delete-all-images" onClick={this.deleteCheckedImages}>{AppLanguages.deleteCheckedImages[this.props.appLanguageCode]}</button>
+        <button className="btn btn-secondary btn-sm btn-uncheck-all-images" onClick={this.uncheckAllImages}>{AppLanguages.uncheckAllImages[this.props.appLanguageCode]}</button>
+        <button className="btn btn-primary btn-sm btn-check-all-images" onClick={this.checkAllImages}>{AppLanguages.checkAllImages[this.props.appLanguageCode]}</button>
       </div>
     );
   }
@@ -262,7 +279,7 @@ class EditFlat extends Component {
               <div key={image.id} className="slide-show-edit-flat">
                 <img src={"http://res.cloudinary.com/chikarao/image/upload/w_165,h_110/" + image.publicid + '.jpg'} />
                 <label className="delete-image-radio">
-                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck.bind(this)} />
+                <input type="checkbox" value={image.id} className="editFlatImageDeleteCheck" onChange={this.handleImageDeleteCheck} />
                 <span className="checkmarkDeleteImage"></span>
                 </label>
               </div>
@@ -367,7 +384,7 @@ class EditFlat extends Component {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
           {Languages[language.code].flag} {Languages[language.code].name}
-          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     })
@@ -383,7 +400,7 @@ class EditFlat extends Component {
       return (
         <div key={calendar.id} className="edit-flat-each-available-icalendar col-xs-6 col-sm-6 col-md-4">
          {calendar.name}
-         <div value={calendar.id} className="edit-flat-each-available-icalendar-edit-link" onClick={this.handleEditIcalendarClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+         <div value={calendar.id} className="edit-flat-each-available-icalendar-edit-link" onClick={this.handleEditIcalendarClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     })
@@ -407,7 +424,7 @@ class EditFlat extends Component {
             </div>
             : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noOtherLanguages[this.props.appLanguageCode]}</div> }
         </div>
-        <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick.bind(this)}>{AppLanguages.addAnotherLanguage[this.props.appLanguageCode]}</div>
+        <div className="edit-flat-language-add-link" onClick={this.handleAddLanguageClick}>{AppLanguages.addAnotherLanguage[this.props.appLanguageCode]}</div>
       </div>
     );
   }
@@ -426,9 +443,9 @@ class EditFlat extends Component {
             : <div style={{ margin: '15px auto 25px auto' }}>{AppLanguages.noIcalendarsAdded[this.props.appLanguageCode]}</div> }
         </div>
         {this.props.flat.calendars.length > 0 ?
-          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnotherICalendar[this.props.appLanguageCode]}</div>
+          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick}>{AppLanguages.addAnotherICalendar[this.props.appLanguageCode]}</div>
           :
-          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick.bind(this)}>{AppLanguages.addAnICalendar[this.props.appLanguageCode]}</div> }
+          <div className="edit-flat-language-add-link" onClick={this.handleAddIcalendarClick}>{AppLanguages.addAnICalendar[this.props.appLanguageCode]}</div> }
 
       </div>
     );
@@ -458,7 +475,7 @@ class EditFlat extends Component {
       return (
         <div key={eachBuilding.name} className="edit-flat-building-choice">
           {eachBuilding.name}{eachBuilding.name ? ', ' : ''} {eachBuilding.address1}, {eachBuilding.city}, {eachBuilding.state}
-          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.yesAssignThisBuilding[this.props.appLanguageCode]}</div>
+          <div value={eachBuilding.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick}>{AppLanguages.yesAssignThisBuilding[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -509,7 +526,7 @@ class EditFlat extends Component {
            &nbsp;
           {Languages[eachInspection.inspection_language].flag}{Languages[eachInspection.inspection_language].local}
           &nbsp;
-          <div value={eachInspection.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+          <div value={eachInspection.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditInspectionClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -540,7 +557,7 @@ class EditFlat extends Component {
         <div key={i} className="edit-flat-inspection-each">
           {Languages[eachBuildingLanguage.language_code].flag}{Languages[eachBuildingLanguage.language_code].name}
           &nbsp;
-          <div value={eachBuildingLanguage.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditBuildingLanguageClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+          <div value={eachBuildingLanguage.id} name="edit" className="edit-flat-inspection-each-edit-link" onClick={this.handleAddEditBuildingLanguageClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -553,21 +570,21 @@ class EditFlat extends Component {
       return (
         <div key={building.name} className="edit-flat-building-choice">
           {building.name}{building.name ? ', ' : ''} {building.address1}, {building.city}, {building.state}, {building.country} &nbsp; Language: {Languages[building.language_code].flag}
-        <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
+        <div value={building.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick}>{AppLanguages.editBuilding[this.props.appLanguageCode]}</div>
 
         {building.inspections && (building.inspections.length > 0) ?
           <div className="edit-flat-inspection-box">{AppLanguages.inspections[this.props.appLanguageCode]}: {this.renderEachInspection()}</div>
           :
           <div>No Inspection Information</div>
         }
-        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick.bind(this)}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
+        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditInspectionClick}>{AppLanguages.addInspection[this.props.appLanguageCode]}</div>
 
         {building.building_languages && (building.building_languages.length > 0) ?
           <div className="edit-flat-inspection-box">{AppLanguages.otherLanguages[this.props.appLanguageCode]}: {this.renderEachBuildingLanguage()}</div>
           :
           <div>No Other Building Languages</div>
         }
-        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditBuildingLanguageClick.bind(this)}>{AppLanguages.addBuildingLanguage[this.props.appLanguageCode]}</div>
+        <div value={building.id} name="add" className="edit-flat-building-add-link" onClick={this.handleAddEditBuildingLanguageClick}>{AppLanguages.addBuildingLanguage[this.props.appLanguageCode]}</div>
         </div>
       );
     }
@@ -587,7 +604,7 @@ class EditFlat extends Component {
             <div className="edit-flat-building-choice-scroll-box" style={this.props.buildings.length > 1 ? { height: '170px' } : { height: '85px'}}>
                 {this.renderEachBuildingChoice()}
             </div>
-            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.noAddMyBuilding[this.props.appLanguageCode]}</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick}>{AppLanguages.noAddMyBuilding[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -596,7 +613,7 @@ class EditFlat extends Component {
         // console.log('in edit flat, renderBuildingAddEdit, this.props.buildings: ', this.props.buildings);
         return (
           <div className="edit-flat-language-box">
-            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick.bind(this)}>{AppLanguages.addMyBuilding[this.props.appLanguageCode]}</div>
+            <div value={this.props.flat.id} name="create" className="edit-flat-building-add-link" onClick={this.handleAssignEditBuildingClick}>{AppLanguages.addMyBuilding[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -655,7 +672,7 @@ class EditFlat extends Component {
         return (
           <div key={i} className="edit-flat-building-choice">
             {eachAccount.bank_name} {eachAccount.account_name} <br/>{AppLanguages[eachAccount.account_type][this.props.appLanguageCode]} {eachAccount.account_number}***&ensp;&ensp;
-            <input name={i} value={eachAccount.id} type="checkbox" checked={isThisAccountDefault} className="my-page-card-default-checkbox" onChange={this.handleBankAcccountDefaultCheck.bind(this)} />
+            <input name={i} value={eachAccount.id} type="checkbox" checked={isThisAccountDefault} className="my-page-card-default-checkbox" onChange={this.handleBankAcccountDefaultCheck} />
           </div>
         );
       });
@@ -734,7 +751,7 @@ class EditFlat extends Component {
     return (
       <div>
         {this.renderAlert()}
-        <form onSubmit={handleSubmit(this.handlePaymentMethodFormSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this.handlePaymentMethodFormSubmit)}>
           {this.renderEachRentPaymentMethodField()}
           <div className="confirm-change-and-button">
             <button action="submit" id="submit-all" className="btn btn-primary btn-sm submit-button">Submit</button>
@@ -780,7 +797,7 @@ class EditFlat extends Component {
       return (
         <div key={i} className="edit-flat-building-choice">
         {this.getFacilityType(eachFacility)}  &nbsp;{eachFacility.facility_number ? eachFacility.facility_number : ''} &nbsp;¥{eachFacility.price_per_month} /{AppLanguages.month[this.props.appLanguageCode]}  &nbsp; {eachFacility.optional ? AppLanguages.optional[this.props.appLanguageCode] : AppLanguages.notOptional[this.props.appLanguageCode]}
-        <div name="edit" value={eachFacility.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+        <div name="edit" value={eachFacility.id} name="edit" className="edit-flat-building-add-link" onClick={this.handleAddEditFacilityClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     });
@@ -794,7 +811,7 @@ class EditFlat extends Component {
           <div className="edit-flat-language-box">
             <div>Add or Edit Facilities (parking for cars, bicycles, motorcycles, external storage etc.)</div>
               <div style={{ margin: '20px 0 20px 0' }}>No Facilities to List</div>
-            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -806,7 +823,7 @@ class EditFlat extends Component {
               <div className="edit-flat-building-choice-scroll-box" style={{ height: `${this.props.flat.facilities.length * 85}px !important` }}>
                 {this.renderEachFacility()}
               </div>
-            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick.bind(this)}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
+            <div name="add" className="edit-flat-language-add-link" onClick={this.handleAddEditFacilityClick}>{AppLanguages.addAFacility[this.props.appLanguageCode]}</div>
           </div>
         );
       }
@@ -829,7 +846,7 @@ class EditFlat extends Component {
         <div>
           <h2 style={{ marginBottom: '30px' }}>{AppLanguages.editYourListing[appLanguageCode]}</h2>
           <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
-          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}:</label>
               <div className="edit-flat-address">{Languages[this.props.flat.language_code].flag}{Languages[this.props.flat.language_code].name}</div>
@@ -1079,7 +1096,7 @@ class EditFlat extends Component {
             {this.renderAlert()}
             <div className="confirm-change-and-button">
               <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
-                <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} />
+                <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck} />
                 <span className="checkmark"></span>
               </label>
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
@@ -1138,7 +1155,7 @@ class EditFlat extends Component {
           </div>
 
           <div className="back-button">
-            <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton.bind(this)}>To Show Page</button>
+            <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton}>To Show Page</button>
           </div>
         </div>
       );

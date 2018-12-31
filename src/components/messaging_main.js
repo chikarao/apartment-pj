@@ -108,7 +108,7 @@ class MessagingMain extends Component {
           </div>
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.archives[this.props.appLanguageCode]}</div>
           <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
-          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
+          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-sync"></i></div>
         </div>
       );
     }
@@ -904,7 +904,7 @@ class MessagingMain extends Component {
           if (pos == 0) {
             clearInterval(id);
           } else {
-            console.log('in messagingMain, conversationRollIn, inside if pos: ', pos);
+            // console.log('in messagingMain, conversationRollIn, inside if pos: ', pos);
             pos = pos + 5;
             // moveElemment.style.top = pos + 'px';
             // moveElemment.style.left = pos + 'px';

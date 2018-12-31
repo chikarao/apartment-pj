@@ -32,6 +32,8 @@ class CreateFlat extends Component {
       // confirmChecked: false
       confirmChecked: false
     };
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+    this.handleConfirmCheck = this.handleConfirmCheck.bind(this)
   }
   // get form input ready for params
   // iterate throughh data from  form submit and separate amanity attributes and flat
@@ -262,7 +264,7 @@ class CreateFlat extends Component {
     // console.log('in createflat, renderFields, Field: ', Field);
     // handle submit came from redux form; fields came from below
     return (
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+      <form onSubmit={handleSubmit(this.handleFormSubmit)}>
         <fieldset key={'language_code'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="language_code" component={SelectField} type="string" className="form-control">
@@ -460,7 +462,7 @@ class CreateFlat extends Component {
         {this.renderAlert()}
         <div className="confirm-change-and-button">
           <label className="confirm-radio">
-            <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck.bind(this)} /><i className="fa fa-check fa-lg"></i>{AppLanguages.confirmAbove[appLanguageCode]}
+            <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck} /><i className="fa fa-check fa-lg"></i>{AppLanguages.confirmAbove[appLanguageCode]}
             <span className="checkmark"></span>
           </label>
           <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
