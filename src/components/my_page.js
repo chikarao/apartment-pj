@@ -45,6 +45,26 @@ class MyPage extends Component {
       showStaffBox: false
       // actionType: 'Add a Card'
     };
+    this.handleBookingCardClick = this.handleBookingCardClick.bind(this);
+    this.handleFlatCardClick = this.handleFlatCardClick.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
+    this.handleMessageHamburgerClick = this.handleMessageHamburgerClick.bind(this);
+    this.handleMessageRefreshClick = this.handleMessageRefreshClick.bind(this);
+    this.handleBookingCardClick = this.handleBookingCardClick.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleUnlikeClick = this.handleUnlikeClick.bind(this);
+    this.handleRemoveProfileImage = this.handleRemoveProfileImage.bind(this);
+    this.handleAddEditProfileClick = this.handleAddEditProfileClick.bind(this);
+    this.handleCardDefaultCheck = this.handleCardDefaultCheck.bind(this);
+    this.handleCardEditDeleteClick = this.handleCardEditDeleteClick.bind(this);
+    this.handleMakePaymentClick = this.handleMakePaymentClick.bind(this);
+    this.handleAddNewCardClick = this.handleAddNewCardClick.bind(this);
+    this.handleBankAccountEditDeleteClick = this.handleBankAccountEditDeleteClick.bind(this);
+    this.handleAddNewBankAccountClick = this.handleAddNewBankAccountClick.bind(this);
+    this.handleContratorEditDeleteClick = this.handleContratorEditDeleteClick.bind(this);
+    this.handleAddContractorClick = this.handleAddContractorClick.bind(this);
+    this.handleStaffEditDeleteClick = this.handleStaffEditDeleteClick.bind(this);
+    this.handleAddStaffClick = this.handleAddStaffClick.bind(this);
   }
   componentDidMount() {
     this.props.fetchFlatsByUser(this.props.auth.id, () => {});
@@ -96,7 +116,7 @@ class MyPage extends Component {
           if (!bookingIsForOwnFlat) {
             return (
               <li key={index} className="my-page-each-card">
-                <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+                <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick}>
                   {booking.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + booking.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
                   <div className="my-page-details">
                     <ul>
@@ -172,7 +192,7 @@ class MyPage extends Component {
         // console.log('in mypage, renderEachFlat, flat.description: ', flat.description);
         return (
           <li key={index} className="my-page-each-card">
-            <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
+            <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick}>
               {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
                 <ul>
@@ -185,7 +205,7 @@ class MyPage extends Component {
               </div>
             </div>
             <div className="my-page-card-button-box">
-              <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+              <button value={flat.id} className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleEditClick}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
             </div>
           </li>
         );
@@ -424,9 +444,9 @@ formatDate(date) {
     return (
       <div>
         <div className="my-page-category-title">
-          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></span></span>
+          <span className="my-page-category-left"><span id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick} ><i className="fa fa-bars"></i></span></span>
           <span>My Messages</span>
-          <span className="my-page-category-right"><span className="btn" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
+          <span className="my-page-category-right"><span className="btn" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-refresh" aria-hidden="true"></i></span></span>
         </div>
         {this.props.showConversationCards ? this.renderConversations() : this.renderMessages()}
       </div>
@@ -509,7 +529,7 @@ formatDate(date) {
         // </div>
           return (
             <li key={index} className="my-page-each-card">
-              <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick.bind(this)}>
+              <div value={booking.id} className="my-page-each-card-click-box" onClick={this.handleBookingCardClick}>
                 {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
                 <div className="my-page-details">
                   <ul>
@@ -524,7 +544,7 @@ formatDate(date) {
 
                 </div>
                 <div className="my-page-card-button-box">
-                  {booking.booking_by_owner && !booking.booking_by_ical ? <button value={booking.id} type="ownBooking" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button> : ''}
+                  {booking.booking_by_owner && !booking.booking_by_ical ? <button value={booking.id} type="ownBooking" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleDeleteClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button> : ''}
                 </div>
               </div>
             </li>
@@ -594,7 +614,7 @@ formatDate(date) {
 
         return (
           <li key={index} className="my-page-each-card">
-            <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick.bind(this)}>
+            <div value={flat.id} className="my-page-each-card-click-box" onClick={this.handleFlatCardClick}>
               {flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
               <div className="my-page-details">
               <ul>
@@ -607,7 +627,7 @@ formatDate(date) {
               </div>
             </div>
               <div className="my-page-card-button-box">
-                <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick.bind(this)}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
+                <button value={flat.id} type="flat" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleUnlikeClick}>{AppLanguages.remove[this.props.appLanguageCode]}</button>
               </div>
           </li>
         );
@@ -703,7 +723,7 @@ formatDate(date) {
             />
           </div>
           {this.props.auth.image == BLANK_PROFILE_PICTURE ? '' :
-          <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage.bind(this)}>
+          <div className="my-page-remove-profile-picture-link" onClick={this.handleRemoveProfileImage}>
             {AppLanguages.removeProfilePicture[this.props.appLanguageCode]}
           </div> }
       </div>
@@ -771,7 +791,7 @@ formatDate(date) {
             </div>
             <div>{AppLanguages.myProfile[appLanguageCode]}</div>
             <div className="my-page-category-right">
-              <div id="my-page-profile-edit-link"><i className="fa fa-edit" value={id} name="edit" onClick={this.handleAddEditProfileClick.bind(this)}></i>
+              <div id="my-page-profile-edit-link"><i className="fa fa-edit" value={id} name="edit" onClick={this.handleAddEditProfileClick}></i>
               </div>
             </div>
           </div>
@@ -780,7 +800,7 @@ formatDate(date) {
             <li className="my-page-profile-attribute"><div>{AppLanguages.availableLanguages[appLanguageCode]}:</div> <div className="my-page-available-language-box">{this.renderEachLanguage(profileLanguagesArray)}</div></li>
             <li className="my-page-profile-attribute">
               <div></div>
-              <div className="my-page-add-language-link" style={{ width: '100px', fontSize: '13px' }} name="addLanguage" onClick={this.handleAddEditProfileClick.bind(this)}>
+              <div className="my-page-add-language-link" style={{ width: '100px', fontSize: '13px' }} name="addLanguage" onClick={this.handleAddEditProfileClick}>
               <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
               &nbsp;
               {AppLanguages.language[this.props.appLanguageCode]}
@@ -909,14 +929,14 @@ formatDate(date) {
                         </ul>
                       </div>
                       <div className="my-page-card-default-input-box">{AppLanguages.useThisCard[this.props.appLanguageCode]} &nbsp;
-                        <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck.bind(this)} />
+                        <input name={i} value={card.id} type="checkbox" checked={isThisCardDefault} className="my-page-card-default-checkbox" onChange={this.handleCardDefaultCheck} />
                       </div>
                     </div>
                     {this.renderCardAddress(card)}
                   </div>
                   <div className="my-page-card-button-box">
-                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
-                    <button name={card.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+                    <button name={card.id} value="Edit Card Info" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+                    <button name={card.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleCardEditDeleteClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
                   </div>
                 </li>
               </div>
@@ -958,11 +978,11 @@ formatDate(date) {
         <div className="my-page-category-title">
           <div className="my-page-category-left"></div>
           <div>{AppLanguages.paymentDetails[this.props.appLanguageCode]}</div>
-          <div className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick.bind(this)}><i className="fa fa-credit-card"></i></div></div>
+          <div className="my-page-category-right"><div className="my_page-make-payment-link" onClick={this.handleMakePaymentClick}><i className="fa fa-credit-card"></i></div></div>
         </div>
         <ul>
           {this.renderExistingCardDetails()}
-          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewCard[this.props.appLanguageCode]}</div>
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddNewCardClick}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewCard[this.props.appLanguageCode]}</div>
           <a className="my-page-enter-new-card-link" href={`https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&scope=read_write`} target="_blank" rel="noopener noreferrer"><i className="fa fa-link" style={{ fontSize: '20px' }}></i> {AppLanguages.connectBank[this.props.appLanguageCode]}</a>
         </ul>
       </div>
@@ -999,8 +1019,8 @@ formatDate(date) {
               </ul>
             </div>
             <div className="my-page-card-button-box">
-              <button name={eachAccount.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
-              <button name={eachAccount.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick.bind(this)}>{AppLanguages.delete[appLanguageCode]}</button>
+              <button name={eachAccount.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick}>{AppLanguages.edit[appLanguageCode]}</button>
+              <button name={eachAccount.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleBankAccountEditDeleteClick}>{AppLanguages.delete[appLanguageCode]}</button>
             </div>
           </div>
         </li>
@@ -1023,7 +1043,7 @@ formatDate(date) {
         </div>
         <ul>
           {this.renderExistingBankAccountDetails()}
-        <div className="my-page-enter-new-card-link" onClick={this.handleAddNewBankAccountClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewBankAccount[this.props.appLanguageCode]}</div>
+        <div className="my-page-enter-new-card-link" onClick={this.handleAddNewBankAccountClick}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewBankAccount[this.props.appLanguageCode]}</div>
         </ul>
       </div>
     );
@@ -1129,7 +1149,7 @@ formatDate(date) {
                   </ul>
                 </div>
                 <div className="my-page-card-button-box my-page-card-button-box-language">
-                  <div name={eachContractor.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick.bind(this)}>
+                  <div name={eachContractor.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleContratorEditDeleteClick}>
                     <i className="fa fa-plus-circle" style={{ fontSize: '13px' }}></i>
                     &nbsp;
                     {AppLanguages.language[this.props.appLanguageCode]}
@@ -1139,8 +1159,8 @@ formatDate(date) {
                   </div>
                 </div>
                 <div className="my-page-card-button-box">
-                  <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.edit[appLanguageCode]}</button>
-                  <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick.bind(this)}>{AppLanguages.viewStaff[appLanguageCode]}</button>
+                  <button name={eachContractor.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick}>{AppLanguages.edit[appLanguageCode]}</button>
+                  <button name={eachContractor.id} value="viewStaff" className="btn btn-sm btn-view my-page-edit-delete-btn" onClick={this.handleContratorEditDeleteClick}>{AppLanguages.viewStaff[appLanguageCode]}</button>
                 </div>
               </div>
             </li>
@@ -1162,7 +1182,7 @@ formatDate(date) {
         </div>
         <ul>
           {this.renderExistingContractorDetails()}
-        <div className="my-page-enter-new-card-link" onClick={this.handleAddContractorClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewContractor[this.props.appLanguageCode]}</div>
+        <div className="my-page-enter-new-card-link" onClick={this.handleAddContractorClick}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewContractor[this.props.appLanguageCode]}</div>
         </ul>
       </div>
     );
@@ -1221,7 +1241,7 @@ formatDate(date) {
                 </ul>
               </div>
               <div className="my-page-card-button-box my-page-card-button-box-language">
-                <div name={eachStaff.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleStaffEditDeleteClick.bind(this)}>
+                <div name={eachStaff.id} value="addLanguage" className="my-page-add-language-link" onClick={this.handleStaffEditDeleteClick}>
                   <i className="fa fa-plus-circle" style={{ fontSize: '12px' }}></i>
                   &nbsp;
                   {AppLanguages.language[this.props.appLanguageCode]}
@@ -1231,7 +1251,7 @@ formatDate(date) {
                 </div>
               </div>
               <div className="my-page-card-button-box">
-                <button name={eachStaff.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
+                <button name={eachStaff.id} value="edit" className="btn btn-sm btn-edit my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick}>{AppLanguages.edit[this.props.appLanguageCode]}</button>
               </div>
             </div>
           </li>
@@ -1257,7 +1277,7 @@ formatDate(date) {
           </div>
           <ul>
             {this.renderExistingStaffDetails(selectedContractor)}
-          <div className="my-page-enter-new-card-link" onClick={this.handleAddStaffClick.bind(this)}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewStaff[this.props.appLanguageCode]}</div>
+          <div className="my-page-enter-new-card-link" onClick={this.handleAddStaffClick}><i className="fa fa-plus-circle" style={{ fontSize: '20px' }}></i> {AppLanguages.addNewStaff[this.props.appLanguageCode]}</div>
           </ul>
         </div>
       );
@@ -1358,9 +1378,9 @@ formatDate(date) {
         {this.props.showStaffCreate ? this.renderStaffCreateForm() : ''}
         {this.props.showProfileEdit ? this.renderProfileEditForm() : ''}
         {this.props.showProfileCreate ? this.renderProfileCreateForm() : ''}
-        <h2>{AppLanguages.myPage[this.props.appLanguageCode]}</h2>
+        <div className="page-title">{AppLanguages.myPage[this.props.appLanguageCode]}</div>
         <div className="container my-page-container">
-          <div className="row">
+          <div className="row my-page-row">
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
             <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>

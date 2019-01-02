@@ -42,9 +42,16 @@ class ShowFlat extends Component {
      // autoCompletePlace: {},
      // clickedPlaceArray: []
    };
+  this.handleImageClick = this.handleImageClick.bind(this);
+  this.handleBookingClick = this.handleBookingClick.bind(this);
+  this.handleEditFlatClick = this.handleEditFlatClick.bind(this);
+  this.handleDeleteFlatClick = this.handleDeleteFlatClick.bind(this);
+  this.handleBookingClick = this.handleBookingClick.bind(this);
+  this.handleDateBlockSyncClick = this.handleDateBlockSyncClick.bind(this);
+  this.handleSignInClick = this.handleSignInClick.bind(this);
  }
   componentDidMount() {
-    console.log('in show flat, componentDidMount, params', this.props.match.params);
+    // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id, () => {
@@ -102,7 +109,7 @@ class ShowFlat extends Component {
             // console.log('in show_flat renderImages, image: ', image.publicid);
             return (
               <div key={image.id} className="slide-show">
-                <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick.bind(this)}/>
+                <img key={index} value={index} src={'http://res.cloudinary.com/chikarao/image/upload/w_300,h_200/' + image.publicid + '.jpg'} alt="" onClick={this.handleImageClick}/>
               </div>
             );
           }
@@ -505,7 +512,7 @@ class ShowFlat extends Component {
           // console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
-              <button value="userBooking" onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
+              <button value="userBooking" onClick={this.handleBookingClick} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
             </div>
           );
         } else {
@@ -513,17 +520,17 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-current-user-button-box">
               <div className="show-flat-button-box">
-                <button onClick={this.handleEditFlatClick.bind(this)} className="btn btn-warning btn-lg show-flat-footer-edit-btn">{AppLanguages.edit[this.props.appLanguageCode]}</button>
+                <button onClick={this.handleEditFlatClick} className="btn btn-warning btn-lg show-flat-footer-edit-btn">{AppLanguages.edit[this.props.appLanguageCode]}</button>
               </div>
               <div className="show-flat-button-box">
-                <button onClick={this.handleDeleteFlatClick.bind(this)} className="btn btn-danger btn-lg">{AppLanguages.delete[this.props.appLanguageCode]}</button>
+                <button onClick={this.handleDeleteFlatClick} className="btn btn-danger btn-lg">{AppLanguages.delete[this.props.appLanguageCode]}</button>
               </div>
               <div className="show-flat-button-box">
-                <button value="ownerBooking" onClick={this.handleBookingClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
+                <button value="ownerBooking" onClick={this.handleBookingClick} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.blockDates[this.props.appLanguageCode]}</button>
               </div>
               {this.props.flat.calendars ?
                 <div className="show-flat-button-box">
-                  <button value="sync" onClick={this.handleDateBlockSyncClick.bind(this)} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
+                  <button value="sync" onClick={this.handleDateBlockSyncClick} className="btn btn-primary btn-lg btn-book-submit" style={{ backgroundColor: 'white', color: 'blue' }}>{AppLanguages.syncCalendar[this.props.appLanguageCode]}</button>
                 </div> :
                 ''
               }
@@ -534,7 +541,7 @@ class ShowFlat extends Component {
       } else {
         return (
           <div>
-          <div className="send-owner-a-message-div" onClick={this.handleSignInClick.bind(this)}>
+          <div className="send-owner-a-message-div" onClick={this.handleSignInClick}>
             <h4><i className="fa fa-book"></i>   Sign in to Book!</h4>
           </div>
           </div>
@@ -545,7 +552,7 @@ class ShowFlat extends Component {
   sendOwnerAMessage() {
     if (!this.props.auth.authenticated) {
       return (
-        <div className="send-owner-a-message-div" onClick={this.handleSignInClick.bind(this)}>
+        <div className="send-owner-a-message-div" onClick={this.handleSignInClick}>
         <h4><i className="fa fa-envelope"></i>   Sign in to Send the Owner a Message</h4>
         </div>
       );

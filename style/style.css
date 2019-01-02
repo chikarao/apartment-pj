@@ -487,6 +487,12 @@ h3 {
    font-size: 5px !important;
 
 }
+/* ************Each Page**************** */
+
+.page-title {
+  font-size: 27px;
+}
+
 
 /* ************MAP**************** */
 
@@ -3286,6 +3292,12 @@ form {
   align-content: center; */
 }
 
+.my-page-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .my-page-category-container ul {
     width: 100%;
     height: 390px;
@@ -3317,7 +3329,7 @@ form {
   width: 100%;
   height: 100px;
   margin-bottom: 2px;
-  border-radius: 3px;
+  border-radius: 5px;
 
   list-style-type: none;
   display: flex;
@@ -3327,7 +3339,7 @@ form {
 
 .my-page-messaging-image-box {
   width: 100px;
-  height: 96%;
+  height: 100%;
   margin: 2px;
   pointer-events: none;
   position: relative;
@@ -3358,10 +3370,11 @@ form {
 
 .my-page-each-card img {
   width: 100px;
-  height: 96%;
-  margin: 2px;
+  /* height: 96%; */
+  height: 100%;
+  /* margin: 2px; */
   pointer-events: none;
-  border-radius: 3px;
+  border-radius: 3px 0 0 3px;
 }
 
 .my-page-each-card-click-box {
@@ -4342,32 +4355,28 @@ text-decoration: underline;
       margin: 5% 10% 0 10%;
     }
 
-    /* #nav_container {
-      height: 250px !important;
-    } */
-
-    /* .my-page-category-container {
-
-      margin: 5px 5px 0 0;
-    } */
-
-    .modal-main {
-      /* padding: 0 60px 0 60px; */
+    .my-page-category-container {
+      max-height: 550px;
+      max-width: 470px;
+      /* max-height: 500px; */
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      margin: 5px auto 5px auto;
+      background-color: white;
+      /* display: flex;
+      justify-content: center;
+      align-content: center; */
     }
+/*
+    .modal-main {
+      padding: 0 60px 0 60px;
+    } */
 
     .form-control {
       width: 90%;
       min-width: 200px;
     }
 
-    /* body > div:first-of-type {
-      margin: 0px;
-    } */
-    /* .my-page-category-title span:first-child {
-      position: absolute;
-      top: 14px;
-      right: 225px;
-    } */
     .review-title {
       /* float: left; */
       /* margin: 5px 5px; */
@@ -4439,6 +4448,10 @@ text-decoration: underline;
   }
   .navbar-brand {
     font-size: 27px;
+  }
+
+  .page-title {
+    font-size: 20px;
   }
 
   #map {
