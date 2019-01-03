@@ -783,6 +783,7 @@ formatDate(date) {
       const { appLanguageCode } = this.props;
       // console.log('in mypage, renderProfile, id: ', id);
       const profileLanguagesArray = this.getProfileLanguages(this.props.auth.user.profiles);
+      // <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[appLanguageCode]}:</div> <div>{username}</div></li>
 
       return (
         <div>
@@ -806,8 +807,6 @@ formatDate(date) {
               {AppLanguages.language[this.props.appLanguageCode]}
               </div>
             </li>
-            <li value="username"className="my-page-profile-attribute"><div>{AppLanguages.userName[appLanguageCode]}:</div> <div>{username}</div></li>
-            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[appLanguageCode]}:</div> <div>{user_id}</div></li>
             <li value="title"className="my-page-profile-attribute"><div>{AppLanguages.title[appLanguageCode]}:</div> <div>{title}</div></li>
             <li value="first_name"className="my-page-profile-attribute"><div>{AppLanguages.firstName[appLanguageCode]}:</div> <div>{first_name}</div></li>
             <li value="last_name"className="my-page-profile-attribute"><div>{AppLanguages.lastName[appLanguageCode]}:</div> <div>{last_name}</div></li>
@@ -823,6 +822,7 @@ formatDate(date) {
             <li value="emergency_contact_relationship"className="my-page-profile-attribute"><div>{AppLanguages.emergencyRelationship[appLanguageCode]}:</div> <div>{emergency_contact_relationship}</div></li>
             <li value=""className="my-page-profile-attribute"><div>{AppLanguages.selfIntro[appLanguageCode]}:</div> <div></div></li>
             <div value="introduction"className="my-page-profile-introduction">{introduction}</div>
+            <li value="user_id"className="my-page-profile-attribute"><div>{AppLanguages.userId[appLanguageCode]}:</div> <div>{user_id}</div></li>
           </ul>
         </div>
       );

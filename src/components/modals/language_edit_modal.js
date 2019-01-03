@@ -18,6 +18,9 @@ class LanguageEditModal extends Component {
       selectedLanguage: '',
       languageCode: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleDeleteLanguageClick = this.handleDeleteLanguageClick.bind(this);
   }
   //
   // componentDidMount() {
@@ -89,19 +92,19 @@ class LanguageEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Flat Language</h3>
 
             <div className="edit-profile-scroll-div">
               <div className="edit-flat-delete-language-button">
-                <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick.bind(this)}>Delete</button>
+                <button name={this.props.language.code} value={this.props.language.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteLanguageClick}>Delete</button>
               </div>
               <div key={'code'} className="edit-flat-delete-language-language-box">
                 <label className="edit-flat-delete-language-language-label">Language:</label>
                 <div className="edit-flat-language-delete-language">{this.props.language.code ? <div>{languages[this.props.language.code].flag} {languages[this.props.language.code].name}</div> : ''}</div>
               </div>
               {this.renderAlert()}
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               <fieldset key={'address1'} className="form-group">
                 <label className="create-flat-form-label">Street Address:</label>
                 <Field name="address1" component="input" type="string" className="form-control" />
@@ -161,7 +164,7 @@ class LanguageEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteLanguageCompleted ?
             <div className="post-signup-message">The {this.state.selectedLanguage} language version has been deleted.</div>

@@ -20,6 +20,10 @@ class ContractorEditModal extends Component {
       deleteContractorCompleted: false,
       selectedContractorId: ''
     };
+    this.handleEditLanguageClick = this.handleEditLanguageClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleDeleteContractorClick = this.handleDeleteContractorClick.bind(this);
   }
   //
   // componentDidMount() {
@@ -161,7 +165,7 @@ class ContractorEditModal extends Component {
             key={i}
             value={eachContractor.id}
             className="modal-edit-language-link"
-            onClick={this.handleEditLanguageClick.bind(this)}
+            onClick={this.handleEditLanguageClick}
           >
             {Languages[eachContractor.language_code].flag}&nbsp;{Languages[eachContractor.language_code].name}
           </div>
@@ -183,17 +187,17 @@ class ContractorEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Contractor</h3>
             <div className="modal-edit-delete-edit-button-box">
-              <button value={this.props.contractor.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteContractorClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <button value={this.props.contractor.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteContractorClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
               <div className="modal-edit-language-link-box">
                   {this.renderEditLanguageLink()}
               </div>
             </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachContractorField()}
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>

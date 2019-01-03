@@ -15,6 +15,7 @@ class FormChoices extends Component {
       // set up state to take input from user
       inputValue: ''
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
   // Take user input in input element
   handleInputChange(event) {
@@ -80,7 +81,7 @@ class FormChoices extends Component {
           id="valueInput"
           value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           key={choice.value}
-          onChange={this.handleInputChange.bind(this)}
+          onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
           style={{ borderColor: 'lightgray' }}

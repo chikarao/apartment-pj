@@ -31,12 +31,13 @@ class Landing extends Component {
     this.state = {
       windowWidth: window.innerWidth,
     };
+    this.handleResize = this.handleResize.bind(this)
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize.bind(this));
+    window.addEventListener('resize', this.handleResize);
     // this.facebookLogin()
-    // clear out all this.props.flats state attributes 
+    // clear out all this.props.flats state attributes
     this.props.clearFlats();
   }
 

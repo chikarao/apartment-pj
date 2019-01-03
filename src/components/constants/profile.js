@@ -23,16 +23,16 @@ const Profile = {
 
   },
 
-  username: {
-    name: 'username',
-    en: 'Username',
-    jp: 'ユーザーネーム',
-    component: 'input',
-    type: 'string',
-    className: 'form-control',
-    language_independent: true,
-    // category: 'basic'
-  },
+  // username: {
+  //   name: 'username',
+  //   en: 'Username',
+  //   jp: 'ユーザーネーム',
+  //   component: 'input',
+  //   type: 'string',
+  //   className: 'form-control',
+  //   language_independent: true,
+  //   // category: 'basic'
+  // },
 
   title: {
     name: 'title',

@@ -20,6 +20,9 @@ class StaffEditModal extends Component {
       deleteStaffCompleted: false,
       selectedStaffId: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleEditLanguageClick = this.handleEditLanguageClick.bind(this);
   }
   //
   // componentDidMount() {
@@ -161,7 +164,7 @@ class StaffEditModal extends Component {
             key={i}
             value={eachStaff.id}
             className="modal-edit-language-link"
-            onClick={this.handleEditLanguageClick.bind(this)}
+            onClick={this.handleEditLanguageClick}
           >
             {Languages[eachStaff.language_code].flag}&nbsp;{Languages[eachStaff.language_code].name}
           </div>
@@ -182,7 +185,7 @@ class StaffEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Staff</h3>
             <div className="modal-edit-delete-edit-button-box">
               <button value={this.props.staff.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteStaffClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
@@ -192,7 +195,7 @@ class StaffEditModal extends Component {
             </div>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachStaffField()}
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
@@ -214,7 +217,7 @@ class StaffEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteStaffCompleted ?
             <div className="post-signup-message">The staff has been successfully deleted.</div>

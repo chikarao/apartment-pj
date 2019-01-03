@@ -17,6 +17,9 @@ class ReviewEditModal extends Component {
       starClicked: false,
       goldStarNum: 0
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleStarClick = this.handleStarClick.bind(this);
   }
 
   componentDidMount() {
@@ -81,20 +84,20 @@ class ReviewEditModal extends Component {
       return _.times(totalStars, (i) => {
         if (i < rating) {
           // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
-          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
+          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick}></i>;
         } else {
           // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
-          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
+          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick}></i>
         }
       });
     } else {
       return _.times(totalStars, (i) => {
         if (i < this.state.goldStarNum) {
           // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
-          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
+          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick}></i>;
         } else {
           // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
-          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
+          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick}></i>
         }
       });
 
@@ -115,10 +118,10 @@ class ReviewEditModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
               <h3 className="auth-modal-title">Edit Review</h3>
               {this.renderAlert()}
-                <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+                <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                   <fieldset className="form-group">
                     <label className="create-flat-form-label">Title:</label>
                     <Field name="title" component="input" type="string" className="form-control" />
@@ -146,7 +149,7 @@ class ReviewEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">Your review has been successfully updated.</div>
         </div>

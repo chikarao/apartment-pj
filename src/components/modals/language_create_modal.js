@@ -16,6 +16,8 @@ class LanguageCreateModal extends Component {
       createLanguageCompleted: false,
       selectedLanguage: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -115,11 +117,11 @@ class LanguageCreateModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">Create Flat Language</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset key={'code'} className="form-group">
               <label className="create-flat-form-label">Select Language:</label>
               <Field name="code" component="select" type="string" className="form-control">
@@ -186,7 +188,7 @@ class LanguageCreateModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">A {this.state.selectedLanguage} language version has been successfully created for your listing.</div>
         </div>

@@ -83,6 +83,19 @@ class Results extends Component {
     selectedTabArray: [],
     amenitySearchStarted: false
   };
+  this.handlePageClick = this.handlePageClick.bind(this);
+  this.handleDoubleLeftPageClick = this.handleDoubleLeftPageClick.bind(this);
+  this.handleLeftPageClick = this.handleLeftPageClick.bind(this);
+  this.handleRightPageClick = this.handleRightPageClick.bind(this);
+  this.handleAmenityCheck = this.handleAmenityCheck.bind(this);
+  this.handleSearchApplyClick = this.handleSearchApplyClick.bind(this);
+  this.popUpCalendar = this.popUpCalendar.bind(this);
+  this.hideCalendar = this.hideCalendar.bind(this);
+  this.handleRefineSearchLinkClick = this.handleRefineSearchLinkClick.bind(this);
+  this.handleSearchTabClick = this.handleSearchTabClick.bind(this);
+  this.handleSearchClearClick = this.handleSearchClearClick.bind(this);
+  this.handleMinMaxClick = this.handleMinMaxClick.bind(this);
+  this.incrementSearchSpaceInput = this.incrementSearchSpaceInput.bind(this);
 }
 // Pagination reference: https://stackoverflow.com/questions/40232847/how-to-implement-pagination-in-reactjs
 
@@ -567,23 +580,23 @@ class Results extends Component {
             //if right arrow has been clicked, don't automatically assign current to class
             if (this.state.rightArrowClicked) {
               return (
-                <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+                <li key={index} id={pageNumber} onClick={this.handlePageClick}>{pageNumber}</li>
               );
             }
             // if fresh page and right arrow has not been clicked, assign current to class
             return (
-              <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+              <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick}>{pageNumber}</li>
             );
           } else if (index <= (MAX_NUM_PAGE_NUMBERS - 3)) {
             // if index less than or equal to render the actual page numbers
             return (
-              <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+              <li key={index} id={pageNumber} onClick={this.handlePageClick}>{pageNumber}</li>
             );
           } else if (index === MAX_NUM_PAGE_NUMBERS - 2) {
             //if last two pages buttons, either render ... or the page number
             if (pageNumber === lastPage - 1) {
               return (
-                <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+                <li key={index} id={pageNumber} onClick={this.handlePageClick}>{pageNumber}</li>
               );
             }
             return (
@@ -592,7 +605,7 @@ class Results extends Component {
           } else {
             //if all else, render the last page number
             return (
-              <li key={index} id={lastPage} onClick={this.handlePageClick.bind(this)}>{lastPage }</li>
+              <li key={index} id={lastPage} onClick={this.handlePageClick}>{lastPage }</li>
             );
           }
         });
@@ -602,11 +615,11 @@ class Results extends Component {
           // console.log('in results renderPageNumbers, pageNumber, index: ', pageNumber, index);
           if (index === 0) {
             return (
-              <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+              <li key={index} id={pageNumber} className="current" onClick={this.handlePageClick}>{pageNumber}</li>
             );
           } else {
             return (
-              <li key={index} id={pageNumber} onClick={this.handlePageClick.bind(this)}>{pageNumber}</li>
+              <li key={index} id={pageNumber} onClick={this.handlePageClick}>{pageNumber}</li>
             );
           }
         });
@@ -630,7 +643,7 @@ class Results extends Component {
     // Double left appears only in flexible pagination with ... and when current page is 3 or more
     if (this.state.currentPage >= 3 && (lastPage > MAX_NUM_PAGE_NUMBERS)) {
       return (
-        <li onClick={this.handleDoubleLeftPageClick.bind(this)}><i className="fa fa-angle-double-left"></i></li>
+        <li onClick={this.handleDoubleLeftPageClick}><i className="fa fa-angle-double-left"></i></li>
       );
     }
   }
@@ -678,9 +691,9 @@ class Results extends Component {
           <div>
             <ul className="pagination">
               {this.renderDoubleLeftArrow()}
-              <li onClick={this.handleLeftPageClick.bind(this)}><i className="fa fa-angle-left"></i></li>
+              <li onClick={this.handleLeftPageClick}><i className="fa fa-angle-left"></i></li>
                 {this.renderPageNumbers(pageNumbersArray)}
-              <li onClick={this.handleRightPageClick.bind(this)}><i className="fa fa-angle-right"></i></li>
+              <li onClick={this.handleRightPageClick}><i className="fa fa-angle-right"></i></li>
             </ul>
           </div>
         );
@@ -815,38 +828,46 @@ class Results extends Component {
 
   incrementSecondCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
 
-    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
-    if (!incrementMax) {
+    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax } = this.state;
+    if (!incrementMax) { // if incrementMin selected
+      // and user clicks up
       if (elementName === 'up') {
         // if (bedroomsMin < bedroomsMax - searchCriteria[criterionValue].increment) {
-        // Allow max and min to be equal
+        // if min is less than max before click, Allow max and min to be equal;
         if (bedroomsMin < bedroomsMax) {
+          // increment min by increment unit (specified in constants/search_criteria.js)
           this.setState({ bedroomsMin: bedroomsMin + increment }, () => {
+            // if after setState bedroom min + increment, min equal max
             if (this.state.bedroomsMin == bedroomsMax) {
+              // set state exact: min
               this.setState({ bedroomsExact: this.state.bedroomsMin }, () => {
+                // then update redux state
                 this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsExact });
               });
+            } else {
+              this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
             }
             // else {
             //   // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
             // }
           });
         } // end of bedroommMin < bedroom max
-      } else {
+      } else { // if user clicks down;
         if (bedroomsMin > moreThanLimit) {
           this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedroomsExact: null });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedrooms_exact: null });
           });
         }
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMin: bedroomsMin - increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedroomsExact: null });
+            this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin, bedrooms_exact: null });
           });
         }
       }// end of second if
-    } else { // increment min
+    } else { // increment max
+      // console.log('in results incrementSecondCriterion if bedroomsMin, bedroomsMax, bedroomsExact, elementName: ', bedroomsMin, bedroomsMax, bedroomsExact, elementName);
       if (elementName === 'up') {
         if (bedroomsMax < lessThanLimit) {
           this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
@@ -857,10 +878,10 @@ class Results extends Component {
         if (bedroomsMin == bedroomsMax) {
           this.setState({ bedroomsMax: bedroomsMax + increment, bedroomsExact: null }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax, bedroomsExact: null });
+            this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax, bedrooms_exact: null });
           });
         }
-      } else {
+      } else { // down while increment min
         // if (bedroomsMax - increment > bedroomsMin) {
         // Allow max and min to be equal
         if (bedroomsMax > bedroomsMin) {
@@ -871,7 +892,9 @@ class Results extends Component {
                 this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsMax });
               });
             } else {
-              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+              // this.setState({ bedroomsExact: null }, () => {
+                this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+              // });
             }
             // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
           });
@@ -1027,17 +1050,17 @@ class Results extends Component {
   //       <div className="search-criteria-details-each-box">
   //         <div className="search-criteria-details-each-label">{searchCriteria[criterionValue].lowerLabel} <small>{searchCriteria[criterionValue].units}</small></div>
   //         <div className="search-criteria-details-each-input-box">
-  //             <div className="search-criteria-details-input-increment"><i value="down" name="moreThan" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+  //             <div className="search-criteria-details-input-increment"><i value="down" name="moreThan" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput}></i></div>
   //             <div className="search-criteria-details-input-display">{this.state.searchDisplayValueMin}</div>
-  //             <div className="search-criteria-details-input-increment"><i value="up" name="moreThan" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+  //             <div className="search-criteria-details-input-increment"><i value="up" name="moreThan" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput}></i></div>
   //         </div>
   //       </div>
   //       <div className="search-criteria-details-each-box">
   //         <div className="search-criteria-details-each-label">{searchCriteria[criterionValue].upperLabel}</div>
   //         <div className="search-criteria-details-each-input-box">
-  //           <div className="search-criteria-details-input-increment"><i value="down" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+  //           <div className="search-criteria-details-input-increment"><i value="down" className="fa fa-angle-down" onClick={this.incrementSearchSpaceInput}></i></div>
   //           <div className="search-criteria-details-input-display">{this.state.searchDisplayValueMax}</div>
-  //           <div className="search-criteria-details-input-increment"><i value="up" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
+  //           <div className="search-criteria-details-input-increment"><i value="up" className="fa fa-angle-up" onClick={this.incrementSearchSpaceInput}></i></div>
   //         </div>
   //       </div>
   //     </div>
@@ -1412,7 +1435,7 @@ class Results extends Component {
           return (
             <div key={i} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
               <label className="amenity-radio">{amenities[a][this.props.appLanguageCode]}</label>
-              <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck.bind(this)} />
+              <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck} />
             </div>
           );
         // }
@@ -1423,7 +1446,7 @@ class Results extends Component {
   renderRefineSearchCriteria() {
     return (
       <div>
-      <div className={this.state.amenitySearchStarted ? 'refine-search-apply-link-highlight' : 'refine-search-apply-link'} onClick={this.handleSearchApplyClick.bind(this)}>{this.state.amenitySearchStarted ? AppLanguages.apply[this.props.appLanguageCode] : ''}</div>
+      <div className={this.state.amenitySearchStarted ? 'refine-search-apply-link-highlight' : 'refine-search-apply-link'} onClick={this.handleSearchApplyClick}>{this.state.amenitySearchStarted ? AppLanguages.apply[this.props.appLanguageCode] : ''}</div>
         <div className="row refine-search-row">
         {this.renderEachAmenityCriteria()}
         </div>
@@ -1476,7 +1499,7 @@ class Results extends Component {
       <div className="results-search-date-search-box">
         <div className="results-search-date-search-input">
           {this.renderCalendarPopup()}
-          <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder={AppLanguages.searchByDates[this.props.appLanguageCode]} onFocus={this.popUpCalendar.bind(this)} />
+          <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder={AppLanguages.searchByDates[this.props.appLanguageCode]} onFocus={this.popUpCalendar} />
         </div>
       </div>
     );
@@ -1510,7 +1533,7 @@ class Results extends Component {
   renderCalendarPopup() {
     return (
       <div className="results-search-date-search-popup hide">
-        <div className="results-search-date-search-close" onClick={this.hideCalendar.bind(this)}>  {AppLanguages.finished[this.props.appLanguageCode]}</div>
+        <div className="results-search-date-search-close" onClick={this.hideCalendar}>  {AppLanguages.finished[this.props.appLanguageCode]}</div>
         <DatePicker
           numberOfMonths={6}
           daysToDisable={this.disabledDays()}
@@ -1521,9 +1544,9 @@ class Results extends Component {
 
   renderSearchArea() {
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
-    // <div className="search-criteria-clear" onClick={this.handleSearchClearClick.bind(this)}>Clear</div>
+    // <div className="search-criteria-clear" onClick={this.handleSearchClearClick}>Clear</div>
     // props of
-    // <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
+    // <div value='apply' className={this.state.searchCriteriaInpuStarted ? 'search-criteria-apply-highlight' : 'search-criteria-apply'} onClick={this.handleSearchApplyClick}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
     const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax, searchCriteriaInpuStarted, criterionValue, selectedTabArray } = this.state;
     const bedrooms = bedroomsExact ? `${bedroomsExact}` : `${bedroomsMin} ~ ${bedroomsMax}`
     return (
@@ -1533,14 +1556,14 @@ class Results extends Component {
             <CitySearch
               resultsPage
             />
-            <div className={this.state.showRefineSearch ? 'hide' : 'results-refine-search-link'} onClick={this.handleRefineSearchLinkClick.bind(this)}>
+            <div className={this.state.showRefineSearch ? 'hide' : 'results-refine-search-link'} onClick={this.handleRefineSearchLinkClick}>
                 {AppLanguages.refineSearch[this.props.appLanguageCode]}
             </div>
           </div>
           <div className="results-search-box-sub-box col-xs-12 col-sm-6 col-md-6">
           <div className="results-search-box-sub-box-box">
             <div className="results-search-box-sub">
-              <div value={0} name={searchCriteria[0].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={0} name={searchCriteria[0].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>
                 {AppLanguages.size[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
@@ -1548,7 +1571,7 @@ class Results extends Component {
               </div>
             </div>
             <div className="results-search-box-sub" >
-              <div value={1} name={searchCriteria[1].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={1} name={searchCriteria[1].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>
                 {AppLanguages.bedrooms[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
@@ -1557,7 +1580,7 @@ class Results extends Component {
 
             </div>
             <div className="results-search-box-sub">
-              <div value={2} name={searchCriteria[2].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={2} name={searchCriteria[2].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>
                 {AppLanguages.station[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
@@ -1566,7 +1589,7 @@ class Results extends Component {
 
             </div>
             <div className="results-search-box-sub">
-              <div value={3} name={searchCriteria[3].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick.bind(this)}>
+              <div value={3} name={searchCriteria[3].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>
                 {AppLanguages.price[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
@@ -1575,12 +1598,12 @@ class Results extends Component {
             </div>
           </div>
             <div className="search-criteria-increment-box">
-            <div value='all' className={this.state.searchCriteriaInpuStarted || this.state.amenitySearchArray.length > 0 ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick.bind(this)}>{AppLanguages.clearAll[this.props.appLanguageCode]}</div>
-              <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick.bind(this)}>Min</div>
-              <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
-              <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput.bind(this)}></i></div>
-              <div value='max' className="search-criteria-increment-min-max" style={this.state.incrementMax ? { backgroundColor: 'gray', color: 'white' } : { backgroundColor: 'white' }} onClick={this.handleMinMaxClick.bind(this)}>Max</div>
-              <div value='apply' className='search-criteria-apply-highlight' onClick={this.handleSearchApplyClick.bind(this)}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
+            <div value='all' className={this.state.searchCriteriaInpuStarted || this.state.amenitySearchArray.length > 0 ? 'search-criteria-clear-all-highlight' : 'search-criteria-clear-all'} onClick={this.handleSearchClearClick}>{AppLanguages.clearAll[this.props.appLanguageCode]}</div>
+              <div value='min' className="search-criteria-increment-min-max" onClick={this.handleMinMaxClick}>Min</div>
+              <div className="search-criteria-increment"><i name="down" className="fa fa-minus-circle" onClick={this.incrementSearchSpaceInput}></i></div>
+              <div className="search-criteria-increment"><i name="up" className="fa fa-plus-circle" onClick={this.incrementSearchSpaceInput}></i></div>
+              <div value='max' className="search-criteria-increment-min-max" style={this.state.incrementMax ? { backgroundColor: 'gray', color: 'white' } : { backgroundColor: 'white' }} onClick={this.handleMinMaxClick}>Max</div>
+              <div value='apply' className='search-criteria-apply-highlight' onClick={this.handleSearchApplyClick}>{AppLanguages.apply[this.props.appLanguageCode]}</div>
             </div>
           </div>
         </div>
@@ -1599,7 +1622,7 @@ class Results extends Component {
           {this.renderDateSearch()}
           {this.renderSearchArea()}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
-            <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick.bind(this)}>{AppLanguages.close[this.props.appLanguageCode]}</div>
+            <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick}>{AppLanguages.close[this.props.appLanguageCode]}</div>
             {this.state.showRefineSearch ? this.renderRefineSearchCriteria() : ''}
           </div>
         </div>

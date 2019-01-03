@@ -19,6 +19,8 @@ class BankAccountEditModal extends Component {
       // deleteBankAccountCompleted: false,
       selectedBankAccountId: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
   //
   // componentDidMount() {
@@ -105,12 +107,12 @@ class BankAccountEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Bank Account</h3>
 
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachBankAccountField()}
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>

@@ -15,6 +15,9 @@ class ResetPasswordModal extends Component {
     this.state = {
       resetCompleted: false
     };
+    this.handleEmailFormSubmit = this.handleEmailFormSubmit.bind(this);
+    this.handlePasswordFormSubmit = this.handlePasswordFormSubmit.bind(this);
+    this.handleAuthClick = this.handleAuthClick.bind(this);
   }
   handleEmailFormSubmit({ email }) {
     console.log('in reset_password, handleEmailFormSubmit email entered, clicked, email:', email);
@@ -53,7 +56,7 @@ class ResetPasswordModal extends Component {
         <h3 className="auth-modal-title">Reset Password</h3>
         <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
 
-        <form onSubmit={handleSubmit(this.handleEmailFormSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this.handleEmailFormSubmit)}>
         <fieldset className="form-group">
           <label className="auth-form-label">Email:</label>
           <Field name="email" component={InputField} type="email" placeholder="First, enter your email and press the first button below" className="form-control" />
@@ -61,7 +64,7 @@ class ResetPasswordModal extends Component {
           <button className="btn btn-primary reset-password-btn">Send Reset Token to My Email</button>
         </form>
 
-        <form id="auth-reset-password-form" onSubmit={handleSubmit(this.handlePasswordFormSubmit.bind(this))}>
+        <form id="auth-reset-password-form" onSubmit={handleSubmit(this.handlePasswordFormSubmit)}>
           <fieldset className="form-group">
             <label className="auth-form-label">Reset Token:</label>
             <Field name="token" component={InputField} type="token" placeholder="Second, enter the token we sent to your email" className="form-control" />
@@ -74,7 +77,7 @@ class ResetPasswordModal extends Component {
             <label className="auth-form-label">Confirm New Password:</label>
             <Field name="passwordConfirm" component={InputField} type="password"placeholder="Enter new password again" className="form-control" />
           </fieldset>
-          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Back to Sign in</span>
+          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick}>Back to Sign in</span>
           <button action="submit" className="btn btn-primary reset-password-btn">Submit</button>
         </form>
       </section>
@@ -89,7 +92,7 @@ class ResetPasswordModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
           <div className="post-signup-message">Your password has been reset. Please sign in.</div>
-          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Back to Sign in</span>
+          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick}>Back to Sign in</span>
         </div>
       </div>
     )

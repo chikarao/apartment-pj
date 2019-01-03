@@ -16,19 +16,11 @@ class ReviewCreateFrom extends Component {
       starClicked: false,
       goldStarNum: 0
     };
+    this.handleStarClick = this.handleStarClick.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
   // componentDidMount() {
   // }
-
-  renderAlert() {
-    if (this.props.errorMessage) {
-      return (
-        <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
-        </div>
-      );
-    }
-  }
 
   handleFormSubmit(data) {
     const { id, user_id, flat_id } = this.props.booking;
@@ -53,14 +45,24 @@ class ReviewCreateFrom extends Component {
   handleStarClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in ReviewEditModal, handleStarClick, elementVal:', elementVal);
+    // console.log('in ReviewEditModal, handleStarClick, elementVal:', elementVal);
     const elementValNum = parseInt(elementVal, 10);
     this.setState({ clickedStar: elementValNum, starClicked: true }, () => {
-      console.log('in ReviewEditModal, handleStarClick, this.state.clickedStar:', this.state.clickedStar);
+      // console.log('in ReviewEditModal, handleStarClick, this.state.clickedStar:', this.state.clickedStar);
       this.setState({ goldStarNum: this.state.clickedStar + 1 }, () => {
-        console.log('in ReviewEditModal, handleStarClick, this.state.goldStarNum:', this.state.goldStarNum);
+        // console.log('in ReviewEditModal, handleStarClick, this.state.goldStarNum:', this.state.goldStarNum);
       })
     });
+  }
+
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+          <strong>Ooops! </strong> {this.props.errorMessage}
+        </div>
+      );
+    }
   }
 
   renderStars() {
@@ -68,28 +70,28 @@ class ReviewCreateFrom extends Component {
     const rating = 0;
     const totalStars = 5;
     const grayStarsNum = 5 - rating;
-    console.log('in ReviewEditModal, renderStars, rating:', rating);
+    // console.log('in ReviewEditModal, renderStars, rating:', rating);
     //
     // for (let i = 0; i < rating; i++) {
     // }
     if (!this.state.starClicked) {
       return _.times(totalStars, (i) => {
         if (i < rating) {
-          console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
-          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
+          // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick}></i>;
         } else {
-          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
-          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
+          // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick}></i>
         }
       });
     } else {
       return _.times(totalStars, (i) => {
         if (i < this.state.goldStarNum) {
-          console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
-          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick.bind(this)}></i>;
+          // console.log('in ReviewEditModal, renderStars, in loop, if: ', i);
+          return <i key={i} value={i} className="fa fa-star gold-star-edit" onClick={this.handleStarClick}></i>;
         } else {
-          console.log('in ReviewEditModal, renderStars, in loop, else:', i);
-          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick.bind(this)}></i>
+          // console.log('in ReviewEditModal, renderStars, in loop, else:', i);
+          return <i key={i} value={i} className="fa fa-star gray-star-edit" onClick={this.handleStarClick}></i>
         }
       });
 
@@ -101,7 +103,7 @@ class ReviewCreateFrom extends Component {
     return (
         <div className="review-container">
           <h4>Write a Review</h4>
-          <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset className="form-group">
               <label className="auth-form-label">Title:</label>
               <Field name="title" component="input" type="string" className="form-control" />

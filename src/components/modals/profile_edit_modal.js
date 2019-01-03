@@ -22,6 +22,9 @@ class ProfileEditModal extends Component {
       editProfileCompleted: false,
       deleteProfileCompleted: false
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleEditLanguageClick = this.handleEditLanguageClick.bind(this);
   }
 
   // componentDidMount() {
@@ -91,7 +94,7 @@ class ProfileEditModal extends Component {
             key={i}
             value={eachProfile.id}
             className="modal-edit-language-link"
-            onClick={this.handleEditLanguageClick.bind(this)}
+            onClick={this.handleEditLanguageClick}
           >
             {Languages[eachProfile.language_code].flag}&nbsp;{Languages[eachProfile.language_code].name}
           </div>
@@ -144,7 +147,7 @@ class ProfileEditModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">{AppLanguages.editProfile[this.props.appLanguageCode]}</h3>
           <div className="modal-edit-delete-edit-button-box">
             {this.props.auth.user.profiles.length > 1 ?
@@ -158,7 +161,7 @@ class ProfileEditModal extends Component {
           </div>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               {this.renderEachInputField()}
               <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
@@ -177,7 +180,7 @@ class ProfileEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteProfileCompleted ?
             <div className="post-signup-message">Your profile has been successfully deleted.</div>

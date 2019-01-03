@@ -11,6 +11,14 @@ let showHideClassName;
 let fbResponse = {};
 
 class SigninModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleAuthClick = this.handleAuthClick.bind(this);
+  }
   componentDidMount() {
     if (FB) {
       this.facebookLogin((res) => this.updateLoggedInState(res));
@@ -153,7 +161,7 @@ class SigninModal extends Component {
           <div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false">FB Login</div>
         </div>
 
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this.handleFormSubmit)}>
           <fieldset className="form-group">
             <label className="auth-form-label">Email:</label>
             <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com"/>
@@ -162,8 +170,8 @@ class SigninModal extends Component {
             <label className="auth-form-label">Password:</label>
             <Field name="password" component={InputField} type="password" className="form-control password-input" placeholder="Enter your password"/>
           </fieldset>
-          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Forgot? Reset Password</span>
-          <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick.bind(this)}>Sign Up!</span>
+          <span value="reset-password"className="goto-signin-link" onClick={this.handleAuthClick}>Forgot? Reset Password</span>
+          <span value="signup" className="goto-signin-link" onClick={this.handleAuthClick}>Sign Up!</span>
 
           {this.renderAlert()}
 

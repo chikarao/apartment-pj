@@ -34,13 +34,18 @@ class MessagingMain extends Component {
       sortByDateOld: false,
       searchInputVal: ''
     };
-    // this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.handleMessageEditClick = this.handleMessageEditClick.bind(this);
+    this.handleMessageRefreshClick = this.handleMessageRefreshClick.bind(this);
+    this.handleMessageBackClick = this.handleMessageBackClick.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleMessageHamburgerClick = this.handleMessageHamburgerClick.bind(this);
   }
 
   componentDidMount() {
     // console.log('in messagingMain, componentDidMount');
     console.log('in messagingMain, componentDidMount, this.props.match.params.id', this.props.match.params.id);
-      window.addEventListener('resize', this.handleResize.bind(this));
+      window.addEventListener('resize', this.handleResize);
       // this.props.match.params.id
       // this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
       this.props.fetchFlatsByUser(this.props.match.params.id, () => {})
@@ -81,13 +86,13 @@ class MessagingMain extends Component {
             id="messaging-main-large-archive-sort"
             className="btn messaging-main-large-archive sort"
             value="sort"
-            onClick={this.handleMessageEditClick.bind(this)}
+            onClick={this.handleMessageEditClick}
           >
             <i
             className="fa fa-sort sort"
             value="sort"
             style={this.state.sortByDateOld ? { color: 'green' } : { color: 'gray' }}
-            onClick={this.handleMessageEditClick.bind(this)}
+            onClick={this.handleMessageEditClick}
             >
             </i>
           </div>
@@ -95,42 +100,42 @@ class MessagingMain extends Component {
             id="messaging-main-large-archive-filter"
             className="btn messaging-main-large-archive filter"
             value="filter"
-            onClick={this.handleMessageEditClick.bind(this)}
+            onClick={this.handleMessageEditClick}
           >
             <i
               className="fa fa-filter filter"
               value="filter"
               // style={this.state.sortListingSelected ? { color: '#fff600' } : { color: 'gray' }}
               style={(this.state.sortListingSelected || (this.state.searchInputVal !== '')) ? { color: 'green' } : { color: 'gray' }}
-              onClick={this.handleMessageEditClick.bind(this)}
+              onClick={this.handleMessageEditClick}
             >
             </i>
           </div>
-          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.archives[this.props.appLanguageCode]}</div>
-          <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
-          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-sync"></i></div>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.archives[this.props.appLanguageCode]}</div>
+          <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
+          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-sync"></i></div>
         </div>
       );
     }
     if (this.state.showArchiveBin) {
-      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
+      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-refresh" aria-hidden="true"></i></div>
       return (
         <div className="messaging-main-controls-left">
-          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick}><i className="fa fa-angle-left"></i></div>
           <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
-          <div value="unarchive" className="btn messaging-main-large-archive"  style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
-          <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
+          <div value="unarchive" className="btn messaging-main-large-archive"  style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
+          <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" className="fa fa-trash-o"></i></div>
         </div>
       );
     }
     if (this.state.showTrashBin) {
-      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick.bind(this)}><i className="fa fa-refresh" aria-hidden="true"></i></div>
+      // <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-refresh" aria-hidden="true"></i></div>
       return (
         <div className="messaging-main-controls-left">
-          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick.bind(this)}><i className="fa fa-angle-left"></i></div>
-          <div value="untrash" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
+          <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick}><i className="fa fa-angle-left"></i></div>
+          <div value="untrash" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick}>{AppLanguages.untrash[this.props.appLanguageCode]}</div>
           <div value="trashbin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
-          <div value="deleteCompletely" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.deleteCompletely[this.props.appLanguageCode]}</div>
+          <div value="deleteCompletely" className="btn messaging-main-large-archive" style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick}>{AppLanguages.deleteCompletely[this.props.appLanguageCode]}</div>
         </div>
       );
     }
@@ -165,8 +170,8 @@ class MessagingMain extends Component {
         <div className="messaging-main-messaging-control-box-box" id="messaging-main-messaging-control-box-box" style={{ left: `${leftDiff - 5}px` }}>
           <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
             <div style={{ fontWeight: 'bold' }}>{AppLanguages.orderBy[this.props.appLanguageCode]}</div>
-            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.messageDateNewest[this.props.appLanguageCode]}</div>
-            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.messageDateOldest[this.props.appLanguageCode]}</div>
+            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateNewest[this.props.appLanguageCode]}</div>
+            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateOldest[this.props.appLanguageCode]}</div>
           </div>
           </div>
       );
@@ -174,7 +179,7 @@ class MessagingMain extends Component {
 
   renderListingDetails(listing) {
     return (
-      <div name={listing.id} value="listingClick" id="" className="main-messaging-sub-control-listing-details" onClick={this.handleMessageEditClick.bind(this)}>
+      <div name={listing.id} value="listingClick" id="" className="main-messaging-sub-control-listing-details" onClick={this.handleMessageEditClick}>
         <img name={listing.id} className="main-messaging-sub-control-listing-details-img" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + listing.images[0].publicid + '.jpg'} alt="" />
         <div name={listing.id} className="main-messaging-sub-control-listing-details-box">
           <div name={listing.id} className="main-messaging-sub-control-listing-details-box-div">{listing.description.substring(0, 30)}</div>
@@ -187,8 +192,8 @@ class MessagingMain extends Component {
 
   renderEachMessageSubControlListing() {
     return _.map(this.props.flats, listing => {
-      // return <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick.bind(this)}>{listing.id}</div>;
-      return <div key={listing.id} name={listing.id} value="listingClick" className="messaging-sub-controls-div" onClick={this.handleMessageEditClick.bind(this)}>{this.renderListingDetails(listing)}</div>;
+      // return <div className="messaging-sub-controls-div" name="" value="listing" onClick={this.handleMessageEditClick}>{listing.id}</div>;
+      return <div key={listing.id} name={listing.id} value="listingClick" className="messaging-sub-controls-div" onClick={this.handleMessageEditClick}>{this.renderListingDetails(listing)}</div>;
     })
   }
 
@@ -219,9 +224,9 @@ class MessagingMain extends Component {
       return (
         <div className="messaging-main-messaging-sub-control-box-box" id="messaging-main-messaging-sub-control-box-box" style={{ left: `${leftDiff - 19}px` }}>
           <div id="messaging-main-messaging-sub-control-box" className={this.state.showMessageSubControls ? 'messaging-main-messaging-sub-control-box' : 'hide'}>
-            <input id="main-messaging-search-box" type="text" placeholder={AppLanguages.filterKeyWords[this.props.appLanguageCode]} value={this.state.searchInputVal} onChange={this.handleSearchInput.bind(this)}></input>
+            <input id="main-messaging-search-box" type="text" placeholder={AppLanguages.filterKeyWords[this.props.appLanguageCode]} value={this.state.searchInputVal} onChange={this.handleSearchInput}></input>
             <div style={{ fontWeight: 'bold' }}>{AppLanguages.filterListing[this.props.appLanguageCode]}</div>
-            <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.allListings[this.props.appLanguageCode]}</div>
+            <div name={0} value="allListings" style={this.state.sortListingSelected ? { border: '1px dotted white', color: 'blue' } : { border: '1px dotted gray' }} id="messaging-main-sub-control-box-all-listings" className="messaging-main-sub-control-box-all-listings" onClick={this.handleMessageEditClick}>{AppLanguages.allListings[this.props.appLanguageCode]}</div>
               <div className="messaging-main-messaging-sub-control-box-scroll">
                 {this.renderEachMessageSubControlListing()}
               </div>
@@ -497,9 +502,9 @@ class MessagingMain extends Component {
   renderEditControls() {
     return (
       <div className="messaging-main-controls-left">
-        <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick.bind(this)}>{AppLanguages.moveToArchives[this.props.appLanguageCode]}</div>
+        <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.moveToArchives[this.props.appLanguageCode]}</div>
         <div className="btn messaging-main-large-archive"></div>
-        <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick.bind(this)}><i value="trash" className="fa fa-trash-o"></i></div>
+        <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" className="fa fa-trash-o"></i></div>
       </div>
     );
   }
@@ -931,7 +936,7 @@ class MessagingMain extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <div className="my-page-category-left"><div id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick.bind(this)} ><i className="fa fa-bars"></i></div></div>
+          <div className="my-page-category-left"><div id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick} ><i className="fa fa-bars"></i></div></div>
           <div>Mail Box</div>
           <div className="my-page-category-right"></div>
         </div>

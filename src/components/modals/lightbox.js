@@ -24,6 +24,10 @@ class Lightbox extends Component {
       displayedFirst: false,
       windowWidth: window.innerWidth
     };
+    this.handleResize = this.handleResize.bind(this);
+    this.handleLightboxAreaClick = this.handleLightboxAreaClick.bind(this);
+    this.handleImageArrowClick = this.handleImageArrowClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -31,7 +35,7 @@ class Lightbox extends Component {
   }
 
    componentDidUpdate() {
-     window.addEventListener('resize', this.handleResize.bind(this));
+     window.addEventListener('resize', this.handleResize);
       // const indexEmpty = _.isEmpty(this.props.imageIndex);
       // if(!indexEmpty) {
       //   this.setState({ imageIndex: this.props.imageIndex})
@@ -39,7 +43,7 @@ class Lightbox extends Component {
    }
 
    componentWillUnmount() {
-       window.removeEventListener('resize', this.handleResize.bind(this));
+       window.removeEventListener('resize', this.handleResize);
    }
 
    createBackgroundImage(image, width) {
@@ -188,8 +192,8 @@ class Lightbox extends Component {
             style={{ background: `url(${this.createBackgroundImage(this.props.images[this.props.imageIndex].publicid, width)})`, width, height: width / WH_RATIO }}
           >
           <div className="lightbox-arrow-box">
-            <div value="left" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="left" className="fa fa-angle-left"></i></div>
-            <div value="right" className="lightbox-arrow" onClick={this.handleImageArrowClick.bind(this)} ><i value="right" className="fa fa-angle-right"></i></div>
+            <div value="left" className="lightbox-arrow" onClick={this.handleImageArrowClick} ><i value="left" className="fa fa-angle-left"></i></div>
+            <div value="right" className="lightbox-arrow" onClick={this.handleImageArrowClick} ><i value="right" className="fa fa-angle-right"></i></div>
           </div>
           <div style={{ width }} className="lightbox-image-bubbles">
             {this.renderImageBubbles()}
@@ -223,9 +227,9 @@ class Lightbox extends Component {
 
       // !!!!! close button not used; click on rest of area and close
       return (
-        <div className={showHideClassName} onClick={this.handleLightboxAreaClick.bind(this)}>
+        <div className={showHideClassName} onClick={this.handleLightboxAreaClick}>
           {this.renderImage()}
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
         </div>
       );
     }

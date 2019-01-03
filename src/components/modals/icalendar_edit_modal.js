@@ -17,6 +17,9 @@ class IcalendarEditModal extends Component {
       deleteIcalendarCompleted: false,
       selectedIcalendarId: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleDeleteIcalendarClick = this.handleDeleteIcalendarClick.bind(this);
   }
   //
   // componentDidMount() {
@@ -89,15 +92,15 @@ class IcalendarEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit iCalendar</h3>
 
             <div className="edit-profile-scroll-div">
               <div className="edit-flat-delete-language-button">
-                <button value={this.props.calendar.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteIcalendarClick.bind(this)}>Delete</button>
+                <button value={this.props.calendar.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteIcalendarClick}>Delete</button>
               </div>
               {this.renderAlert()}
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               <fieldset key={'ical_url'} className="form-group">
                 <label className="create-flat-form-label">iCalendar URL:</label>
                 <Field name="ical_url" component="input" type="string" className="form-control" />
@@ -125,7 +128,7 @@ class IcalendarEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteIcalendarCompleted ?
             <div className="post-signup-message">The iCalendar has been deleted.</div>

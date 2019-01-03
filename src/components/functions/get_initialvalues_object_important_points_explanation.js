@@ -15,7 +15,7 @@ import getContractLength from './get_contract_length';
 export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
-  console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
+  // console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
   const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode } = props;
   function getProfile(personProfiles, language) {
     let returnedProfile;

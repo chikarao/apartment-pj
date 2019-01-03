@@ -19,6 +19,8 @@ class BuildingLanguageCreateModal extends Component {
     this.state = {
       createBuildingLanguageCompleted: false
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   // componentDidMount() {
@@ -106,11 +108,11 @@ class BuildingLanguageCreateModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">{AppLanguages.createBuildingLanguage[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-buildingLanguage-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               {this.renderEachInputField()}
               <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>

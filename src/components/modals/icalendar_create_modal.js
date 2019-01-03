@@ -16,6 +16,8 @@ class IcalendarCreateModal extends Component {
       createIcalendarCompleted: false,
       selectedIcalendar: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   // componentDidMount() {
@@ -80,11 +82,11 @@ class IcalendarCreateModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">Create iCalendar</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset key={'ical_url'} className="form-group">
               <label className="create-flat-form-label">iCal URL:</label>
               <Field name="ical_url" component="input" type="string" className="form-control" placeholder="Ex. https://calendar.google.com/calendar/ical/8t...basic.ics" />
@@ -111,7 +113,7 @@ class IcalendarCreateModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">An iCalendar has been successfully created for your listing.</div>
         </div>

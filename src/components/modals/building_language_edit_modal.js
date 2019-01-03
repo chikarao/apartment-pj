@@ -22,6 +22,10 @@ class BuildingLanguageEditModal extends Component {
       editBuildingLanguageCompleted: false,
       deleteBuildingLanguageCompleted: false
     };
+    this.handleEditLanguageClick = this.handleEditLanguageClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleDeleteBuildingLanguageClick = this.handleDeleteBuildingLanguageClick.bind(this);
   }
 
   // componentDidMount() {
@@ -91,7 +95,7 @@ class BuildingLanguageEditModal extends Component {
             key={i}
             value={eachBuildingLanguage.id}
             className="modal-edit-language-link"
-            onClick={this.handleEditLanguageClick.bind(this)}
+            onClick={this.handleEditLanguageClick}
           >
             {Languages[eachBuildingLanguage.language_code].flag}&nbsp;{Languages[eachBuildingLanguage.language_code].name}
           </div>
@@ -147,17 +151,17 @@ class BuildingLanguageEditModal extends Component {
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           <h3 className="auth-modal-title">{AppLanguages.editBuildingLanguage[this.props.appLanguageCode]}</h3>
           <div className="modal-edit-delete-edit-button-box">
-            <button value={this.props.buildingLanguage.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteBuildingLanguageClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+            <button value={this.props.buildingLanguage.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteBuildingLanguageClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
             <div className="modal-edit-language-link-box">
                 {this.renderEditLanguageLink()}
             </div>
           </div>
           {this.renderAlert()}
           <div className="edit-buildingLanguage-scroll-div">
-            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               {this.renderEachInputField()}
               <div className="confirm-change-and-button">
               <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
@@ -176,7 +180,7 @@ class BuildingLanguageEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteBuildingLanguageCompleted ?
             <div className="post-signup-message">Your building language has been successfully deleted.</div>

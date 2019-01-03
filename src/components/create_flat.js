@@ -32,20 +32,20 @@ class CreateFlat extends Component {
       // confirmChecked: false
       confirmChecked: false
     };
-    this.handleFormSubmit = this.handleFormSubmit.bind(this)
-    this.handleConfirmCheck = this.handleConfirmCheck.bind(this)
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleConfirmCheck = this.handleConfirmCheck.bind(this);
   }
   // get form input ready for params
   // iterate throughh data from  form submit and separate amanity attributes and flat
   // if object key in data is in AMENTIES object, then add to amenityObj and vice versa
   separateFlatAndAmenities(data) {
-    const amenityObj = { flat: {}, amenity: {} }
+    const amenityObj = { flat: {}, amenity: {} };
     console.log('in createflat, separateFlatAndAmenities, data : ', data);
      _.each(Object.keys(data), (key) => {
     // return _.map(AMENITIES, (amenity) => {
       if (AMENITIES[key]) {
-        console.log('in createflat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
-        console.log('in createflat, separateFlatAndAmenities, key : ', key);
+        // console.log('in createflat, separateFlatAndAmenities, key, AMENITIES[key] : ', key, AMENITIES[key]);
+        // console.log('in createflat, separateFlatAndAmenities, key : ', key);
         // console.log('in createflat, separateFlatAndAmenities, key : ', key);
         amenityObj.amenity[key] = data[key];
       } else {

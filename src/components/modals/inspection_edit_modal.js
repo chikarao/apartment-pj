@@ -19,6 +19,8 @@ class InspectionEditModal extends Component {
       deleteInspectionCompleted: false,
       selectedInspectionId: ''
     };
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
   //
   // componentDidMount() {
@@ -126,7 +128,7 @@ class InspectionEditModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
 
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">Edit Inspection</h3>
             <div className="edit-flat-delete-language-button">
               <button value={this.props.inspectionId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteInspectionClick.bind(this)}>Delete</button>
@@ -134,7 +136,7 @@ class InspectionEditModal extends Component {
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
-              <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachInspectionField()}
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
@@ -156,7 +158,7 @@ class InspectionEditModal extends Component {
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
-          <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteInspectionCompleted ?
             <div className="post-signup-message">The inspection has been successfully deleted.</div>

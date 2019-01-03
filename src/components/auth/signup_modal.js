@@ -17,6 +17,8 @@ class SignupModal extends Component {
       signUpCompleted: false,
       facebookSignUp: false
     };
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+    this.handleSigninClick = this.handleSigninClick.bind(this)
   }
 
   componentDidMount() {
@@ -130,7 +132,7 @@ class SignupModal extends Component {
           <div className="sign-up-with-email-message">Or sign up with your email</div>
         </div>
         <button className="modal-close-button" onClick={this.props.handleClose}><i className="fa fa-window-close"></i></button>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this.handleFormSubmit)}>
           <fieldset className="form-group">
             <label className="auth-form-label">Email:</label>
             <Field name="email" component={InputField} type="email" className="form-control" placeholder="your@email.com" />
@@ -144,7 +146,7 @@ class SignupModal extends Component {
             <Field name="passwordConfirm" component={InputField} className="form-control" type="password" placeholder={'Enter your password again for confirmation'} />
           </fieldset>
           {this.renderAlert()}
-          <span className="goto-signin-link" onClick={this.handleSigninClick.bind(this)}>Already signed up? Sign in</span>
+          <span className="goto-signin-link" onClick={this.handleSigninClick}>Already signed up? Sign in</span>
           <button action="submit" className="btn btn-primary btn-lg signup-btn">Sign Up!</button>
         </form>
       </div>

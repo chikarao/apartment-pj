@@ -30,13 +30,18 @@ class Header extends Component {
             show: false, // for auth modal
             showNewMessageBadge: true,
        };
+       this.handleResize = this.handleResize.bind(this);
+       this.handleLanguageSelectChange = this.handleLanguageSelectChange.bind(this);
+       this.handleMailBoxClick = this.handleMailBoxClick.bind(this);
+       this.handleAuthLinkClick = this.handleAuthLinkClick.bind(this);
+       this.handleNavClick = this.handleNavClick.bind(this);
    }
 
   componentDidMount() {
       const currentLocation = this.props.location.pathname;
        // console.log('in header, componentDidMount, currentLocation: ', currentLocation);
        // console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
-       window.addEventListener('resize', this.handleResize.bind(this));
+       window.addEventListener('resize', this.handleResize);
        if (this.props.auth.authenticated) {
          this.props.getCurrentUser();
          // don't need to do anymore since this screws up flats in results and other pages
@@ -80,7 +85,7 @@ class Header extends Component {
    }
 
    componentWillUnmount() {
-       window.removeEventListener('resize', this.handleResize.bind(this));
+       window.removeEventListener('resize', this.handleResize);
    }
 
    // ***************LOADING****************
@@ -274,7 +279,7 @@ class Header extends Component {
     // <option className="header-language-option"></option>
     return (
       <div>
-        <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange.bind(this)}>
+        <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange}>
           <option className="header-language-option" value="jp">{languages['jp'].flag} {languages['jp'].name}</option>
           <option className="header-language-option" value="en">{languages['en'].flag} {languages['en'].name}</option>
         </select>
@@ -312,7 +317,7 @@ class Header extends Component {
               <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
              </li>
              { this.props.conversations ?
-               <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>
+               <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                  <div className="header-mail-box">
                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                  <i className="fa fa-envelope"></i>
@@ -352,7 +357,7 @@ class Header extends Component {
                 <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
                </li>
                { this.props.conversations ?
-                 <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick.bind(this)}>
+                 <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                  <div className="header-mail-box">
                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                  <i className="fa fa-envelope"></i>
@@ -373,10 +378,10 @@ class Header extends Component {
       return [
         <ul key={'2'} className="header-list">
           <li className="nav-item">
-            <div value="signin" className="header-links" onClick={this.handleAuthLinkClick.bind(this)}>Sign In</div>
+            <div value="signin" className="header-links" onClick={this.handleAuthLinkClick}>Sign In</div>
           </li>
           <li className="nav-item">
-            <div value="signup" className="header-links" onClick={this.handleAuthLinkClick.bind(this)}>Sign Up</div>
+            <div value="signup" className="header-links" onClick={this.handleAuthLinkClick}>Sign Up</div>
           </li>
         </ul>
 
@@ -435,7 +440,7 @@ class Header extends Component {
       }
       return [
         <div key={'3'} className="mobile_nav">
-          <div className="header-hamburger" onClick={this.handleNavClick.bind(this)}>
+          <div className="header-hamburger" onClick={this.handleNavClick}>
             <div className="header-hamburger-box">
               <i className="fa fa-bars"></i>
               { (this.props.conversations && this.props.newMessages && this.state.showNewMessageBadge) ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}

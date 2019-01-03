@@ -20,6 +20,9 @@ class CardInputModal extends Component {
       updateCardCompleted: false,
       paymentCompleted: false
     };
+    this.handlePaymentFormSubmit = this.handlePaymentFormSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -145,7 +148,7 @@ class CardInputModal extends Component {
       const { handleSubmit } = this.props;
       return (
         <div>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this.handleFormSubmit)}>
           <fieldset>
           <div className="edit-flat-form-message" style={{ marginLeft: '15px' }}><span style={{ color: 'red' }}>*</span> If you need to upate the CVC, please delete this card and enter a new one for your safety.</div>
           </fieldset>
@@ -195,7 +198,7 @@ class CardInputModal extends Component {
       const { handleSubmit } = this.props;
       return (
         <div>
-          <form onSubmit={handleSubmit(this.handlePaymentFormSubmit.bind(this))}>
+          <form onSubmit={handleSubmit(this.handlePaymentFormSubmit)}>
             <fieldset key={11} className="form-group">
               <label className="create-flat-form-label">{AppLanguages.paymentAmount[this.props.appLanguageCode]}:</label>
               <Field name="amount" component="input" type="integer" className="form-control exp-input">
@@ -274,7 +277,7 @@ class CardInputModal extends Component {
         <div className={showHideClassName}>
           <div className="modal-main">
             <h3 className="auth-modal-title">{this.props.auth.cardActionType == 'Add a Card' ? AppLanguages.addCard[this.props.appLanguageCode] : this.renderEditOrPayTitle()}</h3>
-            <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
+            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
               {this.renderEachCardInput()}
               {this.renderAlert()}
               {this.state.updateCardCompleted ? <div className="alert alert-success" style={{ color: 'gray', fontSize: '17px' }}>Card Updated!</div> : ''}
