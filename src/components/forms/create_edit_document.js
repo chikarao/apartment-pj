@@ -569,6 +569,27 @@ renderEachDocumentField(page) {
     // end of if documentEmpty
   }
 
+  renderEachDocumentTranslation(page) {
+    return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
+      console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translation[en] : ', documentTranslation.translation['en']);
+      return (
+        <div
+          key={i}
+          className={documentTranslation.params.class_name}
+          style={{
+            top: documentTranslation.params.top,
+            left: documentTranslation.params.left,
+            fontSize: `${documentTranslation.params.font_size}px`,
+            fontWeight: documentTranslation.params.font_weight,
+            transform: `rotate(-${documentTranslation.params.rotate}deg)`
+          }}
+        >
+        {documentTranslation.translation['en']}
+        </div>
+      );
+    });
+  }
+
   renderDocument() {
     const initialValuesEmpty = _.isEmpty(this.props.initialValues);
     if (!initialValuesEmpty) {
@@ -582,6 +603,8 @@ renderEachDocumentField(page) {
       } else {
         image = Documents[this.props.createDocumentKey].file;
       }
+
+      const bilingual = Documents[this.props.createDocumentKey].translation;
       // const page = 1;
       // {this.renderNewElements(page)}
       return _.map(Object.keys(this.props.documentFields), page => {
@@ -595,6 +618,7 @@ renderEachDocumentField(page) {
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
+              {!bilingual ? '' : this.renderEachDocumentTranslation(page)}
             </div>
         );
       });
@@ -786,6 +810,7 @@ function mapStateToProps(state) {
     // // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
     const documentKey = state.documents.createDocumentKey;
     const documentFields = Documents[documentKey].form;
+    const documentTranslations = Documents[documentKey].translation;
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
@@ -816,6 +841,7 @@ function mapStateToProps(state) {
       editHistoryArrayProp: state.documents.editHistoryArray,
       // !!!!!!for initialValues to be used in componentDidMount
       documentFields,
+      documentTranslations,
       flat: state.bookingData.flat,
       booking: state.bookingData.fetchBookingData,
       userOwner: state.bookingData.user,

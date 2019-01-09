@@ -845,14 +845,12 @@ class Results extends Component {
                 this.props.searchFlatParameters({ bedrooms_exact: this.state.bedroomsExact });
               });
             } else {
+              //  if not min == max, then update state with new min
               this.props.searchFlatParameters({ bedrooms_min: this.state.bedroomsMin });
             }
-            // else {
-            //   // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
-            // }
           });
         } // end of bedroommMin < bedroom max
-      } else { // if user clicks down;
+      } else { // if user clicks down when min;
         if (bedroomsMin > moreThanLimit) {
           this.setState({ bedroomsMin: bedroomsMin - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.bedroomsMin });
@@ -881,7 +879,7 @@ class Results extends Component {
             this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax, bedrooms_exact: null });
           });
         }
-      } else { // down while increment min
+      } else { // down while increment max
         // if (bedroomsMax - increment > bedroomsMin) {
         // Allow max and min to be equal
         if (bedroomsMax > bedroomsMin) {
@@ -893,7 +891,7 @@ class Results extends Component {
               });
             } else {
               // this.setState({ bedroomsExact: null }, () => {
-                this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
+              this.props.searchFlatParameters({ bedrooms_max: this.state.bedroomsMax });
               // });
             }
             // this.setState({ searchDisplayValueMax: this.state.bedroomsMax });
@@ -1154,9 +1152,6 @@ class Results extends Component {
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
-    // const results-search-box-sub-tab
-    // console.log('in results handleSearchTabClick elementVal: ', elementVal);
-    // console.log('in results handleSearchTabClickm elementName: ', elementName);
     // set state searchCriteriaInpuStarted to show max values and set max values to realistic
     const elementValInt = parseInt(elementVal);
 
@@ -1175,30 +1170,6 @@ class Results extends Component {
         this.setStateMaxToNormal(this.state.selectedTabArray);
       }); // end of setState
     }
-    // if (!this.state.showCriterionBox) {
-    //   clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
-    //   this.setState({ criterionName: elementName, criterionValue: elementVal, showCriterionBox: true }, () => {
-    //     // this.unHighlightTab();
-    //     let min = true;
-    //     const searchDisplayValueMin = this.setStartingDisplayValues(min);
-    //     min = false;
-    //     const searchDisplayValueMax = this.setStartingDisplayValues(min);
-    //     this.setState({ searchDisplayValueMin, searchDisplayValueMax })
-    //   })
-    // } else if (this.state.showCriterionBox && (elementName !== this.state.criterionName)) {
-    //     this.unHighlightTab('results-search-box-sub-tab');
-    //     clickedElement.setAttribute('style', 'background-color: lightGray; color: white;');
-    //     this.setState({ criterionName: elementName, criterionValue: elementVal }, () => {
-    //       let min = true;
-    //       const searchDisplayValueMin = this.setStartingDisplayValues(min);
-    //       min = false;
-    //       const searchDisplayValueMax = this.setStartingDisplayValues(min);
-    //       this.setState({ searchDisplayValueMin, searchDisplayValueMax });
-    //     })
-    // } else {
-    //   this.unHighlightTab('results-search-box-sub-tab');
-    //   this.setState({ criterionName: '', criterionValue: 0, showCriterionBox: false, searchDisplayValueMin: 0, searchDisplayValueMax: 0 });
-    // }
   }
   // *********KEEP *************************
 
@@ -1577,7 +1548,6 @@ class Results extends Component {
               <div className="results-search-box-sub-display">
                 {selectedTabArray.includes(1) ? `${bedrooms}` : `${bedroomsMin} ~` }
               </div>
-
             </div>
             <div className="results-search-box-sub">
               <div value={2} name={searchCriteria[2].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>
@@ -1586,7 +1556,6 @@ class Results extends Component {
               <div className="results-search-box-sub-display">
                 {selectedTabArray.includes(2) ? `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~ ${stationMax}   ${AppLanguages.mins[this.props.appLanguageCode]}` : `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~` }
               </div>
-
             </div>
             <div className="results-search-box-sub">
               <div value={3} name={searchCriteria[3].title} className="results-search-box-sub-tab" onClick={this.handleSearchTabClick}>

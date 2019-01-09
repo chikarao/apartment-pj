@@ -1,5 +1,7 @@
 // For create_edit_document mapStateToProps
 import FixedTermRentalContract from './fixed_term_rental_contract.js';
+import FixedTermRentalContractBilingual from './fixed_term_rental_contract_bilingual.js';
+import FixedTermRentalContractBilingualTranslation from './fixed_term_rental_contract_bilingual_translation.js';
 import ImportantPointsExplanation from './important_points_explanation.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
 import getInitialValuesObjectImportantPointsExplanation from '../functions/get_initialvalues_object_important_points_explanation.js';
@@ -28,7 +30,18 @@ const Documents =
         jp: '重要事項説明書',
         file: 'juyoujikou-setsumei-jp',
         method: getInitialValuesObjectImportantPointsExplanation,
-      }
+      },
+
+    fixed_term_rental_contract_bilingual: {
+      form: FixedTermRentalContractBilingual,
+      en: 'Fixed Term Rental Contract Bilingual',
+      jp: '定期借家契約 バイリンガル',
+      file: 'teishaku-saimuhosho-bilingual-v3-no-translation',
+      method: getInitialValuesObjectFixedTermContract,
+      translation: FixedTermRentalContractBilingualTranslation
+      // method: '',
+      // type: 'fixed_term_rental_contract'
+    },
   };
 
 export default Documents;

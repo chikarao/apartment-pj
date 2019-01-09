@@ -572,7 +572,7 @@ renderReview() {
 
 renderDocument() {
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
-  console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
+  // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   return (
     <CreateEditDocument
       showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
