@@ -4339,6 +4339,7 @@ text-decoration: underline;
 .document-translation {
   position: absolute;
   font-family: Time, serif;
+  text-align: left;
 }
 
 /* .document-submit-button {

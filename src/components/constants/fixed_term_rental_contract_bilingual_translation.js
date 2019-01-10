@@ -485,7 +485,7 @@ const FixedTermRentalContractBilingualTranslation = {
 
     Fees: {
       translation: { en: 'Fees', po: '' },
-      params: { top: '58.5%', left: '8.4%', font_size: '10', class_name: 'document-translation', width: '14%' }
+      params: { top: '58.5%', left: '14.1%', font_size: '10', class_name: 'document-translation', width: '14%' }
     },
 
     jpy1: {
@@ -558,7 +558,238 @@ const FixedTermRentalContractBilingualTranslation = {
       params: { top: '86.7%', left: '17%', font_size: '10', class_name: 'document-translation' }
     },
   },
-  3: {},
+  3: {
+    landlordAndManagemement: {
+      translation: { en: 'Landlord & Management', po: '' },
+      params: { top: '10.2%', left: '37%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    landlordCompanyAndRepresentative: {
+      translation: { en: 'Landlord (Company Name & Representative)', po: '' },
+      params: { top: '18.2%', left: '15.5%', font_size: '10', class_name: 'document-translation', width: '14%' }
+    },
+
+    landlordAddress: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '14.6%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    landlordName: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '19.6%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    landlordPhone: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '19.6%', left: '54.1%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    managementCompanyAndRepresentative: {
+      translation: { en: 'Management (Company Name & Representative)', po: '' },
+      params: { top: '30.9%', left: '15.5%', font_size: '10', class_name: 'document-translation', width: '14%' }
+    },
+
+    managementAddress: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '25%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    managementName: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '30.4%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    managementPhone: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '30.4%', left: '54.1%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    registration: {
+      translation: { en: 'Registration No.', po: '' },
+      params: { top: '34.5%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ministersRegistration: {
+      translation: { en: 'Land & Transportation Minister', po: '' },
+      params: { top: '34.5%', left: '55.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ifOwnerLandordDifferent: {
+      translation: { en: 'Fill-in below if owner is different from landlord', po: '' },
+      params: { top: '37.8%', left: '17.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    propertyOwner: {
+      translation: { en: 'Property Owner', po: '' },
+      params: { top: '43.5%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '14%' }
+    },
+
+    ownerAddress: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '42.4%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ownertName: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '47.5%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ownerPhone: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '47.5%', left: '54.1%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    tenantAndCoTenants: {
+      translation: { en: 'Tenant and Co-tenants', po: '' },
+      params: { top: '51.6%', left: '35.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameHeading: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '61.5%', left: '15.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    tenant: {
+      translation: { en: 'Tenant', po: '' },
+      params: { top: '53.5%', left: '39.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    cotenant: {
+      translation: { en: 'Co-tenants', po: '' },
+      params: { top: '53.5%', left: '74.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameTenant: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '57.3%', left: '24.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ageTenant: {
+      translation: { en: 'Age', po: '' },
+      params: { top: '60.3%', left: '24.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    yearsTenant: {
+      translation: { en: 'Years', po: '' },
+      params: { top: '60.3%', left: '38%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    phoneTenant: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '63.1%', left: '24.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameCoTenant: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '56.5%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameCoTenant1: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '59.6%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameCoTenant2: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '62.7%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ageCoTenant: {
+      translation: { en: 'Age', po: '' },
+      params: { top: '56.5%', left: '77%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ageCoTenant1: {
+      translation: { en: 'Age', po: '' },
+      params: { top: '59.6%', left: '77%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ageCoTenant2: {
+      translation: { en: 'Age', po: '' },
+      params: { top: '62.7%', left: '77%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    yearsCoTenant: {
+      translation: { en: 'Years', po: '' },
+      params: { top: '56.5%', left: '86.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    yearsCoTenant1: {
+      translation: { en: 'Years', po: '' },
+      params: { top: '59.6%', left: '86.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    yearsCoTenant2: {
+      translation: { en: 'Years', po: '' },
+      params: { top: '62.7%', left: '86.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    totalPersons: {
+      translation: { en: 'Total No. Persons', po: '' },
+      params: { top: '65.6%', left: '78.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    emergencyContact: {
+      translation: { en: 'Emergency Contact', po: '' },
+      params: { top: '68.8%', left: '15.6%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    address: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '68.5%', left: '31.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    name: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '69.9%', left: '35.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    phone: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '69.9%', left: '58.3%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    relationship: {
+      translation: { en: 'Relationship', po: '' },
+      params: { top: '69.9%', left: '82.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    guaranteeByGuarantyCompanyHeading: {
+      translation: { en: 'Guarantee by Guaranty Company', po: '' },
+      params: { top: '73.8%', left: '55.3%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    guaranteeByGuarantyCompany: {
+      translation: { en: 'Guarantee by Guaranty Company', po: '' },
+      params: { top: '83%', left: '14.2%', font_size: '10', class_name: 'document-translation', width: '14%' }
+    },
+
+    addressGuarantee: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '78.1%', left: '30.9%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameGuarantee: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '84%', left: '31%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    phoneGuarantee: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '84%', left: '58.4%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    registrationGuarantee: {
+      translation: { en: 'Registration No.', po: '' },
+      params: { top: '88.4%', left: '31%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ministersRegistrationGuarantee: {
+      translation: { en: 'Land & Transportation Minister', po: '' },
+      params: { top: '88.4%', left: '55.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+  },
   12: {}
 };
 
