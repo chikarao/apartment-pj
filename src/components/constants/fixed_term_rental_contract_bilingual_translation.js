@@ -790,7 +790,147 @@ const FixedTermRentalContractBilingualTranslation = {
     },
 
   },
-  12: {}
+  12: {
+    signedAndSealed: {
+      translation: { en: 'To be signed and sealed below', po: '' },
+      params: { top: '8.8%', left: '22.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    inWitnessWhereOf: {
+      translation: { en: 'IN WITNESS WHEREOF, the following Landlord and the Tenant have signed and affixed their seals to the Contract in duplicate, each party retaining one sealed copy.', po: '' },
+      params: { top: '15.8%', left: '16.3%', font_size: '10', class_name: 'document-translation', width: '76.5%' }
+    },
+
+    year: {
+      translation: { en: 'Year', po: '' },
+      params: { top: '20.8%', left: '27.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    month: {
+      translation: { en: 'Month', po: '' },
+      params: { top: '20.8%', left: '37.3%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    day: {
+      translation: { en: 'Day', po: '' },
+      params: { top: '20.8%', left: '47.3%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    landlord: {
+      translation: { en: 'Landlord', po: '' },
+      params: { top: '25%', left: '14.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    addressLandord: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '25.5%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameLandlord: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '30%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    phoneLandlord: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '34%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    sealLandlord: {
+      translation: { en: 'Seal', po: '' },
+      params: { top: '31.2%', left: '82%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    tenant: {
+      translation: { en: 'Landlord', po: '' },
+      params: { top: '38.5%', left: '14.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    addressTenant: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '38.5%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameTenant: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '43%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    phoneTenant: {
+      translation: { en: 'Phone', po: '' },
+      params: { top: '47.5%', left: '26.7%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    sealTenant: {
+      translation: { en: 'Seal', po: '' },
+      params: { top: '45%', left: '82%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    intermediary: {
+      translation: { en: 'Intermediary', po: '' },
+      params: { top: '56%', left: '14.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    broker: {
+      translation: { en: 'Broker', po: '' },
+      params: { top: '60.5%', left: '14.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    agent: {
+      translation: { en: 'Agent', po: '' },
+      params: { top: '64%', left: '14.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    license: {
+      translation: { en: 'License No.', po: '' },
+      params: { top: '56%', left: '27%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    governor: {
+      translation: { en: 'Governor', po: '' },
+      params: { top: '56%', left: '47%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    minister: {
+      translation: { en: 'Minister', po: '' },
+      params: { top: '56%', left: '55%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    brokerAddress: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '64.5%', left: '27%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    brokerRepresentative: {
+      translation: { en: 'Representative', po: '' },
+      params: { top: '73.3%', left: '27%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    registeredBroker: {
+      translation: { en: 'Registered Real Estate Broker', po: '' },
+      params: { top: '77.3%', left: '27%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    licenseNumber: {
+      translation: { en: 'License No.', po: '' },
+      params: { top: '77.3%', left: '48.9%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    governorBroker: {
+      translation: { en: 'Governor', po: '' },
+      params: { top: '77.3%', left: '69%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    nameBroker: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '82.4%', left: '48.9%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    sealBroker: {
+      translation: { en: 'Seal', po: '' },
+      params: { top: '82.4%', left: '87%', font_size: '10', class_name: 'document-translation' }
+    },
+  }
 };
 
 export default FixedTermRentalContractBilingualTranslation;
