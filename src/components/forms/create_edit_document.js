@@ -581,7 +581,8 @@ renderEachDocumentField(page) {
             left: documentTranslation.params.left,
             fontSize: `${documentTranslation.params.font_size}px`,
             fontWeight: documentTranslation.params.font_weight,
-            transform: `rotate(-${documentTranslation.params.rotate}deg)`
+            transform: `rotate(-${documentTranslation.params.rotate}deg)`,
+            width: documentTranslation.params.width,
           }}
         >
         {documentTranslation.translation['en']}
