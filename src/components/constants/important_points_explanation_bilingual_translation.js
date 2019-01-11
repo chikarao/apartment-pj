@@ -398,7 +398,133 @@ const ImportantPointsExplanationBilingualTranslation = {
       params: { top: '92%', left: '10.1%', font_size: '10', class_name: 'document-translation' }
     },
   },
-  3: {},
+  3: {
+    itemsRecordedInRegistry: {
+      translation: { en: 'State of Repair of Facilities (in case of completed building)', po: '' },
+      params: { top: '11.4%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    facility: {
+      translation: { en: 'Facility', po: '' },
+      params: { top: '14.4%', left: '14.6%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    available: {
+      translation: { en: 'Available', po: '' },
+      params: { top: '14.4%', left: '32.6%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    format: {
+      translation: { en: 'Format', po: '' },
+      params: { top: '14.4%', left: '43.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    other: {
+      translation: { en: 'Other', po: '' },
+      params: { top: '14.4%', left: '69.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    kitchen: {
+      translation: { en: 'Kitchen', po: '' },
+      params: { top: '17.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    toilet: {
+      translation: { en: 'Kitchen', po: '' },
+      params: { top: '20.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    bathtub: {
+      translation: { en: 'Bath Tub', po: '' },
+      params: { top: '23.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    waterHeater: {
+      translation: { en: 'Water Heater', po: '' },
+      params: { top: '26.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    kitchenStove: {
+      translation: { en: 'Kitchen Stove', po: '' },
+      params: { top: '29.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ac: {
+      translation: { en: 'A/C', po: '' },
+      params: { top: '32.5%', left: '10.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    inDisasterPrevention: {
+      translation: { en: 'Is the property within a developed residential land disaster prevention zone?', po: '' },
+      params: { top: '43%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    insideDisasterPrevention: {
+      translation: { en: 'Inside residential disaster prevention zone', po: '' },
+      params: { top: '46.5%', left: '22.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    outsideDisasterPrevention: {
+      translation: { en: 'Outside residential disaster prevention zone', po: '' },
+      params: { top: '46.5%', left: '64.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    inLandslideWarning: {
+      translation: { en: 'Is the property within a landslide disaster warning zone?', po: '' },
+      params: { top: '51.6%', left: '11%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    insideLandslideWarning: {
+      translation: { en: 'Inside a landslide disaster warning zone', po: '' },
+      params: { top: '55.5%', left: '22.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    outsideLandslideWarning: {
+      translation: { en: 'Outside a landslide disaster warning zone', po: '' },
+      params: { top: '55.5%', left: '65%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    inTsunamiWarning: {
+      translation: { en: 'Is the building inside a tsunami warning zone?', po: '' },
+      params: { top: '62.6%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    insideTsunamiWarning: {
+      translation: { en: 'Inside tsunami warning zone', po: '' },
+      params: { top: '66.1%', left: '22.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    outsideTsunamiWarning: {
+      translation: { en: 'Outside tsunami warning zone', po: '' },
+      params: { top: '66.1%', left: '65%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    asbestos: {
+      translation: { en: 'Description of asbestos usage survey', po: '' },
+      params: { top: '72%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    asbestosRecordsOnRecord: {
+      translation: { en: 'Are asbestos usage survey results on record?', po: '' },
+      params: { top: '76%', left: '10.5%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    yesAsbestos: {
+      translation: { en: 'Yes', po: '' },
+      params: { top: '76%', left: '60.3%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    noAsbestos: {
+      translation: { en: 'No', po: '' },
+      params: { top: '76%', left: '81.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    asbestosSurveyContents: {
+      translation: { en: 'Contents of Asbestos Usage Survey', po: '' },
+      params: { top: '83%', left: '10.5%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+  },
   4: {},
   5: {},
   6: {},
