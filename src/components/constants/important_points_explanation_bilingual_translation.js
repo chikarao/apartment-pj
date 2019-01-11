@@ -500,7 +500,7 @@ const ImportantPointsExplanationBilingualTranslation = {
     },
 
     asbestos: {
-      translation: { en: 'Description of asbestos usage survey', po: '' },
+      translation: { en: 'Description of Asbestos Usage Survey', po: '' },
       params: { top: '72%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
@@ -524,8 +524,64 @@ const ImportantPointsExplanationBilingualTranslation = {
       params: { top: '83%', left: '10.5%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
+    earthquakeResistanceStudy: {
+      translation: { en: 'Description of Earthquake Resistance Study', po: '' },
+      params: { top: '10%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+
   },
-  4: {},
+  4: {
+    earthquakeStudy: {
+      translation: { en: 'Description of Earthquake Resistance Study', po: '' },
+      params: { top: '12.3%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    earthQuakeStudyPerformed: {
+      translation: { en: 'Has an earthquake resistance study been performed?', po: '' },
+      params: { top: '16.5%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    yesearthquake: {
+      translation: { en: 'Yes', po: '' },
+      params: { top: '16.5%', left: '60.3%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    noearthquake: {
+      translation: { en: 'No', po: '' },
+      params: { top: '16.5%', left: '81.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    earthquakeStudyContents: {
+      translation: { en: 'Contents of Earthquake Resistance Study', po: '' },
+      params: { top: '24%', left: '10.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    transactionConditions: {
+      translation: { en: 'Items Regarding Transaction Conditions', po: '' },
+      params: { top: '34.9%', left: '11.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    nonRentCharges: {
+      translation: { en: 'Non-rent related charges', po: '' },
+      params: { top: '40.4%', left: '11.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    amount: {
+      translation: { en: 'Amount', po: '' },
+      params: { top: '43.9%', left: '17.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    purpose: {
+      translation: { en: 'Pupose of Charge', po: '' },
+      params: { top: '43.9%', left: '47.3%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    cancellation: {
+      translation: { en: 'Cancellation of Contract', po: '' },
+      params: { top: '57.8%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+  },
   5: {},
   6: {},
   7: {},
