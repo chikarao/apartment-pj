@@ -918,7 +918,7 @@ const FixedTermRentalContractBilingualTranslation = {
 
     governorBroker: {
       translation: { en: 'Governor', po: '' },
-      params: { top: '77.3%', left: '69%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '77.3%', left: '71.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     nameBroker: {

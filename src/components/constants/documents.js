@@ -2,7 +2,9 @@
 import FixedTermRentalContract from './fixed_term_rental_contract.js';
 import FixedTermRentalContractBilingual from './fixed_term_rental_contract_bilingual.js';
 import FixedTermRentalContractBilingualTranslation from './fixed_term_rental_contract_bilingual_translation.js';
+import ImportantPointsExplanationBilingualTranslation from './important_points_explanation_bilingual_translation.js';
 import ImportantPointsExplanation from './important_points_explanation.js';
+import ImportantPointsExplanationBilingual from './important_points_explanation_bilingual.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
 import getInitialValuesObjectImportantPointsExplanation from '../functions/get_initialvalues_object_important_points_explanation.js';
 
@@ -39,6 +41,17 @@ const Documents =
       file: 'teishaku-saimuhosho-bilingual-v3-no-translation-1',
       method: getInitialValuesObjectFixedTermContract,
       translation: FixedTermRentalContractBilingualTranslation
+      // method: '',
+      // type: 'fixed_term_rental_contract'
+    },
+
+    important_points_explanation_bilingual: {
+      form: ImportantPointsExplanationBilingual,
+      en: 'Important Points Explanation Form Bilingual',
+      jp: '重要事項説明書 バイリンガル',
+      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-2',
+      method: getInitialValuesObjectImportantPointsExplanation,
+      translation: ImportantPointsExplanationBilingualTranslation,
       // method: '',
       // type: 'fixed_term_rental_contract'
     },
