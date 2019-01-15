@@ -582,7 +582,147 @@ const ImportantPointsExplanationBilingualTranslation = {
       params: { top: '57.8%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
   },
-  5: {},
+  5: {
+    damageCompensation: {
+      translation: { en: 'Compensation for Damages or Breach of Contract', po: '' },
+      params: { top: '8.2%', left: '11.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    guaranteeOfDeposits: {
+      translation: { en: 'Summary of Guarantee of Any Returnable Deposits', po: '' },
+      params: { top: '45.2%', left: '12.1%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    depositHeldInAccount: {
+      translation: { en: 'Deposits held in a protective account?', po: '' },
+      params: { top: '48%', left: '12.1%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '19%' }
+    },
+
+    yesProtective: {
+      translation: { en: 'Yes', po: '' },
+      params: { top: '48.7%', left: '49.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    noProtective: {
+      translation: { en: 'No', po: '' },
+      params: { top: '48.7%', left: '67.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    financialInstitution: {
+      translation: { en: 'Financial Institution to Hold Protective Account', po: '' },
+      params: { top: '52.3%', left: '12.1%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '19%' }
+    },
+
+    contractPeriodAndRenewal: {
+      translation: { en: 'Contract Period and Renewal', po: '' },
+      params: { top: '58.2%', left: '12.1%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    contractPeriod: {
+      translation: { en: 'Contract Period', po: '' },
+      params: { top: '62.2%', left: '11.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    start: {
+      translation: { en: 'Start', po: '' },
+      params: { top: '62.2%', left: '28.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    yearStart: {
+      translation: { en: 'Year', po: '' },
+      params: { top: '62.2%', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    monthStart: {
+      translation: { en: 'Month', po: '' },
+      params: { top: '62.2%', left: '43.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    dayStart: {
+      translation: { en: 'Day', po: '' },
+      params: { top: '62.2%', left: '49%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    end: {
+      translation: { en: 'End', po: '' },
+      params: { top: '66%', left: '28.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    yearEnd: {
+      translation: { en: 'Year', po: '' },
+      params: { top: '66', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    monthEnd: {
+      translation: { en: 'Month', po: '' },
+      params: { top: '66%', left: '43.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    dayEnd: {
+      translation: { en: 'Day', po: '' },
+      params: { top: '66%', left: '49%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    years: {
+      translation: { en: 'Year(s)', po: '' },
+      params: { top: '62.2%', left: '61%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    months: {
+      translation: { en: 'Month(s)', po: '' },
+      params: { top: '62.2%', left: '67.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    ordinaryRentalContract: {
+      translation: { en: 'Ordinary Rental Contract', po: '' },
+      params: { top: '61.4%', left: '75.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    fixedTermRentalContract: {
+      translation: { en: 'Fixed Term Rental Contract', po: '' },
+      params: { top: '64.6%', left: '74.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    endOfLifeRentalContract: {
+      translation: { en: 'End of Life Rental Contract', po: '' },
+      params: { top: '67.6%', left: '74.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    termsOfRenewal: {
+      translation: { en: 'Terms of Renewal', po: '' },
+      params: { top: '72.5', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    contractRenewal: {
+      translation: { en: 'Contract Renewal', po: '' },
+      params: { top: '71.5%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    limitationsOnUse: {
+      translation: { en: 'Limitations on Use and Others', po: '' },
+      params: { top: '79.1%', left: '12%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    limitationsOnUse: {
+      translation: { en: 'Limitations on Use', po: '' },
+      params: { top: '84.1%', left: '12.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    limitationsForMultiFamily: {
+      translation: { en: 'Limits to Exclusive Areas in Building Under Multiple Ownership', po: '' },
+      params: { top: '84.1%', left: '29.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '28%' }
+    },
+
+    others: {
+      translation: { en: 'Others', po: '' },
+      params: { top: '84.1%', left: '73.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    limitationsOnOtherUses: {
+      translation: { en: 'Limitations on Other Uses', po: '' },
+      params: { top: '90%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '28%' }
+    },
+  },
   6: {},
   7: {},
   8: {},
