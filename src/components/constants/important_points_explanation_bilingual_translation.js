@@ -630,17 +630,17 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     yearStart: {
       translation: { en: 'Year', po: '' },
-      params: { top: '62.2%', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '62.2%', left: '38.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     monthStart: {
       translation: { en: 'Month', po: '' },
-      params: { top: '62.2%', left: '43.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '62.2%', left: '43.7%', font_size: '10', class_name: 'document-translation' }
     },
 
     dayStart: {
       translation: { en: 'Day', po: '' },
-      params: { top: '62.2%', left: '49%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '62.2%', left: '49%', font_size: '10', class_name: 'document-translation' }
     },
 
     end: {
@@ -650,42 +650,42 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     yearEnd: {
       translation: { en: 'Year', po: '' },
-      params: { top: '66%', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '66%', left: '38.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     monthEnd: {
       translation: { en: 'Month', po: '' },
-      params: { top: '66%', left: '43.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '66%', left: '43.7%', font_size: '10', class_name: 'document-translation' }
     },
 
     dayEnd: {
       translation: { en: 'Day', po: '' },
-      params: { top: '66%', left: '49%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '66%', left: '49%', font_size: '10', class_name: 'document-translation' }
     },
 
     years: {
       translation: { en: 'Year(s)', po: '' },
-      params: { top: '62.2%', left: '61%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '62.2%', left: '61%', font_size: '10', class_name: 'document-translation' }
     },
 
     months: {
       translation: { en: 'Month(s)', po: '' },
-      params: { top: '62.2%', left: '67.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '62.2%', left: '67.8%', font_size: '10', class_name: 'document-translation' }
     },
 
     ordinaryRentalContract: {
       translation: { en: 'Ordinary Rental Contract', po: '' },
-      params: { top: '61.4%', left: '75.8%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '61.4%', left: '75.8%', font_size: '10', class_name: 'document-translation' }
     },
 
     fixedTermRentalContract: {
       translation: { en: 'Fixed Term Rental Contract', po: '' },
-      params: { top: '64.6%', left: '74.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '64.6%', left: '74.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     endOfLifeRentalContract: {
       translation: { en: 'End of Life Rental Contract', po: '' },
-      params: { top: '67.6%', left: '74.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '67.6%', left: '74.6%', font_size: '10', class_name: 'document-translation' }
     },
 
     termsOfRenewal: {
@@ -737,20 +737,70 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     nameAgent: {
       translation: { en: 'Name of Agent', po: '' },
-      params: { top: '73.5%', left: '10%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '73.5%', left: '10%', font_size: '10', class_name: 'document-translation' }
     },
 
     rules: {
       translation: { en: '(Registration No. under Article 46, Paragraph 1, Subparagraph 2 of the Act on Advancement of Proper Condominium Management or registration no. under Article  5,  Paragraph 1, Subparagraph 2 of the Rental Residential Property Manager Registration Regulations)', po: '' },
-      params: { top: '80.3%', left: '10.3%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '25.1%' }
+      params: { top: '80.3%', left: '10.3%', font_size: '10', class_name: 'document-translation', width: '24%' }
     },
 
     addressAgent: {
       translation: { en: 'Address', po: '' },
-      params: { top: '95%', left: '10.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '95%', left: '10.7%', font_size: '10', class_name: 'document-translation' }
     },
   },
-  7: {},
+  7: {
+    otherItems: {
+      translation: { en: 'Other Items', po: '' },
+      params: { top: '9.5%', left: '11.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    detailsOfBond: {
+      translation: { en: 'Details of Bond (under Article 35-2 of the Real Estate Act)', po: '' },
+      params: { top: '15.9%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    ifNotMember: {
+      translation: { en: 'If Not a Member of the Real Estate Transaction Guarantee Association', po: '' },
+      params: { top: '19.9%', left: '13.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    bondOfficeAddress: {
+      translation: { en: 'Office Address and Name Where Bond is Deposited', po: '' },
+      params: { top: '28.9%', left: '11.6%', font_size: '10', class_name: 'document-translation', width: '19%' }
+    },
+
+    ifMember: {
+      translation: { en: 'If a Member of the Real Estate Transaction Guarantee Association', po: '' },
+      params: { top: '36.9%', left: '13.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    Association: {
+      translation: { en: 'Real Estate Transaction Guarantee Association', po: '' },
+      params: { top: '44.9%', left: '11%', font_size: '10', class_name: 'document-translation', width: '10%' }
+    },
+
+    name: {
+      translation: { en: 'Name', po: '' },
+      params: { top: '40.9%', left: '23%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    address: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '46.4%', left: '23%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    officeLocation: {
+      translation: { en: 'Office Location', po: '' },
+      params: { top: '49.9%', left: '20.5%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    bondOfficeAddress1: {
+      translation: { en: 'Office Address and Name Where Bond is Deposited', po: '' },
+      params: { top: '60%', left: '11.6%', font_size: '10', class_name: 'document-translation', width: '19%' }
+    },
+  },
   8: {},
   9: {},
   10: {},
