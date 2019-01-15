@@ -650,7 +650,7 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     yearEnd: {
       translation: { en: 'Year', po: '' },
-      params: { top: '66', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '66%', left: '38.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
     monthEnd: {
@@ -690,40 +690,66 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     termsOfRenewal: {
       translation: { en: 'Terms of Renewal', po: '' },
-      params: { top: '72.5', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '72.5%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
-    contractRenewal: {
-      translation: { en: 'Contract Renewal', po: '' },
-      params: { top: '71.5%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
-    },
+    // contractRenewal: {
+    //   translation: { en: 'Contract Renewal', po: '' },
+    //   params: { top: '71.5%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    // },
 
-    limitationsOnUse: {
+  },
+  6: {
+    limitationsOnUseAndOthers: {
       translation: { en: 'Limitations on Use and Others', po: '' },
-      params: { top: '79.1%', left: '12%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '6.8%', left: '11.9%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
     limitationsOnUse: {
       translation: { en: 'Limitations on Use', po: '' },
-      params: { top: '84.1%', left: '12.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '20.1%', left: '12.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
     limitationsForMultiFamily: {
       translation: { en: 'Limits to Exclusive Areas in Building Under Multiple Ownership', po: '' },
-      params: { top: '84.1%', left: '29.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '28%' }
+      params: { top: '13.1%', left: '29.4%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '28%' }
     },
 
     others: {
       translation: { en: 'Others', po: '' },
-      params: { top: '84.1%', left: '73.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+      params: { top: '13.1%', left: '73.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
 
     limitationsOnOtherUses: {
       translation: { en: 'Limitations on Other Uses', po: '' },
-      params: { top: '90%', left: '10.2%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '28%' }
+      params: { top: '26.8%', left: '12.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '13%' }
+    },
+
+    returnSecurityDeposit: {
+      translation: { en: 'Return of Security Deposit', po: '' },
+      params: { top: '38.8%', left: '12.6%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    propertyManagement: {
+      translation: { en: 'Property Management', po: '' },
+      params: { top: '69.8%', left: '12%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    nameAgent: {
+      translation: { en: 'Name of Agent', po: '' },
+      params: { top: '73.5%', left: '10%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
+    },
+
+    rules: {
+      translation: { en: '(Registration No. under Article 46, Paragraph 1, Subparagraph 2 of the Act on Advancement of Proper Condominium Management or registration no. under Article  5,  Paragraph 1, Subparagraph 2 of the Rental Residential Property Manager Registration Regulations)', po: '' },
+      params: { top: '80.3%', left: '10.3%', font_size: '10', class_name: 'document-translation', font_weight: 'bold', width: '25.1%' }
+    },
+
+    addressAgent: {
+      translation: { en: 'Address', po: '' },
+      params: { top: '95%', left: '10.7%', font_size: '10', class_name: 'document-translation', font_weight: 'bold' }
     },
   },
-  6: {},
   7: {},
   8: {},
   9: {},
