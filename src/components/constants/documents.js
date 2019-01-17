@@ -49,7 +49,7 @@ const Documents =
       form: ImportantPointsExplanationBilingual,
       en: 'Important Points Explanation Form Bilingual',
       jp: '重要事項説明書 バイリンガル',
-      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-7',
+      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-8',
       method: getInitialValuesObjectImportantPointsExplanation,
       translation: ImportantPointsExplanationBilingualTranslation,
       // method: '',
