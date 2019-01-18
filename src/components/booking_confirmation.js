@@ -36,6 +36,7 @@ class BookingConfirmation extends Component {
     this.props.fetchBooking(bookingId);
     console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
     this.props.fetchReviewForBookingByUser(bookingId);
+    this.props.fetchDocumentTranslation('important_points_explanation')
   }
 
   // componentWillUnmount() {

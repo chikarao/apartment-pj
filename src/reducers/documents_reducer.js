@@ -4,7 +4,8 @@ import {
   SET_CREATE_DOCUMENT_KEY,
   SET_INITIAL_VALUES_OBJECT,
   EDIT_HISTORY,
-  EDIT_AGREEMENT_FIELDS
+  EDIT_AGREEMENT_FIELDS,
+  FETCH_DOCUMENT_TRANSLATION
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -16,7 +17,8 @@ export default function (state = {
   dirtyObject: {},
   dirtyFieldExists: false,
   agreementMappedById: {},
-  agreementMappedByName: {}
+  agreementMappedByName: {},
+  documentTranslations: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -61,6 +63,10 @@ export default function (state = {
     case EDIT_AGREEMENT_FIELDS:
     // console.log('in booking reducer, state: ', state);
     return { ...state, editHistoryArray: [] };
+
+    case FETCH_DOCUMENT_TRANSLATION:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, documentTranslations: action.payload };
 
     default:
       return state;

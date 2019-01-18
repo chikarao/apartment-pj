@@ -162,6 +162,7 @@ import {
   EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT,
   EDIT_HISTORY,
+  FETCH_DOCUMENT_TRANSLATION
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2840,4 +2841,27 @@ export function editHistory(editHistoryObject) {
     type: EDIT_HISTORY,
     payload: editHistoryObject
    };
+}
+
+export function fetchDocumentTranslation(documentName) {
+  console.log('in actions index, fetchDocumentTranslation, documentName: ', documentName);
+  console.log('in actions index, fetchDocumentTranslation: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = reviewAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/fetch_translation`, { document_name: documentName }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchDocumentTranslation, response: ', response);
+      console.log('response to fetchDocumentTranslation, response.data.data: ', response.data.data);
+      // localStorage.setItem('image', response.data.data);
+      dispatch({
+        type: FETCH_DOCUMENT_TRANSLATION,
+        payload: response.data.data.translation
+      });
+      // sends back to createreview.js the review_id and the images
+      // callback();
+    });
+  };
 }

@@ -571,21 +571,21 @@ renderEachDocumentField(page) {
 
   renderEachDocumentTranslation(page) {
     return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
-      console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translation[en] : ', documentTranslation.translation['en']);
+      console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
       return (
         <div
           key={i}
-          className={documentTranslation.params.class_name}
+          className={documentTranslation.attributes.class_name}
           style={{
-            top: documentTranslation.params.top,
-            left: documentTranslation.params.left,
-            fontSize: `${documentTranslation.params.font_size}px`,
-            fontWeight: documentTranslation.params.font_weight,
-            transform: `rotate(-${documentTranslation.params.rotate}deg)`,
-            width: documentTranslation.params.width,
+            top: documentTranslation.attributes.top,
+            left: documentTranslation.attributes.left,
+            fontSize: `${documentTranslation.attributes.font_size}px`,
+            fontWeight: documentTranslation.attributes.font_weight,
+            transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
+            width: documentTranslation.attributes.width,
           }}
         >
-        {documentTranslation.translation['en']}
+        {documentTranslation.translations['en']}
         </div>
       );
     });
@@ -811,7 +811,8 @@ function mapStateToProps(state) {
     // // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
     const documentKey = state.documents.createDocumentKey;
     const documentFields = Documents[documentKey].form;
-    const documentTranslations = Documents[documentKey].translation;
+    // const documentTranslations = Documents[documentKey].translation;
+    const documentTranslations = state.documents.documentTranslations[documentKey];
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
@@ -822,6 +823,7 @@ function mapStateToProps(state) {
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
     console.log('in create_edit_document, mapStateToProps, state: ', state);
+    // console.log('in create_edit_document, mapStateToProps, documentTranslations: ', documentTranslations);
     // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,

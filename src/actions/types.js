@@ -158,3 +158,4 @@ export const EDIT_AGREEMENT = 'edit_agreement';
 export const EDIT_AGREEMENT_FIELDS = 'edit_agreement_fields';
 export const DELETE_AGREEMENT = 'delete_agreement';
 export const EDIT_HISTORY = 'edit_history';
+export const FETCH_DOCUMENT_TRANSLATION = 'fetch_document_translation';
