@@ -949,7 +949,7 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     presenceOfAnyDegradation: {
       translation: { en: 'Presence of Any Degradation etc. of Individual Components', po: '' },
-      params: { top: '71.9%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '17%' }
+      params: { top: '74.9%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '17%' }
     },
 
     crossOutUnrelated: {
@@ -1301,7 +1301,7 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     buildingInpsection: {
       translation: { en: 'Building Inspection', po: '' },
-      params: { top: '70%', left: '5.5%', font_size: '10', class_name: 'document-translation', rotate: '90' }
+      params: { top: '69.3%', left: '5.5%', font_size: '10', class_name: 'document-translation', rotate: '90' }
     },
 
     inspectionDate: {
@@ -1344,10 +1344,10 @@ const ImportantPointsExplanationBilingualTranslation = {
       params: { top: '72.9%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '17%' }
     },
 
-    crossOutUnrelated: {
-      translation: { en: 'Note: Cross out any components not present in the subject building with two lines.', po: '' },
-      params: { top: '82.7%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '17%' }
-    },
+    // crossOutUnrelated: {
+    //   translation: { en: 'Note: Cross out any components not present in the subject building with two lines.', po: '' },
+    //   params: { top: '82.7%', left: '15.9%', font_size: '10', class_name: 'document-translation', width: '17%' }
+    // },
 
     anyDegradation: {
       translation: { en: 'Any degradation etc. based on standards for inspection of building conditions?', po: '' },
@@ -1376,108 +1376,184 @@ const ImportantPointsExplanationBilingualTranslation = {
 
     degradationStructural: {
       translation: { en: 'Degradation', po: '' },
-      params: { top: '62.5%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '61%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
     },
 
     degradationRain: {
       translation: { en: 'Degradation', po: '' },
-      params: { top: '62.5%', left: '76.9%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '61%', left: '76.9%', font_size: '10', class_name: 'document-translation' }
     },
 
     yesStructural: {
       translation: { en: 'Yes', po: '' },
-      params: { top: '65.1%', left: '48.4%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '48.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     noStructural: {
       translation: { en: 'No', po: '' },
-      params: { top: '65.1%', left: '51.9%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '51.7%', font_size: '10', class_name: 'document-translation' }
     },
 
     uninspectableStructural: {
       translation: { en: 'Uninspectable', po: '' },
-      params: { top: '65.1%', left: '54.1%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '53.9%', font_size: '10', class_name: 'document-translation' }
     },
 
     yesRain: {
       translation: { en: 'Yes', po: '' },
-      params: { top: '65.1%', left: '76.9%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '76.7%', font_size: '10', class_name: 'document-translation' }
     },
 
     noRain: {
       translation: { en: 'No', po: '' },
-      params: { top: '65.1%', left: '80.3%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '80.1%', font_size: '10', class_name: 'document-translation' }
     },
 
     uninspectableRain: {
       translation: { en: 'Uninspectable', po: '' },
-      params: { top: '65.1%', left: '82.5%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '63.7%', left: '82.3%', font_size: '10', class_name: 'document-translation' }
     },
+
+    foundation: {
+      translation: { en: 'Foundation', po: '' },
+      params: { top: '66.2%', left: '32.9%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    floor: {
+      translation: { en: 'floor', po: '' },
+      params: { top: '68.7%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    pillarsAndBeams: {
+      translation: { en: 'Pillars & Eaves', po: '' },
+      params: { top: '71.2%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    exteriorWallsAndEaves: {
+      translation: { en: 'Exterior Walls & Eaves', po: '' },
+      params: { top: '73.9%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    balcony: {
+      translation: { en: 'Balcony', po: '' },
+      params: { top: '76.5%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    halls: {
+        translation: { en: 'Halls', po: '' },
+        params: { top: '79%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+      },
+
+    interiorWalls: {
+      translation: { en: 'Interior Walls', po: '' },
+      params: { top: '81.5%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ceilings: {
+      translation: { en: 'Ceilings', po: '' },
+      params: { top: '84%', left: '32.8%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    othersDegradation: {
+      translation: { en: 'Others', po: '' },
+      params: { top: '85.7%', left: '40%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    reinforcement: {
+      translation: { en: 'Reinforcement', po: '' },
+      params: { top: '89.7%', left: '33.6%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    concreteCompression: {
+      translation: { en: 'Concrete Compression', po: '' },
+      params: { top: '93.4%', left: '33.6%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    exteriorWalls: {
+      translation: { en: 'Exterior Walls', po: '' },
+      params: { top: '66.2%', left: '64.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    interiorWallsRain: {
+      translation: { en: 'Interior Walls', po: '' },
+      params: { top: '68.9%', left: '64.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    ceilingsRain: {
+      translation: { en: 'Ceilings', po: '' },
+      params: { top: '71.6%', left: '64.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
+    roofRain: {
+      translation: { en: 'Roof', po: '' },
+      params: { top: '74.5%', left: '64.2%', font_size: '10', class_name: 'document-translation' }
+    },
+
   },
   11: {
     buildingInspector: {
       translation: { en: 'Building Inspector', po: '' },
-      params: { top: '20.6%', left: '6.1%', font_size: '10', class_name: 'document-translation', rotate: '90' }
+      params: { top: '22.8%', left: '5.9%', font_size: '10', class_name: 'document-translation', rotate: '90' }
     },
 
     nameInspector: {
       translation: { en: 'Name of Inspector', po: '' },
-      params: { top: '7%', left: '14%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '7.6%', left: '13.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     certificateNumber: {
       translation: { en: 'Name of Agency Training Inspector and Completion Certificate No.', po: '' },
-      params: { top: '13.4%', left: '14%', font_size: '10', class_name: 'document-translation', width: '20%' }
+      params: { top: '14%', left: '13.2%', font_size: '10', class_name: 'document-translation', width: '20%' }
     },
 
     typeArchitectQualification: {
       translation: { en: 'Type of Architect Qualification', po: '' },
-      params: { top: '19.4%', left: '14%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '21%', left: '12.9%', font_size: '10', class_name: 'document-translation' }
     },
 
     classI: {
       translation: { en: 'Class I', po: '' },
-      params: { top: '19.4%', left: '36%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '20.4%', left: '35.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     classIi: {
       translation: { en: 'Class II', po: '' },
-      params: { top: '19.4%', left: '48%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '20.4%', left: '47.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     woodenStructureClass: {
       translation: { en: 'Wooden Structure', po: '' },
-      params: { top: '19.4%', left: '61%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '20.4%', left: '60.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     architectRegistrationNumber: {
       translation: { en: 'Architect Registration No.', po: '' },
-      params: { top: '25.4%', left: '14%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '26.7%', left: '13.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     ministersRegistration: {
       translation: { en: 'Minister\'s Reg.', po: '' },
-      params: { top: '26.2%', left: '53.7%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '24.7%', left: '52.9%', font_size: '10', class_name: 'document-translation' }
     },
 
     governorsRegistration: {
       translation: { en: 'Governor\'s Reg.', po: '' },
-      params: { top: '22.4%', left: '53.7%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '28.2%', left: '52.9%', font_size: '10', class_name: 'document-translation' }
     },
 
     nameAffiliatedOffice: {
       translation: { en: 'Name of Affiliated Office', po: '' },
-      params: { top: '29.4%', left: '14%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '31.7%', left: '13.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     officeRegistrationNumber: {
       translation: { en: 'Architectural Office Reg. No.', po: '' },
-      params: { top: '32.7%', left: '14%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '35.9%', left: '13.2%', font_size: '10', class_name: 'document-translation' }
     },
 
     governorsRegistrationOffice: {
       translation: { en: 'Governor\'s Reg.', po: '' },
-      params: { top: '32.8%', left: '54.4%', font_size: '10', class_name: 'document-translation' }
+      params: { top: '35.4%', left: '53.6%', font_size: '10', class_name: 'document-translation' }
     },
   },
 };
