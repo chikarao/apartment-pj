@@ -141,13 +141,44 @@ class StaffEditModal extends Component {
   }
 
   getStaffGroup() {
-    const array = [];
-    _.each(this.props.contractor.staffs, eachStaff => {
-      // console.log('in staff_edit_modal, getStaffGroup, eachStaff.id, this.props.selectedStaffId, eachStaff.base_record_id, this.props.selectedStaffId: ', eachStaff.id, this.props.staffId, eachStaff.base_record_id, this.props.staffId);
-      if ((eachStaff.id == this.props.staffId) || (eachStaff.base_record_id == this.props.staffId)) {
-        array.push(eachStaff);
+    let array = [];
+    const staffByBase = {};
+    _.each(this.props.contractor.staffs, each => {
+      if (!each.base_record_id) {
+        staffByBase[each.id] = [each];
       }
-    })
+      if (each.base_record_id) {
+        if (staffByBase[each.base_record_id]) {
+          staffByBase[each.base_record_id].push(each);
+        } else {
+          staffByBase[each.base_record_id] = [];
+          staffByBase[each.base_record_id].push(each);
+        }
+      }
+    });
+    console.log('in staff_edit_modal, getStaffGroup, staffByBase: ', staffByBase);
+
+    // _.each(this.props.contractor.staffs, eachStaff => {
+    //   console.log('in staff_edit_modal, getStaffGroup, eachStaff.id, this.props.StaffId, eachStaff.base_record_id, this.props.StaffId: ', eachStaff.id, this.props.staffId, eachStaff.base_record_id, this.props.staffId);
+    //   if ((eachStaff.id == this.props.staffId) || (eachStaff.base_record_id == this.props.staffId)) {
+    //     array.push(eachStaff);
+    //   }
+    // });
+    let flag = false;
+    _.each(staffByBase, each => {
+      console.log('in staff_edit_modal, getStaffGroup, staffByBase each: ', staffByBase, each);
+      // if (each.includes(this.props.StaffId)) {
+      //   array = each;
+      //   return;
+      // }
+      _.each(each, eachStaff => {
+        if (eachStaff.id == this.props.staffId) {
+          flag = true;
+          array = each;
+        }
+      });
+    });
+
     return array;
   }
 
@@ -158,7 +189,7 @@ class StaffEditModal extends Component {
     console.log('in staff_edit_modal, renderEditLanguageLink, staffGroup: ', staffGroup);
     return _.map(staffGroup, (eachStaff, i) => {
       // const baseRecordOrNot = this.baseRecordOrNot(eachStaff);
-      if (this.props.staff.id !== eachStaff.id) {
+      if (this.props.staff.id != eachStaff.id) {
         return (
           <div
             key={i}

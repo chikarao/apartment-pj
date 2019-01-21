@@ -32,7 +32,7 @@ import Facility from './constants/facility';
 let deleteImageArray = [];
 const AMENITIES = Amenities;
 const MAX_NUM_FILES = globalConstants.maxNumImages;
-
+const { DOM: { input, select, textarea } } = React
 
 class EditFlat extends Component {
   constructor(props) {

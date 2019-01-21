@@ -571,7 +571,7 @@ renderEachDocumentField(page) {
 
   renderEachDocumentTranslation(page) {
     return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
-      console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
+      // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
       return (
         <div
           key={i}

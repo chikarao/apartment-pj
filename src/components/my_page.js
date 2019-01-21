@@ -1138,7 +1138,7 @@ formatDate(date) {
         // render contractor only if it does not have a base_record_id, that is, it is the base record
         if (!eachContractor.base_record_id) {
           const contractorLanguagesArray = this.getLanguages(this.props.auth.user.contractors, eachContractor);
-          console.log('in mypage, renderExistingContractorDetails, contractorLanguagesArray: ', contractorLanguagesArray);
+          // console.log('in mypage, renderExistingContractorDetails, contractorLanguagesArray: ', contractorLanguagesArray);
           return (
             <li key={i} className="my-page-each-card">
                 <div className="my-page-each-card-click-box my-page-card-no-picture-box">
@@ -1222,12 +1222,26 @@ formatDate(date) {
     return object;
   }
 
+  getAppLanguageStaff(staffs, baseStaff) {
+    let staffReturned = {};
+    _.each(staffs, eachStaff => {
+      if ((eachStaff.language_code == this.props.appLanguageCode) && (baseStaff.id == eachStaff.base_record_id)) {
+        staffReturned = eachStaff;
+        return;
+      }
+    })
+    return staffReturned;
+  }
+
   renderExistingStaffDetails(selectedContractor) {
     // const selectedContractor = this.getContractor();
     // <button name={eachStaff.id} value="delete" className="btn btn-sm btn-delete my-page-edit-delete-btn" onClick={this.handleStaffEditDeleteClick.bind(this)}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
     return _.map(selectedContractor.staffs, (eachStaff, i) => {
+      // render if staff has no base record id, meaning it is the base staff record
       if (!eachStaff.base_record_id) {
         const staffLanguagesArray = this.getLanguages(selectedContractor.staffs, eachStaff);
+        const appLanguageStaff = this.getAppLanguageStaff(selectedContractor.staffs, eachStaff);
+        if (!_.isEmpty(appLanguageStaff)) { eachStaff = appLanguageStaff; }
         console.log('in mypage, renderExistingStaffDetails, staffLanguagesArray: ', staffLanguagesArray);
         return (
           <li key={i} className="my-page-each-card">

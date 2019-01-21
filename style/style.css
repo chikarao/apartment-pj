@@ -2449,9 +2449,10 @@ form {
   position: absolute;
   top: 1px;
   right: -2px;
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width: 15px;
   cursor: pointer;
+  margin: 5%;
  /* -webkit-appearance: none; */
  /* appearance: none; */
 }

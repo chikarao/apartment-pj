@@ -7,58 +7,86 @@ const FixedTermRentalContractBilingual = {
   // Anything iside params needs to be in snake case eg input_type for use in rails api
   // !!!! Only height needs to be px NOT %
   // !!!add required: true for validation at submit
-  1: {},
+  1: {
+      document_name: {
+          name: 'document_name',
+          // className: 'form-control-document',
+          // change from input componnet use DocumentChoices
+          component: 'DocumentChoices',
+          borderColor: 'lightgray',
+          choices: {
+              0: {
+                  params: {
+                      val: 'documentAttributes',
+                      top: '2%',
+                      left: '37%',
+                      width: '25%',
+                      // change from input componnet use document-rectange
+                      class_name: 'document-rectangle',
+                      // !!! height works only with px
+                      // height: '23px',
+                      input_type: 'string',
+                    }
+                  }
+                },
+                required: true
+              },
+
+        name: {
+            name: 'name',
+            // className: 'form-control-document',
+            // change from input componnet use DocumentChoices
+            component: 'DocumentChoices',
+            borderColor: 'lightgray',
+            choices: {
+                0: {
+                    params: {
+                        val: 'inputFieldValue',
+                        top: '16.5%',
+                        left: '30%',
+                        width: '59.5%',
+                        // change from input componnet use document-rectange
+                        class_name: 'document-rectangle',
+                        // !!! height works only with px
+                        // height: '23px',
+                        input_type: 'string',
+                      }
+                    }
+                  },
+                  required: true,
+                  translation: 'flat_languages'
+              },
+
+          name_translation: {
+              name: 'name_translation',
+              // className: 'form-control-document',
+              // change from input componnet use DocumentChoices
+              component: 'DocumentChoices',
+              borderColor: 'lightgray',
+              choices: {
+                  0: {
+                      params: {
+                          val: 'inputFieldValue',
+                          top: '18.5%',
+                          left: '30%',
+                          width: '59.5%',
+                          // change from input componnet use document-rectange
+                          class_name: 'document-rectangle',
+                          // !!! height works only with px
+                          // height: '23px',
+                          input_type: 'string',
+                        }
+                      }
+                    },
+                    required: true,
+                    multi_language: true
+                },
+
+  },
   2: {},
   3: {},
   12: {}
-//   1: {
-//     document_name: {
-//       name: 'document_name',
-//       // className: 'form-control-document',
-//       // change from input componnet use DocumentChoices
-//       component: 'DocumentChoices',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'documentAttributes',
-//             top: '2%',
-//             left: '37%',
-//             width: '25%',
-//             // change from input componnet use document-rectange
-//             class_name: 'document-rectangle',
-//             // !!! height works only with px
-//             // height: '23px',
-//             input_type: 'string',
-//           }
-//         }
-//       },
-//       required: true
-//     },
-//
-//     name: {
-//       name: 'name',
-//       // className: 'form-control-document',
-//       // change from input componnet use DocumentChoices
-//       component: 'DocumentChoices',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '16.5%',
-//             left: '26.5%',
-//             width: '63%',
-//             // change from input componnet use document-rectange
-//             class_name: 'document-rectangle',
-//             // !!! height works only with px
-//             // height: '23px',
-//             input_type: 'string',
-//           }
-//         }
-//       },
-//       required: true
-//     },
+  //   1: {
 //
 //     address: {
 //       name: 'address',

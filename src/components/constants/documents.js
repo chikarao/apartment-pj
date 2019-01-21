@@ -23,7 +23,8 @@ const Documents =
         jp: '定期借家契約',
         file: 'teishaku-saimuhosho',
         method: getInitialValuesObjectFixedTermContract,
-        type: 'fixed_term_rental_contract'
+        type: 'fixed_term_rental_contract',
+        baseLanguage: 'jp'
       },
 
     important_points_explanation_jp: {
@@ -32,6 +33,7 @@ const Documents =
         jp: '重要事項説明書',
         file: 'juyoujikou-setsumei-jp',
         method: getInitialValuesObjectImportantPointsExplanation,
+        baseLanguage: 'jp'
       },
 
     fixed_term_rental_contract_bilingual: {
@@ -40,7 +42,8 @@ const Documents =
       jp: '定期借家契約 バイリンガル',
       file: 'teishaku-saimuhosho-bilingual-v3-no-translation-1',
       method: getInitialValuesObjectFixedTermContract,
-      translation: FixedTermRentalContractBilingualTranslation
+      translation: FixedTermRentalContractBilingualTranslation,
+      baseLanguage: 'jp'
       // method: '',
       // type: 'fixed_term_rental_contract'
     },
@@ -52,6 +55,7 @@ const Documents =
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-10',
       method: getInitialValuesObjectImportantPointsExplanation,
       translation: ImportantPointsExplanationBilingualTranslation,
+      baseLanguage: 'jp'
       // method: '',
       // type: 'fixed_term_rental_contract'
     },
