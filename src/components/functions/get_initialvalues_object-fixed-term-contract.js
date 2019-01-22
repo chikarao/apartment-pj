@@ -100,6 +100,7 @@ export default (props) => {
 
   function createAddress(flat) {
     let addressFieldArray = [];
+    console.log('in get_initialvalues_object-fixed-term-contract, createAddress, flat: ', flat);
     // if (flat.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
     // change order of address depending on country
     if (flat.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
@@ -146,6 +147,41 @@ export default (props) => {
 
       return age;
   }
+
+  function getLanguage(languages, languageCode) {
+    let objectReturned;
+    _.each(languages, eachLanguage => {
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+      if (eachLanguage.language_code == languageCode) {
+        objectReturned = eachLanguage;
+        return;
+      }
+    });
+    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
+    return objectReturned;
+  }
+
+  function setLanguage(baseRecord, eachPageObject, eachBuildingKey, objectReturned) {
+    if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
+      // get building language for use translated field;
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachBuildingKey].translation_record], documentLanguageCode);
+      // assign buildingLangugae value to translated field
+      objectReturned[eachPageObject[eachBuildingKey].translation_field] = recordLanguage[eachPageObject[eachBuildingKey].translation_column];
+    } else if (baseRecord.language_code == documentLanguageCode) {
+      // if building language code is different from base language for document
+      // give translated field the baseRecord value
+      objectReturned[eachPageObject[eachBuildingKey].translation_field] = baseRecord[eachBuildingKey];
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachBuildingKey].translation_record], Documents[documentKey].baseLanguage);
+      if (!_.isEmpty(recordLanguage)) {
+        objectReturned[eachBuildingKey] = recordLanguage[eachPageObject[eachBuildingKey].translation_column];
+      }
+    } else {
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachBuildingKey].translation_record], Documents[documentKey].baseLanguage);
+      const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachBuildingKey].translation_record], documentLanguageCode);
+      objectReturned[eachBuildingKey] = recordLanguage[eachPageObject[eachBuildingKey].translation_column];
+      objectReturned[eachPageObject[eachBuildingKey].translation_field] = recordLanguage1[eachPageObject[eachBuildingKey].translation_column];
+    }
+  }
     // object to return to create_edit_document.js
     const objectReturned = {};
     // object to be used in handleFormSubmit
@@ -185,9 +221,16 @@ export default (props) => {
           //   eachBuildingKey = 'flat_building_name';
           // }
           if (eachPageObject[eachBuildingKey]) {
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachBuildingKey: ', eachBuildingKey);
             // if attributes in flat.building are on DocumentForm, add to initialValues objectReturned
             objectReturned[eachBuildingKey] = flat.building[eachBuildingKey];
+            // if key is for a translated field
+            if (eachPageObject[eachBuildingKey].translation_column) {
+              // if building language code equal base language for the document
+              const baseRecord = flat.building;
+              const eachRecordKey = eachBuildingKey;
+              // fill translation field with translations
+              setLanguage(baseRecord, eachPageObject, eachRecordKey, objectReturned);
+            } // end of if translation column
           }
         });
         // end of each Object.keys flat.building
@@ -322,7 +365,7 @@ export default (props) => {
             // get the choice that corresponds to the facility_type
             const choice = getChoice(eachArray[0]);
             // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choice: ', choice);
-            console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, count, facilitySpaces, choice: ', count, facilitySpaces, choice);
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, count, facilitySpaces, choice: ', count, facilitySpaces, choice);
             //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
             // for some reason, parking_spaces gets assigned '0' in form initial, so assign empty string to start,
             // then when choice is selected, assign a number.
@@ -337,8 +380,8 @@ export default (props) => {
       const language = 'jp'
       const ownerProfile = getProfile(userOwner.profiles, language);
       const tenantProfile = getProfile(booking.user.profiles, language);
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile, booking.user.profiles: ', tenantProfile, booking.user.profiles);
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, ownerProfile, userOwner.profiles: ', ownerProfile, userOwner.profiles);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile, booking.user.profiles: ', tenantProfile, booking.user.profiles);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, ownerProfile, userOwner.profiles: ', ownerProfile, userOwner.profiles);
       // form string for user owner names
       if (ownerProfile.first_name && ownerProfile.last_name) {
         const fullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
@@ -354,7 +397,7 @@ export default (props) => {
             const keys = ['name', 'age'];
             _.each(keys, key => {
               if ((count == Tenants[eachTenantKey].group) && (key == Tenants[eachTenantKey].tenantObjectMap)) {
-                console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachTenant, key, eachTenantKey: ', eachTenant, key, eachTenantKey);
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachTenant, key, eachTenantKey: ', eachTenant, key, eachTenantKey);
                 objectReturned[eachTenantKey] = eachTenant[key];
               }
             })
@@ -404,7 +447,7 @@ export default (props) => {
         objectReturned.flat_owner_phone = flat.owner_phone;
       }
 
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile: ', tenantProfile);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile: ', tenantProfile);
       if (tenantProfile.emergency_contact_name) {
         objectReturned.emergency_contact_name = tenantProfile.emergency_contact_name;
         objectReturned.emergency_contact_phone = tenantProfile.emergency_contact_phone;
@@ -446,9 +489,30 @@ export default (props) => {
       // end of each bookingDatesObject
       // get address1, city, state, zip in one string
       const address = createAddress(flat);
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, address: ', address);
       // add address to initialvalues objectReturned
-      objectReturned.address = address;
+      if (eachPageObject.address) {
+        objectReturned.address = address;
+        if (eachPageObject.address.translation_field) {
+          if (flat.language_code == Documents[documentKey].baseLanguage) {
+            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
+            const addressTranslation = createAddress(recordLanguage);
+            objectReturned[eachPageObject.address.translation_field] = recordLanguage;
+          } else if (flat.language_code == documentLanguageCode) {
+            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
+            const addressTranslation = createAddress(recordLanguage);
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, addressTranslation: ', addressTranslation);
+            objectReturned.address = addressTranslation;
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject.address: ', eachPageObject.address);
+            objectReturned[eachPageObject.address.translation_field] = address;
+          } else {
+            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
+            const recordLanguage1 = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
+            objectReturned.address = recordLanguage;
+            objectReturned[eachPageObject.address.translation_field] = recordLanguage1;
+          }
+        }
+      }
+
 
       // get contract length objectReturned with years and months
       const contractLengthObject = getContractLength(booking);

@@ -11,7 +11,7 @@ import {
 export default function (state = {
   createdLanguage: {},
   appLanguageCode: 'en',
-  documentLanguageCode: 'jp',
+  documentLanguageCode: 'en',
   placeSearchLanguageCode: 'en' }, action) {
   // console.log('in language reducer, action.payload: ', action.payload);
 

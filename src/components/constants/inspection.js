@@ -11,6 +11,7 @@ const Inspection = {
     choices: {
       0: { value: 'en', en: '🇬🇧　English', jp: '🇬🇧　English', type: 'button', className: 'form-rectangle' },
       1: { value: 'jp', en: '🇯🇵　Japanese', jp: '🇯🇵　日本語', type: 'button', className: 'form-rectangle' },
+      2: { value: 'po', en: '🇵🇹　Portuguese', jp: '🇵🇹🇹Português', type: 'button', className: 'form-rectangle' },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },

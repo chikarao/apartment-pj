@@ -110,7 +110,7 @@ class InspectionCreateModal extends Component {
     const { handleSubmit } = this.props;
 
     if (this.props.flat) {
-      console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
+      // console.log('in building_edit_modal, renderEditBuildingForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (

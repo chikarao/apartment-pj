@@ -93,7 +93,7 @@ class LanguageCreateModal extends Component {
     // console.log('in modal, in renderLanguageSelectOptions, languages:', languages);
     const languageCodesArray = [];
     _.each(this.props.flat.flat_languages, (language) => {
-      languageCodesArray.push(language.code);
+      languageCodesArray.push(language.language_code);
     });
     return _.map(languages, (v, k) => {
       const languageAlreadyCreated = languageCodesArray.includes(k);
@@ -124,7 +124,7 @@ class LanguageCreateModal extends Component {
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset key={'code'} className="form-group">
               <label className="create-flat-form-label">Select Language:</label>
-              <Field name="code" component="select" type="string" className="form-control">
+              <Field name="language_code" component="select" type="string" className="form-control">
                 <option></option>
                 {this.renderLanguageSelectOptions()}
               </ Field>

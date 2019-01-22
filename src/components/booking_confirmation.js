@@ -296,7 +296,7 @@ class BookingConfirmation extends Component {
   handleDocumentLanguageSelect(event) {
     const clickedElement = event.target;
     console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
-    // this.props.setDocumentLanguageCode(elementVal);
+    this.props.setDocumentLanguageCode(clickedElement.value);
   }
 
   renderDocumentLanguageSelect() {
@@ -329,7 +329,7 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <select type="string" className="booking-request-box-document-language-select" onChange={this.handleDocumentLanguageSelect}>
+              <select type="string" className="booking-request-box-document-language-select" value={this.props.documentLanguageCode} onChange={this.handleDocumentLanguageSelect}>
               {this.renderDocumentLanguageSelect()}
               </select>
             </div>
@@ -679,6 +679,7 @@ function mapStateToProps(state) {
       review: state.reviews.reviewForBookingByUser,
       showEditReviewModal: state.modals.showEditReview,
       appLanguageCode: state.languages.appLanguageCode,
+      documentLanguageCode: state.languages.documentLanguageCode,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

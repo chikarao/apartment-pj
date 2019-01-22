@@ -585,7 +585,7 @@ renderEachDocumentField(page) {
             width: documentTranslation.attributes.width,
           }}
         >
-        {documentTranslation.translations['en']}
+        {documentTranslation.translations[this.props.documentLanguageCode]}
         </div>
       );
     });
