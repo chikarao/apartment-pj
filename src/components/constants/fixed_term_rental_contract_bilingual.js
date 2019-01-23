@@ -527,561 +527,622 @@ const FixedTermRentalContractBilingual = {
       },
 
   },
-  2: {},
+  2: {
+      parking_included: {
+        name: 'parking_included',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '9%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '9%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      parking_spaces: {
+        name: 'parking_spaces',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '9%', left: '61.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      parking_space_number: {
+        name: 'parking_space_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '9%', left: '79.1%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      bicycle_parking_included: {
+        name: 'bicycle_parking_included',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '12.5%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '12.5%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      bicycle_parking_spaces: {
+        name: 'bicycle_parking_spaces',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '12.5%', left: '61.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      bicycle_parking_space_number: {
+        name: 'bicycle_parking_space_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '12.5%', left: '79.1%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      motorcycle_parking_included: {
+        name: 'motorcycle_parking_included',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '16%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '16%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      motorcycle_parking_spaces: {
+        name: 'motorcycle_parking_spaces',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '16%', left: '61.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      motorcycle_parking_space_number: {
+        name: 'motorcycle_parking_space_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '16%', left: '79.1%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      storage_included: {
+        name: 'storage_included',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '19.5%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '19.5%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      storage_spaces: {
+        name: 'storage_spaces',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '19.5%', left: '61.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      storage_space_number: {
+        name: 'storage_space_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '19.5%', left: '79.1%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      dedicated_yard: {
+        name: 'dedicated_yard',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '22.9%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '22.9%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      other_facility: {
+        name: 'other_facility',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '25.9%', left: '45%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '25.9%', left: '50.7%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      other_facility_name: {
+        name: 'other_facility_name',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '25.9%', left: '30%', width: '11.4%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      from_year: {
+        name: 'from_year',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '34.5%', left: '27%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      from_month: {
+        name: 'from_month',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '34.5%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      from_day: {
+        name: 'from_day',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '34.5%', left: '51.2%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      to_year: {
+        name: 'to_year',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '37.3%', left: '27%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      to_month: {
+        name: 'to_month',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '37.3%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      to_day: {
+        name: 'to_day',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '37.3%', left: '51.2%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      contract_length_years: {
+        name: 'contract_length_years',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '36%', left: '72.6%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      contract_length_months: {
+        name: 'contract_length_months',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '36%', left: '80.3%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      notice_from_year: {
+        name: 'notice_from_year',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '42.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      notice_from_month: {
+        name: 'notice_from_month',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '50%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      notice_from_day: {
+        name: 'notice_from_day',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '55.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+      notice_to_year: {
+        name: 'notice_to_year',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '64.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      notice_to_month: {
+        name: 'notice_to_month',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '72%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      notice_to_day: {
+        name: 'notice_to_day',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '40.3%', left: '77.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      price_per_month: {
+        name: 'price_per_month',
+        className: 'form-control-document',
+        // input_type: 'string',
+        component: 'DocumentChoices',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '52.4%',
+              left: '25.5%',
+              width: '8%',
+              class_name: 'document-rectangle',
+              // !!! height works only with px
+              // height: '23px',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      payment_due_date: {
+        name: 'payment_due_date',
+        className: 'form-control-document',
+        // component: 'input',
+        component: 'DocumentChoices',
+        // input_type: 'string',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '52.1%',
+              left: '42.5%',
+              width: '4.2%',
+              class_name: 'document-rectangle',
+              // !!! height works only with px
+              // height: '23px',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      management_fees: {
+        // its for management fees
+        name: 'management_fees',
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // input_type: 'string',
+        // component: 'input',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '78.6%',
+              left: '24.5%',
+              width: '8%',
+              class_name: 'document-rectangle',
+              // !!! height works only with px
+              // height: '23px',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      fees_payment_due_date: {
+        name: 'fees_payment_due_date',
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // className: 'form-control-document',
+        // component: 'input',
+        // input_type: 'string',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '68.3%',
+              left: '42.5%',
+              width: '4.2%',
+              // !!! height works only with px
+              // height: '23px',
+              class_name: 'document-rectangle',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      bank_name: {
+        name: 'bank_name',
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // input_type: 'string',
+        // className: 'form-control-document',
+        // component: 'input',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '51.4%',
+              left: '59.5%',
+              width: '29.5%',
+              // !!! height works only with px
+              class_name: 'document-rectangle',
+              // height: '23px',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      bank_name_english: {
+        name: 'bank_name_english',
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // input_type: 'string',
+        // className: 'form-control-document',
+        // component: 'input',
+        borderColor: 'lightgray',
+        choices: {
+          0: {
+            params: {
+              val: 'inputFieldValue',
+              top: '54.5%',
+              left: '59.5%',
+              width: '29.5%',
+              // !!! height works only with px
+              class_name: 'document-rectangle',
+              // height: '23px',
+              input_type: 'string'
+            }
+          }
+        }
+      },
+
+      account_type: {
+        name: 'account_type',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'ordinary', top: '56.5%', left: '64.6%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'current', top: '56.5%', left: '70.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+        },
+        className: 'form-control-document',
+        // height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
+      account_number: {
+        name: 'account_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '59.7%', left: '69.5%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      swift: {
+        name: 'swift',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '64.7%', left: '59.5%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      account_name: {
+        name: 'account_name',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '68.2%', left: '59.8%', width: '19%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      account_name_english: {
+        name: 'account_name_english',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '71.4%', left: '59.8%', width: '19%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      transfer_fee_paid_by: {
+        name: 'transfer_fee_paid_by',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'owner', top: '73.4%', left: '75.6%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'tenant', top: '73.4%', left: '81.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+        },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
+      rent_payment_method: {
+        name: 'rent_payment_method',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '77.2%', left: '67.5%', width: '22%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+
+      },
+
+      // rent_payment_method_translation: {
+      //   name: 'rent_payment_method_translation',
+      //   input_type: 'string',
+      //   choices: {
+      //     // add 1.5% to top
+      //     0: { params: { val: 'inputFieldValue', top: '77.2%', left: '67.5%', width: '22%', class_name: 'document-rectangle', input_type: 'string' } },
+      //   },
+      //   className: 'form-control-document',
+      //   component: 'DocumentChoices'
+      // },
+
+
+      deposit: {
+        // in MONTHS
+        name: 'deposit',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '82%', left: '27.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      deposit_amount: {
+        // calculated off of deposit months
+        name: 'deposit_amount',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '82%', left: '53.8%', width: '10%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      facilities_usage_fee: {
+        name: 'facilities_usage_fee',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '85.8%', left: '29.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      other_fees: {
+        name: 'other_fees',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '88.8%', left: '29.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // required: true
+      },
+
+
+
+  },
   3: {},
   12: {}
-  //   1: {
-
-
-//     parking_included: {
-//       name: 'parking_included',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '69%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '69%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     parking_spaces: {
-//       name: 'parking_spaces',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '69%', left: '55%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     parking_space_number: {
-//       name: 'parking_space_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '69%', left: '74%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     bicycle_parking_included: {
-//       name: 'bicycle_parking_included',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '70.9%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '70.9%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     bicycle_parking_spaces: {
-//       name: 'bicycle_parking_spaces',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '70.9%', left: '55%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     bicycle_parking_space_number: {
-//       name: 'bicycle_parking_space_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '70.9%', left: '74%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     motorcycle_parking_included: {
-//       name: 'motorcycle_parking_included',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '72.8%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '72.8%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     motorcycle_parking_spaces: {
-//       name: 'motorcycle_parking_spaces',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '72.8%', left: '55%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     motorcycle_parking_space_number: {
-//       name: 'motorcycle_parking_space_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '72.8%', left: '74%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     storage_included: {
-//       name: 'storage_included',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '74.7%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '74.7%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     storage_spaces: {
-//       name: 'storage_spaces',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '74.7%', left: '55%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     storage_space_number: {
-//       name: 'storage_space_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '74.7%', left: '74%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     dedicated_yard: {
-//       name: 'dedicated_yard',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '76.7%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '76.7%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     // other_facility: {
-//     //   name: 'other_facility',
-//     //   input_type: 'boolean',
-//     //   choices: {
-//     //     // add 1.5% to top
-//     //     0: { valName: 'Y', params: { val: true, top: '78.7%', left: '39%', width: '4.3%', class_name: 'document-rectangle', input_type: 'button' } },
-//     //     1: { valName: 'N', params: { val: false, top: '78.7%', left: '44.2%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } }
-//     //   },
-//     //   className: 'form-control-document',
-//     //   component: 'DocumentChoices'
-//     // },
-//     //
-//     // other_facility_name: {
-//     //   name: 'other_facility_name',
-//     //   input_type: 'string',
-//     //   choices: {
-//     //     // add 1.5% to top
-//     //     0: { params: { val: 'inputFieldValue', top: '78.7%', left: '27%', width: '11.4%', class_name: 'document-rectangle', input_type: 'string' } },
-//     //   },
-//     //   className: 'form-control-document',
-//     //   component: 'DocumentChoices'
-//     // },
-//
-//     from_year: {
-//       name: 'from_year',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '83.1%', left: '27%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     from_month: {
-//       name: 'from_month',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '83.1%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     from_day: {
-//       name: 'from_day',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '83.1%', left: '51.2%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     to_year: {
-//       name: 'to_year',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '85.3%', left: '27%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     to_month: {
-//       name: 'to_month',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '85.3%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     to_day: {
-//       name: 'to_day',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '85.3%', left: '51.2%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     contract_length_years: {
-//       name: 'contract_length_years',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '84.2%', left: '72.1%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     contract_length_months: {
-//       name: 'contract_length_months',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '84.2%', left: '79.6%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     notice_from_year: {
-//       name: 'notice_from_year',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '42.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     notice_from_month: {
-//       name: 'notice_from_month',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '50%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     notice_from_day: {
-//       name: 'notice_from_day',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '55.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//     notice_to_year: {
-//       name: 'notice_to_year',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '64.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     notice_to_month: {
-//       name: 'notice_to_month',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '72%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     notice_to_day: {
-//       name: 'notice_to_day',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '87.4%', left: '77.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     }
-//   },
+  //   1: {},
 //   // end of page 1
 //   2: {
-//     price_per_month: {
-//       name: 'price_per_month',
-//       className: 'form-control-document',
-//       // input_type: 'string',
-//       component: 'DocumentChoices',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '17.1%',
-//             left: '24.5%',
-//             width: '8%',
-//             class_name: 'document-rectangle',
-//             // !!! height works only with px
-//             height: '23px',
-//             input_type: 'string'
-//           }
-//         }
-//       }
-//     },
-//
-//     payment_due_date: {
-//       name: 'payment_due_date',
-//       className: 'form-control-document',
-//       // component: 'input',
-//       component: 'DocumentChoices',
-//       // input_type: 'string',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '15.7%',
-//             left: '42.5%',
-//             width: '4.2%',
-//             class_name: 'document-rectangle',
-//             // !!! height works only with px
-//             height: '23px',
-//             input_type: 'string'
-//           }
-//         }
-//       }
-//     },
-//
-//     management_fees: {
-//       // its for management fees
-//       name: 'management_fees',
-//       className: 'form-control-document',
-//       component: 'DocumentChoices',
-//       // input_type: 'string',
-//       // component: 'input',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '23.1%',
-//             left: '24.5%',
-//             width: '8%',
-//             class_name: 'document-rectangle',
-//             // !!! height works only with px
-//             height: '23px',
-//             input_type: 'string'
-//           }
-//         }
-//       }
-//     },
-//
-//     fees_payment_due_date: {
-//       name: 'fees_payment_due_date',
-//       className: 'form-control-document',
-//       component: 'DocumentChoices',
-//       // className: 'form-control-document',
-//       // component: 'input',
-//       // input_type: 'string',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '22%',
-//             left: '42.5%',
-//             width: '4.2%',
-//             // !!! height works only with px
-//             height: '23px',
-//             class_name: 'document-rectangle',
-//             input_type: 'string'
-//           }
-//         }
-//       }
-//     },
-//
-//     bank_name: {
-//       name: 'bank_name',
-//       className: 'form-control-document',
-//       component: 'DocumentChoices',
-//       // input_type: 'string',
-//       // className: 'form-control-document',
-//       // component: 'input',
-//       borderColor: 'lightgray',
-//       choices: {
-//         0: {
-//           params: {
-//             val: 'inputFieldValue',
-//             top: '14.5%',
-//             left: '59.8%',
-//             width: '29.5%',
-//             // !!! height works only with px
-//             class_name: 'document-rectangle',
-//             height: '23px',
-//             input_type: 'string'
-//           }
-//         }
-//       }
-//     },
-//
-//     account_type: {
-//       name: 'account_type',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'ordinary', top: '16.3%', left: '64.6%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'current', top: '16.3%', left: '70.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-//
-//     account_number: {
-//       name: 'account_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '18%', left: '69.5%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     account_name: {
-//       name: 'account_name',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '19.5%', left: '70.5%', width: '19%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     transfer_fee_paid_by: {
-//       name: 'transfer_fee_paid_by',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'owner', top: '21.4%', left: '75.6%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'tenant', top: '21.4%', left: '81.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-//
-//     rent_payment_method: {
-//       name: 'rent_payment_method',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '23.2%', left: '67.5%', width: '22%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     deposit: {
-//       // in MONTHS
-//       name: 'deposit',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '25%', left: '25.8%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     deposit_amount: {
-//       // calculated off of deposit months
-//       name: 'deposit_amount',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '26.6%', left: '27.8%', width: '10%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     facilities_usage_fee: {
-//       name: 'facilities_usage_fee',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '29%', left: '29.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     other_fees: {
-//       name: 'other_fees',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '31.5%', left: '29.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices',
-//       // required: true
-//     },
-//
+
 //     owner_address: {
 //       name: 'owner_address',
 //       input_type: 'string',
