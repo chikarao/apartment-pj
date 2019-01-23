@@ -40,7 +40,7 @@ const Documents =
       form: FixedTermRentalContractBilingual,
       en: 'Fixed Term Rental Contract Bilingual',
       jp: '定期借家契約 バイリンガル',
-      file: 'teishaku-saimuhosho-bilingual-v3-no-translation-1',
+      file: 'teishaku-saimuhosho-bilingual-v3-no-translation-5',
       method: getInitialValuesObjectFixedTermContract,
       translation: FixedTermRentalContractBilingualTranslation,
       baseLanguage: 'jp'

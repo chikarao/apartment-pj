@@ -264,272 +264,275 @@ const FixedTermRentalContractBilingual = {
             component: 'DocumentChoices'
           },
 
+
+      toilet: {
+        name: 'toilet',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'Dedicated Flushing Toilet', top: '45.5%', left: '58.4%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'Dedicated Non-flushing Toilet', top: '45.5%', left: '63.7%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
+          2: { params: { val: 'Shared Flushing Toilet', top: '45.5%', left: '77%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+          3: { params: { val: 'Shared Non-flushing Toilet', top: '45.5%', left: '82%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
+      // !!!!!!bath is assuming if there is a shower, there is a bathingroom
+      bath_tub: {
+        name: 'bath_tub',
+        input_type: 'boolean',
+        choices: {
+          0: { valName: 'Y', params: { val: true, top: '50.9%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '50.9%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices',
+        // attributes; keep just in case
+        attributes: { names: ['bath_tub'], input_type: 'boolean' }
+      },
+
+      shower: {
+        name: 'shower',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '53.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '53.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      wash_basin: {
+        name: 'wash_basin',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '56.7%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '56.7%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      washer_dryer_area: {
+        name: 'washer_dryer_area',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '59.4%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '59.4%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      hot_water: {
+        name: 'hot_water',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '62.3%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '62.3%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      kitchen_grill: {
+        name: 'kitchen_grill',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '65.1%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '65.1%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      parcel_delivery_box: {
+        name: 'parcel_delivery_box',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '67.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '67.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+    },
+
+      ac: {
+        name: 'ac',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '50.8%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '50.8%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      lighting_fixed: {
+        name: 'lighting_fixed',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '53.7%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '53.7%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      auto_lock: {
+        name: 'auto_lock',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '56.6%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '56.6%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+      // cable_tv includes digital
+      cable_tv: {
+        name: 'cable_tv',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '59.3%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '59.3%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      internet_ready: {
+        name: 'internet_ready',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '62.2%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '62.2%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      mail_box: {
+        name: 'mail_box',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '65%', left: '82.5%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '65%', left: '86.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+
+      lock_key: {
+        name: 'lock_key',
+        input_type: 'boolean',
+        choices: {
+          // add 1.5% to top
+          0: { valName: 'Y', params: { val: true, top: '70.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+          1: { valName: 'N', params: { val: false, top: '70.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      key_number: {
+        name: 'key_number',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '73%', left: '36.4%', width: '13%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      keys: {
+        name: 'keys',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '73%', left: '62.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      power_usage_amount: {
+        name: 'power_usage_amount',
+        input_type: 'string',
+        choices: {
+          // add 1.5% to top
+          0: { params: { val: 'inputFieldValue', top: '75.9%', left: '53%', width: '7%', class_name: 'document-rectangle', input_type: 'string' } },
+        },
+        className: 'form-control-document',
+        component: 'DocumentChoices'
+      },
+
+      gas: {
+        name: 'gas',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'Public Gas', top: '79.6%', left: '50.5%', width: '8%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'Propane Gas', top: '79.6%', left: '59.6%', width: '12%', class_name: 'document-rectangle', input_type: 'button' } },
+          2: { params: { val: 'None', top: '79.6%', left: '72.7%', width: '4%', class_name: 'document-rectangle', input_type: 'button' } },
+        },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
+      water: {
+        name: 'water',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'Public Water', top: '83.6%', left: '47.5%', width: '15.5%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'Tank', top: '83.6%', left: '63.9%', width: '6.7%', class_name: 'document-rectangle', input_type: 'button' } },
+          2: { params: { val: 'Well', top: '83.6%', left: '71.5%', width: '6.6%', class_name: 'document-rectangle', input_type: 'button' } },
+        },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
+      sewage: {
+        name: 'sewage',
+        input_type: 'string',
+        choices: {
+          0: { params: { val: 'Public Sewer', top: '87.6%', left: '50%', width: '10.5%', class_name: 'document-rectangle', input_type: 'button' } },
+          1: { params: { val: 'Septic Tank', top: '87.6%', left: '61%', width: '6.7%', class_name: 'document-rectangle', input_type: 'button' } },
+          2: { params: { val: 'None', top: '87.6%', left: '69.5%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
+        },
+        className: 'form-control-document',
+        height: '23px',
+        component: 'DocumentChoices'
+        // borderColor: 'blue'
+      },
+
   },
   2: {},
   3: {},
   12: {}
   //   1: {
 
-//
-//     toilet: {
-//       name: 'toilet',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'Dedicated Flushing Toilet', top: '36.4%', left: '53%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'Dedicated Non-flushing Toilet', top: '36.4%', left: '58.3%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
-//         2: { params: { val: 'Shared Flushing Toilet', top: '36.4%', left: '72%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         3: { params: { val: 'Shared Non-flushing Toilet', top: '36.4%', left: '77.5%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-// 　　// !!!!!!bath is assuming if there is a shower, there is a bathingroom
-//     bath_tub: {
-//       name: 'bath_tub',
-//       input_type: 'boolean',
-//       choices: {
-//         0: { valName: 'Y', params: { val: true, top: '37.7%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '37.7%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices',
-//       // attributes; keep just in case
-//       attributes: { names: ['bath_tub'], input_type: 'boolean' }
-//     },
-//
-//     shower: {
-//       name: 'shower',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '39.2%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '39.2%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     wash_basin: {
-//       name: 'wash_basin',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '40.7%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '40.7%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     washer_dryer_area: {
-//       name: 'washer_dryer_area',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '42.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '42.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     hot_water: {
-//       name: 'hot_water',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '44%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '44%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     kitchen_grill: {
-//       name: 'kitchen_grill',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '45.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '45.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     ac: {
-//       name: 'ac',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '47%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '47%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     lighting_fixed: {
-//       name: 'lighting_fixed',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '48.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '48.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     auto_lock: {
-//       name: 'auto_lock',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '50%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '50%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//     // cable_tv includes digital
-//     cable_tv: {
-//       name: 'cable_tv',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '51.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '51.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     internet_ready: {
-//       name: 'internet_ready',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '53%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '53%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     mail_box: {
-//       name: 'mail_box',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '54.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '54.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     parcel_delivery_box: {
-//       name: 'parcel_delivery_box',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '56%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '56%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     lock_key: {
-//       name: 'lock_key',
-//       input_type: 'boolean',
-//       choices: {
-//         // add 1.5% to top
-//         0: { valName: 'Y', params: { val: true, top: '57.5%', left: '47.3%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-//         1: { valName: 'N', params: { val: false, top: '57.5%', left: '51%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     key_number: {
-//       name: 'key_number',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '57.7%', left: '64.4%', width: '13%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     keys: {
-//       name: 'keys',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '57.7%', left: '82%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     power_usage_amount: {
-//       name: 'power_usage_amount',
-//       input_type: 'string',
-//       choices: {
-//         // add 1.5% to top
-//         0: { params: { val: 'inputFieldValue', top: '62.6%', left: '44%', width: '7%', class_name: 'document-rectangle', input_type: 'string' } },
-//       },
-//       className: 'form-control-document',
-//       component: 'DocumentChoices'
-//     },
-//
-//     gas: {
-//       name: 'gas',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'Public Gas', top: '64.1%', left: '42%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'Propane Gas', top: '64.1%', left: '51.3%', width: '12%', class_name: 'document-rectangle', input_type: 'button' } },
-//         2: { params: { val: 'None', top: '64.1%', left: '64.4%', width: '4%', class_name: 'document-rectangle', input_type: 'button' } },
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-//
-//     water: {
-//       name: 'water',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'Public Water', top: '65.7%', left: '39%', width: '15.5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'Tank', top: '65.7%', left: '55.3%', width: '6.7%', class_name: 'document-rectangle', input_type: 'button' } },
-//         2: { params: { val: 'Well', top: '65.7%', left: '63%', width: '6.6%', class_name: 'document-rectangle', input_type: 'button' } },
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-//
-//     sewage: {
-//       name: 'sewage',
-//       input_type: 'string',
-//       choices: {
-//         0: { params: { val: 'Public Sewer', top: '67.3%', left: '41.5%', width: '10.5%', class_name: 'document-rectangle', input_type: 'button' } },
-//         1: { params: { val: 'Septic Tank', top: '67.3%', left: '52.7%', width: '6.7%', class_name: 'document-rectangle', input_type: 'button' } },
-//         2: { params: { val: 'None', top: '67.3%', left: '61%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
-//       },
-//       className: 'form-control-document',
-//       height: '23px',
-//       component: 'DocumentChoices'
-//       // borderColor: 'blue'
-//     },
-//
+
 //     parking_included: {
 //       name: 'parking_included',
 //       input_type: 'boolean',
