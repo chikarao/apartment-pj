@@ -830,6 +830,45 @@ class EditFlat extends Component {
     }
   }
 
+  renderOwnerFields() {
+    // if (this.props.flat.owner_name != 'user') {
+      return (
+        <div>
+          <fieldset key={'owner_name'} className="form-group">
+            <label className="create-flat-form-label">Owner Name:</label>
+            <Field name="owner_name" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset className="form-group">
+            <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
+          </fieldset>
+          <fieldset key={'owner_contact_name'} className="form-group">
+            <label className="create-flat-form-label">Owner Contact Name:</label>
+            <Field name="owner_contact_name" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset key={'owner_address'} className="form-group">
+            <label className="create-flat-form-label">Owner Address:</label>
+            <Field name="owner_address" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset key={'owner_phone'} className="form-group">
+            <label className="create-flat-form-label">Owner Phone:</label>
+            <Field name="owner_phone" component="input" type="string" className="form-control" />
+          </fieldset>
+        </div>
+      )
+    // }
+  }
+
+  // renderUserIsOwnerPicker() {
+  //   return (
+  //     <div>
+  //       <fieldset key={'user_is_owner'} className="form-group">
+  //         <label className="create-flat-form-label">User is Owner:</label>
+  //         <Field name="user_is_owner" component="input" type="checkbox" />
+  //       </fieldset>
+  //     </div>
+  //   );
+  // }
+
   // <fieldset className="form-group">
   // <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
   // <Field name="station" component="input" type="string" className="form-control" />
@@ -1088,6 +1127,7 @@ class EditFlat extends Component {
               <label className="create-flat-form-label">Listing ID: </label>
               <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
             </fieldset>
+            {this.renderOwnerFields()}
             <div className="container amenity-input-box">
               <div className="row amenity-row">
                 {this.renderAmenityInput()}

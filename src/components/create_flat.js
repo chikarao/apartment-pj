@@ -430,6 +430,25 @@ class CreateFlat extends Component {
           <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
           <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
         </fieldset>
+        <fieldset key={'owner_name'} className="form-group">
+          <label className="create-flat-form-label">Owner Name:</label>
+          <Field name="owner_name" component="input" type="string" className="form-control" />
+        </fieldset>
+        <fieldset className="form-group">
+          <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
+        </fieldset>
+        <fieldset key={'owner_contact_name'} className="form-group">
+          <label className="create-flat-form-label">Owner Contact Name:</label>
+          <Field name="v" component="input" type="string" className="form-control" />
+        </fieldset>
+        <fieldset key={'owner_address'} className="form-group">
+          <label className="create-flat-form-label">Owner Address:</label>
+          <Field name="owner_address" component="input" type="string" className="form-control" />
+        </fieldset>
+        <fieldset key={'owner_phone'} className="form-group">
+          <label className="create-flat-form-label">Owner Phone:</label>
+          <Field name="owner_phone" component="input" type="string" className="form-control" />
+        </fieldset>
         <fieldset key={'cancellation'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
           <Field name="cancellation" component="select" type="boolean" className="form-control">

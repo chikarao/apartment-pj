@@ -282,6 +282,7 @@ const appLanguages =
     viewPdf: { en: 'view pdf', jp: 'PDFをみる' },
     updatePdf: { en: 'update pdf', jp: 'PDFを更新' },
     save: { en: 'save', jp: '保存' },
+    ifOwnerDifferent: { en: 'Owner is titleholder of listed property. Fill in only if owner is different from user', jp: '物件の所有者。ユーザーが物件の所有者では無い場合。' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
     // importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },

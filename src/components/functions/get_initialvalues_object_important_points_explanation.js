@@ -383,7 +383,8 @@ export default (props) => {
         objectReturned.owner_address = createAddress(ownerProfile);
       }
       // if user is the owner, use user profile
-      if (flat.owner_name == 'user') {
+      // if (flat.owner_name == 'user') {
+      if (!flat.owner_name) {
         const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
         objectReturned.flat_owner_name = ownerFullName;
         objectReturned.flat_owner_address = createAddress(ownerProfile);
