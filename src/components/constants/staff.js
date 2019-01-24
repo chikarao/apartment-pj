@@ -23,7 +23,7 @@ const Staff = {
     // map to column in backend code
     map_to_record: 'language_code'
   },
-  
+
   first_name: {
     name: 'first_name',
     en: 'First Name',
@@ -60,6 +60,16 @@ const Staff = {
     className: 'form-control',
     language_independent: true,
 
+  },
+
+  registration_prefecture: {
+    name: 'registration_prefecture',
+    en: 'Registration Number',
+    jp: '登録番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    language_independent: true,
   },
 
   phone: {

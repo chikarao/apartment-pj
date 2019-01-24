@@ -1567,12 +1567,285 @@ const FixedTermRentalContractBilingual = {
 
 
   },
-  12: {}
+  12: {
+    contract_year: {
+      name: 'contract_year',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '19.1%', left: '22.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_month: {
+      name: 'contract_month',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '19.1%', left: '34.2%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_day: {
+      name: 'contract_day',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '19.1%', left: '43.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    owner_address: {
+      name: 'owner_address',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '23.1%', left: '32.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'owner_address_translation'
+    },
+
+    owner_address_translation: {
+      name: 'owner_address_translation',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '25.2%', left: '32.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    owner_name: {
+      name: 'owner_name',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '27.5%', left: '32.8%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'owner_name_translation'
+    },
+
+    owner_name_translation: {
+      name: 'owner_name_translation',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '29.8%', left: '32.8%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    owner_phone: {
+      name: 'owner_phone',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '32.4%', left: '34.8%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    tenant_address: {
+      name: 'tenant_address',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '36.6%', left: '32.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'owner_address_translation'
+    },
+
+    tenant_name: {
+      name: 'tenant_name',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '41.3%', left: '32.8%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'owner_name_translation'
+    },
+
+    tenant_phone: {
+      name: 'tenant_phone',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '45.6%', left: '34.8%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_registration_jurisdiction: {
+      name: 'broker_registration_jurisdiction',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '54.2%', left: '37%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_registration_grantor: {
+        name: 'broker_registration_grantor',
+        input_type: 'string',
+        choices: {
+            0: { params: { val: 'governor', top: '54.2%', left: '47.2%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+            1: { params: { val: 'minister', top: '54.2%', left: '52.9%', width: '12%', class_name: 'document-rectangle', input_type: 'button' } },
+            // 2: { params: { val: 'K', top: '39.6%', left: '73.4%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
+            // 3: { params: { val: 'One Room', top: '39.6%', left: '76.5%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
+          },
+          box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+          className: 'form-control-document',
+          height: '23px',
+          component: 'DocumentChoices'
+          // borderColor: 'blue'
+        },
+
+    broker_registration_front_number: {
+      name: 'broker_registration_front_number',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '54.2%', left: '67%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_registration_number: {
+      name: 'broker_registration_number',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '54.2%', left: '78.3%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_address_hq: {
+      name: 'broker_address_hq',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '62.6%', left: '38.8%', width: '55%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'broker_address_hq_translation'
+    },
+
+    broker_address_hq_translation: {
+      name: 'broker_address_hq_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '64.3%', left: '38.8%', width: '55%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_company_name: {
+      name: 'broker_company_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '66.6%', left: '38.8%', width: '55%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'broker_company_name_translation'
+    },
+
+    broker_company_name_translation: {
+      name: 'broker_company_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '68.7%', left: '38.8%', width: '55%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_representative_name: {
+      name: 'broker_representative_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '70.9%', left: '38.8%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'broker_representative_name_translation'
+    },
+
+    broker_representative_name_translation: {
+      name: 'broker_representative_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '72.9%', left: '38.8%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_staff_registration_jurisdiction: {
+      name: 'broker_staff_registration_jurisdiction',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '75.4%', left: '58.5%', width: '10%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_staff_registration: {
+      name: 'broker_staff_registration',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '75.4%', left: '78.5%', width: '12%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_staff_name: {
+      name: 'broker_staff_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '79.8%', left: '52%', width: '32%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'broker_staff_name_translation'
+    },
+
+    broker_staff_name_translation: {
+      name: 'broker_staff_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '82.2%', left: '52%', width: '32%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+  }
   //   1: {},
 //   // end of page 1
 //   2: {
-
-
 
 //
 //   }

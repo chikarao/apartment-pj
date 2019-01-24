@@ -222,10 +222,12 @@ export default (props) => {
   }
 
   function getInspection(inspections) {
+    // console.log('in get_initialvalues_object_important_points_explanation, sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode: ', sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode);
     const sortedInspections = inspections.sort((a, b) => {
       return a.inspection_date - b.inspection_date;
     });
-    let inspectionReturned;
+    console.log('in get_initialvalues_object_important_points_explanation, inspections, sortedInspections, documentLanguageCode: ', inspections, sortedInspections, documentLanguageCode);
+    let inspectionReturned = {};
     _.each(sortedInspections, eachInspection => {
       if (eachInspection.language_code == documentLanguageCode) {
         inspectionReturned = eachInspection;
@@ -405,10 +407,10 @@ export default (props) => {
       if (flat.building) {
         if (flat.building.inspections) {
           const inspection = getInspection(flat.building.inspections);
+          console.log('in create_edit_document, getInitialValuesObject, inspection, flat.building.inspections: ', inspection, flat.building.inspections);
           inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
           const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
           inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
-          // console.log('in create_edit_document, getInitialValuesObject, inspectionDateFormatted: ', inspectionDateFormatted);
 
           if (inspection) {
             _.each(Object.keys(inspection), key => {

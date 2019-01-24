@@ -383,8 +383,8 @@ class EditFlat extends Component {
     return _.map(this.props.flat.flat_languages, language => {
       return (
         <div key={language.id} className="edit-flat-each-available-language col-xs-6 col-sm-6 col-md-4">
-          {Languages[language.code].flag} {Languages[language.code].name}
-          <div value={language.code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
+          {Languages[language.language_code].flag} {Languages[language.language_code].name}
+          <div value={language.language_code} className="edit-flat-each-available-language-edit-link" onClick={this.handleEditLanguageClick}>{AppLanguages.edit[this.props.appLanguageCode]}</div>
         </div>
       );
     })

@@ -59,6 +59,41 @@ const Contractor = {
     language_independent: true
   },
 
+  registration_jurisdiction: {
+    name: 'registration_jurisdiction',
+    en: 'Registration Prefecture',
+    jp: '登録都道府県',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    language_independent: true,
+  },
+
+  registration_number_front: {
+    name: 'registration_number_front',
+    en: 'Front Registration Number',
+    jp: '',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    language_independent: true,
+  },
+
+  registration_grantor: {
+    name: 'registration_grantor',
+    en: 'Governor or Minister Reg.',
+    jp: '登録（知事・国土交通大臣)',
+    component: 'FormChoices',
+    type: 'string',
+    choices: {
+      0: { value: 'governor', en: 'Governor', jp: '知事', type: 'button', className: 'form-rectangle' },
+      1: { value: 'minister', en: 'Minister', jp: '国土交通大臣', type: 'button', className: 'form-rectangle' },
+      // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
+      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+    },
+    language_independent: true
+  },
+
   registration_date: {
     name: 'registration_date',
     en: 'Registration Date',
