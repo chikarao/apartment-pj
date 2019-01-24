@@ -10,6 +10,15 @@ const BankAccount = {
     className: 'form-control'
   },
 
+  account_name_english: {
+    name: 'account_name_english',
+    en: 'Account Name (English)',
+    jp: '口座名義人(英語名)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
   bank_name: {
     name: 'bank_name',
     en: 'Bank Name',
@@ -19,10 +28,28 @@ const BankAccount = {
     className: 'form-control'
   },
 
+  bank_name_english: {
+    name: 'bank_name_english',
+    en: 'Bank Name (English)',
+    jp: '銀行名（英語名)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
   account_number: {
     name: 'account_number',
     en: 'Account Number',
     jp: '口座番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  swift: {
+    name: 'swift',
+    en: 'SWIFT',
+    jp: 'SWIFT',
     component: 'input',
     type: 'string',
     className: 'form-control'
