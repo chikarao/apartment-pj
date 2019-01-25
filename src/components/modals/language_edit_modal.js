@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
+import AppLanguages from '../constants/app_languages';
 
 let showHideClassName;
 
@@ -141,6 +142,21 @@ class LanguageEditModal extends Component {
                 <label className="create-flat-form-label">Nearest Station:</label>
                 <Field name="station" component="input" type="string" className="form-control" />
               </fieldset>
+              <fieldset key={'owner_name'} className="form-group">
+                <label className="create-flat-form-label">Owner Name (property title):</label>
+                <Field name="owner_name" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset className="form-group">
+                <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
+              </fieldset>
+              <fieldset key={'owner_contact_name'} className="form-group">
+                <label className="create-flat-form-label">Owner Contact Name:</label>
+                <Field name="v" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'owner_address'} className="form-group">
+                <label className="create-flat-form-label">Owner Address:</label>
+                <Field name="owner_address" component="input" type="string" className="form-control" />
+              </fieldset>
               <fieldset key={'intro'} className="form-group">
                 <label className="create-flat-form-label">Intro:</label>
                 <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
@@ -203,7 +219,8 @@ function mapStateToProps(state) {
     // languages: state.languages,
     showLanguageEdit: state.modals.showLanguageEditModal,
     language: state.languages.selectedLanguage,
-    initialValues: state.languages.selectedLanguage
+    initialValues: state.languages.selectedLanguage,
+    appLanguageCode: state.languages.appLanguageCode,
   };
 }
 

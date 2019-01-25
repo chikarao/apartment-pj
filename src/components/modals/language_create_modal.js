@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
+import AppLanguages from '../constants/app_languages';
 
 let showHideClassName;
 
@@ -166,16 +167,15 @@ class LanguageCreateModal extends Component {
               <Field name="station" component="input" type="string" className="form-control" />
             </fieldset>
             <fieldset key={'owner_name'} className="form-group">
-              <label className="create-flat-form-label">Owner Name (property title):</label>
+              <label className="create-flat-form-label">Owner Name:</label>
               <Field name="owner_name" component="input" type="string" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
             </fieldset>
             <fieldset key={'owner_contact_name'} className="form-group">
               <label className="create-flat-form-label">Owner Contact Name:</label>
               <Field name="v" component="input" type="string" className="form-control" />
-            </fieldset>
-            <fieldset key={'owner_contact_name'} className="form-group">
-              <label className="create-flat-form-label">Owner Contact Name:</label>
-              <Field name="owner_contact_name" component="input" type="string" className="form-control" />
             </fieldset>
             <fieldset key={'owner_address'} className="form-group">
               <label className="create-flat-form-label">Owner Address:</label>
@@ -234,6 +234,7 @@ function mapStateToProps(state) {
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
     flat: state.selectedFlatFromParams.selectedFlatFromParams,
+    appLanguageCode: state.languages.appLanguageCode,
     // userProfile: state.auth.userProfile
     // initialValues: state.auth.userProfile
     languages: state.languages,

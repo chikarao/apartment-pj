@@ -353,7 +353,7 @@ class EditFlat extends Component {
     // console.log('in show_flat, getSelectedLanguage, languageCode: ', languageCode);
     const array = []
     _.each(this.props.flat.flat_languages, language => {
-      if (language.code == languageCode) {
+      if (language.language_code == languageCode) {
         array.push(language);
       }
     });

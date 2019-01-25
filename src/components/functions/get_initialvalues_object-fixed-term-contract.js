@@ -9,14 +9,29 @@ import getContractLength from './get_contract_length';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations } = props;
+
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
-    let returnedProfile;
+    let returnedProfile = {};
     _.each(personProfiles, eachProfile => {
       if (eachProfile.language_code == language) {
         returnedProfile = eachProfile;
+        return;
       }
+    });
+    return returnedProfile;
+  }
+
+  function getManagement(contractorArray, language) {
+    let returnedProfile = {};
+    _.each(contractorArray, eachContractor => {
+      _.each(eachContractor, each => {
+        if (each.language_code == language) {
+          returnedProfile = each;
+          return;
+        }
+      });
     });
     return returnedProfile;
   }
@@ -300,87 +315,92 @@ export default (props) => {
       // end of if flat.rent_payment_method
       // calculate number of facilties, car park, bicycle parking, etc
       // and get a string of their numbers 1A, 2D etc.
-      if (booking.facilities) {
-        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flat.facilities: ', flat.facilities);
-        // set up arrays for each facility
-        const carParkingArray = [];
-        const bicycleParkingArray = [];
-        const motorcycleParkingArray = [];
-        const storageArray = [];
-        // set up array of each array;
-        const facilityArray = [carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray];
-        // const yardArray = []
-        // specify which facility_types should be iterated over
-        const facilityTypes = ['car_parking', 'bicycle_parking', 'motorcycle_parking', 'storage'];
-        // iterate through each facility.js facility_type choices
-        _.each(Facility.facility_type.choices, eachChoice => {
-          // iterate over each facility assigned to flat
-          _.each(booking.facilities, eachFacility => {
-            if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
-              // if there is a facility that match the choices and the types that we care about
-              // push them in respective arrays
-              eachFacility.facility_type == 'car_parking' ? carParkingArray.push(eachFacility) : '';
-              eachFacility.facility_type == 'bicycle_parking' ? bicycleParkingArray.push(eachFacility) : '';
-              eachFacility.facility_type == 'motorcycle_parking' ? motorcycleParkingArray.push(eachFacility) : '';
-              eachFacility.facility_type == 'storage' ? storageArray.push(eachFacility) : '';
-              // eachFacility.facility_type == 'dedicated_yard' ? yardArray.push(eachFacility) : '';
-            }
-          })
-        })
-        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilityArray: ', facilityArray);
-        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
-        // facilityUsageFeeCount to calculate total of all facilities to charge
-        let facilityUsageFeeCount = 0;
-        // iterate over each array in array of of arrays
-        _.each(facilityArray, eachArray => {
-          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachArray: ', eachArray);
-          // if an array has something in it, count how many and form their strings
-          if (eachArray.length > 0) {
-            // count for how many spaces (parking, bicycle, motorcyle)
-            let count = 0;
-            // facilitySpaces for string showing space numbers 1A, 2B etc
-            let facilitySpaces = ''
-            _.each(eachArray, each => {
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
-              // forms string with facility numbers eg 1A, 2B etc
-              if (count > 0) {
-                facilitySpaces = facilitySpaces.concat(', ')
-                facilitySpaces = facilitySpaces.concat(each.facility_number)
-                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
-                count++;
-              } else {
-                facilitySpaces = facilitySpaces.concat(each.facility_number)
-                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count else: ', facilitySpaces, count);
-                count++;
-              }
-              // get the choice that corresponds to each facility in facility types
-              const choiceInEach = getChoice(each);
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]: ', choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]);
-              // if facility NOT included, add up price_per_month
-              if (!flat[choiceInEach.facilityObjectMap]) {
-                facilityUsageFeeCount += each.price_per_month;
+      if (eachPageObject.facility_type) {
+        if (booking.facilities) {
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flat.facilities: ', flat.facilities);
+          // set up arrays for each facility
+          const carParkingArray = [];
+          const bicycleParkingArray = [];
+          const motorcycleParkingArray = [];
+          const storageArray = [];
+          // set up array of each array;
+          const facilityArray = [carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray];
+          // const yardArray = []
+          // specify which facility_types should be iterated over
+          const facilityTypes = ['car_parking', 'bicycle_parking', 'motorcycle_parking', 'storage'];
+          // iterate through each facility.js facility_type choices
+          _.each(Facility.facility_type.choices, eachChoice => {
+            // iterate over each facility assigned to flat
+            _.each(booking.facilities, eachFacility => {
+              if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
+                // if there is a facility that match the choices and the types that we care about
+                // push them in respective arrays
+                eachFacility.facility_type == 'car_parking' ? carParkingArray.push(eachFacility) : '';
+                eachFacility.facility_type == 'bicycle_parking' ? bicycleParkingArray.push(eachFacility) : '';
+                eachFacility.facility_type == 'motorcycle_parking' ? motorcycleParkingArray.push(eachFacility) : '';
+                eachFacility.facility_type == 'storage' ? storageArray.push(eachFacility) : '';
+                // eachFacility.facility_type == 'dedicated_yard' ? yardArray.push(eachFacility) : '';
               }
             })
-            // get the choice that corresponds to the facility_type
-            const choice = getChoice(eachArray[0]);
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choice: ', choice);
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, count, facilitySpaces, choice: ', count, facilitySpaces, choice);
-            //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
-            // for some reason, parking_spaces gets assigned '0' in form initial, so assign empty string to start,
-            // then when choice is selected, assign a number.
-            // objectReturned.parking_spaces = '';
-            objectReturned[choice.documentFormMap1] = count;
-            // objectReturned[choice.documentFormMap1] = ((count > 0) ? count : '');
-            objectReturned[choice.documentFormMap2] = facilitySpaces;
-            objectReturned.facilities_usage_fee = facilityUsageFeeCount;
-          }
-        });
-      }
-      const language = 'jp'
+          })
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilityArray: ', facilityArray);
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray: ', carParkingArray, bicycleParkingArray, motorcycleParkingArray, storageArray, yardArray);
+          // facilityUsageFeeCount to calculate total of all facilities to charge
+          let facilityUsageFeeCount = 0;
+          // iterate over each array in array of of arrays
+          _.each(facilityArray, eachArray => {
+            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachArray: ', eachArray);
+            // if an array has something in it, count how many and form their strings
+            if (eachArray.length > 0) {
+              // count for how many spaces (parking, bicycle, motorcyle)
+              let count = 0;
+              // facilitySpaces for string showing space numbers 1A, 2B etc
+              let facilitySpaces = ''
+              _.each(eachArray, each => {
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, each: ', each);
+                // forms string with facility numbers eg 1A, 2B etc
+                if (count > 0) {
+                  facilitySpaces = facilitySpaces.concat(', ')
+                  facilitySpaces = facilitySpaces.concat(each.facility_number)
+                  // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count if > 0: ', facilitySpaces, count);
+                  count++;
+                } else {
+                  facilitySpaces = facilitySpaces.concat(each.facility_number)
+                  // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, facilitySpaces, count else: ', facilitySpaces, count);
+                  count++;
+                }
+                // get the choice that corresponds to each facility in facility types
+                const choiceInEach = getChoice(each);
+                // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]: ', choiceInEach.facilityObjectMap, flat[choiceInEach.facilityObjectMap]);
+                // if facility NOT included, add up price_per_month
+                if (!flat[choiceInEach.facilityObjectMap]) {
+                  facilityUsageFeeCount += each.price_per_month;
+                }
+              })
+              // get the choice that corresponds to the facility_type
+              const choice = getChoice(eachArray[0]);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, choice: ', choice);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, count, facilitySpaces, choice: ', count, facilitySpaces, choice);
+              //set each parking_spaces and parking_space_number for car, bicycle, motorcycle and storage
+              // for some reason, parking_spaces gets assigned '0' in form initial, so assign empty string to start,
+              // then when choice is selected, assign a number.
+              // objectReturned.parking_spaces = '';
+              objectReturned[choice.documentFormMap1] = count;
+              // objectReturned[choice.documentFormMap1] = ((count > 0) ? count : '');
+              objectReturned[choice.documentFormMap2] = facilitySpaces;
+              objectReturned.facilities_usage_fee = facilityUsageFeeCount;
+            }
+          });
+        }
+      } // end of if (eachPageObject.facility_type)
+
+
+      // const language = 'jp'
+      const language = Documents[documentKey].baseLanguage;
       const ownerProfile = getProfile(userOwner.profiles, language);
+      const ownerProfileTranslation = getProfile(userOwner.profiles, documentLanguageCode);
       const tenantProfile = getProfile(booking.user.profiles, language);
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile, booking.user.profiles: ', tenantProfile, booking.user.profiles);
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, ownerProfile, userOwner.profiles: ', ownerProfile, userOwner.profiles);
       // form string for user owner names
       if (ownerProfile.first_name && ownerProfile.last_name) {
@@ -388,6 +408,32 @@ export default (props) => {
         objectReturned.owner_name = fullName;
         objectReturned.owner_phone = ownerProfile.phone;
       }
+
+      if (ownerProfileTranslation.first_name && ownerProfileTranslation.last_name) {
+        const fullName = ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`);
+        objectReturned.owner_name_translation = fullName;
+      }
+      // form string for address of user owner
+      if (ownerProfile.address1 && ownerProfile.city) {
+        if (ownerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+          let fullAddress = ''
+          fullAddress = fullAddress.concat(`${ownerProfile.zip}${ownerProfile.state}${ownerProfile.city}${ownerProfile.address1}`);
+          objectReturned.owner_address = fullAddress;
+        }
+      }
+
+      if (ownerProfileTranslation.address1 && ownerProfileTranslation.city) {
+        if (ownerProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+          let fullAddress = ''
+          fullAddress = fullAddress.concat(`${ownerProfileTranslation.address1} ${ownerProfileTranslation.city} ${ownerProfileTranslation.state} ${ownerProfileTranslation.zip} ${ownerProfileTranslation.country}`);
+          objectReturned.owner_address_translation = fullAddress;
+        }
+      }
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, contractorTranslations, staffTranslations: ', contractorTranslations, staffTranslations);
+
+      const managementProfile = getManagement(contractorTranslations, language);
+      const managementProfileTranslation = getManagement(contractorTranslations, documentLanguageCode);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, managementProfile, managementProfileTranslation: ', managementProfile, managementProfileTranslation);
 
       if (booking.tenants) {
         let count = 0;
@@ -414,14 +460,6 @@ export default (props) => {
         objectReturned.tenant_phone = tenantProfile.phone;
       }
 
-      // form string for address of user owner
-      if (ownerProfile.address1 && ownerProfile.city) {
-        if (ownerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
-          let fullAddress = ''
-          fullAddress = fullAddress.concat(`${ownerProfile.zip}${ownerProfile.state}${ownerProfile.state}${ownerProfile.city}${ownerProfile.address1}`);
-          objectReturned.owner_address = fullAddress;
-        }
-      }
 
       // form get age of tenant
       if (tenantProfile.birthday) {
@@ -435,18 +473,16 @@ export default (props) => {
       //   objectReturned.building_owner_phone = flat.building.building_owner_phone;
       // }
       // if flat_owner_name is user use the user profile for user
-      if (flat.owner_name == 'user') {
-        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
-        objectReturned.flat_owner_name = ownerFullName;
-        objectReturned.flat_owner_address = createAddress(ownerProfile);
-        objectReturned.flat_owner_phone = ownerProfile.phone;
-      } else {
-        // else use the owner in flat
+      if (flat.owner_name) {
+        // const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        // objectReturned.flat_owner_name = ownerFullName;
+        // objectReturned.flat_owner_address = createAddress(ownerProfile);
+        // objectReturned.flat_owner_phone = ownerProfile.phone;
         objectReturned.flat_owner_name = flat.owner_name;
         objectReturned.flat_owner_address = flat.owner_address;
         objectReturned.flat_owner_phone = flat.owner_phone;
       }
-
+        // else use the owner in flat
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, tenantProfile: ', tenantProfile);
       if (tenantProfile.emergency_contact_name) {
         objectReturned.emergency_contact_name = tenantProfile.emergency_contact_name;

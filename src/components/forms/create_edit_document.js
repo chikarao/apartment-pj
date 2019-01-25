@@ -4,21 +4,20 @@ import { reduxForm, Field, isDirty } from 'redux-form';
 // gettting proptypes warning with isDirty
 // import { isDirty } from 'redux-form/immutable'
 import { connect } from 'react-redux';
-import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
-import cloudinary from 'cloudinary-core';
+// import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
+// import cloudinary from 'cloudinary-core';
 import * as actions from '../../actions';
 // import DocumentForm from '../constants/document_form';
 import Documents from '../constants/documents';
-import Building from '../constants/building';
-import SelectField from '../forms/select_field';
+// import Building from '../constants/building';
+// import SelectField from '../forms/select_field';
 
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
-// import RentPayment from '../constants/rent_payment';
-// import Facility from '../constants/facility';
-// import Tenants from '../constants/tenants';
-// import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
-// let updateCount = 0;
+
+// NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
+// flatOwner is the title holder of the flat on documents
+//  and its input is taken on craeteFlat, editFlat and flatLanuages
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -59,7 +58,9 @@ class CreateEditDocument extends Component {
         documentLanguageCode,
         assignments,
         contracts,
-        documentKey
+        documentKey,
+        contractorTranslations,
+        staffTranslations
       } = this.props;
       const documentFields = Documents[documentKey].form
       let initialValuesObject = {};
@@ -73,7 +74,7 @@ class CreateEditDocument extends Component {
         const returnedObject = this.getSavedInitialValuesObject({ agreement });
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
       } else {
-        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey });
+        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
       }
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
@@ -853,6 +854,8 @@ function mapStateToProps(state) {
       documentLanguageCode: state.languages.documentLanguageCode,
       assignments: state.bookingData.assignments,
       contracts: state.bookingData.contracts,
+      contractorTranslations: state.bookingData.contractorTranslations,
+      staffTranslations: state.bookingData.staffTranslations,
       // agreements: state.bookingData.agreements,
       // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
       // setCreateDocumentKey action fired and app state set

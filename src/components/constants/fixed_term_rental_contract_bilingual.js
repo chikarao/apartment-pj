@@ -1137,12 +1137,15 @@ const FixedTermRentalContractBilingual = {
 
   },
   3: {
+    // NOTE!!!!! Owner is referred to in documents as landlord
+    // to make consistent with other parts of code (user (tenant) vs owner),
+    // flat_owner is the title holder of the flat and corresponds to the owner columns in the flat model
     owner_address: {
       name: 'owner_address',
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '11.8%', left: '37.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '9.4%', left: '37.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1154,7 +1157,29 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '14.5%', left: '37.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '11.2%', left: '37.8%', width: '51.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    owner_company: {
+      name: 'owner_company',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '13.3%', left: '37.8%', width: '24.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    owner_company_translation: {
+      name: 'owner_company_translation',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '15.1%', left: '37.8%', width: '24.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1165,7 +1190,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '17.1%', left: '35%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '17.1%', left: '40.5%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1177,7 +1202,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '19.7%', left: '35%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '19.2%', left: '40.5%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1188,7 +1213,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '17%', left: '68.5%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '13.2%', left: '70%', width: '19.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1199,7 +1224,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '22.2%', left: '39.5%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '21.1%', left: '39.5%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1211,7 +1236,30 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '25%', left: '39.5%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '23%', left: '39.5%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    management_company: {
+      name: 'management_company',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '24.85%', left: '37%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'management_name_translation',
+    },
+
+    management_company_translation: {
+      name: 'management_company_translation',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '26.67%', left: '37%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1222,7 +1270,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '27.5%', left: '35%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '28.5%', left: '40.5%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1234,7 +1282,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '30.7%', left: '35%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '30.7%', left: '40.5%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1245,7 +1293,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '27.4%', left: '68.5%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '70%', width: '19.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1256,7 +1304,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '33.2%', left: '67.7%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '32.6%', left: '67.7%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1267,7 +1315,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '33.2%', left: '75.2%', width: '11.2%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '32.6%', left: '75.2%', width: '11.2%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1279,7 +1327,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '39.7%', left: '37.5%', width: '51.8%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '39.1%', left: '37.5%', width: '51.8%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1291,7 +1339,30 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '42.5%', left: '37.5%', width: '51.8%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '40.8%', left: '37.5%', width: '51.8%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    flat_owner_company: {
+      name: 'flat_owner_company',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '42.7%', left: '37%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      translation_field: 'flat_owner_name_translation'
+    },
+
+    flat_owner_company_translation: {
+      name: 'flat_owner_company_translation',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '44.7%', left: '37%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1302,7 +1373,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '44.9%', left: '34.8%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '46.6%', left: '40.5%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1314,7 +1385,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '47.5%', left: '34.8%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '48.3%', left: '40.5%', width: '25%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1325,7 +1396,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '44.9%', left: '68.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '42.8%', left: '68.7%', width: '19.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1336,7 +1407,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '56.1%', left: '29%', width: '15.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '56.6%', left: '29%', width: '15.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1347,7 +1418,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '58.8%', left: '32%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '59.3%', left: '32%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1358,7 +1429,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '64.1%', left: '23.3%', width: '15.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '64.6%', left: '23.3%', width: '15.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1369,7 +1440,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '55.1%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '55.6%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1380,7 +1451,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '55.1%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '55.6%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1391,7 +1462,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '58.1%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '58.6%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1403,7 +1474,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '58.1%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '58.6%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1415,7 +1486,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '61.1%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '61.6%', left: '53%', width: '23%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1426,7 +1497,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '61.1%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '61.6%', left: '82.6%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1437,7 +1508,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '64.2%', left: '83%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '64.7%', left: '83%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1448,7 +1519,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '67.1%', left: '38.5%', width: '51%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '67.6%', left: '38.5%', width: '51%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1459,7 +1530,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '70.8%', left: '31.1%', width: '14.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '71.95%', left: '31.1%', width: '14.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1470,7 +1541,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '70.8%', left: '49.8%', width: '12.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '71.95%', left: '49.8%', width: '17%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1481,7 +1552,7 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '70.8%', left: '70%', width: '8.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '71.95%', left: '70%', width: '19%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1492,7 +1563,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '75.7%', left: '39.1%', width: '50.4%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '77.3%', left: '39.1%', width: '50.4%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices',
@@ -1504,7 +1575,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '78.1%', left: '39.1%', width: '50.4%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '79.4%', left: '39.1%', width: '50.4%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices',
@@ -1515,7 +1586,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '81.5%', left: '40.2%', width: '17%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '82%', left: '40.2%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices',
@@ -1527,7 +1598,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '83.8%', left: '40.2%', width: '17%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '84.5%', left: '40.2%', width: '21%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'
@@ -1538,7 +1609,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '81.5%', left: '68.5%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '81.9%', left: '69.7%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'
@@ -1549,7 +1620,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '86.5%', left: '66.6%', width: '2.5%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '87.4%', left: '66.6%', width: '2.5%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'
@@ -1559,7 +1630,7 @@ const FixedTermRentalContractBilingual = {
         input_type: 'string',
         choices: {
           // add 1.5% to top
-          0: { params: { val: 'inputFieldValue', top: '86.5%', left: '72.5%', width: '11.2%', class_name: 'document-rectangle', input_type: 'string' } },
+          0: { params: { val: 'inputFieldValue', top: '87.4%', left: '72.5%', width: '11.2%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
         component: 'DocumentChoices'
