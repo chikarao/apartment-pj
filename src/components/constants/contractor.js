@@ -72,7 +72,7 @@ const Contractor = {
   registration_number_front: {
     name: 'registration_number_front',
     en: 'Front Registration Number',
-    jp: '',
+    jp: '免許証番号()内番号',
     component: 'input',
     type: 'string',
     className: 'form-control',
@@ -100,6 +100,16 @@ const Contractor = {
     jp: '免許年月日',
     component: 'input',
     type: 'date',
+    className: 'form-control',
+    language_independent: true
+  },
+
+  phone: {
+    name: 'phone',
+    en: 'Phone',
+    jp: '電話番号',
+    component: 'input',
+    type: 'string',
     className: 'form-control',
     language_independent: true
   },

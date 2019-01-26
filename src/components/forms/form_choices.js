@@ -50,6 +50,16 @@ class FormChoices extends Component {
     return anyOtherValueArray.length > 0;
   }
 
+  changeOtherFieldValues(fields, meta, val) {
+    _.each(fields, eachFieldName => {
+      meta.dispatch({
+        type: '@@redux-form/CHANGE',
+        payload: val,
+        meta: { ...meta, field: eachFieldName },
+      });
+    });
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
@@ -65,6 +75,9 @@ class FormChoices extends Component {
           onClick={() => {
             onChange(choice.value);
             this.emptyInput();
+            // if (choice.dependentKeys) {
+            //   this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value)
+            // }
           }}
           className={choice.className}
           style={value.toString() == choice.value && (value != null) ? { borderColor: 'black' } : { borderColor: 'lightgray' }}

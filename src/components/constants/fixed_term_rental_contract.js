@@ -31,7 +31,7 @@ const FixedTermRentalContract = {
       },
       required: true
     },
-    
+
     name: {
       name: 'name',
       // className: 'form-control-document',
@@ -1079,8 +1079,8 @@ const FixedTermRentalContract = {
       component: 'DocumentChoices'
     },
 
-    management_registration_type: {
-      name: 'management_registration_type',
+    management_registration_number_front: {
+      name: 'management_registration_number_front',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1109,7 +1109,8 @@ const FixedTermRentalContract = {
         0: { params: { val: 'inputFieldValue', top: '48.8%', left: '37.5%', width: '51.8%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      record_column: 'owner_address'
     },
 
     flat_owner_name: {
@@ -1120,8 +1121,21 @@ const FixedTermRentalContract = {
         0: { params: { val: 'inputFieldValue', top: '50.45%', left: '34.8%', width: '18%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      record_column: 'owner_contact_name'
     },
+
+    // flat_owner_company: {
+    //   name: 'flat_owner_company',
+    //   input_type: 'string',
+    //   choices: {
+    //     // add 1.5% to top
+    //     0: { params: { val: 'inputFieldValue', top: '', left: '', width: '18%', class_name: 'document-rectangle', input_type: 'string' } },
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices',
+    //   record_column: 'owner_name'
+    // },
 
     flat_owner_phone: {
       name: 'flat_owner_phone',
@@ -1131,7 +1145,9 @@ const FixedTermRentalContract = {
         0: { params: { val: 'inputFieldValue', top: '50.45%', left: '60.8%', width: '20%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      record_column: 'owner_phone'
+
     },
 
     tenant_name: {

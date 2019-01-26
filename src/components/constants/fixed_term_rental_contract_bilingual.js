@@ -1149,6 +1149,8 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
+      // translation_record: 'flat_languages',
+      // translation_column: 'owner_address',
       translation_field: 'owner_address_translation'
     },
 
@@ -1171,7 +1173,10 @@ const FixedTermRentalContractBilingual = {
         0: { params: { val: 'inputFieldValue', top: '13.3%', left: '37.8%', width: '24.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      // translation_record: 'flat_languages',
+      // translation_column: 'owner_address',
+      translation_field: 'owner_address_translation'
     },
 
     owner_company_translation: {
@@ -1194,6 +1199,8 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
+      // translation_record: 'flat_languages',
+      // translation_column: 'owner_name',
       translation_field: 'owner_name_translation'
     },
 
@@ -1299,8 +1306,8 @@ const FixedTermRentalContractBilingual = {
       component: 'DocumentChoices'
     },
 
-    management_registration_type: {
-      name: 'management_registration_type',
+    management_registration_number_front: {
+      name: 'management_registration_number_front',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1309,6 +1316,16 @@ const FixedTermRentalContractBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
+    // management_registration_type: {
+    //   name: 'management_registration_type',
+    //   input_type: 'string',
+    //   choices: {
+    //     // add 1.5% to top
+    //     0: { params: { val: 'inputFieldValue', top: '32.6%', left: '67.7%', width: '4%', class_name: 'document-rectangle', input_type: 'string' } },
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices'
+    // },
 
     management_registration_number: {
       name: 'management_registration_number',
@@ -1331,6 +1348,8 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
+      translation_record: 'flat_languages',
+      translation_column: 'owner_address',
       translation_field: 'flat_owner_address_translation',
     },
 
@@ -1354,7 +1373,9 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      translation_field: 'flat_owner_name_translation'
+      translation_record: 'flat_languages',
+      translation_column: 'owner_name',
+      translation_field: 'flat_owner_company_translation'
     },
 
     flat_owner_company_translation: {
@@ -1377,6 +1398,8 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
+      translation_record: 'flat_languages',
+      translation_column: 'owner_contact_name',
       translation_field: 'flat_owner_name_translation'
     },
 
@@ -1396,10 +1419,11 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         // add 1.5% to top
-        0: { params: { val: 'inputFieldValue', top: '42.8%', left: '68.7%', width: '19.5%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '42.8%', left: '69.7%', width: '19.5%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      record_column: 'owner_phone',
     },
 
     tenant_name: {

@@ -25,8 +25,8 @@ class LanguageCreateModal extends Component {
   }
 
   handleFormSubmit(data) {
-    const { code } = data;
-    this.setState({ selectedLanguage: languages[code].name });
+    const { language_code } = data;
+    this.setState({ selectedLanguage: languages[language_code].name });
     const dataToBeSent = data;
     dataToBeSent.flat_id = this.props.flat.id;
     // console.log('in LanguageCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);

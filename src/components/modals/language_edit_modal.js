@@ -28,8 +28,8 @@ class LanguageEditModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    const { code } = data;
-    this.setState({ selectedLanguage: languages[code].name });
+    const { language_code } = data;
+    this.setState({ selectedLanguage: languages[language_code].name });
     const dataToBeSent = data;
     dataToBeSent.flat_id = this.props.flat.id;
     console.log('in LanguageEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
@@ -151,7 +151,7 @@ class LanguageEditModal extends Component {
               </fieldset>
               <fieldset key={'owner_contact_name'} className="form-group">
                 <label className="create-flat-form-label">Owner Contact Name:</label>
-                <Field name="v" component="input" type="string" className="form-control" />
+                <Field name="owner_contact_name" component="input" type="string" className="form-control" />
               </fieldset>
               <fieldset key={'owner_address'} className="form-group">
                 <label className="create-flat-form-label">Owner Address:</label>

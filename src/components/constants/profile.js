@@ -23,6 +23,28 @@ const Profile = {
 
   },
 
+  // corporation: {
+  //   name: 'corporation',
+  //   en: 'User is Corporation',
+  //   jp: 'ユーザーは法人',
+  //   component: 'FormChoices',
+  //   type: 'boolean',
+  //   choices: {
+  //     0: { value: 'true', en: 'Yes', jp: 'はい', type: 'button', className: 'form-rectangle' },
+  //     1: { value: 'false', en: 'No', jp: 'いいえ', type: 'button', className: 'form-rectangle', dependentKeys: { fields: ['name'], value: '' } }
+  //   }
+  // },
+
+  name: {
+    name: 'name',
+    en: 'Company Name',
+    jp: '法人名',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    // category: 'basic'
+  },
+
   // username: {
   //   name: 'username',
   //   en: 'Username',
