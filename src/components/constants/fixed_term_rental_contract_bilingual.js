@@ -1762,7 +1762,7 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      translation_field: 'owner_address_translation'
+      // translation_field: 'owner_address_translation'
     },
 
     tenant_name: {
@@ -1774,7 +1774,7 @@ const FixedTermRentalContractBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      translation_field: 'owner_name_translation'
+      // translation_field: 'owner_name_translation'
     },
 
     tenant_phone: {
@@ -1793,6 +1793,16 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '54.2%', left: '37%', width: '9%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_registration_jurisdiction_translation: {
+      name: 'broker_registration_jurisdiction_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '56.2%', left: '36%', width: '10%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -1902,6 +1912,16 @@ const FixedTermRentalContractBilingual = {
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '75.4%', left: '58.5%', width: '10%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    broker_staff_registration_jurisdiction_translation: {
+      name: 'broker_staff_registration_jurisdiction_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '77.4%', left: '58%', width: '11%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'

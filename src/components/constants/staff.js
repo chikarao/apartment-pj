@@ -62,10 +62,10 @@ const Staff = {
 
   },
 
-  registration_prefecture: {
-    name: 'registration_prefecture',
-    en: 'Registration Number',
-    jp: '登録番号',
+  registration_jurisdiction: {
+    name: 'registration_jurisdiction',
+    en: 'Registration Prefecture',
+    jp: '登録都道府県',
     component: 'input',
     type: 'string',
     className: 'form-control',

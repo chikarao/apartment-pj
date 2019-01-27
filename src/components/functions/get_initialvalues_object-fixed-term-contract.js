@@ -23,11 +23,11 @@ export default (props) => {
     return returnedProfile;
   }
 
-  function getManagement(contractorArray, language) {
+  function getManagement(contractorArray, language, contractorType) {
     let returnedProfile = {};
     _.each(contractorArray, eachContractor => {
       _.each(eachContractor, each => {
-        if (each.language_code == language) {
+        if ((each.language_code == language) && (each.contractor_type == contractorType)) {
           returnedProfile = each;
           return;
         }
@@ -152,15 +152,14 @@ export default (props) => {
   }
 
   function calculateAge(dateString) {
-      const today = new Date();
-      const birthDate = new Date(dateString);
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-
-      return age;
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 
   function getLanguage(languages, languageCode) {
@@ -364,9 +363,9 @@ export default (props) => {
       // end of if flat.rent_payment_method
       // calculate number of facilties, car park, bicycle parking, etc
       // and get a string of their numbers 1A, 2D etc.
-      if (eachPageObject.facility_type) {
+      if (eachPageObject.parking_included) {
         if (booking.facilities) {
-          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flat.facilities: ', flat.facilities);
+          console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, booking.facilities: ', booking.facilities);
           // set up arrays for each facility
           const carParkingArray = [];
           const bicycleParkingArray = [];
@@ -477,6 +476,14 @@ export default (props) => {
           objectReturned.owner_address_translation = fullAddress;
         }
       }
+
+      if (tenantProfile.address1 && tenantProfile.city) {
+        if (tenantProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+          let fullAddress = ''
+          fullAddress = fullAddress.concat(`${tenantProfile.zip}${tenantProfile.state}${tenantProfile.city}${tenantProfile.address1}`);
+          objectReturned.tenant_address = fullAddress;
+        }
+      }
       objectReturned.owner_company = ownerProfile.name;
       objectReturned.owner_company_translation = ownerProfileTranslation.name;
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, contractorTranslations, staffTranslations: ', contractorTranslations, staffTranslations);
@@ -484,8 +491,9 @@ export default (props) => {
       // language comes from Documents[documentKey].baseLanguage
       if (eachPageObject.management_name) {
         // get managment company profile from contractorTranslations state object
-        const managementProfile = getManagement(contractorTranslations, language);
-        const managementProfileTranslation = getManagement(contractorTranslations, documentLanguageCode);
+        const contractorType = 'rental_broker';
+        const managementProfile = getManagement(contractorTranslations, language, contractorType);
+        const managementProfileTranslation = getManagement(contractorTranslations, documentLanguageCode, contractorType);
         // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, managementProfile, managementProfileTranslation: ', managementProfile, managementProfileTranslation);
         objectReturned.management_company = managementProfile.company_name;
         objectReturned.management_company_translation = managementProfileTranslation.company_name;
@@ -505,7 +513,8 @@ export default (props) => {
         if (managementProfile.address1 && managementProfile.city) {
           if (managementProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
-            fullAddress = fullAddress.concat(`${managementProfile.address1} ${managementProfile.city} ${managementProfile.state} ${managementProfile.zip} ${managementProfile.country}`);
+            // fullAddress = fullAddress.concat(`${managementProfile.address1} ${managementProfile.city} ${managementProfile.state} ${managementProfile.zip} ${managementProfile.country}`);
+            fullAddress = fullAddress.concat(`${managementProfile.zip}${managementProfile.state}${managementProfile.city}${managementProfile.address1}`);
             objectReturned.management_address = fullAddress;
           }
         }
@@ -517,7 +526,52 @@ export default (props) => {
             objectReturned.management_address_translation = fullAddress;
           }
         }
+      } // end of if management_name
+
+      if (eachPageObject.broker_company_name) {
+        const contractorType = 'rental_broker';
+        const brokerProfile = getManagement(contractorTranslations, language, contractorType);
+        const brokerProfileTranslation = getManagement(contractorTranslations, documentLanguageCode, contractorType);
+        objectReturned.broker_registration_jurisdiction = brokerProfile.registration_jurisdiction;
+        objectReturned.broker_registration_jurisdiction_translation = brokerProfileTranslation.registration_jurisdiction;
+        objectReturned.broker_registration_grantor = brokerProfile.registration_grantor;
+        objectReturned.broker_registration_front_number = brokerProfile.registration_front_number;
+        objectReturned.broker_registration_number = brokerProfile.registration_number;
+        if (brokerProfile.address1 && brokerProfile.city) {
+          if (brokerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            // fullAddress = fullAddress.concat(`${brokerProfile.address1} ${brokerProfile.city} ${brokerProfile.state} ${brokerProfile.zip} ${brokerProfile.country}`);
+            fullAddress = fullAddress.concat(`${brokerProfile.zip}${brokerProfile.state}${brokerProfile.city}${brokerProfile.address1}`);
+            objectReturned.broker_address_hq = fullAddress;
+          }
+        }
+
+        if (brokerProfileTranslation.address1 && brokerProfileTranslation.city) {
+          if (brokerProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            fullAddress = fullAddress.concat(`${brokerProfileTranslation.address1} ${brokerProfileTranslation.city} ${brokerProfileTranslation.state} ${brokerProfileTranslation.zip} ${brokerProfileTranslation.country}`);
+            objectReturned.broker_address_hq_translation = fullAddress;
+          }
+        }
+        objectReturned.broker_company_name = brokerProfile.company_name;
+        objectReturned.broker_company_name_translation = brokerProfileTranslation.company_name;
+        const fullName = brokerProfile.last_name.concat(` ${brokerProfile.first_name}`);
+        objectReturned.broker_representative_name = fullName;
+        const fullNameTranslation = brokerProfileTranslation.first_name.concat(` ${brokerProfileTranslation.last_name}`);
+        objectReturned.broker_representative_name_translation = fullNameTranslation;
+
+        const brokerStaffProfile = getManagement(staffTranslations, language);
+        const brokerStaffProfileTranslation = getManagement(staffTranslations, documentLanguageCode);
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, brokerStaffProfile, brokerStaffProfileTranslation: ', brokerStaffProfile, brokerStaffProfileTranslation);
+        objectReturned.broker_staff_registration_jurisdiction = brokerStaffProfile.registration_jurisdiction;
+        objectReturned.broker_staff_registration_jurisdiction_translation = brokerStaffProfileTranslation.registration_jurisdiction;
+        objectReturned.broker_staff_registration = brokerStaffProfile.registration;
+        const fullNameStaff = brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`);
+        objectReturned.broker_staff_name = fullNameStaff;
+        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`);
+        objectReturned.broker_staff_name_translation = fullNameStaffTranslation;
       }
+
 
       if (booking.tenants) {
         let count = 0;
@@ -623,7 +677,6 @@ export default (props) => {
         }
       }
 
-
       // get contract length objectReturned with years and months
       const contractLengthObject = getContractLength(booking);
       objectReturned.contract_length_years = contractLengthObject.years;
@@ -638,6 +691,15 @@ export default (props) => {
         objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
         objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
       }
+
+      // contract date
+      const contractDate = new Date();
+      const contractYear = contractDate.getFullYear();
+      const contractMonth = contractDate.getMonth() + 1;
+      const contractDay = contractDate.getDate();
+      objectReturned.contract_year = contractYear;
+      objectReturned.contract_month = contractMonth;
+      objectReturned.contract_day = contractDay;
     });
     // end of documentForm eachPageObject
 
