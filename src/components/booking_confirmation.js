@@ -259,9 +259,9 @@ class BookingConfirmation extends Component {
   }
 
   renderEachAgreementToCreate() {
-    // console.log('in booking confirmation, renderEachAgreementToCreate:');
     // <div value={'important_points_explanation_jp'} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
     return _.map(Object.keys(Documents), (eachDocumentKey, i) => {
+      console.log('in booking confirmation, renderEachAgreementToCreate, eachDocumentKey, this.props.appLanguageCode:', eachDocumentKey, this.props.appLanguageCode);
       return (
         <div
           key={i}
@@ -295,7 +295,9 @@ class BookingConfirmation extends Component {
 
   handleDocumentLanguageSelect(event) {
     const clickedElement = event.target;
+    // const elementVal = clickedElement.getAttribute('value');
     console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
+    // this.props.setDocumentLanguageCode(elementVal);
     this.props.setDocumentLanguageCode(clickedElement.value);
   }
 
@@ -329,8 +331,13 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <select type="string" className="booking-request-box-document-language-select" value={this.props.documentLanguageCode} onChange={this.handleDocumentLanguageSelect}>
-              {this.renderDocumentLanguageSelect()}
+              <select
+                type="string"
+                className="booking-request-box-document-language-select"
+                value={this.props.documentLanguageCode}
+                onChange={this.handleDocumentLanguageSelect}
+              >
+               {this.renderDocumentLanguageSelect()}
               </select>
             </div>
             <div className="booking-confirmation-document-box">
@@ -661,10 +668,10 @@ handleSavedDocumentShowClick(event) {
 
 render() {
   return (
+    // {this.renderReview()}
     <div>
       {this.renderReviewEditModal()}
       {this.renderBookingData()}
-      {this.renderReview()}
       {this.state.showDocument ? this.renderDocument() : ''}
     </div>
   );

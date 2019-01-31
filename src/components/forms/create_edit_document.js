@@ -583,10 +583,13 @@ renderEachDocumentField(page) {
             fontSize: `${documentTranslation.attributes.font_size}px`,
             fontWeight: documentTranslation.attributes.font_weight,
             transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
+            // transformOrigin: 'top left',
+            transformOrigin: documentTranslation.attributes.transform_origin,
             width: documentTranslation.attributes.width,
+            textAlign: documentTranslation.attributes.text_align,
           }}
         >
-        {documentTranslation.translations[this.props.documentLanguageCode]}
+          {documentTranslation.translations[this.props.documentLanguageCode]}
         </div>
       );
     });

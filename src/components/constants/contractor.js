@@ -43,7 +43,8 @@ const Contractor = {
     choices: {
       0: { value: 'rental_broker', en: 'Rental Broker', jp: '賃貸の仲介業者', type: 'button', className: 'form-rectangle' },
       1: { value: 'house_cleaner', en: 'House Cleaner', jp: '清掃業者', type: 'button', className: 'form-rectangle' },
-      // 2: { value: 'management', en: 'Property Manager', jp: '管理業者', type: 'button', className: 'form-rectangle' },
+      2: { value: 'management', en: 'Property Manager', jp: '管理業者', type: 'button', className: 'form-rectangle' },
+      3: { value: 'guarantor', en: 'Rent Guarantor', jp: '賃貸保証会社', type: 'button', className: 'form-rectangle' },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
