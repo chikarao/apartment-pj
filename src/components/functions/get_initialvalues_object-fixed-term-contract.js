@@ -454,6 +454,8 @@ export default (props) => {
         const fullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
         objectReturned.owner_name = fullName;
         objectReturned.owner_phone = ownerProfile.phone;
+        objectReturned.owner_name_1 = fullName;
+        objectReturned.owner_phone_1 = ownerProfile.phone;
       }
 
       if (ownerProfileTranslation.first_name && ownerProfileTranslation.last_name) {
@@ -466,6 +468,7 @@ export default (props) => {
           let fullAddress = ''
           fullAddress = fullAddress.concat(`${ownerProfile.zip}${ownerProfile.state}${ownerProfile.city}${ownerProfile.address1}`);
           objectReturned.owner_address = fullAddress;
+          objectReturned.owner_address_1 = fullAddress;
         }
       }
 
@@ -474,6 +477,7 @@ export default (props) => {
           let fullAddress = ''
           fullAddress = fullAddress.concat(`${ownerProfileTranslation.address1} ${ownerProfileTranslation.city} ${ownerProfileTranslation.state} ${ownerProfileTranslation.zip} ${ownerProfileTranslation.country}`);
           objectReturned.owner_address_translation = fullAddress;
+          objectReturned.owner_address_translation_1 = fullAddress;
         }
       }
 
@@ -596,6 +600,8 @@ export default (props) => {
         const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
         objectReturned.tenant_name = fullName;
         objectReturned.tenant_phone = tenantProfile.phone;
+        objectReturned.tenant_name_1 = fullName;
+        objectReturned.tenant_phone_1 = tenantProfile.phone;
       }
 
 

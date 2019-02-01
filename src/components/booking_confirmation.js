@@ -277,7 +277,6 @@ class BookingConfirmation extends Component {
 
   renderEachAgreementSaved() {
     // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.pdf`}>Link</a>
-
     return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       return <div
@@ -340,6 +339,7 @@ class BookingConfirmation extends Component {
                {this.renderDocumentLanguageSelect()}
               </select>
             </div>
+
             <div className="booking-confirmation-document-box">
               {this.renderEachAgreementToCreate()}
             </div>

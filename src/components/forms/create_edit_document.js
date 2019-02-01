@@ -246,7 +246,8 @@ class CreateEditDocument extends Component {
       booking_id: this.props.booking.id,
       document_name: data.document_name,
       document_field: [],
-      agreement_id: this.props.agreement ? this.props.agreement.id : null
+      agreement_id: this.props.agreement ? this.props.agreement.id : null,
+      document_language_code: this.props.documentLanguageCode
     };
     // iterate through each key in data from form
 
@@ -506,7 +507,7 @@ renderEachDocumentField(page) {
       if (fieldComponent == 'select') {
         return (
           <div
-            style={{ position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height }}
+            style={{ position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, textAlign: formField.choices[0].params.text_align }}
             key={i}
           >
             <Field
@@ -536,7 +537,7 @@ renderEachDocumentField(page) {
             props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
             type={formField.input_type}
             className={formField.component == 'input' ? 'form-control' : ''}
-            style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding } : {}}
+            style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding, textAlign: formField.choices[0].params.text_align } : {}}
           />
         );
       }
@@ -571,28 +572,31 @@ renderEachDocumentField(page) {
   }
 
   renderEachDocumentTranslation(page) {
-    return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
-      // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
-      return (
-        <div
-          key={i}
-          className={documentTranslation.attributes.class_name}
-          style={{
-            top: documentTranslation.attributes.top,
-            left: documentTranslation.attributes.left,
-            fontSize: `${documentTranslation.attributes.font_size}px`,
-            fontWeight: documentTranslation.attributes.font_weight,
-            transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
-            // transformOrigin: 'top left',
-            transformOrigin: documentTranslation.attributes.transform_origin,
-            width: documentTranslation.attributes.width,
-            textAlign: documentTranslation.attributes.text_align,
-          }}
-        >
-          {documentTranslation.translations[this.props.documentLanguageCode]}
-        </div>
-      );
-    });
+    // only render document translations when !showDocumentPdf
+    if (!this.state.showDocumentPdf) {
+      return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
+        // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
+        return (
+          <div
+            key={i}
+            className={documentTranslation.attributes.class_name}
+            style={{
+              top: documentTranslation.attributes.top,
+              left: documentTranslation.attributes.left,
+              fontSize: `${documentTranslation.attributes.font_size}px`,
+              fontWeight: documentTranslation.attributes.font_weight,
+              transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
+              // transformOrigin: 'top left',
+              transformOrigin: documentTranslation.attributes.transform_origin,
+              width: documentTranslation.attributes.width,
+              textAlign: documentTranslation.attributes.text_align,
+            }}
+          >
+            {documentTranslation.translations[this.props.documentLanguageCode]}
+          </div>
+        );
+      });
+    }
   }
 
   renderDocument() {
@@ -656,11 +660,11 @@ renderEachDocumentField(page) {
 
   handleViewPDFClick() {
     this.setState({ showDocumentPdf: !this.state.showDocumentPdf }, () => {
-      // console.log('in create_edit_document, handleViewPDFClick, this.state.showDocumentPdf: ', this.state.showDocumentPdf);
     })
   }
 
-  swithCreatePDFButton(saveButtonActive, agreementHasPdf) {
+  switchCreatePDFButton(saveButtonActive, agreementHasPdf) {
+    console.log('in create_edit_document, switchCreatePDFButton, saveButtonActive, agreementHasPdf: ', saveButtonActive, agreementHasPdf);
     const { handleSubmit, appLanguageCode } = this.props;
     if (this.props.showSavedDocument) {
       return <button
@@ -696,6 +700,7 @@ renderEachDocumentField(page) {
       if (this.props.agreement.document_publicid) { agreementHasPdf = true; }
     }
 
+    // this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)
     return (
       <div className="document-floating-button-box">
         {agreementHasPdf ?
@@ -707,7 +712,7 @@ renderEachDocumentField(page) {
             {this.state.showDocumentPdf ? AppLanguages.edit[appLanguageCode] : AppLanguages.viewPdf[appLanguageCode]}
           </button>
           :
-          this.swithCreatePDFButton(saveButtonActive, agreementHasPdf)
+          ''
         }
 
         {this.state.showDocumentPdf ?
@@ -721,7 +726,7 @@ renderEachDocumentField(page) {
           Download
           </a>
           :
-          this.swithCreatePDFButton(saveButtonActive, agreementHasPdf)
+          this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)
         }
 
         {this.props.showSavedDocument ?

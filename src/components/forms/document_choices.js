@@ -97,9 +97,9 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, getStyleOfInputElement ');
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
-      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size };
+      elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size, textAlign: choice.params.text_align };
     } else {
-      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size };
+      elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size, textAlign: choice.params.text_align };
     }
 
     return elementStyle;

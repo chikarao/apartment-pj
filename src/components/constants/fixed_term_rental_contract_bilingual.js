@@ -1696,8 +1696,8 @@ const FixedTermRentalContractBilingual = {
       component: 'DocumentChoices'
     },
 
-    owner_address: {
-      name: 'owner_address',
+    owner_address_1: {
+      name: 'owner_address_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1708,8 +1708,8 @@ const FixedTermRentalContractBilingual = {
       translation_field: 'owner_address_translation'
     },
 
-    owner_address_translation: {
-      name: 'owner_address_translation',
+    owner_address_translation_1: {
+      name: 'owner_address_translation_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1719,8 +1719,8 @@ const FixedTermRentalContractBilingual = {
       component: 'DocumentChoices'
     },
 
-    owner_name: {
-      name: 'owner_name',
+    owner_name_1: {
+      name: 'owner_name_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1731,8 +1731,8 @@ const FixedTermRentalContractBilingual = {
       translation_field: 'owner_name_translation'
     },
 
-    owner_name_translation: {
-      name: 'owner_name_translation',
+    owner_name_translation_1: {
+      name: 'owner_name_translation_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1742,8 +1742,8 @@ const FixedTermRentalContractBilingual = {
       component: 'DocumentChoices'
     },
 
-    owner_phone: {
-      name: 'owner_phone',
+    owner_phone_1: {
+      name: 'owner_phone_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1765,8 +1765,8 @@ const FixedTermRentalContractBilingual = {
       // translation_field: 'owner_address_translation'
     },
 
-    tenant_name: {
-      name: 'tenant_name',
+    tenant_name_1: {
+      name: 'tenant_name_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top
@@ -1777,8 +1777,8 @@ const FixedTermRentalContractBilingual = {
       // translation_field: 'owner_name_translation'
     },
 
-    tenant_phone: {
-      name: 'tenant_phone',
+    tenant_phone_1: {
+      name: 'tenant_phone_1',
       input_type: 'string',
       choices: {
         // add 1.5% to top

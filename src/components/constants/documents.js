@@ -1,8 +1,9 @@
 // For create_edit_document mapStateToProps
 import FixedTermRentalContract from './fixed_term_rental_contract.js';
 import FixedTermRentalContractBilingual from './fixed_term_rental_contract_bilingual.js';
-import FixedTermRentalContractBilingualTranslation from './fixed_term_rental_contract_bilingual_translation.js';
-import ImportantPointsExplanationBilingualTranslation from './important_points_explanation_bilingual_translation.js';
+// translations moved to backend
+// import FixedTermRentalContractBilingualTranslation from './fixed_term_rental_contract_bilingual_translation.js';
+// import ImportantPointsExplanationBilingualTranslation from './important_points_explanation_bilingual_translation.js';
 import ImportantPointsExplanation from './important_points_explanation.js';
 import ImportantPointsExplanationBilingual from './important_points_explanation_bilingual.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
@@ -42,7 +43,9 @@ const Documents =
       jp: '定期借家契約 バイリンガル',
       file: 'teishaku-saimuhosho-bilingual-v3-no-translation-8',
       method: getInitialValuesObjectFixedTermContract,
-      translation: FixedTermRentalContractBilingualTranslation,
+      // translation: FixedTermRentalContractBilingualTranslation,
+      // to indicate form is bilingual and needs translations from props
+      translation: true,
       baseLanguage: 'jp'
       // method: '',
       // type: 'fixed_term_rental_contract'
@@ -54,7 +57,9 @@ const Documents =
       jp: '重要事項説明書 バイリンガル',
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-10',
       method: getInitialValuesObjectImportantPointsExplanation,
-      translation: ImportantPointsExplanationBilingualTranslation,
+      // translation: ImportantPointsExplanationBilingualTranslation,
+      // to indicate form is bilingual and needs translations from props
+      translation: true,
       baseLanguage: 'jp'
       // method: '',
       // type: 'fixed_term_rental_contract'
