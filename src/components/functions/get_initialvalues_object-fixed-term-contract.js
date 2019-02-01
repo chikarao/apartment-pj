@@ -566,7 +566,7 @@ export default (props) => {
 
         const brokerStaffProfile = getManagement(staffTranslations, language);
         const brokerStaffProfileTranslation = getManagement(staffTranslations, documentLanguageCode);
-        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, brokerStaffProfile, brokerStaffProfileTranslation: ', brokerStaffProfile, brokerStaffProfileTranslation);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, brokerStaffProfile, brokerStaffProfileTranslation: ', brokerStaffProfile, brokerStaffProfileTranslation);
         objectReturned.broker_staff_registration_jurisdiction = brokerStaffProfile.registration_jurisdiction;
         objectReturned.broker_staff_registration_jurisdiction_translation = brokerStaffProfileTranslation.registration_jurisdiction;
         objectReturned.broker_staff_registration = brokerStaffProfile.registration;
@@ -575,7 +575,6 @@ export default (props) => {
         const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`);
         objectReturned.broker_staff_name_translation = fullNameStaffTranslation;
       }
-
 
       if (booking.tenants) {
         let count = 0;

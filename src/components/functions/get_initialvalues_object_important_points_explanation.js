@@ -16,7 +16,7 @@ export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
   // console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode, contractorTranslations, staffTranslations } = props;
   function getProfile(personProfiles, language) {
     let returnedProfile;
     _.each(personProfiles, eachProfile => {
@@ -297,6 +297,60 @@ export default (props) => {
     return count > 0;
   }
 
+  function getLanguage(languages, languageCode) {
+    let objectReturned;
+    _.each(languages, eachLanguage => {
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+      if (eachLanguage.language_code == languageCode) {
+        objectReturned = eachLanguage;
+        return;
+      }
+    });
+    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
+    return objectReturned;
+  }
+
+  function getManagement(contractorArray, language, contractorType) {
+    let returnedProfile = {};
+    _.each(contractorArray, eachContractor => {
+      _.each(eachContractor, each => {
+        if ((each.language_code == language) && (each.contractor_type == contractorType)) {
+          returnedProfile = each;
+          return;
+        }
+      });
+    });
+    return returnedProfile;
+  }
+
+  function setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned }) {
+    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
+    if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
+      // get building language for use translated field;
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = Documents base recordLanguage, documentLanguageCode: ', recordLanguage, documentLanguageCode);
+      // assign buildingLangugae value to translated field
+      objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+      objectReturned[eachFieldKey] = baseRecord[eachPageObject[eachFieldKey].translation_column];
+    } else if (baseRecord.language_code == documentLanguageCode) {
+      // if building language code is different from base language for document
+      // give translated field the baseRecord value
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]);
+      objectReturned[eachPageObject[eachFieldKey].translation_field] = baseRecord[eachPageObject[eachFieldKey].translation_column];
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode recordLanguage, Documents[documentKey].baseLanguage: ', recordLanguage, Documents[documentKey].baseLanguage);
+      if (!_.isEmpty(recordLanguage)) {
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]);
+        objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+      }
+    } else {
+      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
+      const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
+      objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+      objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+    }
+  }
+
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // get keys that overlap in documentFields e.g. address and address_1;
@@ -332,29 +386,29 @@ export default (props) => {
       objectReturned.date_month = today.getMonth() + 1;
       objectReturned.date_day = today.getDate();
       // get the contractor that is assigned to be the rental broker
-      const broker = getContractor('rental_broker');
+      // const broker = getContractor('rental_broker');
+      //
+      // objectReturned.broker_company_name = broker.company_name;
+      // if (broker.first_name && broker.last_name) {
+      //   const brokerRepFullName = broker.last_name.concat(` ${broker.first_name}`);
+      //   objectReturned.broker_representative_name = brokerRepFullName;
+      // }
+      // objectReturned.broker_address_hq = createAddress(broker);
+      // objectReturned.broker_registration_number = broker.registration_number;
+      // objectReturned.broker_registration_date = formatDate(new Date(broker.registration_date));
 
-      objectReturned.broker_company_name = broker.company_name;
-      if (broker.first_name && broker.last_name) {
-        const brokerRepFullName = broker.last_name.concat(` ${broker.first_name}`);
-        objectReturned.broker_representative_name = brokerRepFullName;
-      }
-      objectReturned.broker_address_hq = createAddress(broker);
-      objectReturned.broker_registration_number = broker.registration_number;
-      objectReturned.broker_registration_date = formatDate(new Date(broker.registration_date));
-
-      const brokerStaff = getStaff({ rentalAssignments: assignments.rental_broker, leader: true });
-      if (brokerStaff.first_name && brokerStaff.last_name) {
-        const brokerStaffFullName = brokerStaff.last_name.concat(` ${brokerStaff.first_name}`);
-        objectReturned.broker_staff_name = brokerStaffFullName;
-      }
-      objectReturned.broker_staff_address = createAddress(brokerStaff);
-      objectReturned.broker_staff_phone = brokerStaff.phone;
-      objectReturned.broker_staff_registration = brokerStaff.registration;
-      objectReturned.broker_staff_registration = brokerStaff.registration;
+      // const brokerStaff = getStaff({ rentalAssignments: assignments.rental_broker, leader: true });
+      // if (brokerStaff.first_name && brokerStaff.last_name) {
+      //   const brokerStaffFullName = brokerStaff.last_name.concat(` ${brokerStaff.first_name}`);
+      //   objectReturned.broker_staff_name = brokerStaffFullName;
+      // }
+      // objectReturned.broker_staff_address = createAddress(brokerStaff);
+      // objectReturned.broker_staff_phone = brokerStaff.phone;
+      // objectReturned.broker_staff_registration = brokerStaff.registration;
+      // objectReturned.broker_staff_registration = brokerStaff.registration;
       const contract = getContract('rental_broker');
       objectReturned.contract_work_sub_type = contract.work_sub_type;
-      objectReturned.contract_work_sub_type = contract.work_sub_type;
+      // objectReturned.contract_work_sub_type = contract.work_sub_type;
       // just a place holder for notes; need to create column in flat or new model for ownership
       const notes = '12345.'
       // const notes = 'Only sixty four characters fit in this box. This is sixty four. The end.'
@@ -502,6 +556,71 @@ export default (props) => {
         });
 
         // end of each Object.keys flat.building
+      }
+
+      if (eachPageObject.broker_company_name) {
+        const contractorType = 'rental_broker';
+        const brokerProfile = getManagement(contractorTranslations, language, contractorType);
+        const brokerProfileTranslation = getManagement(contractorTranslations, documentLanguageCode, contractorType);
+          console.log('in create_edit_document, getInitialValuesObject, brokerProfile, brokerProfileTranslation: ', brokerProfile, brokerProfileTranslation);
+
+        objectReturned.broker_registration_jurisdiction = brokerProfile.registration_jurisdiction;
+        objectReturned.broker_registration_jurisdiction_translation = brokerProfileTranslation.registration_jurisdiction;
+        objectReturned.broker_registration_grantor = brokerProfile.registration_grantor;
+        objectReturned.broker_registration_front_number = brokerProfile.registration_front_number;
+        objectReturned.broker_registration_number = brokerProfile.registration_number;
+        if (brokerProfile.address1 && brokerProfile.city) {
+          if (brokerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            // fullAddress = fullAddress.concat(`${brokerProfile.address1} ${brokerProfile.city} ${brokerProfile.state} ${brokerProfile.zip} ${brokerProfile.country}`);
+            fullAddress = fullAddress.concat(`${brokerProfile.zip}${brokerProfile.state}${brokerProfile.city}${brokerProfile.address1}`);
+            objectReturned.broker_address_hq = fullAddress;
+          }
+        }
+
+        if (brokerProfileTranslation.address1 && brokerProfileTranslation.city) {
+          if (brokerProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            fullAddress = fullAddress.concat(`${brokerProfileTranslation.address1} ${brokerProfileTranslation.city} ${brokerProfileTranslation.state} ${brokerProfileTranslation.zip} ${brokerProfileTranslation.country}`);
+            objectReturned.broker_address_hq_translation = fullAddress;
+          }
+        }
+        console.log('in create_edit_document, getInitialValuesObject, brokerProfile.company_name, brokerProfileTranslation.company_name: ', brokerProfile.company_name, brokerProfileTranslation.company_name);
+        objectReturned.broker_company_name = brokerProfile.company_name;
+        objectReturned.broker_company_name_translation = brokerProfileTranslation.company_name;
+        const fullName = brokerProfile.last_name.concat(` ${brokerProfile.first_name}`);
+        objectReturned.broker_representative_name = fullName;
+        const fullNameTranslation = brokerProfileTranslation.first_name.concat(` ${brokerProfileTranslation.last_name}`);
+        objectReturned.broker_representative_name_translation = fullNameTranslation;
+        objectReturned.broker_registration_date = formatDate(new Date(brokerProfile.registration_date));
+
+        const brokerStaffProfile = getManagement(staffTranslations, language);
+        const brokerStaffProfileTranslation = getManagement(staffTranslations, documentLanguageCode);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, brokerStaffProfile, brokerStaffProfileTranslation: ', brokerStaffProfile, brokerStaffProfileTranslation);
+        objectReturned.broker_staff_registration_jurisdiction = brokerStaffProfile.registration_jurisdiction;
+        objectReturned.broker_staff_registration_jurisdiction_translation = brokerStaffProfileTranslation.registration_jurisdiction;
+        objectReturned.broker_staff_registration = brokerStaffProfile.registration;
+        const fullNameStaff = brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`);
+        objectReturned.broker_staff_name = fullNameStaff;
+        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`);
+        objectReturned.broker_staff_name_translation = fullNameStaffTranslation;
+        if (brokerStaffProfile.address1 && brokerStaffProfile.city) {
+          if (brokerStaffProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            // fullAddress = fullAddress.concat(`${brokerStaffProfile.address1} ${brokerStaffProfile.city} ${brokerStaffProfile.state} ${brokerStaffProfile.zip} ${brokerStaffProfile.country}`);
+            fullAddress = fullAddress.concat(`${brokerStaffProfile.zip}${brokerStaffProfile.state}${brokerStaffProfile.city}${brokerStaffProfile.address1}`);
+            objectReturned.broker_staff_address = fullAddress;
+          }
+        }
+
+        if (brokerStaffProfileTranslation.address1 && brokerStaffProfileTranslation.city) {
+          if (brokerStaffProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            fullAddress = fullAddress.concat(`${brokerStaffProfileTranslation.address1} ${brokerStaffProfileTranslation.city} ${brokerStaffProfileTranslation.state} ${brokerStaffProfileTranslation.zip} ${brokerStaffProfileTranslation.country}`);
+            objectReturned.broker_staff_address_translation = fullAddress;
+          }
+        }
+        objectReturned.broker_staff_phone = brokerStaffProfile.phone;
       }
 
       // if (flat.bank_account) {
