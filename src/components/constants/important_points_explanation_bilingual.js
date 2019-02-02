@@ -241,7 +241,12 @@ const ImportantPointsExplanationBilingual = {
         0: { params: { val: 'inputFieldValue', top: '73.1%', left: '29%', width: '63%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      translation_record: 'flat_languages',
+      // name is the column in model building language
+      // translation_column: 'address_translation',
+      // translation field is the field in the document that takes the translation
+      translation_field: 'address_translation'
     },
 
     address_translation: {
@@ -261,7 +266,12 @@ const ImportantPointsExplanationBilingual = {
         0: { params: { val: 'inputFieldValue', top: '68.5%', left: '29%', width: '63%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      translation_record: 'building_languages',
+      // name is the column in model building language
+      translation_column: 'name',
+      // translation field is the field in the document that takes the translation
+      translation_field: 'name_translation'
     },
 
     name_translation: {
@@ -307,11 +317,20 @@ const ImportantPointsExplanationBilingual = {
     construction: {
       name: 'construction',
       input_type: 'string',
+      // baseLanguageField indicates this field corresponds to
+      // base language of the document in constants/documents.js
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '83.2%', left: '29%', width: '40.5%', height: '2%', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Building.construction.choices, showLocalLanguage: true },
+        0: { params: { val: 'inputFieldValue', top: '83.2%', left: '29%', width: '40.5%', height: '2%', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Building.construction.choices, showLocalLanguage: true, baseLanguageField: true },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      translation_record: 'building_languages',
+      // name is the column in model building language
+      translation_column: 'construction',
+      // translation field is the field in the document that takes the translation
+      translation_field: 'construction_translation',
+      // if only base record building keeps this data
+      language_independent: true
     },
 
     construction_translation: {

@@ -11,7 +11,6 @@ import * as actions from '../../actions';
 import Documents from '../constants/documents';
 // import Building from '../constants/building';
 // import SelectField from '../forms/select_field';
-
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
 
@@ -534,7 +533,7 @@ renderEachDocumentField(page) {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues } : {}}
+            props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues, documentKey: this.props.documentKey } : {}}
             type={formField.input_type}
             className={formField.component == 'input' ? 'form-control' : ''}
             style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding, textAlign: formField.choices[0].params.text_align } : {}}

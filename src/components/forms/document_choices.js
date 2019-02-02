@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
+import Documents from '../constants/documents';
+
 // custom field component based on redux forms used for creating
 // input and button inputs for forms
 class DocumentChoices extends Component {
@@ -245,15 +247,20 @@ class DocumentChoices extends Component {
     );
   }
 
-  renderSelectOptions(choice) {
-    // console.log('DocumentChoices, renderSelectOptions choice', choice);
+  renderSelectOptions(choice) { 
     const emptyChoice = { value: '', en: '', jp: '' };
     // choice is mapped to a model in ../constant/
-    const choiceToChange = choice.selectChoices;
-    choiceToChange[10] = emptyChoice;
-    return _.map(choiceToChange, (eachChoice, i) => {
+    const selectChoices = choice.selectChoices;
+    // gets base language of document from ../constant/documents
+    const documentBaseLanguage = Documents[this.props.documentKey].baseLanguage;
+    // if choice in constants/... has attribute baseLanguageField: true,
+    // assign the document base language, otherwise, use documentLanguageCode
+    const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;
+    // console.log('DocumentChoices, renderSelectOptions language', language);
+    selectChoices[10] = emptyChoice;
+    return _.map(selectChoices, (eachChoice, i) => {
       // if (eachChoice.value != 'Wooden') {
-      return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[this.props.documentLanguageCode] : eachChoice.value}</option>;
+      return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
       // }
     });
   }
