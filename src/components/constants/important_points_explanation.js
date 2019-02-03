@@ -350,7 +350,7 @@ const ImportantPointsExplanation = {
       input_type: 'string',
       choices: {
         0: { params: { val: 'Public Water', top: '20.2%', left: '16.5%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: ['water_scheduled'], value: '' } },
-        1: { params: { val: 'Private Water', top: '20.2%', left: '21.9%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: ['water_scheduled'], value: '' } },
+        1: { params: { val: 'Tank', top: '20.2%', left: '21.9%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: ['water_scheduled'], value: '' } },
         2: { params: { val: 'Well', top: '20.2%', left: '27.4%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: ['water_scheduled'], value: '' } },
       },
       className: 'form-control-document',

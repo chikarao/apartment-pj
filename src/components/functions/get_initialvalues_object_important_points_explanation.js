@@ -322,7 +322,8 @@ export default (props) => {
     });
     return returnedProfile;
   }
-
+  // setLanguageIndependent for data that is language independent,
+  // so assign value to fields from records that have data
   function setLanguageIndependent(baseRecord, eachPageObject, eachFieldKey, recordLanguage) {
     if (baseRecord[eachPageObject[eachFieldKey].translation_column]) {
       const dataAvailable = baseRecord[eachPageObject[eachFieldKey].translation_column]
@@ -468,14 +469,37 @@ export default (props) => {
       }
       // if user is the owner, use user profile
       // if (flat.owner_name == 'user') {
-      if (!flat.owner_name) {
-        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
-        objectReturned.flat_owner_name = ownerFullName;
-        objectReturned.flat_owner_address = createAddress(ownerProfile);
-      } else {
-        // else use the owner in flat
-        objectReturned.flat_owner_name = flat.owner_name;
-        objectReturned.flat_owner_address = flat.owner_address;
+      // if (!flat.owner_name) {
+      //   const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+      //   objectReturned.flat_owner_name = ownerFullName;
+      //   objectReturned.flat_owner_address = createAddress(ownerProfile);
+      // } else {
+      //   // else use the owner in flat
+      //   objectReturned.flat_owner_name = flat.owner_name;
+      //   objectReturned.flat_owner_address = flat.owner_address;
+      // }
+      if (eachPageObject.flat_owner_name) {
+        if (flat.owner_name) {
+          const flatOwnerFields = ['flat_owner_name', 'flat_owner_company', 'flat_owner_phone', 'flat_owner_address'];
+          if (eachPageObject[flatOwnerFields[0]]) {
+            const baseRecord = flat;
+            _.each(flatOwnerFields, each => {
+              if (eachPageObject[each]) {
+                if (eachPageObject[each].translation_column) {
+                  const eachFieldKey = each;
+                  const eachRecordKey = eachPageObject[each].translation_column;
+                  setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                } else {
+                  if (each != baseRecord[eachPageObject[each].record_column]) {
+                    objectReturned[each] = baseRecord[eachPageObject[each].record_column];
+                  } else {
+                    objectReturned[each] = baseRecord[eachPageObject[each].record_column];
+                  }
+                }
+              }
+            });
+          }
+        }
       }
       // flat address
       const address = createAddress(flat);
