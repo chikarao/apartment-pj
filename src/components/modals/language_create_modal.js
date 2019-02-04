@@ -181,6 +181,14 @@ class LanguageCreateModal extends Component {
               <label className="create-flat-form-label">Owner Address:</label>
               <Field name="owner_address" component="input" type="string" className="form-control" />
             </fieldset>
+            <fieldset key={'ownership_rights'} className="form-group">
+              <label className="create-flat-form-label">Ownership Rights:</label>
+              <Field name="ownership_rights" component="input" type="text" className="form-control" />
+            </fieldset>
+            <fieldset key={'other_rights'} className="form-group">
+              <label className="create-flat-form-label">Other Rights than Ownership:</label>
+              <Field name="other_rights" component="input" type="text" className="form-control" />
+            </fieldset>
             <fieldset key={'intro'} className="form-group">
               <label className="create-flat-form-label">Intro:</label>
               <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />

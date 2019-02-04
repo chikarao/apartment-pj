@@ -102,7 +102,7 @@ class LanguageEditModal extends Component {
               </div>
               <div key={'code'} className="edit-flat-delete-language-language-box">
                 <label className="edit-flat-delete-language-language-label">Language:</label>
-                <div className="edit-flat-language-delete-language">{this.props.language.code ? <div>{languages[this.props.language.code].flag} {languages[this.props.language.code].name}</div> : ''}</div>
+                <div className="edit-flat-language-delete-language">{this.props.language.language_code ? <div>{languages[this.props.language.language_code].flag} {languages[this.props.language.language_code].name}</div> : ''}</div>
               </div>
               {this.renderAlert()}
               <form onSubmit={handleSubmit(this.handleFormSubmit)}>
@@ -156,6 +156,14 @@ class LanguageEditModal extends Component {
               <fieldset key={'owner_address'} className="form-group">
                 <label className="create-flat-form-label">Owner Address:</label>
                 <Field name="owner_address" component="input" type="string" className="form-control" />
+              </fieldset>
+              <fieldset key={'ownership_rights'} className="form-group">
+                <label className="create-flat-form-label">Ownership Rights:</label>
+                <Field name="ownership_rights" component="input" type="text" className="form-control" />
+              </fieldset>
+              <fieldset key={'other_rights'} className="form-group">
+                <label className="create-flat-form-label">Other Rights than Ownership:</label>
+                <Field name="other_rights" component="input" type="text" className="form-control" />
               </fieldset>
               <fieldset key={'intro'} className="form-group">
                 <label className="create-flat-form-label">Intro:</label>

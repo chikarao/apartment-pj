@@ -435,10 +435,28 @@ export default (props) => {
       objectReturned.contract_work_sub_type = contract.work_sub_type;
       // objectReturned.contract_work_sub_type = contract.work_sub_type;
       // just a place holder for notes; need to create column in flat or new model for ownership
-      const notes = '12345.'
-      // const notes = 'Only sixty four characters fit in this box. This is sixty four. The end.'
-      // max number of characters 60!!!!!
-      objectReturned.building_ownership_notes = notes;
+      // const notes = 'なし.';
+      // const notesTranslation = 'None.';
+      // // const notes = 'Only sixty four characters fit in this box. This is sixty four. The end.'
+      // // max number of characters 60!!!!!
+      // objectReturned.building_ownership_notes = notes;
+      // objectReturned.building_ownership_notes_translation = notesTranslation;
+      // const otherNotes = 'なし.';
+      // const otherNotesTranslation = 'None.';
+      // // const notes = 'Only sixty four characters fit in this box. This is sixty four. The end.'
+      // // max number of characters 60!!!!!
+      // objectReturned.building_ownership_other_notes = otherNotes;
+      // objectReturned.building_ownership_other_notes_translation = otherNotesTranslation;
+      //
+      // // just a place holder for notes; need to create column in flat or new model for ownership
+      // const regulation = '規制です.';
+      // const regulationTranslation = 'Here are the.';
+      // objectReturned.regulation_name = regulation;
+      // objectReturned.regulation_name_translation = regulationTranslation;
+      // const regulationSummary = '概要です.';
+      // const regulationSummaryTranslation = 'Here is the summary.';
+      // objectReturned.regulation_summary = regulationSummary;
+      // objectReturned.regulation_summary_translation = regulationSummaryTranslation;
 
       // for each page in props.documentFields
       _.each(Object.keys(flat), key => {
@@ -447,13 +465,19 @@ export default (props) => {
           // if flat key is in one of the pages, on DocumentForm
           // add to objectReturned to be returned as initialValues
           objectReturned[key] = flat[key];
+          if (eachPageObject[key].translation_column) {
+            // if building language code equal base language for the document
+            const baseRecord = flat;
+            const eachRecordKey = key;
+            const eachFieldKey = eachPageObject[key].translation_column
+            // fill translation field with translations
+            setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+          }  // end of if translation column
         }
         // handle overlapped keys ie flat size and size_1, size_2, unit, unit_1, unit_2
         if (overlappedkeysMapped[key]) {
           assignMultipleOverLappedKeys(overlappedkeysMapped, key, flat[key]);
         }
-        // iterate through flat amenity
-        // end of each flat amenity
       });
       // assumes party to the rental agreement is the user
       if (ownerProfile.first_name && ownerProfile.last_name) {

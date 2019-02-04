@@ -226,7 +226,7 @@ export default (props) => {
             // if building language code equal base language for the document
             const baseRecord = flat;
             const eachRecordKey = key;
-            // const eachFieldKey = eachPageObject[key].translation_column
+            const eachFieldKey = eachPageObject[key].translation_column
             // fill translation field with translations
             setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
           }  // end of if translation column
@@ -461,6 +461,7 @@ export default (props) => {
       if (ownerProfileTranslation.first_name && ownerProfileTranslation.last_name) {
         const fullName = ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`);
         objectReturned.owner_name_translation = fullName;
+        objectReturned.owner_name_translation_1 = fullName;
       }
       // form string for address of user owner
       if (ownerProfile.address1 && ownerProfile.city) {

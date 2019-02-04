@@ -336,6 +336,24 @@ const Building = {
     className: 'form-control',
   },
 
+  legal_restrictions: {
+    name: 'legal_restrictions',
+    en: 'Legal Restrictions (Name)',
+    jp: '法令に基づく制限(法令名)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+  },
+
+  legal_restrictions_summary: {
+    name: 'legal_restrictions_summary',
+    en: 'Legal Restrictions (Summary)',
+    jp: '法令に基づく制限(概要)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+  },
+
   earthquake_study_performed: {
     name: 'earthquake_study_performed',
     en: 'Earthquake Study Performed',

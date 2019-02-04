@@ -273,7 +273,8 @@ const ImportantPointsExplanation = {
           0: { params: { val: 'inputFieldValue', top: '82.3%', left: '22.4%', width: '27%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
-        component: 'DocumentChoices'
+        component: 'DocumentChoices',
+        record_column: 'owner_contact_name',
       },
 
       // not using building owner; corresponds to flat owner_address
@@ -286,6 +287,7 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices',
         charLimit: 50,
+        record_column: 'owner_address',
       },
 
       // building_owner_address2: {
@@ -298,8 +300,8 @@ const ImportantPointsExplanation = {
       //   component: 'DocumentChoices'
       // },
 
-      building_ownership_notes: {
-        name: 'building_ownership_notes',
+      ownership_rights: {
+        name: 'ownership_rights',
         input_type: 'text',
         choices: {
           0: { params: { val: 'inputFieldValue', top: '82.1%', left: '50.4%', width: '18%', height: '6.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -309,8 +311,8 @@ const ImportantPointsExplanation = {
         charLimit: 50,
       },
 
-      building_ownership_other_notes: {
-        name: 'building_ownership_other_notes',
+      other_rights: {
+        name: 'other_rights',
         input_type: 'text',
         choices: {
           0: { params: { val: 'inputFieldValue', top: '82.1%', left: '69%', width: '21.8%', height: '6.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -323,8 +325,8 @@ const ImportantPointsExplanation = {
   // end of page 1
   // start of page 2
   2: {
-    regulation_name: {
-      name: 'regulation_name',
+    legal_restrictions: {
+      name: 'legal_restrictions',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '8.6%', left: '20%', width: '69.8%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
@@ -334,8 +336,8 @@ const ImportantPointsExplanation = {
       charLimit: 70,
     },
 
-    regulation_summary: {
-      name: 'regulation_summary',
+    legal_restrictions_summary: {
+      name: 'legal_restrictions_summary',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '10.5%', left: '20%', width: '69.8%', height: '3.4%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },

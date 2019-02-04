@@ -445,8 +445,8 @@ const ImportantPointsExplanationBilingual = {
     //   component: 'DocumentChoices'
     // },
 
-    building_ownership_notes: {
-      name: 'building_ownership_notes',
+    ownership_rights: {
+      name: 'ownership_rights',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '27%', left: '49%', width: '18%', height: '5.9%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -454,10 +454,13 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 50,
+      translation_record: 'flat_languages',
+      translation_column: 'ownership_rights',
+      translation_field: 'ownership_rights_translation'
     },
 
-    building_ownership_notes_translation: {
-      name: 'building_ownership_notes_translation',
+    ownership_rights_translation: {
+      name: 'ownership_rights_translation',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '32.5%', left: '49%', width: '18%', height: '5.9%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -467,8 +470,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    building_ownership_other_notes: {
-      name: 'building_ownership_other_notes',
+    other_rights: {
+      name: 'other_rights',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '27%', left: '69%', width: '21.8%', height: '5.9%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -476,10 +479,13 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 60,
+      translation_record: 'flat_languages',
+      translation_column: 'other_rights',
+      translation_field: 'other_rights_translation'
     },
 
-    building_ownership_other_notes_translation: {
-      name: 'building_ownership_other_notes_translation',
+    other_rights_translation: {
+      name: 'other_rights_translation',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '32.5%', left: '69%', width: '21.8%', height: '5.9%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
@@ -487,6 +493,60 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 60,
+    },
+
+    legal_restrictions: {
+      name: 'legal_restrictions',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.3%', left: '20%', width: '69.8%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 70,
+      translation_record: 'building_languages',
+      // name is the column in model building language
+      translation_column: 'legal_restrictions',
+      // translation field is the field in the document that takes the translation
+      translation_field: 'legal_restrictions_translation'
+    },
+
+    legal_restrictions_translation: {
+      name: 'legal_restrictions_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.8%', left: '20%', width: '69.8%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 70,
+    },
+
+    legal_restrictions_summary: {
+      name: 'legal_restrictions_summary',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '49.2%', left: '26%', width: '65.5%', height: '3.4%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 120,
+      translation_record: 'building_languages',
+      // name is the column in model building language
+      translation_column: 'legal_restrictions_summary',
+      // translation field is the field in the document that takes the translation
+      translation_field: 'legal_restrictions_summary_translation'
+    },
+
+    legal_restrictions_summary_translation: {
+      name: 'legal_restrictions_summary_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '52.7%', left: '26%', width: '65.5%', height: '3.4%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 120,
     },
   },
   3: {},

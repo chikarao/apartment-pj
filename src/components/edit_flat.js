@@ -853,6 +853,14 @@ class EditFlat extends Component {
             <label className="create-flat-form-label">Owner Phone:</label>
             <Field name="owner_phone" component="input" type="string" className="form-control" />
           </fieldset>
+          <fieldset key={'ownership_rights'} className="form-group">
+            <label className="create-flat-form-label">Ownership Rights:</label>
+            <Field name="ownership_rights" component="input" type="text" className="form-control" />
+          </fieldset>
+          <fieldset key={'other_rights'} className="form-group">
+            <label className="create-flat-form-label">Other Rights than Ownership:</label>
+            <Field name="other_rights" component="input" type="text" className="form-control" />
+          </fieldset>
         </div>
       )
     // }
