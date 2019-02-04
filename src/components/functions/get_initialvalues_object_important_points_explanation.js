@@ -221,7 +221,7 @@ export default (props) => {
     return returnedChoice;
   }
 
-  function getInspection(inspections) {
+  function getInspection(inspections, language) {
     // console.log('in get_initialvalues_object_important_points_explanation, sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode: ', sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode);
     const sortedInspections = inspections.sort((a, b) => {
       return a.inspection_date - b.inspection_date;
@@ -229,7 +229,7 @@ export default (props) => {
     console.log('in get_initialvalues_object_important_points_explanation, inspections, sortedInspections, documentLanguageCode: ', inspections, sortedInspections, documentLanguageCode);
     let inspectionReturned = {};
     _.each(sortedInspections, eachInspection => {
-      if (eachInspection.language_code == documentLanguageCode) {
+      if (eachInspection.language_code == language) {
         inspectionReturned = eachInspection;
         // console.log('in get_initialvalues_object_important_points_explanation, sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode: ', sortedInspections, inspectionReturned, eachInspection.language_code, documentLanguageCode);
         return;
@@ -466,9 +466,13 @@ export default (props) => {
           // add to objectReturned to be returned as initialValues
           objectReturned[key] = flat[key];
           if (eachPageObject[key].translation_column) {
-            // if building language code equal base language for the document
+            // if there is an object with transaltion column
+            // baseRecord is the record (eg flat or flat.building) that has inspctions or language
             const baseRecord = flat;
+            // eachKeyRecord is key of flat or base record
             const eachRecordKey = key;
+            // eachFieldKey is the actual key used in eachPageObject
+            // key and eachFieldKey can be different (eg owner_contact_name and flat_owner_name)
             const eachFieldKey = eachPageObject[key].translation_column
             // fill translation field with translations
             setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
@@ -565,9 +569,12 @@ export default (props) => {
 
       if (flat.building) {
         if (flat.building.inspections) {
-          const inspection = getInspection(flat.building.inspections);
-          console.log('in create_edit_document, getInitialValuesObject, inspection, flat.building.inspections: ', inspection, flat.building.inspections);
+          // const inspection = getInspection(flat.building.inspections, 'jp');
+          const inspection = getInspection(flat.building.inspections, Documents[documentKey].baseLanguage);
+          const inspectionTranslation = getInspection(flat.building.inspections, documentLanguageCode);
+          // console.log('in create_edit_document, getInitialValuesObject, inspection, flat.building.inspections: ', inspection, flat.building.inspections);
           inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
+          inspectionTranslation ? (objectReturned.building_inspection_summary_translation = inspectionTranslation.inspection_summary) : (objectReturned.building_inspection_summary_translation = '');
           const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
           inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
 
@@ -578,6 +585,14 @@ export default (props) => {
                 // if inspection key is in one of the pages, on DocumentForm
                 // add to objectReturned to be returned as initialValues
                 objectReturned[key] = inspection[key];
+                if (eachPageObject[key].translation_column) {
+                  // if building language code equal base language for the document
+                  const baseRecord = flat.building;
+                  const eachRecordKey = key;
+                  const eachFieldKey = eachPageObject[key].translation_column
+                  // fill translation field with translations
+                  setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                }  // end of if translation column
               }
               // handle overlapped keys ie inspection size and size_1, size_2, unit, unit_1, unit_2
               if (overlappedkeysMapped[key]) {

@@ -38,9 +38,9 @@ class InspectionCreateModal extends Component {
     //     delta[each] = data[each]
     //   }
     // })
-    // data.inspection_language = this.props.appLanguageCode;
+    data.language_code = data.inspection_language;
     data.building_id = this.props.flat.building.id;
-    const dataToBeSent = { inspection: data, building_id: this.props.flat.building.id };
+    const dataToBeSent = { inspection: data, building_id: this.props.flat.building.id, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     // console.log('in InspectionCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
