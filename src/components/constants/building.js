@@ -276,7 +276,7 @@ const Building = {
       //   0: { value: '', val: ''},
       // }
     },
-    
+
   building_owner_name: {
     name: 'building_owner_name',
     en: 'Building Owner Name',

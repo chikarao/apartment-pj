@@ -639,7 +639,12 @@ const ImportantPointsExplanationBilingual = {
         0: { params: { val: 'inputFieldValue', top: '69.6%', left: '17.3%', width: '17.7%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
-      component: 'DocumentChoices'
+      component: 'DocumentChoices',
+      // translation_record: 'building_languages',
+      // // // name is the column in model building language
+      // translation_column: 'electricity',
+      // // // translation field is the field in the document that takes the translation
+      // translation_field: 'electricity_translation',
     },
 
     electricity_translation: {
@@ -1616,7 +1621,213 @@ const ImportantPointsExplanationBilingual = {
 
 
   },
-  4: {},
+  4: {
+    earthquake_study_performed: {
+      name: 'earthquake_study_performed',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '9.5%', left: '58.2%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '9.5%', left: '79%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    earthquake_study_contents: {
+      name: 'earthquake_study_contents',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '13.2%', left: '50.5%', width: '41%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'building_languages',
+      // // name is the column in model building language
+      translation_column: 'earthquake_study_contents',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'earthquake_study_contents_translation',
+    },
+
+    earthquake_study_contents_translation: {
+      name: 'earthquake_study_contents_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '18.7%', left: '50.5%', width: '41%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    other_payments1: {
+      name: 'other_payments1',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '41.1%', left: '12.2%', width: '15%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+
+    other_payments1_explanation: {
+      name: 'other_payments1_explanation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '40.2%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments1_explanation_translation: {
+      name: 'other_payments1_explanation_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '42%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments2: {
+      name: 'other_payments2',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.8%', left: '12.2%', width: '15%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+
+    other_payments2_explanation: {
+      name: 'other_payments2_explanation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '43.9%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments2_explanation_translation: {
+      name: 'other_payments2_explanation_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '45.7%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments3: {
+      name: 'other_payments3',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '48.5%', left: '12.2%', width: '15%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+
+    other_payments3_explanation: {
+      name: 'other_payments3_explanation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '47.6%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments3_explanation_translation: {
+      name: 'other_payments3_explanation_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '49.4%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments4: {
+      name: 'other_payments4',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '52.6%', left: '12.2%', width: '15%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 16,
+    },
+
+    other_payments4_explanation: {
+      name: 'other_payments4_explanation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '51.4%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    other_payments4_explanation_translation: {
+      name: 'other_payments4_explanation_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '53.2%', left: '29.5%', width: '61.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    contract_break_terms: {
+      name: 'contract_break_terms',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '60%', left: '9%', width: '83.4%', height: '18%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    contract_break_terms_translation: {
+      name: 'contract_break_terms_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '78.5%', left: '9%', width: '83.4%', height: '18%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+  },
   5: {},
   6: {},
   7: {},
