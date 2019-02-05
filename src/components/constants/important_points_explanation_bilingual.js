@@ -1828,7 +1828,190 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 300,
     },
   },
-  5: {},
+  5: {
+    warranties: {
+      name: 'warranties',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '9.6%', left: '9%', width: '83.4%', height: '16%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    warranties_translation: {
+      name: 'warranties_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '25.7%', left: '9%', width: '83.4%', height: '16%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    escrow_for_deposit: {
+      name: 'escrow_for_deposit',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '46.8%', left: '48.1%', width: '10.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '46.8%', left: '65.6%', width: '14%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    escrow_agent_deposit: {
+      name: 'escrow_agent_deposit',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '50.8%', left: '34.5%', width: '57%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    escrow_agent_deposit_translation: {
+      name: 'escrow_agent_deposit_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '52.8%', left: '34.5%', width: '57%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 60,
+    },
+
+    from_year: {
+      name: 'from_year',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '60.4%', left: '32.6%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    from_month: {
+      name: 'from_month',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '60.4%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    from_day: {
+      name: 'from_day',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '60.4%', left: '45.4%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_year: {
+      name: 'to_year',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '64.2%', left: '32.6%', width: '5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_month: {
+      name: 'to_month',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '64.2%', left: '40%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    to_day: {
+      name: 'to_day',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '64.2%', left: '45.4%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_length_years: {
+      name: 'contract_length_years',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '60.3%', left: '57%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_length_months: {
+      name: 'contract_length_months',
+      input_type: 'string',
+      choices: {
+        // add 1.5% to top
+        0: { params: { val: 'inputFieldValue', top: '60.3%', left: '64.5%', width: '3%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices'
+    },
+
+    contract_type: {
+      name: 'contract_type',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'ordinary_rental_contract', top: '60%', left: '73.2%', width: '17.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'fixed_term_rental_contract', top: '63%', left: '73.2%', width: '17.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'end_of_life_rental_contract', top: '65.9%', left: '73.2%', width: '17.5%', class_name: 'document-rectangle', input_type: 'button' } },
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices'
+      // borderColor: 'blue'
+    },
+
+    contract_renewal_terms: {
+      name: 'contract_renewal_terms',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '69.1%', left: '24.6%', width: '27.5%', height: '3.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    contract_renewal_terms_translation: {
+      name: 'contract_renewal_terms_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '72.5%', left: '24.6%', width: '27.5%', height: '3.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+  },
   6: {},
   7: {},
   8: {},
