@@ -4,7 +4,7 @@
 // import AmenitiesChoices from './amenities_choices.js';
 const AmenitiesChoices = {
     0: { value: true, en: 'Yes', jp: '有り', type: 'boolean', className: 'form-rectangle' },
-    1: { value: false, en: 'None', jp: '無し', type: 'boolean', className: 'form-rectangle' }
+    1: { value: false, en: 'No', jp: '無し', type: 'boolean', className: 'form-rectangle' }
 };
 
 const Amenities = {

@@ -614,7 +614,18 @@ const ImportantPointsExplanationBilingual = {
       name: 'water_notes',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '66.7%', left: '71.2%', width: '20.5%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '66.5%', left: '71.2%', width: '20.5%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 40,
+    },
+
+    water_notes_translation: {
+      name: 'water_notes_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '67.8%', left: '71.2%', width: '20.5%', font_size: '12px', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -957,7 +968,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_inspection_summary',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '87.1%', left: '50.1%', width: '41.5%', height: '4.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '87.1%', left: '50.1%', width: '41.5%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -973,7 +984,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_inspection_summary_translation',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '92.5%', left: '50.1%', width: '41.5%', height: '4.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '92.1%', left: '50.1%', width: '41.5%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -981,7 +992,551 @@ const ImportantPointsExplanationBilingual = {
     },
 
   },
-  3: {},
+  3: {
+    kitchen: {
+      name: 'kitchen',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    kitchen_format: {
+      name: 'kitchen_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '15.9%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_format_translation: {
+      name: 'kitchen_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '17.9%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_other: {
+      name: 'kitchen_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '15.9%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_other_translation: {
+      name: 'kitchen_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '17.9%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    toilet: {
+      name: 'toilet',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: FlatForDocuments,
+    },
+
+    toilet_format: {
+      name: 'toilet_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    toilet_format_translation: {
+      name: 'toilet_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    toilet_other: {
+      name: 'toilet_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '20%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    toilet_other_translation: {
+      name: 'toilet_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    bath_tub: {
+      name: 'bath_tub',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    bath_tub_format: {
+      name: 'bath_tub_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.1%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    bath_tub_format_translation: {
+      name: 'bath_tub_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '26.1%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    bath_tub_other: {
+      name: 'bath_tub_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.1%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    bath_tub_other_translation: {
+      name: 'bath_tub_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '26.1%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    hot_water: {
+      name: 'hot_water',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    hot_water_format: {
+      name: 'hot_water_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '28.2%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    hot_water_format_translation: {
+      name: 'hot_water_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '30.2%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    hot_water_other: {
+      name: 'hot_water_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '28.2%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    hot_water_other_translation: {
+      name: 'hot_water_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '30.2%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_grill: {
+      name: 'kitchen_grill',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    kitchen_grill_format: {
+      name: 'kitchen_grill_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '32.3%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_grill_format_translation: {
+      name: 'kitchen_grill_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '34.3%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_grill_other: {
+      name: 'kitchen_grill_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '32.3%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    kitchen_grill_other_translation: {
+      name: 'kitchen_grill_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '34.3%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    ac: {
+      name: 'ac',
+      input_type: 'string',
+      choices: {
+             0: { valName: 'Y', params: { val: true, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true },
+             1: { valName: 'N', params: { val: false, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true }
+           },
+      className: 'form-control-document',
+      component: 'select',
+      // height: '23px',
+      mapToModel: Amenities,
+    },
+
+    ac_format: {
+      name: 'ac_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '36.4%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    ac_format_translation: {
+      name: 'ac_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '38.4%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    ac_other: {
+      name: 'ac_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '36.4%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    ac_other_translation: {
+      name: 'ac_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '38.4%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1_name: {
+      name: 'equipment1_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '40.5%', left: '8.6%', width: '19%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1_name_translation: {
+      name: 'equipment1_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '42.5%', left: '8.6%', width: '19%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1: {
+      name: 'equipment1',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '41.4%', left: '28%', width: '11.1%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      // choices: {
+      //        0: { valName: 'Y', params: { val: true, top: '71.65%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
+      //        1: { valName: 'N', params: { val: false, top: '71.65%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+      //      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // height: '23px',
+      // mapToModel: Amenities,
+    },
+
+    equipment1_format: {
+      name: 'equipment1_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '40.5%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1_format_translation: {
+      name: 'equipment1_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '42.5%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1_other: {
+      name: 'equipment1_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '40.5%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment1_other_translation: {
+      name: 'equipment1_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '42.5%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2_name: {
+      name: 'equipment2_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.6%', left: '8.6%', width: '19%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2_name_translation: {
+      name: 'equipment2_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.6%', left: '8.6%', width: '19%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2: {
+      name: 'equipment2',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '45.5%', left: '28%', width: '11.1%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      // choices: {
+      //        0: { valName: 'Y', params: { val: true, top: '44.6%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } },
+      //        1: { valName: 'N', params: { val: false, top: '44.6%', left: '29.3%', width: '7%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' } }
+      //      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // height: '23px',
+      // mapToModel: Amenities,
+    },
+
+    equipment2_format: {
+      name: 'equipment2_format',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.6%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2_format_translation: {
+      name: 'equipment2_format_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.6%', left: '39.4%', width: '18.5%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2_other: {
+      name: 'equipment2_other',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.6%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+    equipment2_other_translation: {
+      name: 'equipment2_other_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.6%', left: '58.5%', width: '33%', height: '1.8%', margin: '0', font_size: '10px', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 8,
+    },
+
+
+  },
   4: {},
   5: {},
   6: {},

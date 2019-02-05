@@ -443,9 +443,10 @@ class CreateEditDocument extends Component {
     // rendering options for select fields
   return _.map(Object.keys(choices), (eachKey, i) => {
     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
-    const languageCode = this.props.documentLanguageCode;
+    const languageCode = Documents[this.props.documentKey].baseLanguage;
+    const languageCodeTranslation = this.props.documentLanguageCode;
         return (
-        <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]}</option>
+        <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]} {modelChoice[languageCodeTranslation]}</option>
       );
     // }
   });

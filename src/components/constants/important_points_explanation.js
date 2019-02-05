@@ -274,6 +274,7 @@ const ImportantPointsExplanation = {
         },
         className: 'form-control-document',
         component: 'DocumentChoices',
+        // record_column to indicate which column in backend model field corresponds to
         record_column: 'owner_contact_name',
       },
 
@@ -287,6 +288,7 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices',
         charLimit: 50,
+        // record_column to indicate which column in backend model field corresponds to   
         record_column: 'owner_address',
       },
 
