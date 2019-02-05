@@ -1535,6 +1535,85 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 8,
     },
 
+    inside_disaster_prevention: {
+      name: 'inside_disaster_prevention',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '54.2%', left: '21%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '54.2%', left: '62.7%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    inside_disaster_warning: {
+      name: 'inside_disaster_warning',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '63%', left: '21%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '63%', left: '62.5%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    inside_tsunami_warning: {
+      name: 'inside_tsunami_warning',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '73.9%', left: '21%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '73.9%', left: '63%', width: '18.5%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    asbestos_record: {
+      name: 'asbestos_record',
+      input_type: 'boolean',
+      choices: {
+        0: { valName: 'Y', params: { val: true, top: '84%', left: '58%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { valName: 'N', params: { val: false, top: '84%', left: '79%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    asbestos_survey_contents: {
+      name: 'asbestos_survey_contents',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '87%', left: '50.5%', width: '41%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'building_languages',
+      // // name is the column in model building language
+      translation_column: 'asbestos_survey_contents',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'asbestos_survey_contents_translation',
+    },
+
+    asbestos_survey_contents_translation: {
+      name: 'asbestos_survey_contents_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '92.5%', left: '50.5%', width: '41%', height: '5.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
 
   },
   4: {},

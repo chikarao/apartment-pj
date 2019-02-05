@@ -265,6 +265,18 @@ const Building = {
     language_independent: true,
   },
 
+  asbestos_survey_contents: {
+    name: 'asbestos_survey_contents',
+    en: 'Asbestos Survey Contents',
+    jp: 'アスベストス調査の内容',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+    // choices: {
+      //   0: { value: '', val: ''},
+      // }
+    },
+    
   building_owner_name: {
     name: 'building_owner_name',
     en: 'Building Owner Name',
@@ -302,17 +314,6 @@ const Building = {
     // }
   },
 
-  asbestos_survey_contents: {
-    name: 'asbestos_survey_contents',
-    en: 'Asbestos Survey Contents',
-    jp: 'アスベストス調査の内容',
-    component: 'input',
-    type: 'string',
-    className: 'form-control',
-    // choices: {
-    //   0: { value: '', val: ''},
-    // }
-  },
 
   building_inspection_conducted: {
     name: 'building_inspection_conducted',
