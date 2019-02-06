@@ -2341,7 +2341,99 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
   },
-  8: {},
+  8: {
+    date_prepared: {
+      name: 'date_prepared',
+      input_type: 'date',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '11.3%', left: '74.7%', width: '16%', height: '1.8%', margin: '0', font_size: '13px', class_name: 'document-rectangle', input_type: 'date' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      // charLimit: 50,
+    },
+
+    building_name_2: {
+      name: 'building_name_2',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '14.4%', left: '32.4%', width: '53.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      baseKey: 'name',
+      translation_record: 'building_languages',
+      // // name is the column in model building language
+      translation_column: 'name',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'building_name_2_translation',
+    },
+
+    building_name_2_translation: {
+      name: 'building_name_2_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '16.5%', left: '32.4%', width: '53.5%', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      // baseKey: 'name'
+    },
+
+    address_1: {
+      name: 'address_1',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '18.7%', left: '32.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      baseKey: 'address',
+      translation_record: 'flat_languages',
+      translation_field: 'address_1_translation',
+    },
+
+    address_1_translation: {
+      name: 'address_1_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '21.2%', left: '32.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      // baseKey: 'address',
+    },
+
+    address_check: {
+      name: 'address_check',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'address_exists', enclosed_text: 'X', top: '18.4%', left: '79.9%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 1,
+      // xbox mean check box toggle with x inside button div
+      // xbox: true,
+      second_click_off: true,
+    },
+
+    address_site_check: {
+      name: 'address_site_check',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'address_sit_exists', enclosed_text: 'X', top: '20.7%', left: '79.9%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 1,
+      // xbox: true,
+      second_click_off: true,
+    },
+  },
   9: {},
   10: {},
   11: {},

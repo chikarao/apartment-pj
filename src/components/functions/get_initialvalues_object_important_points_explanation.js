@@ -257,6 +257,7 @@ export default (props) => {
           if (!object[baseKey]) {
             // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, if object[baseKey], eachKey: ', object[baseKey], eachKey);
             object[baseKey] = [];
+            object[baseKey].push(baseKey);
             object[baseKey].push(eachKey);
           } else {
             // console.log('in get_initialvalues_object_important_points_explanation, getOverlappedkeysMapped, else object[baseKey], eachKey: ', object[baseKey], eachKey);
@@ -275,12 +276,15 @@ export default (props) => {
     });
   }
 
-  function assignMultipleOverLappedKeys(overlappedkeysMapped, key, recordValue) {
+  function assignMultipleOverLappedKeys(overlappedkeysMapped, key, recordValue, eachPageObject) {
     // if (overlappedkeysMapped[key]) {
       // console.log('in create_edit_document, getInitialValuesObject, key, flat[key], overlappedkeysMapped[key]: ', key, flat[key], overlappedkeysMapped[key]);
       _.each(overlappedkeysMapped[key], eachMappedKey => {
         console.log('in create_edit_document, getInitialValuesObject, assignMultipleOverLappedKeys, key, eachMappedKey, recordValue: ', key, eachMappedKey, recordValue);
         objectReturned[eachMappedKey] = recordValue;
+        // if (eachPageObject[eachMappedKey].translation_field) {
+        //
+        // }
       });
       // console.log('in create_edit_document, getInitialValuesObject, objectReturned: ', objectReturned);
     // }
@@ -339,7 +343,6 @@ export default (props) => {
   }
 
   function setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned }) {
-    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
     if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
       // get building language for use translated field;
       let recordLanguage = {};
@@ -355,10 +358,12 @@ export default (props) => {
     } else if (baseRecord.language_code == documentLanguageCode) {
       // if building language code is different from base language for document
       // give translated field the baseRecord value
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
       objectReturned[eachPageObject[eachFieldKey].translation_field] = baseRecord[eachPageObject[eachFieldKey].translation_column];
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]);
       let recordLanguage = {};
       recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, recordLanguage: ', eachFieldKey, recordLanguage);
       if (!_.isEmpty(recordLanguage)) {
         objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
       }
@@ -388,7 +393,8 @@ export default (props) => {
     // iterate throught each page of documentFields eg ImportantPointsExplanation
     // this will enable checking of whether flat or building object contains keys to assign
     _.each(documentFields, eachPageObject => {
-      const language = 'jp'
+      // const language = 'jp'
+      const language = Documents[documentKey].baseLanguage
       const ownerProfile = getProfile(userOwner.profiles, language);
       const ownerProfileTranslation = getProfile(userOwner.profiles, documentLanguageCode);
       const tenantProfile = getProfile(booking.user.profiles, language);
@@ -480,7 +486,7 @@ export default (props) => {
         }
         // handle overlapped keys ie flat size and size_1, size_2, unit, unit_1, unit_2
         if (overlappedkeysMapped[key]) {
-          assignMultipleOverLappedKeys(overlappedkeysMapped, key, flat[key]);
+          assignMultipleOverLappedKeys(overlappedkeysMapped, key, flat[key], eachPageObject);
         }
       });
       // assumes party to the rental agreement is the user
@@ -535,37 +541,48 @@ export default (props) => {
       if (address) {
         // objectReturned.address = address;
         objectReturned.address_check = 'address_exists';
-        assignMultipleOverLappedKeys(overlappedkeysMapped, 'address_check', 'address_exists');
-        if (overlappedkeysMapped.address) {
-          assignMultipleOverLappedKeys(overlappedkeysMapped, 'address', address);
-        }
+        assignMultipleOverLappedKeys(overlappedkeysMapped, 'address_check', 'address_exists', {});
+        // if (overlappedkeysMapped.address) {
+        //   assignMultipleOverLappedKeys(overlappedkeysMapped, 'address', address);
+        // }
       }
-
-      // get address1, city, state, zip in one string
-      // const address = createAddress(flat);
       // add address to initialvalues objectReturned
-      if (eachPageObject.address) {
-        objectReturned.address = address;
-        if (eachPageObject.address.translation_field) {
-          if (flat.language_code == Documents[documentKey].baseLanguage) {
-            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
-            const addressTranslation = createAddress(recordLanguage);
-            objectReturned[eachPageObject.address.translation_field] = recordLanguage;
-          } else if (flat.language_code == documentLanguageCode) {
-            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
-            const addressTranslation = createAddress(recordLanguage);
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, addressTranslation: ', addressTranslation);
-            objectReturned.address = addressTranslation;
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject.address: ', eachPageObject.address);
-            objectReturned[eachPageObject.address.translation_field] = address;
-          } else {
-            const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
-            const recordLanguage1 = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
-            objectReturned.address = recordLanguage;
-            objectReturned[eachPageObject.address.translation_field] = recordLanguage1;
+      // if (eachPageObject.address || eachPageObject.address_1) {
+      // iterate over address key in overlappedkeysMapped (all address fields in document)
+      let baseRecord = flat;
+      const attribute = 'address';
+      _.each(overlappedkeysMapped[attribute], eachAddressKey => {
+        // if pageObject has add in it
+        if (eachPageObject[eachAddressKey]) {
+          objectReturned[eachAddressKey] = address;
+          // if address key in overlapped keys has translation field
+          if (eachPageObject[eachAddressKey].translation_field) {
+            // if flat language code is the document base language
+            if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
+              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
+              // get address1, city, state, zip in one string
+              const addressTranslation = createAddress(recordLanguage);
+              objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation;
+            // else if baseRecord language code is the document translated language
+            } else if (baseRecord.language_code == documentLanguageCode) {
+              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, recordLanguage: ', recordLanguage);
+              const addressTranslation = createAddress(recordLanguage);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, addressTranslation: ', addressTranslation);
+              objectReturned[eachAddressKey] = addressTranslation;
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject[eachAddressKey]: ', eachPageObject[eachAddressKey]);
+              objectReturned[eachPageObject[eachAddressKey].translation_field] = address;
+            } else {
+              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
+              const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
+              const addressTranslation = createAddress(recordLanguage);
+              const addressTranslation1 = createAddress(recordLanguage1);
+              objectReturned[eachAddressKey] = addressTranslation;
+              objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation1;
+            }
           }
         }
-      }
+      });
 
       if (flat.building) {
         if (flat.building.inspections) {
@@ -596,7 +613,7 @@ export default (props) => {
               }
               // handle overlapped keys ie inspection size and size_1, size_2, unit, unit_1, unit_2
               if (overlappedkeysMapped[key]) {
-                assignMultipleOverLappedKeys(overlappedkeysMapped, key, inspection[key]);
+                assignMultipleOverLappedKeys(overlappedkeysMapped, key, inspection[key], {});
               }
               // iterate through inspection amenity
               // end of each inspection amenity
@@ -608,7 +625,7 @@ export default (props) => {
           }
           // need to have inspectionDateFormatted after iteration above so that date format is correct for
           // date input element to be able to read it ie 2018-01-01
-          inspection ? assignMultipleOverLappedKeys(overlappedkeysMapped, 'inspection_date', inspectionDateFormatted) : '';
+          inspection ? assignMultipleOverLappedKeys(overlappedkeysMapped, 'inspection_date', inspectionDateFormatted, {}) : '';
         }
       }
 
@@ -617,7 +634,7 @@ export default (props) => {
         // add to objectReturned to be returned as initialValues
         const dateTodayFormatted = formatDateForForm(new Date());
         objectReturned.date_prepared = dateTodayFormatted;
-        assignMultipleOverLappedKeys(overlappedkeysMapped, 'date_prepared', dateTodayFormatted);
+        assignMultipleOverLappedKeys(overlappedkeysMapped, 'date_prepared', dateTodayFormatted, {});
       }
       // for evaluating if has toilet or not!!!
       if (flat.toilet) {
@@ -647,7 +664,7 @@ export default (props) => {
           // if (importantAmenityArray.includes(eachAmenityKey)) {
             // objectReturned[eachAmenityKey] = getAmenityInput(eachAmenityKey);
           // } else {
-            objectReturned[eachAmenityKey] = flat.amenity[eachAmenityKey];
+          objectReturned[eachAmenityKey] = flat.amenity[eachAmenityKey];
           // }
         }
       });
@@ -670,17 +687,29 @@ export default (props) => {
             // assignOverLappedKeys(eachBuildingKey, flat.building[eachBuildingKey])
             if (eachPageObject[eachBuildingKey].translation_column) {
               // if building language code equal base language for the document
-              const baseRecord = flat.building;
+              baseRecord = flat.building;
               const eachRecordKey = eachBuildingKey;
               const eachFieldKey = eachPageObject[eachBuildingKey].translation_column
               // fill translation field with translations
               setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
             } // end of if translation column
-          }
+          } // end of eachPageObject[eachBuildingKey]
+          // if keys are in overlapped keys object
           if (overlappedkeysMapped[eachBuildingKey]) {
-            assignMultipleOverLappedKeys(overlappedkeysMapped, eachBuildingKey, flat.building[eachBuildingKey]);
-          }
-        });
+            _.each(overlappedkeysMapped[eachBuildingKey], eachOverlappedKey => {
+              baseRecord = flat.building;
+              const eachRecordKey = eachBuildingKey;
+              const eachFieldKey = eachOverlappedKey;
+              // const eachFieldKey = eachPageObject[eachBuildingKey].translation_column
+              // setLanguage only if overlappedKey in eachPageObject
+              if (eachPageObject[eachOverlappedKey]) {
+                console.log('in create_edit_document, getInitialValuesObject, flat.building overlappedkeysMapped eachPageObject, eachBuildingKey, eachOverlappedKey: ', eachPageObject, eachBuildingKey, eachOverlappedKey);
+                setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+              }
+            })
+            // assignMultipleOverLappedKeys(overlappedkeysMapped, eachBuildingKey, flat.building[eachBuildingKey], eachPageObject);
+          } // end of if overlappedkeysMapped[eachBuildingKey]
+        }); // end of each flat.building
 
         // end of each Object.keys flat.building
       }
