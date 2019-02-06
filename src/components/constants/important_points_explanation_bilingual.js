@@ -2172,7 +2172,175 @@ const ImportantPointsExplanationBilingual = {
     },
 
   },
-  7: {},
+  7: {
+    bond_deposit_office: {
+      name: 'bond_deposit_office',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.6%', left: '29.5%', width: '63%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    bond_deposit_office_translation: {
+      name: 'bond_deposit_office_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '24.9%', left: '29.5%', width: '63%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    bond_deposit_office_address: {
+      name: 'bond_deposit_office_address',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.2%', left: '29.5%', width: '63%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    bond_deposit_office_address_translation: {
+      name: 'bond_deposit_office_address_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '29.5%', left: '29.5%', width: '63%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company: {
+      name: 'retga_company',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '39%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_translation: {
+      name: 'retga_company_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '41.3%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_address: {
+      name: 'retga_company_address',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '44.5%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_address_translation: {
+      name: 'retga_company_address_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '46.8%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_office_address: {
+      name: 'retga_company_office_address',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '50.1%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_office_address_translation: {
+      name: 'retga_company_office_address_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '52.4%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_bond_office: {
+      name: 'retga_company_bond_office',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '55.5%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_bond_office_translation: {
+      name: 'retga_company_bond_office_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '57.3%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_bond_office_address: {
+      name: 'retga_company_bond_office_address',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '59%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    retga_company_bond_office_address_translation: {
+      name: 'retga_company_bond_office_address_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '60.8%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+  },
   8: {},
   9: {},
   10: {},

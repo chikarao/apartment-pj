@@ -242,12 +242,13 @@ class DocumentChoices extends Component {
           onFocus={this.handleOnFocus}
           type={choice.params.input_type}
           className={choice.params.class_name}
+          // placeholder={choice.placeholder}
           style={this.getStyleOfInputElement(value, choice)}
         />
     );
   }
 
-  renderSelectOptions(choice) { 
+  renderSelectOptions(choice) {
     const emptyChoice = { value: '', en: '', jp: '' };
     // choice is mapped to a model in ../constant/
     const selectChoices = choice.selectChoices;
