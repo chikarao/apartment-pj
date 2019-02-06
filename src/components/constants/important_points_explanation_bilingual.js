@@ -2012,7 +2012,166 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 100,
     },
   },
-  6: {},
+  6: {
+    limitations_use: {
+      name: 'limitations_use',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '16.9%', left: '24.6%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    limitations_use_translation: {
+      name: 'limitations_use_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.1%', left: '24.6%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    limitations_use_other: {
+      name: 'limitations_use_other',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '16.9%', left: '58.4%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    limitations_use_other_translation: {
+      name: 'limitations_use_other_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.1%', left: '58.4%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use: {
+      name: 'restrictions_use',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.9%', left: '24.6%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use_translation: {
+      name: 'restrictions_use_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '33%', left: '24.6%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use_other: {
+      name: 'restrictions_use_other',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.9%', left: '58.4%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    restrictions_use_other_translation: {
+      name: 'restrictions_use_other_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '33%', left: '58.4%', width: '33.1%', height: '5%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    deposit_return_terms: {
+      name: 'deposit_return_terms',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '43.2%', left: '9.5%', width: '82.5%', height: '11.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    deposit_return_terms_translation: {
+      name: 'deposit_return_terms_translation',
+      input_type: 'text',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '54.4%', left: '9.5%', width: '82.5%', height: '11.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 300,
+    },
+
+    building_management_company: {
+      name: 'building_management_company',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '72%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    building_management_company_translation: {
+      name: 'building_management_company_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '74.3%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 509
+    },
+
+    building_management_company_address: {
+      name: 'building_management_company_address',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '92.7%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+    building_management_company_address_translation: {
+      name: 'building_management_company_address_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '95%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 50,
+    },
+
+  },
   7: {},
   8: {},
   9: {},
