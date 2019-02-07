@@ -714,8 +714,12 @@ export default (props) => {
               // const eachFieldKey = eachPageObject[eachBuildingKey].translation_column
               // setLanguage only if overlappedKey in eachPageObject
               if (eachPageObject[eachOverlappedKey]) {
-                console.log('in create_edit_document, getInitialValuesObject, flat.building overlappedkeysMapped eachPageObject, eachBuildingKey, eachOverlappedKey: ', eachPageObject, eachBuildingKey, eachOverlappedKey);
-                setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                if (eachPageObject[eachOverlappedKey].translation_column) {
+                  console.log('in create_edit_document, getInitialValuesObject, flat.building overlappedkeysMapped eachPageObject, eachBuildingKey, eachOverlappedKey: ', eachPageObject, eachBuildingKey, eachOverlappedKey);
+                  setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                } else {
+                objectReturned[eachOverlappedKey] = flat.building[eachBuildingKey];
+                }
               }
             })
             // assignMultipleOverLappedKeys(overlappedkeysMapped, eachBuildingKey, flat.building[eachBuildingKey], eachPageObject);

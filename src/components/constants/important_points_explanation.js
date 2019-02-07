@@ -2242,8 +2242,8 @@ const ImportantPointsExplanation = {
       baseKey: 'address_site',
     },
 
-    building_name_2: {
-      name: 'building_name_2',
+    building_name_4: {
+      name: 'building_name_4',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '19.6%', left: '43.5%', width: '24.5%', height: '3%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
