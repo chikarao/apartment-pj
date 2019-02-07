@@ -594,15 +594,17 @@ export default (props) => {
       if (flat.building) {
         if (flat.building.inspections) {
           // const inspection = getInspection(flat.building.inspections, 'jp');
-          const inspection = getInspection(flat.building.inspections, Documents[documentKey].baseLanguage);
-          const inspectionTranslation = getInspection(flat.building.inspections, documentLanguageCode);
+          let inspection = {};
+          let inspectionTranslation = {};
+          inspection = getInspection(flat.building.inspections, Documents[documentKey].baseLanguage);
+          inspectionTranslation = getInspection(flat.building.inspections, documentLanguageCode);
           // console.log('in create_edit_document, getInitialValuesObject, inspection, flat.building.inspections: ', inspection, flat.building.inspections);
-          inspection ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
-          inspectionTranslation ? (objectReturned.building_inspection_summary_translation = inspectionTranslation.inspection_summary) : (objectReturned.building_inspection_summary_translation = '');
+          !_.isEmpty(inspection) ? (objectReturned.building_inspection_summary = inspection.inspection_summary) : (objectReturned.building_inspection_summary = '');
+          !_.isEmpty(inspectionTranslation) ? (objectReturned.building_inspection_summary_translation = inspectionTranslation.inspection_summary) : (objectReturned.building_inspection_summary_translation = '');
           const inspectionDateFormatted = formatDateForForm(new Date(inspection.inspection_date))
-          inspection ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
+          !_.isEmpty(inspection) ? (objectReturned.inspection_date = inspectionDateFormatted) : (objectReturned.inspection_date = '');
 
-          if (inspection) {
+          if (!_.isEmpty(inspection)) {
             _.each(Object.keys(inspection), key => {
               // for each inspection in boooking
               if (eachPageObject[key]) {
@@ -611,11 +613,13 @@ export default (props) => {
                 objectReturned[key] = inspection[key];
                 if (eachPageObject[key].translation_column) {
                   // if building language code equal base language for the document
-                  baseRecord = flat.building;
-                  const eachRecordKey = key;
-                  const eachFieldKey = eachPageObject[key].translation_column
-                  // fill translation field with translations
-                  setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                  // baseRecord = flat.building;
+                  // const eachRecordKey = key;
+                  // const eachFieldKey = eachPageObject[key].translation_column
+                  // // fill translation field with translations
+                  // setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+                  objectReturned[key] = inspection[key]
+                  objectReturned[eachPageObject[key].translation_field] = inspectionTranslation[key]
                 }  // end of if translation column
               }
               // handle overlapped keys ie inspection size and size_1, size_2, unit, unit_1, unit_2
@@ -718,7 +722,7 @@ export default (props) => {
           } // end of if overlappedkeysMapped[eachBuildingKey]
         }); // end of each flat.building
         // management in impotant points is the building managmenent,
-        // not the property manager in fixed term contract 
+        // not the property manager in fixed term contract
         if (eachPageObject.building_management_company_address) {
           const flatBuildingAddress = createAddress(flat.building);
           baseRecord = flat.building;

@@ -2912,11 +2912,179 @@ const ImportantPointsExplanationBilingual = {
       wooden: true,
       // attributes; keep just in case
       // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    }
+  },
+  9: {
+    inspector_name: {
+      name: 'inspector_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '5.5%', left: '32.5%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'inspections',
+      // // name is the column in model building language
+      translation_column: 'inspector_name',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'inspector_name_translation',
     },
 
+    inspector_name_translation: {
+      name: 'inspector_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '7%', left: '32.5%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    inspector_trainer: {
+      name: 'inspector_trainer',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '10%', left: '32%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'inspections',
+      // // name is the column in model building language
+      translation_column: 'inspector_trainer',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'inspector_trainer_trainer',
+    },
+
+    inspector_trainer_trainer: {
+      name: 'inspector_trainer_trainer',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '13.6%', left: '32%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'inspections',
+      // // name is the column in model building language
+      translation_column: 'inspector_trainer',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'inspector_name_translation',
+    },
+
+    inspector_certificate_number: {
+      name: 'inspector_certificate_number',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '12%', left: '67%', width: '23.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_qualification_type: {
+      name: 'architect_qualification_type',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'Class 1', enclosed_text: 'X', top: '17.7%', left: '33.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'Class 2', enclosed_text: 'X', top: '17.7%', left: '46.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Wooden Strcture', enclosed_text: 'X', top: '17.7%', left: '58.5%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+    },
+
+    architect_type: {
+      name: 'architect_type',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'Minister Registration', enclosed_text: 'X', top: '20.8%', left: '51.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'Governor Registration', enclosed_text: 'X', top: '24.4%', left: '51.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        // 2: { params: { val: 'Wooden Strcture', enclosed_text: 'X', top: '82.7%', left: '58.3%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        // 3: { params: { val: 'others', top: '27.3%', left: '27%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      height: '23px',
+      component: 'DocumentChoices',
+    },
+
+    architect_registration_number: {
+      name: 'architect_registration_number',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '22.8%', left: '68.2%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_name: {
+      name: 'architect_office_name',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '27.7%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+      translation_record: 'inspections',
+      // // name is the column in model building language
+      translation_column: 'architect_office_name',
+      // // translation field is the field in the document that takes the translation
+      translation_field: 'architect_office_name_translation',
+    },
+
+    architect_office_name_translation: {
+      name: 'architect_office_name_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '29.3%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_registration_jurisdiction: {
+      name: 'architect_office_registration_jurisdiction',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '31%', left: '37.5%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_registration_jurisdiction_translation: {
+      name: 'architect_office_registration_jurisdiction_translation',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '32.6%', left: '37.5%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
+
+    architect_office_registration: {
+      name: 'architect_office_registration',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '31%', left: '68.2%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      charLimit: 100,
+    },
 
   },
-  9: {},
   10: {},
   11: {},
 };
