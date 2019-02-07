@@ -45,7 +45,7 @@ class BuildingLanguageEditModal extends Component {
     delta.id = this.props.initialValues.id;
     // building.id
     delta.building_id = this.props.building.id;
-    console.log('in edit flat, handleFormSubmit, delta: ', delta);
+    // console.log('in edit flat, handleFormSubmit, delta: ', delta);
     const dataToSend = { building_language: delta, flat_id: this.props.flat.id }
     this.props.editBuildingLanguage(dataToSend, () => {
       this.handleFormSubmitCallback();

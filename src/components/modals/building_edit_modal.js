@@ -36,7 +36,9 @@ class BuildingEditModal extends Component {
       if (data[each] !== this.props.initialValues[each]) {
         delta[each] = data[each]
       }
-    })
+    });
+
+    delta.id = this.props.flat.building.id;
     const dataToBeSent = { building: delta, building_id: this.props.flat.building.id, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     // console.log('in BuildingEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);

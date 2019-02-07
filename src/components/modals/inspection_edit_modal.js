@@ -37,6 +37,7 @@ class InspectionEditModal extends Component {
         delta[each] = data[each]
       }
     })
+    delta.id = this.props.initialValues.id;
     const dataToBeSent = { inspection: delta, flat_id: this.props.flat.id };
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in InspectionEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);

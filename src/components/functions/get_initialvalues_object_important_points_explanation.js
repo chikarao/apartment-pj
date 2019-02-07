@@ -109,7 +109,7 @@ export default (props) => {
     let addressFieldArray = [];
     // if (flat.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
     // change order of address depending on country
-    const country = subjectObject.country.toLowerCase()
+    const country = subjectObject.country ? subjectObject.country.toLowerCase() : '';
     function readIntoArray() {
       const addressArray = [];
       _.each(addressFieldArray, each => {
@@ -122,7 +122,7 @@ export default (props) => {
       });
       return addressArray;
     }
-    let address;
+    let address = {};
     if (country == 'japan' || country == '日本' || country == '日本国' || country == 'japon') {
       addressFieldArray = ['zip', 'state', 'city', 'address2', 'address1'];
       const addressArray = readIntoArray(addressFieldArray);
@@ -380,6 +380,36 @@ export default (props) => {
     }
   }
 
+  function setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject, }) {
+    objectReturned[eachAddressKey] = address;
+    // if address key in overlapped keys has translation field
+    if (eachPageObject[eachAddressKey].translation_field) {
+      // if flat language code is the document base language
+      if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
+        const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
+        // get address1, city, state, zip in one string
+        const addressTranslation = createAddress(recordLanguage);
+        objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation;
+      // else if baseRecord language code is the document translated language
+      } else if (baseRecord.language_code == documentLanguageCode) {
+        const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, recordLanguage: ', recordLanguage);
+        const addressTranslation = createAddress(recordLanguage);
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, addressTranslation: ', addressTranslation);
+        objectReturned[eachAddressKey] = addressTranslation;
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, eachPageObject[eachAddressKey]: ', eachPageObject[eachAddressKey]);
+        objectReturned[eachPageObject[eachAddressKey].translation_field] = address;
+      } else {
+        const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
+        const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
+        const addressTranslation = createAddress(recordLanguage);
+        const addressTranslation1 = createAddress(recordLanguage1);
+        objectReturned[eachAddressKey] = addressTranslation;
+        objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation1;
+      }
+    }
+  }
+
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! Start of instructions to assign values!!!!!!!!!!!!!!!
   // get keys that overlap in documentFields e.g. address and address_1;
@@ -536,9 +566,9 @@ export default (props) => {
         }
       }
       // flat address
-      const address = createAddress(flat);
+      const flatAddress = createAddress(flat);
 
-      if (address) {
+      if (flatAddress) {
         // objectReturned.address = address;
         objectReturned.address_check = 'address_exists';
         assignMultipleOverLappedKeys(overlappedkeysMapped, 'address_check', 'address_exists', {});
@@ -554,33 +584,10 @@ export default (props) => {
       _.each(overlappedkeysMapped[attribute], eachAddressKey => {
         // if pageObject has add in it
         if (eachPageObject[eachAddressKey]) {
-          objectReturned[eachAddressKey] = address;
+          objectReturned[eachAddressKey] = flatAddress;
+          const address = flatAddress;
           // if address key in overlapped keys has translation field
-          if (eachPageObject[eachAddressKey].translation_field) {
-            // if flat language code is the document base language
-            if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
-              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
-              // get address1, city, state, zip in one string
-              const addressTranslation = createAddress(recordLanguage);
-              objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation;
-            // else if baseRecord language code is the document translated language
-            } else if (baseRecord.language_code == documentLanguageCode) {
-              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, recordLanguage: ', recordLanguage);
-              const addressTranslation = createAddress(recordLanguage);
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, addressTranslation: ', addressTranslation);
-              objectReturned[eachAddressKey] = addressTranslation;
-              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject[eachAddressKey]: ', eachPageObject[eachAddressKey]);
-              objectReturned[eachPageObject[eachAddressKey].translation_field] = address;
-            } else {
-              const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
-              const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
-              const addressTranslation = createAddress(recordLanguage);
-              const addressTranslation1 = createAddress(recordLanguage1);
-              objectReturned[eachAddressKey] = addressTranslation;
-              objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation1;
-            }
-          }
+          setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject });
         }
       });
 
@@ -604,7 +611,7 @@ export default (props) => {
                 objectReturned[key] = inspection[key];
                 if (eachPageObject[key].translation_column) {
                   // if building language code equal base language for the document
-                  const baseRecord = flat.building;
+                  baseRecord = flat.building;
                   const eachRecordKey = key;
                   const eachFieldKey = eachPageObject[key].translation_column
                   // fill translation field with translations
@@ -710,9 +717,58 @@ export default (props) => {
             // assignMultipleOverLappedKeys(overlappedkeysMapped, eachBuildingKey, flat.building[eachBuildingKey], eachPageObject);
           } // end of if overlappedkeysMapped[eachBuildingKey]
         }); // end of each flat.building
+        // management in impotant points is the building managmenent,
+        // not the property manager in fixed term contract 
+        if (eachPageObject.building_management_company_address) {
+          const flatBuildingAddress = createAddress(flat.building);
+          baseRecord = flat.building;
+          const eachAddressKey = 'building_management_company_address';
+          const address = flatBuildingAddress;
+          setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject });
+        }
 
         // end of each Object.keys flat.building
       }
+
+      if (eachPageObject.management_name || eachPageObject.management_company) {
+        // get managment company profile from contractorTranslations state object
+        const contractorType = 'rental_broker';
+        const managementProfile = getManagement(contractorTranslations, language, contractorType);
+        const managementProfileTranslation = getManagement(contractorTranslations, documentLanguageCode, contractorType);
+        objectReturned.management_company = managementProfile.company_name;
+        objectReturned.management_company_translation = managementProfileTranslation.company_name;
+        objectReturned.management_phone = managementProfile.phone;
+        const fullName = managementProfile.last_name.concat(` ${managementProfile.first_name}`);
+        objectReturned.management_name = fullName;
+        const fullNameTranslation = managementProfileTranslation.last_name.concat(` ${managementProfileTranslation.first_name}`);
+        objectReturned.management_name_translation = fullNameTranslation;
+        if (managementProfile.language_code = Documents[documentKey].baseLanguage) {
+          objectReturned.management_registration_number_front = managementProfileTranslation.registration_number_front;
+          objectReturned.management_registration_number = managementProfileTranslation.registration_number;
+        } else {
+          objectReturned.management_registration_number_front = managementProfile.registration_number_front;
+          objectReturned.management_registration_number = managementProfile.registration_number;
+        }
+
+        if (managementProfile.address1 && managementProfile.city) {
+          console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, in managementProfile, managementProfileTranslation: ', managementProfile, managementProfileTranslation);
+          if (managementProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            // fullAddress = fullAddress.concat(`${managementProfile.address1} ${managementProfile.city} ${managementProfile.state} ${managementProfile.zip} ${managementProfile.country}`);
+            fullAddress = fullAddress.concat(`${managementProfile.zip}${managementProfile.state}${managementProfile.city}${managementProfile.address1}`);
+            objectReturned.management_address = fullAddress;
+          }
+        }
+
+        if (managementProfileTranslation.address1 && managementProfileTranslation.city) {
+          console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, managementProfile, in managementProfileTranslation: ', managementProfile, managementProfileTranslation);
+          if (managementProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
+            let fullAddress = ''
+            fullAddress = fullAddress.concat(`${managementProfileTranslation.address1} ${managementProfileTranslation.city} ${managementProfileTranslation.state} ${managementProfileTranslation.zip} ${managementProfileTranslation.country}`);
+            objectReturned.management_address_translation = fullAddress;
+          }
+        }
+      } // end of if management_name
 
       if (eachPageObject.broker_company_name) {
         const contractorType = 'rental_broker';

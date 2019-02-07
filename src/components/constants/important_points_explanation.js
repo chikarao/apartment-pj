@@ -1537,8 +1537,8 @@ const ImportantPointsExplanation = {
       // charLimit: 50,
     },
 
-    building_name_2: {
-      name: 'building_name_2',
+    building_name_1: {
+      name: 'building_name_1',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '13%', left: '31.9%', width: '53.5%', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1587,19 +1587,19 @@ const ImportantPointsExplanation = {
       second_click_off: true,
     },
 
-    address_site: {
-      name: 'address_site',
-      input_type: 'text',
-      choices: {
-        0: { params: { val: 'inputFieldValue', top: '17.9%', left: '31.9%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
-      },
-      className: 'form-control-document',
-      component: 'DocumentChoices',
-      charLimit: 100,
-    },
+    // address_site: {
+    //   name: 'address_site',
+    //   input_type: 'text',
+    //   choices: {
+    //     0: { params: { val: 'inputFieldValue', top: '17.9%', left: '31.9%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+    //   },
+    //   className: 'form-control-document',
+    //   component: 'DocumentChoices',
+    //   charLimit: 100,
+    // },
 
-    building_name_1: {
-      name: 'building_name_1',
+    building_name_2: {
+      name: 'building_name_2',
       input_type: 'text',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '20.4%', left: '43.5%', width: '24.5%', height: '3%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
