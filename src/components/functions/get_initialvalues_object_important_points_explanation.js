@@ -625,6 +625,14 @@ export default (props) => {
               // handle overlapped keys ie inspection size and size_1, size_2, unit, unit_1, unit_2
               if (overlappedkeysMapped[key]) {
                 assignMultipleOverLappedKeys(overlappedkeysMapped, key, inspection[key], {});
+                _.each(overlappedkeysMapped[key], eachOverlappedKey => {
+                  if (eachPageObject[eachOverlappedKey]) {
+                    objectReturned[eachOverlappedKey] = inspection[key];
+                    if (eachPageObject[eachOverlappedKey].translation_field) {
+                      objectReturned[eachPageObject[eachOverlappedKey].translation_field] = inspectionTranslation[key];
+                    }
+                  }
+                })
               }
               // iterate through inspection amenity
               // end of each inspection amenity
