@@ -234,7 +234,7 @@ class CreateEditDocument extends Component {
   }
 
   handleFormSubmit({ data, submitAction }) {
-    // console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
+    console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
     // object to send to API; set flat_id
     // const contractName = 'teishaku-saimuhosho';
     const contractName = Documents[this.props.createDocumentKey].file;
@@ -285,7 +285,7 @@ class CreateEditDocument extends Component {
       // paramsObject.document_field.push(this.props.do)cumentFields[key].params;
       let choice = {};
       _.each(this.props.documentFields[page][key].choices, eachChoice => {
-        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data[key]: ', key, eachChoice, data[key]);
+        console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key]: ', key, eachChoice, data, data[key]);
         // val = '' means its an input element, not a custom field component
         if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
@@ -308,15 +308,35 @@ class CreateEditDocument extends Component {
                 // assign display as an attribute in choice params
                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
                 // paramsObject.document_field.push(choice.params);
+                // if choice is a baseLanguageField ie not a _translation field,
+                // assign Document baseLanguage
+                if (choice.baseLanguageField) {
+                  choice.params.display_text = selectChoice[Documents[this.props.documentKey].baseLanguage];
+                }
+                // console.log('in create_edit_document, handleFormSubmit, if showLocalLanguage: selectChoice', selectChoice);
               }
             } else {
               choice.params.value = '';
             }
               // add params object with the top, left, width etc. to object to send to api
-              // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params, if null: ', eachChoice.params.val, key, data[key], choice.params);
             paramsObject.document_field.push(choice.params);
           }
         } // end of if inputFieldValue
+
+        // if (eachChoice.valName == 'Y' || eachChoice.valName == 'N') {
+        //   choice = eachChoice;
+        //   if (choice.showLocalLanguage) {
+        //     const selectChoice = this.getSelectChoice(choice.selectChoices, data[key]);
+        //     // for equipment section to show both languages
+        //     if (choice.combineLanguages) {
+        //       const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
+        //       const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
+        //       console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
+        //       choice.params.display_text = combinedString
+        //     }
+        //   }
+        //   paramsObject.document_field.push(choice.params);
+        // }
         // in case of button and there is data[key]
         // console.log('in create_edit_document, handleFormSubmit, key, eachChoice.params.val == data[key] eachChoice.params.val, data[key] eachChoice, eachChoice.params: ', key, eachChoice.params.val == data[key], eachChoice.params.val, data[key], eachChoice, eachChoice.params);
         // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val == data[k]: ', eachChoice.params.val == data[key]);
@@ -330,7 +350,7 @@ class CreateEditDocument extends Component {
           dataRefined = data[key];
         }
 
-        if (eachChoice.params.val == dataRefined) {
+        if ((eachChoice.params.val == dataRefined) || (dataRefined == '')) {
           console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
           choice = eachChoice;
           if (this.props.showSavedDocument) {
@@ -341,6 +361,12 @@ class CreateEditDocument extends Component {
             const selectChoice = this.getSelectChoice(choice.selectChoices, dataRefined);
             // assign display as an attribute in choice params
             choice.params.display_text = selectChoice[this.props.documentLanguageCode];
+            if (choice.combineLanguages) {
+              const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
+              const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
+              console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
+              choice.params.display_text = combinedString
+            }
           }
           choice.params.value = data[key];
           choice.params.page = page;

@@ -735,10 +735,10 @@ export default (props) => {
         }); // end of each flat.building
         // management in impotant points is the building managmenent,
         // not the property manager in fixed term contract
-        if (eachPageObject.building_management_company_address) {
+        if (eachPageObject.building_management_address) {
           const flatBuildingAddress = createAddress(flat.building);
           baseRecord = flat.building;
-          const eachAddressKey = 'building_management_company_address';
+          const eachAddressKey = 'building_management_address';
           const address = flatBuildingAddress;
           setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject });
         }

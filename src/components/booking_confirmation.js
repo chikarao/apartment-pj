@@ -34,9 +34,9 @@ class BookingConfirmation extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     const bookingId = parseInt(this.props.match.params.id, 10);
     this.props.fetchBooking(bookingId);
-    console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
+    // console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
     this.props.fetchReviewForBookingByUser(bookingId);
-    this.props.fetchDocumentTranslation('important_points_explanation')
+    this.props.fetchDocumentTranslation('important_points_explanation');
   }
 
   // componentWillUnmount() {

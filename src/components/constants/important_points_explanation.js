@@ -1425,8 +1425,8 @@ const ImportantPointsExplanation = {
       charLimit: 50,
     },
 
-    building_management_company_address: {
-      name: 'building_management_company_address',
+    building_management_address: {
+      name: 'building_management_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '63.2%', left: '35%', width: '55.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2463,6 +2463,22 @@ const ImportantPointsExplanation = {
       degradationKey: true,
       wooden: false,
       baseKey: 'balcony',
+      // attributes; keep just in case
+      // attributes: { names: ['bath_tub'], input_type: 'boolean' }
+    },
+
+    halls: {
+      name: 'halls',
+      input_type: 'boolean',
+      choices: {
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '57%', left: '48.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '57%', left: '51.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '55.2%', left: '54.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+      },
+      className: 'form-control-document',
+      component: 'DocumentChoices',
+      degradationKey: true,
+      wooden: false,
       // attributes; keep just in case
       // attributes: { names: ['bath_tub'], input_type: 'boolean' }
     },

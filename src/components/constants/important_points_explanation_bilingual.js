@@ -1002,8 +1002,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'kitchen',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '16.8%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -1063,8 +1063,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'toilet',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '20.9%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: FlatForDocuments.toilet.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -1124,8 +1124,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'bath_tub',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '25%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.bath_tub.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -1185,8 +1185,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'hot_water',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '29.1%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.hot_water.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -1246,8 +1246,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'kitchen_grill',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '33.2%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.kitchen_grill.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -1307,8 +1307,8 @@ const ImportantPointsExplanationBilingual = {
       name: 'ac',
       input_type: 'string',
       choices: {
-             0: { valName: 'Y', params: { val: true, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true },
-             1: { valName: 'N', params: { val: false, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true }
+             0: { valName: 'Y', params: { val: true, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true, combineLanguages: true },
+             1: { valName: 'N', params: { val: false, top: '37.3%', left: '28.6%', width: '11.1%', height: '24px', margin: '0px', class_name: 'document-rectangle', input_type: 'string' }, selectChoices: Amenities.ac.choices, showLocalLanguage: true, combineLanguages: true }
            },
       className: 'form-control-document',
       component: 'select',
@@ -2152,8 +2152,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 509
     },
 
-    building_management_company_address: {
-      name: 'building_management_company_address',
+    building_management_address: {
+      name: 'building_management_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '92.7%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2163,12 +2163,12 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 50,
       translation_record: 'building_languages',
-      translation_field: 'building_management_company_address_translation',
+      translation_field: 'building_management_address_translation',
 
     },
 
-    building_management_company_address_translation: {
-      name: 'building_management_company_address_translation',
+    building_management_address_translation: {
+      name: 'building_management_address_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '95%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2391,9 +2391,9 @@ const ImportantPointsExplanationBilingual = {
 
     address_1: {
       name: 'address_1',
-      input_type: 'string',
+      input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '18.7%', left: '32.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '18.4%', left: '32.4%', width: '47%', height: '3%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2405,9 +2405,9 @@ const ImportantPointsExplanationBilingual = {
 
     address_1_translation: {
       name: 'address_1_translation',
-      input_type: 'string',
+      input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '21.2%', left: '32.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '21.2%', left: '32.4%', width: '47%', height: '3%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2446,7 +2446,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_name_2',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '24%', left: '43.5%', width: '24.5%', height: '2%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '24%', left: '43.5%', width: '24.5%', height: '2%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2807,8 +2807,8 @@ const ImportantPointsExplanationBilingual = {
       input_type: 'boolean',
       choices: {
         0: { params: { val: 'Yes', enclosed_text: 'X', top: '61%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '61%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '61%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        1: { params: { val: 'No', enclosed_text: 'X', top: '61%', left: '80.3%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '61%', left: '83.8%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2822,9 +2822,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'eaves_rain',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '63.2%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '63.2%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '63.2%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '63.2%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '63.2%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '63.2%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2838,9 +2838,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'balcony_rain',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '65.7%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '65.7%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '65.7%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '65.7%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '65.7%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '65.7%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2854,9 +2854,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'interior_walls_rain',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '68.3%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '68.3%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '68.3%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '68.3%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '68.3%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '68.3%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2870,9 +2870,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'ceilings_rain',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '70.9%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '70.9%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '70.9%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '70.9%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '70.9%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '70.9%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2886,9 +2886,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'roof_truss_rain',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '73.3%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '73.3%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '73.3%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '73.3%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '73.3%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '73.3%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2902,9 +2902,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'roof',
       input_type: 'boolean',
       choices: {
-        0: { params: { val: 'Yes', enclosed_text: 'X', top: '76.3%', left: '76.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'No', enclosed_text: 'X', top: '76.3%', left: '80.1%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '76.3%', left: '83.6%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
+        0: { params: { val: 'Yes', enclosed_text: 'X', top: '76.3%', left: '76.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'No', enclosed_text: 'X', top: '76.3%', left: '80.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Could not be investigated', enclosed_text: 'X', top: '76.3%', left: '83.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } }
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2919,7 +2919,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_name',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '5.4%', left: '32.5%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '5.4%', left: '32.5%', width: '47%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2935,7 +2935,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_name_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '6.9%', left: '32.5%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '6.9%', left: '32.5%', width: '47%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2946,7 +2946,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_trainer',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '10%', left: '32%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '10%', left: '32%', width: '34.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2955,30 +2955,30 @@ const ImportantPointsExplanationBilingual = {
       // // name is the column in model building language
       translation_column: 'inspector_trainer',
       // // translation field is the field in the document that takes the translation
-      translation_field: 'inspector_trainer_trainer'
+      translation_field: 'inspector_trainer_translation'
     },
 
-    inspector_trainer_trainer: {
-      name: 'inspector_trainer_trainer',
+    inspector_trainer_translation: {
+      name: 'inspector_trainer_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '13.6%', left: '32%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '13.6%', left: '32%', width: '34.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 100,
-      translation_record: 'inspections',
-      // // name is the column in model building language
-      translation_column: 'inspector_trainer',
-      // // translation field is the field in the document that takes the translation
-      translation_field: 'inspector_name_translation',
+      // translation_record: 'inspections',
+      // // // name is the column in model building language
+      // translation_column: 'inspector_trainer',
+      // // // translation field is the field in the document that takes the translation
+      // translation_field: 'inspector_name_translation',
     },
 
     inspector_certificate_number: {
       name: 'inspector_certificate_number',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '12%', left: '67%', width: '23.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '12%', left: '67%', width: '23.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3017,7 +3017,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_number',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '22.8%', left: '68.2%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '22.8%', left: '68.2%', width: '16%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3028,7 +3028,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_jurisdiction',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '24.4%', left: '35.1%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '24.4%', left: '35.1%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3044,7 +3044,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_jurisdiction_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '25.9%', left: '35.1%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '25.9%', left: '35.1%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3055,7 +3055,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_name',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '27.7%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '27.7%', left: '32%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3071,7 +3071,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_name_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '29.3%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '29.3%', left: '32%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3082,7 +3082,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration_jurisdiction',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '31%', left: '37.3%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '31%', left: '37.3%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3098,7 +3098,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration_jurisdiction_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '32.6%', left: '37.3%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '32.6%', left: '37.3%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3109,7 +3109,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '31%', left: '68.2%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '31%', left: '68.2%', width: '16%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3131,8 +3131,8 @@ const ImportantPointsExplanationBilingual = {
       baseKey: 'date_prepared',
     },
 
-    building_name_2: {
-      name: 'building_name_2',
+    building_name_3: {
+      name: 'building_name_3',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '15.6%', left: '32.4%', width: '53.5%', class_name: 'document-rectangle', input_type: 'string' } },
@@ -3147,8 +3147,8 @@ const ImportantPointsExplanationBilingual = {
       translation_field: 'building_name_2_translation',
     },
 
-    building_name_2_translation: {
-      name: 'building_name_2_translation',
+    building_name_3_translation: {
+      name: 'building_name_3_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '17.8%', left: '32.4%', width: '53.5%', class_name: 'document-rectangle', input_type: 'string' } },
@@ -3160,9 +3160,9 @@ const ImportantPointsExplanationBilingual = {
 
     address_2: {
       name: 'address_2',
-      input_type: 'string',
+      input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '20.7%', left: '31.7%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '19.8%', left: '31.7%', width: '47%', height: '3.2%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3174,9 +3174,9 @@ const ImportantPointsExplanationBilingual = {
 
     address_2_translation: {
       name: 'address_2_translation',
-      input_type: 'string',
+      input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '23.2%', left: '31.7%', width: '46.3%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '23%', left: '31.7%', width: '46.3%', height: '3.2%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3211,11 +3211,11 @@ const ImportantPointsExplanationBilingual = {
       second_click_off: true,
     },
 
-    building_name_3: {
-      name: 'building_name_3',
+    building_name_4: {
+      name: 'building_name_4',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '26.6%', left: '43%', width: '24.5%', height: '2%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '26.6%', left: '43%', width: '24.5%', height: '2%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3228,11 +3228,11 @@ const ImportantPointsExplanationBilingual = {
       translation_field: 'building_name_3_translation',
     },
 
-    building_name_3_translation: {
-      name: 'building_name_3_translation',
+    building_name_4_translation: {
+      name: 'building_name_4_translation',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '28.8%', left: '43%', width: '24.5%', height: '2%', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '28.8%', left: '43%', width: '24.5%', height: '2%', font_size: '13px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3256,9 +3256,9 @@ const ImportantPointsExplanationBilingual = {
       name: 'construction_2',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'Wooden', enclosed_text: 'X', top: '31.5%', left: '31.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        1: { params: { val: 'S', enclosed_text: 'X', top: '31.5%', left: '49.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
-        2: { params: { val: 'Aluminum', enclosed_text: 'X', top: '31.5%', left: '72.3%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        0: { params: { val: 'RC', enclosed_text: 'X', top: '31.5%', left: '31.2%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        1: { params: { val: 'SRC', enclosed_text: 'X', top: '31.5%', left: '49.7%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
+        2: { params: { val: 'Other', enclosed_text: 'X', top: '31.5%', left: '72.3%', width: '2%', class_name: 'document-rectangle', input_type: 'button' } },
       },
       className: 'form-control-document',
       height: '23px',
@@ -3291,8 +3291,8 @@ const ImportantPointsExplanationBilingual = {
       baseKey: 'floors_underground'
     },
 
-    size_1: {
-      name: 'size_1',
+    size_2: {
+      name: 'size_2',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '35.5%', left: '79.8%', width: '6%', class_name: 'document-rectangle', input_type: 'string' } },
@@ -3328,6 +3328,7 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       height: '23px',
       component: 'DocumentChoices',
+      baseKey: 'flat_type'
     },
 
     // dependentKeys changes other fields to value (self is its own val); eg if below single_family clicked, field flat_sub_types turns to ''
@@ -3607,7 +3608,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_name_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '6%', left: '31.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '6%', left: '31.4%', width: '47%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3624,7 +3625,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_name_1_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '7.5%', left: '31.4%', width: '47%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '7.5%', left: '31.4%', width: '47%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3636,7 +3637,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_trainer_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '10.5%', left: '31.4%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '10.5%', left: '31.4%', width: '34.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3653,7 +3654,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_trainer_1_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '14.1%', left: '31.4%', width: '34.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '14.1%', left: '31.4%', width: '34.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3665,7 +3666,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'inspector_certificate_number_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '12.5%', left: '67%', width: '23.4%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '12.5%', left: '67%', width: '23.4%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3707,7 +3708,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_number_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '25%', left: '69%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '25%', left: '69%', width: '16%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3719,7 +3720,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_jurisdiction_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '26.4%', left: '34.3%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '26.4%', left: '34.3%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3735,7 +3736,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_registration_jurisdiction_1_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '27.9%', left: '34.3%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '27.9%', left: '34.3%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3746,7 +3747,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_name_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '29.9%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '29.9%', left: '32%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3763,7 +3764,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_name_1_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '31.5%', left: '32%', width: '50%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '31.5%', left: '32%', width: '50%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3775,7 +3776,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration_jurisdiction_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '33.9%', left: '37.1%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '33.9%', left: '37.1%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3791,7 +3792,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration_jurisdiction_1_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '35.1%', left: '37.1%', width: '16%', text_align: 'right', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '35.1%', left: '37.1%', width: '16%', text_align: 'right', height: '1.6%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -3802,7 +3803,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'architect_office_registration_1',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '33.8%', left: '69%', width: '16%', class_name: 'document-rectangle wrap-textarea', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '33.8%', left: '69%', width: '16%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
