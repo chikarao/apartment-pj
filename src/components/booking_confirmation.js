@@ -97,27 +97,40 @@ class BookingConfirmation extends Component {
   renderEachBasicLine() {
     const { date_start, date_end, id, facilities } = this.props.bookingData;
     const { description, area, beds, rooms, layout, city, state, country } = this.props.bookingData.flat;
+    const { appLanguageCode } = this.props;
     const facilitiesInStringArray = this.getFacilityStrings(facilities);
     console.log('in booking_confirmation renderEachBasicLine, facilitiesInStringArray: ', facilitiesInStringArray);
     const addressString = city + ', ' + state
     // const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
 
+    // const lineArray = [
+    //   { title: 'Description:', data: description },
+    //   { title: 'Area:', data: area },
+    //   { title: 'City/State:', data: addressString },
+    //   { title: 'Beds:', data: beds },
+    //   { title: 'Rooms:', data: rooms },
+    //   { title: 'Layout:', data: layout },
+    //   { title: 'Date Start:', data: date_start },
+    //   { title: 'Date End:', data: date_end },
+    //   { title: 'Booking ID:', data: id },
+    //   { title: 'Listing ID:', data: this.props.bookingData.flat.id }
+    // ];
     const lineArray = [
-      { title: 'Description:', data: description },
-      { title: 'Area:', data: area },
-      { title: 'City/State:', data: addressString },
-      { title: 'Beds:', data: beds },
-      { title: 'Rooms:', data: rooms },
-      { title: 'Layout:', data: layout },
-      { title: 'Date Start:', data: date_start },
-      { title: 'Date End:', data: date_end },
-      { title: 'Booking ID:', data: id },
-      { title: 'Listing ID:', data: this.props.bookingData.flat.id }
+      { title: `${AppLanguages.description[appLanguageCode]}:`, data: description },
+      { title: `${AppLanguages.area[appLanguageCode]}:`, data: area },
+      { title: `${AppLanguages.cityState[appLanguageCode]}:`, data: addressString },
+      { title: `${AppLanguages.beds[appLanguageCode]}:`, data: beds },
+      { title: `${AppLanguages.rooms[appLanguageCode]}:`, data: rooms },
+      { title: `${AppLanguages.layout[appLanguageCode]}:`, data: layout },
+      { title: `${AppLanguages.dateStart[appLanguageCode]}:`, data: date_start },
+      { title: `${AppLanguages.dateEnd[appLanguageCode]}:`, data: date_end },
+      { title: `${AppLanguages.bookingId[appLanguageCode]}:`, data: id },
+      { title: `${AppLanguages.listingId[appLanguageCode]}:`, data: this.props.bookingData.flat.id }
     ];
 
 
     if (facilitiesInStringArray.length > 0) {
-      const object = { title: 'Facilities:', data: '' };
+      const object = { title: AppLanguages.facilities[appLanguageCode], data: '' };
       lineArray.splice((lineArray.length - 2), 0, object);
       _.each(facilitiesInStringArray, eachFacilityString => {
         const facilityObject = { title: '', data: eachFacilityString };
@@ -156,6 +169,7 @@ class BookingConfirmation extends Component {
 
   renderEachTenantLine(profile) {
     const { birthday, city, state, country } = profile;
+    const { appLanguageCode } = this.props;
     // const { description, area, beds } = bookingData.flat;
     const age = CalculateAge(birthday);
     console.log('in booking_confirmation renderEachTenantLine, age: ', age);
@@ -163,9 +177,9 @@ class BookingConfirmation extends Component {
     const numberOfTenants = this.getNumberOfTenants(this.props.bookingData, profile)
 
     const lineArray = [
-      { title: 'Age', data: age },
-      { title: 'From', data: addressString },
-      { title: 'Number of Tenants', data: numberOfTenants },
+      { title: AppLanguages.age[appLanguageCode], data: age },
+      { title: AppLanguages.tenantFrom[appLanguageCode], data: addressString },
+      { title: AppLanguages.numberTenants[appLanguageCode], data: numberOfTenants },
       // { title: 'State', data: state },
       // { title: 'Country', data: country },
     ];
@@ -184,32 +198,35 @@ class BookingConfirmation extends Component {
   }
 
   renderBookingBasicInformation() {
+    const { appLanguageCode } = this.props;
     return (
       <div className="booking-confirmation-each-box">
-        <div className="booking-request-box-title">Basic Booking Request Information</div>
+        <div className="booking-request-box-title">{AppLanguages.basicBookingRequestInformation[appLanguageCode]}</div>
         {this.renderEachBasicLine()}
       </div>
     );
   }
 
   renderNameBox(profile) {
+    const { appLanguageCode } = this.props;
     return (
       <div className="booking-confirmation-name-box">
         <div className="booking-confirmation-name-box-each-line">
-          First Name: {profile.first_name}
+            {AppLanguages.firstName[appLanguageCode]}: {profile.first_name}
         </div>
         <div className="booking-confirmation-name-box-each-line">
-          Last Name: {profile.last_name}
+            {AppLanguages.lastName[appLanguageCode]}: {profile.last_name}
         </div>
       </div>
     );
   }
 
   renderTenantIntroduction(profile) {
+    const { appLanguageCode } = this.props;
     return (
       <div className="booking-confirmation-profile-introduction">
         <div className="booking-request-box-each-line-title">
-          Introduction:
+          {AppLanguages.introduction[appLanguageCode]}:
         </div>
         {profile.introduction}
       </div>
@@ -243,9 +260,11 @@ class BookingConfirmation extends Component {
     // for some reason, cloudinary image does not render correctly if image obtained
     // from this.props.bookingData; needs to be passed on by parameter
     const profileToUse = this.getProfileToUse(bookingData.user.profiles);
+    const { appLanguageCode } = this.props;
+
     return (
       <div className="booking-confirmation-each-box">
-        <div className="booking-request-box-title">Proposed Tenant Information</div>
+        <div className="booking-request-box-title">{AppLanguages.proposedTenantInformation[appLanguageCode]}</div>
           <div className="booking-confirmation-profile-top-box">
             <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + bookingData.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
             {this.renderNameBox(profileToUse)}
@@ -317,13 +336,15 @@ class BookingConfirmation extends Component {
   }
 
   renderBookingDocuments() {
+    const { appLanguageCode } = this.props;
+
     if (this.props.bookingData) {
       return (
         <div className="booking-confirmation-each-box">
-          <div className="booking-request-box-title">Rental Documents</div>
+          <div className="booking-request-box-title">{AppLanguages.rentalDocuments[appLanguageCode]}</div>
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
-                Create Documents:
+                {AppLanguages.createDocuments[appLanguageCode]}:
               </div>
               <div className="booking-request-box-each-line-data">
               </div>
@@ -346,7 +367,7 @@ class BookingConfirmation extends Component {
 
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
-                Documents Saved:
+                {AppLanguages.savedDocuments[appLanguageCode]}:
               </div>
               <div className="booking-request-box-each-line-data">
               </div>
@@ -369,12 +390,14 @@ class BookingConfirmation extends Component {
   }
 
   renderBookingApprovals() {
+    const { appLanguageCode } = this.props;
+
     return (
       <div className="booking-confirmation-each-box">
-        <div className="booking-request-box-title">Approvals and Checklist</div>
+        <div className="booking-request-box-title">{AppLanguages.approvalsChecklist[appLanguageCode]}</div>
           <div className="booking-request-box-each-line">
             <div className="booking-request-box-each-line-title">
-              Approve Booking Request
+              {AppLanguages.approveBookingRequest[appLanguageCode]}
             </div>
             <div className="booking-request-box-each-line-data">
               {this.props.bookingData.approved ? 'Approved ✅'
@@ -409,12 +432,12 @@ class BookingConfirmation extends Component {
           </div>
           <div className="booking-confirmation-progress-box">
             <div className="booking-confirmation-progress-box-title">
-              Rental Progress
+                {AppLanguages.rentalProgress[appLanguageCode]}
             </div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>Reservation Request</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>Tenant Approved</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>Contract Delivered</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%', padding: '10px' }}>Signed!</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%', width: 'auto' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%', width: 'auto' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%', width: 'auto' }}>{AppLanguages.documentsDelivered[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%', width: 'auto' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
             <div className="booking-confirmation-progress-box-contents">
               <div className="booking-confirmation-progress-circle" />
               <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
@@ -579,7 +602,7 @@ renderReview() {
 }
 
 renderDocument() {
-  // get agreement chosen by user. Returns array so get first index position below 
+  // get agreement chosen by user. Returns array so get first index position below
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   return (

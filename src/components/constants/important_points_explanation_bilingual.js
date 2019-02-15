@@ -83,7 +83,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_company_name',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '23.5%', left: '19.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '23.5%', left: '20.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -93,7 +93,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_company_name_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '25.7%', left: '19.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '25.7%', left: '20.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -103,7 +103,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_representative_name',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '28.1%', left: '19.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '28.1%', left: '20.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -113,7 +113,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_representative_name_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '30.3%', left: '19.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '30.3%', left: '20.4%', width: '40%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -123,7 +123,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_address_hq',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '33.1%', left: '19.4%', width: '60%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '33.1%', left: '20.4%', width: '60%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -133,7 +133,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_address_hq_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '35.1%', left: '19.4%', width: '60%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '35.1%', left: '20.4%', width: '60%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -143,7 +143,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_registration_number',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '37.7%', left: '19.4%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '37.7%', left: '20.4%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
@@ -153,7 +153,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'broker_registration_date',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '40.7%', left: '19.4%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '40.7%', left: '20.4%', width: '30%', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices'
