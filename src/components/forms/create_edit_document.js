@@ -99,8 +99,8 @@ class CreateEditDocument extends Component {
       } else {
         initialValuesObject[eachField.name] = eachField.value;
       }
-      agreementMappedByName[eachField.name] = eachField
-      agreementMappedById[eachField.id] = eachField
+      agreementMappedByName[eachField.name] = eachField;
+      agreementMappedById[eachField.id] = eachField;
     });
     return { initialValuesObject, agreementMappedByName, agreementMappedById };
   }
@@ -233,6 +233,24 @@ class CreateEditDocument extends Component {
     return delta;
   }
 
+  getSavedDocumentField(choice, key) {
+    const { agreementMappedById } = this.props;
+    let objectReturned = {};
+    // console.log('in create_edit_document, handleFormSubmit, choice : ', choice);
+    // console.log('in create_edit_document, handleFormSubmit, agreementMappedById : ', agreementMappedById);
+    // Iterate through all saved document fields
+    _.each(Object.keys(this.props.agreementMappedById), eachSavedFieldKey => {
+      // console.log('in create_edit_document, handleFormSubmit, eachSavedFieldKey : ', eachSavedFieldKey);
+      // if the name and key match AND the val matches return object 
+      if ((agreementMappedById[eachSavedFieldKey].name == key) && (agreementMappedById[eachSavedFieldKey].val == choice.params.val)) {
+        // console.log('in create_edit_document, handleFormSubmit, agreementMappedById[eachSavedFieldKey] : ', agreementMappedById[eachSavedFieldKey]);
+        objectReturned = agreementMappedById[eachSavedFieldKey];
+        return;
+      }
+    });
+    return objectReturned;
+  }
+
   handleFormSubmit({ data, submitAction }) {
     console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
     // object to send to API; set flat_id
@@ -261,6 +279,7 @@ class CreateEditDocument extends Component {
       // get delta from data and initialValues
       fields = this.getDeltaFields(data);
     } else {
+      // assign all fields to fields for iteration below
       fields = this.props.allFields;
     }
       // console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
@@ -284,9 +303,13 @@ class CreateEditDocument extends Component {
       // this.props.documentFields[key].params.value = data[key];
       // paramsObject.document_field.push(this.props.do)cumentFields[key].params;
       let choice = {};
+      // use page and key from above to get each choice from each document field from Documents[documentKey].form
       _.each(this.props.documentFields[page][key].choices, eachChoice => {
-        console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key]: ', key, eachChoice, data, data[key]);
+        // Boolean to test if field has multiple choices
+        const keyWithMultipleChoices = Object.keys(this.props.documentFields[page][key].choices).length > 1;
+        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key], keyWithMultipleChoices: ', key, eachChoice, data, data[key], keyWithMultipleChoices);
         // val = '' means its an input element, not a custom field component
+        // .val is assigned inputFieldValue if it is not a button
         if (eachChoice.params.val == 'inputFieldValue') {
           choice = eachChoice;
           // add data[key] (user choice) as value in the object to send to API
@@ -342,19 +365,31 @@ class CreateEditDocument extends Component {
         // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val == data[k]: ', eachChoice.params.val == data[key]);
         // console.log('in create_edit_document, handleFormSubmit, typeof eachChoice.params.val, typeof data[k]: ', typeof eachChoice.params.val, typeof data[key]);
         let dataRefined = ''
-        if (data[key] == 'true') {
+        if ((data[key] == 'true') || (data[key] == 't')) {
           dataRefined = true;
-        } else if (data[key] == 'false') {
+        } else if ((data[key] == 'false') || (data[key] == 'f')) {
           dataRefined = false;
         } else {
           dataRefined = data[key];
         }
 
-        if ((eachChoice.params.val == dataRefined) || (dataRefined == '')) {
+        // else if (data[key] == undefined) {
+        //   // for empty input fields
+        //   dataRefined = '';
+        if ((eachChoice.params.val == dataRefined) || (dataRefined == '') || (eachChoice.params.val !== 'inputFieldValue')) {
           console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
           choice = eachChoice;
+          // if this is a saved document on backend ie not newly creating
           if (this.props.showSavedDocument) {
-            choice.params.id = this.props.agreementMappedByName[key].id
+            // if this key has multiple choices
+            if (keyWithMultipleChoices) {
+              // use agreementMappedByName to get id
+              const savedDocumentField = this.getSavedDocumentField(choice, key);
+              // console.log('in create_edit_document, handleFormSubmit, savedDocumentField : ', savedDocumentField);
+              choice.params.id = savedDocumentField.id;
+            } else {
+              choice.params.id = this.props.agreementMappedByName[key].id;
+            }
           }
           if (choice.showLocalLanguage) {
             // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
@@ -897,6 +932,7 @@ function mapStateToProps(state) {
       // document key eg fixed_term_rental_contract_jp, form and method for setting initialValues
       documentKey: state.documents.createDocumentKey,
       agreementMappedByName: state.documents.agreementMappedByName,
+      agreementMappedById: state.documents.agreementMappedById,
       formIsDirty,
       // isDirty: isDirty('CreateEditDocument')(state)
     };

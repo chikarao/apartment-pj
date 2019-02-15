@@ -579,6 +579,7 @@ renderReview() {
 }
 
 renderDocument() {
+  // get agreement chosen by user. Returns array so get first index position below 
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   return (
