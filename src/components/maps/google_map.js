@@ -576,28 +576,47 @@ class GoogleMap extends Component {
 
   setIwDomReadyAddListener(infowindow) {
     google.maps.event.addListener(infowindow, 'domready', () => {
-      // this addDomListener takes display nones some divs in google maps
-      // so that gm-style-iw can be styled enable image to be panned across IW
+      // NOTE: KEEP below just for future reference before Google changed the API
+      // this addDomListener makes display nones of some divs in google maps
+      // so that gm-style-iw can be styled and enable image to be panned across IW
       // gets infowindow element, returns array of HTML so get the first element in array
+      // !!!!!!!! IMPORTANT AS OF 2/19/2019 no need for above code setting display none
+      // on background and shadow elements
+      // just need to assign CSS properties to gm-iw-style, gm-iw-style-c, gm-iw-style-d in sytle.css
       // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-      const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+      // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIw:', gmStyleIw)
+      const gmStyleIwD = document.getElementsByClassName('gm-style-iw-d');
+      // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIwD:', gmStyleIwD)
+      // !!!!! ONLY styling attribute that cannot seem to go to style.css
+      gmStyleIwD[0].style.overflow = '';
+      // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+      // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
+      // // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIw:', gmStyleIw)
+      // const gmStyleIwD = document.getElementsByClassName('gm-style-iw-d');
+      // // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIwD:', gmStyleIwD)
+
       // !!!!!!gmStyleIwAlt to deal with previousSibling of undefined error;
       // somehow, building marker clicks trigger this error
-      const gmStyleIwAlt = document.getElementsByClassName('google-map-gm-style-iw');
-      const iwBackground = gmStyleIw[0] ? gmStyleIw[0].previousSibling : gmStyleIwAlt[0].previousSibling;
-      const nextSibling = gmStyleIw[0] ? gmStyleIw[0].nextSibling : gmStyleIwAlt[0].nextSibling;
+      // const gmStyleIwAlt = document.getElementsByClassName('google-map-gm-style-iw');
+      // const iwBackground = gmStyleIw[0] ? gmStyleIw[0].previousSibling : gmStyleIwAlt[0].previousSibling;
+      // const nextSibling = gmStyleIw[0] ? gmStyleIw[0].nextSibling : gmStyleIwAlt[0].nextSibling;
       //gets the element with the white background and assign style of display none
-      const iwBackgroundWhite = iwBackground.lastChild;
-      iwBackgroundWhite.style.display = 'none';
+      // console.log('in googlemap, setIwDomReadyAddListener, iwBackground:', iwBackground)
+      // const iwBackgroundWhite = iwBackground.lastChild;
+      // iwBackgroundWhite.style.display = 'none';
       // get element with shadow behind the IW and assign style of display none;
       //item number is index
-      const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
-      iwBackgroundShadow.style.display = 'none';
+      // const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
+      // iwBackgroundShadow.style.display = 'none';
 
       // name class so that .gm-style-iw styling does not clash with others
-      gmStyleIw[0] ? gmStyleIw[0].setAttribute('class', 'google-map-gm-style-iw') : '';
+      // gmStyleIw[0] ? gmStyleIw[0].setAttribute('class', 'google-map-gm-style-iw') : '';
       // for taking out close button img that is standard with google map
-      nextSibling.setAttribute('class', 'google-map-gm-style-iw-next');
+      // nextSibling.setAttribute('class', 'google-map-gm-style-iw-next');
+      // gmStyleIw[0].style.backgroundColor = 'transparent';
+      // gmStyleIw[0].style.boxShadow = 'none';
+      // gmStyleIw[0].style.maxHeight = 'none';
+      // gmStyleIwD[0].style.maxHeight = 'none';
     }); // end of addlistener
   }
 

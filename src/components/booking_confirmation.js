@@ -434,10 +434,10 @@ class BookingConfirmation extends Component {
             <div className="booking-confirmation-progress-box-title">
                 {AppLanguages.rentalProgress[appLanguageCode]}
             </div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%', width: 'auto' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%', width: 'auto' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%', width: 'auto' }}>{AppLanguages.documentsDelivered[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%', width: 'auto' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsDelivered[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
             <div className="booking-confirmation-progress-box-contents">
               <div className="booking-confirmation-progress-circle" />
               <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />

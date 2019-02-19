@@ -527,22 +527,42 @@ h3 {
   left: 0px !important;
 } */
 /* rename .gm-style-iw so it does not clash with others */
-.google-map-gm-style-iw {
+/* .google-map-gm-style-iw { */
+  /* width: 350px !important; */
+  /* top: -50px !important; */
+  /* bottom: 0px !important; */
+  /* left: 0px !important; */
+/* } */
+.gm-style-iw {
   width: 350px !important;
-  top: -50px !important;
+  /* top: -50px !important; */
+  top: 18px !important;
   /* bottom: 0px !important; */
   left: 0px !important;
-}
-/* change to GM API 10.2018 need to increase max-height on first child
-to override imposed max by API div */
-.google-map-gm-style-iw div:first-child {
-  max-height: 300px !important;
-  overflow: auto;
+  height: 300px !important;
+  max-height: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  max-height: none !important;
 }
 
-.google-map-gm-style-iw-next img {
-  display: none;
+/* .gm-style-iw-c { */
+  /* max-height: none !important; */
+  /* background-color: transparent !important; */
+  /* box-shadow: none !important; */
+  /* max-height: none !important; */
+/* } */
+/* change to GM API 10.2018 need to increase max-height on first child
+to override imposed max by API div */
+.gm-style-iw div:first-child {
+  max-height: 300px !important;
+  /* overflow: auto; */
+  max-height: none !important;
 }
+
+/* .google-map-gm-style-iw-next img {
+  display: none;
+} */
 
 /* .gm-style-iw + div {
   display: none;
