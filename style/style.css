@@ -667,7 +667,7 @@ to override imposed max by API div */
 
 #infowindow-box-building-box {
   background-color: white !important;
-  height: 225px !important;
+  height: 230px !important;
   /* height: 80% !important; */
   /* width: 330px !important; */
   width: 100%;
@@ -2822,12 +2822,9 @@ form {
   margin: 20px auto 20px auto;
 }
 
-
-
 .booking-confirmation-document-create-box {
   /* color: blue; */
   margin: 0 0 10px 0;
-
 }
 
 .booking-request-box-document-language-select {
@@ -3562,8 +3559,9 @@ form {
   margin: 15px;
   float: right;
 }
+
 .profile-dropzone-area div:first-child:hover {
-text-decoration: underline;
+  text-decoration: underline;
 }
 
 .my-page-profile-ul {
@@ -4277,12 +4275,13 @@ text-decoration: underline;
 .test-image-pdf-jpg {
   width: auto;
   height: auto;
-  margin: 20px auto 0 auto;
+  margin: 0px auto 20px auto;
   overflow: hidden;
   overflow-y: scroll;
   overflow-x: scroll;
   display: flex;
   flex-direction: column;
+  border-radius: 4px;
 }
 
 .test-image-pdf-jpg-background {
@@ -4293,11 +4292,16 @@ text-decoration: underline;
   height: 842px; */
   position: relative;
 }
-.test-image-pdf-jpg-background form{
+
+.test-image-pdf-jpg-background form {
   width: auto;
   height: auto;
   /* position: relative; */
 }
+
+/* .booking-confirmation-render-document-box {
+  text-align: center;
+} */
 /*
 .test-image-pdf-jpg input {
   width: 100px;
@@ -4305,6 +4309,70 @@ text-decoration: underline;
   border-radius: 5px;
 } */
 
+.document-insert-box {
+  /* position: absolute; */
+  width: 30%;
+  height: 13%;
+  /* top: 1%;
+  left: 69%; */
+  border: 1.5px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  margin: 20px auto 0 auto;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.document-insert-box-title {
+  /* border: 1.5px solid #ccc; */
+  font-weight: bold;
+  width: 100%;
+  height: 20%;
+}
+
+.document-insert-box-documents {
+  width: 100%;
+  flex-grow: 1;
+  overflow-y: scroll;
+  overflow: hidden;
+}
+
+.document-insert-box-upload-link {
+  width: 100%;
+  height: 20%;
+  color: blue;
+}
+
+.document-insert-box-upload-link:hover {
+  color: gray;
+}
+
+.document-dropzone-area {
+  display: flex;
+  justify-content: center;
+}
+
+.document-dropzone-area div:first-child {
+  width: 200px !important;
+  height: 25px !important;
+  border-color: transparent !important;
+  margin: 5px;
+  /* float: right; */
+  height: 20px !important;
+  width: 100px !important;
+}
+
+.document-dropzone-area div:first-child:hover {
+  text-decoration: underline;
+}
+
+.create-edit-document-insert-box-documents-each {
+  width: 100%;
+  height: 20px;
+  text-align: left;
+  padding: 3px 5px 0px 5px;
+}
 
 .document-submit-button {
   background-color: blue;

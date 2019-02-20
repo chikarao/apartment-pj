@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import cloudinary from 'cloudinary-core';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
-import sha1 from 'sha1';
+// import sha1 from 'sha1';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -31,7 +31,6 @@ class UploadForProfile extends Component {
       this.props.showLoading();
       // document.location.reload()
       console.log('in UploadForProfile, createImageCallback, create image completed');
-
   }
 
   handleDrop = files => {
@@ -103,30 +102,35 @@ class UploadForProfile extends Component {
     // console.log('in UploadForProfile, handleDrop, axios.all, .then, imageCount ', imageCount);
     // this.props.createImage(imagesArray, imageCount, this.props.flatId, (array, counterCB, id) => this.createImageCallback(array, counterCB, id))
     // this.props.editProfile({ id: this.props.profileId, image: imagesArray[0] }, () => this.createImageCallback())
-    this.props.updateUser({ image: imagesArray[0] }, () => this.createImageCallback())
+    if (this.props.documentUpload) {
+      console.log('in UploadForProfile, handleDrop, in if this.props.documentUpload axios.all, .then, imagesArray ', imagesArray);
+
+    } else {
+      this.props.updateUser({ image: imagesArray[0] }, () => this.createImageCallback())
+    }
     // document.location.reload();
     // this.props.history.push(`/editflat/${this.props.flatId}`);
   });
 }
 //end of handleDrop
 
-    render() {
-      return (
-          <div>
-          <div className="profile-dropzone-area">
-            <Dropzone
-              onDrop={this.handleDrop}
-              // multiple
-              accept="image/*"
-              // className="dropzone"
-            // style={styles.dropzone}
-            >
-              <p><br/>{AppLanguages.changeProfilePicture[this.props.appLanguageCode]}</p>
-            </Dropzone>
-          </div>
-          </div>
-      );
-    }
+render() {
+  return (
+      <div>
+      <div className={this.props.documentUpload ? 'document-dropzone-area' : 'profile-dropzone-area'}>
+        <Dropzone
+          onDrop={this.handleDrop}
+          // multiple
+          accept={this.props.documentUpload ? '.pdf' : 'image/*'}
+          // className="dropzone"
+        // style={styles.dropzone}
+        >
+        {this.props.documentUpload ? AppLanguages.uploadPdf[this.props.appLanguageCode] : <p><br/>{AppLanguages.changeProfilePicture[this.props.appLanguageCode]}</p>}
+        </Dropzone>
+      </div>
+      </div>
+  );
+}
 }
 
 function mapStateToProps(state) {

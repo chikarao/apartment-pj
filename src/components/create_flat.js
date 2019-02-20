@@ -12,6 +12,8 @@ import Amenities from './constants/amenities';
 import Languages from './constants/languages';
 import RenderDropzoneInput from './images/render_dropzone_input';
 import AppLanguages from './constants/app_languages';
+import globalConstants from './constants/global_constants';
+
 
 // const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 // const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -21,7 +23,8 @@ import AppLanguages from './constants/app_languages';
 // import Upload from './images/upload';
 
 const FILE_FIELD_NAME = 'files';
-const ROOT_URL = 'http://localhost:3000';
+// const ROOT_URL = 'http://localhost:3000';
+const ROOT_URL = globalConstants.rootUrl;
 // Amenities imported from /constants
 const AMENITIES = Amenities;
 
@@ -107,10 +110,10 @@ class CreateFlat extends Component {
 
     geocoder.geocode({ 'address': addressString }, function (results, status) {
       if (status === 'OK') {
-        console.log('in createflat, geocoder, status:', status);
-        console.log('in createflat, geocoder, results:', results);
-        console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lat());
-        console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lng());
+        // console.log('in createflat, geocoder, status:', status);
+        // console.log('in createflat, geocoder, results:', results);
+        // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lat());
+        // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lng());
         // resultsMap.setCenter(results[0].geometry.location);
         // var marker = new google.maps.Marker({
         //   map: resultsMap,

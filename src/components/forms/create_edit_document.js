@@ -13,6 +13,7 @@ import Documents from '../constants/documents';
 // import SelectField from '../forms/select_field';
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
+// import UploadForProfile from '../images/upload_for_profile';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
 // flatOwner is the title holder of the flat on documents

@@ -162,7 +162,18 @@ import {
   EDIT_AGREEMENT_FIELDS,
   DELETE_AGREEMENT,
   EDIT_HISTORY,
-  FETCH_DOCUMENT_TRANSLATION
+  FETCH_DOCUMENT_TRANSLATION,
+  CREATE_DOCUMENT_INSERT,
+  EDIT_DOCUMENT_INSERT,
+  DELETE_DOCUMENT_INSERT,
+  CREATE_INSERT_FIELD,
+  EDIT_INSERT_FIELD,
+  DELETE_INSERT_FIELD,
+  SHOW_DOCUMENT_INSERT_CREATE_MODAL,
+  SHOW_DOCUMENT_INSERT_EDIT_MODAL,
+  SHOW_INSERT_FIELD_CREATE_MODAL,
+  SHOW_INSERT_FIELD_EDIT_MODAL,
+
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -420,6 +431,20 @@ export function showBuildingLanguageEditModal() {
 
   //flip state boolean
   return { type: SHOW_BUILDING_LANGUAGE_EDIT_MODAL };
+}
+
+export function showDocumentInsertCreateModal() {
+  console.log('in actions index, showDocumentInsertCreateModal:');
+
+  //flip state boolean
+  return { type: SHOW_DOCUMENT_INSERT_CREATE_MODAL };
+}
+
+export function showDocumentInsertEditModal() {
+  console.log('in actions index, showDocumentInsertEditModal:');
+
+  //flip state boolean
+  return { type: SHOW_DOCUMENT_INSERT_EDIT_MODAL };
 }
 
 export function showLoading(fromWhere) {
@@ -2766,6 +2791,7 @@ export function createAgreement(agreementAttributes, callback) {
     });
   };
 }
+
 export function editAgreement(agreementAttributes, callback) {
   console.log('in actions index, editAgreement, agreementAttributes: ', agreementAttributes);
   console.log('in actions index, editAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
@@ -2862,6 +2888,28 @@ export function fetchDocumentTranslation(documentName) {
       });
       // sends back to createreview.js the review_id and the images
       // callback();
+    });
+  };
+}
+
+export function createDocumentInsert(documentInsertAttributes, callback) {
+  console.log('in actions index, createDocumentInsert, documentInsertAttributes: ', documentInsertAttributes);
+  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = documentInsertAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/document_inserts`, documentInsertAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createDocumentInsert, response: ', response);
+      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_DOCUMENT_INSERT,
+        payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
     });
   };
 }

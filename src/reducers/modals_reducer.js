@@ -34,6 +34,8 @@ import {
   SELECTED_BUILDING_LANGUAGE_ID,
   SELECTED_BUILDING_ID,
   BUILDING_LANGUAGE_TO_EDIT_ID,
+  SHOW_DOCUMENT_INSERT_CREATE_MODAL,
+  SHOW_DOCUMENT_INSERT_EDIT_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -166,10 +168,16 @@ export default function (
       return { ...state, showBuildingLanguageEditModal: !state.showBuildingLanguageEditModal };
 
     case SELECTED_BUILDING_LANGUAGE_ID:
-    return { ...state, selectedBuildingLanguageId: action.payload };
+      return { ...state, selectedBuildingLanguageId: action.payload };
 
     case SELECTED_BUILDING_ID:
-    return { ...state, selectedBuildingId: action.payload };
+      return { ...state, selectedBuildingId: action.payload };
+
+    case SHOW_DOCUMENT_INSERT_CREATE_MODAL:
+    return { ...state, showDocumentInsertCreateModal: !state.showDocumentInsertCreateModal };
+
+    case SHOW_DOCUMENT_INSERT_EDIT_MODAL:
+    return { ...state, showDocumentInsertEditModal: !state.showDocumentInsertEditModal };
 
     default:
       return state;

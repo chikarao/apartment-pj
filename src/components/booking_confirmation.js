@@ -13,6 +13,10 @@ import Facility from './constants/facility';
 import Documents from './constants/documents';
 import AppLanguages from './constants/app_languages';
 import Languages from './constants/languages';
+// import UploadForProfile from './images/upload_for_profile';
+import DocumentInsertCreateModal from './modals/document_insert_create_modal';
+
+
 // import DocumentForm from './constants/document_form';
 
 class BookingConfirmation extends Component {
@@ -28,6 +32,7 @@ class BookingConfirmation extends Component {
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
     this.handleEditReviewClick = this.handleEditReviewClick.bind(this);
     this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
+    this.handleUploadPdfLink = this.handleUploadPdfLink.bind(this);
   }
 
   componentDidMount() {
@@ -360,7 +365,6 @@ class BookingConfirmation extends Component {
                {this.renderDocumentLanguageSelect()}
               </select>
             </div>
-
             <div className="booking-confirmation-document-box">
               {this.renderEachAgreementToCreate()}
             </div>
@@ -601,25 +605,64 @@ renderReview() {
   }
 }
 
+renderEachUploadedDocument(agreement) {
+  return _.map(agreement.document_inserts, eachInsert => {
+    return (
+      <div key={eachInsert.id} className="create-edit-document-insert-box-documents-each">
+        {eachInsert.insert_name}
+      </div>
+    );
+  });
+}
+
+handleUploadPdfLink() {
+  this.props.showDocumentInsertCreateModal();
+}
+
+renderInsertBox(agreement) {
+  // <div className="create-edit-document-insert-box-upload-link">
+  //   <UploadForProfile
+  //     // pass props to indicate uploading for documents not profile
+  //     documentUpload
+  //   />
+  // </div>
+  return (
+    <div className="document-insert-box">
+      <div className="document-insert-box-title">
+        {AppLanguages.insertDocuments[this.props.appLanguageCode]}
+      </div>
+      <div className="document-insert-box-upload-link" onClick={this.handleUploadPdfLink}>
+        Upload PDF
+      </div>
+      <div className="document-insert-box-documents">
+        {this.renderEachUploadedDocument(agreement)}
+      </div>
+    </div>
+  );
+}
+
 renderDocument() {
   // get agreement chosen by user. Returns array so get first index position below
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   return (
-    <CreateEditDocument
-      showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
-      closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
-      goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
-          // console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
-        this.setState({ showDocument: !this.state.showDocument }, () => {
-          // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
-        });
-      })}
-      setAgreementId={(id) => this.setState({ agreementId: id })}
-      showSavedDocument={this.state.showSavedDocument}
-      agreementId={this.state.agreementId}
-      agreement={agreementArray[0]}
-    />
+    <div className="booking-confirmation-render-document-box">
+      {this.renderInsertBox(agreementArray[0])}
+      <CreateEditDocument
+        showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+        closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
+        goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+            // console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          this.setState({ showDocument: !this.state.showDocument }, () => {
+            // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          });
+        })}
+        setAgreementId={(id) => this.setState({ agreementId: id })}
+        showSavedDocument={this.state.showSavedDocument}
+        agreementId={this.state.agreementId}
+        agreement={agreementArray[0]}
+      />
+    </div>
   );
 }
 
@@ -690,6 +733,16 @@ handleSavedDocumentShowClick(event) {
 //   );
 // }
 
+renderDocumentInsertCreateForm() {
+  console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
+  return (
+    <DocumentInsertCreateModal
+      show={this.props.showDocumentInsertCreate}
+      agreementId={this.state.agreementId}
+    />
+  );
+}
+
 render() {
   return (
     // {this.renderReview()}
@@ -697,6 +750,7 @@ render() {
       {this.renderReviewEditModal()}
       {this.renderBookingData()}
       {this.state.showDocument ? this.renderDocument() : ''}
+      {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
     </div>
   );
 }
@@ -711,6 +765,7 @@ function mapStateToProps(state) {
       showEditReviewModal: state.modals.showEditReview,
       appLanguageCode: state.languages.appLanguageCode,
       documentLanguageCode: state.languages.documentLanguageCode,
+      showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

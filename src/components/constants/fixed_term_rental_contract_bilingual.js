@@ -20,7 +20,7 @@ const FixedTermRentalContractBilingual = {
                       val: 'documentAttributes',
                       top: '2%',
                       left: '37%',
-                      width: '25%',
+                      width: '30%',
                       // change from input componnet use document-rectange
                       class_name: 'document-rectangle',
                       // !!! height works only with px
