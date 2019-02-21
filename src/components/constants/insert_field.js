@@ -2,7 +2,6 @@
 // object for input of inspections in edit flat, in building section
 
 const InsertField = {
-
   name: {
     name: 'name',
     en: 'Field Name',

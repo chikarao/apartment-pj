@@ -70,6 +70,7 @@ class CreateEditDocument extends Component {
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
+        this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
         const returnedObject = this.getSavedInitialValuesObject({ agreement });
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }

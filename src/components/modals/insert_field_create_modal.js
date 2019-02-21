@@ -259,19 +259,34 @@ function getInitialValues(insertField) {
   return objectReturned;
 }
 
-function getLanguageArray(insertFields, baseInsertField) {
-  let array = [];
-  _.each(insertFields, eachInsertField => {
-    if (eachInsertField.base_record_id == baseInsertField.id) {
-      if (!array.includes(eachInsertField.language_code)) {
-        array.push(eachInsertField.language_code);
-      }
-      if (!array.includes(baseInsertField.language_code)) {
-        array.push(baseInsertField.language_code);
+// function getLanguageArray(insertFields, baseInsertField) {
+//   let array = [];
+//   _.each(insertFields, eachInsertField => {
+//     if (eachInsertField.base_record_id == baseInsertField.id) {
+//       if (!array.includes(eachInsertField.language_code)) {
+//         array.push(eachInsertField.language_code);
+//       }
+//       if (!array.includes(baseInsertField.language_code)) {
+//         array.push(baseInsertField.language_code);
+//       }
+//     }
+//   });
+//   return array;
+// }
+
+function getExistingInsertFieldsObject(insertFields) {
+  let objectReturned = {};
+  _.each(insertFields, eachField => {
+    if (!objectReturned[eachField.name]) {
+      objectReturned[eachField.name] = [];
+      objectReturned[eachField.name].push(eachField.language_code);
+    } else {
+      if (!objectReturned[eachField.name].includes(eachField.language_code)) {
+        objectReturned[eachField.name].push(eachField.language_code);
       }
     }
   });
-  return array;
+  return objectReturned;
 }
 
 // !!!!!! initialValues required for redux form to prepopulate fields
@@ -296,7 +311,8 @@ function mapStateToProps(state) {
     console.log('in InsertFieldCreateModal, mapStateToProps, agreement, documentInsert: ', agreement, documentInsert);
     // console.log('in InsertFieldCreateModal, mapStateToProps, insertField: ', insertField);
     // const existingLanguagesArray = getExistingLanguages(insertFields);
-    // console.log('in InsertFieldCreateModal, mapStateToProps, insertField: ', insertField);
+    const existingInsertFieldsObject = getExistingInsertFieldsObject(documentInsert.insertFields);
+    console.log('in InsertFieldCreateModal, mapStateToProps, existingInsertFieldsObject: ', existingInsertFieldsObject);
     // initialValues = insertField;
     // // initialValues.insertField_date = dateString;
     // console.log('in InsertFieldCreateModal, mapStateToProps, initialValues: ', initialValues);

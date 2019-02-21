@@ -176,7 +176,7 @@ import {
   SELECTED_DOCUMENT_INSERT_ID,
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID,
-
+  FETCH_AGREEMENT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -752,21 +752,21 @@ export function resetPassword({ email, password, token }) {
 }
 
 // Not used but kept for references
-export function fetchMessage() {
-  console.log('in actions index, fetchMessage:');
-
-  return function (dispatch) {
-    axios.get(ROOT_URL, {
-      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-    })
-    .then(response => {
-      dispatch({
-        type: FETCH_MESSAGE,
-        payload: response.data.message
-    });
-  });
-};
-}
+// export function fetchMessage() {
+//   console.log('in actions index, fetchMessage:');
+//
+//   return function (dispatch) {
+//     axios.get(ROOT_URL, {
+//       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//     })
+//     .then(response => {
+//       dispatch({
+//         type: FETCH_MESSAGE,
+//         payload: response.data.message
+//       });
+//     });
+//   };
+// }
 
 // Gets map dimansions (lat, lng, zoom and center);
 // Requred to render map when there are no flats in the panned area
@@ -3009,4 +3009,21 @@ export function selectedInsertFieldId(id) {
 export function selectedAgreementId(id) {
   console.log('in actions index, selectedAgreementId id:', id);
   return { type: SELECTED_AGREEMENT_ID, payload: id };
+}
+
+export function fetchAgreement(id, callback) {
+  console.log('in actions index, fetchAgreement id: ', id);
+  return function (dispatch) {
+    axios.get(`${ROOT_URL}/api/v1/agreements/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to fetchAgreement: ', response.data.data);
+      dispatch({
+        type: FETCH_AGREEMENT,
+        payload: response.data.data
+    });
+    callback();
+  });
+  };
 }

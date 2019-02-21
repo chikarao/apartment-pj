@@ -16,14 +16,16 @@ import {
   EDIT_DOCUMENT_INSERT,
   DELETE_DOCUMENT_INSERT,
   CREATE_INSERT_FIELD,
-  EDIT_INSERT_FIELD
+  EDIT_INSERT_FIELD,
+  FETCH_AGREEMENT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
 export default function (state = {
   selectedBookingDates: { to: null, from: null },
   requiredFields: [],
-  bookingRequestData: {}
+  bookingRequestData: {},
+  agreement: {}
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -98,6 +100,12 @@ export default function (state = {
     case EDIT_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);
     return { ...state, fetchBookingData: action.payload };
+
+    case FETCH_AGREEMENT:
+    // console.log('in booking reducer, state: ', state);
+
+    // return { ...state, agreement: action.payload.agreement, documentInserts: action.payload.document_inserts  };
+    return { ...state, documentInserts: action.payload.document_inserts };
 
     // case SELECTED_ICALENDAR_ID:
     // // console.log('in booking reducer, state: ', state);
