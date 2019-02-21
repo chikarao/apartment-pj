@@ -450,6 +450,21 @@ export function showDocumentInsertEditModal() {
   return { type: SHOW_DOCUMENT_INSERT_EDIT_MODAL };
 }
 
+export function showInsertFieldCreateModal() {
+  console.log('in actions index, showInsertFieldCreateModal:');
+
+  //flip state boolean
+  return { type: SHOW_INSERT_FIELD_CREATE_MODAL };
+}
+
+export function showInsertFieldEditModal() {
+  console.log('in actions index, showDocumentInsertEditModal:');
+
+  //flip state boolean
+  return { type: SHOW_INSERT_FIELD_EDIT_MODAL };
+}
+
+
 export function showLoading(fromWhere) {
   console.log('in actions index, showLoading:', fromWhere);
 
@@ -2909,6 +2924,28 @@ export function createDocumentInsert(documentInsertAttributes, callback) {
       console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_DOCUMENT_INSERT,
+        payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function createInsertField(insertFieldAttributes, callback) {
+  console.log('in actions index, createInsertField, insertFieldAttributes: ', insertFieldAttributes);
+  console.log('in actions index, createInsertField: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  // const { } = insertFieldAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/insert_fields`, insertFieldAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createInsertField, response: ', response);
+      console.log('response to createInsertField, response.data.data: ', response.data.data);
+      dispatch({
+        type: CREATE_INSERT_FIELD,
         payload: response.data.data.booking
       });
       // sends back to createflat.js the flat_id and the images

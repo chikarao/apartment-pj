@@ -16,6 +16,8 @@ import Languages from './constants/languages';
 // import UploadForProfile from './images/upload_for_profile';
 import DocumentInsertCreateModal from './modals/document_insert_create_modal';
 import DocumentInsertEditModal from './modals/document_insert_edit_modal';
+import InsertFieldCreateModal from './modals/insert_field_create_modal';
+// import InsertFieldEditModal from './modals/insert_field_edit_modal';
 
 
 // import DocumentForm from './constants/document_form';
@@ -36,6 +38,7 @@ class BookingConfirmation extends Component {
     this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
     this.handleUploadPdfLink = this.handleUploadPdfLink.bind(this);
     this.handleUploadedPdfClick = this.handleUploadedPdfClick.bind(this);
+    this.handleInsertFieldAddClick = this.handleInsertFieldAddClick.bind(this);
   }
 
   componentDidMount() {
@@ -620,11 +623,38 @@ handleUploadedPdfClick(event) {
   this.setState({ documentInsertId: elementVal, agreementId: elementName });
 }
 
+handleInsertFieldAddClick(event) {
+  this.props.showInsertFieldCreateModal();
+  const clickedElement = event.target;
+  const elementVal = clickedElement.getAttribute('value');
+  const elementName = clickedElement.getAttribute('name');
+  this.props.selectedDocumentInsertId(elementVal);
+  this.props.selectedAgreementId(elementName);
+  this.setState({ documentInsertId: elementVal, agreementId: elementName });
+}
+
+renderEachInsertField() {
+  return (
+    <div className="document-insert-box-documents-each-box-fields-each">Field</div>
+  );
+}
+
 renderEachUploadedPdf(agreement) {
   return _.map(agreement.document_inserts, eachInsert => {
     return (
-      <div key={eachInsert.id} value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-box-documents-each" onClick={this.handleUploadedPdfClick}>
-        {eachInsert.insert_name}
+      <div key={eachInsert.id} className="document-insert-box-documents-each-box-container">
+        <div className="document-insert-box-documents-each-box">
+          <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-box-documents-each" onClick={this.handleUploadedPdfClick}>
+          {eachInsert.insert_name}
+          </div>
+          &nbsp;&nbsp;&nbsp;
+          {eachInsert.main_agreement ? <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-create-field-button" onClick={this.handleInsertFieldAddClick}>{AppLanguages.insertField[this.props.appLanguageCode]}</div> : ''}
+        </div>
+        <div className="document-insert-box-documents-each-box-fields">
+          {this.renderEachInsertField()}
+          {this.renderEachInsertField()}
+          {this.renderEachInsertField()}
+        </div>
       </div>
     );
   });
@@ -769,6 +799,28 @@ renderDocumentInsertEditForm() {
   );
 }
 
+renderInsertFieldCreateForm() {
+  console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
+  return (
+    <InsertFieldCreateModal
+      show={this.props.showInsertFieldCreate}
+      agreementId={this.state.agreementId}
+      documentInsertId={this.state.documentInsertId}
+    />
+  );
+}
+
+renderInsertFieldEditForm() {
+  // console.log('in booking confirmation, renderDocumentInsertEditForm: ');
+  // return (
+  //   <InsertFieldEditModal
+  //     show={this.props.showDocumentInsertEdit}
+  //     agreementId={this.state.agreementId}
+  //     documentInsertId={this.state.documentInsertId}
+  //   />
+  // );
+}
+
 render() {
   return (
     // {this.renderReview()}
@@ -778,6 +830,8 @@ render() {
       {this.state.showDocument ? this.renderDocument() : ''}
       {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
       {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
+      {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
+      {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
     </div>
   );
 }
@@ -794,6 +848,8 @@ function mapStateToProps(state) {
       documentLanguageCode: state.languages.documentLanguageCode,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
+      showInsertFieldCreate: state.modals.showInsertFieldCreateModal,
+      showInsertFieldEdit: state.modals.showInsertFieldEditModal,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

@@ -79,7 +79,7 @@ class DocumentInsertEditModal extends Component {
     // if (this.props.showDocumentInsertEdit) {
       this.props.showDocumentInsertEditModal();
       this.props.selectedDocumentInsertId('');
-      this.props.documentInsertToEditId('');
+      // this.props.documentInsertToEditId('');
       this.setState({ editDocumentInsertCompleted: false });
     // }
   }

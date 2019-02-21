@@ -189,14 +189,14 @@ class DocumentInsertCreateModal extends Component {
     this.props.showLoading();
   }
 
-  renderEditDocumentInsertForm() {
-    console.log('in documentInsert_create_modal, renderEditDocumentInsertForm, this.props.showDocumentInsertCreate: ', this.props.showDocumentInsertCreate);
+  renderCreateDocumentInsertForm() {
+    console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.showDocumentInsertCreate: ', this.props.showDocumentInsertCreate);
     // <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createDocumentInsert[this.props.appLanguageCode] : AppLanguages.addDocumentInsertLanguage[this.props.appLanguageCode]}</h3>
 
     const { handleSubmit } = this.props;
 
     if (this.props.auth) {
-      console.log('in documentInsert_create_modal, renderEditDocumentInsertForm, this.props.flat: ', this.props.flat);
+      console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -231,7 +231,7 @@ class DocumentInsertCreateModal extends Component {
   }
 
 
-  renderPostEditDeleteMessage() {
+  renderPostCreateMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
@@ -254,7 +254,7 @@ class DocumentInsertCreateModal extends Component {
     console.log('in documentInsert_create_modal, render this.state.createDocumentInsertCompleted: ', this.state.createDocumentInsertCompleted);
     return (
       <div>
-        {this.state.createDocumentInsertCompleted ? this.renderPostEditDeleteMessage() : this.renderEditDocumentInsertForm()}
+        {this.state.createDocumentInsertCompleted ? this.renderPostCreateMessage() : this.renderCreateDocumentInsertForm()}
       </div>
     );
   }

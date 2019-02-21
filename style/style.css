@@ -4368,17 +4368,56 @@ form {
   text-decoration: underline;
 }
 
-.document-insert-box-documents-each {
+.document-insert-box-documents-each-box-container {
   width: 100%;
-  height: 20px;
+  height: auto;
   text-align: left;
   padding: 3px 5px 0px 5px;
-  color: blue
+  display: flex;
+  flex-direction: column;
+}
+
+.document-insert-box-documents-each-box {
+  width: 100%;
+  height: 30px;
+  text-align: left;
+  padding: 3px 5px 0px 5px;
+  color: blue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.document-insert-box-documents-each-box-fields {
+  padding: 0 0 0 30px;
+}
+
+.document-insert-box-documents-each-box-fields-each {
+  color: blue;
+}
+
+.document-insert-box-documents-each-box-fields-each:hover {
+  color: gray;
+  text-decoration: underline;
 }
 
 .document-insert-box-documents-each:hover {
   color: gray;
   text-decoration: underline;
+}
+
+.document-insert-create-field-button {
+  border: 1.5px solid #ccc;
+  height: 25px;
+  width: auto;
+  color: gray;
+  padding: 1px 4px 0 4px;
+  border-radius: 4px;
+}
+
+.document-insert-create-field-button:hover {
+  border: 1.5px solid gray;
+  color: blue;
 }
 
 .document-submit-button {

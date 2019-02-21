@@ -36,6 +36,8 @@ import {
   BUILDING_LANGUAGE_TO_EDIT_ID,
   SHOW_DOCUMENT_INSERT_CREATE_MODAL,
   SHOW_DOCUMENT_INSERT_EDIT_MODAL,
+  SHOW_INSERT_FIELD_CREATE_MODAL,
+  SHOW_INSERT_FIELD_EDIT_MODAL,
   SELECTED_DOCUMENT_INSERT_ID,
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID
@@ -72,6 +74,10 @@ export default function (
     selectedAgreementId: '',
     selectedDocumentInsertId: '',
     selectedInsertFieldId: '',
+    showInsertFieldCreateModal: '',
+    showInsertFieldEditModal: '',
+    showDocumentInsertCreateModal: '',
+    showDocumentInsertEditModal: '',
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -184,6 +190,12 @@ export default function (
 
     case SHOW_DOCUMENT_INSERT_EDIT_MODAL:
     return { ...state, showDocumentInsertEditModal: !state.showDocumentInsertEditModal };
+
+    case SHOW_INSERT_FIELD_CREATE_MODAL:
+    return { ...state, showInsertFieldCreateModal: !state.showInsertFieldCreateModal };
+
+    case SHOW_INSERT_FIELD_EDIT_MODAL:
+    return { ...state, showInsertFieldEditModal: !state.showInsertFieldEditModal };
 
     case SELECTED_DOCUMENT_INSERT_ID:
     return { ...state, selectedDocumentInsertId: action.payload };
