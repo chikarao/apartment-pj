@@ -4346,6 +4346,7 @@ form {
 
 .document-insert-box-upload-link:hover {
   color: gray;
+  text-decoration: underline;
 }
 
 .document-dropzone-area {
@@ -4367,11 +4368,17 @@ form {
   text-decoration: underline;
 }
 
-.create-edit-document-insert-box-documents-each {
+.document-insert-box-documents-each {
   width: 100%;
   height: 20px;
   text-align: left;
   padding: 3px 5px 0px 5px;
+  color: blue
+}
+
+.document-insert-box-documents-each:hover {
+  color: gray;
+  text-decoration: underline;
 }
 
 .document-submit-button {

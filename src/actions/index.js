@@ -173,6 +173,9 @@ import {
   SHOW_DOCUMENT_INSERT_EDIT_MODAL,
   SHOW_INSERT_FIELD_CREATE_MODAL,
   SHOW_INSERT_FIELD_EDIT_MODAL,
+  SELECTED_DOCUMENT_INSERT_ID,
+  SELECTED_INSERT_FIELD_ID,
+  SELECTED_AGREEMENT_ID,
 
 } from './types';
 
@@ -2912,4 +2915,61 @@ export function createDocumentInsert(documentInsertAttributes, callback) {
       callback();
     });
   };
+}
+
+export function editDocumentInsert(documentInsertAttributes, callback) {
+  console.log('in actions index, createDocumentInsert, documentInsertAttributes: ', documentInsertAttributes);
+  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
+  const id = documentInsertAttributes.id
+  // const { } = documentInsertAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/document_inserts/${id}`, documentInsertAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createDocumentInsert, response: ', response);
+      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_DOCUMENT_INSERT,
+        payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function deleteDocumentInsert(id, callback) {
+  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // const { } = documentInsertAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/document_inserts/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to createDocumentInsert, response: ', response);
+      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_DOCUMENT_INSERT,
+        payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function selectedDocumentInsertId(id) {
+  console.log('in actions index, selectedDocumentInsertId id:', id);
+  return { type: SELECTED_DOCUMENT_INSERT_ID, payload: id };
+}
+
+export function selectedInsertFieldId(id) {
+  console.log('in actions index, selectedInsertFieldId id:', id);
+  return { type: SELECTED_INSERT_FIELD_ID, payload: id };
+}
+
+export function selectedAgreementId(id) {
+  console.log('in actions index, selectedAgreementId id:', id);
+  return { type: SELECTED_AGREEMENT_ID, payload: id };
 }

@@ -169,3 +169,6 @@ export const SHOW_DOCUMENT_INSERT_CREATE_MODAL = 'show_document_insert_create_mo
 export const SHOW_DOCUMENT_INSERT_EDIT_MODAL = 'show_document_insert_edit_modal';
 export const SHOW_INSERT_FIELD_CREATE_MODAL = 'show_insert_field_create_modal';
 export const SHOW_INSERT_FIELD_EDIT_MODAL = 'show_insert_field_edit_modal';
+export const SELECTED_DOCUMENT_INSERT_ID = 'selected_document_insert_id';
+export const SELECTED_INSERT_FIELD_ID = 'selected_insert_field_id';
+export const SELECTED_AGREEMENT_ID = 'selected_agreement_id';

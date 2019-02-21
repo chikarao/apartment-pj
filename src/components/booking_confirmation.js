@@ -15,6 +15,7 @@ import AppLanguages from './constants/app_languages';
 import Languages from './constants/languages';
 // import UploadForProfile from './images/upload_for_profile';
 import DocumentInsertCreateModal from './modals/document_insert_create_modal';
+import DocumentInsertEditModal from './modals/document_insert_edit_modal';
 
 
 // import DocumentForm from './constants/document_form';
@@ -26,6 +27,7 @@ class BookingConfirmation extends Component {
       showDocument: false,
       agreementId: '',
       showSavedDocument: false,
+      documentInsertId: ''
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -33,6 +35,7 @@ class BookingConfirmation extends Component {
     this.handleEditReviewClick = this.handleEditReviewClick.bind(this);
     this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
     this.handleUploadPdfLink = this.handleUploadPdfLink.bind(this);
+    this.handleUploadedPdfClick = this.handleUploadedPdfClick.bind(this);
   }
 
   componentDidMount() {
@@ -605,10 +608,22 @@ renderReview() {
   }
 }
 
-renderEachUploadedDocument(agreement) {
+handleUploadedPdfClick(event) {
+  const clickedElement = event.target;
+  const elementVal = clickedElement.getAttribute('value');
+  const elementName = clickedElement.getAttribute('name');
+  console.log('in booking confirmation, handleUploadedPdfClick, elementVal:', elementVal);
+  console.log('in booking confirmation, handleUploadedPdfClick, elementName:', elementName);
+  this.props.showDocumentInsertEditModal();
+  this.props.selectedDocumentInsertId(elementVal);
+  this.props.selectedAgreementId(elementName);
+  this.setState({ documentInsertId: elementVal, agreementId: elementName });
+}
+
+renderEachUploadedPdf(agreement) {
   return _.map(agreement.document_inserts, eachInsert => {
     return (
-      <div key={eachInsert.id} className="create-edit-document-insert-box-documents-each">
+      <div key={eachInsert.id} value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-box-documents-each" onClick={this.handleUploadedPdfClick}>
         {eachInsert.insert_name}
       </div>
     );
@@ -620,7 +635,7 @@ handleUploadPdfLink() {
 }
 
 renderInsertBox(agreement) {
-  // <div className="create-edit-document-insert-box-upload-link">
+  // <div className="document-insert-box-upload-link">
   //   <UploadForProfile
   //     // pass props to indicate uploading for documents not profile
   //     documentUpload
@@ -635,7 +650,7 @@ renderInsertBox(agreement) {
         Upload PDF
       </div>
       <div className="document-insert-box-documents">
-        {this.renderEachUploadedDocument(agreement)}
+        {this.renderEachUploadedPdf(agreement)}
       </div>
     </div>
   );
@@ -743,6 +758,17 @@ renderDocumentInsertCreateForm() {
   );
 }
 
+renderDocumentInsertEditForm() {
+  console.log('in booking confirmation, renderDocumentInsertEditForm: ');
+  return (
+    <DocumentInsertEditModal
+      show={this.props.showDocumentInsertEdit}
+      agreementId={this.state.agreementId}
+      documentInsertId={this.state.documentInsertId}
+    />
+  );
+}
+
 render() {
   return (
     // {this.renderReview()}
@@ -751,6 +777,7 @@ render() {
       {this.renderBookingData()}
       {this.state.showDocument ? this.renderDocument() : ''}
       {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
+      {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
     </div>
   );
 }
@@ -766,6 +793,7 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode,
       documentLanguageCode: state.languages.documentLanguageCode,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
+      showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

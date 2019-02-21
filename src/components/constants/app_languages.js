@@ -309,6 +309,7 @@ const appLanguages =
     insertDocuments: { en: 'Insert Documents', jp: '書類を挿入' },
     uploadPdf: { en: 'Upload PDF', jp: 'PDFをアップロード' },
     createDocumentInsert: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
+    editDocumentInsert: { en: 'Edit Document Insert', jp: '挿入ドキュメントを編集' },
     // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },

@@ -35,7 +35,10 @@ import {
   SELECTED_BUILDING_ID,
   BUILDING_LANGUAGE_TO_EDIT_ID,
   SHOW_DOCUMENT_INSERT_CREATE_MODAL,
-  SHOW_DOCUMENT_INSERT_EDIT_MODAL
+  SHOW_DOCUMENT_INSERT_EDIT_MODAL,
+  SELECTED_DOCUMENT_INSERT_ID,
+  SELECTED_INSERT_FIELD_ID,
+  SELECTED_AGREEMENT_ID
 } from '../actions/types';
 //
 // const initialState = {
@@ -66,6 +69,9 @@ export default function (
     selectedBuildingLanguageId: '',
     showBuildingLanguageCreateModal: false,
     showBuildingLanguageEditModal: false,
+    selectedAgreementId: '',
+    selectedDocumentInsertId: '',
+    selectedInsertFieldId: '',
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -178,6 +184,15 @@ export default function (
 
     case SHOW_DOCUMENT_INSERT_EDIT_MODAL:
     return { ...state, showDocumentInsertEditModal: !state.showDocumentInsertEditModal };
+
+    case SELECTED_DOCUMENT_INSERT_ID:
+    return { ...state, selectedDocumentInsertId: action.payload };
+
+    case SELECTED_INSERT_FIELD_ID:
+    return { ...state, selectedInsertFieldId: action.payload };
+
+    case SELECTED_AGREEMENT_ID:
+    return { ...state, selectedAgreementId: action.payload };
 
     default:
       return state;
