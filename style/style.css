@@ -4392,11 +4392,13 @@ form {
   padding: 0 0 0 30px;
 }
 
-.document-insert-box-documents-each-box-fields-each {
+.document-insert-box-documents-each-box-fields-each-field {
   color: blue;
+  display: flex;
+  flex-direction: column;
 }
 
-.document-insert-box-documents-each-box-fields-each:hover {
+.document-insert-box-documents-each-box-fields-each-field:hover {
   color: gray;
   text-decoration: underline;
 }
@@ -4404,6 +4406,13 @@ form {
 .document-insert-box-documents-each:hover {
   color: gray;
   text-decoration: underline;
+}
+
+.document-insert-box-documents-each-box-fields-each-language {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 0 0 10px;
 }
 
 .document-insert-create-field-button {

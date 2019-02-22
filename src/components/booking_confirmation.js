@@ -22,6 +22,7 @@ import InsertFieldCreateModal from './modals/insert_field_create_modal';
 
 
 // import DocumentForm from './constants/document_form';
+let insertFieldObject = {}
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -645,23 +646,56 @@ getInsertFieldChoice(field) {
   return choice;
 }
 
-renderEachInsertField(eachInsert) {
-  console.log('in booking confirmation, renderEachInsertField, eachInsert:', eachInsert);
-  return _.map(eachInsert.insert_fields, eachField => {
-    const choice = this.getInsertFieldChoice(eachField);
+renderEachInsertFieldLanguage(fieldKeyArray) {
+  return _.map(fieldKeyArray, (eachField, i) => {
     return (
-      <div key={eachField.id} className="document-insert-box-documents-each-box-fields-each">{choice[this.props.appLanguageCode]}</div>
+      <div key={i}>{Languages[eachField.language_code].flag}</div>
     );
   });
 }
 
+renderEachInsertField(eachInsert) {
+  // insertFieldObject is a global variable
+  insertFieldObject = {};
+  _.each(eachInsert.insert_fields, eachField => {
+    if (!insertFieldObject[eachField.name]) {
+      insertFieldObject[eachField.name] = [];
+      insertFieldObject[eachField.name].push(eachField);
+    } else {
+      insertFieldObject[eachField.name].push(eachField);
+    }
+  });
+  // console.log('in booking confirmation, renderEachInsertField, insertFieldObject:', insertFieldObject);
+
+  return _.map(Object.keys(insertFieldObject), eachFieldKey => {
+    const choice = this.getInsertFieldChoice(insertFieldObject[eachFieldKey][0]);
+    return (
+      <div key={insertFieldObject[eachFieldKey][0].id} className="document-insert-box-documents-each-box-fields-each">
+        <div className="document-insert-box-documents-each-box-fields-each-field">
+            {choice[this.props.appLanguageCode]}
+        </div>
+        <div className="document-insert-box-documents-each-box-fields-each-language">
+          {this.renderEachInsertFieldLanguage(insertFieldObject[eachFieldKey])}
+        </div>
+      </div>
+    );
+  });
+  // return _.map(eachInsert.insert_fields, eachField => {
+  //   const choice = this.getInsertFieldChoice(eachField);
+  //   return (
+  //     <div key={eachField.id} className="document-insert-box-documents-each-box-fields-each">{choice[this.props.appLanguageCode]}</div>
+  //   );
+  // });
+}
+
 renderEachUploadedPdf() {
   return _.map(this.props.documentInserts, eachInsert => {
+    console.log('in booking confirmation, renderEachUploadedPdf, eachInsert:', eachInsert);
     return (
       <div key={eachInsert.id} className="document-insert-box-documents-each-box-container">
         <div className="document-insert-box-documents-each-box">
           <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-box-documents-each" onClick={this.handleUploadedPdfClick}>
-          {eachInsert.insert_name}
+          <i className="far fa-file"></i>&nbsp;{eachInsert.insert_name}
           </div>
           &nbsp;&nbsp;&nbsp;
           {eachInsert.main_agreement ? <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-create-field-button" onClick={this.handleInsertFieldAddClick}>{AppLanguages.insertField[this.props.appLanguageCode]}</div> : ''}
@@ -691,7 +725,7 @@ renderInsertBox() {
         {AppLanguages.insertDocuments[this.props.appLanguageCode]}
       </div>
       <div className="document-insert-box-upload-link" onClick={this.handleUploadPdfLink}>
-          {AppLanguages.uploadPdf[this.props.appLanguageCode]}
+        <i className="fas fa-cloud-upload-alt"></i>&nbsp;{AppLanguages.uploadPdf[this.props.appLanguageCode]}
       </div>
       <div className="document-insert-box-documents">
         {this.renderEachUploadedPdf()}
@@ -814,12 +848,13 @@ renderDocumentInsertEditForm() {
 }
 
 renderInsertFieldCreateForm() {
-  console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
+  console.log('in booking confirmation, renderDocumentInsertCreateForm, insertFieldObject: ', insertFieldObject);
   return (
     <InsertFieldCreateModal
       show={this.props.showInsertFieldCreate}
       agreementId={this.state.agreementId}
       documentInsertId={this.state.documentInsertId}
+      insertFieldObject={insertFieldObject}
     />
   );
 }

@@ -95,7 +95,7 @@ export default function (state = {
 
     case CREATE_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, fetchBookingData: action.payload };
+    return { ...state, documentInserts: action.payload.document_inserts };
 
     case EDIT_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);

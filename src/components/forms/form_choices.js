@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-import Building from '../constants/building';
+// import Building from '../constants/building';
+import Languages from '../constants/languages';
 // import BankAccount from '../constants/bank_account';
 
 // custom field component based on redux forms used for creating
@@ -101,38 +102,78 @@ class FormChoices extends Component {
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
       // if choice type is string, use input element above and button if not string
-      // console.log('FormChoices, renderEachChoice choice, choice.value, value, choice[value]: ', choice, choice.value, value, choice[anotherValue]);
       // choice.type can be string (input) or button element
-      // if (this.props.addLanguageInput) {
       // if there is record and language_code in object; ie do not allow imput
       // make sure to read the respective objects in src/components/constants such as staff or contractor
-      if (this.props.record && this.props.model[name].map_to_record) {
-        // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
-        // if the language code or map_to_record  does not equal the choice value
-        // ie the choice is something other than the language code that already exists in the db
-        if (choice.value !== this.props.record[this.props.model[name].map_to_record]) {
-          // if the input form is a create form
-          if (this.props.create) {
-            // if an array with existing contractor language is true
-            if (this.props.existingLanguageArray) {
-              // if choice language is not included in the array, render the choice else return
-              if (!this.props.existingLanguageArray.includes(choice.value)) {
+      // !!!! logic for rendering languge_code buttons
+      if (this.props.insertFieldObject) {
+        console.log('FormChoices, renderEachChoice, this.props.insertFieldObject: ', this.props.insertFieldObject);
+        console.log('FormChoices, renderEachChoice, this.props.formValues: ', this.props.formValues);
+        const contingentRenderColumn = this.props.model[name].contingent_render;
+        // formValues is a ReduxForm prop and insertFieldObject is passed in props in Field
+        const { formValues, insertFieldObject } = this.props;
+        let languageCodeArray = [];
+        if (contingentRenderColumn) {
+          // if the field has contingent_render, ie buttons/input render depends on whether
+          // value has been assigned to column
+          // find out if contingent render value has value
+          if (formValues) {
+            // form value exists in state/prop
+            if (insertFieldObject[formValues[contingentRenderColumn]]) {
+              languageCodeArray = insertFieldObject[formValues[contingentRenderColumn]].map(insertField => insertField.language_code)
+              // get array of language codes for each insert field in obect
+              if (!languageCodeArray.includes(choice.value)) {
+                // if has value find out what languages are in the field
                 return choice.type == 'string' ? inputElement : buttonElement;
-              } else {
-                return;
               }
             } else {
-              // render an input button or input field
+              // if there is no key in insertFieldObject for the contingent
               return choice.type == 'string' ? inputElement : buttonElement;
             }
-            // return <div>{choice[this.props.appLanguageCode]}</div>
-          } else {
-            // if not on create form, do nothing
-            return;
+          } // end of if formValues
+          // render only languages that do not have language for field
+        } // end of if contingentRenderColumn
+
+        if (!contingentRenderColumn) { // ie not language_code which depends on name
+          const limitChoicesColumn = this.props.model[name].limit_choices
+          if (limitChoicesColumn) {
+            const implementedLanguages = Object.keys(Languages).filter(key => Languages[key].implemented)
+            // languageCodeArray = insertFieldObject[name].map(insertField => insertField.language_code)
+            console.log('FormChoices, renderEachChoice, implementedLanguages: ', implementedLanguages);
+            // _.each(implementedLanguages, eachImplementedLanguage => {
+            //
+            // })
+            return choice.type == 'string' ? inputElement : buttonElement;
           }
-          // return choice.type == 'string' ? inputElement : buttonElement;
-        // if the choice value already exists
-        } else {
+        } // end of if !contingentRenderColumn
+      } else { // !!!!!!! ELSE for if this.props.insertFieldObject
+        if (this.props.record && this.props.model[name].map_to_record) {
+          // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
+          // if the language code or map_to_record  does not equal the choice value
+          // ie the choice is something other than the language code that already exists in the db
+          if (choice.value !== this.props.record[this.props.model[name].map_to_record]) {
+            // if the input form is a create form
+            if (this.props.create) {
+              // if an array with existing contractor language is true
+              if (this.props.existingLanguageArray) {
+                // if choice language is not included in the array, render the choice else return
+                if (!this.props.existingLanguageArray.includes(choice.value)) {
+                  return choice.type == 'string' ? inputElement : buttonElement;
+                } else {
+                  return;
+                }
+              } else {
+                // render an input button or input field
+                return choice.type == 'string' ? inputElement : buttonElement;
+              }
+              // return <div>{choice[this.props.appLanguageCode]}</div>
+            } else {
+              // if not on create form, do nothing
+              return;
+            }
+            // return choice.type == 'string' ? inputElement : buttonElement;
+            // if the choice value already exists
+          } else {
             if (this.props.create) {
               // do nothing render nothing in create form
               return;
@@ -140,13 +181,16 @@ class FormChoices extends Component {
               // just render choice en or jp, not an input button or field
               return <div key={i}>{choice[this.props.appLanguageCode]}</div>
             }
+          }
+        } else {
+          // if there is no record (db record) or model map to, ie a regular field
+          return choice.type == 'string' ? inputElement : buttonElement;
         }
-      } else {
-        // if there is no record (db record) or model map to, ie a regular field
-        return choice.type == 'string' ? inputElement : buttonElement;
-      }
+      } // END of if insertFieldObject
+      // For document insert field create
     });
   }
+
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { value, onChange, name } } = this.props;
@@ -162,9 +206,12 @@ class FormChoices extends Component {
 
 function mapStateToProps(state) {
   console.log('in form_choices, mapStateToProps, state: ', state);
+  console.log('in form_choices, mapStateToProps, state.form.InsertFieldCreateModal: ', state.form.InsertFieldCreateModal);
+  const formValues = state.form.InsertFieldCreateModal ? state.form.InsertFieldCreateModal.values : '';
   return {
     appLanguageCode: state.languages.appLanguageCode,
-    addLanguageInput: state.modals.addLanguage
+    addLanguageInput: state.modals.addLanguage,
+    formValues
   };
 }
 

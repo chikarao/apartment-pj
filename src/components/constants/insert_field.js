@@ -16,7 +16,10 @@ const InsertField = {
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
-    language_independent: true
+    language_independent: true,
+    map_to_record: 'name',
+    required: true,
+    limit_choices: true,
   },
 
   language_code: {
@@ -39,7 +42,8 @@ const InsertField = {
     limit_choices: true,
     // map to column in backend code
     map_to_record: 'language_code',
-    contingent_render: true
+    contingent_render: 'name',
+    required: true,
   },
 
   value: {
@@ -47,6 +51,7 @@ const InsertField = {
     en: 'Content',
     jp: '内容',
     component: 'input',
+    // component: 'FormChoices',
     type: 'string',
     className: 'form-control',
   },

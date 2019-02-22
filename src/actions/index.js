@@ -2946,7 +2946,7 @@ export function createInsertField(insertFieldAttributes, callback) {
       console.log('response to createInsertField, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_INSERT_FIELD,
-        payload: response.data.data.booking
+        payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
       callback();

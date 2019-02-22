@@ -10,7 +10,7 @@ import languages from '../constants/languages';
 import InsertField from '../constants/insert_field';
 import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
-import RenderDropzoneInput from '../images/render_dropzone_input';
+// import RenderDropzoneInput from '../images/render_dropzone_input';
 
 
 let showHideClassName;
@@ -29,6 +29,38 @@ class InsertFieldCreateModal extends Component {
   //
   // componentDidMount() {
   // }
+
+  getRequiredKeys() {
+    const array = [];
+    _.each(Object.keys(InsertField), eachKey => {
+      // if the object has the key, that is the page the key is on
+      // so set page variable so we can get choices from input key
+
+      if (InsertField[eachKey].required) {
+        array.push(eachKey);
+      }
+    });
+    // console.log('in create_edit_document, getRequiredKeys array: ', array);
+    return array;
+  }
+
+  checkIfRequiredKeysNull(requiredKeysArray, data) {
+    // console.log('in create_edit_document, checkIfRequiredKeysNull, requiredKeys, data: ', requiredKeys, data);
+    const array = [];
+    _.each(requiredKeysArray, eachKey => {
+      // console.log('in create_edit_document, checkIfRequiredKeysNull, eachKey, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == : ', requiredKeys, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == ('' || undefined || null));
+      if (data[eachKey] == (undefined || null)) {
+        array.push(eachKey);
+      }
+      // for some reason, empty string does not return true to == ('' || undefined || null)
+      // so separate out
+      if (data[eachKey] == '') {
+        array.push(eachKey);
+      }
+    });
+    // console.log('in create_edit_document, checkIfRequiredKeysNull array', array);
+    return array;
+  }
 
   handleFormSubmit(data) {
     // const { code } = data;
@@ -50,10 +82,20 @@ class InsertFieldCreateModal extends Component {
     // this.props.createInsertField(dataToBeSent, () => {
     //   this.handleFormSubmitCallback();
     // });
-    this.props.showLoading()
-    const dataToBeSent = { insert_field: data };
-    dataToBeSent.insert_field.document_insert_id = this.props.documentInsertId;
-    this.props.createInsertField(dataToBeSent, () => this.handleFormSubmitCallback());
+    let requiredKeysArray = [];
+    let requiredKeysNull = true;
+    requiredKeysArray = this.getRequiredKeys();
+    requiredKeysNull = this.checkIfRequiredKeysNull(requiredKeysArray, data);
+
+    if (!(requiredKeysNull.length > 0)) {
+      console.log('in InsertFieldCreateModal, handleFormSubmit, requiredKeysNull: ', requiredKeysNull);
+      this.props.showLoading();
+      const dataToBeSent = { insert_field: data };
+      dataToBeSent.insert_field.document_insert_id = this.props.documentInsertId;
+      this.props.createInsertField(dataToBeSent, () => this.handleFormSubmitCallback());
+    } else {
+      this.props.authError('Please provide input for all fields.');
+    }
   }
 
   handleFormSubmitCallback() {
@@ -63,6 +105,7 @@ class InsertFieldCreateModal extends Component {
     this.setState({ createInsertFieldCompleted: true });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
+    this.props.authError('');
     this.props.showLoading();
   }
 
@@ -70,7 +113,7 @@ class InsertFieldCreateModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
+          <strong>!! </strong> {this.props.errorMessage}
         </div>
       );
     }
@@ -98,7 +141,8 @@ class InsertFieldCreateModal extends Component {
       } else {
         fieldComponent = formField.component;
       }
-      console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
+      // console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
+      // console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
 
       return (
         <fieldset key={i} className="form-group">
@@ -107,7 +151,7 @@ class InsertFieldCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: true, existingLanguageArray: this.props.insertFieldLanguageArray } : {}}
+            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.documentInsert, create: true, existingLanguageArray: [], insertFieldObject: this.props.insertFieldObject } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
           />
@@ -131,13 +175,14 @@ class InsertFieldCreateModal extends Component {
   }
 
   renderCreateInsertFieldForm() {
-    console.log('in insertField_create_modal, renderCreateInsertFieldForm, this.props.showInsertFieldCreate: ', this.props.showInsertFieldCreate);
+    // console.log('in insertField_create_modal, renderCreateInsertFieldForm, this.props.showInsertFieldCreate: ', this.props.showInsertFieldCreate);
+    // console.log('in insertField_create_modal, renderCreateInsertFieldForm, this.props.insertFieldObject: ', this.props.insertFieldObject);
     // <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createInsertField[this.props.appLanguageCode] : AppLanguages.addInsertFieldLanguage[this.props.appLanguageCode]}</h3>
 
     const { handleSubmit } = this.props;
 
     if (this.props.auth) {
-      console.log('in insertField_create_modal, renderCreateInsertFieldForm, this.props.flat: ', this.props.flat);
+      // console.log('in insertField_create_modal, renderCreateInsertFieldForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
