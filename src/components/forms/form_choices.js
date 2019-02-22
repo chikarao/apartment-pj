@@ -135,17 +135,37 @@ class FormChoices extends Component {
         } // end of if contingentRenderColumn
 
         if (!contingentRenderColumn) { // ie not language_code which depends on name
-          const limitChoicesColumn = this.props.model[name].limit_choices
+        //   const limitChoicesColumn = this.props.model[name].limit_choices
+        const limitChoicesColumn = this.props.model[name].limit_choices;
+
           if (limitChoicesColumn) {
             const implementedLanguages = Object.keys(Languages).filter(key => Languages[key].implemented)
-            // languageCodeArray = insertFieldObject[name].map(insertField => insertField.language_code)
-            console.log('FormChoices, renderEachChoice, implementedLanguages: ', implementedLanguages);
+            // _.each(this.props.model[name].choices, eachChoice => {
+              if (insertFieldObject[choice.value]) {
+                // test only if insertFieldObject has each model choice;
+                languageCodeArray = insertFieldObject[choice.value].map(insertField => insertField.language_code)
+                // languageCodeArray = insertFieldObject[eachChoice.value]
+                console.log('FormChoices, renderEachChoice, implementedLanguages, languageCodeArray: ', implementedLanguages, languageCodeArray);
+                let count = 0;
+                return _.map(implementedLanguages, eachImplementedLanguage => {
+                  if (!languageCodeArray.includes(eachImplementedLanguage)) {
+                    count++;
+                    console.log('FormChoices, renderEachChoice, eachImplementedLanguage, choice, count: ', eachImplementedLanguage, choice, count);
+                  }
+                  const returnValue = choice.type == 'string' ? inputElement : buttonElement
+                  return (count > 0) ? returnValue : '';
+                }); // end of each languageCodeArray
+              } else {
+                return choice.type == 'string' ? inputElement : buttonElement;
+              }
+              // end of if insertFieldObject[eachChoice.value]
+            // }) // end of each model choice
             // _.each(implementedLanguages, eachImplementedLanguage => {
             //
             // })
-            return choice.type == 'string' ? inputElement : buttonElement;
-          }
+          } // end of if limitChoicesColumn
         } // end of if !contingentRenderColumn
+        //
       } else { // !!!!!!! ELSE for if this.props.insertFieldObject
         if (this.props.record && this.props.model[name].map_to_record) {
           // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
