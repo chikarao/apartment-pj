@@ -71,7 +71,7 @@ class FormChoices extends Component {
       // define button element for user to click to set value in submission
       const buttonElement =
         <div
-          key={i}
+          key={choice.value}
           type={choice.type}
           onClick={() => {
             onChange(choice.value);
@@ -94,7 +94,8 @@ class FormChoices extends Component {
         <input
           id="valueInput"
           value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
-          key={choice.value}
+          key={i}
+          // key={choice.value}
           onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
@@ -145,16 +146,17 @@ class FormChoices extends Component {
                 // test only if insertFieldObject has each model choice;
                 languageCodeArray = insertFieldObject[choice.value].map(insertField => insertField.language_code)
                 // languageCodeArray = insertFieldObject[eachChoice.value]
-                console.log('FormChoices, renderEachChoice, implementedLanguages, languageCodeArray: ', implementedLanguages, languageCodeArray);
+                // console.log('FormChoices, renderEachChoice, implementedLanguages, languageCodeArray: ', implementedLanguages, languageCodeArray);
                 let count = 0;
-                return _.map(implementedLanguages, eachImplementedLanguage => {
+                _.each(implementedLanguages, eachImplementedLanguage => {
                   if (!languageCodeArray.includes(eachImplementedLanguage)) {
                     count++;
-                    console.log('FormChoices, renderEachChoice, eachImplementedLanguage, choice, count: ', eachImplementedLanguage, choice, count);
+                    // console.log('FormChoices, renderEachChoice, eachImplementedLanguage, choice: ', eachImplementedLanguage, choice);
+                    // return choice.type == 'string' ? inputElement : buttonElement;
                   }
-                  const returnValue = choice.type == 'string' ? inputElement : buttonElement
-                  return (count > 0) ? returnValue : '';
                 }); // end of each languageCodeArray
+                const returnValue = choice.type == 'string' ? inputElement : buttonElement
+                return (count > 0) ? returnValue : '';
               } else {
                 return choice.type == 'string' ? inputElement : buttonElement;
               }
@@ -199,7 +201,7 @@ class FormChoices extends Component {
               return;
             } else {
               // just render choice en or jp, not an input button or field
-              return <div key={i}>{choice[this.props.appLanguageCode]}</div>
+              return <div key={choice.name}>{choice[this.props.appLanguageCode]}</div>
             }
           }
         } else {
