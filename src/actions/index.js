@@ -173,6 +173,7 @@ import {
   SHOW_DOCUMENT_INSERT_EDIT_MODAL,
   SHOW_INSERT_FIELD_CREATE_MODAL,
   SHOW_INSERT_FIELD_EDIT_MODAL,
+  INSERT_FIELD_TO_EDIT_ID,
   SELECTED_DOCUMENT_INSERT_ID,
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID,
@@ -458,7 +459,7 @@ export function showInsertFieldCreateModal() {
 }
 
 export function showInsertFieldEditModal() {
-  console.log('in actions index, showDocumentInsertEditModal:');
+  console.log('in actions index, showInsertFieldEditModal:');
 
   //flip state boolean
   return { type: SHOW_INSERT_FIELD_EDIT_MODAL };
@@ -2245,6 +2246,13 @@ export function buildingLanguageToEditId(id) {
   return { type: BUILDING_LANGUAGE_TO_EDIT_ID, payload: parseInt(id, 10) };
 }
 
+export function insertFieldToEditId(id) {
+  console.log('in actions index, insertFieldToEditId:');
+
+  //flip state boolean
+  return { type: INSERT_FIELD_TO_EDIT_ID, payload: parseInt(id, 10) };
+}
+
 export function selectedBuildingLanguageId(id) {
   console.log('in actions index, selectedBuildingLanguageId:');
 
@@ -2976,19 +2984,61 @@ export function editDocumentInsert(documentInsertAttributes, callback) {
   };
 }
 
+export function editInsertField(insertFieldAttributes, callback) {
+  console.log('in actions index, editInsertField, insertFieldAttributes: ', insertFieldAttributes);
+  console.log('in actions index, editInsertField: localStorage.getItem, token; ', localStorage.getItem('token'));
+  const id = insertFieldAttributes.id
+  // const { } = insertFieldAttributes;
+  return function (dispatch) {
+    axios.patch(`${ROOT_URL}/api/v1/insert_fields/${id}`, insertFieldAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to editInsertField, response: ', response);
+      console.log('response to editInsertField, response.data.data: ', response.data.data);
+      dispatch({
+        type: EDIT_INSERT_FIELD,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
 export function deleteDocumentInsert(id, callback) {
-  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, deleteDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
   // const { } = documentInsertAttributes;
   return function (dispatch) {
     axios.delete(`${ROOT_URL}/api/v1/document_inserts/${id}`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to createDocumentInsert, response: ', response);
-      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      console.log('response to deleteDocumentInsert, response: ', response);
+      console.log('response to deleteDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: DELETE_DOCUMENT_INSERT,
         payload: response.data.data.booking
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
+    });
+  };
+}
+
+export function deleteInsertField(id, callback) {
+  console.log('in actions index, deleteInsertField: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // const { } = documentInsertAttributes;
+  return function (dispatch) {
+    axios.delete(`${ROOT_URL}/api/v1/insert_fields/${id}`, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteInsertField, response: ', response);
+      console.log('response to deleteInsertField, response.data.data: ', response.data.data);
+      dispatch({
+        type: DELETE_INSERT_FIELD,
+        payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
       callback();

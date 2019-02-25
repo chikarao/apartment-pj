@@ -17,6 +17,7 @@ import {
   DELETE_DOCUMENT_INSERT,
   CREATE_INSERT_FIELD,
   EDIT_INSERT_FIELD,
+  DELETE_INSERT_FIELD,
   FETCH_AGREEMENT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
@@ -98,8 +99,13 @@ export default function (state = {
     return { ...state, documentInserts: action.payload.document_inserts };
 
     case EDIT_INSERT_FIELD:
+
     // console.log('in booking reducer, state: ', state);
-    return { ...state, fetchBookingData: action.payload };
+    return { ...state, documentInserts: action.payload.document_inserts };
+
+    case DELETE_INSERT_FIELD:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, documentInserts: action.payload.document_inserts };
 
     case FETCH_AGREEMENT:
     // console.log('in booking reducer, state: ', state);

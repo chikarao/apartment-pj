@@ -18,6 +18,7 @@ import InsertField from './constants/insert_field';
 import DocumentInsertCreateModal from './modals/document_insert_create_modal';
 import DocumentInsertEditModal from './modals/document_insert_edit_modal';
 import InsertFieldCreateModal from './modals/insert_field_create_modal';
+import InsertFieldEditModal from './modals/insert_field_edit_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 
 
@@ -31,7 +32,9 @@ class BookingConfirmation extends Component {
       showDocument: false,
       agreementId: '',
       showSavedDocument: false,
-      documentInsertId: ''
+      documentInsertId: '',
+      insertFieldId: '',
+      insertFieldLanguageCode: ''
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -41,6 +44,7 @@ class BookingConfirmation extends Component {
     this.handleUploadPdfLink = this.handleUploadPdfLink.bind(this);
     this.handleUploadedPdfClick = this.handleUploadedPdfClick.bind(this);
     this.handleInsertFieldAddClick = this.handleInsertFieldAddClick.bind(this);
+    this.handleEachInsertFieldClick = this.handleEachInsertFieldClick.bind(this);
   }
 
   componentDidMount() {
@@ -646,7 +650,28 @@ getInsertFieldChoice(field) {
   return choice;
 }
 
+handleEachInsertFieldClick(event) {
+  const clickedElement = event.target;
+  const elementVal = clickedElement.getAttribute('value');
+  const elementName = clickedElement.getAttribute('Name');
+  console.log('in booking confirmation, handleEachInsertFieldClick, clickedElement:', clickedElement);
+  // this.props.selectedDocumentInsertId(elementVal);
+  // this.props.selectedAgreementId(elementName);
+  this.props.selectedInsertFieldId(elementVal);
+  this.props.selectedAgreementId(this.state.agreementId);
+  this.props.selectedDocumentInsertId(elementName);
+  this.props.showInsertFieldEditModal();
+
+  this.setState({
+    // documentInsertId: elementVal,
+    insertFieldId: elementVal,
+    // agreementId: elementName
+    documentInsertId: elementName
+  });
+}
+
 renderEachInsertFieldLanguage(fieldKeyArray) {
+  // console.log('in booking confirmation, renderEachInsertFieldLanguage, fieldKeyArray:', fieldKeyArray);
   return _.map(fieldKeyArray, (eachField, i) => {
     return (
       <div key={i}>{Languages[eachField.language_code].flag}</div>
@@ -668,10 +693,11 @@ renderEachInsertField(eachInsert) {
   // console.log('in booking confirmation, renderEachInsertField, insertFieldObject:', insertFieldObject);
 
   return _.map(Object.keys(insertFieldObject), eachFieldKey => {
+    console.log('in booking confirmation, renderEachInsertField, insertFieldObject[eachFieldKey]:', insertFieldObject[eachFieldKey]);
     const choice = this.getInsertFieldChoice(insertFieldObject[eachFieldKey][0]);
     return (
       <div key={insertFieldObject[eachFieldKey][0].id} className="document-insert-box-documents-each-box-fields-each">
-        <div className="document-insert-box-documents-each-box-fields-each-field">
+        <div value={insertFieldObject[eachFieldKey][0].id} name={insertFieldObject[eachFieldKey][0].document_insert_id} onClick={this.handleEachInsertFieldClick} className="document-insert-box-documents-each-box-fields-each-field">
             {choice[this.props.appLanguageCode]}
         </div>
         <div className="document-insert-box-documents-each-box-fields-each-language">
@@ -860,14 +886,16 @@ renderInsertFieldCreateForm() {
 }
 
 renderInsertFieldEditForm() {
-  // console.log('in booking confirmation, renderDocumentInsertEditForm: ');
-  // return (
-  //   <InsertFieldEditModal
-  //     show={this.props.showDocumentInsertEdit}
-  //     agreementId={this.state.agreementId}
-  //     documentInsertId={this.state.documentInsertId}
-  //   />
-  // );
+  return (
+    <InsertFieldEditModal
+      show={this.props.showInsertFieldEdit}
+      // show
+      agreementId={this.state.agreementId}
+      // documentInsertId={this.state.documentInsertId}
+      insertFieldId={this.state.insertFieldId}
+      documentInsertId={this.state.documentInsertId}
+    />
+  );
 }
 
 render() {

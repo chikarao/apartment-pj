@@ -40,7 +40,8 @@ import {
   SHOW_INSERT_FIELD_EDIT_MODAL,
   SELECTED_DOCUMENT_INSERT_ID,
   SELECTED_INSERT_FIELD_ID,
-  SELECTED_AGREEMENT_ID
+  SELECTED_AGREEMENT_ID,
+  INSERT_FIELD_TO_EDIT_ID
 } from '../actions/types';
 //
 // const initialState = {
@@ -74,10 +75,10 @@ export default function (
     selectedAgreementId: '',
     selectedDocumentInsertId: '',
     selectedInsertFieldId: '',
-    showInsertFieldCreateModal: '',
-    showInsertFieldEditModal: '',
-    showDocumentInsertCreateModal: '',
-    showDocumentInsertEditModal: '',
+    showInsertFieldCreateModal: false,
+    showInsertFieldEditModal: false,
+    showDocumentInsertCreateModal: false,
+    showDocumentInsertEditModal: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -205,6 +206,9 @@ export default function (
 
     case SELECTED_AGREEMENT_ID:
     return { ...state, selectedAgreementId: action.payload };
+
+    case INSERT_FIELD_TO_EDIT_ID:
+    return { ...state, insertFieldToEditId: action.payload };
 
     default:
       return state;
