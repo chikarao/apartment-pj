@@ -201,7 +201,8 @@ class FormChoices extends Component {
               return;
             } else {
               // just render choice en or jp, not an input button or field
-              return <div key={choice.name}>{choice[this.props.appLanguageCode]}</div>
+              // return <div key={choice.name}>{choice[this.props.appLanguageCode]}</div>
+              return <div key={i}>{choice[this.props.appLanguageCode]}</div>
             }
           }
         } else {
@@ -228,7 +229,7 @@ class FormChoices extends Component {
 
 function mapStateToProps(state) {
   console.log('in form_choices, mapStateToProps, state: ', state);
-  console.log('in form_choices, mapStateToProps, state.form.InsertFieldCreateModal: ', state.form.InsertFieldCreateModal);
+  // console.log('in form_choices, mapStateToProps, state.form.InsertFieldCreateModal: ', state.form.InsertFieldCreateModal);
   const formValues = state.form.InsertFieldCreateModal ? state.form.InsertFieldCreateModal.values : '';
   return {
     appLanguageCode: state.languages.appLanguageCode,

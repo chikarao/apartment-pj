@@ -4309,9 +4309,17 @@ form {
   border-radius: 5px;
 } */
 
+.document-insert-modal-image {
+  width: 100px;
+  height: 150px;
+  margin: 0 auto 0 auto;
+}
+
 .document-insert-box {
   /* position: absolute; */
-  width: 30%;
+  width: auto;
+  /* width: 30%; */
+  max-width: 43%;
   height: 13%;
   /* top: 1%;
   left: 69%; */

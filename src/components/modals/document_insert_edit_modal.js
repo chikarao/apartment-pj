@@ -3,6 +3,7 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import axios from 'axios';
 
 import * as actions from '../../actions';
 import Languages from '../constants/languages';
@@ -10,8 +11,11 @@ import DocumentInsert from '../constants/document_insert';
 import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
 import RenderDropzoneInput from '../images/render_dropzone_input';
+import globalConstants from '../constants/global_constants';
 
 let showHideClassName;
+const FILE_FIELD_NAME = 'files';
+const ROOT_URL = globalConstants.rootUrl;
 
 class DocumentInsertEditModal extends Component {
   constructor(props) {
@@ -42,14 +46,68 @@ class DocumentInsertEditModal extends Component {
       }
     })
     delta.agreement_id = this.props.agreementId;
-    const dataToBeSent = { document_insert: delta, id: this.props.documentInsertId };
+    // const dataToBeSent = { document_insert: delta, id: this.props.documentInsertId };
     // dataToBeSent.flat_id = this.props.flat.id;
-    console.log('in DocumentInsertEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+    // console.log('in DocumentInsertEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.editDocumentInsert(dataToBeSent, () => {
-      this.handleFormSubmitCallback();
-    });
+    // this.props.editDocumentInsert(dataToBeSent, () => {
+    //   this.handleFormSubmitCallback();
+    // });
+    const imageFiles = data.files ? data.files : [];
+
+    this.handleCreateImages(imageFiles, delta);
   }
+
+  handleCreateImages(files, data) {
+    console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
+
+    const imagesArray = [];
+    let uploaders = [];
+    let pages = '';
+  // Push all the axios request promise into a single array
+    if (files.length > 0) {
+      uploaders = files.map((file) => {
+        console.log('in Upload, handleDrop, uploaders, file: ', file);
+        // Initial FormData
+        const formData = new FormData();
+        formData.append('file', file);
+        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+        // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
+        return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+          headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+        }).then(response => {
+          // const data = response.data;
+          console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+          const filePublicId = response.data.data.response.public_id;
+          pages = response.data.data.response.pages;
+          // You should store this URL for future references in your app
+          imagesArray.push(filePublicId);
+          // call create image action, send images Array with flat id
+        });
+        //end of then
+      });
+      //end of uploaders
+    }
+  console.log('in Upload, handleDrop, uploaders: ', uploaders);
+  // Once all the files are uploaded
+  axios.all(uploaders).then(() => {
+    // ... perform after upload is successful operation
+    console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+    // if there are no images, call do not create images and just call createImageCallback
+    const dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+    if (imagesArray.length > 0) {
+      // this.createImageCallback(imagesArray, 0, flatId);
+      // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+      dataToBeSent.document_insert.publicid = imagesArray[0];
+      dataToBeSent.document_insert.pages = pages;
+      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+      this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+    } else {
+      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+      this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+    }
+  });
+}
 
   handleFormSubmitCallback() {
     console.log('in DocumentInsertEditModal, handleFormSubmitCallback: ');
@@ -176,6 +234,18 @@ class DocumentInsertEditModal extends Component {
   //   });
   // }
 
+  renderDocumentInsertImage() {
+    // console.log('in documentInsert_edit_modal, renderDocumentInsertImage, this.props.documentInsert: ', this.props.documentInsert);
+    const image = this.props.documentInsert.publicid ? this.props.documentInsert.publicid : '';
+    // console.log('in documentInsert_edit_modal, renderDocumentInsertImage, image: ', image);
+    if (image) {
+      return (
+        <div className="document-insert-modal-image" style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_100,h_142,q_60,pg_1/${image}.jpg)` }}>
+        </div>
+      );
+    }
+  }
+
   renderEditDocumentInsertForm() {
 
     const { handleSubmit } = this.props;
@@ -198,9 +268,16 @@ class DocumentInsertEditModal extends Component {
               <button value={this.props.documentInsert.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
             </div>
             <div className="edit-profile-scroll-div">
+            {this.renderDocumentInsertImage()}
               {this.renderAlert()}
               <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachDocumentInsertField()}
+                <Field
+                  name={FILE_FIELD_NAME}
+                  component={RenderDropzoneInput}
+                  props={{ pdfUpload: true }}
+                  // message={AppLanguages.dropImages[appLanguageCode]}
+                />
                 <div className="confirm-change-and-button">
                   <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
                 </div>

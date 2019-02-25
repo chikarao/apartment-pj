@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -103,6 +103,7 @@ class InsertFieldEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
+            // props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: false } : {}}
             props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
@@ -177,16 +178,11 @@ class InsertFieldEditModal extends Component {
   }
 
   renderEditInsertFieldForm() {
-
     const { handleSubmit } = this.props;
-    // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
 
     if (this.props.auth) {
       console.log('in insert_field_edit_modal, renderEditInsertFieldForm: ');
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      // <div className="modal-edit-language-link-box">
-      // {this.renderEditLanguageLink()}
-      // </div>
 
       return (
         <div className={showHideClassName}>
@@ -326,9 +322,6 @@ function mapStateToProps(state) {
       documentInsertId: state.modals.selectedInsertFieldId,
       documentInsert,
       insertField,
-      // editInsertFieldId: state.modals.documentInsertToEditId,
-      // editInsertField,
-      // language: state.languages.selectedLanguage,
       // set initialValues to be first calendar in array to match selectedInsertFieldId
       initialValues
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
@@ -338,6 +331,5 @@ function mapStateToProps(state) {
     return {};
   }
 }
-
 
 export default connect(mapStateToProps, actions)(InsertFieldEditModal);
