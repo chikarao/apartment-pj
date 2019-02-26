@@ -240,8 +240,17 @@ class DocumentInsertEditModal extends Component {
     // console.log('in documentInsert_edit_modal, renderDocumentInsertImage, image: ', image);
     if (image) {
       return (
-        <div className="document-insert-modal-image" style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_100,h_142,q_60,pg_1/${image}.jpg)` }}>
-        </div>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`http://res.cloudinary.com/chikarao/image/upload/${image}.pdf`}
+        >
+          <div
+            className="document-insert-modal-image"
+            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_100,h_142,q_60,pg_1/${image}.jpg)` }}
+          >
+          </div>
+        </a>
       );
     }
   }
