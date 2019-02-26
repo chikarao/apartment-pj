@@ -34,17 +34,17 @@ const DocumentInsert = {
     className: 'form-control'
   },
 
-  main_agreement: {
-    name: 'main_agreement',
-    en: 'Main Agreement?',
-    jp: '契約書本文ですか？',
-    component: 'FormChoices',
-    type: 'string',
-    choices: {
-      0: { value: 'true', en: 'Yes', jp: 'はい', type: 'button', className: 'form-rectangle' },
-      1: { value: 'false', en: 'No', jp: 'いいえ', type: 'button', className: 'form-rectangle' },
-    }
-  },
+  // main_agreement: {
+  //   name: 'main_agreement',
+  //   en: 'Main Agreement?',
+  //   jp: '契約書本文ですか？',
+  //   component: 'FormChoices',
+  //   type: 'string',
+  //   choices: {
+  //     0: { value: 'true', en: 'Yes', jp: 'はい', type: 'button', className: 'form-rectangle' },
+  //     1: { value: 'false', en: 'No', jp: 'いいえ', type: 'button', className: 'form-rectangle' },
+  //   }
+  // },
 
   // files: {
   //   name: 'files',

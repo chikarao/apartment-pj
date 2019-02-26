@@ -739,20 +739,24 @@ handleUploadPdfLink() {
 }
 
 renderInsertBox() {
-  // <div className="document-insert-box-upload-link">
-  //   <UploadForProfile
-  //     // pass props to indicate uploading for documents not profile
-  //     documentUpload
-  //   />
-  // </div>
+  // let pdfHasDocumentInsert = false;
+  const maxNumDocuments = 0
+  // if (this.props.documentInserts) {
+  const pdfHasDocumentInsert = this.props.documentInserts ? (this.props.documentInserts.length > maxNumDocuments) : false;
+  // }
+  // {AppLanguages.insertDocuments[this.props.appLanguageCode]}
   return (
     <div className="document-insert-box">
       <div className="document-insert-box-title">
-        {AppLanguages.insertDocuments[this.props.appLanguageCode]}
+        {AppLanguages.insertOwnAgreement[this.props.appLanguageCode]}
       </div>
-      <div className="document-insert-box-upload-link" onClick={this.handleUploadPdfLink}>
-        <i className="fas fa-cloud-upload-alt"></i>&nbsp;{AppLanguages.uploadPdf[this.props.appLanguageCode]}
-      </div>
+      {pdfHasDocumentInsert ?
+        ''
+        :
+        <div className="document-insert-box-upload-link" onClick={this.handleUploadPdfLink}>
+          <i className="fas fa-cloud-upload-alt"></i>&nbsp;{AppLanguages.uploadPdf[this.props.appLanguageCode]}
+        </div>
+      }
       <div className="document-insert-box-documents">
         {this.renderEachUploadedPdf()}
       </div>
