@@ -62,15 +62,6 @@ const Inspection = {
     className: 'form-control'
   },
 
-  inspector_certificate_number: {
-    name: 'inspector_certificate_number',
-    en: 'Inspector Certificate Number',
-    jp: '調査実施者の修了証明書番号',
-    component: 'input',
-    type: 'string',
-    className: 'form-control'
-  },
-
   architect_qualification_type: {
     name: 'architect_qualification_type',
     en: 'Architect Qualification Type',
@@ -99,6 +90,15 @@ const Inspection = {
     }
   },
 
+  architect_registration_jurisdiction: {
+    name: 'architect_registration_jurisdiction',
+    en: 'Architect Registration Jurisdiction',
+    jp: '建築士登録(都道府県)',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
   architect_registration_number: {
     name: 'architect_registration_number',
     en: 'Architect Registration Number',
@@ -121,6 +121,15 @@ const Inspection = {
     name: 'architect_office_registration',
     en: 'Architect Office Registration',
     jp: '建築士事務所登録番号',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  architect_office_registration_jurisdiction: {
+    name: 'architect_office_registration_jurisdiction',
+    en: 'Architect Office Registration Jurisdiction',
+    jp: '建築士事務所登録(都道府県)',
     component: 'input',
     type: 'string',
     className: 'form-control'

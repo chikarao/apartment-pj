@@ -51,8 +51,8 @@ const Staff = {
     className: 'form-control'
   },
 
-  registration: {
-    name: 'registration',
+  registration_number: {
+    name: 'registration_number',
     en: 'Registration Number',
     jp: '登録番号',
     component: 'input',

@@ -116,6 +116,51 @@ const Contractor = {
     language_independent: true
   },
 
+  bond_deposit_office: {
+    name: 'bond_deposit_office',
+    en: 'Bond Deposit Office',
+    jp: '営業保証金の供託所',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  bond_deposit_office_address: {
+    name: 'bond_deposit_office_address',
+    en: 'Bond Deposit Office Address',
+    jp: '営業保証金の住所',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  guaranty_association_name: {
+    name: 'guaranty_association_name',
+    en: ' RETGA Name',
+    jp: '宅地建物取引業保証協会',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  guaranty_association_address: {
+    name: 'guaranty_association_address',
+    en: ' RETGA Address',
+    jp: '宅地建物取引業保証協会の住所',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
+  guaranty_association_office_address: {
+    name: 'guaranty_association_office_address',
+    en: ' RETGA Office Address',
+    jp: '宅地建物取引業保証協会の事務所',
+    component: 'input',
+    type: 'string',
+    className: 'form-control'
+  },
+
   first_name: {
     name: 'first_name',
     en: 'First Name (Rep)',

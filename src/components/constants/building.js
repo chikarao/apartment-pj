@@ -178,6 +178,15 @@ const Building = {
     className: 'form-control',
   },
 
+  building_management_address: {
+    name: 'building_management_address',
+    en: 'Building Management Contact',
+    jp: '管理会社　住所',
+    component: 'input',
+    type: 'string',
+    className: 'form-control',
+  },
+
   building_management_phone: {
     name: 'building_management_phone',
     en: 'Building Management Phone',
