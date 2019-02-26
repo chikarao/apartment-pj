@@ -25,7 +25,8 @@ const Documents =
         file: 'teishaku-saimuhosho',
         method: getInitialValuesObjectFixedTermContract,
         type: 'fixed_term_rental_contract',
-        baseLanguage: 'jp'
+        baseLanguage: 'jp',
+        allowDocumentInserts: true
       },
 
     important_points_explanation_jp: {
@@ -34,7 +35,8 @@ const Documents =
         jp: '重要事項説明書',
         file: 'juyoujikou-setsumei-jp',
         method: getInitialValuesObjectImportantPointsExplanation,
-        baseLanguage: 'jp'
+        baseLanguage: 'jp',
+        allowDocumentInserts: false
       },
 
     fixed_term_rental_contract_bilingual: {
@@ -46,7 +48,8 @@ const Documents =
       // translation: FixedTermRentalContractBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
       translation: true,
-      baseLanguage: 'jp'
+      baseLanguage: 'jp',
+      allowDocumentInserts: true
       // method: '',
       // type: 'fixed_term_rental_contract'
     },
@@ -60,7 +63,8 @@ const Documents =
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
       translation: true,
-      baseLanguage: 'jp'
+      baseLanguage: 'jp',
+      allowDocumentInserts: false
       // method: '',
       // type: 'fixed_term_rental_contract'
     },

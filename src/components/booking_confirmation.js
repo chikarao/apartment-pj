@@ -768,14 +768,21 @@ renderDocument() {
   // get agreement chosen by user. Returns array so get first index position below
   const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
+  let showDocumentInsertBox = false;
+  if (agreementArray.length > 0) {
+    showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
+    console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
+    console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
+    console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
+  }
+
   return (
     <div className="booking-confirmation-render-document-box">
-      {this.renderInsertBox()}
+      {showDocumentInsertBox ? this.renderInsertBox() : ''}
       <CreateEditDocument
         showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
         closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
         goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
-            // console.log('in booking confirmation, renderDocument, first this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
           this.setState({ showDocument: !this.state.showDocument }, () => {
             // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
           });
@@ -784,6 +791,7 @@ renderDocument() {
         showSavedDocument={this.state.showSavedDocument}
         agreementId={this.state.agreementId}
         agreement={agreementArray[0]}
+        showDocumentInsertBox={showDocumentInsertBox}
       />
     </div>
   );
@@ -857,7 +865,7 @@ handleSavedDocumentShowClick(event) {
 // }
 
 renderDocumentInsertCreateForm() {
-  console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
+  // console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
   return (
     <DocumentInsertCreateModal
       show={this.props.showDocumentInsertCreate}
@@ -867,7 +875,7 @@ renderDocumentInsertCreateForm() {
 }
 
 renderDocumentInsertEditForm() {
-  console.log('in booking confirmation, renderDocumentInsertEditForm: ');
+  // console.log('in booking confirmation, renderDocumentInsertEditForm: ');
   return (
     <DocumentInsertEditModal
       show={this.props.showDocumentInsertEdit}
@@ -878,7 +886,7 @@ renderDocumentInsertEditForm() {
 }
 
 renderInsertFieldCreateForm() {
-  console.log('in booking confirmation, renderDocumentInsertCreateForm, insertFieldObject: ', insertFieldObject);
+  // console.log('in booking confirmation, renderDocumentInsertCreateForm, insertFieldObject: ', insertFieldObject);
   return (
     <InsertFieldCreateModal
       show={this.props.showInsertFieldCreate}

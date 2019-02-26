@@ -28,6 +28,7 @@ class CreateEditDocument extends Component {
       valueWhenInputFocused: '',
       inputFocused: {},
       showDocumentPdf: false,
+      useMainDocumentInsert: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -36,6 +37,7 @@ class CreateEditDocument extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleViewPDFClick = this.handleViewPDFClick.bind(this);
+    this.handleDocumentInsertCheckBox = this.handleDocumentInsertCheckBox.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -74,6 +76,13 @@ class CreateEditDocument extends Component {
         const agreement = this.props.agreement || {};
         const returnedObject = this.getSavedInitialValuesObject({ agreement });
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
+        const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
+        if (countMainDocumentInserts > 0) {
+          this.setState({ useMainDocumentInsert: true }, () => {
+            console.log('in create_edit_document, componentDidMount, this.state.useMainDocumentInsert', this.state.useMainDocumentInsert);
+
+          });
+        }
       } else {
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
@@ -81,6 +90,16 @@ class CreateEditDocument extends Component {
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
+  }
+
+  countMainDocumentInserts(agreement) {
+    let count = 0;
+    _.each(agreement.document_inserts, each => {
+      if (each.main_agreement) {
+        count++;
+      }
+    });
+    return count;
   }
 
   getSavedInitialValuesObject({ agreement }) {
@@ -277,7 +296,8 @@ class CreateEditDocument extends Component {
       document_name: data.document_name,
       document_field: [],
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
-      document_language_code: this.props.documentLanguageCode
+      document_language_code: this.props.documentLanguageCode,
+      use_own_main_agreement: this.state.useMainDocumentInsert,
     };
     // iterate through each key in data from form
 
@@ -650,64 +670,75 @@ renderEachDocumentField(page) {
 
   renderEachDocumentTranslation(page) {
     // only render document translations when !showDocumentPdf
-    if (!this.state.showDocumentPdf) {
-      return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
-        // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
-        return (
-          <div
-            key={i}
-            className={documentTranslation.attributes.class_name}
-            style={{
-              top: documentTranslation.attributes.top,
-              left: documentTranslation.attributes.left,
-              fontSize: `${documentTranslation.attributes.font_size}px`,
-              fontWeight: documentTranslation.attributes.font_weight,
-              transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
-              // transformOrigin: 'top left',
-              transformOrigin: documentTranslation.attributes.transform_origin,
-              width: documentTranslation.attributes.width,
-              textAlign: documentTranslation.attributes.text_align,
-            }}
-          >
-            {documentTranslation.translations[this.props.documentLanguageCode]}
-          </div>
-        );
-      });
-    }
+    // if (!this.state.showDocumentPdf) {
+    return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
+      // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
+      return (
+        <div
+          key={i}
+          className={documentTranslation.attributes.class_name}
+          style={{
+            top: documentTranslation.attributes.top,
+            left: documentTranslation.attributes.left,
+            fontSize: `${documentTranslation.attributes.font_size}px`,
+            fontWeight: documentTranslation.attributes.font_weight,
+            transform: `rotate(-${documentTranslation.attributes.rotate}deg)`,
+            // transformOrigin: 'top left',
+            transformOrigin: documentTranslation.attributes.transform_origin,
+            width: documentTranslation.attributes.width,
+            textAlign: documentTranslation.attributes.text_align,
+          }}
+        >
+          {documentTranslation.translations[this.props.documentLanguageCode]}
+        </div>
+      );
+    });
+    // }
   }
 
   renderDocument() {
     const initialValuesEmpty = _.isEmpty(this.props.initialValues);
+    let pages = [];
     if (!initialValuesEmpty) {
-      //      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
-      // <div className="test-image-pdf-jpg" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn')})` }}>
-      // {this.renderAlert()}
-      // <div id="document-background" className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('teishasaku-saimuhosho' + '.jpg')})` }}>
       let image;
+      // when showing PDF (view pdf or after creating and updating pdf)
+      // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
       if (this.state.showDocumentPdf) {
+        const array = [];
+        // use image in agreement kept in Cloudinary
         image = this.props.agreement.document_publicid;
+        // lodosh .times to get array [1, 2, 3 etc....]
+        _.times(this.props.agreement.document_pages, i => {
+          array.push(i + 1);
+        });
+        // assign array to pages for later iteration
+        pages = array;
+        // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
       } else {
+        // if showing document form, get array of pages from constants/documents
         image = Documents[this.props.createDocumentKey].file;
+        // assign array to pages varaible for later iteration
+        pages = Object.keys(this.props.documentFields);
       }
-
       const bilingual = Documents[this.props.createDocumentKey].translation;
       // const page = 1;
       // {this.renderNewElements(page)}
-      return _.map(Object.keys(this.props.documentFields), page => {
+      return _.map(pages, page => {
         // console.log('in create_edit_document, renderDocument, page: ', page);
         return (
-            <div
-              key={page}
-              value={page}
-              id="document-background"
-              className="test-image-pdf-jpg-background"
-              style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
-            >
-              {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
-              {!bilingual ? '' : this.renderEachDocumentTranslation(page)}
-            </div>
+          <div
+          key={page}
+          value={page}
+          id="document-background"
+          className="test-image-pdf-jpg-background"
+          style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
+          >
+            {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
+            {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
+          </div>
         );
       });
+
     }
   }
 
@@ -764,7 +795,14 @@ renderEachDocumentField(page) {
     }
   }
 
+  handleDocumentInsertCheckBox() {
+    this.setState({ useMainDocumentInsert: !this.state.useMainDocumentInsert }, () => {
+      // console.log('in create_edit_document, handleDocumentInsertCheckBox, this.state.useMainDocumentInsert: ', this.state.useMainDocumentInsert);
+    });
+  }
+
   renderDocumentButtons() {
+    console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
     const { handleSubmit, appLanguageCode } = this.props;
     let saveButtonActive = false;
     let agreementHasPdf = false;
@@ -800,10 +838,14 @@ renderEachDocumentField(page) {
             style={{ backgroundColor: 'lightgray' }}
             href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
           >
-          Download
+           {AppLanguages.download[appLanguageCode]}
           </a>
           :
-          this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)
+          <div className="update-create-pdf-button-box">
+            {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)}
+            {this.props.showDocumentInsertBox ? <input type="checkbox" onChange={this.handleDocumentInsertCheckBox} checked={this.state.useMainDocumentInsert} /> : ''}
+            {this.props.showDocumentInsertBox ? <div style={{　fontSize: '10px'　}}>{AppLanguages.useOwnInsert[appLanguageCode]}</div> : ''}
+          </div>
         }
 
         {this.props.showSavedDocument ?

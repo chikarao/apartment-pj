@@ -314,6 +314,8 @@ const appLanguages =
     editDocumentInsert: { en: 'Edit Document Insert', jp: '挿入ドキュメントを編集' },
     insertField: { en: 'insert field', jp: 'フィールドを追加' },
     insertOwnAgreement: { en: 'Insert Your Own Agreement', jp: '自分の契約書を挿入' },
+    download: { en: 'Download', jp: 'ダウンロード' },
+    useOwnInsert: { en: 'Use Own Insert', jp: '自分の契約書を使用' },
     // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },

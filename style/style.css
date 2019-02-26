@@ -2995,7 +2995,7 @@ form {
   color: white;
   border-radius: 10px;
   z-index: 2;
-  margin-left: 8%;
+  margin-left: 5%;
   padding: 5px;
 }
 
@@ -4309,12 +4309,26 @@ form {
   border-radius: 5px;
 } */
 
+.update-create-pdf-button-box {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin: 0 0 0 5%;
+}
+
+.update-create-pdf-button-box input {
+  margin: 10px 0 0 10px;
+  line-height: normal;
+  font-size: 30px;
+}
+
 .document-insert-modal-image {
   width: 100px;
   height: 142px;
   margin: 0 auto 0 auto;
   border: 1px solid gray;
   box-shadow: rgba(0, 0, 0, 0.50) 1px 1px 4px 0px !important;
+  background-repeat: no-repeat;
 }
 
 .document-insert-modal-image:hover {
