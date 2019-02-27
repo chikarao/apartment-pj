@@ -9,16 +9,18 @@ const InsertField = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'contract_break_terms', en: 'Contract Break Terms', jp: '契約解除の事項', type: 'button', className: 'form-rectangle' },
-      1: { value: 'contract_renewal_terms', en: 'Contract Renewal Terms', jp: '契約更新の事項', type: 'button', className: 'form-rectangle' },
-      2: { value: 'warranties', en: 'Compensation for Damages', jp: '損害賠償・違約金の事項', type: 'button', className: 'form-rectangle' },
-      3: { value: 'deposit_return_terms', en: 'Deposit Return Terms', jp: '敷金返金の事項', type: 'button', className: 'form-rectangle' },
+      0: { value: 'contract_break_terms', en: 'Contract Break Terms', jp: '契約解除の事項', type: 'button', className: 'form-rectangle', charLimit: 500, width: '400px', height: '200px' },
+      1: { value: 'contract_renewal_terms', en: 'Contract Renewal Terms', jp: '契約更新の事項', type: 'button', className: 'form-rectangle', charLimit: 100, width: '400px', height: '50px' },
+      2: { value: 'warranties', en: 'Compensation for Damages', jp: '損害賠償・違約金の事項', type: 'button', className: 'form-rectangle', charLimit: 500, width: '400px', height: '200px' },
+      3: { value: 'deposit_return_terms', en: 'Deposit Return Terms', jp: '敷金返金の事項', type: 'button', className: 'form-rectangle', charLimit: 300, width: '400px', height: '100px' },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
     language_independent: true,
     map_to_record: 'name',
     required: true,
+    // use limit choices when not rendering some choices based on criteria
+    // such as existence of languages for choices
     limit_choices: true,
   },
 
@@ -42,6 +44,7 @@ const InsertField = {
     limit_choices: true,
     // map to column in backend code
     map_to_record: 'language_code',
+    // use contingent_render when rendering based on user choice of field; eg name
     contingent_render: 'name',
     required: true,
   },
@@ -50,10 +53,17 @@ const InsertField = {
     name: 'value',
     en: 'Content',
     jp: '内容',
-    component: 'input',
+    // component: 'input',
+    component: 'FormChoices',
+    choices: {
+      0: { value: '', type: 'text', className: 'form-rectangle wrap-textarea' },
+      // 1: { value: 'jp', en: '🇯🇵 Japanese', jp: '🇯🇵 日本語', type: 'button', className: 'form-rectangle' },
+    },
     // component: 'FormChoices',
-    type: 'string',
+    type: 'text',
     className: 'form-control',
+    // use contingent_style when configuring style of field depending on choice eg name above
+    contingent_style: 'name'
   },
 
   // files: {

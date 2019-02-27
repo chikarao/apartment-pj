@@ -61,14 +61,45 @@ class FormChoices extends Component {
     });
   }
 
+  getModelChoice(modelChoices, userChoiceInFormValues) {
+    let objectReturned = {};
+    _.each(modelChoices, eachChoice => {
+      if (eachChoice.value == userChoiceInFormValues) {
+        objectReturned = eachChoice;
+        return;
+      }
+    });
+    return objectReturned;
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(this.props.model[name].choices, (choice, i) => {
-      // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
       // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record);
       // define button element for user to click to set value in submission
+      const { formValues, insertFieldObject } = this.props;
+      // get modelChoice to get field config from constants/...js
+      // Preset as null so that can test if true
+      let modelChoice = null;
+      // if redux form has values prop
+        if (formValues) {
+          // if this is coming from create
+          // if (this.props.create) {
+          console.log('FormChoices, renderEachChoice, formValues: ', formValues);
+          console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
+          // const formName = formValues.name
+             if (this.props.model[name].contingent_style) {
+               // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
+               const userChoiceInFormValues = formValues[this.props.model[name].contingent_style];
+               console.log('FormChoices, renderEachChoice, userChoiceInFormValues, formValues: ', userChoiceInFormValues, formValues);
+               modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
+               console.log('FormChoices, renderEachChoice, modelChoice, choice: ', modelChoice, choice);
+             }
+          // }
+        }
+
       const buttonElement =
         <div
           key={choice.value}
@@ -99,7 +130,22 @@ class FormChoices extends Component {
           onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
-          style={{ borderColor: 'lightgray' }}
+          maxLength={modelChoice ? modelChoice.charLimit : 400}
+          style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
+          placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
+        />
+
+      const textareaElement =
+        <textarea
+          id="valueInput"
+          value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          key={i}
+          // key={choice.value}
+          onChange={this.handleInputChange}
+          type={choice.type}
+          className={choice.className}
+          maxLength={modelChoice ? modelChoice.charLimit : 400}
+          style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
       // if choice type is string, use input element above and button if not string
@@ -108,11 +154,11 @@ class FormChoices extends Component {
       // make sure to read the respective objects in src/components/constants such as staff or contractor
       // !!!! logic for rendering languge_code buttons
       if (this.props.insertFieldObject) {
-        console.log('FormChoices, renderEachChoice, this.props.insertFieldObject: ', this.props.insertFieldObject);
-        console.log('FormChoices, renderEachChoice, this.props.formValues: ', this.props.formValues);
+        // console.log('FormChoices, renderEachChoice, this.props.insertFieldObject: ', this.props.insertFieldObject);
+        // console.log('FormChoices, renderEachChoice, this.props.formValues: ', this.props.formValues);
+        // eg language_code field has contingent_render of name
         const contingentRenderColumn = this.props.model[name].contingent_render;
         // formValues is a ReduxForm prop and insertFieldObject is passed in props in Field
-        const { formValues, insertFieldObject } = this.props;
         let languageCodeArray = [];
         if (contingentRenderColumn) {
           // if the field has contingent_render, ie buttons/input render depends on whether
@@ -135,29 +181,29 @@ class FormChoices extends Component {
           // render only languages that do not have language for field
         } // end of if contingentRenderColumn
 
-        if (!contingentRenderColumn) { // ie not language_code which depends on name
+        if (!contingentRenderColumn) { // ie not language_code which depends on other fields eg name
         //   const limitChoicesColumn = this.props.model[name].limit_choices
+        // limit choices is a boolean specified in constant/...
         const limitChoicesColumn = this.props.model[name].limit_choices;
 
           if (limitChoicesColumn) {
+            // which languages have been marked implemented in the constants/languages
             const implementedLanguages = Object.keys(Languages).filter(key => Languages[key].implemented)
             // _.each(this.props.model[name].choices, eachChoice => {
               if (insertFieldObject[choice.value]) {
                 // test only if insertFieldObject has each model choice;
                 languageCodeArray = insertFieldObject[choice.value].map(insertField => insertField.language_code)
                 // languageCodeArray = insertFieldObject[eachChoice.value]
-                // console.log('FormChoices, renderEachChoice, implementedLanguages, languageCodeArray: ', implementedLanguages, languageCodeArray);
                 let count = 0;
                 _.each(implementedLanguages, eachImplementedLanguage => {
                   if (!languageCodeArray.includes(eachImplementedLanguage)) {
                     count++;
-                    // console.log('FormChoices, renderEachChoice, eachImplementedLanguage, choice: ', eachImplementedLanguage, choice);
                     // return choice.type == 'string' ? inputElement : buttonElement;
                   }
                 }); // end of each languageCodeArray
                 const returnValue = choice.type == 'string' ? inputElement : buttonElement
                 return (count > 0) ? returnValue : '';
-              } else {
+              } else { // if insertFieldObject does not contain choice.value
                 return choice.type == 'string' ? inputElement : buttonElement;
               }
               // end of if insertFieldObject[eachChoice.value]
@@ -165,12 +211,21 @@ class FormChoices extends Component {
             // _.each(implementedLanguages, eachImplementedLanguage => {
             //
             // })
+          } else { // if limitChoicesColumn
+            // if neither limitChoicesColumn nor contingentRenderColumn there is insertFieldObject
+            console.log('FormChoices, renderEachChoice, else in !contingentRenderColumn, not limitChoices choice: ', choice);
+            if (choice.type == 'text') {
+              // console.log('FormChoices, renderEachChoice, else no record or model map choice: ', choice);
+              return textareaElement;
+            } else {
+              return choice.type == 'string' ? inputElement : buttonElement;
+            }
           } // end of if limitChoicesColumn
         } // end of if !contingentRenderColumn
         //
       } else { // !!!!!!! ELSE for if this.props.insertFieldObject
         if (this.props.record && this.props.model[name].map_to_record) {
-          // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
+          // console.log('FormChoices, renderEachChoice, if else insertFieldObject this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
           // if the language code or map_to_record  does not equal the choice value
           // ie the choice is something other than the language code that already exists in the db
           if (choice.value !== this.props.record[this.props.model[name].map_to_record]) {
@@ -207,7 +262,13 @@ class FormChoices extends Component {
           }
         } else {
           // if there is no record (db record) or model map to, ie a regular field
-          return choice.type == 'string' ? inputElement : buttonElement;
+          // return choice.type == 'string' ? inputElement : buttonElement;
+          if (choice.type == 'text') {
+            console.log('FormChoices, renderEachChoice, else no record or model map choice: ', choice);
+            return textareaElement;
+          } else {
+            return choice.type == 'string' ? inputElement : buttonElement;
+          }
         }
       } // END of if insertFieldObject
       // For document insert field create
@@ -230,7 +291,8 @@ class FormChoices extends Component {
 function mapStateToProps(state) {
   console.log('in form_choices, mapStateToProps, state: ', state);
   // console.log('in form_choices, mapStateToProps, state.form.InsertFieldCreateModal: ', state.form.InsertFieldCreateModal);
-  const formValues = state.form.InsertFieldCreateModal ? state.form.InsertFieldCreateModal.values : '';
+  const activeForm = state.form.InsertFieldCreateModal || state.form.InsertFieldEditModal;
+  const formValues = activeForm ? activeForm.values : '';
   return {
     appLanguageCode: state.languages.appLanguageCode,
     addLanguageInput: state.modals.addLanguage,

@@ -43,9 +43,13 @@ class Landing extends Component {
 
   componentDidUpdate() {
     const banner = document.getElementById('banner');
-
-    console.log('in landing, componentDidUpdate', banner);
+    // console.log('in landing, componentDidUpdate', banner);
     banner.focus();
+  }
+
+  componentWillUnmount() {
+    // Clean up of addEventListener so that don't get setState in an unmounted component error
+    window.removeEventListener('resize', this.handleResize);
   }
 
   printMousePos(event) {
@@ -139,13 +143,13 @@ class Landing extends Component {
   handleResize() {
     // console.log('in landing, createBackghandleResizeroundImage: ', this.state.windowWidth);
     this.setState({ windowWidth: window.innerWidth }, () => {
-      console.log('in landing, handleResize, this.state.windowWidth: ', this.state.windowWidth);
+      // console.log('in landing, handleResize, this.state.windowWidth: ', this.state.windowWidth);
     });
   }
 
   createBackgroundImage(image) {
-    console.log('in landing, createBackgroundImage, image: ', image);
-    console.log('in landing, createBackgroundImage, this.state.windowWidth: ', this.state.windowWidth);
+    // console.log('in landing, createBackgroundImage, image: ', image);
+    // console.log('in landing, createBackgroundImage, this.state.windowWidth: ', this.state.windowWidth);
     const width = 1000;
     const t = new cloudinary.Transformation();
     t.angle(0).crop('scale').width(width).aspectRatio('1.5');
@@ -154,7 +158,7 @@ class Landing extends Component {
 
   renderBanner() {
     // <h1>Flats, flats & more flats</h1>
-    console.log('in landing, renderBanner, this.state.windowWidth: ', this.state.windowWidth);
+    // console.log('in landing, renderBanner, this.state.windowWidth: ', this.state.windowWidth);
     // <div className="banner-search-datalist-div">
     // </div>
     // <datalist className="banner-datalist" id="areas">

@@ -295,13 +295,13 @@ function mapStateToProps(state) {
   if (state) {
     let initialValues = {};
     // console.log('in InsertFieldEditModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
+    // const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
     const documentInsert = getDocumentInsert(state.bookingData.documentInserts, parseInt(state.modals.selectedDocumentInsertId, 10));
     const insertField = getInsertField(documentInsert.insert_fields, parseInt(state.modals.selectedInsertFieldId, 10));
     // const editInsertField = getEditInsertField(agreement.documentInserts, parseInt(state.modals.insertFieldToEditId, 10));
     // const date = new Date(documentInsert.documentInsert_date);
     // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
-    console.log('in InsertFieldEditModal, mapStateToProps, documentInsert, agreement, insertField: ', documentInsert, agreement, insertField);
+    console.log('in InsertFieldEditModal, mapStateToProps, documentInsert, insertField: ', documentInsert, insertField);
     // if (state.modals.documentInsertToEditId) {
     //   documentInsert = editInsertField;
     // }

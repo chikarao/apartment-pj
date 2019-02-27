@@ -141,7 +141,7 @@ class InsertFieldCreateModal extends Component {
       } else {
         fieldComponent = formField.component;
       }
-      // console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
+      console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
       // console.log('in insertField_create_modal, renderEachInsertFieldField, fieldComponent: ', fieldComponent);
 
       return (
@@ -163,7 +163,7 @@ class InsertFieldCreateModal extends Component {
   handleDeleteInsertFieldClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    this.props.showLoading()
+    this.props.showLoading();
     this.props.deleteInsertField(elementVal, () => this.handleDeleteInsertFieldCallback());
   }
 
@@ -343,8 +343,8 @@ function mapStateToProps(state) {
     let initialValues = {};
     // initialValues.language_code = 'en';
     // // console.log('in InsertFieldCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
-    const documentInsert = getDocumentInsert(agreement.document_inserts, parseInt(state.modals.selectedDocumentInsertId, 10));
+    // const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
+    const documentInsert = getDocumentInsert(state.bookingData.documentInserts, parseInt(state.modals.selectedDocumentInsertId, 10));
     // let insertField = {};
     // let insertFieldLanguageArray = []
     // // if user click is not to create a brand new insertField; ie add a language
@@ -353,7 +353,7 @@ function mapStateToProps(state) {
     //   insertFieldLanguageArray = getLanguageArray(insertFields, insertField);
     //   initialValues = getInitialValues(insertField);
     // }
-    console.log('in InsertFieldCreateModal, mapStateToProps, agreement, documentInsert: ', agreement, documentInsert);
+    // console.log('in InsertFieldCreateModal, mapStateToProps, agreement, documentInsert: ', agreement, documentInsert);
     // console.log('in InsertFieldCreateModal, mapStateToProps, insertField: ', insertField);
     // const existingLanguagesArray = getExistingLanguages(insertFields);
     const existingInsertFieldsObject = getExistingInsertFieldsObject(documentInsert.insertFields);

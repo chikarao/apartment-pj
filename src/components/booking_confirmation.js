@@ -45,6 +45,7 @@ class BookingConfirmation extends Component {
     this.handleUploadedPdfClick = this.handleUploadedPdfClick.bind(this);
     this.handleInsertFieldAddClick = this.handleInsertFieldAddClick.bind(this);
     this.handleEachInsertFieldClick = this.handleEachInsertFieldClick.bind(this);
+    this.handlePrepareEmailClick = this.handlePrepareEmailClick.bind(this);
   }
 
   componentDidMount() {
@@ -63,10 +64,10 @@ class BookingConfirmation extends Component {
   renderImage(images) {
     const imagesEmpty = _.isEmpty(images);
     if(!imagesEmpty) {
-      console.log('in booking_confirmation renderImages, images: ', images);
+      // console.log('in booking_confirmation renderImages, images: ', images);
       return (
         _.map(images, (image, index) => {
-          console.log('in booking_confirmation renderImages, image: ', image.publicid);
+          // console.log('in booking_confirmation renderImages, image: ', image.publicid);
           return (
             <div key={index} className="slide-show">
               <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + image.publicid + '.jpg'} />
@@ -97,27 +98,50 @@ class BookingConfirmation extends Component {
     let facilityString = ''
     _.each(facilitiesArray, eachFacility => {
       const choice = this.getFacilityChoice(eachFacility.facility_type);
-      console.log('in booking_confirmation getFacilityStrings, choice: ', choice);
+      // console.log('in booking_confirmation getFacilityStrings, choice: ', choice);
 
       // if facility included
       if (this.props.bookingData.flat[choice.facilityObjectMap]) {
-        facilityString = choice[this.props.appLanguageCode] + ', ' + 'Included'
+        facilityString = choice[this.props.appLanguageCode] + ', ' + AppLanguages.included[this.props.appLanguageCode]
       } else {
-        facilityString = choice[this.props.appLanguageCode] + ', ' + '$' + eachFacility.price_per_month + '/mo'+ ', ' + 'Dep ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' mo'
+        facilityString = choice[this.props.appLanguageCode] + ', ' + '$' + eachFacility.price_per_month + '/' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]　+ ', ' + AppLanguages.depositAbbreviated[this.props.appLanguageCode] + ' ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' ' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]
       }
       array.push(facilityString)
     })
     return array;
   }
 
+  getFlatLanguage(flat) {
+    let returnedObject = null;
+    if (flat.flat_languages) {
+      _.each(flat.flat_languages, each => {
+        if (each.language_code == this.props.appLanguageCode) {
+          returnedObject = each;
+          return;
+        }
+      });
+    }
+    return returnedObject;
+  }
+
 
   renderEachBasicLine() {
+    const flatLanguage = this.getFlatLanguage(this.props.bookingData.flat);
     const { date_start, date_end, id, facilities } = this.props.bookingData;
-    const { description, area, beds, rooms, layout, city, state, country } = this.props.bookingData.flat;
+    let { description, area, beds, rooms, layout, city, state, country } = this.props.bookingData.flat;
+    // if there is a flat language, reassign language dependent props
+    if (flatLanguage) {
+      description = flatLanguage.description;
+      area = flatLanguage.area;
+      city = flatLanguage.city;
+      state = flatLanguage.state;
+      country = flatLanguage.country;
+    }
     const { appLanguageCode } = this.props;
     const facilitiesInStringArray = this.getFacilityStrings(facilities);
-    console.log('in booking_confirmation renderEachBasicLine, facilitiesInStringArray: ', facilitiesInStringArray);
-    const addressString = city + ', ' + state
+    // console.log('in booking_confirmation renderEachBasicLine, facilitiesInStringArray: ', facilitiesInStringArray);
+    // const addressString = city + ', ' + state
+    const addressString = this.props.appLanguageCode == 'en' ? city + ', ' + state : city
     // const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
 
     // const lineArray = [
@@ -405,13 +429,17 @@ class BookingConfirmation extends Component {
     }
   }
 
+  handlePrepareEmailClick() {
+
+  }
+
   renderBookingApprovals() {
     const { appLanguageCode } = this.props;
 
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">{AppLanguages.approvalsChecklist[appLanguageCode]}</div>
-          <div className="booking-request-box-each-line">
+          <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
             <div className="booking-request-box-each-line-title">
               {AppLanguages.approveBookingRequest[appLanguageCode]}
             </div>
@@ -420,6 +448,15 @@ class BookingConfirmation extends Component {
               :
               <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Approve</div>
              }
+            </div>
+          </div>
+
+          <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+            <div className="booking-request-box-each-line-title">
+              {AppLanguages.sendDocumentsEmail[appLanguageCode]}
+            </div>
+            <div className="booking-request-box-each-line-data">
+              {<div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>}
             </div>
           </div>
       </div>
@@ -771,9 +808,9 @@ renderDocument() {
   let showDocumentInsertBox = false;
   if (agreementArray.length > 0) {
     showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
-    console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
-    console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
-    console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
+    // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
+    // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
+    // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
   }
 
   return (

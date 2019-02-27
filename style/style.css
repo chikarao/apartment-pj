@@ -1498,6 +1498,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 10px;
 }
 
+.booking-request-each-line-with-buttons {
+  margin-bottom: 30px;
+}
+
 .booking-request-box-each-line-data {
   height: auto;
   text-align: right;
@@ -1512,6 +1516,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .booking-request-box-each-line-title {
   font-weight: bold;
+  text-align: left;
 }
 
 .booking-request-each-box img {

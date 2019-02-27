@@ -1462,8 +1462,8 @@ const ImportantPointsExplanation = {
       charLimit: 50,
     },
 
-    retga_company: {
-      name: 'retga_company',
+    guaranty_association_name: {
+      name: 'guaranty_association_name',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '24.7%', left: '33%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1474,8 +1474,8 @@ const ImportantPointsExplanation = {
       charLimit: 50,
     },
 
-    retga_company_address: {
-      name: 'retga_company_address',
+    guaranty_association_address: {
+      name: 'guaranty_association_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '27%', left: '33%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1486,8 +1486,8 @@ const ImportantPointsExplanation = {
       charLimit: 50,
     },
 
-    retga_company_office_address: {
-      name: 'retga_company_office_address',
+    guaranty_association_office_address: {
+      name: 'guaranty_association_office_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '29.35%', left: '33%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1498,8 +1498,8 @@ const ImportantPointsExplanation = {
       charLimit: 50,
     },
 
-    retga_company_bond_office: {
-      name: 'retga_company_bond_office',
+    bond_deposit_office_1: {
+      name: 'bond_deposit_office_1',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '31.8%', left: '33%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1508,10 +1508,11 @@ const ImportantPointsExplanation = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      baseKey: 'bond_deposit_office'
     },
 
-    retga_company_bond_office_address: {
-      name: 'retga_company_bond_office_address',
+    bond_deposit_office_address_1: {
+      name: 'bond_deposit_office_address_1',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '33.5%', left: '33%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -1520,6 +1521,7 @@ const ImportantPointsExplanation = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      baseKey: 'bond_deposit_office_address'
     },
   },
   // end of page 5

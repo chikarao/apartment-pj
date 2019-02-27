@@ -1815,7 +1815,7 @@ const ImportantPointsExplanationBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      charLimit: 300,
+      charLimit: 600,
     },
 
     contract_break_terms_translation: {
@@ -1826,7 +1826,7 @@ const ImportantPointsExplanationBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      charLimit: 300,
+      charLimit: 600,
     },
   },
   5: {
@@ -1838,7 +1838,7 @@ const ImportantPointsExplanationBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      charLimit: 300,
+      charLimit: 600,
     },
 
     warranties_translation: {
@@ -1849,7 +1849,7 @@ const ImportantPointsExplanationBilingual = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      charLimit: 300,
+      charLimit: 600,
     },
 
     escrow_for_deposit: {
@@ -2230,8 +2230,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company: {
-      name: 'retga_company',
+    guaranty_association_name: {
+      name: 'guaranty_association_name',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '39%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2242,8 +2242,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_translation: {
-      name: 'retga_company_translation',
+    guaranty_association_name_translation: {
+      name: 'guaranty_association_name_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '41.3%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2254,8 +2254,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_address: {
-      name: 'retga_company_address',
+    guaranty_association_address: {
+      name: 'guaranty_association_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '44.5%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2266,8 +2266,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_address_translation: {
-      name: 'retga_company_address_translation',
+    guaranty_association_address_translation: {
+      name: 'guaranty_association_address_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '46.8%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2278,8 +2278,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_office_address: {
-      name: 'retga_company_office_address',
+    guaranty_association_office_address: {
+      name: 'guaranty_association_office_address',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '50.1%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2290,8 +2290,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_office_address_translation: {
-      name: 'retga_company_office_address_translation',
+    guaranty_association_office_address_translation: {
+      name: 'guaranty_association_office_address_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '52.4%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2302,8 +2302,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_bond_office: {
-      name: 'retga_company_bond_office',
+    bond_deposit_office_1: {
+      name: 'bond_deposit_office_1',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '55.5%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2312,10 +2312,11 @@ const ImportantPointsExplanationBilingual = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      baseKey: 'bond_deposit_office'
     },
 
-    retga_company_bond_office_translation: {
-      name: 'retga_company_bond_office_translation',
+    bond_deposit_office_1_translation: {
+      name: 'bond_deposit_office_1_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '57.3%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2326,8 +2327,8 @@ const ImportantPointsExplanationBilingual = {
       charLimit: 50,
     },
 
-    retga_company_bond_office_address: {
-      name: 'retga_company_bond_office_address',
+    bond_deposit_office_address_1: {
+      name: 'bond_deposit_office_address_1',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '59%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
@@ -2336,10 +2337,11 @@ const ImportantPointsExplanationBilingual = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      baseKey: 'bond_deposit_office_address'
     },
 
-    retga_company_bond_office_address_translation: {
-      name: 'retga_company_bond_office_address_translation',
+    bond_deposit_office_address_1_translation: {
+      name: 'bond_deposit_office_address_1_translation',
       input_type: 'string',
       choices: {
         0: { params: { val: 'inputFieldValue', top: '60.8%', left: '33.1%', width: '58.4%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
