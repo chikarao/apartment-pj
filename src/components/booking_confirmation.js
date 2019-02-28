@@ -19,6 +19,7 @@ import DocumentInsertCreateModal from './modals/document_insert_create_modal';
 import DocumentInsertEditModal from './modals/document_insert_edit_modal';
 import InsertFieldCreateModal from './modals/insert_field_create_modal';
 import InsertFieldEditModal from './modals/insert_field_edit_modal';
+import DocumentEmailCreateModal from './modals/document_email_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 
 
@@ -34,7 +35,8 @@ class BookingConfirmation extends Component {
       showSavedDocument: false,
       documentInsertId: '',
       insertFieldId: '',
-      insertFieldLanguageCode: ''
+      insertFieldLanguageCode: '',
+      showDocumentEmailCreateModal: false
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -429,8 +431,9 @@ class BookingConfirmation extends Component {
     }
   }
 
-  handlePrepareEmailClick() {
-
+  handlePrepareEmailClick(event) {
+    console.log('in booking confirmation, handlePrepareEmailClick:');
+    this.setState({ showDocumentEmailCreateModal: true });
   }
 
   renderBookingApprovals() {
@@ -923,7 +926,6 @@ renderDocumentInsertEditForm() {
 }
 
 renderInsertFieldCreateForm() {
-  // console.log('in booking confirmation, renderDocumentInsertCreateForm, insertFieldObject: ', insertFieldObject);
   return (
     <InsertFieldCreateModal
       show={this.props.showInsertFieldCreate}
@@ -947,6 +949,21 @@ renderInsertFieldEditForm() {
   );
 }
 
+renderDocumentEmailCreateForm() {
+  console.log('in booking confirmation, renderDocumentEmailCreateForm: ');
+  return (
+    <DocumentEmailCreateModal
+      show={this.state.showDocumentEmailCreateModal}
+      handleClose={() => this.setState({ showDocumentEmailCreateModal: !this.state.showDocumentEmailCreateModal})}
+      // show
+      // agreementId={this.state.agreementId}
+      // // documentInsertId={this.state.documentInsertId}
+      // insertFieldId={this.state.insertFieldId}
+      // documentInsertId={this.state.documentInsertId}
+    />
+  );
+}
+
 render() {
   return (
     // {this.renderReview()}
@@ -958,6 +975,7 @@ render() {
       {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
       {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
       {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
+      {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
     </div>
   );
 }

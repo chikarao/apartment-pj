@@ -1995,7 +1995,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'contract_renewal_terms',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '69.1%', left: '24.6%', width: '27.5%', height: '3.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '69.1%', left: '24.6%', width: '27.5%', height: '6.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2006,7 +2006,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'contract_renewal_terms_translation',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '72.5%', left: '24.6%', width: '27.5%', height: '3.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '75.9%', left: '24.6%', width: '27.5%', height: '6.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',

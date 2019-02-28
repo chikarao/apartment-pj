@@ -1221,7 +1221,7 @@ const ImportantPointsExplanation = {
       name: 'contract_break_terms',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '52.8%', left: '7.9%', width: '85%', height: '13.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '52.3%', left: '7.9%', width: '85%', height: '14.2%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -1232,7 +1232,7 @@ const ImportantPointsExplanation = {
       name: 'warranties',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '71.2%', left: '7.9%', width: '85%', height: '13.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '70.9%', left: '7.9%', width: '85%', height: '13.6%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',

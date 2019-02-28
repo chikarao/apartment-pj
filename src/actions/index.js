@@ -178,6 +178,7 @@ import {
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID,
   FETCH_AGREEMENT,
+  EMAIL_DOCUMENTS,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3071,6 +3072,23 @@ export function fetchAgreement(id, callback) {
       console.log('in actions index, response to fetchAgreement: ', response.data.data);
       dispatch({
         type: FETCH_AGREEMENT,
+        payload: response.data.data
+    });
+    callback();
+  });
+  };
+}
+
+export function emailDocuments(data, callback) {
+  console.log('in actions index, emailDocuments data: ', data);
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/email_documents`, data, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to emailDocuments: ', response.data.data);
+      dispatch({
+        type: EMAIL_DOCUMENTS,
         payload: response.data.data
     });
     callback();

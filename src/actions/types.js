@@ -173,3 +173,4 @@ export const SELECTED_DOCUMENT_INSERT_ID = 'selected_document_insert_id';
 export const SELECTED_INSERT_FIELD_ID = 'selected_insert_field_id';
 export const SELECTED_AGREEMENT_ID = 'selected_agreement_id';
 export const FETCH_AGREEMENT = 'fetch_agreement';
+export const EMAIL_DOCUMENTS = 'email_documents';
