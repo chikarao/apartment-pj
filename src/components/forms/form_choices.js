@@ -5,6 +5,7 @@ import * as actions from '../../actions';
 
 // import Building from '../constants/building';
 import Languages from '../constants/languages';
+import globalConstants from '../constants/global_constants';
 // import BankAccount from '../constants/bank_account';
 
 // custom field component based on redux forms used for creating
@@ -72,6 +73,19 @@ class FormChoices extends Component {
     return objectReturned;
   }
 
+  getDocumentFormParams(documentForm, userChoiceInFormValues) {
+    console.log('FormChoices, getDocumentFormParams, documentForm, userChoiceInFormValues: ', documentForm, userChoiceInFormValues);
+    let objectReturned = {};
+    _.each(documentForm, eachPage => {
+      console.log('FormChoices, getDocumentFormParams, each eachPage, userChoiceInFormValues: ', eachPage, userChoiceInFormValues);
+      if (eachPage[userChoiceInFormValues]) {
+        console.log('FormChoices, getDocumentFormParams, if eachPage[userChoiceInFormValues], userChoiceInFormValues: ', eachPage[userChoiceInFormValues], userChoiceInFormValues);
+        objectReturned = eachPage[userChoiceInFormValues].choices[0].params;
+      }
+    });
+    return objectReturned;
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
@@ -83,21 +97,33 @@ class FormChoices extends Component {
       // get modelChoice to get field config from constants/...js
       // Preset as null so that can test if true
       let modelChoice = null;
+      let widthPx = null;
+      let heightPx = null;
       // if redux form has values prop
         if (formValues) {
           // if this is coming from create
-          // if (this.props.create) {
-          console.log('FormChoices, renderEachChoice, formValues: ', formValues);
-          console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
+          // console.log('FormChoices, renderEachChoice, formValues: ', formValues);
+          // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
           // const formName = formValues.name
-             if (this.props.model[name].contingent_style) {
-               // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
-               const userChoiceInFormValues = formValues[this.props.model[name].contingent_style];
-               console.log('FormChoices, renderEachChoice, userChoiceInFormValues, formValues: ', userChoiceInFormValues, formValues);
-               modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
-               console.log('FormChoices, renderEachChoice, modelChoice, choice: ', modelChoice, choice);
-             }
-          // }
+         if (this.props.model[name].contingent_style) {
+           // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
+           const userChoiceInFormValues = formValues[this.props.model[name].contingent_style];
+           // console.log('FormChoices, renderEachChoice, userChoiceInFormValues, formValues: ', userChoiceInFormValues, formValues);
+           modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
+           // console.log('FormChoices, renderEachChoice, modelChoice, choice: ', modelChoice, choice);
+           // const documentForm = Documents[this.props.documentKey].form;
+           // console.log('FormChoices, renderEachChoice, documentForm, choice: ', documentForm, choice);
+           // get params from document form eg important_points_explanation to get input dimensions
+           const documentFormParams = this.getDocumentFormParams(modelChoice.inForm, userChoiceInFormValues)
+           // console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
+           // get dimensions of A4 paper in px for ex important_points_explanation
+           const a4Width = globalConstants.a4Width;
+           const a4Height = globalConstants.a4Height;
+           // get the width and height in px
+           widthPx = a4Width * (parseFloat(documentFormParams.width) / 100);
+           heightPx = a4Height * (parseFloat(documentFormParams.height) / 100);
+           // console.log('FormChoices, renderEachChoice, parseFloat a4Width, documentFormParams.width, widthPx, a4Height, parseFloat documentFormParams.height, heightPx: ', a4Width, parseFloat(documentFormParams.width), widthPx, a4Height, parseFloat(documentFormParams.height), heightPx);
+         }
         }
 
       const buttonElement =
@@ -130,7 +156,7 @@ class FormChoices extends Component {
           onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
-          maxLength={modelChoice ? modelChoice.charLimit : 400}
+          maxLength={modelChoice ? modelChoice.charLimit : ''}
           style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
@@ -145,7 +171,8 @@ class FormChoices extends Component {
           type={choice.type}
           className={choice.className}
           maxLength={modelChoice ? modelChoice.charLimit : 400}
-          style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
+          // style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
+          style={widthPx && heightPx ? { width: `${widthPx}px`, height: `${heightPx}px`, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
       // if choice type is string, use input element above and button if not string
@@ -277,10 +304,12 @@ class FormChoices extends Component {
 
   render() {
     // destructure local props set by redux forms Field compoenent
-    const { input: { value, onChange, name } } = this.props;
+    const { input: { value, onChange, name }, contingentStyleClassName, contingentStyleClassNameChild } = this.props;
+    console.log('FormChoices, render, this.props.contingentStyleClassName: ', this.props.contingentStyleClassName);
+
       return (
-      <div className="container form-control-custom-container" key={name}>
-        <div className="row form-control-custom">
+      <div className={contingentStyleClassName || 'container form-control-custom-container'} key={name}>
+        <div className={contingentStyleClassNameChild || 'row form-control-custom'}>
           {this.renderEachChoice()}
         </div>
       </div>
@@ -296,7 +325,8 @@ function mapStateToProps(state) {
   return {
     appLanguageCode: state.languages.appLanguageCode,
     addLanguageInput: state.modals.addLanguage,
-    formValues
+    formValues,
+    documentKey: state.documents.createDocumentKey,
   };
 }
 

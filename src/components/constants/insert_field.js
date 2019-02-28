@@ -1,5 +1,7 @@
 // import React from 'react';
 // object for input of inspections in edit flat, in building section
+// import ImportantPointsExplanation from './important_points_explanation.js';
+import ImportantPointsExplanationBilingual from './important_points_explanation_bilingual.js';
 
 const InsertField = {
   name: {
@@ -9,15 +11,16 @@ const InsertField = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'contract_break_terms', en: 'Contract Break Terms', jp: '契約解除の事項', type: 'button', className: 'form-rectangle', charLimit: 500, width: '400px', height: '200px' },
-      1: { value: 'contract_renewal_terms', en: 'Contract Renewal Terms', jp: '契約更新の事項', type: 'button', className: 'form-rectangle', charLimit: 100, width: '400px', height: '50px' },
-      2: { value: 'warranties', en: 'Compensation for Damages', jp: '損害賠償・違約金の事項', type: 'button', className: 'form-rectangle', charLimit: 500, width: '400px', height: '200px' },
-      3: { value: 'deposit_return_terms', en: 'Deposit Return Terms', jp: '敷金返金の事項', type: 'button', className: 'form-rectangle', charLimit: 300, width: '400px', height: '100px' },
+      0: { value: 'contract_break_terms', en: 'Contract Break Terms', jp: '契約解除の事項', type: 'button', className: 'form-rectangle', charLimit: 500, inForm: ImportantPointsExplanationBilingual },
+      1: { value: 'contract_renewal_terms', en: 'Contract Renewal Terms', jp: '契約更新の事項', type: 'button', className: 'form-rectangle', charLimit: 150, inForm: ImportantPointsExplanationBilingual },
+      2: { value: 'warranties', en: 'Compensation for Damages', jp: '損害賠償・違約金の事項', type: 'button', className: 'form-rectangle', charLimit: 500, inForm: ImportantPointsExplanationBilingual },
+      3: { value: 'deposit_return_terms', en: 'Deposit Return Terms', jp: '敷金返金の事項', type: 'button', className: 'form-rectangle', charLimit: 200, inForm: ImportantPointsExplanationBilingual },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
     language_independent: true,
     map_to_record: 'name',
+    // required true if user must provide a value to an input or trigger validation
     required: true,
     // use limit choices when not rendering some choices based on criteria
     // such as existence of languages for choices
@@ -63,7 +66,13 @@ const InsertField = {
     type: 'text',
     className: 'form-control',
     // use contingent_style when configuring style of field depending on choice eg name above
-    contingent_style: 'name'
+    contingent_style: 'name',
+    // use classNames to be used in FormChoices
+    contingent_style_class: 'form-control-span-modal-text-field',
+    contingent_style_class_child: 'form-control-span-modal-text-field-row',
+    // message to user for a message to user under input field
+    message_to_user: '* Text must fit into box',
+    required: true,
   },
 
   // files: {

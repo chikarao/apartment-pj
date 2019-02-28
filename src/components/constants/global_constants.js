@@ -5,7 +5,9 @@ const globalConstants = {
     maxFileSize: 80000000,
     minPWLength: 6,
     maxNumPdfFiles: 1,
-    rootUrl: 'http://localhost:3000'
+    rootUrl: 'http://localhost:3000',
+    a4Width: 792,
+    a4Height: 1122
 };
 
 export default globalConstants;

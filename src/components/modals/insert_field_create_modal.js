@@ -151,10 +151,11 @@ class InsertFieldCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.documentInsert, create: true, existingLanguageArray: [], insertFieldObject: this.props.insertFieldObject } : {}}
+            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.documentInsert, create: true, existingLanguageArray: [], insertFieldObject: this.props.insertFieldObject, contingentStyleClassName: formField.contingent_style_class, contingentStyleClassNameChild: formField.contingent_style_class_child } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
           />
+          {formField.message_to_user ? <div style={{ textAlign: 'left', margin: '5px 0 0 25px' }}>{formField.message_to_user}</div> : ''}
         </fieldset>
       );
     });
@@ -191,7 +192,7 @@ class InsertFieldCreateModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{AppLanguages.createInsertField[this.props.appLanguageCode]}</h3>
-            <div className="edit-profile-scroll-div">
+            <div className="modal-scroll-div">
               {this.renderAlert()}
 
               <form onSubmit={handleSubmit(this.handleFormSubmit)}>

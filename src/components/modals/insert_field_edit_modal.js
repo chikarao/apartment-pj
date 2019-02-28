@@ -104,11 +104,12 @@ class InsertFieldEditModal extends Component {
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
             // props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: false } : {}}
-            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: false } : {}}
+            props={fieldComponent == FormChoices ? { model: InsertField, record: this.props.insertField, create: false, contingentStyleClassName: formField.contingent_style_class, contingentStyleClassNameChild: formField.contingent_style_class_child } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
           />
+          {formField.message_to_user ? <div style={{ textAlign: 'left', margin: '5px 0 0 25px' }}>{formField.message_to_user}</div> : ''}
         </fieldset>
       );
     });
@@ -181,7 +182,7 @@ class InsertFieldEditModal extends Component {
     const { handleSubmit } = this.props;
 
     if (this.props.auth) {
-      console.log('in insert_field_edit_modal, renderEditInsertFieldForm: ');
+      // console.log('in insert_field_edit_modal, renderEditInsertFieldForm: ');
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -196,7 +197,7 @@ class InsertFieldEditModal extends Component {
                   {this.renderEditLanguageLink()}
               </div>
             </div>
-            <div className="edit-profile-scroll-div">
+            <div className="modal-scroll-div">
               {this.renderAlert()}
               <form onSubmit={handleSubmit(this.handleFormSubmit)}>
                 {this.renderEachInsertFieldField()}
