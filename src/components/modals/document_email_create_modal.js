@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
+import AppLanguages from '../constants/app_languages';
 // import languages from '../constants/languages';
 
 let showHideClassName;
@@ -25,17 +26,77 @@ class DocumentEmailCreateModal extends Component {
   // componentDidMount() {
   // }
 
+  createEmailAddressArray(emailString) {
+    let array = [];
+    if (emailString) {
+      // array = emailString.split(',');
+      array = emailString.split(',').map((each) => {
+        // trim extra spaces from before and after emails
+        return each.trim();
+      });
+    }
+    return array;
+  }
+
+  validateEmail(email) {
+    // regex for checking for valid email
+    // reference: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+
   handleFormSubmit(data) {
     // const { code } = data;
     // this.setState({ selectedDocumentEmail: languages[code].name });
-    const dataToBeSent = data;
+    const dataToBeSent = {};
     dataToBeSent.documents_array = this.state.documentsToSendArray;
+    dataToBeSent.subject = data.subject;
+    dataToBeSent.message = data.message;
+    // Create arrays of emails from string of emails
+    const ccArray = this.createEmailAddressArray(data.cc);
+    const bccArray = this.createEmailAddressArray(data.bcc);
+    let emailsValid = true;
+    // validate each email in cc and bcc arrays
+    _.each(ccArray, each => {
+      emailsValid = this.validateEmail(each);
+      // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
+      if (!emailsValid) {
+        return;
+      }
+    });
+
+    // validate each email in cc and bcc arrays
+    _.each(bccArray, each => {
+      emailsValid = this.validateEmail(each);
+      // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
+      if (!emailsValid) {
+        return;
+      }
+    });
+
+    dataToBeSent.cc_array = ccArray;
+    dataToBeSent.bcc_array = bccArray;
+    dataToBeSent.booking_id = this.props.booking.id;
+    dataToBeSent.user_id = this.props.booking.user_id;
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in DocumentEmailCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
-    this.props.showLoading();
-    this.props.emailDocuments(dataToBeSent, () => {
-      this.handleFormSubmitCallback();
-    });
+    if (this.state.documentsToSendArray.length > 0 && emailsValid) {
+      // if documents checked and all emails valid send to api
+      this.props.authError('');
+      this.props.showLoading();
+      this.props.emailDocuments(dataToBeSent, () => {
+        this.handleFormSubmitCallback();
+      });
+    } else {
+      if (!emailsValid) {
+        // if any emails invalid give error
+        // console.log('in DocumentEmailCreateModal, handleFormSubmit, in else if !emailsValid: ', emailsValid);
+        this.props.authError('Please check your emails and enter valid email address.');
+      } else {
+        // if no documents checked give error
+        this.props.authError('Please select at least one document by checking it.');
+      }
+    }
   }
 
   emptyInputFields() {
@@ -59,7 +120,7 @@ class DocumentEmailCreateModal extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-          <strong>Ooops! </strong> {this.props.errorMessage}
+          <strong></strong> {this.props.errorMessage}
         </div>
       );
     }
@@ -75,21 +136,24 @@ class DocumentEmailCreateModal extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const parsedElementVal = parseFloat(elementVal, 10);
-    console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
+    // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
     const alreadyChecked = this.state.documentsToSendArray.includes(parsedElementVal);
-    console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
+    // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
     if (alreadyChecked) {
+      // if document already checked delete id from array
       const newArray = [...this.state.documentsToSendArray];
+      // create new array from state array since cannot push into state object
       const index = newArray.indexOf(parsedElementVal); // get index of id to be deleted
       newArray.splice(index, 1); // remove one id at index
       this.setState({ documentsToSendArray: newArray }, () => {
-        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.documentsToSendArray: ', this.state.documentsToSendArray);
+        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.documentsToSendArray: ', this.state.documentsToSendArray);
       });
     } else {
+      // if document not yet checked, add to array
       const newArray = [...this.state.documentsToSendArray];
       newArray.push(parsedElementVal);
       this.setState({ documentsToSendArray: newArray }, () => {
-        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.documentsToSendArray: ', this.state.documentsToSendArray);
+        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.documentsToSendArray: ', this.state.documentsToSendArray);
       });
     }
   }
@@ -131,19 +195,32 @@ class DocumentEmailCreateModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title">Send Documents</h3>
+          <h3 className="auth-modal-title">{AppLanguages.emailDocuments[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
+          <label className="create-flat-form-label">Documents:</label>
             {this.renderDocuments()}
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
-            <fieldset key={'message'} className="form-group">
-              <label className="create-flat-form-label">Message:</label>
-              <Field name="message" component="textarea" type="text" className="form-control document-email-text-box" placeholder="Your message here..." />
-            </fieldset>
+              <fieldset key={'cc'} className="form-group">
+                <label className="create-flat-form-label">Cc:</label>
+                <Field name="cc" component="input" type="string" className="form-control document-email-subject-box" placeholder="Enter email addresses here with commas in between" />
+              </fieldset>
+              <fieldset key={'Bcc'} className="form-group">
+                <label className="create-flat-form-label">Bcc:</label>
+                <Field name="bcc" component="input" type="string" className="form-control document-email-subject-box" placeholder="Enter email addresses separated by commas" />
+              </fieldset>
+              <fieldset key={'subject'} className="form-group">
+                <label className="create-flat-form-label">Subject:</label>
+                <Field name="subject" component="input" type="string" className="form-control document-email-subject-box" placeholder="Subject of your email..." />
+              </fieldset>
+              <fieldset key={'message'} className="form-group">
+                <label className="create-flat-form-label">Message:</label>
+                <Field name="message" component="textarea" type="text" className="form-control document-email-text-box" placeholder="Your message here..." />
+              </fieldset>
 
-            <div className="confirm-change-and-button">
-              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">Submit</button>
-            </div>
+              <div className="confirm-change-and-button">
+                <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.send[this.props.appLanguageCode]}</button>
+              </div>
             </form>
           </div>
           </section>
@@ -151,6 +228,25 @@ class DocumentEmailCreateModal extends Component {
       );
     }
   }
+
+  // towerOfHanoi(n, from, to, aux) {
+  //   if (n == 1) {
+  //     console.log(`TOH ${n} going from ${from} to ${to}`);
+  //     return;
+  //   }
+  //   this.towerOfHanoi((n - 1), from, aux, to);
+  //   console.log(`TOH ${n} going from ${from} to ${to}`);
+  //   this.towerOfHanoi((n - 1), aux, to, from);
+  // }
+
+  // sum(a) {
+  //   return (b) => {
+  //     if (b) {
+  //       return this.sum(a + b);
+  //     }
+  //     return a;
+  //   };
+  // }
 
   renderPostCreateMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
@@ -168,6 +264,8 @@ class DocumentEmailCreateModal extends Component {
   }
 
   render() {
+    // this.towerOfHanoi(5, 'A', 'C', 'B');
+    // console.log('HERE is the this.sum(1)(2)(3)(4): ', this.sum(1)(2)(3)(4)());
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
     return (
       <div>
@@ -178,22 +276,29 @@ class DocumentEmailCreateModal extends Component {
 }
 
 DocumentEmailCreateModal = reduxForm({
-  form: 'DocumentEmailCreateModal'
+  form: 'DocumentEmailCreateModal',
+  enableReinitialize: true
 })(DocumentEmailCreateModal);
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in iCalendar_create_modal, mapStateToProps, state: ', state);
+  const flat = state.bookingData.flat;
+  const initialValues = { subject: `Documents for your rental: ${flat.address1}`, cc: state.auth.email }
   return {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
-    flat: state.selectedFlatFromParams.selectedFlatFromParams,
+    // flat: state.selectedFlatFromParams.selectedFlatFromParams,
+    flat,
     // userProfile: state.auth.userProfile
     // initialValues: state.auth.userProfile
     languages: state.languages,
+    appLanguageCode: state.languages.appLanguageCode,
     agreements: state.bookingData.fetchBookingData.agreements,
+    booking: state.bookingData.fetchBookingData,
     // showDocumentEmailCreate: state.modals.showDocumentEmailCreateModal,
+    initialValues
   };
 }
 

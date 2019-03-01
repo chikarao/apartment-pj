@@ -466,10 +466,28 @@ class BookingConfirmation extends Component {
     );
   }
 
+  findIfDocumentsSent(agreements) {
+    // console.log('in booking confirmation, findIfDocumentsSent, agreements:', agreements);
+
+    let returnedBoolean = false;
+    _.each(agreements, eachAgreement => {
+      // console.log('in booking confirmation, findIfDocumentsSent, eachAgreement:', eachAgreement);
+      if (eachAgreement.sent_to_tenant) {
+        returnedBoolean = true;
+        return;
+      }
+    });
+    return returnedBoolean;
+  }
+
   renderBookingData() {
     const { bookingData, appLanguageCode } = this.props;
     // if (bookingData && !this.state.showDocument) {
     if (bookingData) {
+      // find out if any documents sent to tenant
+        const documentsSent = this.findIfDocumentsSent(bookingData.agreements);
+      // }
+      // const documentsSent = bookingData.fetchBookingData ? this.findIfDocumentsSent(bookingData.fetchBookingData.agreements) : '';
       // const data = this.props.bookingData.id;
       // localStorage.setItem('data', data);
       // const localData = localStorage.getItem('data');
@@ -492,13 +510,13 @@ class BookingConfirmation extends Component {
             </div>
             <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
             <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsDelivered[appLanguageCode]}</div>
+            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsSent[appLanguageCode]}</div>
             <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
             <div className="booking-confirmation-progress-box-contents">
               <div className="booking-confirmation-progress-circle" />
               <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
               <div className="booking-confirmation-progress-circle" />
-              <div className="booking-confirmation-progress-line" />
+              <div className="booking-confirmation-progress-line" style={documentsSent ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
               <div className="booking-confirmation-progress-circle" />
               <div className="booking-confirmation-progress-line" />
               <div className="booking-confirmation-progress-circle" />
