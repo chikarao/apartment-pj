@@ -74,13 +74,21 @@ class CreateEditDocument extends Component {
         // const agreement = this.getAgreement(this.props.agreementId)
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
-        const returnedObject = this.getSavedInitialValuesObject({ agreement });
-        initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
-        const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
-        if (countMainDocumentInserts > 0) {
-          this.setState({ useMainDocumentInsert: true }, () => {
-            console.log('in create_edit_document, componentDidMount, this.state.useMainDocumentInsert', this.state.useMainDocumentInsert);
-
+        console.log('in create_edit_document, componentDidMount, agreement', agreement);
+        if (!this.props.showOwnUploadedDocument) {
+          console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
+          const returnedObject = this.getSavedInitialValuesObject({ agreement });
+          initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
+          const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
+          if (countMainDocumentInserts > 0) {
+            this.setState({ useMainDocumentInsert: true }, () => {
+              // console.log('in create_edit_document, componentDidMount, this.state.useMainDocumentInsert', this.state.useMainDocumentInsert);
+            });
+          }
+        } else {
+          console.log('in create_edit_document, componentDidMount, before setStatethis.state.showDocumentPdf', this.state.showDocumentPdf);
+          this.setState({ showDocumentPdf: true }, () => {
+            console.log('in create_edit_document, componentDidMount, this.state.showDocumentPdf', this.state.showDocumentPdf);
           });
         }
       } else {
@@ -699,7 +707,7 @@ renderEachDocumentField(page) {
   renderDocument() {
     const initialValuesEmpty = _.isEmpty(this.props.initialValues);
     let pages = [];
-    if (!initialValuesEmpty) {
+    if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
       let image;
       // when showing PDF (view pdf or after creating and updating pdf)
       // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
@@ -720,18 +728,19 @@ renderEachDocumentField(page) {
         // assign array to pages varaible for later iteration
         pages = Object.keys(this.props.documentFields);
       }
+
       const bilingual = Documents[this.props.createDocumentKey].translation;
       // const page = 1;
       // {this.renderNewElements(page)}
       return _.map(pages, page => {
-        // console.log('in create_edit_document, renderDocument, page: ', page);
+        console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
         return (
           <div
-          key={page}
-          value={page}
-          id="document-background"
-          className="test-image-pdf-jpg-background"
-          style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
+            key={page}
+            value={page}
+            id="document-background"
+            className="test-image-pdf-jpg-background"
+            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
           >
             {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
             {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
@@ -766,9 +775,15 @@ renderEachDocumentField(page) {
     }
   }
 
-  handleViewPDFClick() {
-    this.setState({ showDocumentPdf: !this.state.showDocumentPdf }, () => {
-    })
+  handleViewPDFClick(event) {
+    if (!this.props.showOwnUploadedDocument) {
+      this.setState({ showDocumentPdf: !this.state.showDocumentPdf }, () => {
+      });
+    } else {
+      const clickedElement = event.target;
+      const elementVal = clickedElement.getAttribute('value');
+      this.props.showDocumentInsertEditProp(elementVal);
+    }
   }
 
   switchCreatePDFButton(saveButtonActive, agreementHasPdf) {
@@ -848,7 +863,7 @@ renderEachDocumentField(page) {
           </div>
         }
 
-        {this.props.showSavedDocument ?
+        {this.props.showSavedDocument && !this.props.showOwnUploadedDocument ?
           <button
             value='delete'
             className="btn document-floating-button"

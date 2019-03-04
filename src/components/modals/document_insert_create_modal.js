@@ -13,8 +13,6 @@ import FormChoices from '../forms/form_choices';
 import RenderDropzoneInput from '../images/render_dropzone_input';
 import globalConstants from '../constants/global_constants';
 
-
-
 let showHideClassName;
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = globalConstants.rootUrl;
@@ -54,8 +52,8 @@ class DocumentInsertCreateModal extends Component {
     // this.props.createDocumentInsert(dataToBeSent, () => {
     //   this.handleFormSubmitCallback();
     // });
-    this.props.showLoading()
-    this.handleCreateImages(data.files, data)
+    this.props.showLoading();
+    this.handleCreateImages(data.files, data);
   }
 
   handleCreateImages(files, data) {
@@ -63,6 +61,7 @@ class DocumentInsertCreateModal extends Component {
 
     const imagesArray = [];
     let uploaders = [];
+    let pages = null;
   // Push all the axios request promise into a single array
     if (files.length > 0) {
       uploaders = files.map((file) => {
@@ -78,6 +77,8 @@ class DocumentInsertCreateModal extends Component {
           // const data = response.data;
           console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
           const filePublicId = response.data.data.response.public_id;
+          pages = response.data.data.response.pages;
+          console.log('in Upload, handleDrop, uploaders, after response, pages ', pages);
           // You should store this URL for future references in your app
           imagesArray.push(filePublicId);
           // call create image action, send images Array with flat id
@@ -95,11 +96,24 @@ class DocumentInsertCreateModal extends Component {
     if (imagesArray.length > 0) {
       // this.createImageCallback(imagesArray, 0, flatId);
       // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-      const dataToBeSent = { document_insert: data };
-      dataToBeSent.document_insert.publicid = imagesArray[0];
-      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-      this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
-    }
+      let dataToBeSent = {};
+      if (!this.props.uploadOwnDocument) {
+        dataToBeSent = { document_insert: data };
+        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+        this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+      } else {
+        const dataToChange = data;
+        console.log('in Upload, handleCreateImages, axios all, then, else pages: ', pages);
+        dataToChange.document_name = dataToChange.insert_name;
+        dataToBeSent = { agreement: dataToChange };
+        dataToBeSent.agreement.booking_id = this.props.booking.id;
+        dataToBeSent.agreement.document_publicid = imagesArray[0];
+        dataToBeSent.agreement.document_pages = pages;
+        dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
+        dataToBeSent.document_field = [];
+        this.props.createAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+      }
+    } // end of if imagesArray > 0
   });
 }
 
@@ -233,6 +247,7 @@ class DocumentInsertCreateModal extends Component {
 
   renderPostCreateMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+    const documentKind = this.props.uploadOwnDocument ? 'agreement' : 'document insert';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
     return (
@@ -243,7 +258,7 @@ class DocumentInsertCreateModal extends Component {
           {this.state.deleteDocumentInsertCompleted ?
             <div className="post-signup-message">The documentInsert has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The documentInsert has been successfully created.</div>
+            <div className="post-signup-message">{`The ${documentKind} has been successfully created.`}</div>
           }
         </div>
       </div>
@@ -319,8 +334,8 @@ function mapStateToProps(state) {
   console.log('in DocumentInsertCreateModal, mapStateToProps, state: ', state);
   // get clicked calendar
   // const calendarArray = [];
-  if (state) {
-    let initialValues = {};
+  if (state.bookingData.fetchBookingData) {
+    // let initialValues = {};
     // initialValues.language_code = 'en';
     // // console.log('in DocumentInsertCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
     // const { documentInserts } = state.auth.user;
@@ -347,6 +362,8 @@ function mapStateToProps(state) {
       // flat: state.selectedFlatFromParams.selectedFlatFromParams,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
+      booking: state.bookingData.fetchBookingData,
+      documentKey: state.documents.createDocumentKey,
       // documentInsertId: state.modals.selectedDocumentInsertId,
       // documentInsert,
       // addNew: state.modals.addNewDocumentInsert,

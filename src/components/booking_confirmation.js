@@ -21,6 +21,7 @@ import InsertFieldCreateModal from './modals/insert_field_create_modal';
 import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import DocumentEmailCreateModal from './modals/document_email_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
+import globalConstants from './constants/global_constants.js'
 
 
 // import DocumentForm from './constants/document_form';
@@ -36,7 +37,8 @@ class BookingConfirmation extends Component {
       documentInsertId: '',
       insertFieldId: '',
       insertFieldLanguageCode: '',
-      showDocumentEmailCreateModal: false
+      showDocumentEmailCreateModal: false,
+      uploadOwnDocument: false,
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -48,6 +50,7 @@ class BookingConfirmation extends Component {
     this.handleInsertFieldAddClick = this.handleInsertFieldAddClick.bind(this);
     this.handleEachInsertFieldClick = this.handleEachInsertFieldClick.bind(this);
     this.handlePrepareEmailClick = this.handlePrepareEmailClick.bind(this);
+    this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
   }
 
   componentDidMount() {
@@ -378,6 +381,13 @@ class BookingConfirmation extends Component {
     });
   }
 
+  handleDocumentUploadClick() {
+    this.setState({ uploadOwnDocument: true }, () => {
+      console.log('in booking confirmation, handleDocumentUploadClick, this.state.uploadOwnDocument:', this.state.uploadOwnDocument);
+      this.props.showDocumentInsertCreateModal();
+    });
+  }
+
   renderBookingDocuments() {
     const { appLanguageCode } = this.props;
 
@@ -415,6 +425,9 @@ class BookingConfirmation extends Component {
               </div>
             </div>
             <br/>
+            <div className="booking-confirmation-document-box">
+              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>Upload Your Document</div>
+            </div>
             <div className="booking-confirmation-document-box">
               {this.props.bookingData.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
             </div>
@@ -828,7 +841,9 @@ renderDocument() {
   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
   let showDocumentInsertBox = false;
   if (agreementArray.length > 0) {
-    showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
+    if (agreementArray[0].document_code) {
+      showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
+    }
     // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
     // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
     // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
@@ -845,11 +860,17 @@ renderDocument() {
             // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
           });
         })}
+        showDocumentInsertEditProp={() => {
+          this.setState({ uploadOwnDocument: true }, () => {
+            this.props.showDocumentInsertEditModal();
+          });
+        }}
         setAgreementId={(id) => this.setState({ agreementId: id })}
         showSavedDocument={this.state.showSavedDocument}
         agreementId={this.state.agreementId}
         agreement={agreementArray[0]}
         showDocumentInsertBox={showDocumentInsertBox}
+        showOwnUploadedDocument={this.state.showOwnUploadedDocument}
       />
     </div>
   );
@@ -884,18 +905,35 @@ handleSavedDocumentShowClick(event) {
   // elementName is agreement id
   const elementName = clickedElement.getAttribute('name');
   if (!this.state.showDocument) {
-    this.props.setCreateDocumentKey(elementVal, () => {
-      this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-    });
+    if (elementVal == globalConstants.ownUploadedDocumentKey) {
+      this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
+        this.props.selectedAgreementId(elementName);
+      });
+    } else {
+      this.props.setCreateDocumentKey(elementVal, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+      });
+    }
   } else {
     // if showDocument is true (currently showing document),
     // close document first then show new document, turn off and null out other state attributes
-    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-      this.props.setCreateDocumentKey(elementVal, () => {
-        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-        // this.setState({ showDocument: true });
+    if (elementVal == globalConstants.ownUploadedDocumentKey) {
+      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+        this.props.setCreateDocumentKey('own_uploaded_document', () => {
+          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
+          this.props.selectedAgreementId(elementName);
+          // this.setState({ showDocument: true });
+        });
       });
-    });
+    } else {
+      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+        this.props.setCreateDocumentKey(elementVal, () => {
+          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+          // this.setState({ showDocument: true });
+        });
+      });
+    }
   }
 }
 
@@ -928,6 +966,7 @@ renderDocumentInsertCreateForm() {
     <DocumentInsertCreateModal
       show={this.props.showDocumentInsertCreate}
       agreementId={this.state.agreementId}
+      uploadOwnDocument={this.state.uploadOwnDocument}
     />
   );
 }
@@ -939,6 +978,7 @@ renderDocumentInsertEditForm() {
       show={this.props.showDocumentInsertEdit}
       agreementId={this.state.agreementId}
       documentInsertId={this.state.documentInsertId}
+      uploadOwnDocument={this.state.uploadOwnDocument}
     />
   );
 }

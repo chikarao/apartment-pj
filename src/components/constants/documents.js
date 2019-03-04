@@ -8,7 +8,7 @@ import ImportantPointsExplanation from './important_points_explanation.js';
 import ImportantPointsExplanationBilingual from './important_points_explanation_bilingual.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
 import getInitialValuesObjectImportantPointsExplanation from '../functions/get_initialvalues_object_important_points_explanation.js';
-
+import globalConstants from './global_constants.js'
 // ADD NEW DOCUMENTS FOR CREATION HERE!!!!!
 // form for setting inputs and buttons with absolute position top and left attributes
 // on the image for the contract
@@ -60,6 +60,26 @@ const Documents =
       jp: '重要事項説明書 バイリンガル',
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-22',
       method: getInitialValuesObjectImportantPointsExplanation,
+      // translation: ImportantPointsExplanationBilingualTranslation,
+      // to indicate form is bilingual and needs translations from props
+      translation: true,
+      baseLanguage: 'jp',
+      allowDocumentInserts: false
+      // method: '',
+      // type: 'fixed_term_rental_contract'
+    },
+
+    [globalConstants.ownUploadedDocumentKey]: {
+      form: '',
+      en: '',
+      jp: '',
+      file: '',
+      method: '',
+      // form: ImportantPointsExplanationBilingual,
+      // en: 'Important Points Explanation Form Bilingual',
+      // jp: '重要事項説明書 バイリンガル',
+      // file: 'juyoujikou-setsumei-bilingual-v3-no-translation-22',
+      // method: getInitialValuesObjectImportantPointsExplanation,
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
       translation: true,

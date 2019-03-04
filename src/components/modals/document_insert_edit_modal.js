@@ -94,17 +94,37 @@ class DocumentInsertEditModal extends Component {
     // ... perform after upload is successful operation
     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
     // if there are no images, call do not create images and just call createImageCallback
-    const dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+    let dataToBeSent = {};
     if (imagesArray.length > 0) {
-      // this.createImageCallback(imagesArray, 0, flatId);
-      // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-      dataToBeSent.document_insert.publicid = imagesArray[0];
-      dataToBeSent.document_insert.pages = pages;
-      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-      this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+      if (!this.props.uploadOwnDocument) {
+        dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+        // this.createImageCallback(imagesArray, 0, flatId);
+        // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+        dataToBeSent.document_insert.publicid = imagesArray[0];
+        dataToBeSent.document_insert.pages = pages;
+        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+        this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+      } else {
+        const dataToChange = data;
+        dataToChange.document_name = data.insert_name;
+        dataToChange.booking_id = this.props.booking.id;
+        dataToChange.document_publicid = imagesArray[0];
+        dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
+        this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+      }
     } else {
-      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-      this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+      if (!this.props.uploadOwnDocument) {
+        dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+        this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+      } else {
+        const dataToChange = data;
+        dataToChange.document_publicid = imagesArray[0];
+        dataToChange.document_name = data.insert_name;
+        dataToChange.booking_id = this.props.booking.id;
+        dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
+        this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+      }
     }
   });
 }
@@ -302,6 +322,7 @@ class DocumentInsertEditModal extends Component {
 
   renderPostEditDeleteMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+    const documentKind = this.props.uploadOwnDocument ? 'agreement' : 'document insert';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
     return (
@@ -310,9 +331,9 @@ class DocumentInsertEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteDocumentInsertCompleted ?
-            <div className="post-signup-message">The PDF insert has been successfully deleted.</div>
+            <div className="post-signup-message">{`The ${documentKind} has been successfully deleted.`}</div>
             :
-            <div className="post-signup-message">The PDF insert has been successfully updated.</div>
+            <div className="post-signup-message">{`The ${documentKind} has been successfully updated.`}</div>
           }
         </div>
       </div>
@@ -377,7 +398,11 @@ function mapStateToProps(state) {
     // if (state.modals.documentInsertToEditId) {
     //   documentInsert = editDocumentInsert;
     // }
-    initialValues = documentInsert;
+    if (_.isEmpty(documentInsert)) {
+      initialValues.insert_name = agreement.document_name;
+    } else {
+      initialValues = documentInsert;
+    }
     // initialValues.documentInsert_date = dateString;
     // console.log('in DocumentInsertEditModal, mapStateToProps, initialValues: ', initialValues);
 
@@ -392,7 +417,9 @@ function mapStateToProps(state) {
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       appLanguageCode: state.languages.appLanguageCode,
       documentInsertId: state.modals.selectedDocumentInsertId,
+      booking: state.bookingData.fetchBookingData,
       documentInsert,
+      agreement,
       // editDocumentInsertId: state.modals.documentInsertToEditId,
       // editDocumentInsert,
       // language: state.languages.selectedLanguage,

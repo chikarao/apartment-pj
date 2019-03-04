@@ -7,7 +7,8 @@ const globalConstants = {
     maxNumPdfFiles: 1,
     rootUrl: 'http://localhost:3000',
     a4Width: 792,
-    a4Height: 1122
+    a4Height: 1122,
+    ownUploadedDocumentKey: 'own_uploaded_document'
 };
 
 export default globalConstants;

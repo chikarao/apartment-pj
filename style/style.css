@@ -2892,6 +2892,17 @@ form {
   color: gray;
 }
 
+.booking-request-upload-document-link {
+  margin: 0 0 7px 20px;
+  background-color: gray;
+  color: white;
+}
+
+.booking-request-upload-document-link:hover {
+  color: white;
+  background-color: lightgray;
+}
+
 .booking-confirmation-row {
   width: 100%;
   display: flex;

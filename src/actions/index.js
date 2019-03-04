@@ -2825,7 +2825,7 @@ export function editAgreement(agreementAttributes, callback) {
 
   // const { } = agreementAttributes;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/agreements/${id}`, agreementAttributes, {
+    axios.patch(`${ROOT_URL}/api/v1/agreements/${agreementAttributes.id}`, agreementAttributes, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
