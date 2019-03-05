@@ -38,7 +38,8 @@ class BookingConfirmation extends Component {
       insertFieldId: '',
       insertFieldLanguageCode: '',
       showDocumentEmailCreateModal: false,
-      uploadOwnDocument: false,
+      uploadOwnDocument: false, // used in upload modals
+      showOwnUploadedDocument: false, // used in create_edit_document
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -51,6 +52,7 @@ class BookingConfirmation extends Component {
     this.handleEachInsertFieldClick = this.handleEachInsertFieldClick.bind(this);
     this.handlePrepareEmailClick = this.handlePrepareEmailClick.bind(this);
     this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
+    this.handleOwnDocumentShowClick = this.handleOwnDocumentShowClick.bind(this);
   }
 
   componentDidMount() {
@@ -348,7 +350,7 @@ class BookingConfirmation extends Component {
         key={i}
         value={eachAgreement.document_code}
         name={eachAgreement.id}
-        onClick={this.handleSavedDocumentShowClick}
+        onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
         className="booking-confirmation-document-create-link"
       >
         {eachAgreement.document_name} &nbsp;
@@ -876,13 +878,7 @@ renderDocument() {
   );
 }
 
-handleDocumentCreateClick(event) {
-  const clickedElement = event.target;
-  // elementval is document key
-  const elementVal = clickedElement.getAttribute('value');
-  // console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
-
-  // if showDocument is false, just create document key with the document code
+setConditionsForCreateDocuments(elementVal) {
   if (!this.state.showDocument) {
     this.props.setCreateDocumentKey(elementVal, () => {
       this.setState({ showDocument: true, showSavedDocument: false, agreementId: '' });
@@ -898,43 +894,95 @@ handleDocumentCreateClick(event) {
   }
 }
 
+handleDocumentCreateClick(event) {
+  const clickedElement = event.target;
+  // elementval is document key
+  const elementVal = clickedElement.getAttribute('value');
+  console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
+
+  // if showDocument is false, just create document key with the document code
+  if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
+    // if (!this.state.showDocument) {
+    //   this.props.setCreateDocumentKey(elementVal, () => {
+    //     this.setState({ showDocument: true, showSavedDocument: false, agreementId: '' });
+    //   });
+    // } else {
+    //   // if showDocument is true (currently showing document),
+    //   // close document first then show new document
+    //   this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+    //     this.props.setCreateDocumentKey(elementVal, () => {
+    //       this.setState({ showDocument: true });
+    //     });
+    //   });
+    // }
+    this.setState({ showOwnUploadedDocument: false }, () => {
+      this.setConditionsForCreateDocuments(elementVal);
+    });
+  } else {
+    this.setConditionsForCreateDocuments(elementVal);
+  }
+}
+
+setConditionsForSavedDocuments(elementVal, elementName) {
+  if (!this.state.showDocument) {
+      this.props.setCreateDocumentKey(elementVal, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+      });
+  } else {
+    // if showDocument is true (currently showing document),
+    // close document first then show new document, turn off and null out other state attributes
+    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+      this.props.setCreateDocumentKey(elementVal, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+        // this.setState({ showDocument: true });
+      });
+    });
+  }
+}
+
 handleSavedDocumentShowClick(event) {
   const clickedElement = event.target;
   // elementVal is documentCode or document key in documents.js
   const elementVal = clickedElement.getAttribute('value');
   // elementName is agreement id
   const elementName = clickedElement.getAttribute('name');
-  if (!this.state.showDocument) {
-    if (elementVal == globalConstants.ownUploadedDocumentKey) {
-      this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
-        this.props.selectedAgreementId(elementName);
-      });
-    } else {
-      this.props.setCreateDocumentKey(elementVal, () => {
-        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-      });
-    }
+
+  if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
+    this.setState({ showOwnUploadedDocument: false }, () => {
+      this.setConditionsForSavedDocuments(elementVal, elementName);
+    });
   } else {
-    // if showDocument is true (currently showing document),
-    // close document first then show new document, turn off and null out other state attributes
-    if (elementVal == globalConstants.ownUploadedDocumentKey) {
-      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-        this.props.setCreateDocumentKey('own_uploaded_document', () => {
-          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
-          this.props.selectedAgreementId(elementName);
-          // this.setState({ showDocument: true });
-        });
-      });
-    } else {
-      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-        this.props.setCreateDocumentKey(elementVal, () => {
-          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-          // this.setState({ showDocument: true });
-        });
-      });
-    }
+    this.setConditionsForSavedDocuments(elementVal, elementName);
+    // if (!this.state.showDocument) {
+    //     this.props.setCreateDocumentKey(elementVal, () => {
+    //       this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+    //     });
+    // } else {
+    //   // if showDocument is true (currently showing document),
+    //   // close document first then show new document, turn off and null out other state attributes
+    //   this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+    //     this.props.setCreateDocumentKey(elementVal, () => {
+    //       this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
+    //       // this.setState({ showDocument: true });
+    //     });
+    //   });
+    // }
   }
+}
+
+handleOwnDocumentShowClick(event) {
+  const clickedElement = event.target;
+  // elementVal is documentCode or document key in documents.js
+  const elementVal = clickedElement.getAttribute('value');
+  // elementName is agreement id
+  const elementName = clickedElement.getAttribute('name');
+  this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+    this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+      this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
+      this.props.selectedAgreementId(elementName);
+      // this.setState({ showDocument: true });
+    });
+  });
 }
 
 // renderDocumentChoices() {

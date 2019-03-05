@@ -74,9 +74,9 @@ class CreateEditDocument extends Component {
         // const agreement = this.getAgreement(this.props.agreementId)
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
-        console.log('in create_edit_document, componentDidMount, agreement', agreement);
+        // console.log('in create_edit_document, componentDidMount, agreement', agreement);
         if (!this.props.showOwnUploadedDocument) {
-          console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
+          // console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
           const returnedObject = this.getSavedInitialValuesObject({ agreement });
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
           const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
@@ -85,15 +85,16 @@ class CreateEditDocument extends Component {
               // console.log('in create_edit_document, componentDidMount, this.state.useMainDocumentInsert', this.state.useMainDocumentInsert);
             });
           }
-        } else {
-          console.log('in create_edit_document, componentDidMount, before setStatethis.state.showDocumentPdf', this.state.showDocumentPdf);
+        } else { // else for if showOwnUploadedDocument
+          // console.log('in create_edit_document, componentDidMount, before setStatethis.state.showDocumentPdf', this.state.showDocumentPdf);
           this.setState({ showDocumentPdf: true }, () => {
-            console.log('in create_edit_document, componentDidMount, this.state.showDocumentPdf', this.state.showDocumentPdf);
+            // console.log('in create_edit_document, componentDidMount, this.state.showDocumentPdf', this.state.showDocumentPdf);
           });
         }
-      } else {
+      } else { // if this.props.showSavedDocument
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
+        console.log('in create_edit_document, componentDidMount, else in if showSavedDocument, initialValuesObject', initialValuesObject);
       }
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
@@ -707,48 +708,60 @@ renderEachDocumentField(page) {
   renderDocument() {
     const initialValuesEmpty = _.isEmpty(this.props.initialValues);
     let pages = [];
-    if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
-      let image;
-      // when showing PDF (view pdf or after creating and updating pdf)
-      // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
-      if (this.state.showDocumentPdf) {
-        const array = [];
-        // use image in agreement kept in Cloudinary
-        image = this.props.agreement.document_publicid;
-        // lodosh .times to get array [1, 2, 3 etc....]
-        _.times(this.props.agreement.document_pages, i => {
-          array.push(i + 1);
-        });
-        // assign array to pages for later iteration
-        pages = array;
-        // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
-      } else {
-        // if showing document form, get array of pages from constants/documents
-        image = Documents[this.props.createDocumentKey].file;
-        // assign array to pages varaible for later iteration
-        pages = Object.keys(this.props.documentFields);
+    let showDocument = false;
+    if (this.props.showSavedDocument) {
+      if (this.props.agreement) {
+        showDocument = true;
       }
+    } else {
+      showDocument = true;
+    }
 
-      const bilingual = Documents[this.props.createDocumentKey].translation;
-      // const page = 1;
-      // {this.renderNewElements(page)}
-      return _.map(pages, page => {
-        console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
-        return (
-          <div
+    // if (this.props.agreement) {
+    if (showDocument) {
+      if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
+        // render document only if initialValues NOT empty or if user has uploaded own document (agreement)
+        let image;
+        // when showing PDF (view pdf or after creating and updating pdf)
+        // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
+        if (this.state.showDocumentPdf) {
+          const array = [];
+          // use image in agreement kept in Cloudinary
+          image = this.props.agreement.document_publicid;
+          // lodosh .times to get array [1, 2, 3 etc....]
+          _.times(this.props.agreement.document_pages, i => {
+            array.push(i + 1);
+          });
+          // assign array to pages for later iteration
+          pages = array;
+          // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
+        } else {
+          // if showing document form, get array of pages from constants/documents
+          image = Documents[this.props.createDocumentKey].file;
+          // assign array to pages varaible for later iteration
+          pages = Object.keys(this.props.documentFields);
+        }
+
+        const bilingual = Documents[this.props.createDocumentKey].translation;
+        // const page = 1;
+        // {this.renderNewElements(page)}
+        return _.map(pages, page => {
+          console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
+          return (
+            <div
             key={page}
             value={page}
             id="document-background"
             className="test-image-pdf-jpg-background"
             style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
-          >
+            >
             {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
             {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
-          </div>
-        );
-      });
-
-    }
+            </div>
+          );
+        });
+      } // end of if !initialValuesEmpty
+    } // end of if this.props.agreement
   }
 
   handleFormCloseDeleteClick(event) {
@@ -756,7 +769,7 @@ renderEachDocumentField(page) {
     const elementVal = clickedElement.getAttribute('value');
     if (elementVal == 'close') {
       this.props.showSavedDocument ? this.props.closeSavedDocument() : this.props.showDocument();
-      this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
+      this.props.editHistory({ editHistoryItem: {}, action: 'clear' });
       this.props.setCreateDocumentKey('', () => {});
       this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
     }
@@ -817,90 +830,100 @@ renderEachDocumentField(page) {
   }
 
   renderDocumentButtons() {
-    console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
+    // console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
     const { handleSubmit, appLanguageCode } = this.props;
     let saveButtonActive = false;
     let agreementHasPdf = false;
+    let showDocumentButtons = false;
 
     if (this.props.formIsDirty && this.props.showSavedDocument) { saveButtonActive = true; }
 
     if (!this.props.showSavedDocument) { saveButtonActive = true; }
 
-    if (this.props.agreement) {
-      if (this.props.agreement.document_publicid) { agreementHasPdf = true; }
+    if (this.props.showSavedDocument) {
+      if (this.props.agreement) {
+        showDocumentButtons = true;
+        if (this.props.agreement.document_publicid) { agreementHasPdf = true; }
+      }
+    } else {
+      showDocumentButtons = true;
     }
 
+    if (showDocumentButtons) {
+      // console.log('in create_edit_document, renderDocumentButtons, this.props.agreement: ', this.props.agreement);
+
     // this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)
-    return (
-      <div className="document-floating-button-box">
-        {agreementHasPdf ?
-          <button
-            onClick={this.handleViewPDFClick}
-            className="btn document-floating-button"
-            style={{ backgroundColor: 'blue' }}
-          >
-            {this.state.showDocumentPdf ? AppLanguages.edit[appLanguageCode] : AppLanguages.viewPdf[appLanguageCode]}
-          </button>
-          :
-          ''
-        }
+      return (
+        <div className="document-floating-button-box">
+          {agreementHasPdf ?
+            <button
+              onClick={this.handleViewPDFClick}
+              className="btn document-floating-button"
+              style={{ backgroundColor: 'blue' }}
+            >
+              {this.state.showDocumentPdf ? AppLanguages.edit[appLanguageCode] : AppLanguages.viewPdf[appLanguageCode]}
+            </button>
+            :
+            ''
+          }
 
-        {this.state.showDocumentPdf ?
-          <a
-            className="btn document-floating-button"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ backgroundColor: 'lightgray' }}
-            href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
-          >
-           {AppLanguages.download[appLanguageCode]}
-          </a>
-          :
-          <div className="update-create-pdf-button-box">
-            {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)}
-            {this.props.showDocumentInsertBox ? <input type="checkbox" onChange={this.handleDocumentInsertCheckBox} checked={this.state.useMainDocumentInsert} /> : ''}
-            {this.props.showDocumentInsertBox ? <div style={{　fontSize: '10px'　}}>{AppLanguages.useOwnInsert[appLanguageCode]}</div> : ''}
-          </div>
-        }
+          {this.state.showDocumentPdf ?
+            <a
+              className="btn document-floating-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ backgroundColor: 'lightgray' }}
+              href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
+            >
+             {AppLanguages.download[appLanguageCode]}
+            </a>
+            :
+            <div className="update-create-pdf-button-box">
+              {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)}
+              {this.props.showDocumentInsertBox ? <input type="checkbox" onChange={this.handleDocumentInsertCheckBox} checked={this.state.useMainDocumentInsert} /> : ''}
+              {this.props.showDocumentInsertBox ? <div style={{　fontSize: '10px'　}}>{AppLanguages.useOwnInsert[appLanguageCode]}</div> : ''}
+            </div>
+          }
 
-        {this.props.showSavedDocument && !this.props.showOwnUploadedDocument ?
+          {this.props.showSavedDocument && !this.props.showOwnUploadedDocument ?
+            <button
+              value='delete'
+              className="btn document-floating-button"
+              style={{ backgroundColor: 'red' }}
+              onClick={this.handleFormCloseDeleteClick}
+            >
+              {AppLanguages.delete[appLanguageCode]}
+            </button>
+            : ''
+          }
           <button
-            value='delete'
+            value='close'
             className="btn document-floating-button"
-            style={{ backgroundColor: 'red' }}
+            style={{ backgroundColor: 'gray' }}
             onClick={this.handleFormCloseDeleteClick}
           >
-            {AppLanguages.delete[appLanguageCode]}
+            {AppLanguages.close[appLanguageCode]}
           </button>
-          : ''
-        }
-        <button
-          value='close'
-          className="btn document-floating-button"
-          style={{ backgroundColor: 'gray' }}
-          onClick={this.handleFormCloseDeleteClick}
-        >
-          {AppLanguages.close[appLanguageCode]}
-        </button>
-        <div
-            value='save'
-            // submit save only if formIsDirty
-            onClick={saveButtonActive ?
-              handleSubmit(data =>
-                this.handleFormSubmit({
-                  data,
-                  submitAction: 'save'
-                }))
-                :
-                () => {}
-            }
-            className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
-            style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
-          >
-            {AppLanguages.save[appLanguageCode]}
-          </div>
-      </div>
-    );
+          <div
+              value='save'
+              // submit save only if formIsDirty
+              onClick={saveButtonActive ?
+                handleSubmit(data =>
+                  this.handleFormSubmit({
+                    data,
+                    submitAction: 'save'
+                  }))
+                  :
+                  () => {}
+              }
+              className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
+              style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
+            >
+              {AppLanguages.save[appLanguageCode]}
+            </div>
+        </div>
+      );
+    } // END of if this.props.agreement
   }
 
   render() {
@@ -966,6 +989,7 @@ function mapStateToProps(state) {
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
     console.log('in create_edit_document, mapStateToProps, state: ', state);
+    console.log('in create_edit_document, mapStateToProps, documentKey, documentFields, documentTranslations, initialValues: ', documentKey, documentFields, documentTranslations, initialValues);
     // console.log('in create_edit_document, mapStateToProps, documentTranslations: ', documentTranslations);
     // console.log('in create_edit_document, mapStateToProps state:', state);
     return {

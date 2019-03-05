@@ -196,9 +196,17 @@ class DocumentInsertEditModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
     // if the documentInsert is the base documentInsert, give warking
     // if (!this.props.documentInsert.base_record_id) {
-    if (window.confirm('Are you sure you want to delete this documentInsert? Deleting this record will delete fields and PDF attached to it.')) {
-      this.props.showLoading()
-      this.props.deleteDocumentInsert(elementVal, () => this.handleDeleteDocumentInsertCallback());
+    if (!this.props.uploadOwnDocument) {
+      if (window.confirm('Are you sure you want to delete this documentInsert? Deleting this record will delete fields and PDF attached to it.')) {
+        this.props.showLoading()
+        this.props.deleteDocumentInsert(elementVal, () => this.handleDeleteDocumentInsertCallback());
+      }
+    } else {
+      if (window.confirm('Are you sure you want to delete this document?')) {
+        this.props.showLoading()
+        // this.props.deleteOwnDocumentCompleted();
+        this.props.deleteAgreement(elementVal, () => this.handleDeleteDocumentInsertCallback());
+      }
     }
     // } else {
     //   if (window.confirm('Are you sure you want to delete this language?')) {
@@ -209,7 +217,9 @@ class DocumentInsertEditModal extends Component {
   }
 
   handleDeleteDocumentInsertCallback() {
-    this.setState({ editDocumentInsertCompleted: true, deleteDocumentInsertCompleted: true });
+    this.setState({ editDocumentInsertCompleted: true, deleteDocumentInsertCompleted: true }, () => {
+      console.log('in documentInsert_edit_modal, handleDeleteDocumentInsertCallback, handleDeleteDocumentInsertCallback this.state.editDocumentInsertCompleted: ', this.state.editDocumentInsertCompleted);
+    });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
     this.props.showLoading();
@@ -294,7 +304,7 @@ class DocumentInsertEditModal extends Component {
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{AppLanguages.editDocumentInsert[this.props.appLanguageCode]}</h3>
             <div className="modal-edit-delete-edit-button-box">
-              <button value={this.props.documentInsert.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <button value={this.props.uploadOwnDocument ? this.props.agreementId : this.props.documentInsert.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
             </div>
             <div className="edit-profile-scroll-div">
             {this.renderDocumentInsertImage()}
