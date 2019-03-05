@@ -72,12 +72,15 @@ class CreateEditDocument extends Component {
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
+        // need to have this to populate document inserts 
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
-        // console.log('in create_edit_document, componentDidMount, agreement', agreement);
+        // const agreements = this.props.agreements || [];
+        const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
+        console.log('in create_edit_document, componentDidMount, this.props.documentInsertsAll, mainDocumentInsert', this.props.documentInsertsAll, mainDocumentInsert);
         if (!this.props.showOwnUploadedDocument) {
           // console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
-          const returnedObject = this.getSavedInitialValuesObject({ agreement });
+          const returnedObject = this.getSavedInitialValuesObject({ agreement, mainDocumentInsert });
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
           const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
           if (countMainDocumentInserts > 0) {
@@ -111,7 +114,7 @@ class CreateEditDocument extends Component {
     return count;
   }
 
-  getSavedInitialValuesObject({ agreement }) {
+  getSavedInitialValuesObject({ agreement, mainDocumentInsert }) {
     // console.log('in create_edit_document, getSavedInitialValuesObject, agreement: ', agreement);
     const initialValuesObject = {};
     const agreementMappedByName = {}
@@ -132,7 +135,29 @@ class CreateEditDocument extends Component {
       agreementMappedByName[eachField.name] = eachField;
       agreementMappedById[eachField.id] = eachField;
     });
-    return { initialValuesObject, agreementMappedByName, agreementMappedById };
+
+    const insertFieldObject = {};
+    if (!_.isEmpty(mainDocumentInsert)) {
+      _.each(mainDocumentInsert.insert_fields, eachInsertField => {
+        insertFieldObject[eachInsertField.name] = { name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code };
+      });
+    }
+    console.log('in create_edit_document, getMainDocument, mainDocumentInsert, insertFieldObject: ', mainDocumentInsert, insertFieldObject);
+
+    return { initialValuesObject, agreementMappedByName, agreementMappedById, insertFieldObject };
+  }
+
+  getMainDocumentInsert(documentInsertsAll) {
+    console.log('in create_edit_document, getMainDocument, documentInsertsAll: ', documentInsertsAll);
+    let objectReturned = {};
+    if (documentInsertsAll.length > 0) {
+      _.each(documentInsertsAll, eachInsert => {
+        if (eachInsert.main_agreement) {
+          objectReturned = eachInsert;
+        }
+      });
+    }
+    return objectReturned;
   }
 
 
@@ -983,6 +1008,7 @@ function mapStateToProps(state) {
     // parameters sent as props to functions/xxx.js methods
     // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
     // initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
+    const agreements = state.bookingData.fetchBookingData.agreements
     initialValues = state.documents.initialValuesObject;
     // const initialValues = { address: '1 Never never land' }
     // selector from redux form; true if any field on form is dirty
@@ -998,7 +1024,7 @@ function mapStateToProps(state) {
       auth: state.auth,
       // appLanguageCode: state.languages.appLanguageCode,
       // documentLanguageCode: state.languages.documentLanguageCode,
-      bookingData: state.bookingData.fetchBookingData.flat,
+      bookingData: state.bookingData.fetchBookingData,
       // userOwner: state.bookingData.user,
       // tenant: state.bookingData.fetchBookingData.user,
       // initialValues: state.documents.initialValuesObject,
@@ -1031,6 +1057,8 @@ function mapStateToProps(state) {
       agreementMappedByName: state.documents.agreementMappedByName,
       agreementMappedById: state.documents.agreementMappedById,
       formIsDirty,
+      agreements,
+      documentInsertsAll: state.bookingData.documentInsertsAll
       // isDirty: isDirty('CreateEditDocument')(state)
     };
   } else {

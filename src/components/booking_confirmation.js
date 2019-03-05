@@ -354,7 +354,9 @@ class BookingConfirmation extends Component {
         className="booking-confirmation-document-create-link"
       >
         {eachAgreement.document_name} &nbsp;
-        {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}
+        {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}&nbsp;
+        {eachAgreement.sent_to_tenant ? <i className="far fa-envelope" aria-hidden="true" style={{ color: 'black' }}></i> : ''}
+        {eachAgreement.sent_to_tenant ? <span style={{ fontSize: '10px' }}>✅</span> : ''}
       </div>
     });
   }

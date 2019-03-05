@@ -2896,6 +2896,8 @@ form {
   margin: 0 0 7px 20px;
   background-color: gray;
   color: white;
+  font-size: 12px;
+  padding: 8px 8px 6px 8px;
 }
 
 .booking-request-upload-document-link:hover {
@@ -3036,7 +3038,8 @@ form {
 }
 
 .booking-confirmation-approve-request-btn:hover {
-  background-color: gray;
+  background-color: lightgray;
+  color: white;
 }
 
 .document-floating-button-box {

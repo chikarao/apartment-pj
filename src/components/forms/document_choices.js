@@ -226,25 +226,25 @@ class DocumentChoices extends Component {
     // console.log('DocumentChoices, createInputElement, dirtyValue', dirtyValue);
     // console.log('DocumentChoices, createInputElement input, meta.dirty, value, this.props.dirtyFields', input, meta.dirty, value, this.props.dirtyFields);
     return (
-        <input
-          // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
-          // place {...input } above so input props won't override custom props
-          // ... passes all input attributes onChange, onBlur, onFocus name, value etc allows foreign language input
-          {...input}
-          // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
-          // override standard input props below
-          onChange={this.handleInputChange}
-          id="valueInput"
-          maxLength={this.props.charLimit}
-          // value with this.state.inputValue is no longer need in RF v7.4.2;
-          key={choice.params.val}
-          onBlur={this.handleOnBlur}
-          onFocus={this.handleOnFocus}
-          type={choice.params.input_type}
-          className={choice.params.class_name}
-          // placeholder={choice.placeholder}
-          style={this.getStyleOfInputElement(value, choice)}
-        />
+      <input
+        // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
+        // place {...input } above so input props won't override custom props
+        // ... passes all input attributes onChange, onBlur, onFocus name, value etc allows foreign language input
+        {...input}
+        // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
+        // override standard input props below
+        onChange={this.handleInputChange}
+        id="valueInput"
+        maxLength={this.props.charLimit}
+        // value with this.state.inputValue is no longer need in RF v7.4.2;
+        key={choice.params.val}
+        onBlur={this.handleOnBlur}
+        onFocus={this.handleOnFocus}
+        type={choice.params.input_type}
+        className={choice.params.class_name}
+        // placeholder={choice.placeholder}
+        style={this.getStyleOfInputElement(value, choice)}
+      />
     );
   }
 
