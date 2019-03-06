@@ -154,19 +154,19 @@ class CreateEditDocument extends Component {
       _.each(Object.keys(mainInsertFieldsObject), eachFieldKey => {
         if (documentForm[eachPage][eachFieldKey]) {
           _.each(mainInsertFieldsObject[eachFieldKey], eachArrayItem => {
-            console.log('in create_edit_document, getSavedDocumentInitialValuesObject, before if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+            // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, before if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
             if (eachArrayItem.language_code == Documents[this.props.documentKey].baseLanguage) {
-              console.log('in create_edit_document, getSavedDocumentInitialValuesObject, if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+              // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
               initialValuesObject[eachFieldKey] = eachArrayItem.value;
             } else if (eachArrayItem.language_code == this.props.documentLanguageCode) {
-              console.log('in create_edit_document, getSavedDocumentInitialValuesObject, else if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+              // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, else if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
               initialValuesObject[documentForm[eachPage][eachFieldKey].translation_field] = eachArrayItem.value;
             }
           });
         }
       });
     });
-    console.log('in create_edit_document, getMainDocument, mainDocumentInsert, mainInsertFieldsObject: ', mainDocumentInsert, mainInsertFieldsObject);
+    // console.log('in create_edit_document, getMainDocument, mainDocumentInsert, mainInsertFieldsObject: ', mainDocumentInsert, mainInsertFieldsObject);
 
     return { initialValuesObject, agreementMappedByName, agreementMappedById, mainInsertFieldsObject };
   }
@@ -731,6 +731,8 @@ renderEachDocumentField(page) {
     // if (!this.state.showDocumentPdf) {
     return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
       // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
+      let textToRender = documentTranslation.translations[this.props.documentLanguageCode]
+    
       return (
         <div
           key={i}
@@ -747,7 +749,7 @@ renderEachDocumentField(page) {
             textAlign: documentTranslation.attributes.text_align,
           }}
         >
-          {documentTranslation.translations[this.props.documentLanguageCode]}
+          {textToRender}
         </div>
       );
     });

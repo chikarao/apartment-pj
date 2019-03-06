@@ -43,7 +43,7 @@ export default function (state = {
 
     case FETCH_BOOKING:
       // console.log('in booking reducer, state: ', state);
-      return { ...state, fetchBookingData: action.payload.booking, user: action.payload.user, owner: action.payload.owner, flat: action.payload.flat, contracts: action.payload.contracts, assignments: action.payload.assignments, contractorTranslations: action.payload.contractorTranslations, staffTranslations: action.payload.staffTranslations, documentInsertsAll: action.payload.document_inserts };
+      return { ...state, fetchBookingData: action.payload.booking, user: action.payload.user, owner: action.payload.owner, flat: action.payload.flat, contracts: action.payload.contracts, assignments: action.payload.assignments, contractorTranslations: action.payload.contractorTranslations, staffTranslations: action.payload.staffTranslations, documentInsertsAll: action.payload.document_inserts_all };
 
     case CREATE_AGREEMENT:
       // console.log('in booking reducer, state: ', state);
@@ -97,12 +97,12 @@ export default function (state = {
 
     case CREATE_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, documentInserts: action.payload.document_inserts };
+    return { ...state, documentInserts: action.payload.document_inserts, documentInsertsAll: action.payload.document_inserts_all };
 
     case EDIT_INSERT_FIELD:
 
     // console.log('in booking reducer, state: ', state);
-    return { ...state, documentInserts: action.payload.document_inserts };
+    return { ...state, documentInserts: action.payload.document_inserts, documentInsertsAll: action.payload.document_inserts_all };
 
     case DELETE_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);

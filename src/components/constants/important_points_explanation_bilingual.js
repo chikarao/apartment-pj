@@ -2149,12 +2149,24 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_management_company_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '80.3%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '79.9%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 509
+    },
+
+    building_management_registration: {
+      name: 'building_management_registration',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '81.9%', left: '35%', width: '40%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 30,
     },
 
     building_management_address: {
