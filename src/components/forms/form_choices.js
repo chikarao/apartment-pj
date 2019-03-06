@@ -74,12 +74,12 @@ class FormChoices extends Component {
   }
 
   getDocumentFormParams(documentForm, userChoiceInFormValues) {
-    console.log('FormChoices, getDocumentFormParams, documentForm, userChoiceInFormValues: ', documentForm, userChoiceInFormValues);
+    // console.log('FormChoices, getDocumentFormParams, documentForm, userChoiceInFormValues: ', documentForm, userChoiceInFormValues);
     let objectReturned = {};
     _.each(documentForm, eachPage => {
-      console.log('FormChoices, getDocumentFormParams, each eachPage, userChoiceInFormValues: ', eachPage, userChoiceInFormValues);
+      // console.log('FormChoices, getDocumentFormParams, each eachPage, userChoiceInFormValues: ', eachPage, userChoiceInFormValues);
       if (eachPage[userChoiceInFormValues]) {
-        console.log('FormChoices, getDocumentFormParams, if eachPage[userChoiceInFormValues], userChoiceInFormValues: ', eachPage[userChoiceInFormValues], userChoiceInFormValues);
+        // console.log('FormChoices, getDocumentFormParams, if eachPage[userChoiceInFormValues], userChoiceInFormValues: ', eachPage[userChoiceInFormValues], userChoiceInFormValues);
         objectReturned = eachPage[userChoiceInFormValues].choices[0].params;
       }
     });
@@ -99,7 +99,7 @@ class FormChoices extends Component {
       let modelChoice = null;
       let widthPx = null;
       let heightPx = null;
-      // if redux form has values prop
+      // if redux form has values prop; formValues coming from mapStateToProps
         if (formValues) {
           // if this is coming from create
           // console.log('FormChoices, renderEachChoice, formValues: ', formValues);
@@ -115,7 +115,7 @@ class FormChoices extends Component {
            // console.log('FormChoices, renderEachChoice, documentForm, choice: ', documentForm, choice);
            // get params from document form eg important_points_explanation to get input dimensions
            const documentFormParams = this.getDocumentFormParams(modelChoice.inForm, userChoiceInFormValues)
-           // console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
+           console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
            // get dimensions of A4 paper in px for ex important_points_explanation
            const a4Width = globalConstants.a4Width;
            const a4Height = globalConstants.a4Height;
@@ -320,6 +320,7 @@ class FormChoices extends Component {
 function mapStateToProps(state) {
   console.log('in form_choices, mapStateToProps, state: ', state);
   // console.log('in form_choices, mapStateToProps, state.form.InsertFieldCreateModal: ', state.form.InsertFieldCreateModal);
+  // identify which form in redux form state is acitve
   const activeForm = state.form.InsertFieldCreateModal || state.form.InsertFieldEditModal;
   const formValues = activeForm ? activeForm.values : '';
   return {

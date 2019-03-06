@@ -72,16 +72,16 @@ class CreateEditDocument extends Component {
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
         // const agreement = this.getAgreement(this.props.agreementId)
-        // need to have this to populate document inserts 
+        // need to have this to populate document inserts
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
         // const agreements = this.props.agreements || [];
         const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
-        console.log('in create_edit_document, componentDidMount, this.props.documentInsertsAll, mainDocumentInsert', this.props.documentInsertsAll, mainDocumentInsert);
+        // console.log('in create_edit_document, componentDidMount, this.props.documentInsertsAll, mainDocumentInsert', this.props.documentInsertsAll, mainDocumentInsert);
         if (!this.props.showOwnUploadedDocument) {
           // console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
-          const returnedObject = this.getSavedInitialValuesObject({ agreement, mainDocumentInsert });
-          initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {} }
+          const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement, mainDocumentInsert });
+          initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById, allFields: {}, mainInsertFieldsObject: returnedObject.mainInsertFieldsObject }
           const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
           if (countMainDocumentInserts > 0) {
             this.setState({ useMainDocumentInsert: true }, () => {
@@ -97,7 +97,7 @@ class CreateEditDocument extends Component {
       } else { // if this.props.showSavedDocument
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
-        console.log('in create_edit_document, componentDidMount, else in if showSavedDocument, initialValuesObject', initialValuesObject);
+        // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument, initialValuesObject', initialValuesObject);
       }
       // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
@@ -114,11 +114,12 @@ class CreateEditDocument extends Component {
     return count;
   }
 
-  getSavedInitialValuesObject({ agreement, mainDocumentInsert }) {
-    // console.log('in create_edit_document, getSavedInitialValuesObject, agreement: ', agreement);
+  getSavedDocumentInitialValuesObject({ agreement, mainDocumentInsert }) {
+    // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, agreement: ', agreement);
     const initialValuesObject = {};
     const agreementMappedByName = {}
     const agreementMappedById = {}
+    const mainInsertFieldsObject = {};
     // populate initialValues object with backend persisted data;
     // true and false need to be set again since agreement.value is a string column
     // and cannot persist boolean in backend
@@ -136,19 +137,42 @@ class CreateEditDocument extends Component {
       agreementMappedById[eachField.id] = eachField;
     });
 
-    const insertFieldObject = {};
     if (!_.isEmpty(mainDocumentInsert)) {
       _.each(mainDocumentInsert.insert_fields, eachInsertField => {
-        insertFieldObject[eachInsertField.name] = { name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code };
+        // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, mainDocumentInsert, eachInsertField: ', mainDocumentInsert, eachInsertField);
+        if (!mainInsertFieldsObject[eachInsertField.name]) {
+          mainInsertFieldsObject[eachInsertField.name] = [];
+          mainInsertFieldsObject[eachInsertField.name].push({ name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code });
+        } else {
+          mainInsertFieldsObject[eachInsertField.name].push({ name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code });
+        }
       });
     }
-    console.log('in create_edit_document, getMainDocument, mainDocumentInsert, insertFieldObject: ', mainDocumentInsert, insertFieldObject);
 
-    return { initialValuesObject, agreementMappedByName, agreementMappedById, insertFieldObject };
+    const documentForm = Documents[this.props.documentKey].form;
+    _.each(Object.keys(documentForm), eachPage => {
+      _.each(Object.keys(mainInsertFieldsObject), eachFieldKey => {
+        if (documentForm[eachPage][eachFieldKey]) {
+          _.each(mainInsertFieldsObject[eachFieldKey], eachArrayItem => {
+            console.log('in create_edit_document, getSavedDocumentInitialValuesObject, before if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+            if (eachArrayItem.language_code == Documents[this.props.documentKey].baseLanguage) {
+              console.log('in create_edit_document, getSavedDocumentInitialValuesObject, if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+              initialValuesObject[eachFieldKey] = eachArrayItem.value;
+            } else if (eachArrayItem.language_code == this.props.documentLanguageCode) {
+              console.log('in create_edit_document, getSavedDocumentInitialValuesObject, else if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+              initialValuesObject[documentForm[eachPage][eachFieldKey].translation_field] = eachArrayItem.value;
+            }
+          });
+        }
+      });
+    });
+    console.log('in create_edit_document, getMainDocument, mainDocumentInsert, mainInsertFieldsObject: ', mainDocumentInsert, mainInsertFieldsObject);
+
+    return { initialValuesObject, agreementMappedByName, agreementMappedById, mainInsertFieldsObject };
   }
 
   getMainDocumentInsert(documentInsertsAll) {
-    console.log('in create_edit_document, getMainDocument, documentInsertsAll: ', documentInsertsAll);
+    // console.log('in create_edit_document, getMainDocument, documentInsertsAll: ', documentInsertsAll);
     let objectReturned = {};
     if (documentInsertsAll.length > 0) {
       _.each(documentInsertsAll, eachInsert => {
@@ -511,7 +535,7 @@ class CreateEditDocument extends Component {
         this.setState({ showDocumentPdf: true });
         let initialValuesObject = {};
         // console.log('in create_edit_document, handleFormSubmit, else if save_and_create in callback editAgreementFields agreement: ', agreement);
-        const returnedObject = this.getSavedInitialValuesObject({ agreement });
+        const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
         // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
         this.props.setInitialValuesObject(initialValuesObject);
@@ -543,7 +567,7 @@ class CreateEditDocument extends Component {
         this.props.editAgreementFields(paramsObject, (agreement) => {
           this.props.showLoading();
           let initialValuesObject = {};
-          const returnedObject = this.getSavedInitialValuesObject({ agreement });
+          const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
           // console.log('in create_edit_document, handleFormSubmit, else in callback editAgreementFields agreement: ', agreement);
           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
           // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);

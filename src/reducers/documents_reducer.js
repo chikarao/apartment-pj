@@ -41,6 +41,7 @@ export default function (state = {
         allFields: action.payload.allFields,
         agreementMappedById: action.payload.agreementMappedById,
         agreementMappedByName: action.payload.agreementMappedByName,
+        mainInsertFieldsObject: action.payload.mainInsertFieldsObject,
       };
 
     case EDIT_HISTORY:

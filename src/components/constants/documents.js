@@ -26,6 +26,7 @@ const Documents =
         method: getInitialValuesObjectFixedTermContract,
         type: 'fixed_term_rental_contract',
         baseLanguage: 'jp',
+        // allowDocumentInserts for indicating user can upload document insert
         allowDocumentInserts: true
       },
 
@@ -49,6 +50,7 @@ const Documents =
       // to indicate form is bilingual and needs translations from props
       translation: true,
       baseLanguage: 'jp',
+      // allowDocumentInserts for indicating user can upload document insert
       allowDocumentInserts: true
       // method: '',
       // type: 'fixed_term_rental_contract'
@@ -58,7 +60,7 @@ const Documents =
       form: ImportantPointsExplanationBilingual,
       en: 'Important Points Explanation Form Bilingual',
       jp: '重要事項説明書 バイリンガル',
-      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-22',
+      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-24',
       method: getInitialValuesObjectImportantPointsExplanation,
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
@@ -69,6 +71,7 @@ const Documents =
       // type: 'fixed_term_rental_contract'
     },
 
+    // Key kept in global constants
     [globalConstants.ownUploadedDocumentKey]: {
       form: '',
       en: '',
@@ -82,8 +85,8 @@ const Documents =
       // method: getInitialValuesObjectImportantPointsExplanation,
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
-      translation: true,
-      baseLanguage: 'jp',
+      // translation: true,
+      // baseLanguage: 'jp',
       allowDocumentInserts: false
       // method: '',
       // type: 'fixed_term_rental_contract'

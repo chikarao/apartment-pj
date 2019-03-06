@@ -1816,6 +1816,7 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 600,
+      translation_field: 'contract_break_terms_translation'
     },
 
     contract_break_terms_translation: {
@@ -1839,6 +1840,7 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 600,
+      translation_field: 'warranties_translation'
     },
 
     warranties_translation: {
@@ -2000,6 +2002,7 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 100,
+      translation_field: 'contract_renewal_terms_translation'
     },
 
     contract_renewal_terms_translation: {
@@ -2106,18 +2109,19 @@ const ImportantPointsExplanationBilingual = {
       name: 'deposit_return_terms',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '43.2%', left: '9.5%', width: '82.5%', height: '11.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '43.5%', left: '9.5%', width: '82.5%', height: '14.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 300,
+      translation_field: 'deposit_return_terms_translation'
     },
 
     deposit_return_terms_translation: {
       name: 'deposit_return_terms_translation',
       input_type: 'text',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '54.4%', left: '9.5%', width: '82.5%', height: '11.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
+        0: { params: { val: 'inputFieldValue', top: '58%', left: '9.5%', width: '82.5%', height: '14.1%', font_size: '12px', class_name: 'document-rectangle wrap-textarea', input_type: 'text' } },
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
@@ -2128,7 +2132,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_management_company',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '72%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '78%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       // component: 'input',
@@ -2145,7 +2149,7 @@ const ImportantPointsExplanationBilingual = {
       name: 'building_management_company_translation',
       input_type: 'string',
       choices: {
-        0: { params: { val: 'inputFieldValue', top: '74.3%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+        0: { params: { val: 'inputFieldValue', top: '80.3%', left: '35%', width: '56.5%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
       },
       className: 'form-control-document',
       // component: 'input',
