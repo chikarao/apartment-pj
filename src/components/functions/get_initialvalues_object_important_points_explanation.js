@@ -16,7 +16,7 @@ export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps
   // console.log('in get_initialvalues_object-fixed-term-contract, just this: ');
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode, contractorTranslations, staffTranslations } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, mainInsertFieldsObject } = props;
   function getProfile(personProfiles, language) {
     let returnedProfile;
     _.each(personProfiles, eachProfile => {
@@ -851,7 +851,27 @@ export default (props) => {
         objectReturned.broker_staff_phone = brokerStaffProfile.phone;
       }
 
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, booking: ', booking);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, booking: ', booking);
+      // Assign initialValues to main agreement insertField fields
+      if (!_.isEmpty(mainInsertFieldsObject)) {
+        // const documentForm = Documents[this.props.documentKey].form;
+        // _.each(Object.keys(documentForm), eachPage => {
+          _.each(Object.keys(mainInsertFieldsObject), eachFieldKey => {
+            if (eachPageObject[eachFieldKey]) {
+              _.each(mainInsertFieldsObject[eachFieldKey], eachArrayItem => {
+                // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, before if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+                if (eachArrayItem.language_code == Documents[documentKey].baseLanguage) {
+                  // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+                  objectReturned[eachFieldKey] = eachArrayItem.value;
+                } else if (eachArrayItem.language_code == documentLanguageCode) {
+                  // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, else if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
+                  objectReturned[eachPageObject[eachFieldKey].translation_field] = eachArrayItem.value;
+                }
+              });
+            }
+          });
+        // });
+      }
 
       // if (flat.bank_account) {
       //   // test if bank_account has been added to flat
