@@ -13,6 +13,7 @@ import Documents from '../constants/documents';
 // import SelectField from '../forms/select_field';
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
+import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
 // import UploadForProfile from '../images/upload_for_profile';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
@@ -70,7 +71,10 @@ class CreateEditDocument extends Component {
       // const documentKey = state.documents.createDocumentKey;
       // if showing a saved document (props set in booking_confirmation.js)
       const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
-      const mainInsertFieldsObject = this.getMainInsertFieldObject(mainDocumentInsert);
+      let mainInsertFieldsObject = {};
+      // mainInsertFieldsObject = this.getMainInsertFieldObject(mainDocumentInsert);
+      // if mainInsertFieldsObject is empty; ie user has not created a main agreement and insert fields
+      _.isEmpty(mainInsertFieldsObject) ? (mainInsertFieldsObject = DefaultMainInsertFieldsObject) : mainInsertFieldsObject;
       // console.log('in create_edit_document, componentDidMount, mainInsertFieldsObject, mainDocumentInsert', mainInsertFieldsObject, mainDocumentInsert);
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
@@ -103,7 +107,7 @@ class CreateEditDocument extends Component {
           });
         }
       } else { // if this.props.showSavedDocument
-        // if not save document ie creating new document, call method to assign initialValues 
+        // if not save document ie creating new document, call method to assign initialValues
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject });
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
         // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument, initialValuesObject', initialValuesObject);
@@ -825,7 +829,7 @@ renderEachDocumentField(page) {
         // const page = 1;
         // {this.renderNewElements(page)}
         return _.map(pages, page => {
-          console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
+          // console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
           return (
             <div
             key={page}

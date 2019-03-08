@@ -168,8 +168,8 @@ class CreateFlat extends Component {
         // console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
         // // console.log('formData api_key: ', formData.get('api_key'));
         // console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
-        console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
-        console.log('in create_flat, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
+        // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
+        // console.log('in create_flat, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
 
         // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
         // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
@@ -179,7 +179,7 @@ class CreateFlat extends Component {
           //   headers: { 'X-Requested-With': 'XMLHttpRequest' },
         }).then(response => {
           // const data = response.data;
-          console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+          // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
           const filePublicId = response.data.data.response.public_id;
           // You should store this URL for future references in your app
           imagesArray.push(filePublicId);
@@ -189,11 +189,11 @@ class CreateFlat extends Component {
       });
       //end of uploaders
     }
-  console.log('in Upload, handleDrop, uploaders: ', uploaders);
+  // console.log('in Upload, handleDrop, uploaders: ', uploaders);
   // Once all the files are uploaded
   axios.all(uploaders).then(() => {
     // ... perform after upload is successful operation
-    console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+    // console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
     // if there are no images, call do not create images and just call createImageCallback
     if (imagesArray.length === 0) {
       this.createImageCallback(imagesArray, 0, flatId);
@@ -205,7 +205,7 @@ class CreateFlat extends Component {
 }
 
   createImageCallback(imagesArray, imageCount, flatId) {
-    console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
+    // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
     const count = imageCount + 1;
     if (count <= (imagesArray.length - 1)) {
       this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));

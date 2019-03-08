@@ -182,13 +182,25 @@ class DocumentEmailCreateModal extends Component {
     );
   }
 
+  getUserProfile(profiles) {
+    let returnedObject = {};
+    _.each(profiles, eachProfile => {
+      if (eachProfile.language_code == this.props.appLanguageCode) {
+        returnedObject = eachProfile;
+      }
+    });
+    return !_.isEmpty(returnedObject) ? returnedObject : { first_name: 'Tenant' };
+  }
+
   renderCreateDocumentEmailForm() {
     const { handleSubmit } = this.props;
     // const profileEmpty = _.isEmpty(this.props.auth.userProfile);
-    console.log('in modal, render before if props.auth showHideClassName:', showHideClassName);
+    // console.log('in modal, render before if props.auth showHideClassName:', showHideClassName);
     if (this.props.auth) {
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      console.log('in modal, render showHideClassName:', showHideClassName);
+      // console.log('in modal, render showHideClassName:', showHideClassName);
+      const tenantProfile = this.getUserProfile(this.props.booking.user.profiles);
+      const tenantEmail = this.props.booking.user.email;
       // console.log('in modal, render this.props.show:', this.props.show);
       // console.log('in modal, render this.props:', this.props);
       return (
@@ -201,13 +213,17 @@ class DocumentEmailCreateModal extends Component {
           <label className="create-flat-form-label">Documents:</label>
             {this.renderDocuments()}
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
+              <fieldset key={'to'} className="form-group">
+                <label className="create-flat-form-label">To:</label>
+                <div style={{ float: 'left', paddingLeft: '0px', fontStyle: 'normal' }}>{tenantEmail} ({tenantProfile.first_name}'s email)</div>
+              </fieldset>
               <fieldset key={'cc'} className="form-group">
                 <label className="create-flat-form-label">Cc:</label>
                 <Field name="cc" component="input" type="string" className="form-control document-email-subject-box" placeholder="Enter email addresses here with commas in between" />
               </fieldset>
               <fieldset key={'Bcc'} className="form-group">
                 <label className="create-flat-form-label">Bcc:</label>
-                <Field name="bcc" component="input" type="string" className="form-control document-email-subject-box" placeholder="Enter email addresses separated by commas" />
+                <Field name="bcc" component="input" type="string" className="form-control document-email-subject-box" placeholder="Enter email addresses separated by comma" />
               </fieldset>
               <fieldset key={'subject'} className="form-group">
                 <label className="create-flat-form-label">Subject:</label>

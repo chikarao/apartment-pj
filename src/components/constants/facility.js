@@ -9,7 +9,7 @@ const Facility = {
     type: 'string',
     choices: {
       //documentformMap1 and 2 correspond to the contract document
-      // facilityObjectMap corresponds to the column in backend database facility
+      // facilityObjectMap corresponds to the column in backend model flat
       0: { value: 'car_parking', en: 'Car Parking', jp: '駐車場', type: 'button', className: 'form-rectangle', documentFormMap1: 'parking_spaces', documentFormMap2: 'parking_space_number', facilityObjectMap: 'parking_included' },
       1: { value: 'bicycle_parking', en: 'Bicycle Parking', jp: '駐輪場', type: 'button', className: 'form-rectangle', documentFormMap1: 'bicycle_parking_spaces', documentFormMap2: 'bicycle_parking_space_number', facilityObjectMap: 'bicycle_parking_included' },
       2: { value: 'motorcycle_parking', en: 'Motorcycle Parking', jp: 'バイク置場', type: 'button', className: 'form-rectangle', documentFormMap1: 'motorcycle_parking_spaces', documentFormMap2: 'motorcycle_parking_space_number', facilityObjectMap: 'motorcycle_parking_included' },

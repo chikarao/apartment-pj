@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { reduxForm, Field } from 'redux-form';
+// import { reduxForm, Field } from 'redux-form';
+// import { reduxForm, Field } from 'redux-form';
 
 import * as actions from '../actions';
 import ReviewEditModal from './modals/review_edit_modal';
 import ReviewCreateFrom from './forms/review_create';
+import SetFinalBookingTermsFrom from './forms/set_booking_deal';
 
 import CreateEditDocument from './forms/create_edit_document';
 import CalculateAge from './functions/calculate_age';
@@ -453,12 +455,18 @@ class BookingConfirmation extends Component {
     this.setState({ showDocumentEmailCreateModal: true });
   }
 
-  renderBookingApprovals() {
+  renderBookingActionForm() {
+    return(
+      <SetFinalBookingTermsFrom />
+    );
+  }
+
+  renderBookingActions() {
     const { appLanguageCode } = this.props;
 
     return (
       <div className="booking-confirmation-each-box">
-        <div className="booking-request-box-title">{AppLanguages.approvalsChecklist[appLanguageCode]}</div>
+        <div className="booking-request-box-title">{AppLanguages.rentalActions[appLanguageCode]}</div>
           <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
             <div className="booking-request-box-each-line-title">
               {AppLanguages.approveBookingRequest[appLanguageCode]}
@@ -470,15 +478,15 @@ class BookingConfirmation extends Component {
              }
             </div>
           </div>
-
           <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
             <div className="booking-request-box-each-line-title">
               {AppLanguages.sendDocumentsEmail[appLanguageCode]}
             </div>
             <div className="booking-request-box-each-line-data">
-              {<div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>}
+              <div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>
             </div>
           </div>
+          {this.renderBookingActionForm()}
       </div>
     );
   }
@@ -544,7 +552,7 @@ class BookingConfirmation extends Component {
               {this.renderBookingBasicInformation()}
               {this.renderBookingTenantInformation(bookingData)}
               {this.renderBookingDocuments()}
-              {this.renderBookingApprovals()}
+              {this.renderBookingActions()}
             </div>
           </div>
         </div>

@@ -1499,7 +1499,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .booking-request-each-line-with-buttons {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .booking-request-box-each-line-data {
@@ -3062,6 +3062,30 @@ form {
   z-index: 2;
   margin-left: 5%;
   padding: 5px;
+}
+
+.set-final-booking-deal-container {
+  width: auto;
+  /* height: auto; */
+  padding: 10px 0 10px 0;
+  margin: 10px 0px 10px 0px;
+}
+
+.set-final-booking-deal-container form {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0px 10px 0px;
+  margin: 10px 20px 10px 20px;
+}
+
+.set-booking-terms-input {
+  width: 100px;
+  height: 23px;
+}
+
+.set-booking-terms-input {
+  display: flex;
+  justify-content: space-between;
 }
 
 
