@@ -3370,6 +3370,12 @@ form {
   color: blue;
 }
 
+.review-create-btn:hover {
+  background-color: white !important;
+  border-color: lightgray;
+  color: lightgray !important;
+}
+
 /* **************MY PAGE**************** */
 /* ***************** MYPAGE ********************  */
 

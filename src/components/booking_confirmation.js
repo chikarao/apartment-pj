@@ -137,7 +137,7 @@ class BookingConfirmation extends Component {
   renderEachBasicLine() {
     const flatLanguage = this.getFlatLanguage(this.props.bookingData.flat);
     const { date_start, date_end, id, facilities } = this.props.bookingData;
-    let { description, area, beds, rooms, layout, city, state, country } = this.props.bookingData.flat;
+    let { description, area, beds, rooms, layout, city, state, country, price_per_month, deposit, key_money } = this.props.bookingData.flat;
     // if there is a flat language, reassign language dependent props
     if (flatLanguage) {
       description = flatLanguage.description;
@@ -166,14 +166,17 @@ class BookingConfirmation extends Component {
     //   { title: 'Listing ID:', data: this.props.bookingData.flat.id }
     // ];
     const lineArray = [
+      { title: `${AppLanguages.dateStart[appLanguageCode]}:`, data: date_start },
+      { title: `${AppLanguages.dateEnd[appLanguageCode]}:`, data: date_end },
       { title: `${AppLanguages.description[appLanguageCode]}:`, data: description },
       { title: `${AppLanguages.area[appLanguageCode]}:`, data: area },
       { title: `${AppLanguages.cityState[appLanguageCode]}:`, data: addressString },
+      { title: `${AppLanguages.listedRent[appLanguageCode]}:`, data: price_per_month },
+      { title: `${AppLanguages.listedDeposit[appLanguageCode]}:`, data: deposit },
+      { title: `${AppLanguages.listedKeyMoney[appLanguageCode]}:`, data: key_money },
       { title: `${AppLanguages.beds[appLanguageCode]}:`, data: beds },
       { title: `${AppLanguages.rooms[appLanguageCode]}:`, data: rooms },
       { title: `${AppLanguages.layout[appLanguageCode]}:`, data: layout },
-      { title: `${AppLanguages.dateStart[appLanguageCode]}:`, data: date_start },
-      { title: `${AppLanguages.dateEnd[appLanguageCode]}:`, data: date_end },
       { title: `${AppLanguages.bookingId[appLanguageCode]}:`, data: id },
       { title: `${AppLanguages.listingId[appLanguageCode]}:`, data: this.props.bookingData.flat.id }
     ];
@@ -526,9 +529,11 @@ class BookingConfirmation extends Component {
           <h3>
             {AppLanguages.bookingRequestWorkspace[appLanguageCode]}
           </h3>
+
           <div id="carousel-show" className="booking-confirmation-image">
             {this.renderImage(bookingData.flat.images)}
           </div>
+
           <div className="booking-confirmation-progress-box">
             <div className="booking-confirmation-progress-box-title">
                 {AppLanguages.rentalProgress[appLanguageCode]}
@@ -547,6 +552,7 @@ class BookingConfirmation extends Component {
               <div className="booking-confirmation-progress-circle" />
             </div>
           </div>
+
           <div className="booking-confirmation container">
             <div className="booking-confirmation-row">
               {this.renderBookingBasicInformation()}
