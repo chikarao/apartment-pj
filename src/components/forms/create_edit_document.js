@@ -206,12 +206,14 @@ class CreateEditDocument extends Component {
   getMainDocumentInsert(documentInsertsAll) {
     // console.log('in create_edit_document, getMainDocument, documentInsertsAll: ', documentInsertsAll);
     let objectReturned = {};
-    if (documentInsertsAll.length > 0) {
-      _.each(documentInsertsAll, eachInsert => {
-        if (eachInsert.main_agreement) {
-          objectReturned = eachInsert;
-        }
-      });
+    if (documentInsertsAll) {
+      if (documentInsertsAll.length > 0) {
+        _.each(documentInsertsAll, eachInsert => {
+          if (eachInsert.main_agreement) {
+            objectReturned = eachInsert;
+          }
+        });
+      }
     }
     return objectReturned;
   }

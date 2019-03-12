@@ -790,8 +790,10 @@ const FixedTermRentalContract = {
   },
   // end of page 1
   2: {
-    price_per_month: {
-      name: 'price_per_month',
+    // price_per_month: {
+    final_rent: {
+      name: 'final_rent',
+      // name: 'price_per_month',
       className: 'form-control-document',
       // input_type: 'string',
       component: 'DocumentChoices',

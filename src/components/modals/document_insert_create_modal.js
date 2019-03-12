@@ -100,6 +100,7 @@ class DocumentInsertCreateModal extends Component {
       if (!this.props.uploadOwnDocument) {
         dataToBeSent = { document_insert: data };
         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+        dataToBeSent.document_insert.publicid = imagesArray[0];
         this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
       } else {
         const dataToChange = data;

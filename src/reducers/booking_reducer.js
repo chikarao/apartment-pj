@@ -85,34 +85,34 @@ export default function (state = {
 
     case CREATE_DOCUMENT_INSERT:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, fetchBookingData: action.payload };
+    return { ...state, fetchBookingData: action.payload.booking, documentInsertsAll: action.payload.document_inserts_all };
 
     case EDIT_DOCUMENT_INSERT:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, fetchBookingData: action.payload };
+    return { ...state, fetchBookingData: action.payload.booking, documentInsertsAll: action.payload.document_inserts_all };
 
     case DELETE_DOCUMENT_INSERT:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, fetchBookingData: action.payload };
+    return { ...state, fetchBookingData: action.payload.booking, documentInsertsAll: action.payload.document_inserts_all};
 
     case CREATE_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, documentInserts: action.payload.document_inserts, documentInsertsAll: action.payload.document_inserts_all };
+    return { ...state, documentInsertsAll: action.payload.document_inserts_all };
 
     case EDIT_INSERT_FIELD:
 
     // console.log('in booking reducer, state: ', state);
-    return { ...state, documentInserts: action.payload.document_inserts, documentInsertsAll: action.payload.document_inserts_all };
+    return { ...state, documentInsertsAll: action.payload.document_inserts_all };
 
     case DELETE_INSERT_FIELD:
     // console.log('in booking reducer, state: ', state);
-    return { ...state, documentInserts: action.payload.document_inserts };
+    return { ...state, documentInsertsAll: action.payload.document_inserts_all };
 
     case FETCH_AGREEMENT:
     // console.log('in booking reducer, state: ', state);
 
     // return { ...state, agreement: action.payload.agreement, documentInserts: action.payload.document_inserts  };
-    return { ...state, documentInserts: action.payload.document_inserts };
+    return { ...state, documentInsertsAll: action.payload.document_inserts };
 
     case EMAIL_DOCUMENTS:
     // console.log('in booking reducer, state: ', state);

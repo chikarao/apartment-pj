@@ -25,17 +25,21 @@ class SetFinalBookingTermsFrom extends Component {
   handleFormSubmit(data) {
     const { id, user_id, flat_id } = this.props.booking;
     console.log('in SetFinalBookingTermsFrom, handleFormSubmit, data: ', data);
-    const bookingAttributes = { booking_id: id, user_id, flat_id };
+    const dataToSend = data.data;
+    dataToSend.id = id
+    const bookingAttributes = dataToSend;
     // bookingAttributes.rating = this.state.goldStarNum;
     console.log('in SetFinalBookingTermsFrom, handleFormSubmit, bookingAttributes: ', bookingAttributes);
     console.log('in SetFinalBookingTermsFrom, handleFormSubmit, data: ', data);
     console.log('in SetFinalBookingTermsFrom, handleFormSubmit, booking: ', this.props.booking);
+    this.props.showLoading();
     this.props.editBooking(bookingAttributes, () => {
       this.handleFormSubmitCallback();
     });
   }
 
   handleFormSubmitCallback() {
+    this.props.showLoading();
     // console.log('in SetFinalBookingTermsFrom, handleFormSubmitCallback: ', this.props);
     // showHideClassName = 'modal display-none';
     // this.setState({ editReviewCompleted: true });
@@ -138,14 +142,16 @@ class SetFinalBookingTermsFrom extends Component {
             <div className="review-edit-star-box">
             </div>
               {this.renderAlert()}
-              <button
-                  value='save'
+              {saveButtonActive
+                ?
+                <button
+                  // value='save'
                   // submit save only if formIsDirty
                   onClick={saveButtonActive ?
                     handleSubmit(data =>
                       this.handleFormSubmit({
                         data,
-                        submitAction: 'save'
+                        // submitAction: 'save'
                       }))
                       :
                       () => {}
@@ -153,8 +159,15 @@ class SetFinalBookingTermsFrom extends Component {
                   className={saveButtonActive ? 'btn btn-primary review-create-btn' : 'btn btn-primary review-create-btn'  }
                   style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
                 >
-                {AppLanguages.updateFinalTerms[this.props.appLanguageCode]}
-              </button>
+                  {AppLanguages.updateFinalTerms[this.props.appLanguageCode]}
+                </button>
+                :
+                <div
+                  style={{ backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray', padding: '6px 12px', width: 'max-content', borderRadius: '4px', margin: 'auto' }}
+                >
+                  {AppLanguages.updateFinalTerms[this.props.appLanguageCode]}
+                </div>
+              }
           </form>
         </div>
     );
@@ -173,6 +186,7 @@ class SetFinalBookingTermsFrom extends Component {
 SetFinalBookingTermsFrom = reduxForm({
     // (your redux-form config)
     form: 'SetFinalBookingTermsFrom',
+    enableReinitialize: true
     // fields: ['email', 'password']
 })(SetFinalBookingTermsFrom);
 
@@ -180,11 +194,16 @@ function mapStateToProps(state) {
   if (state.bookingData.fetchBookingData) {
     console.log('in SetFinalBookingTermsFrom, mapStateToProps, state: ', state);
     const flat = state.bookingData.fetchBookingData.flat;
-    console.log('in SetFinalBookingTermsFrom, mapStateToProps, flat: ', flat);
+    const booking = state.bookingData.fetchBookingData;
+    // console.log('in SetFinalBookingTermsFrom, mapStateToProps, flat: ', flat);
     // Convert values to string to get redux form dirty to work; Only seems to work with string (not integers or floats)
-    const finalRentFloat = parseFloat(flat.price_per_month);
+    const finalRentFloat = parseFloat(booking.final_rent);
     const finalRentStringNoDecimal = finalRentFloat.toFixed(0);
-    const initialValues = { final_rent: finalRentStringNoDecimal, parking_included: flat.parking_included.toString(), final_deposit: flat.deposit.toString(), final_key_money: flat.key_money.toString() };
+    // const finalRentFloat = parseFloat(flat.price_per_month);
+    // const finalRentStringNoDecimal = finalRentFloat.toFixed(0);
+    // const initialValues = { final_rent: finalRentStringNoDecimal, parking_included: flat.parking_included.toString(), final_deposit: flat.deposit.toString(), final_key_money: flat.key_money.toString() };
+    // const initialValues = { final_rent: finalRentStringNoDecimal, parking_included: flat.parking_included.toString(), final_deposit: flat.deposit.toString(), final_key_money: flat.key_money.toString() };
+    const initialValues = { final_rent: finalRentStringNoDecimal, parking_included: flat.parking_included.toString(), final_deposit: booking.final_deposit.toString(), final_key_money: flat.key_money.toString() };
     const formIsDirty = isDirty('SetFinalBookingTermsFrom')(state);
 
     return {

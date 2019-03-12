@@ -322,14 +322,22 @@ export default (props) => {
         objectReturned.fees_payment_due_date = flat.payment_due_date;
       }
 
-      if (flat.deposit) {
-        objectReturned.deposit_amount = (flat.price_per_month * flat.deposit);
+      // if (flat.deposit) {
+      //   objectReturned.deposit_amount = (flat.price_per_month * flat.deposit);
+      // }
+      if (booking.final_deposit) {
+        objectReturned.deposit_amount = parseInt((booking.final_rent * booking.final_deposit), 10);
+        objectReturned.deposit = booking.final_deposit * 1;
       }
 
-      if (flat.price_per_month) {
+      if (booking.final_rent) {
         // convert float to integer by multiplying flat by integer
-        objectReturned.price_per_month = (flat.price_per_month * 1);
+        objectReturned.final_rent = parseInt((booking.final_rent * 1), 10);
       }
+      // if (flat.price_per_month) {
+      //   // convert float to integer by multiplying flat by integer
+      //   objectReturned.price_per_month = (flat.price_per_month * 1);
+      // }
 
       // handle rent_payment_method;
       if (flat.rent_payment_method) {

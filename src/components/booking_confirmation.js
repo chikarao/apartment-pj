@@ -512,57 +512,60 @@ class BookingConfirmation extends Component {
     const { bookingData, appLanguageCode } = this.props;
     // if (bookingData && !this.state.showDocument) {
     if (bookingData) {
-      // find out if any documents sent to tenant
+      // if (bookingData.flat) {
+        // find out if any documents sent to tenant
         const documentsSent = this.findIfDocumentsSent(bookingData.agreements);
+        // }
+        // const documentsSent = bookingData.fetchBookingData ? this.findIfDocumentsSent(bookingData.fetchBookingData.agreements) : '';
+        // const data = this.props.bookingData.id;
+        // localStorage.setItem('data', data);
+        // const localData = localStorage.getItem('data');
+        // console.log('in booking confirmation, renderBookingData, localstorage data: ', localData);
+        // <h4>
+        // This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
+        // </h4>
+
+        return (
+          <div>
+            <h3>
+              {AppLanguages.bookingRequestWorkspace[appLanguageCode]}
+            </h3>
+
+            <div id="carousel-show" className="booking-confirmation-image">
+              {this.props.bookingData.flat ? this.renderImage(bookingData.flat.images) : ''}
+            </div>
+
+            <div className="booking-confirmation-progress-box">
+              <div className="booking-confirmation-progress-box-title">
+                  {AppLanguages.rentalProgress[appLanguageCode]}
+              </div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsSent[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-contents">
+                <div className="booking-confirmation-progress-circle" />
+                <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
+                <div className="booking-confirmation-progress-circle" />
+                <div className="booking-confirmation-progress-line" style={documentsSent ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
+                <div className="booking-confirmation-progress-circle" />
+                <div className="booking-confirmation-progress-line" />
+                <div className="booking-confirmation-progress-circle" />
+              </div>
+            </div>
+
+            <div className="booking-confirmation container">
+              <div className="booking-confirmation-row">
+                {this.props.bookingData.flat ? this.renderBookingBasicInformation() : ''}
+                {this.props.bookingData.user ? this.renderBookingTenantInformation(bookingData) : ''}
+                {this.renderBookingDocuments()}
+                {this.props.bookingData.flat ? this.renderBookingActions() : ''}
+              </div>
+            </div>
+          </div>
+        );
+
       // }
-      // const documentsSent = bookingData.fetchBookingData ? this.findIfDocumentsSent(bookingData.fetchBookingData.agreements) : '';
-      // const data = this.props.bookingData.id;
-      // localStorage.setItem('data', data);
-      // const localData = localStorage.getItem('data');
-      // console.log('in booking confirmation, renderBookingData, localstorage data: ', localData);
-      // <h4>
-      // This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
-      // </h4>
-
-      return (
-        <div>
-          <h3>
-            {AppLanguages.bookingRequestWorkspace[appLanguageCode]}
-          </h3>
-
-          <div id="carousel-show" className="booking-confirmation-image">
-            {this.renderImage(bookingData.flat.images)}
-          </div>
-
-          <div className="booking-confirmation-progress-box">
-            <div className="booking-confirmation-progress-box-title">
-                {AppLanguages.rentalProgress[appLanguageCode]}
-            </div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsSent[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
-            <div className="booking-confirmation-progress-box-contents">
-              <div className="booking-confirmation-progress-circle" />
-              <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
-              <div className="booking-confirmation-progress-circle" />
-              <div className="booking-confirmation-progress-line" style={documentsSent ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
-              <div className="booking-confirmation-progress-circle" />
-              <div className="booking-confirmation-progress-line" />
-              <div className="booking-confirmation-progress-circle" />
-            </div>
-          </div>
-
-          <div className="booking-confirmation container">
-            <div className="booking-confirmation-row">
-              {this.renderBookingBasicInformation()}
-              {this.renderBookingTenantInformation(bookingData)}
-              {this.renderBookingDocuments()}
-              {this.renderBookingActions()}
-            </div>
-          </div>
-        </div>
-      );
     }
 }
 
@@ -854,44 +857,48 @@ renderInsertBox() {
 }
 
 renderDocument() {
-  // get agreement chosen by user. Returns array so get first index position below
-  const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
-  // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
-  let showDocumentInsertBox = false;
-  if (agreementArray.length > 0) {
-    if (agreementArray[0].document_code) {
-      showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
-    }
-    // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
-    // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
-    // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
-  }
+  if (this.props.bookingData) {
+    // if (this.props.bookingData.agreements || this.props.documentInserts) {
+      // get agreement chosen by user. Returns array so get first index position below
+      const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
+      // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
+      let showDocumentInsertBox = false;
+      if (agreementArray.length > 0) {
+        if (agreementArray[0].document_code) {
+          showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
+        }
+        // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
+        // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
+        // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
+      }
 
-  return (
-    <div className="booking-confirmation-render-document-box">
-      {showDocumentInsertBox ? this.renderInsertBox() : ''}
-      <CreateEditDocument
-        showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
-        closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
-        goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
-          this.setState({ showDocument: !this.state.showDocument }, () => {
-            // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
-          });
-        })}
-        showDocumentInsertEditProp={() => {
-          this.setState({ uploadOwnDocument: true }, () => {
-            this.props.showDocumentInsertEditModal();
-          });
-        }}
-        setAgreementId={(id) => this.setState({ agreementId: id })}
-        showSavedDocument={this.state.showSavedDocument}
-        agreementId={this.state.agreementId}
-        agreement={agreementArray[0]}
-        showDocumentInsertBox={showDocumentInsertBox}
-        showOwnUploadedDocument={this.state.showOwnUploadedDocument}
-      />
-    </div>
-  );
+      return (
+        <div className="booking-confirmation-render-document-box">
+          {showDocumentInsertBox ? this.renderInsertBox() : ''}
+          <CreateEditDocument
+            showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+            closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
+            goToSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+              this.setState({ showDocument: !this.state.showDocument }, () => {
+                // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+              });
+            })}
+            showDocumentInsertEditProp={() => {
+              this.setState({ uploadOwnDocument: true }, () => {
+                this.props.showDocumentInsertEditModal();
+              });
+            }}
+            setAgreementId={(id) => this.setState({ agreementId: id })}
+            showSavedDocument={this.state.showSavedDocument}
+            agreementId={this.state.agreementId}
+            agreement={agreementArray[0]}
+            showDocumentInsertBox={showDocumentInsertBox}
+            showOwnUploadedDocument={this.state.showOwnUploadedDocument}
+          />
+        </div>
+      );
+    // }
+  }
 }
 
 setConditionsForCreateDocuments(elementVal) {
@@ -1086,6 +1093,7 @@ renderDocumentEmailCreateForm() {
   );
 }
 
+
 render() {
   return (
     // {this.renderReview()}
@@ -1116,7 +1124,7 @@ function mapStateToProps(state) {
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       showInsertFieldCreate: state.modals.showInsertFieldCreateModal,
       showInsertFieldEdit: state.modals.showInsertFieldEditModal,
-      documentInserts: state.bookingData.documentInserts,
+      documentInserts: state.bookingData.documentInsertsAll,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

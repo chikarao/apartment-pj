@@ -852,8 +852,10 @@ const FixedTermRentalContractBilingual = {
         component: 'DocumentChoices'
       },
 
-      price_per_month: {
-        name: 'price_per_month',
+      final_rent: {
+      // price_per_month: {
+        name: 'final_rent',
+        // name: 'price_per_month',
         className: 'form-control-document',
         // input_type: 'string',
         component: 'DocumentChoices',

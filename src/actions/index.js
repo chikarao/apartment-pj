@@ -2933,7 +2933,7 @@ export function createDocumentInsert(documentInsertAttributes, callback) {
       console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_DOCUMENT_INSERT,
-        payload: response.data.data.booking
+        payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
       callback();
@@ -3019,7 +3019,7 @@ export function deleteDocumentInsert(id, callback) {
       console.log('response to deleteDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: DELETE_DOCUMENT_INSERT,
-        payload: response.data.data.booking
+        payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
       callback();
