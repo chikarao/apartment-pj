@@ -327,7 +327,7 @@ export default (props) => {
       // }
       if (booking.final_deposit) {
         objectReturned.deposit_amount = parseInt((booking.final_rent * booking.final_deposit), 10);
-        objectReturned.deposit = booking.final_deposit * 1;
+        objectReturned.final_deposit = booking.final_deposit * 1;
       }
 
       if (booking.final_rent) {

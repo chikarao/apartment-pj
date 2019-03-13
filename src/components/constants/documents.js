@@ -44,7 +44,7 @@ const Documents =
       form: FixedTermRentalContractBilingual,
       en: 'Fixed Term Rental Contract Bilingual',
       jp: '定期借家契約 バイリンガル',
-      file: 'teishaku-saimuhosho-bilingual-v3-no-translation-8',
+      file: 'teishaku-saimuhosho-bilingual-v3-no-translation-9',
       method: getInitialValuesObjectFixedTermContract,
       // translation: FixedTermRentalContractBilingualTranslation,
       // to indicate form is bilingual and needs translations from props

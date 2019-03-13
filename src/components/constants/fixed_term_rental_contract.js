@@ -968,9 +968,11 @@ const FixedTermRentalContract = {
       component: 'DocumentChoices'
     },
 
-    deposit: {
+    final_deposit: {
+    // deposit: {
       // in MONTHS
-      name: 'deposit',
+      name: 'final_deposit',
+      // name: 'deposit',
       input_type: 'string',
       choices: {
         // add 1.5% to top
