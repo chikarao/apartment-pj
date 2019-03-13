@@ -4,7 +4,9 @@ import * as actions from '../../actions';
 
 class SignOut extends Component {
   componentWillMount() {
-    this.props.signoutUser(() => this.signoutFB());
+    // if (this.props.authenticated) {
+      this.props.signoutUser(() => this.signoutFB());
+    // }
   }
   // below code signs user out of app as well as FB itself
   signoutFB() {
@@ -28,10 +30,17 @@ class SignOut extends Component {
     }
   }
 
+  signoutMessage() {
+    // const message = this.props.authenticated ?
+    // <div className="signout-page-message">&nbsp;&nbsp;&nbsp;You're signed in. <br/><br/>Welcome Back!</div>
+    // :
+    // <div className="signout-page-message">&nbsp;&nbsp;&nbsp;You have been signed out. <br/><br/>Please come back soon!</div>;
+    // return message;
+    return <div className="signout-page-message">&nbsp;&nbsp;&nbsp;You have been signed out. <br/><br/>Please come back soon!</div>;
+  }
+
   renderMessage() {
-    return (
-      <div className="signout-page-message">You have been signed out. <br/><br/>Please come back soon!</div>
-    );
+    return this.signoutMessage();
   }
 
   render() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import * as actions from '../../actions';
@@ -102,12 +102,19 @@ class SigninModal extends Component {
   // for oauth facebook login
   handleFormSubmitCallback() {
     // showHideClassName = 'modal display-none';
-    console.log('in signin, handleFormSubmitCallback: ');
+    // Reference: https://stackoverflow.com/questions/43408406/react-router-v4-get-current-location/43409523
+    console.log('in signin, handleFormSubmitCallback, this.props: ', this.props);
     this.props.showAuthModal(); // turn off
     this.props.showSigninModal(); // turn off to close modal
 
-    // when goBack is called, any code after does not get called
-    this.props.history.goBack();
+    // if user signs in via sign modal on the signOUT page, go to root otherwise go back
+    if (this.props.location.pathname === '/signout') {
+      // go to root page
+      this.props.history.push('/');
+    } else {
+      // when goBack is called, any code after does not get called
+      this.props.history.goBack();
+    }
   }
 
   // clearPasswordInput() {
@@ -246,4 +253,4 @@ function mapStateToProps(state) {
 //   validate
 //   // fields: ['email', 'password']
 // }, mapStateToProps, actions)(SigninModal);
-export default connect(mapStateToProps, actions)(SigninModal);
+export default withRouter(connect(mapStateToProps, actions)(SigninModal));

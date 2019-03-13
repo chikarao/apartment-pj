@@ -838,7 +838,7 @@ renderEachDocumentField(page) {
             value={page}
             id="document-background"
             className="test-image-pdf-jpg-background"
-            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${image}.jpg)` }}
+            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/apartmentpj-constant-assets/${image}.jpg)` }}
             >
             {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
             {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}

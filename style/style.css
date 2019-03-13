@@ -4043,7 +4043,10 @@ form {
 
 .signout-page-message {
   font-size: 17px;
-  margin: 30px auto 0 auto;
+  margin: 0 auto 0 auto;
+  height: 400px;
+  background-color: rgb(254, 254, 254) !important;
+  padding: 10%;
 }
 
 .success-alert {

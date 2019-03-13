@@ -60,7 +60,7 @@ const Documents =
       form: ImportantPointsExplanationBilingual,
       en: 'Important Points Explanation Form Bilingual',
       jp: '重要事項説明書 バイリンガル',
-      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-26',
+      file: 'juyoujikou-setsumei-bilingual-v3-no-translation-28',
       method: getInitialValuesObjectImportantPointsExplanation,
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props

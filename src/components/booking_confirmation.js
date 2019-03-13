@@ -94,7 +94,7 @@ class BookingConfirmation extends Component {
   getFacilityChoice(facilityType) {
     let facilityChoice = {};
     _.each(Facility.facility_type.choices, eachChoice => {
-      if (eachChoice.value == facilityType) {
+      if (eachChoice.value === facilityType) {
         facilityChoice = eachChoice;
         return;
       }
@@ -104,6 +104,7 @@ class BookingConfirmation extends Component {
 
   getFacilityStrings(facilitiesArray) {
     const array = []
+    const currency = this.props.currency;
     let facilityString = ''
     _.each(facilitiesArray, eachFacility => {
       const choice = this.getFacilityChoice(eachFacility.facility_type);
@@ -113,7 +114,7 @@ class BookingConfirmation extends Component {
       if (this.props.bookingData.flat[choice.facilityObjectMap]) {
         facilityString = choice[this.props.appLanguageCode] + ', ' + AppLanguages.included[this.props.appLanguageCode]
       } else {
-        facilityString = choice[this.props.appLanguageCode] + ', ' + '$' + eachFacility.price_per_month + '/' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]　+ ', ' + AppLanguages.depositAbbreviated[this.props.appLanguageCode] + ' ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' ' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]
+        facilityString = choice[this.props.appLanguageCode] + ', ' + currency + eachFacility.price_per_month + '/' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]　+ ', ' + AppLanguages.depositAbbreviated[this.props.appLanguageCode] + ' ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' ' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]
       }
       array.push(facilityString)
     })
@@ -171,7 +172,7 @@ class BookingConfirmation extends Component {
       { title: `${AppLanguages.description[appLanguageCode]}:`, data: description },
       { title: `${AppLanguages.area[appLanguageCode]}:`, data: area },
       { title: `${AppLanguages.cityState[appLanguageCode]}:`, data: addressString },
-      { title: `${AppLanguages.listedRent[appLanguageCode]}:`, data: price_per_month },
+      { title: `${AppLanguages.listedRent[appLanguageCode]}:`, data: parseInt(price_per_month, 10), currency: this.props.currency },
       { title: `${AppLanguages.listedDeposit[appLanguageCode]}:`, data: deposit },
       { title: `${AppLanguages.listedKeyMoney[appLanguageCode]}:`, data: key_money },
       { title: `${AppLanguages.beds[appLanguageCode]}:`, data: beds },
@@ -199,7 +200,7 @@ class BookingConfirmation extends Component {
             {eachLine.title}
             </div>
             <div className="booking-request-box-each-line-data">
-            {eachLine.data}
+            {eachLine.currency ? eachLine.currency : ''}{eachLine.data}
           </div>
         </div>
       );
@@ -324,7 +325,7 @@ class BookingConfirmation extends Component {
           </div>
           <div className="booking-confirmation-profile-scrollbox">
             {this.renderEachTenantLine(profileToUse)}
-            {this.renderTenantIntroduction(profileToUse)}
+            {this.props.userIsOwner ? this.renderTenantIntroduction(profileToUse) : ''}
           </div>
       </div>
     );
@@ -464,32 +465,117 @@ class BookingConfirmation extends Component {
     );
   }
 
+  renderBookingApprovalLine() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {AppLanguages.approveBookingRequest[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          {this.props.bookingData.approved ? 'Approved ✅'
+          :
+          <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Approve</div>
+         }
+        </div>
+      </div>
+    );
+  }
+
+  renderSendDocumentEmailLine() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {AppLanguages.sendDocumentsEmail[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          <div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>
+        </div>
+      </div>
+    )
+  }
+
+  renderImportpointExplantionDoneLine() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {AppLanguages.importantPointsExplanationDone[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          {this.props.bookingData.approved ? 'Yes ✅'
+          :
+          <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Done</div>
+         }
+        </div>
+      </div>
+    );
+  }
+
+  // <a
+  //   className="btn document-floating-button"
+  //   target="_blank"
+  //   rel="noopener noreferrer"
+  //   style={{ backgroundColor: 'lightgray' }}
+  //   href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
+  // >
+  //  {AppLanguages.download[appLanguageCode]}
+  // </a>
+
+  renderEachAgreementForTenant() {
+    return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
+      if (eachAgreement.sent_to_tenant) {
+        return (
+          <div
+            key={i}
+            className="booking-confirmation-document-create-link"
+          >
+            <a
+              // className="btn document-floating-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              // style={{ backgroundColor: 'lightgray' }}
+              href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.pdf`}
+            >
+              {eachAgreement.document_name}
+            </a>
+          </div>
+        );
+      }
+    });
+  }
+
+  renderDocumentDownloadLinks() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div style={{ marginTop: '35px' }}>
+        <div className="booking-request-box-each-line">
+          <div className="booking-request-box-each-line-title">
+            {AppLanguages.rentalDocuments[appLanguageCode]}:
+          </div>
+          <div className="booking-request-box-each-line-data">
+          </div>
+        </div>
+        <br/>
+        <div className="booking-confirmation-document-box">
+          {this.props.bookingData.agreements ? this.renderEachAgreementForTenant() : 'No documents sent yet'}
+        </div>
+      </div>
+    )
+  }
+
   renderBookingActions() {
     const { appLanguageCode } = this.props;
 
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">{AppLanguages.rentalActions[appLanguageCode]}</div>
-          <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
-            <div className="booking-request-box-each-line-title">
-              {AppLanguages.approveBookingRequest[appLanguageCode]}
-            </div>
-            <div className="booking-request-box-each-line-data">
-              {this.props.bookingData.approved ? 'Approved ✅'
-              :
-              <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Approve</div>
-             }
-            </div>
-          </div>
-          <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
-            <div className="booking-request-box-each-line-title">
-              {AppLanguages.sendDocumentsEmail[appLanguageCode]}
-            </div>
-            <div className="booking-request-box-each-line-data">
-              <div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>
-            </div>
-          </div>
-          {this.renderBookingActionForm()}
+          {this.props.userIsOwner ? this.renderBookingApprovalLine() : ''}
+          {this.props.userIsOwner ? this.renderSendDocumentEmailLine() : ''}
+          {this.props.userIsOwner ? this.renderBookingActionForm() : ''}
+          {this.props.userIsOwner ? '' : this.renderImportpointExplantionDoneLine()}
+          {this.props.userIsOwner ? '' : this.renderDocumentDownloadLinks()}
       </div>
     );
   }
@@ -539,8 +625,8 @@ class BookingConfirmation extends Component {
               <div className="booking-confirmation-progress-box-title">
                   {AppLanguages.rentalProgress[appLanguageCode]}
               </div>
-              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>  {AppLanguages.reservationRequest[appLanguageCode]}</div>
-              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>  {AppLanguages.tenantApproved[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '1.5%' }}>{AppLanguages.reservationRequest[appLanguageCode]}</div>
+              <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '31%' }}>{AppLanguages.tenantApproved[appLanguageCode]}</div>
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '60.5%' }}>{AppLanguages.documentsSent[appLanguageCode]}</div>
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
               <div className="booking-confirmation-progress-box-contents">
@@ -556,14 +642,15 @@ class BookingConfirmation extends Component {
 
             <div className="booking-confirmation container">
               <div className="booking-confirmation-row">
-                {this.props.bookingData.flat ? this.renderBookingBasicInformation() : ''}
-                {this.props.bookingData.user ? this.renderBookingTenantInformation(bookingData) : ''}
-                {this.renderBookingDocuments()}
-                {this.props.bookingData.flat ? this.renderBookingActions() : ''}
+                {this.renderBookingBasicInformation()}
+                {this.renderBookingTenantInformation(bookingData)}
+                {this.props.userIsOwner ? this.renderBookingDocuments() : ''}
+                {this.renderBookingActions()}
               </div>
             </div>
           </div>
         );
+        // {this.props.userIsOwner ? this.renderBookingTenantInformation(bookingData) : ''}
 
       // }
     }
@@ -1114,6 +1201,10 @@ render() {
 function mapStateToProps(state) {
   console.log('in booking confirmation, mapStateToProps, state: ', state);
   if (state.bookingData.fetchBookingData) {
+    // distinguish current user between tenant and owner; !userIsOwner is tenant
+    const userIsOwner = state.bookingData.user.id !== state.bookingData.fetchBookingData.user.id;
+    const currency = '¥';
+    console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
     return {
       bookingData: state.bookingData.fetchBookingData,
       review: state.reviews.reviewForBookingByUser,
@@ -1125,6 +1216,8 @@ function mapStateToProps(state) {
       showInsertFieldCreate: state.modals.showInsertFieldCreateModal,
       showInsertFieldEdit: state.modals.showInsertFieldEditModal,
       documentInserts: state.bookingData.documentInsertsAll,
+      userIsOwner,
+      currency
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

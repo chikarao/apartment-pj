@@ -330,6 +330,8 @@ const appLanguages =
     updateFinalTerms: { en: 'Update Final Terms', jp: '最終条件を更新' },
     yesTrue: { en: 'Yes', jp: 'はい' },
     noFalse: { en: 'No', jp: 'いえ' },
+    importantPointsExplanationDone: { en: 'I received the important points explanation', jp: '重要事項説明を受けました' },
+    rentalDocuments: { en: 'Rental Documents', jp: '賃貸関連書類' },
     // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
