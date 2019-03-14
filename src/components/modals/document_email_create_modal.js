@@ -16,15 +16,30 @@ class DocumentEmailCreateModal extends Component {
     this.state = {
       createDocumentEmailCompleted: false,
       selectedDocumentEmail: '',
-      checkedDocumentsArray: []
+      checkedDocumentsArray: [],
+      signedDocumentsArray: [],
+      unmarkAsSignedDocumentsArray: [],
+      markAsSigned: true
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleDocumentSelectCheck = this.handleDocumentSelectCheck.bind(this);
+    this.handleUnmarkAsSignedCheck = this.handleUnmarkAsSignedCheck.bind(this);
   }
 
-  // componentDidMount() {
-  // }
+  componentDidMount() {
+    if (this.props.booking.agreements && this.props.signedDocumentsModal) {
+      const newArray = [...this.state.signedDocumentsArray];
+      _.each(this.props.booking.agreements, each => {
+        if (each.tenant_signed) {
+          newArray.push(each.id);
+        }
+      });
+      this.setState({ signedDocumentsArray: newArray }, () => {
+        console.log('in DocumentEmailCreateModal, componentDidMount, this.state.signedDocumentsArray: ', this.state.signedDocumentsArray);
+      });
+    }
+  }
 
   createEmailAddressArray(emailString) {
     let array = [];
@@ -52,6 +67,8 @@ class DocumentEmailCreateModal extends Component {
     dataToBeSent.documents_array = this.state.checkedDocumentsArray;
     dataToBeSent.booking_id = this.props.booking.id;
     dataToBeSent.user_id = this.props.booking.user_id;
+    dataToBeSent.mark_as_signed = this.state.markAsSigned;
+
     let emailsValid = true;
     if (!this.props.signedDocumentsModal) {
       dataToBeSent.subject = data.subject;
@@ -150,6 +167,7 @@ class DocumentEmailCreateModal extends Component {
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
     const alreadyChecked = this.state.checkedDocumentsArray.includes(parsedElementVal);
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
+
     if (alreadyChecked) {
       // if document already checked delete id from array
       const newArray = [...this.state.checkedDocumentsArray];
@@ -179,7 +197,7 @@ class DocumentEmailCreateModal extends Component {
             value={each.id}
             onChange={this.handleDocumentSelectCheck}
             style={{ margin: '0 0 0 15px' }}
-            // checked={this.props.signedDocumentsModal ? (each.tenant_signed || this.state.checkedDocumentsArray.includes(each.id)) : false}
+            // checked={this.props.signedDocumentsModal ? (this.state.signedDocumentsArray.includes(each.id) || this.state.checkedDocumentsArray.includes(each.id)) : false}
           />
         </div>
       );
@@ -257,6 +275,21 @@ class DocumentEmailCreateModal extends Component {
     }
   }
 
+  handleUnmarkAsSignedCheck() {
+    this.setState({ markAsSigned: !this.state.markAsSigned }, () => {
+      console.log('in DocumentEmailCreateModal, handleUnmarkAsSignedCheck, this.state.markAsSigned: ', this.state.markAsSigned);
+    });
+  }
+
+  renderUnmarkAsSignedBox() {
+    return (
+      <div>
+        <input type="checkbox" onChange={this.handleUnmarkAsSignedCheck} />
+        &nbsp; Unmark document as signed
+      </div>
+    );
+  }
+
   renderDocumentSignedForm() {
     const { handleSubmit } = this.props;
     // const profileEmpty = _.isEmpty(this.props.auth.userProfile);
@@ -277,6 +310,7 @@ class DocumentEmailCreateModal extends Component {
           <div className="edit-profile-scroll-div">
           <label className="create-flat-form-label">Documents:</label>
             {this.renderDocuments()}
+            {this.renderUnmarkAsSignedBox()}
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               <div className="confirm-change-and-button">
                 <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>

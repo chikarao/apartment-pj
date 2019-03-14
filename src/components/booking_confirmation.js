@@ -496,13 +496,23 @@ class BookingConfirmation extends Component {
 
   renderSendDocumentEmailLine() {
     const { appLanguageCode } = this.props;
+    const buttonToRender = this.props.thereAreSavedDocuments ?
+      <div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>{AppLanguages.sendDocuments[this.props.appLanguageCode]}</div>
+      :
+      <div
+        style={{ backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray', padding: '6px 12px', width: 'max-content', borderRadius: '4px', margin: 'auto' }}
+      >
+        {AppLanguages.sendDocuments[this.props.appLanguageCode]}
+      </div>
+      // <div className="btn btn-md booking-confirmation-approve-request-btn" style={{ backgroundColor: 'white', borderColor: 'lightgray', color: 'lightgray' }}>Send Documents</div>;
+
     return (
       <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
         <div className="booking-request-box-each-line-title">
           {AppLanguages.sendDocumentsEmail[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
-          <div className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handlePrepareEmailClick}>Send Documents</div>
+          {buttonToRender}
         </div>
       </div>
     )
@@ -510,13 +520,23 @@ class BookingConfirmation extends Component {
 
   renderDocumentsSignedLine() {
     const { appLanguageCode, bookingData } = this.props;
+    const buttonToRender = this.props.thereAreSavedDocuments ?
+    <div value={bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleDocumentsSignedClick}>{AppLanguages.documentsSignedButton[this.props.appLanguageCode]}</div>
+    :
+    <div
+    style={{ backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray', padding: '6px 12px', width: 'max-content', borderRadius: '4px', margin: 'auto' }}
+    >
+    {AppLanguages.documentsSignedButton[this.props.appLanguageCode]}
+    </div>
+    // <div className="btn btn-md booking-confirmation-approve-request-btn" style={{ backgroundColor: 'white', borderColor: 'lightgray', color: 'lightgray' }}>Documents Signed</div>;
+
     return (
       <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
         <div className="booking-request-box-each-line-title">
           {AppLanguages.documentsSigned[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
-          <div value={bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleDocumentsSignedClick}>Documents Signed</div>
+          {buttonToRender}
         </div>
       </div>
     );
@@ -1235,6 +1255,7 @@ function mapStateToProps(state) {
     // distinguish current user between tenant and owner; !userIsOwner is tenant
     const userIsOwner = state.bookingData.user.id !== state.bookingData.fetchBookingData.user.id;
     const currency = '¥';
+    const thereAreSavedDocuments = state.bookingData.fetchBookingData.agreements
     console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
     return {
       bookingData: state.bookingData.fetchBookingData,
@@ -1248,7 +1269,8 @@ function mapStateToProps(state) {
       showInsertFieldEdit: state.modals.showInsertFieldEditModal,
       documentInserts: state.bookingData.documentInsertsAll,
       userIsOwner,
-      currency
+      currency,
+      thereAreSavedDocuments
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };
