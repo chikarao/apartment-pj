@@ -809,6 +809,7 @@ renderEachDocumentField(page) {
         let image;
         // when showing PDF (view pdf or after creating and updating pdf)
         // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
+        let constantAssetsFolder = '';
         if (this.state.showDocumentPdf) {
           const array = [];
           // use image in agreement kept in Cloudinary
@@ -821,6 +822,7 @@ renderEachDocumentField(page) {
           pages = array;
           // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
         } else {
+          constantAssetsFolder = 'apartmentpj-constant-assets/'
           // if showing document form, get array of pages from constants/documents
           image = Documents[this.props.createDocumentKey].file;
           // assign array to pages varaible for later iteration
@@ -838,7 +840,7 @@ renderEachDocumentField(page) {
             value={page}
             id="document-background"
             className="test-image-pdf-jpg-background"
-            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/apartmentpj-constant-assets/${image}.jpg)` }}
+            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
             {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
             {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}

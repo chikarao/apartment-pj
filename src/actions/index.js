@@ -179,6 +179,7 @@ import {
   SELECTED_AGREEMENT_ID,
   FETCH_AGREEMENT,
   EMAIL_DOCUMENTS,
+  MARK_DOCUMENTS_SIGNED
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3089,6 +3090,23 @@ export function emailDocuments(data, callback) {
       console.log('in actions index, response to emailDocuments: ', response.data.data);
       dispatch({
         type: EMAIL_DOCUMENTS,
+        payload: response.data.data
+    });
+    callback();
+  });
+  };
+}
+
+export function markDocumentsSigned(data, callback) {
+  console.log('in actions index, markDocumentsSigned data: ', data);
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/mark_documents_signed`, data, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to markDocumentsSigned: ', response.data.data);
+      dispatch({
+        type: MARK_DOCUMENTS_SIGNED,
         payload: response.data.data
     });
     callback();

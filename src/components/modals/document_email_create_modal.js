@@ -16,7 +16,7 @@ class DocumentEmailCreateModal extends Component {
     this.state = {
       createDocumentEmailCompleted: false,
       selectedDocumentEmail: '',
-      documentsToSendArray: []
+      checkedDocumentsArray: []
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -49,44 +49,52 @@ class DocumentEmailCreateModal extends Component {
     // const { code } = data;
     // this.setState({ selectedDocumentEmail: languages[code].name });
     const dataToBeSent = {};
-    dataToBeSent.documents_array = this.state.documentsToSendArray;
-    dataToBeSent.subject = data.subject;
-    dataToBeSent.message = data.message;
-    // Create arrays of emails from string of emails
-    const ccArray = this.createEmailAddressArray(data.cc);
-    const bccArray = this.createEmailAddressArray(data.bcc);
-    let emailsValid = true;
-    // validate each email in cc and bcc arrays
-    _.each(ccArray, each => {
-      emailsValid = this.validateEmail(each);
-      // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
-      if (!emailsValid) {
-        return;
-      }
-    });
-
-    // validate each email in cc and bcc arrays
-    _.each(bccArray, each => {
-      emailsValid = this.validateEmail(each);
-      // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
-      if (!emailsValid) {
-        return;
-      }
-    });
-
-    dataToBeSent.cc_array = ccArray;
-    dataToBeSent.bcc_array = bccArray;
+    dataToBeSent.documents_array = this.state.checkedDocumentsArray;
     dataToBeSent.booking_id = this.props.booking.id;
     dataToBeSent.user_id = this.props.booking.user_id;
+    let emailsValid = true;
+    if (!this.props.signedDocumentsModal) {
+      dataToBeSent.subject = data.subject;
+      dataToBeSent.message = data.message;
+      // Create arrays of emails from string of emails
+      const ccArray = this.createEmailAddressArray(data.cc);
+      const bccArray = this.createEmailAddressArray(data.bcc);
+      // validate each email in cc and bcc arrays
+      _.each(ccArray, each => {
+        emailsValid = this.validateEmail(each);
+        // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
+        if (!emailsValid) {
+          return;
+        }
+      });
+
+      // validate each email in cc and bcc arrays
+      _.each(bccArray, each => {
+        emailsValid = this.validateEmail(each);
+        // console.log('in DocumentEmailCreateModal, handleFormSubmit, ccArray, each, emailsValid: ', ccArray, each, emailsValid);
+        if (!emailsValid) {
+          return;
+        }
+      });
+
+      dataToBeSent.cc_array = ccArray;
+      dataToBeSent.bcc_array = bccArray;
+    }
     // dataToBeSent.flat_id = this.props.flat.id;
     console.log('in DocumentEmailCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
-    if (this.state.documentsToSendArray.length > 0 && emailsValid) {
+    if (this.state.checkedDocumentsArray.length > 0 && emailsValid) {
       // if documents checked and all emails valid send to api
       this.props.authError('');
       this.props.showLoading();
-      this.props.emailDocuments(dataToBeSent, () => {
-        this.handleFormSubmitCallback();
-      });
+      if (!this.props.signedDocumentsModal) {
+        this.props.emailDocuments(dataToBeSent, () => {
+          this.handleFormSubmitCallback();
+        });
+      } else {
+        this.props.markDocumentsSigned(dataToBeSent, () => {
+          this.handleFormSubmitCallback();
+        });
+      }
     } else {
       if (!emailsValid) {
         // if any emails invalid give error
@@ -99,12 +107,12 @@ class DocumentEmailCreateModal extends Component {
     }
   }
 
-  emptyInputFields() {
-   const resetFields = { ical_url: '', name: '' }
-
-    console.log('in DocumentEmailCreateModal, emptyInputFields: ');
-    this.props.initialize(resetFields, true); //keepDirty = true;
-  }
+  // emptyInputFields() {
+  //  const resetFields = { ical_url: '', name: '' }
+  //
+  //   console.log('in DocumentEmailCreateModal, emptyInputFields: ');
+  //   this.props.initialize(resetFields, true); //keepDirty = true;
+  // }
 
 
   handleFormSubmitCallback() {
@@ -112,7 +120,7 @@ class DocumentEmailCreateModal extends Component {
     // showHideClassName = 'modal display-none';
     this.setState({ createDocumentEmailCompleted: true });
     // this.resetAdvancedFilters();
-    this.emptyInputFields();
+    // this.emptyInputFields();
     this.props.showLoading();
   }
 
@@ -128,8 +136,11 @@ class DocumentEmailCreateModal extends Component {
 
   // turn off showDocumentEmailCreateModal app state
   handleClose() {
-      this.setState({ createDocumentEmailCompleted: false });
-      this.props.handleClose();
+    this.setState({ createDocumentEmailCompleted: false });
+    this.props.handleClose();
+    if (this.props.signedDocumentsModal) {
+      this.props.turnOffSignedDocuments();
+    }
   }
 
   handleDocumentSelectCheck(event) {
@@ -137,23 +148,23 @@ class DocumentEmailCreateModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const parsedElementVal = parseFloat(elementVal, 10);
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
-    const alreadyChecked = this.state.documentsToSendArray.includes(parsedElementVal);
+    const alreadyChecked = this.state.checkedDocumentsArray.includes(parsedElementVal);
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
     if (alreadyChecked) {
       // if document already checked delete id from array
-      const newArray = [...this.state.documentsToSendArray];
+      const newArray = [...this.state.checkedDocumentsArray];
       // create new array from state array since cannot push into state object
       const index = newArray.indexOf(parsedElementVal); // get index of id to be deleted
       newArray.splice(index, 1); // remove one id at index
-      this.setState({ documentsToSendArray: newArray }, () => {
-        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.documentsToSendArray: ', this.state.documentsToSendArray);
+      this.setState({ checkedDocumentsArray: newArray }, () => {
+        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
       });
     } else {
       // if document not yet checked, add to array
-      const newArray = [...this.state.documentsToSendArray];
+      const newArray = [...this.state.checkedDocumentsArray];
       newArray.push(parsedElementVal);
-      this.setState({ documentsToSendArray: newArray }, () => {
-        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.documentsToSendArray: ', this.state.documentsToSendArray);
+      this.setState({ checkedDocumentsArray: newArray }, () => {
+        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
       });
     }
   }
@@ -168,6 +179,7 @@ class DocumentEmailCreateModal extends Component {
             value={each.id}
             onChange={this.handleDocumentSelectCheck}
             style={{ margin: '0 0 0 15px' }}
+            // checked={this.props.signedDocumentsModal ? (each.tenant_signed || this.state.checkedDocumentsArray.includes(each.id)) : false}
           />
         </div>
       );
@@ -245,47 +257,62 @@ class DocumentEmailCreateModal extends Component {
     }
   }
 
-  // towerOfHanoi(n, from, to, aux) {
-  //   if (n == 1) {
-  //     console.log(`TOH ${n} going from ${from} to ${to}`);
-  //     return;
-  //   }
-  //   this.towerOfHanoi((n - 1), from, aux, to);
-  //   console.log(`TOH ${n} going from ${from} to ${to}`);
-  //   this.towerOfHanoi((n - 1), aux, to, from);
-  // }
-
-  // sum(a) {
-  //   return (b) => {
-  //     if (b) {
-  //       return this.sum(a + b);
-  //     }
-  //     return a;
-  //   };
-  // }
+  renderDocumentSignedForm() {
+    const { handleSubmit } = this.props;
+    // const profileEmpty = _.isEmpty(this.props.auth.userProfile);
+    // console.log('in modal, render before if props.auth showHideClassName:', showHideClassName);
+    if (this.props.auth) {
+      showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+      // console.log('in modal, render showHideClassName:', showHideClassName);
+      const tenantProfile = this.getUserProfile(this.props.booking.user.profiles);
+      const tenantEmail = this.props.booking.user.email;
+      // console.log('in modal, render this.props.show:', this.props.show);
+      // console.log('in modal, render this.props:', this.props);
+      return (
+        <div className={showHideClassName}>
+          <section className="modal-main">
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
+          <h3 className="auth-modal-title">{AppLanguages.signedDocuments[this.props.appLanguageCode]}</h3>
+          {this.renderAlert()}
+          <div className="edit-profile-scroll-div">
+          <label className="create-flat-form-label">Documents:</label>
+            {this.renderDocuments()}
+            <form onSubmit={handleSubmit(this.handleFormSubmit)}>
+              <div className="confirm-change-and-button">
+                <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
+              </div>
+            </form>
+          </div>
+          </section>
+        </div>
+      );
+    }
+  }
 
   renderPostCreateMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
+    const message = this.props.signedDocumentsModal ? 'The documents have been marked signed.' : 'Your email was successfully sent.'
     return (
       <div className={showHideClassName}>
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your email was successfully sent.</div>
+          <div className="post-signup-message">{message}</div>
         </div>
       </div>
     )
   }
 
   render() {
-    // this.towerOfHanoi(5, 'A', 'C', 'B');
-    // console.log('HERE is the this.sum(1)(2)(3)(4): ', this.sum(1)(2)(3)(4)());
+    // console.log('in DocumentEmailCreateModal, render, this.props.signedDocuments: ', this.props.signedDocuments);
+
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
+    const formToRender = this.props.signedDocumentsModal ? this.renderDocumentSignedForm() : this.renderCreateDocumentEmailForm()
     return (
       <div>
-        {this.state.createDocumentEmailCompleted ? this.renderPostCreateMessage() : this.renderCreateDocumentEmailForm()}
+        {this.state.createDocumentEmailCompleted ? this.renderPostCreateMessage() : formToRender}
       </div>
     );
   }

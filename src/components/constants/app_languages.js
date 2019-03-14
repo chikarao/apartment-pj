@@ -332,6 +332,8 @@ const appLanguages =
     noFalse: { en: 'No', jp: 'いえ' },
     importantPointsExplanationDone: { en: 'I received the important points explanation', jp: '重要事項説明を受けました' },
     rentalDocuments: { en: 'Rental Documents', jp: '賃貸関連書類' },
+    documentsSigned: { en: 'Documents Signed', jp: '賃貸書類手続き完了' },
+    signedDocuments: { en: 'Signed Documents', jp: '賃貸書類手続き完了' },
     // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },

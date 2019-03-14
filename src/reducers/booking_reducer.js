@@ -19,7 +19,8 @@ import {
   EDIT_INSERT_FIELD,
   DELETE_INSERT_FIELD,
   FETCH_AGREEMENT,
-  EMAIL_DOCUMENTS
+  EMAIL_DOCUMENTS,
+  MARK_DOCUMENTS_SIGNED
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -115,6 +116,10 @@ export default function (state = {
     return { ...state, documentInsertsAll: action.payload.document_inserts };
 
     case EMAIL_DOCUMENTS:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, fetchBookingData: action.payload.booking };
+
+    case MARK_DOCUMENTS_SIGNED:
     // console.log('in booking reducer, state: ', state);
     return { ...state, fetchBookingData: action.payload.booking };
     // case SELECTED_ICALENDAR_ID:

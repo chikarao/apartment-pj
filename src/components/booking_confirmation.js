@@ -42,6 +42,7 @@ class BookingConfirmation extends Component {
       showDocumentEmailCreateModal: false,
       uploadOwnDocument: false, // used in upload modals
       showOwnUploadedDocument: false, // used in create_edit_document
+      signedDocumentsModal: false, // used in email documents modal signed documents
     };
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
@@ -55,6 +56,7 @@ class BookingConfirmation extends Component {
     this.handlePrepareEmailClick = this.handlePrepareEmailClick.bind(this);
     this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
     this.handleOwnDocumentShowClick = this.handleOwnDocumentShowClick.bind(this);
+    this.handleDocumentsSignedClick = this.handleDocumentsSignedClick.bind(this);
   }
 
   componentDidMount() {
@@ -362,7 +364,9 @@ class BookingConfirmation extends Component {
         {eachAgreement.document_name} &nbsp;
         {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}&nbsp;
         {eachAgreement.sent_to_tenant ? <i className="far fa-envelope" aria-hidden="true" style={{ color: 'black' }}></i> : ''}
-        {eachAgreement.sent_to_tenant ? <span style={{ fontSize: '10px' }}>✅</span> : ''}
+        {eachAgreement.sent_to_tenant ? <span style={{ fontSize: '10px' }}>✅</span> : ''}&nbsp;
+        {eachAgreement.tenant_signed ? <i className="fas fa-stamp" aria-hidden="true" style={{ color: 'gray' }}></i> : ''}
+        {eachAgreement.tenant_signed ? <span style={{ fontSize: '10px' }}>✅</span> : ''}
       </div>
     });
   }
@@ -454,13 +458,21 @@ class BookingConfirmation extends Component {
     }
   }
 
-  handlePrepareEmailClick(event) {
+  handlePrepareEmailClick() {
     console.log('in booking confirmation, handlePrepareEmailClick:');
     this.setState({ showDocumentEmailCreateModal: true });
   }
 
-  renderBookingActionForm() {
-    return(
+  handleDocumentsSignedClick(event) {
+    const clickedElement = event.target;
+    // elementVal is booking.id
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in booking confirmation, handleDocumentsSignedClick, elementVal:', elementVal);
+    this.setState({ showDocumentEmailCreateModal: true, signedDocumentsModal: true });
+  }
+
+  renderFinalBookingTermsForm() {
+    return (
       <SetFinalBookingTermsFrom />
     );
   }
@@ -494,6 +506,20 @@ class BookingConfirmation extends Component {
         </div>
       </div>
     )
+  }
+
+  renderDocumentsSignedLine() {
+    const { appLanguageCode, bookingData } = this.props;
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {AppLanguages.documentsSigned[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          <div value={bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleDocumentsSignedClick}>Documents Signed</div>
+        </div>
+      </div>
+    );
   }
 
   renderImportpointExplantionDoneLine() {
@@ -573,20 +599,21 @@ class BookingConfirmation extends Component {
         <div className="booking-request-box-title">{AppLanguages.rentalActions[appLanguageCode]}</div>
           {this.props.userIsOwner ? this.renderBookingApprovalLine() : ''}
           {this.props.userIsOwner ? this.renderSendDocumentEmailLine() : ''}
-          {this.props.userIsOwner ? this.renderBookingActionForm() : ''}
+          {this.props.userIsOwner ? this.renderDocumentsSignedLine() : ''}
+          {this.props.userIsOwner ? this.renderFinalBookingTermsForm() : ''}
           {this.props.userIsOwner ? '' : this.renderImportpointExplantionDoneLine()}
           {this.props.userIsOwner ? '' : this.renderDocumentDownloadLinks()}
       </div>
     );
   }
 
-  findIfDocumentsSent(agreements) {
+  findDocumentsStatus(agreements, bookingAttribute) {
     // console.log('in booking confirmation, findIfDocumentsSent, agreements:', agreements);
 
     let returnedBoolean = false;
     _.each(agreements, eachAgreement => {
       // console.log('in booking confirmation, findIfDocumentsSent, eachAgreement:', eachAgreement);
-      if (eachAgreement.sent_to_tenant) {
+      if (eachAgreement[bookingAttribute]) {
         returnedBoolean = true;
         return;
       }
@@ -600,7 +627,8 @@ class BookingConfirmation extends Component {
     if (bookingData) {
       // if (bookingData.flat) {
         // find out if any documents sent to tenant
-        const documentsSent = this.findIfDocumentsSent(bookingData.agreements);
+        const documentsSent = this.findDocumentsStatus(bookingData.agreements, 'sent_to_tenant');
+        const documentsSigned = this.findDocumentsStatus(bookingData.agreements, 'signed');
         // }
         // const documentsSent = bookingData.fetchBookingData ? this.findIfDocumentsSent(bookingData.fetchBookingData.agreements) : '';
         // const data = this.props.bookingData.id;
@@ -635,7 +663,7 @@ class BookingConfirmation extends Component {
                 <div className="booking-confirmation-progress-circle" />
                 <div className="booking-confirmation-progress-line" style={documentsSent ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
                 <div className="booking-confirmation-progress-circle" />
-                <div className="booking-confirmation-progress-line" />
+                <div className="booking-confirmation-progress-line" style={documentsSigned ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }}/>
                 <div className="booking-confirmation-progress-circle" />
               </div>
             </div>
@@ -1171,6 +1199,8 @@ renderDocumentEmailCreateForm() {
     <DocumentEmailCreateModal
       show={this.state.showDocumentEmailCreateModal}
       handleClose={() => this.setState({ showDocumentEmailCreateModal: !this.state.showDocumentEmailCreateModal})}
+      signedDocumentsModal={this.state.signedDocumentsModal}
+      turnOffSignedDocuments={() => this.setState({ signedDocumentsModal: false})}
       // show
       // agreementId={this.state.agreementId}
       // // documentInsertId={this.state.documentInsertId}
@@ -1188,6 +1218,7 @@ render() {
       {this.renderReviewEditModal()}
       {this.renderBookingData()}
       {this.state.showDocument ? this.renderDocument() : ''}
+
       {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
       {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
       {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}

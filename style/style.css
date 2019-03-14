@@ -1499,7 +1499,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 }
 
 .booking-request-each-line-with-buttons {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .booking-request-box-each-line-data {
@@ -2879,13 +2879,13 @@ form {
 }
 
 .booking-request-box-document-language-select {
-  margin: 0 0 5px 20px;
+  margin: 0 0 5px 6px;
   height: 26px;
 }
 
 .booking-confirmation-document-create-link {
   color: blue;
-  margin: 0 0 5px 20px;
+  margin: 0 0 5px 6px;
 }
 
 .booking-confirmation-document-create-link:hover {
@@ -2893,7 +2893,7 @@ form {
 }
 
 .booking-request-upload-document-link {
-  margin: 0 0 7px 20px;
+  margin: 0 0 7px 6px;
   background-color: gray;
   color: white;
   font-size: 12px;
