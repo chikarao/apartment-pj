@@ -113,7 +113,7 @@ class BookingConfirmation extends Component {
       // console.log('in booking_confirmation getFacilityStrings, choice: ', choice);
 
       // if facility included
-      if (this.props.bookingData.flat[choice.facilityObjectMap]) {
+      if (this.props.booking.flat[choice.facilityObjectMap]) {
         facilityString = choice[this.props.appLanguageCode] + ', ' + AppLanguages.included[this.props.appLanguageCode]
       } else {
         facilityString = choice[this.props.appLanguageCode] + ', ' + currency + eachFacility.price_per_month + '/' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]　+ ', ' + AppLanguages.depositAbbreviated[this.props.appLanguageCode] + ' ' + (eachFacility.deposit ? eachFacility.deposit : 0) + ' ' + AppLanguages.monthAbbreviated[this.props.appLanguageCode]
@@ -138,9 +138,9 @@ class BookingConfirmation extends Component {
 
 
   renderEachBasicLine() {
-    const flatLanguage = this.getFlatLanguage(this.props.bookingData.flat);
-    const { date_start, date_end, id, facilities } = this.props.bookingData;
-    let { description, area, beds, rooms, layout, city, state, country, price_per_month, deposit, key_money } = this.props.bookingData.flat;
+    const flatLanguage = this.getFlatLanguage(this.props.booking.flat);
+    const { date_start, date_end, id, facilities } = this.props.booking;
+    let { description, area, beds, rooms, layout, city, state, country, price_per_month, deposit, key_money } = this.props.booking.flat;
     // if there is a flat language, reassign language dependent props
     if (flatLanguage) {
       description = flatLanguage.description;
@@ -166,7 +166,7 @@ class BookingConfirmation extends Component {
     //   { title: 'Date Start:', data: date_start },
     //   { title: 'Date End:', data: date_end },
     //   { title: 'Booking ID:', data: id },
-    //   { title: 'Listing ID:', data: this.props.bookingData.flat.id }
+    //   { title: 'Listing ID:', data: this.props.booking.flat.id }
     // ];
     const lineArray = [
       { title: `${AppLanguages.dateStart[appLanguageCode]}:`, data: date_start },
@@ -181,7 +181,7 @@ class BookingConfirmation extends Component {
       { title: `${AppLanguages.rooms[appLanguageCode]}:`, data: rooms },
       { title: `${AppLanguages.layout[appLanguageCode]}:`, data: layout },
       { title: `${AppLanguages.bookingId[appLanguageCode]}:`, data: id },
-      { title: `${AppLanguages.listingId[appLanguageCode]}:`, data: this.props.bookingData.flat.id }
+      { title: `${AppLanguages.listingId[appLanguageCode]}:`, data: this.props.booking.flat.id }
     ];
 
 
@@ -209,8 +209,8 @@ class BookingConfirmation extends Component {
     });
   }
 
-  getNumberOfTenants(bookingData, profile) {
-    const { tenants } = bookingData;
+  getNumberOfTenants(booking, profile) {
+    const { tenants } = booking;
     let otherTenants = 0;
     if (tenants) {
       if (tenants.length > 0) {
@@ -226,11 +226,11 @@ class BookingConfirmation extends Component {
   renderEachTenantLine(profile) {
     const { birthday, city, state, country } = profile;
     const { appLanguageCode } = this.props;
-    // const { description, area, beds } = bookingData.flat;
+    // const { description, area, beds } = booking.flat;
     const age = CalculateAge(birthday);
     console.log('in booking_confirmation renderEachTenantLine, age: ', age);
     const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
-    const numberOfTenants = this.getNumberOfTenants(this.props.bookingData, profile)
+    const numberOfTenants = this.getNumberOfTenants(this.props.booking, profile)
 
     const lineArray = [
       { title: AppLanguages.age[appLanguageCode], data: age },
@@ -312,17 +312,17 @@ class BookingConfirmation extends Component {
     return returnedProfile;
   }
 
-  renderBookingTenantInformation(bookingData) {
+  renderBookingTenantInformation(booking) {
     // for some reason, cloudinary image does not render correctly if image obtained
-    // from this.props.bookingData; needs to be passed on by parameter
-    const profileToUse = this.getProfileToUse(bookingData.user.profiles);
+    // from this.props.booking; needs to be passed on by parameter
+    const profileToUse = this.getProfileToUse(booking.user.profiles);
     const { appLanguageCode } = this.props;
 
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">{AppLanguages.proposedTenantInformation[appLanguageCode]}</div>
           <div className="booking-confirmation-profile-top-box">
-            <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + bookingData.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
+            <img src={'http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/' + booking.user.image + '.jpg'} className="booking-confirmation-image-box" alt="" />
             {this.renderNameBox(profileToUse)}
           </div>
           <div className="booking-confirmation-profile-scrollbox">
@@ -352,7 +352,7 @@ class BookingConfirmation extends Component {
 
   renderEachAgreementSaved() {
     // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.pdf`}>Link</a>
-    return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
+    return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       return <div
         key={i}
@@ -405,7 +405,7 @@ class BookingConfirmation extends Component {
   renderBookingDocuments() {
     const { appLanguageCode } = this.props;
 
-    if (this.props.bookingData) {
+    if (this.props.booking) {
       return (
         <div className="booking-confirmation-each-box">
           <div className="booking-request-box-title">{AppLanguages.rentalDocuments[appLanguageCode]}</div>
@@ -443,7 +443,7 @@ class BookingConfirmation extends Component {
               <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>Upload Your Document</div>
             </div>
             <div className="booking-confirmation-document-box">
-              {this.props.bookingData.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
+              {this.props.booking.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
             </div>
         </div>
       );
@@ -453,8 +453,14 @@ class BookingConfirmation extends Component {
   handleBookingRequsetApprovalClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    if (window.confirm('Approve booking request? The action cannot be undone unless you cancel the request.')) {
-      this.props.editBooking({ id: elementVal, approved: true }, () => {});
+    if (!this.props.booking.approved) {
+      if (window.confirm('Approve booking request?')) {
+        this.props.editBooking({ id: elementVal, approved: true }, () => {});
+      }
+    } else {
+      if (window.confirm('Cancel approval of booking request?')) {
+        this.props.editBooking({ id: elementVal, approved: false }, () => {});
+      }
     }
   }
 
@@ -485,9 +491,9 @@ class BookingConfirmation extends Component {
           {AppLanguages.approveBookingRequest[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
-          {this.props.bookingData.approved ? 'Approved ✅'
+          {this.props.booking.approved ? <div className="booking-confirmation-unapprove-request-link" value={this.props.booking.id} onClick={this.handleBookingRequsetApprovalClick}>{AppLanguages.approved[appLanguageCode]} ✅</div>
           :
-          <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Approve</div>
+          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>{AppLanguages.approve[appLanguageCode]}</div>
          }
         </div>
       </div>
@@ -519,9 +525,9 @@ class BookingConfirmation extends Component {
   }
 
   renderDocumentsSignedLine() {
-    const { appLanguageCode, bookingData } = this.props;
+    const { appLanguageCode, booking } = this.props;
     const buttonToRender = this.props.thereAreSavedDocuments ?
-    <div value={bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleDocumentsSignedClick}>{AppLanguages.documentsSignedButton[this.props.appLanguageCode]}</div>
+    <div value={booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleDocumentsSignedClick}>{AppLanguages.documentsSignedButton[this.props.appLanguageCode]}</div>
     :
     <div
     style={{ backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray', padding: '6px 12px', width: 'max-content', borderRadius: '4px', margin: 'auto' }}
@@ -533,7 +539,7 @@ class BookingConfirmation extends Component {
     return (
       <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
         <div className="booking-request-box-each-line-title">
-          {AppLanguages.documentsSigned[appLanguageCode]}
+          {AppLanguages.markDocumentsSigned[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
           {buttonToRender}
@@ -550,9 +556,9 @@ class BookingConfirmation extends Component {
           {AppLanguages.importantPointsExplanationDone[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
-          {this.props.bookingData.approved ? 'Yes ✅'
+          {this.props.booking.approved ? 'Yes ✅'
           :
-          <div value={this.props.bookingData.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Done</div>
+          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Done</div>
          }
         </div>
       </div>
@@ -570,7 +576,7 @@ class BookingConfirmation extends Component {
   // </a>
 
   renderEachAgreementForTenant() {
-    return _.map(this.props.bookingData.agreements, (eachAgreement, i) => {
+    return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       if (eachAgreement.sent_to_tenant) {
         return (
           <div
@@ -605,7 +611,7 @@ class BookingConfirmation extends Component {
         </div>
         <br/>
         <div className="booking-confirmation-document-box">
-          {this.props.bookingData.agreements ? this.renderEachAgreementForTenant() : 'No documents sent yet'}
+          {this.props.booking.agreements ? this.renderEachAgreementForTenant() : 'No documents sent yet'}
         </div>
       </div>
     )
@@ -627,13 +633,12 @@ class BookingConfirmation extends Component {
     );
   }
 
-  findDocumentsStatus(agreements, bookingAttribute) {
+  findDocumentsStatus(agreements, agreementAttribute) {
     // console.log('in booking confirmation, findIfDocumentsSent, agreements:', agreements);
-
     let returnedBoolean = false;
     _.each(agreements, eachAgreement => {
       // console.log('in booking confirmation, findIfDocumentsSent, eachAgreement:', eachAgreement);
-      if (eachAgreement[bookingAttribute]) {
+      if (eachAgreement[agreementAttribute]) {
         returnedBoolean = true;
         return;
       }
@@ -642,16 +647,16 @@ class BookingConfirmation extends Component {
   }
 
   renderBookingData() {
-    const { bookingData, appLanguageCode } = this.props;
-    // if (bookingData && !this.state.showDocument) {
-    if (bookingData) {
-      // if (bookingData.flat) {
+    const { booking, appLanguageCode } = this.props;
+    // if (booking && !this.state.showDocument) {
+    if (booking) {
+      // if (booking.flat) {
         // find out if any documents sent to tenant
-        const documentsSent = this.findDocumentsStatus(bookingData.agreements, 'sent_to_tenant');
-        const documentsSigned = this.findDocumentsStatus(bookingData.agreements, 'signed');
+        const documentsSent = this.findDocumentsStatus(booking.agreements, 'sent_to_tenant');
+        const documentsSigned = this.findDocumentsStatus(booking.agreements, 'tenant_signed');
         // }
-        // const documentsSent = bookingData.fetchBookingData ? this.findIfDocumentsSent(bookingData.fetchBookingData.agreements) : '';
-        // const data = this.props.bookingData.id;
+        // const documentsSent = booking.fetchBookingData ? this.findIfDocumentsSent(booking.fetchBookingData.agreements) : '';
+        // const data = this.props.booking.id;
         // localStorage.setItem('data', data);
         // const localData = localStorage.getItem('data');
         // console.log('in booking confirmation, renderBookingData, localstorage data: ', localData);
@@ -666,7 +671,7 @@ class BookingConfirmation extends Component {
             </h3>
 
             <div id="carousel-show" className="booking-confirmation-image">
-              {this.props.bookingData.flat ? this.renderImage(bookingData.flat.images) : ''}
+              {this.props.booking.flat ? this.renderImage(booking.flat.images) : ''}
             </div>
 
             <div className="booking-confirmation-progress-box">
@@ -679,7 +684,7 @@ class BookingConfirmation extends Component {
               <div className="booking-confirmation-progress-box-label" style={{ top: '26%', left: '90%' }}>{AppLanguages.documentsSigned[appLanguageCode]}</div>
               <div className="booking-confirmation-progress-box-contents">
                 <div className="booking-confirmation-progress-circle" />
-                <div className="booking-confirmation-progress-line" style={bookingData.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
+                <div className="booking-confirmation-progress-line" style={booking.approved ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
                 <div className="booking-confirmation-progress-circle" />
                 <div className="booking-confirmation-progress-line" style={documentsSent ? { backgroundColor: 'green' } : { backgroundColor: 'lightgray' }} />
                 <div className="booking-confirmation-progress-circle" />
@@ -691,14 +696,14 @@ class BookingConfirmation extends Component {
             <div className="booking-confirmation container">
               <div className="booking-confirmation-row">
                 {this.renderBookingBasicInformation()}
-                {this.renderBookingTenantInformation(bookingData)}
+                {this.renderBookingTenantInformation(booking)}
                 {this.props.userIsOwner ? this.renderBookingDocuments() : ''}
                 {this.renderBookingActions()}
               </div>
             </div>
           </div>
         );
-        // {this.props.userIsOwner ? this.renderBookingTenantInformation(bookingData) : ''}
+        // {this.props.userIsOwner ? this.renderBookingTenantInformation(booking) : ''}
 
       // }
     }
@@ -824,22 +829,22 @@ renderReview() {
       </div>
     );
   } else {
-    if(this.props.bookingData) {
+    if(this.props.booking) {
       const today = new Date()
-      // console.log('in booking confirmation, renderReview, this.props.bookingData.date_end:', this.props.bookingData.date_end);
-      const bookingEnd = new Date(this.props.bookingData.date_end)
+      // console.log('in booking confirmation, renderReview, this.props.booking.date_end:', this.props.booking.date_end);
+      const bookingEnd = new Date(this.props.booking.date_end)
       const pastBookingEnd = bookingEnd < today;
       if (pastBookingEnd) {
         return (
           <div>
             <ReviewCreateFrom
-              booking={this.props.bookingData}
+              booking={this.props.booking}
             />
           </div>
         );
       }
     }
-    // if(this.props.bookingData) {
+    // if(this.props.booking) {
     // }
   }
 }
@@ -992,10 +997,10 @@ renderInsertBox() {
 }
 
 renderDocument() {
-  if (this.props.bookingData) {
-    // if (this.props.bookingData.agreements || this.props.documentInserts) {
+  if (this.props.booking) {
+    // if (this.props.booking.agreements || this.props.documentInserts) {
       // get agreement chosen by user. Returns array so get first index position below
-      const agreementArray = this.props.bookingData.agreements.filter(agreement => agreement.id == this.state.agreementId)
+      const agreementArray = this.props.booking.agreements.filter(agreement => agreement.id == this.state.agreementId)
       // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
       let showDocumentInsertBox = false;
       if (agreementArray.length > 0) {
@@ -1258,7 +1263,7 @@ function mapStateToProps(state) {
     const thereAreSavedDocuments = state.bookingData.fetchBookingData.agreements
     console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
     return {
-      bookingData: state.bookingData.fetchBookingData,
+      booking: state.bookingData.fetchBookingData,
       review: state.reviews.reviewForBookingByUser,
       showEditReviewModal: state.modals.showEditReview,
       appLanguageCode: state.languages.appLanguageCode,

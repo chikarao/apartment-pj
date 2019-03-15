@@ -188,25 +188,42 @@ class DocumentEmailCreateModal extends Component {
   }
 
   renderEachDocument() {
-    return _.map(this.props.agreements, each => {
+    const document = (each) => {
       return (
         <div key={each.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ width: '90%', textAlign: 'left' }}>{each.document_name}</div>
-          <input
-            type="checkbox"
-            value={each.id}
-            onChange={this.handleDocumentSelectCheck}
-            style={{ margin: '0 0 0 15px' }}
-            // checked={this.props.signedDocumentsModal ? (this.state.signedDocumentsArray.includes(each.id) || this.state.checkedDocumentsArray.includes(each.id)) : false}
-          />
-        </div>
+            <div style={{ width: '90%', textAlign: 'left' }}>{each.document_name}</div>
+            <input
+              type="checkbox"
+              value={each.id}
+              onChange={this.handleDocumentSelectCheck}
+              style={{ margin: '0 0 0 15px' }}
+              // checked={this.props.signedDocumentsModal ? (this.state.signedDocumentsArray.includes(each.id) || this.state.checkedDocumentsArray.includes(each.id)) : false}
+            />
+          </div>
       );
+    };
+
+    return _.map(this.props.agreements, each => {
+      if (this.props.signedDocumentsModal) {
+        const documentSigned = each.tenant_signed;
+        if (this.state.markAsSigned) {
+          if (!documentSigned) {
+            return document(each);
+          }
+        } else {
+          if (documentSigned) {
+            return document(each);
+          }
+        }
+      } else {
+        return document(each);
+      }
     });
   }
 
   renderDocuments() {
     return (
-      <div className="document-email-documents-box">
+      <div className="form-control document-email-documents-box">
         {this.renderEachDocument()}
       </div>
     );
@@ -240,8 +257,10 @@ class DocumentEmailCreateModal extends Component {
           <h3 className="auth-modal-title">{AppLanguages.emailDocuments[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
-          <label className="create-flat-form-label">Documents:</label>
-            {this.renderDocuments()}
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">Documents:</label>
+              {this.renderDocuments()}
+            </fieldset>
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               <fieldset key={'to'} className="form-group">
                 <label className="create-flat-form-label">To:</label>
@@ -276,8 +295,8 @@ class DocumentEmailCreateModal extends Component {
   }
 
   handleUnmarkAsSignedCheck() {
-    this.setState({ markAsSigned: !this.state.markAsSigned }, () => {
-      console.log('in DocumentEmailCreateModal, handleUnmarkAsSignedCheck, this.state.markAsSigned: ', this.state.markAsSigned);
+    this.setState({ markAsSigned: !this.state.markAsSigned, checkedDocumentsArray: [] }, () => {
+      console.log('in DocumentEmailCreateModal, handleUnmarkAsSignedCheck, this.state.markAsSigned, this.state.checkedDocumentsArray: ', this.state.markAsSigned, this.state.checkedDocumentsArray);
     });
   }
 
@@ -305,12 +324,12 @@ class DocumentEmailCreateModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title">{AppLanguages.signedDocuments[this.props.appLanguageCode]}</h3>
+          <h3 className="auth-modal-title">{AppLanguages.markDocumentsSigned[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
           <label className="create-flat-form-label">Documents:</label>
             {this.renderDocuments()}
-            {this.renderUnmarkAsSignedBox()}
+            {this.state.signedDocumentsArray.length > 0 ? this.renderUnmarkAsSignedBox() : ''}
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>
               <div className="confirm-change-and-button">
                 <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[this.props.appLanguageCode]}</button>
@@ -340,8 +359,6 @@ class DocumentEmailCreateModal extends Component {
   }
 
   render() {
-    // console.log('in DocumentEmailCreateModal, render, this.props.signedDocuments: ', this.props.signedDocuments);
-
     // const { handleSubmit, pristine, submitting, fields: { email, password } } = this.props;
     const formToRender = this.props.signedDocumentsModal ? this.renderDocumentSignedForm() : this.renderCreateDocumentEmailForm()
     return (

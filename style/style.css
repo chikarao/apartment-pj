@@ -1539,6 +1539,11 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   margin: 30px auto 0 auto;
 }
 
+.booking-confirmation-unapprove-request-link:hover {
+  color: gray;
+  text-decoration: underline;
+}
+
 /* **********SHOW FLAT***************** */
 #carousel-show {
   width: 100%;
@@ -4658,6 +4663,10 @@ form {
       min-width: 200px;
     }
 
+    .document-email-documents-box {
+      margin: 20px auto;
+    }
+
     .review-title {
       /* float: left; */
       /* margin: 5px 5px; */
@@ -4683,7 +4692,6 @@ form {
   .fa-bars:before {
     font-size: 25px;
   }
-
   /* #nav_container {
     height: 250px !important;
   } */
