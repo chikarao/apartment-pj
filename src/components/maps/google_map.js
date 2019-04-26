@@ -332,11 +332,12 @@ class GoogleMap extends Component {
       // changed again 12/12/18 to ea.l and j and la.l and j
       // changed again 12/26/18 to fa.l and j ma.l and j
       // changed again 1/16/19 to ga.l and j ma.l and j
+      // changed yet again 4/19 to ia.l and j, na.l and j what for????
       const mapBounds = {
-        east: bounds.ga.l,
-        west: bounds.ga.j,
-        north: bounds.ma.l,
-        south: bounds.ma.j
+        east: bounds.ia.l,
+        west: bounds.ia.j,
+        north: bounds.na.l,
+        south: bounds.na.j
       };
       // const mapBounds = {
       //   east: bounds.b.f,

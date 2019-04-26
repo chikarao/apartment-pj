@@ -66,8 +66,8 @@ export default function (state = {
     return { ...state, editHistoryArray: [] };
 
     case FETCH_DOCUMENT_TRANSLATION:
-    // console.log('in booking reducer, state: ', state);
-    return { ...state, documentTranslations: action.payload };
+    // console.log('in booking reducer, fetch document translation action.payload: ', action.payload);
+    return { ...state, documentTranslations: JSON.parse(action.payload) };
 
     default:
       return state;

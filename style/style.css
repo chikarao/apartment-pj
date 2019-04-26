@@ -1544,6 +1544,18 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-decoration: underline;
 }
 
+.conversation-create-modal-textarea {
+  width: 90%;
+  max-width: 450px;
+  border-radius: 4px;
+  height: 150px;
+  padding: 5px;
+}
+
+.conversation-create-modal-submit-btn {
+
+}
+
 /* **********SHOW FLAT***************** */
 #carousel-show {
   width: 100%;
@@ -3975,6 +3987,15 @@ form {
 
 .modal-main form {
   margin-top: 40px;
+}
+
+.small-modal {
+  width: 300px;
+  height: 450px;
+}
+
+.small-modal-title {
+  margin-top: 50px;
 }
 
 .sign-up-with-email-message {

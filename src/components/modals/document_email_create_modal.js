@@ -30,6 +30,7 @@ class DocumentEmailCreateModal extends Component {
   componentDidMount() {
     if (this.props.booking.agreements && this.props.signedDocumentsModal) {
       const newArray = [...this.state.signedDocumentsArray];
+      // console.log('in DocumentEmailCreateModal, componentDidMount, newArray: ', newArray);
       _.each(this.props.booking.agreements, each => {
         if (each.tenant_signed) {
           newArray.push(each.id);
@@ -175,48 +176,49 @@ class DocumentEmailCreateModal extends Component {
       const index = newArray.indexOf(parsedElementVal); // get index of id to be deleted
       newArray.splice(index, 1); // remove one id at index
       this.setState({ checkedDocumentsArray: newArray }, () => {
-        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
+        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, if already checked this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
       });
     } else {
       // if document not yet checked, add to array
       const newArray = [...this.state.checkedDocumentsArray];
       newArray.push(parsedElementVal);
       this.setState({ checkedDocumentsArray: newArray }, () => {
-        console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
+        // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, this.state.checkedDocumentsArray: ', this.state.checkedDocumentsArray);
       });
     }
   }
 
   renderEachDocument() {
-    const document = (each) => {
+    const document = (eachAgreement) => {
       return (
-        <div key={each.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ width: '90%', textAlign: 'left' }}>{each.document_name}</div>
+        <div key={eachAgreement.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ width: '90%', textAlign: 'left' }}>{eachAgreement.document_name}</div>
             <input
               type="checkbox"
-              value={each.id}
+              value={eachAgreement.id}
               onChange={this.handleDocumentSelectCheck}
               style={{ margin: '0 0 0 15px' }}
-              // checked={this.props.signedDocumentsModal ? (this.state.signedDocumentsArray.includes(each.id) || this.state.checkedDocumentsArray.includes(each.id)) : false}
+              // checked={this.props.signedDocumentsModal ? (this.state.signedDocumentsArray.includes(eachAgreement.id) || this.state.checkedDocumentsArray.includes(eachAgreement.id)) : false}
             />
           </div>
       );
     };
-
-    return _.map(this.props.agreements, each => {
+    // iterate through each agreement
+    return _.map(this.props.agreements, eachAgreement => {
       if (this.props.signedDocumentsModal) {
-        const documentSigned = each.tenant_signed;
+        // if this is signed documents modal; ie not email documents modal
+        const documentSigned = eachAgreement.tenant_signed;
+        // find out if agreement has been signed by tenant
         if (this.state.markAsSigned) {
-          if (!documentSigned) {
-            return document(each);
-          }
+          // if user does not check umarked as signed and document is not signed render document
+          if (!documentSigned) return document(eachAgreement);
         } else {
-          if (documentSigned) {
-            return document(each);
-          }
-        }
+          // if user checks unmark as signed and document IS signed render document
+          if (documentSigned) return document(eachAgreement);
+        } // end of if markAsSigned
       } else {
-        return document(each);
+        //if this is not signed documents modal; ie IS email documents modal render document
+        return document(eachAgreement);
       }
     });
   }

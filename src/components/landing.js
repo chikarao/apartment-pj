@@ -165,7 +165,7 @@ class Landing extends Component {
     // {this.state.searchInputHasValue ? this.renderDataListOptions() : ''}
     // </ datalist>
     return (
-      <div id="banner" style={{ background: `url(${this.createBackgroundImage('banner_image_1')}` }}>
+      <div id="banner" style={{ background: `url(${this.createBackgroundImage('apartmentpj-constant-assets/banner_image_1')}` }}>
         <div className="banner-content">
           <div className="banner-search-box">
             <CitySearch
@@ -259,7 +259,7 @@ class Landing extends Component {
 //     return (
 //       <div className="test-image-pdf-jpg">
 //         <div className="test-image-pdf-jpg-background" style={{ background: `url(${this.createBackgroundImageForDocs('phmzxr1sle99vzwgy0qn' + '.jpg')})` }}>
-//           <input type="string" placeholder="test input" style={{ top: '204px', left: '-120px', borderColor: 'red' }} />
+//           <input type="str" placeholder="test input" style={{ top: '204px', left: '-120px', borderColor: 'red' }} />
 //         </div>
 //       </div>
 //     );
@@ -282,8 +282,8 @@ class Landing extends Component {
   // }
 
   render() {
-    const { handleSubmit, appLanguageCode } = this.props;
-    console.log('in landing, render, this.props: ', this.props);
+    // const { handleSubmit, appLanguageCode } = this.props;
+    // console.log('in landing, render, this.props: ', this.props);
 
     // console.log('in Welcome, render, this.state: ', this.state)
     // console.log('in Welcome, render, this.state.show: ', this.state.show)
@@ -297,7 +297,6 @@ class Landing extends Component {
       <div>
         {this.renderBanner()}
         <div className="landing-main">
-
         </div>
           {this.renderFooter()}
       </div>

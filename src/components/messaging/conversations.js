@@ -22,8 +22,8 @@ class Conversations extends Component {
  getConversationToShow(conversationId) {
    // console.log('in conversations, getConversationToShow, before each: ', coversationId);
    const { conversations } = this.props;
-   console.log('in conversations, getConversationToShow, this.props.conversations: ', this.props.conversations);
-   console.log('in conversations, getConversationToShow, conversationId: ', conversationId);
+   // console.log('in conversations, getConversationToShow, this.props.conversations: ', this.props.conversations);
+   // console.log('in conversations, getConversationToShow, conversationId: ', conversationId);
    // console.log('in conversations, getConversationToShow, before each conversation: ', conversations);
    const conversationArray = []
    _.each(conversations, (conv) => {
@@ -33,15 +33,15 @@ class Conversations extends Component {
      }
    });
 
-   console.log('in conversations, getConversationToShow, conversationArray: ', conversationArray);
+   // console.log('in conversations, getConversationToShow, conversationArray: ', conversationArray);
    return conversationArray;
  }
 
  handleConversationCardClick(event) {
-   console.log('in conversations, handleConversationCardClick, event: ', event.target);
+   // console.log('in conversations, handleConversationCardClick, event: ', event.target);
    const clickedElement = event.target;
    const elementVal = clickedElement.getAttribute('value');
-   console.log('in conversations, handleConversationCardClick, elementVal', elementVal);
+   // console.log('in conversations, handleConversationCardClick, elementVal', elementVal);
 
    const wasCheckBoxClicked = event.target.className === 'my-page-conversation-input' ||
    event.target.className === 'conversations-input-checkbox';
@@ -121,7 +121,7 @@ class Conversations extends Component {
    const todayMidnight = today.setHours(0, 0, 0, 0);
    // test whether message is before midnight; if so return just the time not the entire date
    const beforeTodayMidnight = date < todayMidnight;
-   console.log('in conversations, formatDate, today, date, beforeTodayMidnight', today, date, beforeTodayMidnight);
+   // console.log('in conversations, formatDate, today, date, beforeTodayMidnight', today, date, beforeTodayMidnight);
    let hours = date.getHours();
    let minutes = date.getMinutes();
    const ampm = hours >= 12 ? 'pm' : 'am';
@@ -135,11 +135,11 @@ class Conversations extends Component {
 handleConversationCheck(event) {
   const checkedElement = event.target;
   const elementVal = checkedElement.getAttribute('value');
-  console.log('in conversations, handleConversationCheck, checkedElement', checkedElement);
-  console.log('in conversations, handleConversationCheck, elementVal', elementVal);
+  // console.log('in conversations, handleConversationCheck, checkedElement', checkedElement);
+  // console.log('in conversations, handleConversationCheck, elementVal', elementVal);
 
   this.props.checkedConversations([parseInt(elementVal, 10)]);
-  console.log('in results handleConversationCheck, checkedConversationsArray: ', this.state.checkedConversationsArray);
+  // console.log('in results handleConversationCheck, checkedConversationsArray: ', this.state.checkedConversationsArray);
   // this.props.conversationToShow(parseInt(elementVal));
 }
 
@@ -189,7 +189,7 @@ handleConversationCheck(event) {
            // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);
          });
          const date = new Date(conversation.messages[lastMessageIndex].created_at);
-         console.log('in conversations, renderEachConversation, date: ', date);
+         // console.log('in conversations, renderEachConversation, date: ', date);
          //show only first 26 characters of text
          const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
 

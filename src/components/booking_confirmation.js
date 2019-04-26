@@ -22,6 +22,7 @@ import DocumentInsertEditModal from './modals/document_insert_edit_modal';
 import InsertFieldCreateModal from './modals/insert_field_create_modal';
 import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import DocumentEmailCreateModal from './modals/document_email_create_modal';
+import ConversationCreateModal from './modals/conversation_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import globalConstants from './constants/global_constants.js'
 
@@ -43,7 +44,9 @@ class BookingConfirmation extends Component {
       uploadOwnDocument: false, // used in upload modals
       showOwnUploadedDocument: false, // used in create_edit_document
       signedDocumentsModal: false, // used in email documents modal signed documents
+      showConversationCreate: false, // for showing modeal to input message and create conversation
     };
+
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
     this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
@@ -57,6 +60,8 @@ class BookingConfirmation extends Component {
     this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
     this.handleOwnDocumentShowClick = this.handleOwnDocumentShowClick.bind(this);
     this.handleDocumentsSignedClick = this.handleDocumentsSignedClick.bind(this);
+    this.handleCreateConversationClick = this.handleCreateConversationClick.bind(this);
+    this.handleOpenConversationClick = this.handleOpenConversationClick.bind(this);
   }
 
   componentDidMount() {
@@ -565,16 +570,6 @@ class BookingConfirmation extends Component {
     );
   }
 
-  // <a
-  //   className="btn document-floating-button"
-  //   target="_blank"
-  //   rel="noopener noreferrer"
-  //   style={{ backgroundColor: 'lightgray' }}
-  //   href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
-  // >
-  //  {AppLanguages.download[appLanguageCode]}
-  // </a>
-
   renderEachAgreementForTenant() {
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       if (eachAgreement.sent_to_tenant) {
@@ -617,12 +612,68 @@ class BookingConfirmation extends Component {
     )
   }
 
+  findConversation() {
+    console.log('in booking confirmation, findConversation, this.props.booking.user:', this.props.booking.user);
+    const conversations = this.props.booking.user.conversations;
+    let conversation = null;
+    _.each(conversations, each => {
+      if (each.flat_id === this.props.booking.flat.id) {
+        conversation = each;
+      }
+    });
+    return conversation;
+  }
+
+  handleCreateConversationClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in booking confirmation, handleCreateConversationClick, elementVal:', elementVal);
+    // this.props.createConversation({ flat_id: this.props.flat.id }, { body: 'Hello', flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
+    this.setState({ showConversationCreate: !this.state.showConversationCreate })
+  }
+
+  handleOpenConversationClick() {
+    const win = window.open(`/messagingmain/${this.props.auth.id}`, '_blank');
+    win.focus();
+  }
+
+  renderCreateConversationLink() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div className="booking-confirmation-unapprove-request-link" value={this.props.booking.flat.id} onClick={this.handleCreateConversationClick}>{AppLanguages.sendMessage[appLanguageCode]}</div>
+    )
+  }
+
+  renderOpenMessagingLink() {
+    const { appLanguageCode } = this.props;
+    return (
+      <div className="booking-confirmation-unapprove-request-link" value={this.props.booking.flat.id} onClick={this.handleOpenConversationClick}>{AppLanguages.openMessaging[appLanguageCode]}</div>
+    )
+  }
+
+  renderContactCounterpartyLine() {
+    const { appLanguageCode } = this.props;
+    const conversation = this.findConversation();
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {this.props.userIsOwner ? AppLanguages.contactTenant[appLanguageCode] : AppLanguages.contactLandlord[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          {conversation ? this.renderOpenMessagingLink() : this.renderCreateConversationLink()}
+        </div>
+      </div>
+    );
+  }
+
   renderBookingActions() {
     const { appLanguageCode } = this.props;
-
+    // userIsOwner true means user is one renting out listing
+    // renderDocumentDownloadLinks renders documents sent to tenant via email
     return (
       <div className="booking-confirmation-each-box">
         <div className="booking-request-box-title">{AppLanguages.rentalActions[appLanguageCode]}</div>
+          {this.renderContactCounterpartyLine()}
           {this.props.userIsOwner ? this.renderBookingApprovalLine() : ''}
           {this.props.userIsOwner ? this.renderSendDocumentEmailLine() : ''}
           {this.props.userIsOwner ? this.renderDocumentsSignedLine() : ''}
@@ -1235,6 +1286,17 @@ renderDocumentEmailCreateForm() {
   );
 }
 
+renderConversationCreateForm() {
+  return (
+    <ConversationCreateModal
+     show={this.state.showConversationCreate}
+     handleClose={() => this.setState({ showConversationCreate: !this.state.showConversationCreate})}
+     flatId={this.props.booking.flat.id}
+     sentByUser={!this.props.userIsOwner}
+     userId={this.props.booking.user_id}
+    />
+  );
+}
 
 render() {
   return (
@@ -1249,6 +1311,7 @@ render() {
       {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
       {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
       {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
+      {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
     </div>
   );
 }
@@ -1261,8 +1324,9 @@ function mapStateToProps(state) {
     const userIsOwner = state.bookingData.user.id !== state.bookingData.fetchBookingData.user.id;
     const currency = '¥';
     const thereAreSavedDocuments = state.bookingData.fetchBookingData.agreements
-    console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
+    // console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
     return {
+      auth: state.auth,
       booking: state.bookingData.fetchBookingData,
       review: state.reviews.reviewForBookingByUser,
       showEditReviewModal: state.modals.showEditReview,
