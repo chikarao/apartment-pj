@@ -26,6 +26,7 @@ import AppLanguages from './constants/app_languages';
 
 const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
 const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
+const RESIZE_BREAK_POINT = 800;
 
 class MyPage extends Component {
   constructor(props) {
@@ -42,9 +43,24 @@ class MyPage extends Component {
       selectedContractorId: '',
       selectedContractor: {},
       selectedStaffId: '',
-      showStaffBox: false
+      showStaffBox: false,
+      windowWidth: window.innerWidth,
+      displayChoiceBox: false,
+      choiceBoxTop: null,
+      choiceBoxLeft: null,
+      showMyLikes: false,
+      showMyFlats: false,
+      showMyBookings: true,
+      showBookingsForMyFlats: false,
+      showMyProfile: false,
+      showPaymentDetails: false,
+      showBankAccounts: false,
+      showContractors: false,
+      showStaff: false,
+      lastPanel: 'showMyBookings',
       // actionType: 'Add a Card'
     };
+    this.handleResize = this.handleResize.bind(this);
     this.handleBookingCardClick = this.handleBookingCardClick.bind(this);
     this.handleFlatCardClick = this.handleFlatCardClick.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
@@ -65,6 +81,8 @@ class MyPage extends Component {
     this.handleAddContractorClick = this.handleAddContractorClick.bind(this);
     this.handleStaffEditDeleteClick = this.handleStaffEditDeleteClick.bind(this);
     this.handleAddStaffClick = this.handleAddStaffClick.bind(this);
+    this.handleChoiceEllipsisClick = this.handleChoiceEllipsisClick.bind(this);
+    this.handleChoiceEachClick = this.handleChoiceEachClick.bind(this);
   }
   componentDidMount() {
     this.props.fetchFlatsByUser(this.props.auth.id, () => {});
@@ -77,6 +95,16 @@ class MyPage extends Component {
     // this.props.fetchCustomer();
     this.props.actionTypeCard('Add a Card');
     this.props.fetchBankAccountsByUser();
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    // const body = document.getElementById('messaging-main-main-container');
+    // body.removeEventListener('click', this.choiceEllipsisCloseClick);
+  }
+
+  handleResize() {
+    this.setState({ windowWidth: window.innerWidth });
   }
 
   // fetchFlatsByUserCallback(flatIdArray) {
@@ -1331,7 +1359,6 @@ formatDate(date) {
   }
 
   renderContractorEditForm() {
-    // console.log('in mypage, renderContractorEditForm, this.props.showContractorEdit: ', this.props.showContractorEdit);
     return (
       <ContractorEditModal
         show={this.props.showContractorEdit}
@@ -1379,8 +1406,102 @@ formatDate(date) {
     );
   }
 
+  handleChoiceEachClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // console.log('in mypage, handleChoiceEachClick, elementVal: ', elementVal);
+    // const object = { showMyLikes: true };
+    // object.showMyLikes = true;
+    // this.setState({ showMyLikes: true });
+    // this.setState({ [elementVal]: true });
+    if (this.state.lastPanel !== elementVal) {
+      this.setState({ [elementVal]: true, lastPanel: elementVal, [this.state.lastPanel]: false }, () => {
+        // console.log('in mypage, handleChoiceEachClick, this.state: ', this.state);
+      });
+    }
+  }
+
+  renderEachChoice(choiceObject) {
+    return _.map(Object.keys(choiceObject), (each, i) => {
+      return (
+        <div key={i} className="my-page-choice-box-each" style={this.state.lastPanel === each ? { fontWeight: 'bold' } : {}} value={each} onClick={this.handleChoiceEachClick}>
+          {choiceObject[each]}
+        </div>
+      );
+    });
+  }
+
+  renderChoiceBox() {
+    const choiceObject = {
+      showMyLikes: 'My Likes',
+      showMyFlats: 'My Flats',
+      showMyBookings: 'My Bookings',
+      showBookingsForMyFlats: 'Bookings for my Flats',
+      showMyProfile: 'My Profile',
+      showPaymentDetails: 'Payment Details',
+      showBankAccounts: 'Banks Accounts',
+      showContractors: 'Contractors',
+    };
+    return (
+      <div
+        className={this.state.displayChoiceBox ? 'my-page-choice-box display-block' : 'my-page-choice-box display-none'}
+        style={{ top: this.state.choiceBoxTop + 20, left: this.state.choiceBoxLeft }}
+      >
+        {this.renderEachChoice(choiceObject)}
+      </div>
+    );
+  }
+  // open and close choice box with click of ellipsis
+  handleChoiceEllipsisClick() {
+    // get the choice box
+    const choiceIcon = document.getElementById('my-page-choice-ellipsis');
+    // get the coordinates of the choice box
+    const rectChoice = choiceIcon.getBoundingClientRect();
+    // set the top, left and show or hide choice box state variables
+    this.setState({ displayChoiceBox: !this.state.displayChoiceBox, choiceBoxTop: rectChoice.top, choiceBoxLeft: rectChoice.left - 245 }, () => {
+      // if click is to open the box, add addEventListener after some time to avoid
+      // event listener to detect the opening click which causes it not to open
+      if (this.state.displayChoiceBox) {
+        setTimeout(() => {
+          window.addEventListener('click', this.choiceEllipsisCloseClick);
+        }, 100);
+      } else {
+        // if ellipsis click is to close, remvoe addEventListener
+        window.removeEventListener('click', this.choiceEllipsisCloseClick);
+      }
+    });
+    // const body = document.getElementById('messaging-main-main-container');
+  }
+
+  choiceEllipsisCloseClick = (e) => {
+    // fucntion passed to addEventListener
+    const clickedElement = e.target;
+    // get class name of clicked element
+    const elementClassName = clickedElement.getAttribute('class');
+    // split the class name string if not null since elements can have more than one class name
+    const classArray = elementClassName ? elementClassName.split(' ') : null;
+    // define array of classnames that you do not want to close
+    const donotClosearray = ['my-page-choice-box', 'my-page-choice-box-each'];
+    // check if clicked element is included in the donotClosearray
+    let clickedInsideChoiceBox = false;
+    _.each(donotClosearray, each => {
+      if (classArray && classArray.includes(each)) {
+        clickedInsideChoiceBox = true;
+      }
+    });
+    // if clicked element class not null and not clicked inside choice box
+    // set state to close box
+    if ((classArray && !clickedInsideChoiceBox) || !classArray) {
+      this.setState({ displayChoiceBox: false }, () => {
+      });
+      // remove eventListener when box closed
+      window.removeEventListener('click', this.choiceEllipsisCloseClick);
+    }
+  }
+
   render() {
     // <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderMessaging()}</div>
+    const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
     return (
       <div>
         {this.renderCardInputModal()}
@@ -1392,18 +1513,25 @@ formatDate(date) {
         {this.props.showStaffCreate ? this.renderStaffCreateForm() : ''}
         {this.props.showProfileEdit ? this.renderProfileEditForm() : ''}
         {this.props.showProfileCreate ? this.renderProfileCreateForm() : ''}
-        <div className="page-title">{AppLanguages.myPage[this.props.appLanguageCode]}</div>
+        <div className="page-title">
+          <div className="page-title-box"></div>
+            <div className="page-title-box">
+              {AppLanguages.myPage[this.props.appLanguageCode]}
+            </div>
+            <div className="page-title-box page-title-box-right">{showMobileView ? <i id="my-page-choice-ellipsis" className="fa fa-ellipsis-v" onClick={this.handleChoiceEllipsisClick}></i> : ''}</div>
+        </div>
         <div className="container my-page-container">
+        {this.renderChoiceBox()}
           <div className="row my-page-row">
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBankAccounts()}</div>
-            <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderContractors()}</div>
-            {this.state.selectedContractorId && this.state.showStaffBox ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderStaffs()}</div> : ''}
+            {!showMobileView || this.state.showMyLikes ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div> : ''}
+            {!showMobileView || this.state.showMyBookings ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div> : ''}
+            {!showMobileView || this.state.showMyFlats ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div> : ''}
+            {!showMobileView || this.state.showBookingsForMyFlats ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div> : ''}
+            {!showMobileView || this.state.showMyProfile ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div> : ''}
+            {!showMobileView || this.state.showPaymentDetails ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div> : ''}
+            {!showMobileView || this.state.showBankAccounts ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBankAccounts()}</div> : ''}
+            {!showMobileView || this.state.showContractors ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderContractors()}</div> : ''}
+            {this.state.selectedContractorId && (!showMobileView || (this.state.showStaffBox && this.state.showContractors))? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderStaffs()}</div> : ''}
         </div>
         </div>
         <Link to="/createflat" ><button className="btn btn-lg btn-create-flat">{AppLanguages.listNewFlat[this.props.appLanguageCode]}</button></Link>

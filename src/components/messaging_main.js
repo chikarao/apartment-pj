@@ -928,7 +928,7 @@ class MessagingMain extends Component {
     // this.conversationRollIn();
     this.props.checkedConversations(this.props.checkedConversationsArray);
     const moveElemment = document.getElementById('conversation-main-ul');
-    console.log('in messagingMain, handleMessageHamburgerClick, moveElemment: ', moveElemment);
+    // console.log('in messagingMain, handleMessageHamburgerClick, moveElemment: ', moveElemment);
   }
 // mobile version of messaging; showConversation is a boolean set in
 // Conversation handleConversationCardClick; when conversation is clicked, shows messages
@@ -949,7 +949,7 @@ class MessagingMain extends Component {
   // my-page classes to simplify; my page messaging will be gone but keeping it for now;
   // conversation and messaging come from component/messaging/conversation.js and messaging.js
   render() {
-    console.log('in messagingMain, render this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
+    // console.log('in messagingMain, render this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
     // console.log('in Welcome, render, this.state: ', this.state)
     // <div className="messaging-main-controls-container">{this.renderMessagingControls()}</div>
     // console.log('in Welcome, render, this.state.show: ', this.state.show)

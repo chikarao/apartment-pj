@@ -491,6 +491,20 @@ h3 {
 
 .page-title {
   font-size: 27px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.page-title-box {
+  font-weight: normal;
+  width: 33.3%;
+}
+
+.page-title-box-right {
+  font-size: 17px;
+  padding: 13px 50px 0 0;
+  text-align: right;
 }
 
 
@@ -3435,6 +3449,27 @@ form {
     padding: 0px;
     overflow: hidden;
     overflow-y: scroll;
+}
+
+.my-page-choice-box {
+  width: 250px;
+  height: 400px;
+  z-index: 100;
+  background-color: white;
+  position: fixed;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  /* top: 0;
+  left: 0; */
+
+}
+
+.my-page-choice-box-each {
+  text-align: left;
+  margin: 25px 25px 25px 25px; 
 }
 
 .my-page-category-title {
