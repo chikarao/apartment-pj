@@ -14,11 +14,7 @@ import latLngOffset from './constants/lat_lng_offset';
 import searchCriteria from './constants/search_criteria';
 import amenities from './constants/amenities';
 import AppLanguages from './constants/app_languages';
-
-// const initialPosition = {
-//   lat: 37.7952,
-//   lng: -122.4029
-// };
+import GlobalConstants from './constants/global_constants';
 
 // Can not avoid these global variables
 // lastPage set as global since setState cannot be run in renderfunctions
@@ -30,9 +26,7 @@ let displayedPagesArray = [];
 const MAX_NUM_PAGE_NUMBERS = 5;
 // ******Pagination
 
-// const valueNameObject = {
-//   1: { name: 'size', title: '' }, 2: { name: 'bedrooms', title: 'Bedrooms' }, 3: { name: 'station', title: 'Distance from Station' }, 4: { name: 'price', title: 'Price' }
-// };
+const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
 
 class Results extends Component {
   constructor() {
@@ -81,8 +75,13 @@ class Results extends Component {
     tabSelected: false,
     searchCriteriaInpuStarted: false,
     selectedTabArray: [],
-    amenitySearchStarted: false
+    amenitySearchStarted: false,
+    windowWidth: window.innerWidth,
+    showMap: false,
+    showFilter: false,
   };
+
+  this.handleResize = this.handleResize.bind(this);
   this.handlePageClick = this.handlePageClick.bind(this);
   this.handleDoubleLeftPageClick = this.handleDoubleLeftPageClick.bind(this);
   this.handleLeftPageClick = this.handleLeftPageClick.bind(this);
@@ -96,10 +95,14 @@ class Results extends Component {
   this.handleSearchClearClick = this.handleSearchClearClick.bind(this);
   this.handleMinMaxClick = this.handleMinMaxClick.bind(this);
   this.incrementSearchSpaceInput = this.incrementSearchSpaceInput.bind(this);
+  this.handleShowMapFilterClick = this.handleShowMapFilterClick.bind(this);
 }
 // Pagination reference: https://stackoverflow.com/questions/40232847/how-to-implement-pagination-in-reactjs
 
   componentDidMount() {
+    // handleResize works with windowWidth and RESIZE_BREAK_POINT
+    window.addEventListener('resize', this.handleResize);
+
     const latOffsetNorth = latLngOffset.latOffsetNorth;
     const latOffsetSouth = latLngOffset.latOffsetSouth;
     const lngOffsetWest = latLngOffset.lngOffsetWest;
@@ -176,6 +179,15 @@ class Results extends Component {
       if (this.props.auth.authenticated) {
         this.props.fetchLikesByUser();
       }
+  }
+
+  componentWillUnmount() {
+    // remove resize eventhandler of will get setState on an unmounted component error
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize() {
+    this.setState({ windowWidth: window.innerWidth });
   }
 
   calculateLatLngAve(flats) {
@@ -1467,7 +1479,7 @@ class Results extends Component {
     // <input type="text" placeholder="Date to" />
     // </div>
     return (
-      <div className="results-search-date-search-box">
+      <div id="filter" className="results-search-date-search-box">
         <div className="results-search-date-search-input">
           {this.renderCalendarPopup()}
           <input value={this.props.datesSelected.to ? this.getCalendarInputValue() : ''} id="results-date-search-input" type="text" placeholder={AppLanguages.searchByDates[this.props.appLanguageCode]} onFocus={this.popUpCalendar} />
@@ -1580,16 +1592,66 @@ class Results extends Component {
     );
   }
 
+  handleShowMapFilterClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // funtion to scroll map or filter into view after user click
+    function scrollToElement() {
+      const element = document.getElementById(elementVal);
+      if (element) element.scrollIntoView();
+    }
+    // console.log('in results handleShowMapFilterClick elementVal: ', elementVal);
+    // if user clicks map, set showMap to true
+    if (elementVal === 'map') {
+      this.setState({ showMap: !this.state.showMap }, () => {
+        // console.log('in results handleShowMapFilterClick this.state.showMap: ', this.state.showMap);
+        // scroll the map and filter elements into view
+        scrollToElement();
+      });
+    // if click filter, set state showfilter to true and scroll to element
+    } else {
+      this.setState({ showFilter: !this.state.showFilter, showRefineSearch: false }, () => {
+        // console.log('in results handleShowMapFilterClick this.state.showFilter: ', this.state.showFilter);
+        scrollToElement();
+      });
+    }
+  }
+
+  renderShowMapButton() {
+    // show map and handle click with one handler for both map and filter
+    return (
+      <div className="results-show-map-button" value="map" onClick={this.handleShowMapFilterClick}>
+        <i className="fa fa-globe-americas" value="map"></i>
+      </div>
+    );
+  }
+
+  renderShowFilterButton() {
+    // show map and handle click with one handler for both map and filter 
+    return (
+      <div className="results-show-filter-button" value="filter" onClick={this.handleShowMapFilterClick}>
+        <i className="fa fa-filter" value="filter"></i>
+      </div>
+    );
+  }
+
   render() {
+    // if window width less than break point for tablets (include smartphone)
+    const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
     // <div className={'refine-search-box container'}>
     return (
       <div>
-        <div className="container" id="map">
-        {this.renderMap()}
-        </div>
+        {showMobileView ? this.renderShowMapButton() : ''}
+        {showMobileView ? this.renderShowFilterButton() : ''}
+        {!showMobileView || this.state.showMap ?
+          <div className="container" id="map">
+          {this.renderMap()}
+          </div>
+          : ''
+        }
         <div>
-          {this.renderDateSearch()}
-          {this.renderSearchArea()}
+          {!showMobileView || this.state.showFilter ? this.renderDateSearch() : ''}
+          {!showMobileView || this.state.showFilter ? this.renderSearchArea() : ''}
           <div className={this.state.showRefineSearch ? 'refine-search-box' : 'hide'}>
             <div className="refine-search-close-link" onClick={this.handleRefineSearchLinkClick}>{AppLanguages.close[this.props.appLanguageCode]}</div>
             {this.state.showRefineSearch ? this.renderRefineSearchCriteria() : ''}

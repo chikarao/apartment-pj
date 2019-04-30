@@ -40,7 +40,8 @@ body > div:first-child {
 }
 
 main {
-  background-color: rgb(252, 252, 252)
+  background-color: rgb(252, 252, 252);
+  min-height: 500px;
 }
 
 h2 {
@@ -207,6 +208,7 @@ h3 {
   padding: 0 !important;
   margin: 0 !important;
   background-color: rgb(254, 254, 254) !important;
+  /* z-index: 10; */
 }
 
 .header-auth-link {
@@ -1345,6 +1347,43 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   /* position: absolute;
   top: 0;
   right: 0; */
+}
+
+.results-show-map-button, .results-show-filter-button  {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /* background-color: white; */
+  z-index: 10;
+}
+
+.results-show-map-button i:hover, .results-show-filter-button:hover  {
+  border-radius: 50%;
+  background-color: #ccc;
+}
+
+.results-show-map-button  {
+  color: gray;
+  position: fixed;
+  top: 35%;
+  left: 86%;
+  font-size: 50px;
+}
+
+.results-show-filter-button  {
+  border: 1px solid #ccc;
+  color: gray;
+  position: fixed;
+  top: 45%;
+  left: 86%;
+  font-size: 30px;
+}
+
+.results-show-filter-button i  {
+  position: absolute;
+  top: 24%;
+  left: 19%;
+  font-size: 30px;
 }
 
 /* ***********PAGINATION*************** */
@@ -3469,7 +3508,7 @@ form {
 
 .my-page-choice-box-each {
   text-align: left;
-  margin: 25px 25px 25px 25px; 
+  margin: 25px 25px 25px 25px;
 }
 
 .my-page-category-title {
@@ -4846,7 +4885,7 @@ form {
     padding: 5px;
     /* margin-top: 7px; */
     position: absolute;
-    top: -7px;
+    top: -3px;
     right: 0;
     margin-top: 7px !important;
   }

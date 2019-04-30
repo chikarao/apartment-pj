@@ -8,7 +8,8 @@ const globalConstants = {
     rootUrl: 'http://localhost:3000',
     a4Width: 792,
     a4Height: 1122,
-    ownUploadedDocumentKey: 'own_uploaded_document'
+    ownUploadedDocumentKey: 'own_uploaded_document',
+    resizeBreakPoint: 800,
 };
 
 export default globalConstants;

@@ -19,6 +19,7 @@ import ProfileEditModal from './modals/profile_edit_modal';
 import ProfileCreateModal from './modals/profile_create_modal';
 import Contractor from './constants/contractor';
 import Languages from './constants/languages';
+import GlobalConstants from './constants/global_constants';
 
 import CardTypes from './constants/card_types'
 
@@ -26,7 +27,8 @@ import AppLanguages from './constants/app_languages';
 
 const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
 const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
-const RESIZE_BREAK_POINT = 800;
+const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
+// const RESIZE_BREAK_POINT = 800;
 
 class MyPage extends Component {
   constructor(props) {
@@ -99,40 +101,27 @@ class MyPage extends Component {
   }
 
   componentWillUnmount() {
-    // const body = document.getElementById('messaging-main-main-container');
-    // body.removeEventListener('click', this.choiceEllipsisCloseClick);
+    // remove event listeners when closing page or unmounting
+    window.removeEventListener('click', this.choiceEllipsisCloseClick);
+    window.removeEventListener('resize', this.handleResize);
   }
 
   handleResize() {
     this.setState({ windowWidth: window.innerWidth });
   }
 
-  // fetchFlatsByUserCallback(flatIdArray) {
-  //   // console.log('in mypage, fetchFlatsByUserCallback, flatIdArray: ', flatIdArray);
-  //   this.props.fetchConversationByUserAndFlat(flatIdArray);
-  // }
-
- // fetchData(id) {
- //    //callback from getCurrentUserForMyPageid
- //    console.log('in mypage, fetchData, this.props.auth.id: ', this.props.auth.id);
- //    console.log('in mypage, fetchData, callback from getCurrentUserForMyPageid: ', id);
- // //  }
  isBookingForOwnFlat(booking) {
    // console.log('in mypage, isBookingForOwnFlat, booking: ', booking);
-   return booking.flat.user_id == parseInt(this.props.auth.id);
+   return booking.flat.user_id === parseInt(this.props.auth.id, 10);
  }
 
   renderEachBookingByUser() {
     // console.log('in mypage, renderEachBookingByUser, this.props.bookingsByUser: ', this.props.bookingsByUser);
-    // const { bookingsByUser } = this.props;
     if (this.props.bookingsByUser) {
       const bookingsByUserEmpty = _.isEmpty(this.props.bookingsByUser);
       const { bookingsByUser } = this.props;
       // sort by date_start
       const sortedBookingsByUser = this.sortBookings(bookingsByUser);
-      // <div className="my-page-card-button-box">
-      // <button className="btn btn-delete btn-sm my-page-edit-delete-btn">Delete</button>
-      // </div>
 
       if (!bookingsByUserEmpty) {
         // console.log('in mypage, renderEachBookingByUser, after if empty check, bookingsByUser: ', bookingsByUser);

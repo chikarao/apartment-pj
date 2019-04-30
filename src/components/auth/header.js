@@ -16,9 +16,11 @@ import Loading from '../modals/loading';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
-import AppLanguages from '../constants/app_languages'
+import AppLanguages from '../constants/app_languages';
+import GlobalConstants from '../constants/global_constants';
 
-const RESIZE_BREAK_POINT = 800;
+// const RESIZE_BREAK_POINT = 800;
+const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
 
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
