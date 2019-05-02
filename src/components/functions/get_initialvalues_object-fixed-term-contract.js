@@ -208,8 +208,10 @@ export default (props) => {
         objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
       } else {
         // if not a translated document, assign one that corresponds to the selected document language code
-        if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachFieldKey] = recordLanguage[eachFieldKey];
-        if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachFieldKey] = recordLanguage1[eachFieldKey];
+        if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+        if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+        // if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachFieldKey] = recordLanguage[eachFieldKey];
+        // if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachFieldKey] = recordLanguage1[eachFieldKey];
       }
     }
   }
@@ -219,7 +221,6 @@ export default (props) => {
     const allFields = {};
 
     _.each(documentFields, eachPageObject => {
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject: ', eachPageObject);
       // for each page in this.props.documentFields
       _.each(eachPageObject, (eachField, i) => {
         allFields[eachField.name] = i;
@@ -246,6 +247,7 @@ export default (props) => {
         // end of each flat amenity
       });
 
+      // flatOwnerFields are those that are in eachPageObject
       const flatOwnerFields = ['flat_owner_name', 'flat_owner_company', 'flat_owner_phone', 'flat_owner_address'];
       if (eachPageObject[flatOwnerFields[0]]) {
         const baseRecord = flat;
@@ -256,14 +258,17 @@ export default (props) => {
               const eachRecordKey = eachPageObject[each].translation_column;
               setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
             } else {
-              if (each != baseRecord[eachPageObject[each].record_column]) {
+              console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flatOwnerFields each, eachPageObject[each].record_column: ', each, eachPageObject[each].record_column);
+              if (each != eachPageObject[each].record_column) {
                 objectReturned[each] = baseRecord[eachPageObject[each].record_column];
               } else {
-                objectReturned[each] = baseRecord[eachPageObject[each].record_column];
+                objectReturned[each] = baseRecord[each];
               }
             }
           }
         });
+        // owner phone is kept only in the base record to avoid multiple entries
+        objectReturned.flat_owner_phone = baseRecord.owner_phone;
       }
 
       // if flat_owner_name is user use the user profile for user
@@ -384,7 +389,7 @@ export default (props) => {
       // and get a string of their numbers 1A, 2D etc.
       if (eachPageObject.parking_included) {
         if (booking.facilities) {
-          console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, booking.facilities: ', booking.facilities);
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, booking.facilities: ', booking.facilities);
           // set up arrays for each facility
           const carParkingArray = [];
           const bicycleParkingArray = [];
@@ -671,10 +676,12 @@ export default (props) => {
       //   }
       // });
       // deal with booking dates dates (separates year, month and day of to and from attributes)
-      const bookingDatesObject = getBookingDateObject(booking);
-      _.each(Object.keys(bookingDatesObject), dateKey => {
-        objectReturned[dateKey] = bookingDatesObject[dateKey];
-      });
+      if (eachPageObject.to_year) {
+        const bookingDatesObject = getBookingDateObject(booking);
+        _.each(Object.keys(bookingDatesObject), dateKey => {
+          objectReturned[dateKey] = bookingDatesObject[dateKey];
+        });
+      }
       // end of each bookingDatesObject
 
       // get address1, city, state, zip in one string
@@ -685,7 +692,7 @@ export default (props) => {
         objectReturned.address = address;
         if (eachPageObject.address.translation_field) {
           // there is a tranlation corresponding to address in the document
-          // ie the document is a biligual document 
+          // ie the document is a biligual document
           if (flat.language_code == Documents[documentKey].baseLanguage) {
             // languge code for flat is the document's base language
             const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
@@ -710,6 +717,7 @@ export default (props) => {
           }
         } else {
           // if the document is a single language document, ie does not have translation
+          // get language eg flat and flat_language and create address to assign to initialValues
           const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
           const recordLanguage1 = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
           address = createAddress(recordLanguage);
@@ -717,35 +725,36 @@ export default (props) => {
           // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, address, address1: ', address, address1);
           if (recordLanguage.language_code === documentLanguageCode) objectReturned.address = address;
           if (recordLanguage1.language_code === documentLanguageCode) objectReturned.address = address1;
-
         }
       }
 
       // get contract length objectReturned with years and months
-      const contractLengthObject = getContractLength(booking);
-      objectReturned.contract_length_years = contractLengthObject.years;
-      objectReturned.contract_length_months = contractLengthObject.months;
+      if (eachPageObject.contract_length_years) {
+        const contractLengthObject = getContractLength(booking);
+        objectReturned.contract_length_years = contractLengthObject.years;
+        objectReturned.contract_length_months = contractLengthObject.months;
 
-      if (contractLengthObject.years >= 1) {
-        const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
-        objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
-        objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
-        objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
-        objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
-        objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
-        objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
+        if (contractLengthObject.years >= 1) {
+          const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
+          objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
+          objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
+          objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
+          objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
+          objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
+          objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
+        }
+
+        // contract date
+        const contractDate = new Date();
+        const contractYear = contractDate.getFullYear();
+        const contractMonth = contractDate.getMonth() + 1;
+        const contractDay = contractDate.getDate();
+        objectReturned.contract_year = contractYear;
+        objectReturned.contract_month = contractMonth;
+        objectReturned.contract_day = contractDay;
       }
-
-      // contract date
-      const contractDate = new Date();
-      const contractYear = contractDate.getFullYear();
-      const contractMonth = contractDate.getMonth() + 1;
-      const contractDay = contractDate.getDate();
-      objectReturned.contract_year = contractYear;
-      objectReturned.contract_month = contractMonth;
-      objectReturned.contract_day = contractDay;
     });
-    // end of documentForm eachPageObject
+    // !!!!!!!!!end of documentForm eachPageObject
 
     console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, objectReturned: ', objectReturned);
     // return objectReturned for assignment to initialValues in mapStateToProps

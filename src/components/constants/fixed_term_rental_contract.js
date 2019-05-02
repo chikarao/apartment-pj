@@ -1118,7 +1118,12 @@ const FixedTermRentalContract = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      record_column: 'owner_address'
+      // record_column is the column in the database eg flat.owner_address
+      record_column: 'owner_address',
+      translation_column: 'owner_address',
+      translation_record: 'flat_languages',
+      translation_field: 'flat_owner_address',
+
     },
 
     flat_owner_name: {
@@ -1130,7 +1135,10 @@ const FixedTermRentalContract = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      record_column: 'owner_contact_name'
+      record_column: 'owner_contact_name',
+      translation_column: 'owner_contact_name',
+      translation_record: 'flat_languages',
+      translation_field: 'flat_owner_name',
     },
 
     // flat_owner_company: {
@@ -1154,8 +1162,10 @@ const FixedTermRentalContract = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      record_column: 'owner_phone'
-
+      record_column: 'owner_phone',
+      translation_column: 'owner_phone',
+      translation_record: 'flat_languages',
+      translation_field: 'flat_owner_phone',
     },
 
     tenant_name: {
