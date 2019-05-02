@@ -1597,6 +1597,11 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-decoration: underline;
 }
 
+.booking-confirmation-unapprove-request-link {
+  color: blue;
+  text-decoration: none;
+}
+
 .conversation-create-modal-textarea {
   width: 90%;
   max-width: 450px;
@@ -3508,7 +3513,13 @@ form {
 
 .my-page-choice-box-each {
   text-align: left;
-  margin: 25px 25px 25px 25px;
+  margin: 16px 15px 15px 15px;
+  padding: 0 15px 11px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.my-page-choice-box-each:last-child {
+  border-bottom: none;
 }
 
 .my-page-category-title {

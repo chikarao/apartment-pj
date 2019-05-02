@@ -53,7 +53,10 @@ const FixedTermRentalContract = {
           }
         }
       },
-      required: true
+      required: true,
+      translation_record: 'building_languages',
+      translation_column: 'name',
+      translation_field: 'name',
     },
 
     address: {
@@ -75,6 +78,7 @@ const FixedTermRentalContract = {
           }
         }
       },
+      translation_record: 'flat_languages',
       // required: true
     },
 

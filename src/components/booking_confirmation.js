@@ -1112,28 +1112,27 @@ handleDocumentCreateClick(event) {
   const clickedElement = event.target;
   // elementval is document key
   const elementVal = clickedElement.getAttribute('value');
-  console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
-
-  // if showDocument is false, just create document key with the document code
-  if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
-    // if (!this.state.showDocument) {
-    //   this.props.setCreateDocumentKey(elementVal, () => {
-    //     this.setState({ showDocument: true, showSavedDocument: false, agreementId: '' });
-    //   });
-    // } else {
-    //   // if showDocument is true (currently showing document),
-    //   // close document first then show new document
-    //   this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-    //     this.props.setCreateDocumentKey(elementVal, () => {
-    //       this.setState({ showDocument: true });
-    //     });
-    //   });
-    // }
-    this.setState({ showOwnUploadedDocument: false }, () => {
-      this.setConditionsForCreateDocuments(elementVal);
-    });
+  // console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
+  // console.log('in booking confirmation, handleDocumentCreateClick, elementVal:', elementVal);
+  // if document is has tranlation feature
+  //and the base language of the document is same as user chosen document language,
+  // give alert to select another language
+  if (Documents[elementVal].translation && Documents[elementVal].baseLanguage === this.props.documentLanguageCode) {
+    const language = Languages[Documents[elementVal].baseLanguage].name;
+    window.alert(`Please select a language above other than ${language.charAt(0).toUpperCase() + language.slice(1)}, as the translation language.`)
+  } else if (!Documents[elementVal].translation && Documents[elementVal].baseLanguage !== this.props.documentLanguageCode) {
+    const language = Languages[Documents[elementVal].baseLanguage].name;
+    window.alert(`Please select above ${language.charAt(0).toUpperCase() + language.slice(1)} as the document language, since the document is in that language.`)
   } else {
-    this.setConditionsForCreateDocuments(elementVal);
+    // if language selection is correct and
+    // if showDocument is false, just create document key with the document code
+    if (this.state.showOwnUploadedDocument && (elementVal !== globalConstants.ownUploadedDocumentKey)) {
+      this.setState({ showOwnUploadedDocument: false }, () => {
+        this.setConditionsForCreateDocuments(elementVal);
+      });
+    } else {
+      this.setConditionsForCreateDocuments(elementVal);
+    }
   }
 }
 
@@ -1294,6 +1293,7 @@ renderConversationCreateForm() {
      flatId={this.props.booking.flat.id}
      sentByUser={!this.props.userIsOwner}
      userId={this.props.booking.user_id}
+     bookingId={this.props.booking.id}
     />
   );
 }

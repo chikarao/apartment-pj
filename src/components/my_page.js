@@ -62,6 +62,7 @@ class MyPage extends Component {
       lastPanel: 'showMyBookings',
       // actionType: 'Add a Card'
     };
+    
     this.handleResize = this.handleResize.bind(this);
     this.handleBookingCardClick = this.handleBookingCardClick.bind(this);
     this.handleFlatCardClick = this.handleFlatCardClick.bind(this);
@@ -1421,16 +1422,18 @@ formatDate(date) {
   }
 
   renderChoiceBox() {
-    const choiceObject = {
+    const choiceObject =
+    {
       showMyLikes: 'My Likes',
       showMyFlats: 'My Flats',
       showMyBookings: 'My Bookings',
-      showBookingsForMyFlats: 'Bookings for my Flats',
+      showBookingsForMyFlats: 'Bookings for My Flats',
       showMyProfile: 'My Profile',
-      showPaymentDetails: 'Payment Details',
-      showBankAccounts: 'Banks Accounts',
       showContractors: 'Contractors',
+      showPaymentDetails: 'Payment Details',
+      showBankAccounts: 'My Bank Accounts',
     };
+
     return (
       <div
         className={this.state.displayChoiceBox ? 'my-page-choice-box display-block' : 'my-page-choice-box display-none'}

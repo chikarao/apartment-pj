@@ -166,7 +166,7 @@ export default (props) => {
     let objectReturned;
     _.each(languages, eachLanguage => {
       console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
-      if (eachLanguage.language_code == languageCode) {
+      if (eachLanguage.language_code === languageCode) {
         objectReturned = eachLanguage;
         return;
       }
@@ -176,15 +176,15 @@ export default (props) => {
   }
 
   function setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned }) {
-    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
-    if (baseRecord.language_code == Documents[documentKey].baseLanguage) {
+    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
+    if (baseRecord.language_code === Documents[documentKey].baseLanguage) {
       // get building language for use translated field;
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = Documents base recordLanguage, documentLanguageCode: ', recordLanguage, documentLanguageCode);
       // assign buildingLangugae value to translated field
       objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
       objectReturned[eachFieldKey] = baseRecord[eachPageObject[eachFieldKey].translation_column];
-    } else if (baseRecord.language_code == documentLanguageCode) {
+    } else if (baseRecord.language_code === documentLanguageCode) {
       // if building language code is different from base language for document
       // give translated field the baseRecord value
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]);
@@ -192,14 +192,25 @@ export default (props) => {
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode recordLanguage, Documents[documentKey].baseLanguage: ', recordLanguage, Documents[documentKey].baseLanguage);
       if (!_.isEmpty(recordLanguage)) {
-        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]);
         objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
       }
     } else {
+      // baseRecord languge is neither the document's baselanguage nor the
+      // documentLanguageCode selected by the user, so need to look in translations
+      // e.g. flat and flat_languages
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
       const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
-      objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-      objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage else recordLanguage, recordLanguage1: ', recordLanguage, recordLanguage1);
+      // if document is a translated/biligual document assign both
+      if (Documents[documentKey].translation) {
+        objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+        objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+      } else {
+        // if not a translated document, assign one that corresponds to the selected document language code
+        if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachFieldKey] = recordLanguage[eachFieldKey];
+        if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachFieldKey] = recordLanguage1[eachFieldKey];
+      }
     }
   }
     // object to return to create_edit_document.js
@@ -665,29 +676,48 @@ export default (props) => {
         objectReturned[dateKey] = bookingDatesObject[dateKey];
       });
       // end of each bookingDatesObject
+
       // get address1, city, state, zip in one string
-      const address = createAddress(flat);
       // add address to initialvalues objectReturned
+      // Address cannot setLanguage since addresses need to be formatted in createAddress
       if (eachPageObject.address) {
+        let address = createAddress(flat);
         objectReturned.address = address;
         if (eachPageObject.address.translation_field) {
+          // there is a tranlation corresponding to address in the document
+          // ie the document is a biligual document 
           if (flat.language_code == Documents[documentKey].baseLanguage) {
+            // languge code for flat is the document's base language
             const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
             const addressTranslation = createAddress(recordLanguage);
             objectReturned[eachPageObject.address.translation_field] = recordLanguage;
           } else if (flat.language_code == documentLanguageCode) {
+            // language code for flat is the user's selected language
             const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
             const addressTranslation = createAddress(recordLanguage);
             // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, addressTranslation: ', addressTranslation);
             objectReturned.address = addressTranslation;
-            // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, eachPageObject.address: ', eachPageObject.address);
             objectReturned[eachPageObject.address.translation_field] = address;
           } else {
+            // if flat language is neither document's base language nor user's selected
+            // find the language in flat_languages
             const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
             const recordLanguage1 = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
-            objectReturned.address = recordLanguage;
-            objectReturned[eachPageObject.address.translation_field] = recordLanguage1;
+            address = createAddress(recordLanguage);
+            const address1 = createAddress(recordLanguage1);
+            objectReturned.address = address;
+            objectReturned[eachPageObject.address.translation_field] = address1;
           }
+        } else {
+          // if the document is a single language document, ie does not have translation
+          const recordLanguage = getLanguage(flat[eachPageObject.address.translation_record], Documents[documentKey].baseLanguage);
+          const recordLanguage1 = getLanguage(flat[eachPageObject.address.translation_record], documentLanguageCode);
+          address = createAddress(recordLanguage);
+          const address1 = createAddress(recordLanguage1);
+          // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, address, address1: ', address, address1);
+          if (recordLanguage.language_code === documentLanguageCode) objectReturned.address = address;
+          if (recordLanguage1.language_code === documentLanguageCode) objectReturned.address = address1;
+
         }
       }
 

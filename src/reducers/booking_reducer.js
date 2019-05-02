@@ -20,7 +20,8 @@ import {
   DELETE_INSERT_FIELD,
   FETCH_AGREEMENT,
   EMAIL_DOCUMENTS,
-  MARK_DOCUMENTS_SIGNED
+  MARK_DOCUMENTS_SIGNED,
+  CREATE_MESSAGE,
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -120,6 +121,10 @@ export default function (state = {
     return { ...state, fetchBookingData: action.payload.booking };
 
     case MARK_DOCUMENTS_SIGNED:
+    // console.log('in booking reducer, state: ', state);
+    return { ...state, fetchBookingData: action.payload.booking };
+
+    case CREATE_MESSAGE:
     // console.log('in booking reducer, state: ', state);
     return { ...state, fetchBookingData: action.payload.booking };
     // case SELECTED_ICALENDAR_ID:

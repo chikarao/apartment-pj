@@ -81,15 +81,15 @@ export default function (state = {
       // toggle back to conversations, only the old conversation remains and it did not have
       // flat in the conversation object so threw and error
       _.each(state.conversationByUserAndFlat, conversation => {
-        if (conversation.id !== action.payload.id) {
+        if (conversation.id !== action.payload.conversation.id) {
           conversationArray.push(conversation);
         } else {
-          conversationArray.push(action.payload);
+          conversationArray.push(action.payload.conversation);
         }
       })
       console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
         console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, noConversationForFlat: false };
+      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false };
 
     case CREATE_CONVERSATION:
       // console.log('in conversation reducer, state: ', state);

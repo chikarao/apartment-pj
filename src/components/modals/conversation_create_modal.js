@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
-
 import AppLanguages from '../constants/app_languages';
-// import Profile from '../constants/profile';
-// import FormChoices from '../forms/form_choices';
 
-// Note: This component is called in header not my page!!!!!!!!
 let showHideClassName;
 
 class ConversationCreateModal extends Component {
@@ -30,16 +26,13 @@ class ConversationCreateModal extends Component {
     console.log('in conversation create modal, handleFormSubmit, data: ', data);
     console.log('in conversation create modal, handleFormSubmit, this.props.flatId, this.props.sentByUser: ', this.props.flatId, this.props.sentByUser);
     this.props.createConversation({ flat_id: this.props.flatId, user_id: this.props.userId }, { body: data.message, flat_id: this.props.flatId, sent_by_user: this.props.sentByUser }, (messageAttributes) => this.createConversationCallback(messageAttributes));
-
-    // this.props.createProfile(delta, () => {
-    //   this.handleFormSubmitCallback();
-    // });
   }
 
   createConversationCallback(messageAttributes) {
     // console.log('in show_flat, createConversationCallback, messageAttributes: ', messageAttributes);
 
     // this.props.createMessage(messageAttributes, (flatId) => this.createMessageCallback(flatId));
+    messageAttributes.booking_id = this.props.bookingId;
     this.props.createMessage(messageAttributes, () => this.handleFormSubmitCallback());
   }
 
@@ -53,8 +46,6 @@ class ConversationCreateModal extends Component {
   // }
 
   handleFormSubmitCallback() {
-    // console.log('in signin, handleFormSubmitCallback: ');
-    // showHideClassName = 'modal display-none';
     this.setState({ createConversationCompleted: true });
   }
 

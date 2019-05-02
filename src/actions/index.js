@@ -1043,7 +1043,7 @@ export function createMessage(messageAttributes, callback) {
 
   // const { } = flatAttributes;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/conversations/${messageAttributes.conversation_id}/messages`, { message: messageAttributes }, {
+    axios.post(`${ROOT_URL}/api/v1/conversations/${messageAttributes.conversation_id}/messages`, { message: messageAttributes, booking_id: messageAttributes.booking_id }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
@@ -1051,7 +1051,7 @@ export function createMessage(messageAttributes, callback) {
       console.log('response to createMessage, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_MESSAGE,
-        payload: response.data.data.conversation
+        payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.conversation.flat_id);

@@ -2,7 +2,6 @@
 "extends": "rallycoding",
  "rules": {
     "react/require-extension": "off",
-
     "arrow-body-style": [0]
   }
 }
