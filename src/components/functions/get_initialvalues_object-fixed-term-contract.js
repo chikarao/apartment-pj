@@ -165,13 +165,13 @@ export default (props) => {
   function getLanguage(languages, languageCode) {
     let objectReturned;
     _.each(languages, eachLanguage => {
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
       if (eachLanguage.language_code === languageCode) {
         objectReturned = eachLanguage;
         return;
       }
     });
-    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
     return objectReturned;
   }
 
@@ -258,7 +258,7 @@ export default (props) => {
               const eachRecordKey = eachPageObject[each].translation_column;
               setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
             } else {
-              console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flatOwnerFields each, eachPageObject[each].record_column: ', each, eachPageObject[each].record_column);
+              // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, flatOwnerFields each, eachPageObject[each].record_column: ', each, eachPageObject[each].record_column);
               if (each != eachPageObject[each].record_column) {
                 objectReturned[each] = baseRecord[eachPageObject[each].record_column];
               } else {

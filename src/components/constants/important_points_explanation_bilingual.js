@@ -2180,6 +2180,7 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 50,
       translation_record: 'building_languages',
+      translation_column: 'building_management_address',
       translation_field: 'building_management_address_translation',
 
     },

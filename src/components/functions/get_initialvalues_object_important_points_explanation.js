@@ -375,8 +375,13 @@ export default (props) => {
     } else {
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
       const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
-      objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-      objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+      if (Documents[documentKey].translation) {
+        objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+        objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+      } else {
+        if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+        if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+      }
     }
   }
 
@@ -395,7 +400,6 @@ export default (props) => {
         const recordLanguage = getLanguage(baseRecord[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
         // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, recordLanguage: ', recordLanguage);
         const addressTranslation = createAddress(recordLanguage);
-        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, addressTranslation: ', addressTranslation);
         objectReturned[eachAddressKey] = addressTranslation;
         // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, eachPageObject[eachAddressKey]: ', eachPageObject[eachAddressKey]);
         objectReturned[eachPageObject[eachAddressKey].translation_field] = address;
@@ -407,6 +411,15 @@ export default (props) => {
         objectReturned[eachAddressKey] = addressTranslation;
         objectReturned[eachPageObject[eachAddressKey].translation_field] = addressTranslation1;
       }
+    } else {
+      const recordLanguage = getLanguage(flat[eachPageObject[eachAddressKey].translation_record], Documents[documentKey].baseLanguage);
+      const recordLanguage1 = getLanguage(flat[eachPageObject[eachAddressKey].translation_record], documentLanguageCode);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, in else if translation_field, recordLanguage, recordLanguage1: ', recordLanguage, recordLanguage1);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setAddressLanguage, in else if translation_field, eachAddressKey: ', eachAddressKey);
+      const addressTranslation = createAddress(recordLanguage);
+      const addressTranslation1 = createAddress(recordLanguage1);
+      if (recordLanguage.language_code === documentLanguageCode) objectReturned[eachAddressKey] = addressTranslation;
+      if (recordLanguage1.language_code === documentLanguageCode) objectReturned[eachAddressKey] = addressTranslation1;
     }
   }
 
@@ -736,11 +749,15 @@ export default (props) => {
         // management in impotant points is the building managmenent,
         // not the property manager in fixed term contract
         if (eachPageObject.building_management_address) {
-          const flatBuildingAddress = createAddress(flat.building);
           baseRecord = flat.building;
-          const eachAddressKey = 'building_management_address';
-          const address = flatBuildingAddress;
-          setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject });
+          const eachFieldKey = 'building_management_address';
+          const eachRecordKey = 'building_management_address';
+          // objectReturned.building_management_address = baseRecord.building_management_address;
+          setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned });
+          // const flatBuildingAddress = createAddress(flat.building);
+          // const eachAddressKey = 'building_management_address';
+          // const address = flatBuildingAddress;
+          // setAddressLanguage({ baseRecord, address, eachAddressKey, eachPageObject });
         }
 
         // end of each Object.keys flat.building

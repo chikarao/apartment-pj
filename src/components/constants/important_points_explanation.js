@@ -193,7 +193,8 @@ const ImportantPointsExplanation = {
           0: { params: { val: 'inputFieldValue', top: '51.9%', left: '24.4%', width: '64.5%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
-        component: 'DocumentChoices'
+        component: 'DocumentChoices',
+        translation_record: 'flat_languages',
       },
       // name is building name
       name: {
@@ -203,7 +204,10 @@ const ImportantPointsExplanation = {
           0: { params: { val: 'inputFieldValue', top: '48.9%', left: '24.4%', width: '64.5%', class_name: 'document-rectangle', input_type: 'string' } },
         },
         className: 'form-control-document',
-        component: 'DocumentChoices'
+        component: 'DocumentChoices',
+        translation_record: 'building_languages',
+        translation_column: 'name',
+        translation_field: 'name',
       },
 
       unit: {
@@ -276,6 +280,9 @@ const ImportantPointsExplanation = {
         component: 'DocumentChoices',
         // record_column to indicate which column in backend model field corresponds to
         record_column: 'owner_contact_name',
+        translation_column: 'owner_contact_name',
+        translation_record: 'flat_languages',
+        translation_field: 'flat_owner_name',
       },
 
       // not using building owner; corresponds to flat owner_address
@@ -290,7 +297,11 @@ const ImportantPointsExplanation = {
         charLimit: 50,
         // record_column to indicate which column in backend model field corresponds to
         record_column: 'owner_address',
+        translation_column: 'owner_address',
+        translation_record: 'flat_languages',
+        translation_field: 'flat_owner_address',
       },
+      // !!No flat_owner_phone on single language document
 
       // building_owner_address2: {
       //   name: 'building_owner_address2',
@@ -311,6 +322,9 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices',
         charLimit: 50,
+        translation_column: 'ownership_rights',
+        translation_record: 'flat_languages',
+        translation_field: 'ownership_rights',
       },
 
       other_rights: {
@@ -322,6 +336,9 @@ const ImportantPointsExplanation = {
         className: 'form-control-document',
         component: 'DocumentChoices',
         charLimit: 60,
+        translation_column: 'other_rights',
+        translation_record: 'flat_languages',
+        translation_field: 'other_rights',
       },
   },
   // end of page 1
@@ -336,6 +353,10 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 70,
+      record_column: 'owner_address',
+      translation_record: 'building_languages',
+      translation_column: 'legal_restrictions',
+      translation_field: 'legal_restrictions',
     },
 
     legal_restrictions_summary: {
@@ -347,6 +368,9 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 120,
+      translation_record: 'building_languages',
+      translation_column: 'legal_restrictions_summary',
+      translation_field: 'legal_restrictions_summary',
     },
 
     water: {
@@ -1095,6 +1119,10 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 100,
+      translation_record: 'building_languages',
+      translation_column: 'asbestos_survey_contents',
+      translation_field: 'asbestos_survey_contents',
+
     },
 
     earthquake_study_performed: {
@@ -1119,6 +1147,9 @@ const ImportantPointsExplanation = {
       className: 'form-control-document',
       component: 'DocumentChoices',
       charLimit: 100,
+      translation_record: 'building_languages',
+      translation_column: 'earthquake_study_contents',
+      translation_field: 'earthquake_study_contents',
     },
 
     other_payments1: {
@@ -1423,6 +1454,21 @@ const ImportantPointsExplanation = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      translation_record: 'building_languages',
+      translation_column: 'building_management_company',
+      translation_field: 'building_management_company',
+    },
+
+    building_management_registration: {
+      name: 'building_management_registration',
+      input_type: 'string',
+      choices: {
+        0: { params: { val: 'inputFieldValue', top: '58.9%', left: '35%', width: '40%', height: '1.8%', margin: '0', class_name: 'document-rectangle', input_type: 'string' } },
+      },
+      className: 'form-control-document',
+      // component: 'input',
+      component: 'DocumentChoices',
+      charLimit: 30,
     },
 
     building_management_address: {
@@ -1435,6 +1481,9 @@ const ImportantPointsExplanation = {
       // component: 'input',
       component: 'DocumentChoices',
       charLimit: 50,
+      translation_record: 'building_languages',
+      translation_column: 'building_management_address',
+      translation_field: 'building_management_address',
     },
   },
   5: {
@@ -1547,7 +1596,10 @@ const ImportantPointsExplanation = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      baseKey: 'name'
+      baseKey: 'name',
+      translation_record: 'building_languages',
+      translation_column: 'name',
+      translation_field: 'building_name_1',
     },
 
     address_1: {
@@ -1560,6 +1612,7 @@ const ImportantPointsExplanation = {
       component: 'DocumentChoices',
       charLimit: 100,
       baseKey: 'address',
+      translation_record: 'flat_languages',
     },
     // button, text hybrid input; when clicked, text toggles on and off with enclosedText
     address_check: {
@@ -1610,6 +1663,9 @@ const ImportantPointsExplanation = {
       component: 'DocumentChoices',
       baseKey: 'name',
       charLimit: 100,
+      translation_record: 'building_languages',
+      translation_column: 'name',
+      translation_field: 'building_name_2',
     },
     // unit_1 means the key overlaps with unit from flat, so assign 'unit' to baseKey
     // so that it gets picked up by the function getOverlappedkeysMapped
@@ -2188,7 +2244,10 @@ const ImportantPointsExplanation = {
       },
       className: 'form-control-document',
       component: 'DocumentChoices',
-      baseKey: 'name'
+      baseKey: 'name',
+      translation_record: 'building_languages',
+      translation_column: 'name',
+      translation_field: 'building_name_3',
     },
 
     address_2: {
@@ -2201,6 +2260,7 @@ const ImportantPointsExplanation = {
       component: 'DocumentChoices',
       charLimit: 100,
       baseKey: 'address',
+      translation_record: 'flat_languages',
     },
     // button, text hybrid input; when clicked, text toggles on and off with enclosedText
     address_check_1: {
@@ -2254,6 +2314,9 @@ const ImportantPointsExplanation = {
       component: 'DocumentChoices',
       baseKey: 'name',
       charLimit: 100,
+      translation_record: 'building_languages',
+      translation_column: 'name',
+      translation_field: 'building_name_4',
     },
     // unit_1 means the key overlaps with unit from flat, so assign 'unit' to baseKey
     // so that it gets picked up by the function getOverlappedkeysMapped
