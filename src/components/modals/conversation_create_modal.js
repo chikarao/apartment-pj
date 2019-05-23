@@ -23,8 +23,8 @@ class ConversationCreateModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    console.log('in conversation create modal, handleFormSubmit, data: ', data);
-    console.log('in conversation create modal, handleFormSubmit, this.props.flatId, this.props.sentByUser: ', this.props.flatId, this.props.sentByUser);
+    // console.log('in conversation create modal, handleFormSubmit, data: ', data);
+    // console.log('in conversation create modal, handleFormSubmit, this.props.flatId, this.props.sentByUser: ', this.props.flatId, this.props.sentByUser);
     this.props.createConversation({ flat_id: this.props.flatId, user_id: this.props.userId }, { body: data.message, flat_id: this.props.flatId, sent_by_user: this.props.sentByUser }, (messageAttributes) => this.createConversationCallback(messageAttributes));
   }
 
@@ -90,7 +90,7 @@ class ConversationCreateModal extends Component {
         <div className={showHideClassName}>
           <section className="modal-main small-modal">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-          <h3 className="auth-modal-title small-modal-title">{AppLanguages.enterMessage[this.props.appLanguageCode]}</h3>
+          <h3 className="auth-modal-title small-modal-title">{AppLanguages.enterMessageToTenant[this.props.appLanguageCode]}</h3>
           {this.renderAlert()}
           <div className="edit-profile-scroll-div">
             <form onSubmit={handleSubmit(this.handleFormSubmit)}>

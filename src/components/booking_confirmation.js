@@ -456,14 +456,15 @@ class BookingConfirmation extends Component {
   }
 
   handleBookingRequsetApprovalClick(event) {
+    const { appLanguageCode } = this.props;
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     if (!this.props.booking.approved) {
-      if (window.confirm('Approve booking request?')) {
+      if (window.confirm(AppLanguages.approveBooking[appLanguageCode])) {
         this.props.editBooking({ id: elementVal, approved: true }, () => {});
       }
     } else {
-      if (window.confirm('Cancel approval of booking request?')) {
+      if (window.confirm(AppLanguages.cancelApprovalBooking[appLanguageCode])) {
         this.props.editBooking({ id: elementVal, approved: false }, () => {});
       }
     }
@@ -627,7 +628,6 @@ class BookingConfirmation extends Component {
   handleCreateConversationClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in booking confirmation, handleCreateConversationClick, elementVal:', elementVal);
     // this.props.createConversation({ flat_id: this.props.flat.id }, { body: 'Hello', flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     this.setState({ showConversationCreate: !this.state.showConversationCreate })
   }
@@ -666,6 +666,41 @@ class BookingConfirmation extends Component {
     );
   }
 
+  handleEndRentalClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    if (window.confirm('End this rental?')) {
+      console.log('in booking confirmation, handleEndRentalClick, elementVal:', elementVal);
+    }
+  }
+
+  renderEndRentalLine() {
+    const { appLanguageCode } = this.props;
+
+    const buttonToRender = 1 < 2 ?
+    <div
+      value={this.props.booking.id}
+      className="btn btn-md booking-confirmation-approve-request-btn"
+      style={{ backgroundColor: 'gray' }}
+      onClick={this.handleEndRentalClick}
+    >{AppLanguages.endRental[appLanguageCode]}</div>
+      :
+    <div
+      style={{ backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray', padding: '6px 12px', width: 'max-content', borderRadius: '4px', margin: 'auto' }}
+    >{AppLanguages.undo[appLanguageCode]}</div>
+
+    return (
+      <div className="booking-request-box-each-line booking-request-each-line-with-buttons">
+        <div className="booking-request-box-each-line-title">
+          {AppLanguages.endRentalLine[appLanguageCode]}
+        </div>
+        <div className="booking-request-box-each-line-data">
+          {buttonToRender}
+        </div>
+      </div>
+    );
+  }
+
   renderBookingActions() {
     const { appLanguageCode } = this.props;
     // userIsOwner true means user is one renting out listing
@@ -677,6 +712,7 @@ class BookingConfirmation extends Component {
           {this.props.userIsOwner ? this.renderBookingApprovalLine() : ''}
           {this.props.userIsOwner ? this.renderSendDocumentEmailLine() : ''}
           {this.props.userIsOwner ? this.renderDocumentsSignedLine() : ''}
+          {this.props.userIsOwner ? this.renderEndRentalLine() : ''}
           {this.props.userIsOwner ? this.renderFinalBookingTermsForm() : ''}
           {this.props.userIsOwner ? '' : this.renderImportpointExplantionDoneLine()}
           {this.props.userIsOwner ? '' : this.renderDocumentDownloadLinks()}
@@ -1313,8 +1349,8 @@ render() {
       {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
       {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
     </div>
-  );
-}
+   );
+  }
 }
 
 function mapStateToProps(state) {
