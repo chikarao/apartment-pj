@@ -562,12 +562,13 @@ h3 {
   max-height: none !important;
 }
 
-/* .gm-style-iw-c { */
-  /* max-height: none !important; */
-  /* background-color: transparent !important; */
-  /* box-shadow: none !important; */
-  /* max-height: none !important; */
-/* } */
+.gm-style-iw-d {
+  /* max-width: 350px !important; */
+  border: none !important;
+ }
+/* .gm-style-iw-c {
+  max-width: 350px !important;
+ } */
 /* change to GM API 10.2018 need to increase max-height on first child
 to override imposed max by API div */
 .gm-style-iw div:first-child {
@@ -2997,7 +2998,7 @@ form {
   background-color: white;
   overflow: auto;
   overflow-y: scroll;
-  padding: 0 0 10px 0;
+  padding: 0 0 15px 0;
 }
 
 .booking-confirmation-profile-top-box {

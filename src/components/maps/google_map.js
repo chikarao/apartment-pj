@@ -591,6 +591,8 @@ class GoogleMap extends Component {
       // !!!!! ONLY styling attribute that cannot seem to go to style.css
       // since do not fit overflow options, visible|hidden|scroll|auto|initial|inherit
       gmStyleIwD[0].style.overflow = '';
+      gmStyleIwD[0].style.maxWidth = '350px';
+
       // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
       // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
       // // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIw:', gmStyleIw)
