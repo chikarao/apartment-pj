@@ -332,10 +332,11 @@ class GoogleMap extends Component {
       // changed again 12/12/18 to ea.l and j and la.l and j
       // changed again 12/26/18 to fa.l and j ma.l and j
       // changed again 1/16/19 to ga.l and j ma.l and j
-      // changed yet again 4/19 to ia.l and j, na.l and j what for????
+      // changed yet again 4/19 to ia.l and j, na.l and j
+      // changed yet again 7/24 to ga.l and j, na.l and j what for????
       const mapBounds = {
-        east: bounds.ia.l,
-        west: bounds.ia.j,
+        east: bounds.ga.l,
+        west: bounds.ga.j,
         north: bounds.na.l,
         south: bounds.na.j
       };
@@ -590,8 +591,13 @@ class GoogleMap extends Component {
       // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIwD:', gmStyleIwD)
       // !!!!! ONLY styling attribute that cannot seem to go to style.css
       // since do not fit overflow options, visible|hidden|scroll|auto|initial|inherit
-      gmStyleIwD[0].style.overflow = '';
-      gmStyleIwD[0].style.maxWidth = '350px';
+      // !!! Needs overflow = null to get rid of white space on div with class gm-style-iw-d
+      gmStyleIwD[0].style.overflow = null;
+      // gmStyleIwD[0].style.maxWidth = '0';
+      // gmStyleIwD[0].style.width = '100%';
+      // !!! Needs maxWidth = null to get rid of white space when first IW opened
+      gmStyleIwD[0].style.maxWidth = null;
+      // gmStyleIwD[0].style.maxWidth = '310px';
 
       // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
       // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
