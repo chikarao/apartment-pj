@@ -1309,9 +1309,9 @@ renderDocumentEmailCreateForm() {
   return (
     <DocumentEmailCreateModal
       show={this.state.showDocumentEmailCreateModal}
-      handleClose={() => this.setState({ showDocumentEmailCreateModal: !this.state.showDocumentEmailCreateModal})}
+      handleClose={() => this.setState({ showDocumentEmailCreateModal: !this.state.showDocumentEmailCreateModal })}
       signedDocumentsModal={this.state.signedDocumentsModal}
-      turnOffSignedDocuments={() => this.setState({ signedDocumentsModal: false})}
+      turnOffSignedDocuments={() => this.setState({ signedDocumentsModal: false })}
       // show
       // agreementId={this.state.agreementId}
       // // documentInsertId={this.state.documentInsertId}
@@ -1325,7 +1325,7 @@ renderConversationCreateForm() {
   return (
     <ConversationCreateModal
      show={this.state.showConversationCreate}
-     handleClose={() => this.setState({ showConversationCreate: !this.state.showConversationCreate})}
+     handleClose={() => this.setState({ showConversationCreate: !this.state.showConversationCreate })}
      flatId={this.props.booking.flat.id}
      sentByUser={!this.props.userIsOwner}
      userId={this.props.booking.user_id}
@@ -1359,7 +1359,7 @@ function mapStateToProps(state) {
     // distinguish current user between tenant and owner; !userIsOwner is tenant
     const userIsOwner = state.bookingData.user.id !== state.bookingData.fetchBookingData.user.id;
     const currency = '¥';
-    const thereAreSavedDocuments = state.bookingData.fetchBookingData.agreements
+    const thereAreSavedDocuments = state.bookingData.fetchBookingData.agreements;
     // console.log('in booking confirmation, mapStateToProps, userIsOwner: ', userIsOwner);
     return {
       auth: state.auth,
