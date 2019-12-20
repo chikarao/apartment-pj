@@ -338,22 +338,32 @@ class BookingConfirmation extends Component {
   createSocket() {
     this.cable = Cable.createConsumer('ws://localhost:3000/cable');
     console.log('createSocket this.cable', this.cable);
+    const userId = localStorage.getItem('id');
     // console.log('createSocket this.props.auth.id', this.props.auth.id);
     // console.log('createSocket Cable', Cable);
     this.chats = this.cable.subscriptions.create({
-      channel: 'ChatChannel', room: `room3`
+      channel: 'ChatChannel', room: `messaging_room_${userId}`
       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
     }, {
       connected: () => {
           console.log('createSocket in call back to connected');
           console.log('createSocket in call back to connected, this.chats', this.chats);
+          this.authenticateChat();
       }, // end of connected
       rejected: () => {
-        console.log('createSocket in call back to rejected');
+        console.log('***** Connection Rejected *****');
+      },
+
+      unsubscribed: () => {
+        console.log('***** Connection Unsubscribed *****');
       },
       // unsubscribe: () => {
       //     console.log('createSocket in call back to unsubscribe');
       // }, // end of connected
+      authenticated: function (token) {
+        this.perform('authenticated', { token });
+        console.log('***** Authenticating Action Cable Connection *******');
+      },
       received: (data) => {
         const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
         const conversation = JSON.parse(data);
@@ -365,11 +375,15 @@ class BookingConfirmation extends Component {
         );
       }, // end of received
       create: function (chatContent) {
-        this.perform('create', {
-          content: chatContent
-        });
+        this.perform('create', { content: chatContent });
       } // end of create:
     }); // end of subscriptions.create and second object
+  }
+
+  authenticateChat() {
+    const token = localStorage.getItem('token');
+    this.chats.authenticated(token);
+    console.log('authenticateChat in call back to chat connection authenticated');
   }
   // createSocket2() {
   //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
@@ -407,7 +421,7 @@ class BookingConfirmation extends Component {
   handleSendEvent(event) {
     event.preventDefault();
     // this.chats.create(this.state.currentChatMessage);
-    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: true }, () => {});
+    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: false }, () => {});
     this.setState({
       currentChatMessage: ''
     });

@@ -111,7 +111,7 @@ export default function (state = {
       console.log('in conversation reducer, CREATE_MESSAGE action.payload.conversation: ', action.payload.conversation);
       console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
         console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
 
     case RECEIVE_CONVERSATION:
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
@@ -147,7 +147,7 @@ export default function (state = {
       console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
       console.log('in conversation reducer, RECEIVE_CONVERSATION conversationArray: ', conversationArray);
         console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
 
 
     case CREATE_CONVERSATION:
