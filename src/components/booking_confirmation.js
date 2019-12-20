@@ -356,6 +356,12 @@ class BookingConfirmation extends Component {
 
       unsubscribed: () => {
         console.log('***** Connection Unsubscribed *****');
+        // this.perform('unsubscribed');
+      },
+
+      unsubscribeConnection: function () {
+        console.log('***** Unsubscribing from Connection *****');
+        this.perform('unsubscribe_connection', {});
       },
       // unsubscribe: () => {
       //     console.log('createSocket in call back to unsubscribe');
@@ -365,14 +371,18 @@ class BookingConfirmation extends Component {
         console.log('***** Authenticating Action Cable Connection *******');
       },
       received: (data) => {
-        const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
-        const conversation = JSON.parse(data);
-        this.props.receiveConversation(conversation);
-        chatLogs.push(conversation);
-        this.setState({ chatLogs }, () => {
-          console.log('Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-          }
-        );
+        if (data.conversation) {
+          const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+          const conversation = JSON.parse(data);
+          this.props.receiveConversation(conversation);
+          chatLogs.push(conversation);
+          this.setState({ chatLogs }, () => {
+            console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
+            }
+          );  // end of setState
+        } else if (data.notification) {
+          console.log('createSocket in received, data.notification ', data.notification);
+        }
       }, // end of received
       create: function (chatContent) {
         this.perform('create', { content: chatContent });
@@ -432,9 +442,13 @@ class BookingConfirmation extends Component {
     // disconnects consumer and stops streaming
     // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
     // ChatChannel stopped streaming from test_room
-    this.cable.disconnect(() => {
+    // this.cable.disconnect(() => {
+    // console.log('handleDisconnectEvent in call back to disconnect');
+    // });
+    this.chats.unsubscribeConnection(() => {
     console.log('handleDisconnectEvent in call back to disconnect');
     });
+    // this.chats.unsubscribed();
   }
 
   handleConnectEvent(event) {
