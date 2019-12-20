@@ -306,6 +306,8 @@ class GoogleMap extends Component {
       const mapCenter = map.getCenter();
       const mapZoom = map.getZoom();
       console.log('in googlemap, bounds: ', bounds);
+      console.log('in googlemap, bounds.ka, bounds.pa: ', bounds.ka, bounds.pa);
+      console.log('in googlemap, bounds.ka.g, bounds.pa.g: ', bounds.ka.g, bounds.pa.g);
       //leaving just to show how mapbounds works
       // const ew = bounds.b; // LatLng of the north-east corner
       // const ns = bounds.f; // LatLng of the south-west corder
@@ -334,11 +336,12 @@ class GoogleMap extends Component {
       // changed again 1/16/19 to ga.l and j ma.l and j
       // changed yet again 4/19 to ia.l and j, na.l and j
       // changed yet again 7/24 to ga.l and j, na.l and j what for????
+      // changed yet again 12/17 or before to ka.h, ka.g, pa.h, pa.g
       const mapBounds = {
-        east: bounds.ga.l,
-        west: bounds.ga.j,
-        north: bounds.na.l,
-        south: bounds.na.j
+        east: bounds.ka.h,
+        west: bounds.ka.g,
+        north: bounds.pa.h,
+        south: bounds.pa.g
       };
       // const mapBounds = {
       //   east: bounds.b.f,
@@ -479,7 +482,7 @@ class GoogleMap extends Component {
     iwDetailTextBoxDiv.id = 'infowindow-box-detail-text-box';
     const iwDetailDescription = document.createElement('div');
     // iwDetailDescription.id = 'infowindow-box-image-box-sib';
-    iwDetailDescription.innerHTML = `<div style="color: gray; padding-top: 10px;"><strong>${flat.description}</strong></div>`;
+    iwDetailDescription.innerHTML = `<div style="color: gray; padding-top: 10px; height: auto;"><strong>${flat.description}</strong></div>`;
     const iwDetailArea = document.createElement('div');
     // iwDetailDescription.id = 'infowindow-box-image-box-sib';
     iwDetailArea.innerHTML = `<div>${flat.area}</div>`;

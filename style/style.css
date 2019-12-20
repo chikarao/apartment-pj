@@ -642,6 +642,11 @@ to override imposed max by API div */
   /* border: 1px solid #ccc; */
 }
 
+#infowindow-box-detail-text-box div {
+  height: auto;
+  /* border: 1px solid #ccc; */
+}
+
 .infowindow-box-detail-arrow-box {
   width: 15% !important;
   height: auto !important;

@@ -175,3 +175,4 @@ export const SELECTED_AGREEMENT_ID = 'selected_agreement_id';
 export const FETCH_AGREEMENT = 'fetch_agreement';
 export const EMAIL_DOCUMENTS = 'email_documents';
 export const MARK_DOCUMENTS_SIGNED = 'mark_documents_signed';
+export const RECEIVE_CONVERSATION = 'receive_conversation';

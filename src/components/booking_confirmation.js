@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import Cable from 'actioncable';
 // import { reduxForm, Field } from 'redux-form';
 // import { reduxForm, Field } from 'redux-form';
 
@@ -45,6 +46,9 @@ class BookingConfirmation extends Component {
       showOwnUploadedDocument: false, // used in create_edit_document
       signedDocumentsModal: false, // used in email documents modal signed documents
       showConversationCreate: false, // for showing modeal to input message and create conversation
+      currentChatMessage: '', // test for action action cable take out later
+      chatLogs: {}, // test for action action cable take out later
+      // chatLogs2: [], // test for action action cable take out later
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -68,10 +72,18 @@ class BookingConfirmation extends Component {
     // gets flat id from params set in click of main_cards or infowindow detail click
     const bookingId = parseInt(this.props.match.params.id, 10);
     this.props.fetchBooking(bookingId);
-    // console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
     this.props.fetchReviewForBookingByUser(bookingId);
     this.props.fetchDocumentTranslation('important_points_explanation');
+    // test for actioncable
+    // console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
+    // if (this.props.auth.id) {
+      // console.log('in booking confirmation, this.props.auth.id: ', this.props.auth.id);
+      this.createSocket();
+    // }
+    // this.createSocket2();
   }
+   // componentDidUpdate() {
+   // }
 
   // componentWillUnmount() {
   //   console.log('in booking confirmation, componentWillUnmount');
@@ -132,7 +144,7 @@ class BookingConfirmation extends Component {
     let returnedObject = null;
     if (flat.flat_languages) {
       _.each(flat.flat_languages, each => {
-        if (each.language_code == this.props.appLanguageCode) {
+        if (each.language_code === this.props.appLanguageCode) {
           returnedObject = each;
           return;
         }
@@ -316,6 +328,110 @@ class BookingConfirmation extends Component {
 
     return returnedProfile;
   }
+  // test for actioncable take out later
+  updateCurrentChatMessage(event) {
+    this.setState({
+      currentChatMessage: event.target.value
+    });
+  }
+
+  createSocket() {
+    this.cable = Cable.createConsumer('ws://localhost:3000/cable');
+    console.log('createSocket this.cable', this.cable);
+    // console.log('createSocket this.props.auth.id', this.props.auth.id);
+    // console.log('createSocket Cable', Cable);
+    this.chats = this.cable.subscriptions.create({
+      channel: 'ChatChannel', room: `room3`
+      // channel: 'ChatChannel', room: `room${this.props.auth.id}`
+    }, {
+      connected: () => {
+          console.log('createSocket in call back to connected');
+          console.log('createSocket in call back to connected, this.chats', this.chats);
+      }, // end of connected
+      rejected: () => {
+        console.log('createSocket in call back to rejected');
+      },
+      // unsubscribe: () => {
+      //     console.log('createSocket in call back to unsubscribe');
+      // }, // end of connected
+      received: (data) => {
+        const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+        const conversation = JSON.parse(data);
+        this.props.receiveConversation(conversation);
+        chatLogs.push(conversation);
+        this.setState({ chatLogs }, () => {
+          console.log('Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
+          }
+        );
+      }, // end of received
+      create: function (chatContent) {
+        this.perform('create', {
+          content: chatContent
+        });
+      } // end of create:
+    }); // end of subscriptions.create and second object
+  }
+  // createSocket2() {
+  //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
+  //   console.log('createSocket this.cable', this.cable);
+  //   // console.log('createSocket Cable', Cable);
+  //   this.chats = this.cable.subscriptions.create({
+  //     channel: 'ChatChannel', room: 'test_room2'
+  //   }, {
+  //     connected: () => {
+  //         console.log('createSocket in call back to connected');
+  //         console.log('createSocket in call back to connected, this.chats', this.chats);
+  //     }, // end of connected
+  //     rejected: () => {
+  //       console.log('createSocket in call back to rejected');
+  //     },
+  //     // unsubscribe: () => {
+  //     //     console.log('createSocket in call back to unsubscribe');
+  //     // }, // end of connected
+  //     received: (data) => {
+  //       const chatLogs2 = [...this.state.chatLogs2]; // create copy of state.chatLogs
+  //       chatLogs2.push(data);
+  //       this.setState({ chatLogs2 }, () => {
+  //         console.log('Chatlogs after set state, this.state.chatLogs2 ', this.state.chatLogs2);
+  //         }
+  //       );
+  //     }, // end of received
+  //     create: function (chatContent) {
+  //       this.perform('create', {
+  //         content: chatContent
+  //       });
+  //     } // end of create:
+  //   }); // end of subscriptions.create and second object
+  // }
+
+  handleSendEvent(event) {
+    event.preventDefault();
+    // this.chats.create(this.state.currentChatMessage);
+    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: true }, () => {});
+    this.setState({
+      currentChatMessage: ''
+    });
+  }
+
+  handleDisconnectEvent(event) {
+    event.preventDefault();
+    // disconnects consumer and stops streaming
+    // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
+    // ChatChannel stopped streaming from test_room
+    this.cable.disconnect(() => {
+    console.log('handleDisconnectEvent in call back to disconnect');
+    });
+  }
+
+  handleConnectEvent(event) {
+    event.preventDefault();
+    // disconnects consumer and stops streaming
+    // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
+    // ChatChannel stopped streaming from test_room
+    this.createSocket(() => {
+    console.log('handleDisconnectEvent in call back to connect');
+    });
+  }
 
   renderBookingTenantInformation(booking) {
     // for some reason, cloudinary image does not render correctly if image obtained
@@ -334,6 +450,36 @@ class BookingConfirmation extends Component {
             {this.renderEachTenantLine(profileToUse)}
             {this.props.userIsOwner ? this.renderTenantIntroduction(profileToUse) : ''}
           </div>
+              <div style={{ width: 'auto', height: '150px'}}>
+              <div style={ { width: 'auto', height: '50%', border: 'gray', padding: '10px' }}>
+              </div>
+              <input
+                value={ this.state.currentChatMessage }
+                onChange={(e) => this.updateCurrentChatMessage(e) }
+                type='text'
+                placeholder='Enter your message...'
+                className='chat-input'
+                style={{ width: '80%' }}
+              />
+              <button
+              className='send'
+              onClick={(e) => this.handleSendEvent(e)}
+              >
+                Send
+              </button>
+              <button
+              className='disconnect'
+              onClick={(e) => this.handleDisconnectEvent(e)}
+              >
+                Disconnect
+              </button>
+              <button
+              className='connect'
+              onClick={(e) => this.handleConnectEvent(e)}
+              >
+                Connect
+              </button>
+              </div>
       </div>
     );
   }
@@ -409,11 +555,27 @@ class BookingConfirmation extends Component {
 
   renderBookingDocuments() {
     const { appLanguageCode } = this.props;
+    // {this.renderEachAgreementToCreate()}
 
     if (this.props.booking) {
       return (
         <div className="booking-confirmation-each-box">
           <div className="booking-request-box-title">{AppLanguages.rentalDocuments[appLanguageCode]}</div>
+
+            <div className="booking-request-box-each-line">
+              <div className="booking-request-box-each-line-title">
+                {AppLanguages.templates[appLanguageCode]}:
+              </div>
+              <div className="booking-request-box-each-line-data">
+              </div>
+            </div>
+            <br/>
+            <div className="booking-confirmation-document-box">
+              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadTemplate[appLanguageCode]}</div>
+            </div>
+            <div className="booking-confirmation-document-box">
+            </div>
+
             <div className="booking-request-box-each-line">
               <div className="booking-request-box-each-line-title">
                 {AppLanguages.createDocuments[appLanguageCode]}:
@@ -445,7 +607,7 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>Upload Your Document</div>
+              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadDocument[appLanguageCode]}</div>
             </div>
             <div className="booking-confirmation-document-box">
               {this.props.booking.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}

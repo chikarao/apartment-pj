@@ -17,7 +17,7 @@ class BookingRequest extends Component {
       addedFacilityArray: []
     };
     this.handleOptionButtonClick = this.handleOptionButtonClick.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   componentDidMount() {

@@ -179,7 +179,8 @@ import {
   SELECTED_AGREEMENT_ID,
   FETCH_AGREEMENT,
   EMAIL_DOCUMENTS,
-  MARK_DOCUMENTS_SIGNED
+  MARK_DOCUMENTS_SIGNED,
+  RECEIVE_CONVERSATION
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3111,5 +3112,13 @@ export function markDocumentsSigned(data, callback) {
     });
     callback();
   });
+  };
+}
+
+export function receiveConversation(conversation) {
+  console.log('in actions index, receiveConversation, conversation:', conversation);
+  return {
+    type: RECEIVE_CONVERSATION,
+    payload: { conversation }
   };
 }

@@ -13,7 +13,8 @@ import {
   SHOW_CONVERSATIONS,
   YOUR_FLAT,
   CHECKED_CONVERSATIONS,
-  UPDATE_CONVERSATIONS
+  UPDATE_CONVERSATIONS,
+  RECEIVE_CONVERSATION,
 } from '../actions/types';
 
 export default function (state = {
@@ -31,6 +32,8 @@ export default function (state = {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
+  let userNotOwner;
+  let newMessagesNum;
 
   switch (action.type) {
     case FETCH_CONVERSATION_BY_FLAT:
@@ -43,11 +46,11 @@ export default function (state = {
 
     case FETCH_CONVERSATIONS_BY_USER:
       // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
-      const currentUserId = localStorage.getItem('id');
-      let newMessagesNum = 0;
+      let currentUserId = localStorage.getItem('id');
+      newMessagesNum = 0;
       _.each(action.payload, conversation => {
         // somehow needs to be == not ====
-        const userNotOwner = conversation.user_id == currentUserId
+        userNotOwner = conversation.user_id === currentUserId
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
@@ -87,9 +90,65 @@ export default function (state = {
           conversationArray.push(action.payload.conversation);
         }
       })
+      // THIS part redundant; Need to refactor with FETCH_CONVERSATIONS_BY_USER
+      currentUserId = localStorage.getItem('id');
+      userNotOwner = action.payload.conversation.user_id === currentUserId;
+      newMessagesNum = 0
+
+      _.each(action.payload.conversation.messages, message => {
+        if (userNotOwner) {
+          if ((message.read === false) && !message.sent_by_user) {
+            newMessagesNum++;
+            // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
+          }
+        } else {
+          if ((message.read === false) && message.sent_by_user) {
+            newMessagesNum++;
+            // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
+          }
+        }
+      });
+      console.log('in conversation reducer, CREATE_MESSAGE action.payload.conversation: ', action.payload.conversation);
       console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
         console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false };
+      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+
+    case RECEIVE_CONVERSATION:
+      // when message craeted, changing conversation with new message in conversationByUserAndFlat
+      // with old conversation with old message;
+      // Fixes bug in mypage where after message created and
+      // toggle back to conversations, only the old conversation remains and it did not have
+      // flat in the conversation object so threw and error
+      _.each(state.conversationByUserAndFlat, conversation => {
+        if (conversation.id !== action.payload.conversation.id) {
+          conversationArray.push(conversation);
+        } else {
+          conversationArray.push(action.payload.conversation);
+        }
+      })
+      // THIS part redundant; Need to refactor with FETCH_CONVERSATIONS_BY_USER
+      currentUserId = localStorage.getItem('id');
+      userNotOwner = action.payload.conversation.user_id === currentUserId;
+      newMessagesNum = 0;
+
+      _.each(action.payload.conversation.messages, message => {
+        if (userNotOwner) {
+          if ((message.read === false) && !message.sent_by_user) {
+            newMessagesNum++;
+            // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, sent_by_user, message.id: ', message.id);
+          }
+        } else {
+          if ((message.read === false) && message.sent_by_user) {
+            newMessagesNum++;
+            // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, !sent_by_user, message.id: ', message.id);
+          }
+        }
+      });
+      console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
+      console.log('in conversation reducer, RECEIVE_CONVERSATION conversationArray: ', conversationArray);
+        console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload: ', action.payload);
+      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+
 
     case CREATE_CONVERSATION:
       // console.log('in conversation reducer, state: ', state);
@@ -207,7 +266,7 @@ export default function (state = {
       // take new conversations array and if any messages are unread, mark newMessages as true
       _.each(conversationArray, conversation => {
         const currentUserId2 = localStorage.getItem('id');
-        const userNotOwner = conversation.user_id == currentUserId2;
+        userNotOwner = conversation.user_id === currentUserId2;
         _.each(conversation.messages, message => {
           if (userNotOwner) {
             if (message.read === false && !message.sent_by_user) {

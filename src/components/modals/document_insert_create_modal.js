@@ -97,6 +97,7 @@ class DocumentInsertCreateModal extends Component {
       // this.createImageCallback(imagesArray, 0, flatId);
       // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
       let dataToBeSent = {};
+      // if this is an entire document and not an insert to another document 
       if (!this.props.uploadOwnDocument) {
         dataToBeSent = { document_insert: data };
         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
