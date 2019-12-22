@@ -353,16 +353,23 @@ class BookingConfirmation extends Component {
       channel: 'ChatChannel', room: `messaging_room_${userId}`
       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
     }, {
-      connected: () => {
-          console.log('createSocket in call back to connected');
-          console.log('createSocket in call back to connected, this.chats', this.chats);
-          console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-          this.authenticateChat();
+      connected: (message) => {
+          console.log('createSocket in call back to connected message', message);
+          // console.log('createSocket in call back to connected, this.chats', this.chats);
+          // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
+          // this.cable.connection.webSocket.onmessage = (m) => {
+          //   console.log('createSocket in call back to chat connection, webSocket onmessage listener fired!!!!', m.data);
+          //   // if webSocket connection is disconneted, createSocket reconnects
+          //   // this.createSocket();
+          // };
+          if (!message && !this.state.webSocketConnected) {
+            this.authenticateChat();
+          }
           // this.cable.connection.webSocket.onclose = function (event) {
           //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
           // }
-          this.webSocket = this.cable.connection.webSocket;
-          this.setState({ webSocketConnected: true });
+          // this.webSocket = this.cable.connection.webSocket;
+          if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
       }, // end of connected
       rejected: () => {
         console.log('***** Connection Rejected *****');
@@ -417,6 +424,11 @@ class BookingConfirmation extends Component {
       // if webSocket connection is disconneted, createSocket reconnects
       // this.createSocket();
     };
+    // this.cable.connection.webSocket.onmessage = (m) => {
+    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!!', m.data);
+    //   // if webSocket connection is disconneted, createSocket reconnects
+    //   // this.createSocket();
+    // };
   }
   // createSocket2() {
   //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
