@@ -49,6 +49,7 @@ class BookingConfirmation extends Component {
       currentChatMessage: '', // test for action action cable take out later
       chatLogs: {}, // test for action action cable take out later
       // chatLogs2: [], // test for action action cable take out later
+      webSocketConnected: false,
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -337,7 +338,14 @@ class BookingConfirmation extends Component {
 
   createSocket() {
     this.cable = Cable.createConsumer('ws://localhost:3000/cable');
-    console.log('createSocket this.cable', this.cable);
+    // this.cable.connection.websocket.onclose = () => {
+    //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
+    // };
+    console.log('createSocket this.cable.connnection', this.cable.connection);
+    console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
+    console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
+    console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
+    console.log('createSocket this', this);
     const userId = localStorage.getItem('id');
     // console.log('createSocket this.props.auth.id', this.props.auth.id);
     // console.log('createSocket Cable', Cable);
@@ -348,7 +356,13 @@ class BookingConfirmation extends Component {
       connected: () => {
           console.log('createSocket in call back to connected');
           console.log('createSocket in call back to connected, this.chats', this.chats);
+          console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
           this.authenticateChat();
+          // this.cable.connection.webSocket.onclose = function (event) {
+          //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
+          // }
+          this.webSocket = this.cable.connection.webSocket;
+          this.setState({ webSocketConnected: true });
       }, // end of connected
       rejected: () => {
         console.log('***** Connection Rejected *****');
@@ -371,15 +385,17 @@ class BookingConfirmation extends Component {
         console.log('***** Authenticating Action Cable Connection *******');
       },
       received: (data) => {
+        console.log('createSocket in received before if this, data', this, data);
         if (data.conversation) {
-          const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
-          const conversation = JSON.parse(data);
+          // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+          const conversation = JSON.parse(data.conversation);
           this.props.receiveConversation(conversation);
-          chatLogs.push(conversation);
-          this.setState({ chatLogs }, () => {
-            console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-            }
-          );  // end of setState
+          console.log('createSocket this', this);
+          // chatLogs.push(conversation);
+          // this.setState({ chatLogs }, () => {
+          //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
+          //   }
+          // );  // end of setState
         } else if (data.notification) {
           console.log('createSocket in received, data.notification ', data.notification);
         }
@@ -393,7 +409,14 @@ class BookingConfirmation extends Component {
   authenticateChat() {
     const token = localStorage.getItem('token');
     this.chats.authenticated(token);
-    console.log('authenticateChat in call back to chat connection authenticated');
+    console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection', this.cable.connection);
+    // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
+    this.cable.connection.webSocket.onclose = () => {
+      console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!');
+      this.setState({ webSocketConnected: false });
+      // if webSocket connection is disconneted, createSocket reconnects
+      // this.createSocket();
+    };
   }
   // createSocket2() {
   //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
@@ -429,25 +452,27 @@ class BookingConfirmation extends Component {
   // }
 
   handleSendEvent(event) {
-    event.preventDefault();
+    // event.preventDefault();
     // this.chats.create(this.state.currentChatMessage);
-    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: false }, () => {});
+    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: true }, () => {});
     this.setState({
       currentChatMessage: ''
     });
   }
 
   handleDisconnectEvent(event) {
-    event.preventDefault();
+    // event.preventDefault();
     // disconnects consumer and stops streaming
     // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
     // ChatChannel stopped streaming from test_room
-    // this.cable.disconnect(() => {
-    // console.log('handleDisconnectEvent in call back to disconnect');
-    // });
-    this.chats.unsubscribeConnection(() => {
+    // .disconnect causes webSocket.onclose listener to fire.
+    // unsubscribe leading to reject does not fire onclose
+    this.cable.disconnect(() => {
     console.log('handleDisconnectEvent in call back to disconnect');
     });
+    // this.chats.unsubscribeConnection(() => {
+    // console.log('handleDisconnectEvent in call back to disconnect');
+    // });
     // this.chats.unsubscribed();
   }
 
@@ -495,18 +520,21 @@ class BookingConfirmation extends Component {
               >
                 Send
               </button>
-              <button
-              className='disconnect'
-              onClick={(e) => this.handleDisconnectEvent(e)}
-              >
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignContent: 'center', margin: 'auto', padding: '10px'}}>
+                <div style={{ height: '10px', width: '10px', backgroundColor: this.state.webSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+                <button
+                className='disconnect'
+                onClick={(e) => this.handleDisconnectEvent(e)}
+                >
                 Disconnect
-              </button>
-              <button
-              className='connect'
-              onClick={(e) => this.handleConnectEvent(e)}
-              >
+                </button>
+                <button
+                className='connect'
+                onClick={(e) => this.handleConnectEvent(e)}
+                >
                 Connect
-              </button>
+                </button>
+              </div>
               </div>
       </div>
     );
