@@ -26,10 +26,12 @@ import DocumentEmailCreateModal from './modals/document_email_create_modal';
 import ConversationCreateModal from './modals/conversation_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import globalConstants from './constants/global_constants.js'
+import Typing from './messaging/typing.js'
 
 
 // import DocumentForm from './constants/document_form';
-let insertFieldObject = {}
+let insertFieldObject = {};
+// let typingSubTimer = 0;
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -50,6 +52,7 @@ class BookingConfirmation extends Component {
       chatLogs: {}, // test for action action cable take out later
       // chatLogs2: [], // test for action action cable take out later
       webSocketConnected: false,
+      typingTimer: 0,
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -83,6 +86,15 @@ class BookingConfirmation extends Component {
     // }
     // this.createSocket2();
   }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log('in booking confirmation, this.state, nextState: ', this.state, nextState);
+  //   if (this.state.typingTimer !== nextState.typingTimer) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
    // componentDidUpdate() {
    // }
 
@@ -331,6 +343,9 @@ class BookingConfirmation extends Component {
   }
   // test for actioncable take out later
   updateCurrentChatMessage(event) {
+    const userId = 3;
+    // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
+    this.chats.typing(userId)
     this.setState({
       currentChatMessage: event.target.value
     });
@@ -355,22 +370,20 @@ class BookingConfirmation extends Component {
     }, {
       connected: (message) => {
           console.log('createSocket in call back to connected message', message);
+          console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
           // console.log('createSocket in call back to connected, this.chats', this.chats);
           // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-          // this.cable.connection.webSocket.onmessage = (m) => {
-          //   console.log('createSocket in call back to chat connection, webSocket onmessage listener fired!!!!', m.data);
-          //   // if webSocket connection is disconneted, createSocket reconnects
-          //   // this.createSocket();
-          // };
-          if (!message && !this.state.webSocketConnected) {
+
+          // if (!message && !this.state.webSocketConnected) {
             this.authenticateChat();
-          }
+          // }
           // this.cable.connection.webSocket.onclose = function (event) {
           //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
           // }
           // this.webSocket = this.cable.connection.webSocket;
           if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
       }, // end of connected
+
       rejected: () => {
         console.log('***** Connection Rejected *****');
       },
@@ -384,6 +397,7 @@ class BookingConfirmation extends Component {
         console.log('***** Unsubscribing from Connection *****');
         this.perform('unsubscribe_connection', {});
       },
+
       // unsubscribe: () => {
       //     console.log('createSocket in call back to unsubscribe');
       // }, // end of connected
@@ -391,8 +405,9 @@ class BookingConfirmation extends Component {
         this.perform('authenticated', { token });
         console.log('***** Authenticating Action Cable Connection *******');
       },
+
       received: (data) => {
-        console.log('createSocket in received before if this, data', this, data);
+        console.log('createSocket in received before if data', data);
         if (data.conversation) {
           // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
           const conversation = JSON.parse(data.conversation);
@@ -405,11 +420,43 @@ class BookingConfirmation extends Component {
           // );  // end of setState
         } else if (data.notification) {
           console.log('createSocket in received, data.notification ', data.notification);
+          if (data.notification === 'typing') {
+            if (this.state.typingTimer === 0) {
+              console.log('createSocket in received, data.notification.typing ', data.notification);
+              const lapseTime = () => {
+                if (subTimer > 0) {
+                  subTimer--;
+                  console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
+                } else {
+                  console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
+                  // typingTimer--;
+                  this.setState({ typingTimer: 0 }, () => {
+                    console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
+                  });
+                  clearInterval(timer);
+                }
+              };
+              // clearInterval(timer);
+              let subTimer = 5;
+              if (this.state.typingTimer < 5) {
+                this.setState({ typingTimer: subTimer }, () => {
+                  console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5 ', this.state.typingTimer);
+                });
+              }
+              const timer = setInterval(lapseTime, 1000);
+            }
+          }
         }
       }, // end of received
+
       create: function (chatContent) {
         this.perform('create', { content: chatContent });
-      } // end of create:
+      }, // end of create:
+
+      typing: function (addresseeId) {
+        console.log('createSocket this', this);
+        this.perform('typing', { addresseeId });
+      },
     }); // end of subscriptions.create and second object
   }
 
@@ -417,18 +464,32 @@ class BookingConfirmation extends Component {
     const token = localStorage.getItem('token');
     this.chats.authenticated(token);
     console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection', this.cable.connection);
+    console.log('authenticateChat in call back to chat connection authenticated, run');
     // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
-    this.cable.connection.webSocket.onclose = () => {
-      console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!');
+    this.cable.connection.webSocket.onclose = (m) => {
+      console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
       this.setState({ webSocketConnected: false });
       // if webSocket connection is disconneted, createSocket reconnects
       // this.createSocket();
     };
     // this.cable.connection.webSocket.onmessage = (m) => {
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!!', m.data);
+    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
+    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
+    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
+    //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' } };
+    //     const message = { command: 'message', identifier: this.cable.subscriptions.subscriptions[0].identifier, data: JSON.stringify({ action: 'message', data: m.data.message }) };
+    //     // const message = { command: 'message', event: 'ping', identifier: JSON.stringify({ channel: 'ChatChannel', room: 'messaging_room_3' }), data: JSON.stringify({ action: 'message', data: m.data.message }) };
+    //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' }, data: JSON.stringify({ type: 'ping', message: m.data.message }) };
+    //     // const message = m.data.message;
+    //     this.cable.connection.webSocket.send(JSON.stringify(message));
+    //     // if (m.data.type === 'ping') {
+    //     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
+    //     //   return;
+    //     // }
+    //     // this.cable.connection.webSocket.send(message);
     //   // if webSocket connection is disconneted, createSocket reconnects
     //   // this.createSocket();
-    // };
+    // };// end of on message
   }
   // createSocket2() {
   //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
@@ -494,7 +555,7 @@ class BookingConfirmation extends Component {
     // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
     // ChatChannel stopped streaming from test_room
     this.createSocket(() => {
-    console.log('handleDisconnectEvent in call back to connect');
+    console.log('handleConnectEvent in call back to connect');
     });
   }
 
@@ -516,37 +577,42 @@ class BookingConfirmation extends Component {
             {this.props.userIsOwner ? this.renderTenantIntroduction(profileToUse) : ''}
           </div>
               <div style={{ width: 'auto', height: '150px'}}>
-              <div style={ { width: 'auto', height: '50%', border: 'gray', padding: '10px' }}>
-              </div>
-              <input
-                value={ this.state.currentChatMessage }
-                onChange={(e) => this.updateCurrentChatMessage(e) }
-                type='text'
-                placeholder='Enter your message...'
-                className='chat-input'
-                style={{ width: '80%' }}
-              />
-              <button
-              className='send'
-              onClick={(e) => this.handleSendEvent(e)}
-              >
-                Send
-              </button>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignContent: 'center', margin: 'auto', padding: '10px'}}>
-                <div style={{ height: '10px', width: '10px', backgroundColor: this.state.webSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+                <div style={ { width: 'auto', height: '50%', border: 'gray', padding: '10px', textAlign: 'left', display: 'flex', alignItems: 'flex-end' }}>
+                  <div style={{ width: '200px', height: '30px', border: 'gray', padding: '10px', borderRadius: '3px' }}>
+                      <Typing
+                        typingTimer={this.state.typingTimer}
+                      />
+                  </div>
+                </div>
+                <input
+                  value={ this.state.currentChatMessage }
+                  onChange={(e) => this.updateCurrentChatMessage(e) }
+                  type='text'
+                  placeholder='Enter your message...'
+                  className='chat-input'
+                  style={{ width: '80%' }}
+                />
                 <button
-                className='disconnect'
-                onClick={(e) => this.handleDisconnectEvent(e)}
+                className='send'
+                onClick={(e) => this.handleSendEvent(e)}
                 >
-                Disconnect
-                </button>
-                <button
-                className='connect'
-                onClick={(e) => this.handleConnectEvent(e)}
-                >
-                Connect
-                </button>
-              </div>
+                  Send
+                  </button>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignContent: 'center', margin: 'auto', padding: '10px'}}>
+                  <div style={{ height: '10px', width: '10px', backgroundColor: this.state.webSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+                  <button
+                  className='disconnect'
+                  onClick={(e) => this.handleDisconnectEvent(e)}
+                  >
+                  Disconnect
+                  </button>
+                  <button
+                  className='connect'
+                  onClick={(e) => this.handleConnectEvent(e)}
+                  >
+                  Connect
+                  </button>
+                </div>
               </div>
       </div>
     );
