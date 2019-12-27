@@ -34,7 +34,7 @@ class Typing extends Component {
 
   render() {
     return (
-      <div>{this.props.typingTimer > 0 ? 'Typing...' : ''}</div>
+      <div>{this.props.typingTimer > 0 ? `User ${this.props.messageSender} is typing...` : ''}</div>
     );
   }
 }

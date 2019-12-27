@@ -31,7 +31,7 @@ import Typing from './messaging/typing.js'
 
 // import DocumentForm from './constants/document_form';
 let insertFieldObject = {};
-// let typingSubTimer = 0;
+let typingTimerOut = 0;
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -53,6 +53,7 @@ class BookingConfirmation extends Component {
       // chatLogs2: [], // test for action action cable take out later
       webSocketConnected: false,
       typingTimer: 0,
+      messageSender: '',
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -343,9 +344,31 @@ class BookingConfirmation extends Component {
   }
   // test for actioncable take out later
   updateCurrentChatMessage(event) {
-    const userId = 3;
+    const userId = this.props.auth.id;
+    const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
     // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
-    this.chats.typing(userId)
+    // typingTimerOut is a global variable
+    // this.chats.typing is a command for the backend to send a notification to the addressee
+    // that the sender is typing a message. Notifications are sent once per timer cycle.
+    // The timer is started when typingTimerOut is 0, when decremented every second
+    // When the timer is zero, the timer is ready to be started again.
+    if (typingTimerOut === 0) {
+      const lapseTime = () => {
+        if (subTimer > 0) {
+          subTimer--;
+          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer ', subTimer);
+        } else {
+          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer in else ', subTimer);
+          // typingTimer--;
+          clearInterval(timer);
+          typingTimerOut = subTimer;
+        }
+      };
+      let subTimer = 5;
+      typingTimerOut = subTimer;
+      const timer = setInterval(lapseTime, 1000);
+      this.chats.typing(addresseeId);
+    }
     this.setState({
       currentChatMessage: event.target.value
     });
@@ -419,7 +442,7 @@ class BookingConfirmation extends Component {
           //   }
           // );  // end of setState
         } else if (data.notification) {
-          console.log('createSocket in received, data.notification ', data.notification);
+          console.log('createSocket in received, data ', data);
           if (data.notification === 'typing') {
             if (this.state.typingTimer === 0) {
               console.log('createSocket in received, data.notification.typing ', data.notification);
@@ -430,7 +453,7 @@ class BookingConfirmation extends Component {
                 } else {
                   console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
                   // typingTimer--;
-                  this.setState({ typingTimer: 0 }, () => {
+                  this.setState({ typingTimer: subTimer }, () => {
                     console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
                   });
                   clearInterval(timer);
@@ -439,8 +462,8 @@ class BookingConfirmation extends Component {
               // clearInterval(timer);
               let subTimer = 5;
               if (this.state.typingTimer < 5) {
-                this.setState({ typingTimer: subTimer }, () => {
-                  console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5 ', this.state.typingTimer);
+                this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
+                  console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
                 });
               }
               const timer = setInterval(lapseTime, 1000);
@@ -455,7 +478,7 @@ class BookingConfirmation extends Component {
 
       typing: function (addresseeId) {
         console.log('createSocket this', this);
-        this.perform('typing', { addresseeId });
+        this.perform('typing', { user_id: userId, addressee_id: addresseeId });
       },
     }); // end of subscriptions.create and second object
   }
@@ -581,6 +604,7 @@ class BookingConfirmation extends Component {
                   <div style={{ width: '200px', height: '30px', border: 'gray', padding: '10px', borderRadius: '3px' }}>
                       <Typing
                         typingTimer={this.state.typingTimer}
+                        messageSender={this.state.messageSender}
                       />
                   </div>
                 </div>
