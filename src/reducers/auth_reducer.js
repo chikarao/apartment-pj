@@ -48,7 +48,6 @@ export default function (state = {
   customer: {},
   bankAccounts: []
 }, action) {
-  // console.log('in auth reducer, action: ', action);
   switch (action.type) {
     case AUTH_USER:
       return {
@@ -69,7 +68,14 @@ export default function (state = {
       return { ...state, success: action.payload.message };
 
     case UNAUTH_USER:
-      return { ...state, authenticated: false, customer: {} };
+    console.log('in auth reducer, action, signout UNAUTH_USER: ', action);
+      return { ...state,
+        id: null,
+        email: null,
+        image: null,
+        authenticated: false,
+        customer: {}
+      };
 
     case GET_CURRENT_USER:
       return { ...state, email: action.payload.email, id: action.payload.id, image: action.payload.image };

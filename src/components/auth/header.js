@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import _ from 'lodash';
+import Cable from 'actioncable';
 
 // import DayPicker from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -21,6 +22,8 @@ import GlobalConstants from '../constants/global_constants';
 
 // const RESIZE_BREAK_POINT = 800;
 const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
+let connectionTimer = 0;
+let disconnectTimer = 0;
 
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
@@ -31,6 +34,7 @@ class Header extends Component {
             mobileNavVisible: false,
             show: false, // for auth modal
             showNewMessageBadge: true,
+            webSocketConnected: false,
        };
        this.handleResize = this.handleResize.bind(this);
        this.handleLanguageSelectChange = this.handleLanguageSelectChange.bind(this);
@@ -41,7 +45,6 @@ class Header extends Component {
 
   componentDidMount() {
       const currentLocation = this.props.location.pathname;
-       // console.log('in header, componentDidMount, currentLocation: ', currentLocation);
        // console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
        window.addEventListener('resize', this.handleResize);
        if (this.props.auth.authenticated) {
@@ -49,13 +52,20 @@ class Header extends Component {
          // don't need to do anymore since this screws up flats in results and other pages
          // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
          this.props.fetchConversationsByUser(() => {});
+         // console.log('in header, componentDidMount, this.props.auth, userId: ', this.props.auth, userId);
          if (this.props.auth.id) {
-           this.props.fetchFlatsByUser(this.props.auth.id, () => {})
+           this.props.fetchFlatsByUser(this.props.auth.id, () => {});
          }
        }
    }
 
-   componentDidUpdate() {
+   // shouldComponentUpdate() {
+   // }
+
+   componentDidUpdate(prevProps) {
+     console.log('in header, componentDidUpdate, prevProps.auth: ', prevProps.auth);
+     console.log('in header, componentDidUpdate, this.props.auth: ', this.props.auth);
+     console.log('in header, componentDidUpdate, this.state.webSocketConnected: ', this.state.webSocketConnected);
      // specify which language at which the app state is currently set and change select box
      if (this.props.appLanguageCode) {
        const languageSelect = document.getElementById('header-language-selection-box-select')
@@ -69,7 +79,43 @@ class Header extends Component {
          languageSelect.selectedIndex = optionIndex;
        }
      }
+     // for websocket connection to actioncable when user logs on and off
+     let userId = null;
+     if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
+       if (!this.state.webSocketConnected) {
+         userId = this.props.auth.id;
+         this.createSocket(userId);
+       }
+     }
+     // for when user logs off and authenticated = false
+     if (prevProps.auth.authenticated !== this.props.auth.authenticated && !this.props.auth.authenticated) {
+        this.handleDisconnectEvent();
+     }
+     // for when page opens and webSocketConnected is initialized to false
+     // but user is still logged on and authenticated = true
+     if (!this.state.webSocketConnected && this.props.auth.authenticated) {
+       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       if (connectionTimer === 0) {
+         const lapseTime = () => {
+           if (subTimer > 0) {
+             subTimer--;
+             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ', subTimer);
+           } else {
+             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer in else ', subTimer);
+             // typingTimer--;
+             clearInterval(timer);
+             connectionTimer = subTimer;
+           }
+         };
+         let subTimer = 5;
+         connectionTimer = subTimer;
+         const timer = setInterval(lapseTime, 1000);
+         userId = this.props.auth.id;
+         this.createSocket(userId);
+       }
+     }
    }
+
 
    getIndexOption() {
      const optionTags = document.getElementsByClassName('header-language-option')
@@ -87,8 +133,197 @@ class Header extends Component {
    }
 
    componentWillUnmount() {
-       window.removeEventListener('resize', this.handleResize);
+     window.removeEventListener('resize', this.handleResize);
    }
+
+   // ************************** Websocket Actioncable *************************
+
+   createSocket(id) {
+     this.cable = Cable.createConsumer('ws://localhost:3000/cable');
+     // this.cable.connection.websocket.onclose = () => {
+     //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
+     // };
+     console.log('createSocket this.cable.connnection', this.cable.connection);
+     console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
+     console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
+     console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
+     console.log('createSocket this', this);
+     console.log('createSocket id', id);
+     const userId = localStorage.getItem('id') ? localStorage.getItem('id') : id;
+     console.log('createSocket localStorage userId', userId);
+     // console.log('createSocket Cable', Cable);
+     this.chats = this.cable.subscriptions.create({
+       channel: 'ChatChannel', room: `messaging_room_${userId}`
+       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
+     }, {
+       connected: (message) => {
+           console.log('createSocket in call back to connected message', message);
+           console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
+           // console.log('createSocket in call back to connected, this.chats', this.chats);
+           // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
+
+           // if (!message && !this.state.webSocketConnected) {
+             this.authenticateChat();
+           // }
+           // this.cable.connection.webSocket.onclose = function (event) {
+           //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
+           // }
+           // this.webSocket = this.cable.connection.webSocket;
+           if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
+       }, // end of connected
+
+       rejected: () => {
+         console.log('***** Connection Rejected *****');
+       },
+
+       unsubscribed: () => {
+         console.log('***** Connection Unsubscribed *****');
+         // this.perform('unsubscribed');
+       },
+
+       unsubscribeConnection: function () {
+         console.log('***** Unsubscribing from Connection *****');
+         this.perform('unsubscribe_connection', {});
+       },
+
+       // unsubscribe: () => {
+       //     console.log('createSocket in call back to unsubscribe');
+       // }, // end of connected
+       authenticated: function (token) {
+         this.perform('authenticated', { token });
+         console.log('***** Authenticating Action Cable Connection *******');
+       },
+
+       received: (data) => {
+         console.log('createSocket in received before if data', data);
+         if (data.conversation) {
+           // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+           const conversation = JSON.parse(data.conversation);
+           this.props.receiveConversation(conversation);
+           console.log('createSocket this', this);
+           // chatLogs.push(conversation);
+           // this.setState({ chatLogs }, () => {
+           //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
+           //   }
+           // );  // end of setState
+         } else if (data.notification) {
+           console.log('createSocket in received, data ', data);
+           if (data.notification === 'typing') {
+             if (this.state.typingTimer === 0) {
+               console.log('createSocket in received, data.notification.typing ', data.notification);
+               const lapseTime = () => {
+                 if (subTimer > 0) {
+                   subTimer--;
+                   console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
+                 } else {
+                   console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
+                   // typingTimer--;
+                   this.setState({ typingTimer: subTimer }, () => {
+                     console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
+                   });
+                   clearInterval(timer);
+                 }
+               };
+               // clearInterval(timer);
+               let subTimer = 5;
+               if (this.state.typingTimer < 5) {
+                 this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
+                   console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
+                 });
+               }
+               const timer = setInterval(lapseTime, 1000);
+             }
+           } else if (data.notification === 'authenticated') { // if typing
+             console.log('createSocket in received, data.notification else ', data.notification);
+             this.resetDisconnectTimer(20);
+           }
+         }
+       }, // end of received
+
+       create: function (chatContent) {
+         this.perform('create', { content: chatContent });
+       }, // end of create:
+
+       typing: function (addresseeId) {
+         console.log('createSocket this', this);
+         this.perform('typing', { user_id: userId, addressee_id: addresseeId });
+       },
+     }); // end of subscriptions.create and second object
+   }
+
+   resetDisconnectTimer(time) {
+     const lapseTime = () => {
+       if (subTimer > 0) {
+         subTimer--;
+         console.log('disconnectTimer lapseTime, subTimer ', subTimer);
+       } else {
+         console.log('disconnectTimer lapseTime, subTimer in else TIME IS UP!!!!!!! ', subTimer);
+         // typingTimer--;
+         clearInterval(timer);
+         // disconnectTimer = subTimer;
+         this.handleDisconnectEvent();
+       }
+     };
+     let subTimer = time;
+     // disconnectTimer = subTimer;
+     const timer = setInterval(lapseTime, 1000);
+   }
+
+   authenticateChat() {
+     const token = localStorage.getItem('token');
+     this.chats.authenticated(token);
+     console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection', this.cable.connection);
+     console.log('authenticateChat in call back to chat connection authenticated, run');
+     // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
+     this.cable.connection.webSocket.onclose = (m) => {
+       // onclose listener for when websocket is closed or disconnected;
+       // if rails server is shutdown, this fires, and when server restarted, automatically connects; by npm actioncable???
+       console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
+       // set webSocketConnected to false to change online indicator
+       this.setState({ webSocketConnected: false }, () => {
+         console.log('authenticateChat in call back to chat connection authenticated, this.state.webSocketConnected', this.state.webSocketConnected);
+       });
+       // if webSocket connection is disconneted, createSocket reconnects
+       // this.createSocket();
+     };
+     // this.cable.connection.webSocket.onmessage = (m) => {
+     // //onMessage listener for getting pings; This is onhold until can find out way to pong back.
+     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
+     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
+     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
+     //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' } };
+     //     const message = { command: 'message', identifier: this.cable.subscriptions.subscriptions[0].identifier, data: JSON.stringify({ action: 'message', data: m.data.message }) };
+     //     // const message = { command: 'message', event: 'ping', identifier: JSON.stringify({ channel: 'ChatChannel', room: 'messaging_room_3' }), data: JSON.stringify({ action: 'message', data: m.data.message }) };
+     //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' }, data: JSON.stringify({ type: 'ping', message: m.data.message }) };
+     //     // const message = m.data.message;
+     //     this.cable.connection.webSocket.send(JSON.stringify(message));
+     //     // if (m.data.type === 'ping') {
+     //     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
+     //     //   return;
+     //     // }
+     //     // this.cable.connection.webSocket.send(message);
+     //   // if webSocket connection is disconneted, createSocket reconnects
+     //   // this.createSocket();
+     // };// end of on message
+   }
+
+   handleDisconnectEvent() {
+     // event.preventDefault();
+     // disconnects consumer and stops streaming
+     // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
+     // ChatChannel stopped streaming from test_room
+     // .disconnect causes webSocket.onclose listener to fire.
+     // unsubscribe leading to reject does not fire onclose
+     this.setState({ webSocketConnected: false }, () => {
+       console.log('handleDisconnectEvent call back to this.state.webSocketConnected', this.state.webSocketConnected);
+       this.cable.disconnect();
+     });
+     // this.chats.unsubscribeConnection(() => {
+     // console.log('handleDisconnectEvent in call back to disconnect');
+     // });
+     // this.chats.unsubscribed();
+   }
+   // ************************** Websocket Actioncable *************************
 
    // ***************LOADING****************
    showLoading = () => {

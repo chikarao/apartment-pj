@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Cable from 'actioncable';
+// import Cable from 'actioncable';
 // import { reduxForm, Field } from 'redux-form';
 // import { reduxForm, Field } from 'redux-form';
 
@@ -25,8 +25,8 @@ import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import DocumentEmailCreateModal from './modals/document_email_create_modal';
 import ConversationCreateModal from './modals/conversation_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
-import globalConstants from './constants/global_constants.js'
-import Typing from './messaging/typing.js'
+import globalConstants from './constants/global_constants.js';
+import Typing from './messaging/typing.js';
 
 
 // import DocumentForm from './constants/document_form';
@@ -51,7 +51,7 @@ class BookingConfirmation extends Component {
       currentChatMessage: '', // test for action action cable take out later
       chatLogs: {}, // test for action action cable take out later
       // chatLogs2: [], // test for action action cable take out later
-      webSocketConnected: false,
+      // webSocketConnected: false,
       typingTimer: 0,
       messageSender: '',
     };
@@ -83,7 +83,7 @@ class BookingConfirmation extends Component {
     // console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
     // if (this.props.auth.id) {
       // console.log('in booking confirmation, this.props.auth.id: ', this.props.auth.id);
-      this.createSocket();
+    // this.createSocket();
     // }
     // this.createSocket2();
   }
@@ -374,114 +374,114 @@ class BookingConfirmation extends Component {
     });
   }
 
-  createSocket() {
-    this.cable = Cable.createConsumer('ws://localhost:3000/cable');
-    // this.cable.connection.websocket.onclose = () => {
-    //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
-    // };
-    console.log('createSocket this.cable.connnection', this.cable.connection);
-    console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
-    console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
-    console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
-    console.log('createSocket this', this);
-    const userId = localStorage.getItem('id');
-    // console.log('createSocket this.props.auth.id', this.props.auth.id);
-    // console.log('createSocket Cable', Cable);
-    this.chats = this.cable.subscriptions.create({
-      channel: 'ChatChannel', room: `messaging_room_${userId}`
-      // channel: 'ChatChannel', room: `room${this.props.auth.id}`
-    }, {
-      connected: (message) => {
-          console.log('createSocket in call back to connected message', message);
-          console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
-          // console.log('createSocket in call back to connected, this.chats', this.chats);
-          // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-
-          // if (!message && !this.state.webSocketConnected) {
-            this.authenticateChat();
-          // }
-          // this.cable.connection.webSocket.onclose = function (event) {
-          //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
-          // }
-          // this.webSocket = this.cable.connection.webSocket;
-          if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
-      }, // end of connected
-
-      rejected: () => {
-        console.log('***** Connection Rejected *****');
-      },
-
-      unsubscribed: () => {
-        console.log('***** Connection Unsubscribed *****');
-        // this.perform('unsubscribed');
-      },
-
-      unsubscribeConnection: function () {
-        console.log('***** Unsubscribing from Connection *****');
-        this.perform('unsubscribe_connection', {});
-      },
-
-      // unsubscribe: () => {
-      //     console.log('createSocket in call back to unsubscribe');
-      // }, // end of connected
-      authenticated: function (token) {
-        this.perform('authenticated', { token });
-        console.log('***** Authenticating Action Cable Connection *******');
-      },
-
-      received: (data) => {
-        console.log('createSocket in received before if data', data);
-        if (data.conversation) {
-          // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
-          const conversation = JSON.parse(data.conversation);
-          this.props.receiveConversation(conversation);
-          console.log('createSocket this', this);
-          // chatLogs.push(conversation);
-          // this.setState({ chatLogs }, () => {
-          //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-          //   }
-          // );  // end of setState
-        } else if (data.notification) {
-          console.log('createSocket in received, data ', data);
-          if (data.notification === 'typing') {
-            if (this.state.typingTimer === 0) {
-              console.log('createSocket in received, data.notification.typing ', data.notification);
-              const lapseTime = () => {
-                if (subTimer > 0) {
-                  subTimer--;
-                  console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
-                } else {
-                  console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
-                  // typingTimer--;
-                  this.setState({ typingTimer: subTimer }, () => {
-                    console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
-                  });
-                  clearInterval(timer);
-                }
-              };
-              // clearInterval(timer);
-              let subTimer = 5;
-              if (this.state.typingTimer < 5) {
-                this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
-                  console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
-                });
-              }
-              const timer = setInterval(lapseTime, 1000);
-            }
-          }
-        }
-      }, // end of received
-
-      create: function (chatContent) {
-        this.perform('create', { content: chatContent });
-      }, // end of create:
-
-      typing: function (addresseeId) {
-        console.log('createSocket this', this);
-        this.perform('typing', { user_id: userId, addressee_id: addresseeId });
-      },
-    }); // end of subscriptions.create and second object
-  }
+  // createSocket() {
+  //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
+  //   // this.cable.connection.websocket.onclose = () => {
+  //   //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
+  //   // };
+  //   console.log('createSocket this.cable.connnection', this.cable.connection);
+  //   console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
+  //   console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
+  //   console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
+  //   console.log('createSocket this', this);
+  //   const userId = localStorage.getItem('id');
+  //   // console.log('createSocket this.props.auth.id', this.props.auth.id);
+  //   // console.log('createSocket Cable', Cable);
+  //   this.chats = this.cable.subscriptions.create({
+  //     channel: 'ChatChannel', room: `messaging_room_${userId}`
+  //     // channel: 'ChatChannel', room: `room${this.props.auth.id}`
+  //   }, {
+  //     connected: (message) => {
+  //         console.log('createSocket in call back to connected message', message);
+  //         console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
+  //         // console.log('createSocket in call back to connected, this.chats', this.chats);
+  //         // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
+  //
+  //         // if (!message && !this.state.webSocketConnected) {
+  //           this.authenticateChat();
+  //         // }
+  //         // this.cable.connection.webSocket.onclose = function (event) {
+  //         //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
+  //         // }
+  //         // this.webSocket = this.cable.connection.webSocket;
+  //         if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
+  //     }, // end of connected
+  //
+  //     rejected: () => {
+  //       console.log('***** Connection Rejected *****');
+  //     },
+  //
+  //     unsubscribed: () => {
+  //       console.log('***** Connection Unsubscribed *****');
+  //       // this.perform('unsubscribed');
+  //     },
+  //
+  //     unsubscribeConnection: function () {
+  //       console.log('***** Unsubscribing from Connection *****');
+  //       this.perform('unsubscribe_connection', {});
+  //     },
+  //
+  //     // unsubscribe: () => {
+  //     //     console.log('createSocket in call back to unsubscribe');
+  //     // }, // end of connected
+  //     authenticated: function (token) {
+  //       this.perform('authenticated', { token });
+  //       console.log('***** Authenticating Action Cable Connection *******');
+  //     },
+  //
+  //     received: (data) => {
+  //       console.log('createSocket in received before if data', data);
+  //       if (data.conversation) {
+  //         // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+  //         const conversation = JSON.parse(data.conversation);
+  //         this.props.receiveConversation(conversation);
+  //         console.log('createSocket this', this);
+  //         // chatLogs.push(conversation);
+  //         // this.setState({ chatLogs }, () => {
+  //         //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
+  //         //   }
+  //         // );  // end of setState
+  //       } else if (data.notification) {
+  //         console.log('createSocket in received, data ', data);
+  //         if (data.notification === 'typing') {
+  //           if (this.state.typingTimer === 0) {
+  //             console.log('createSocket in received, data.notification.typing ', data.notification);
+  //             const lapseTime = () => {
+  //               if (subTimer > 0) {
+  //                 subTimer--;
+  //                 console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
+  //               } else {
+  //                 console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
+  //                 // typingTimer--;
+  //                 this.setState({ typingTimer: subTimer }, () => {
+  //                   console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
+  //                 });
+  //                 clearInterval(timer);
+  //               }
+  //             };
+  //             // clearInterval(timer);
+  //             let subTimer = 5;
+  //             if (this.state.typingTimer < 5) {
+  //               this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
+  //                 console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
+  //               });
+  //             }
+  //             const timer = setInterval(lapseTime, 1000);
+  //           }
+  //         }
+  //       }
+  //     }, // end of received
+  //
+  //     create: function (chatContent) {
+  //       this.perform('create', { content: chatContent });
+  //     }, // end of create:
+  //
+  //     typing: function (addresseeId) {
+  //       console.log('createSocket this', this);
+  //       this.perform('typing', { user_id: userId, addressee_id: addresseeId });
+  //     },
+  //   }); // end of subscriptions.create and second object
+  // }
 
   authenticateChat() {
     const token = localStorage.getItem('token');
@@ -490,12 +490,16 @@ class BookingConfirmation extends Component {
     console.log('authenticateChat in call back to chat connection authenticated, run');
     // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
     this.cable.connection.webSocket.onclose = (m) => {
+      // onclose listener for when websocket is closed or disconnected;
+      // if rails server is shutdown, this fires, and when server restarted, automatically connects; by npm actioncable???
       console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
+      // set webSocketConnected to false to change online indicator
       this.setState({ webSocketConnected: false });
       // if webSocket connection is disconneted, createSocket reconnects
       // this.createSocket();
     };
     // this.cable.connection.webSocket.onmessage = (m) => {
+    // //onMessage listener for getting pings; This is onhold until can find out way to pong back.
     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
@@ -550,7 +554,7 @@ class BookingConfirmation extends Component {
   handleSendEvent(event) {
     // event.preventDefault();
     // this.chats.create(this.state.currentChatMessage);
-    this.props.createMessage({ conversation_id: 44, body: this.state.currentChatMessage, booking_id: 2452, sent_by_user: true }, () => {});
+    this.props.createMessage({ conversation_id: 1, body: this.state.currentChatMessage, booking_id: 1, sent_by_user: false }, () => {});
     this.setState({
       currentChatMessage: ''
     });
@@ -1061,12 +1065,13 @@ class BookingConfirmation extends Component {
         // find out if any documents sent to tenant
         const documentsSent = this.findDocumentsStatus(booking.agreements, 'sent_to_tenant');
         const documentsSigned = this.findDocumentsStatus(booking.agreements, 'tenant_signed');
+
         // }
         // const documentsSent = booking.fetchBookingData ? this.findIfDocumentsSent(booking.fetchBookingData.agreements) : '';
         // const data = this.props.booking.id;
         // localStorage.setItem('data', data);
         // const localData = localStorage.getItem('data');
-        // console.log('in booking confirmation, renderBookingData, localstorage data: ', localData);
+        console.log('in booking confirmation, renderBookingData, booking: ', booking);
         // <h4>
         // This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
         // </h4>
@@ -1102,10 +1107,10 @@ class BookingConfirmation extends Component {
 
             <div className="booking-confirmation container">
               <div className="booking-confirmation-row">
-                {this.renderBookingBasicInformation()}
-                {this.renderBookingTenantInformation(booking)}
-                {this.props.userIsOwner ? this.renderBookingDocuments() : ''}
-                {this.renderBookingActions()}
+              {this.renderBookingBasicInformation()}
+              {this.renderBookingTenantInformation(booking)}
+              {this.props.userIsOwner ? this.renderBookingDocuments() : ''}
+              {this.renderBookingActions()}
               </div>
             </div>
           </div>
@@ -1657,17 +1662,17 @@ renderConversationCreateForm() {
 render() {
   return (
     // {this.renderReview()}
+    //
     <div>
-      {this.renderReviewEditModal()}
-      {this.renderBookingData()}
-      {this.state.showDocument ? this.renderDocument() : ''}
-
-      {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
-      {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
-      {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
-      {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
-      {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
-      {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
+    {this.renderReviewEditModal()}
+    {this.renderBookingData()}
+    {this.state.showDocument ? this.renderDocument() : ''}
+    {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
+    {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
+    {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
+    {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
+    {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
+    {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
     </div>
    );
   }
