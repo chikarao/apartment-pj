@@ -54,7 +54,9 @@ class Header extends Component {
          // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
          this.props.fetchConversationsByUser(() => {});
          // console.log('in header, componentDidMount, this.props.auth, userId: ', this.props.auth, userId);
-         if (this.props.auth.id) {
+         const userId = localStorage.getItem('id');
+
+         if (userId) {
            this.props.fetchFlatsByUser(this.props.auth.id, () => {});
          }
        }
@@ -549,23 +551,33 @@ class Header extends Component {
     );
   }
 
+  ownFlat(flatId) {
+    _.each(this.props.flats, eachFlat => {
+      // console.log('in header, ownFlat, flatId, eachFlat.id', flatId, eachFlat.id);
+      if (eachFlat.id === flatId) {
+        return true;
+      }
+    });
+    return false;
+  }
+
   navigationLinks() {
     // console.log('in header, navigationLinks, this.props.location: ', this.props.location);
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
+    // on show page pathname returned is like in string type: /show/2
+    const onShowPage = this.props.location.pathname.includes('/show/');
+    // const currentFlatId = parseFloat(this.props.location.pathname)
+    // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
+    const currentFlatId = this.props.location.pathname.match(/\d+/)
+    const ownFlat = this.ownFlat(parseInt(currentFlatId[0], 10));
     // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
-    // console.log('in header, navigationLinks, appLanguageCode: ', this.props.appLanguageCode);
-
-
+    // console.log('in header, navigationLinks, this.props.location.pathname, onShowPage, ownFlat, currentFlatId, type of this.props.location.pathname ', this.props.location.pathname, onShowPage, ownFlat, currentFlatId, typeof this.props.location.pathname);
     if (this.props.authenticated) {
-      // console.log('in header, navigationLinks, this.props.newMessages: ', this.props.newMessages);
        // show link to signout and signed in as...
-       // const newMessages = this.newMessagesOrNot();
-
        if (onMyPage) {
-         // console.log('in header, navigationLinks, if on mypage, newMessages: ', this.props.newMessages);
          // console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
          return [
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
@@ -607,9 +619,6 @@ class Header extends Component {
          //consider opedning mypage in new tab...
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
-         // if (this.props.conversations) {
-           // console.log('in header, navigationLinks, else mypage, newMessages: ', this.props.newMessages);
-           // console.log('in header, navigationLinks, else mypage, this.props.conversations: ', this.props.conversations);
            return [
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
@@ -649,13 +658,6 @@ class Header extends Component {
 
       ];
     }
-    // return [
-    //   <ul>
-    //     <li className="nav-item"key={1}><Link to="about">ABOUT</Link></li>
-    //     <li className="nav-item"key={2}><Link to="blog">BLOG</Link></li>
-    //     <li className="nav-item"key={3}><Link to="portfolio">PORTFOLIO</Link></li>
-    //   </ul>
-    // ];
   }
 
   resizeHeader(larger) {
