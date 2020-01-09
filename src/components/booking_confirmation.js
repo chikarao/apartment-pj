@@ -86,6 +86,8 @@ class BookingConfirmation extends Component {
     // this.createSocket();
     // }
     // this.createSocket2();
+    console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
+
   }
 
   // shouldComponentUpdate(nextProps, nextState) {
@@ -367,7 +369,8 @@ class BookingConfirmation extends Component {
       let subTimer = 5;
       typingTimerOut = subTimer;
       const timer = setInterval(lapseTime, 1000);
-      this.chats.typing(addresseeId);
+      this.props.propsChats.typing(addresseeId);
+      // this.chats.typing(addresseeId);
     }
     this.setState({
       currentChatMessage: event.target.value
@@ -567,7 +570,10 @@ class BookingConfirmation extends Component {
     // ChatChannel stopped streaming from test_room
     // .disconnect causes webSocket.onclose listener to fire.
     // unsubscribe leading to reject does not fire onclose
-    this.cable.disconnect(() => {
+    // this.cable.disconnect(() => {
+    // console.log('handleDisconnectEvent in call back to disconnect');
+    // });
+    this.props.propsCable.disconnect(() => {
     console.log('handleDisconnectEvent in call back to disconnect');
     });
     // this.chats.unsubscribeConnection(() => {
@@ -607,8 +613,8 @@ class BookingConfirmation extends Component {
                 <div style={ { width: 'auto', height: '50%', border: 'gray', padding: '10px', textAlign: 'left', display: 'flex', alignItems: 'flex-end' }}>
                   <div style={{ width: '200px', height: '30px', border: 'gray', padding: '10px', borderRadius: '3px' }}>
                       <Typing
-                        typingTimer={this.state.typingTimer}
-                        messageSender={this.state.messageSender}
+                        typingTimer={this.props.typingTimer}
+                        messageSender={this.props.messageSender}
                       />
                   </div>
                 </div>
@@ -627,7 +633,7 @@ class BookingConfirmation extends Component {
                   Send
                   </button>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignContent: 'center', margin: 'auto', padding: '10px'}}>
-                  <div style={{ height: '10px', width: '10px', backgroundColor: this.state.webSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+                  <div style={{ height: '10px', width: '10px', backgroundColor: this.props.propsWebSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
                   <button
                   className='disconnect'
                   onClick={(e) => this.handleDisconnectEvent(e)}
@@ -1700,7 +1706,12 @@ function mapStateToProps(state) {
       documentInserts: state.bookingData.documentInsertsAll,
       userIsOwner,
       currency,
-      thereAreSavedDocuments
+      thereAreSavedDocuments,
+      propsCable: state.conversation.propsCable,
+      propsChats: state.conversation.propsChats,
+      typingTimer: state.conversation.typingTimer,
+      messageSender: state.conversation.messageSender,
+      propsWebSocketConnected: state.conversation.webSocketConnected,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

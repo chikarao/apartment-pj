@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import Cable from 'actioncable';
 
+import actioncableManager from '../messaging/actioncable_manager';
 // import DayPicker from 'react-day-picker';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 // import $ from 'jquery';
@@ -62,6 +63,21 @@ class Header extends Component {
    // shouldComponentUpdate() {
    // }
 
+   // **************** Need to have in actioncable
+   setComponentState = (stateObject, callback) => {
+     this.setState(stateObject, callback);
+   }
+
+   setTypingTimer = (timerAttributes) => {
+     this.props.setTypingTimer(timerAttributes);
+   }
+
+   propsWebSocketConnected = (connected) => {
+     // connected is a boolean
+     this.props.webSocketConnected(connected);
+   }
+   // **************** Need to have in actioncable
+
    componentDidUpdate(prevProps) {
      console.log('in header, componentDidUpdate, prevProps.auth: ', prevProps.auth);
      console.log('in header, componentDidUpdate, this.props.auth: ', this.props.auth);
@@ -110,8 +126,17 @@ class Header extends Component {
          let subTimer = 5;
          connectionTimer = subTimer;
          const timer = setInterval(lapseTime, 1000);
+
+         // **************** Need to have in actioncable
          userId = this.props.auth.id;
-         this.createSocket(userId);
+         const receiveConversationProps = (conv) => {
+           this.props.receiveConversation(conv);
+         }
+         // this.createSocket(userId);
+         const cableAttributes = actioncableManager({ component_this: this, setComponentState: this.setComponentState, setTypingTimer: this.setTypingTimer, propsWebSocketConnected: this.propsWebSocketConnected, webSocketConnected: this.state.webSocketConnected, receiveConversationProps, userId, makeConnection: true, disconnect: false, reconnect: false })
+         console.log('componentDidUpdate in not connected but authenticated, cableAttributes ', cableAttributes);
+         this.props.setCableConnection(cableAttributes);
+         // this.context.testVariable = 'test_variable';
        }
      }
    }
@@ -255,7 +280,7 @@ class Header extends Component {
      const lapseTime = () => {
        if (subTimer > 0) {
          subTimer--;
-         console.log('disconnectTimer lapseTime, subTimer ', subTimer);
+         console.log('disconnectTimer lapseTime, subTimer ');
        } else {
          console.log('disconnectTimer lapseTime, subTimer in else TIME IS UP!!!!!!! ', subTimer);
          // typingTimer--;

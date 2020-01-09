@@ -176,3 +176,6 @@ export const FETCH_AGREEMENT = 'fetch_agreement';
 export const EMAIL_DOCUMENTS = 'email_documents';
 export const MARK_DOCUMENTS_SIGNED = 'mark_documents_signed';
 export const RECEIVE_CONVERSATION = 'receive_conversation';
+export const SET_CABLE_CONNECTION = 'set_cable_connection';
+export const SET_TYPING_TIMER = 'set_typing_timer';
+export const WEBSOCKET_CONNECTED = 'websocket_connected';

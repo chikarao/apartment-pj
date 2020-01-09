@@ -94,8 +94,8 @@ class App extends Component {
   }
 
   renderApp() {
-      if (this.state.gmapLoaded) {
-      // console.log('in app.js, renderApp, after if, this.state.gmapLoaded', this.state.gmapLoaded);
+    // console.log('in app.js, renderApp, after if, this.state.gmapLoaded', this.state.gmapLoaded);
+    if (this.state.gmapLoaded) {
       return (
         <div>
           <Header />

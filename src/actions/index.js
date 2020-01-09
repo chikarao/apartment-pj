@@ -180,7 +180,10 @@ import {
   FETCH_AGREEMENT,
   EMAIL_DOCUMENTS,
   MARK_DOCUMENTS_SIGNED,
-  RECEIVE_CONVERSATION
+  RECEIVE_CONVERSATION,
+  SET_CABLE_CONNECTION,
+  SET_TYPING_TIMER,
+  WEBSOCKET_CONNECTED
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3120,5 +3123,30 @@ export function receiveConversation(conversation) {
   return {
     type: RECEIVE_CONVERSATION,
     payload: { conversation }
+  };
+}
+
+export function setCableConnection(connection) {
+  console.log('in actions index, setCableConnection, connection:', connection);
+  return {
+    type: SET_CABLE_CONNECTION,
+    payload: { connection }
+  };
+}
+
+export function setTypingTimer(timerAttributes) {
+  console.log('in actions index, setTypingTimer, timerAttributes:', timerAttributes);
+  return {
+    type: SET_TYPING_TIMER,
+    payload: { timerAttributes }
+  };
+}
+
+export function webSocketConnected(connected) {
+  // connected is a boolean
+  console.log('in actions index, webSocketConnected, connected:', connected);
+  return {
+    type: WEBSOCKET_CONNECTED,
+    payload: { connected }
   };
 }

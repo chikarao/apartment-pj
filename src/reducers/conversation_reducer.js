@@ -15,6 +15,9 @@ import {
   CHECKED_CONVERSATIONS,
   UPDATE_CONVERSATIONS,
   RECEIVE_CONVERSATION,
+  SET_CABLE_CONNECTION,
+  SET_TYPING_TIMER,
+  WEBSOCKET_CONNECTED
 } from '../actions/types';
 
 export default function (state = {
@@ -27,7 +30,10 @@ export default function (state = {
   conversationByFlat: [],
   conversationByUserAndFlat: [],
   conversationsByUser: [],
-  yourFlat: false
+  yourFlat: false,
+  props_cable: null,
+  props_chats: null,
+  typingTimer: 0
 }, action) {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
@@ -144,11 +150,29 @@ export default function (state = {
           }
         }
       });
-      console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
-      console.log('in conversation reducer, RECEIVE_CONVERSATION conversationArray: ', conversationArray);
-        console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload: ', action.payload);
+      // console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
+      // console.log('in conversation reducer, RECEIVE_CONVERSATION conversationArray: ', conversationArray);
+        // console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload: ', action.payload);
       return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
 
+
+    case SET_CABLE_CONNECTION:
+      // console.log('in conversation reducer, SET_CABLE_CONNECTION: ', action.payload);
+      // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
+      return { ...state,
+        propsCable: action.payload.connection.cable,
+        propsChats: action.payload.connection.chats
+      };
+
+    case SET_TYPING_TIMER:
+      // console.log('in conversation reducer, SET_TYPING_TIMER: ', action.payload);
+      // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
+      return { ...state, typingTimer: action.payload.timerAttributes.typingTimer, messageSender: action.payload.timerAttributes.messageSender };
+
+    case WEBSOCKET_CONNECTED:
+      console.log('in conversation reducer, WEBSOCKET_CONNECTED: ', action.payload);
+      // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
+      return { ...state, webSocketConnected: action.payload.connected };
 
     case CREATE_CONVERSATION:
       // console.log('in conversation reducer, state: ', state);
