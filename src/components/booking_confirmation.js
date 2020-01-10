@@ -1712,6 +1712,7 @@ function mapStateToProps(state) {
       typingTimer: state.conversation.typingTimer,
       messageSender: state.conversation.messageSender,
       propsWebSocketConnected: state.conversation.webSocketConnected,
+      propsWebSocketTimedOut: state.conversation.webSocketTimedOut,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

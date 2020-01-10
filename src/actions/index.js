@@ -1051,7 +1051,7 @@ export function createMessage(messageAttributes, callback) {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to createMessage, response: ', response);
+      // console.log('response to createMessage, response: ', response);
       console.log('response to createMessage, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_MESSAGE,
@@ -1066,7 +1066,7 @@ export function createMessage(messageAttributes, callback) {
 export function editFlat(flatAttributes, callback) {
   const { flat_id } = flatAttributes;
   console.log('in actions index, editFlat, flatAttributes: ', flatAttributes);
-  console.log('in actions index, editFlat, flat_id: ', flat_id);
+  // console.log('in actions index, editFlat, flat_id: ', flat_id);
   console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
@@ -1076,7 +1076,7 @@ export function editFlat(flatAttributes, callback) {
     })
     .then(response => {
       console.log('response to editFlat, response: ', response);
-      console.log('response to editFlat, response.data.data: ', response.data.data.flat);
+      // console.log('response to editFlat, response.data.data: ', response.data.data.flat);
       dispatch({
         type: EDIT_FLAT,
         payload: response.data.data.flat
@@ -1099,7 +1099,7 @@ export function editProfile(profileAttributes, callback) {
     })
     .then(response => {
       console.log('response to editProfile, response: ', response);
-      console.log('response to editProfile, response.data.data: ', response.data.data.user);
+      // console.log('response to editProfile, response.data.data: ', response.data.data.user);
       dispatch({
         type: EDIT_PROFILE,
         payload: response.data.data.user
@@ -1122,7 +1122,7 @@ export function createProfile(profileAttributes, callback) {
     })
     .then(response => {
       console.log('response to createProfile, response: ', response);
-      console.log('response to createProfile, response.data.data: ', response.data.data.profile);
+      // console.log('response to createProfile, response.data.data: ', response.data.data.profile);
       dispatch({
         type: CREATE_PROFILE,
         payload: response.data.data.user
@@ -1145,7 +1145,7 @@ export function deleteProfile(id, callback) {
     })
     .then(response => {
       console.log('response to deleteProfile, response: ', response);
-      console.log('response to deleteProfile, response.data.data: ', response.data.data);
+      // console.log('response to deleteProfile, response.data.data: ', response.data.data);
       dispatch({
         type: DELETE_PROFILE,
         payload: response.data.data.user
@@ -1167,7 +1167,7 @@ export function deleteFlat(id, callback) {
     })
     .then(response => {
       console.log('response to deleteFlat, response: ', response);
-      console.log('response to deleteFlat, response.data.data: ', response.data.data);
+      // console.log('response to deleteFlat, response.data.data: ', response.data.data);
       dispatch({
         type: DELETE_FLAT,
         payload: response.data.data
@@ -1182,10 +1182,10 @@ export function deleteFlat(id, callback) {
 }
 
 export function createImage(imagesArray, imageCount, flatId, callback) {
-  console.log('in actions index, createImage, imagesArray: ', imagesArray);
-  console.log('in actions index, createImage: localStorage.getItem, token: ', localStorage.getItem('token'));
-  console.log('in actions index, createImage: imageCount: ', imageCount);
-  console.log('in actions index, createImage: flatId: ', flatId);
+  // console.log('in actions index, createImage, imagesArray: ', imagesArray);
+  // console.log('in actions index, createImage: localStorage.getItem, token: ', localStorage.getItem('token'));
+  // console.log('in actions index, createImage: imageCount: ', imageCount);
+  // console.log('in actions index, createImage: flatId: ', flatId);
   const image = imagesArray[imageCount];
   console.log('in actions index, createImage: image: ', image);
 
@@ -1196,7 +1196,7 @@ export function createImage(imagesArray, imageCount, flatId, callback) {
     })
     .then(response => {
       console.log('response to createImage, response: ', response);
-      console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+      // console.log('response to createImage, response.data.data.image: ', response.data.data.image);
 
       callback(imagesArray, imageCount, response.data.data.image.flat_id);
       dispatch({
@@ -3142,11 +3142,36 @@ export function setTypingTimer(timerAttributes) {
   };
 }
 
-export function webSocketConnected(connected) {
-  // connected is a boolean
-  console.log('in actions index, webSocketConnected, connected:', connected);
+export function webSocketConnected(data) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, webSocketConnected, data:', data);
   return {
     type: WEBSOCKET_CONNECTED,
-    payload: { connected }
+    payload: { data }
   };
 }
+// Thunk example from docs
+// function makeASandwichWithSecretSauce(forPerson) {
+//   // We can invert control here by returning a function - the "thunk".
+//   // When this function is passed to `dispatch`, the thunk middleware will intercept it,
+//   // and call it with `dispatch` and `getState` as arguments.
+//   // This gives the thunk function the ability to run some logic, and still interact with the store.
+//   return function(dispatch) {
+//     return fetchSecretSauce().then(
+//       (sauce) => dispatch(makeASandwich(forPerson, sauce)),
+//       (error) => dispatch(apologize('The Sandwich Shop', forPerson, error)),
+//     );
+//   };
+// }
+//
+// export function webSocketConnected(connected) {
+//   // connected is a boolean
+//   console.log('in actions index, webSocketConnected, connected:', connected);
+//   return function (dispatch) {
+//     return ({
+//       type: WEBSOCKET_CONNECTED,
+//       payload: { connected }
+//     }).then(() => dispatch(() => { console.log('in actions index, webSocketConnected, connected in .then dispatch:'); }
+//       ));
+//     };
+//   }

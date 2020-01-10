@@ -33,7 +33,7 @@ import Facility from './constants/facility';
 let deleteImageArray = [];
 const AMENITIES = Amenities;
 const MAX_NUM_FILES = globalConstants.maxNumImages;
-// !!!! Took out DOM: { input ....} on React 16.2 upgrade
+// !!!! Took out DOM: { input ....} on React and react-dom 16.2 upgrade
 // const { DOM: { input, select, textarea } } = React;
 
 class EditFlat extends Component {
