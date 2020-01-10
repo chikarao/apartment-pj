@@ -120,7 +120,7 @@ export default function (props) {
             }
           } else if (data.notification === 'authenticated') { // if typing
             console.log('actioncable_manager in received, data.notification else ', data.notification);
-            resetDisconnectTimer(10);
+            resetDisconnectTimer(180);
           }
         }
       }, // end of received

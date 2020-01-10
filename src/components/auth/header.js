@@ -117,7 +117,7 @@ class Header extends Component {
          const lapseTime = () => {
            if (subTimer > 0) {
              subTimer--;
-             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ', subTimer);
+             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ');
            } else {
              console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer in else ', subTimer);
              // typingTimer--;
@@ -571,8 +571,10 @@ class Header extends Component {
     const onShowPage = this.props.location.pathname.includes('/show/');
     // const currentFlatId = parseFloat(this.props.location.pathname)
     // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
-    const currentFlatId = this.props.location.pathname.match(/\d+/)
-    const ownFlat = this.ownFlat(parseInt(currentFlatId[0], 10));
+    if (onShowPage) {
+      const currentFlatId = this.props.location.pathname.match(/\d+/)
+      const ownFlat = this.ownFlat(parseInt(currentFlatId[0], 10));
+    }
     // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
     // console.log('in header, navigationLinks, this.props.location.pathname, onShowPage, ownFlat, currentFlatId, type of this.props.location.pathname ', this.props.location.pathname, onShowPage, ownFlat, currentFlatId, typeof this.props.location.pathname);
     if (this.props.authenticated) {
