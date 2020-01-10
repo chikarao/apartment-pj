@@ -24,7 +24,7 @@ export default function (state = {
   noConversation: true,
   noConversationForFlat: true,
   newMessages: 0,
-  conversationToShow: [],
+  conversationToShow: '',
   showConversations: true,
   checkedConversationsArray: [],
   conversationByFlat: [],

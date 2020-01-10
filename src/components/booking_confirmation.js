@@ -619,7 +619,7 @@ class BookingConfirmation extends Component {
                   </div>
                 </div>
                 <input
-                  value={ this.state.currentChatMessage }
+                  value={this.state.currentChatMessage}
                   onChange={(e) => this.updateCurrentChatMessage(e) }
                   type='text'
                   placeholder='Enter your message...'
