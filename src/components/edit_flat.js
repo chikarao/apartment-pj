@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import _ from 'lodash';
@@ -32,7 +33,8 @@ import Facility from './constants/facility';
 let deleteImageArray = [];
 const AMENITIES = Amenities;
 const MAX_NUM_FILES = globalConstants.maxNumImages;
-const { DOM: { input, select, textarea } } = React
+// !!!! Took out DOM: { input ....} on React 16.2 upgrade
+// const { DOM: { input, select, textarea } } = React;
 
 class EditFlat extends Component {
   constructor(props) {
@@ -164,7 +166,7 @@ class EditFlat extends Component {
     if (this.props.errorMessage) {
       return (
         <div className="alert alert-danger">
-        <strong>Ooops! </strong> {this.props.errorMessage}
+          <strong>Ooops! </strong> {this.props.errorMessage}
         </div>
       );
     }
