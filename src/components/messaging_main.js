@@ -124,7 +124,7 @@ class MessagingMain extends Component {
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageBackClick}><i className="fa fa-angle-left"></i></div>
           <div value="archivebin" className="messaging-main-large-archive" style={{ color: 'black' }}>{AppLanguages.archivedMessages[this.props.appLanguageCode]}</div>
           <div value="unarchive" className="btn messaging-main-large-archive"  style={this.props.checkedConversationsArray.length > 0 ? { color: 'blue' } : { color: 'gray' }} onClick={this.handleMessageEditClick}>{AppLanguages.unarchive[this.props.appLanguageCode]}</div>
-          <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" className="fa fa-trash-o"></i></div>
+          <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" style={{ fontSize: '18px' }} className="far fa-trash-alt"></i></div>
         </div>
       );
     }
@@ -504,7 +504,7 @@ class MessagingMain extends Component {
       <div className="messaging-main-controls-left">
         <div value="archive" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.moveToArchives[this.props.appLanguageCode]}</div>
         <div className="btn messaging-main-large-archive"></div>
-        <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" className="fa fa-trash-o"></i></div>
+        <div value="trash" className="btn messaging-main-large-trash" onClick={this.handleMessageEditClick}><i value="trash" style={{ fontSize: '18px'}} className="far fa-trash-alt"></i></div>
       </div>
     );
   }
@@ -565,9 +565,10 @@ class MessagingMain extends Component {
       return this.state.sortByDateNew ? newest : oldest;
   }
 
-  isConvByUser(conv) {
-    const convByUser = conv.id == this.props.auth.id;
-    return convByUser;
+  isConvByCurrentUser(conv) {
+    const convByCurrentUser = conv.user_id === this.props.auth.id;
+    console.log('in messagingMain, isConvByCurrentUser, conv.id, this.props.auth.id, convByCurrentUser: ', conv.id, this.props.auth.id, convByCurrentUser);
+    return convByCurrentUser;
   }
 
   // filters (key words, not by flats which is in this.filterConversations) for conversations
@@ -591,9 +592,9 @@ class MessagingMain extends Component {
       // iterate through conversations by user
       _.each(this.props.conversations, conv => {
         // test if conv.id is user.id (ie user is not owner of flat involved)
-        const convByUser = this.isConvByUser(conv);
-        // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
-        if (convByUser) {
+        const convByCurrentUser = this.isConvByCurrentUser(conv);
+        // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.id, this.props.auth.id: ', convByCurrentUser, conv.id, this.props.auth.id);
+        if (convByCurrentUser) {
           // if not owner (ie user), show conversation if conv is not trashed or archived
           if (!conv.trashed_by_user && !conv.archived_by_user) {
             // if user inputs something in search
@@ -611,7 +612,7 @@ class MessagingMain extends Component {
                 if (!filteredConversationsIdArray.includes(conv.id)) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
-                  // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+                  // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.trashed_by_user: ', convByCurrentUser, conv.trashed_by_user);
                 }
               } // end of if convHasSearchWords
             } else { // if searchInputVal has no value ie user is not searching
@@ -619,11 +620,11 @@ class MessagingMain extends Component {
               if (!filteredConversationsIdArray.includes(conv.id)) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
-                // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.trashed_by_user: ', convByUser, conv.trashed_by_user);
+                // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.trashed_by_user: ', convByCurrentUser, conv.trashed_by_user);
               }
             }// else searchInputVal has value
           } // if not conv.trashed
-        } else { // if not convByUser; ie user is owner of flat and conv.id != auth.id
+        } else { // if not convByCurrentUser; ie user is owner of flat and conv.id != auth.id
           // if not trashed or archived true
           if (!conv.trashed && !conv.archived) {
             // if there is input in search
@@ -640,7 +641,7 @@ class MessagingMain extends Component {
                 if (!filteredConversationsIdArray.includes(conv.id)) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
-                  // console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+                  // console.log('in messagingMain, initialFilteredConversations, not convByCurrentUser, conv.trashed: ', convByCurrentUser, conv.trashed);
                 }
               } // end of if convHasSearchWords
             } else { // if searchInputVal does not have value
@@ -648,7 +649,7 @@ class MessagingMain extends Component {
               if (!filteredConversationsIdArray.includes(conv.id)) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
-                // console.log('in messagingMain, initialFilteredConversations, not convByUser, conv.trashed: ', convByUser, conv.trashed);
+                // console.log('in messagingMain, initialFilteredConversations, not convByCurrentUser, conv.trashed: ', convByCurrentUser, conv.trashed);
               }
             }// else searchInputVal has value
           } // if not conv.trashed
@@ -729,9 +730,9 @@ class MessagingMain extends Component {
           // console.log('in messagingMain, filterConversations, if showTrashBin conv : ', conv);
           // trashed can either be archived or not, so when untrashed, goes back to archives
           // the backend api filters for completely deleted messages
-          const convByUser = this.isConvByUser(conv);
-          // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
-          if (convByUser) {
+          const convByCurrentUser = this.isConvByCurrentUser(conv);
+          // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.id, this.props.auth.id: ', convByCurrentUser, conv.id, this.props.auth.id);
+          if (convByCurrentUser) {
             // if conv is users ie not flat owner, add conv to array if not already
             // if trashed but not deleted by user
             if (conv.trashed_by_user && !conv.deleted_by_user) {
@@ -771,10 +772,10 @@ class MessagingMain extends Component {
         _.each(conversationsFilteredByFlatAndSearchArray, conv => {
           // console.log('in messagingMain, filterConversations, if showArchiveBin conv : ', conv);
           // archived cannot be trashed
-          const convByUser = this.isConvByUser(conv);
-          // console.log('in messagingMain, initialFilteredConversations, convByUser, conv.id, this.props.auth.id: ', convByUser, conv.id, this.props.auth.id);
+          const convByCurrentUser = this.isConvByCurrentUser(conv);
+          // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.id, this.props.auth.id: ', convByCurrentUser, conv.id, this.props.auth.id);
           // if conv is users ie not flat owner, add conv to array if not already
-          if (convByUser) {
+          if (convByCurrentUser) {
             if ((conv.archived_by_user) && !conv.trashed_by_user && !conv.deleted_by_user) {
               filteredConversationsArray.push(conv);
               filteredConversationsIdArray.push(conv.id);
