@@ -869,7 +869,7 @@ class MessagingMain extends Component {
       <div className={this.state.windowWidth < RESIZE_BREAK_POINT ? 'my-page-message-box' : 'messaging-main-messages-box col-md-8' }>
       <Messaging
         // currentUserIsOwner={false}
-        // currentUserIsOwner={this.props.yourFlat}
+        currentUserIsOwner={this.props.thisIsYourFlat}
         // conversation={this.state.conversationToShow}
         noConversation={this.props.noConversation}
         // yourFlat={this.state.yourFlat}

@@ -7,6 +7,7 @@ import * as actions from '../../actions';
 
 import AppLanguages from '../constants/app_languages';
 import MultiLineText from '../functions/multi_line_text';
+import Typing from '../messaging/typing.js';
 
 const INITIAL_STATE = {
   inMessaging: false,
@@ -90,12 +91,12 @@ class Messaging extends Component {
     // if (this.props.conversationId) {
     //   const userId = this.props.auth.id;
     //   // const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
-    //   const conversationToShowArray = this.conversationToShow();
+    //   const conversationToShow = this.conversationToShow();
     //   console.log('messaging, updateCurrentChatMessage, this.props.conversationId ', this.props.conversationId);
-    //   console.log('messaging, updateCurrentChatMessage, conversationToShowArray ', conversationToShowArray);
-    //   const userIsOwner = userId == conversationToShowArray[0].flat.user_id;
-    //   console.log('messaging, updateCurrentChatMessage, userId, conversationToShowArray[0].flat.user_id, userIsOwner ', userId, conversationToShowArray[0].flat.user_id, userIsOwner);
-    //   const addresseeId = userIsOwner ? conversationToShowArray[0].user_id : userId;
+    //   console.log('messaging, updateCurrentChatMessage, conversationToShow ', conversationToShow);
+    //   const userIsOwner = userId == conversationToShow[0].flat.user_id;
+    //   console.log('messaging, updateCurrentChatMessage, userId, conversationToShow[0].flat.user_id, userIsOwner ', userId, conversationToShow[0].flat.user_id, userIsOwner);
+    //   const addresseeId = userIsOwner ? conversationToShow[0].user_id : userId;
     //   console.log('messaging, updateCurrentChatMessage, addresseeId, userId ', addresseeId, userId);
     // }
     // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
@@ -105,12 +106,13 @@ class Messaging extends Component {
     // The timer is started when typingTimerOut is 0, when decremented every second
     // When the timer is zero, the timer is ready to be started again.
     if (typingTimerOut === 0) {
+      console.log('messaging updateCurrentChatMessage, in if typingTimerOut === 0 ');
       const lapseTime = () => {
         if (subTimer > 0) {
           subTimer--;
-          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer ', subTimer);
+          console.log('messaging updateCurrentChatMessage, in lapseTime, subTimer ', subTimer);
         } else {
-          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer in else ', subTimer);
+          console.log('messaging updateCurrentChatMessage, in lapseTime, subTimer in else ', subTimer);
           // typingTimer--;
           clearInterval(timer);
           typingTimerOut = subTimer;
@@ -119,7 +121,7 @@ class Messaging extends Component {
       let subTimer = 5;
       typingTimerOut = subTimer;
       const timer = setInterval(lapseTime, 1000);
-      this.props.propsChats.typing(this.props.auth.id);
+      if (this.props.propsChats) this.props.propsChats.typing(this.props.auth.id);
       // this.chats.typing(addresseeId);
     }
     this.setState({ currentChatMessage: event.target.value }, () => {
@@ -162,14 +164,14 @@ class Messaging extends Component {
       // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
       this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     } else {
-      const conversationToShowArray = this.conversationToShow();
-      const { user_id, flat_id, id } = conversationToShowArray[0];
+      const conversationToShow = this.conversationToShow();
+      const { user_id, flat_id, id } = conversationToShow[0];
       // console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
       this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
     // messageText.value = '';
-    this.setState({ currentChatMessage : '' });
+    this.setState({ currentChatMessage: '' });
   }
 
   createConversationCallback(messageAttributes) {
@@ -206,59 +208,37 @@ class Messaging extends Component {
     : strTime;
 }
 
-  renderEachMessage(conversationToShowArray) {
-    // if (this.props.checkedConversationsArray && this.props.checkedConversationsArray.length < 1) {
-      // console.log('in messaging, renderEachMessage, this.props.checkedConversationsArray: ', this.props.checkedConversationsArray);
-      // console.log('in messaging, renderEachMessage,this.props.conversation: ', this.props.conversation[0]);
-      // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
-      // if (this.props.conversation) {
-      // const { conversation } = this.props;
-      // conversation is an array
-      if (conversationToShowArray.length > 0) {
-        const messages = conversationToShowArray[0].messages;
-        // console.log('in messaging, renderEachMessage, this.props.conversation: ', this.props.conversation[0]);
-        // console.log('in messaging, renderEachMessage, conversation.messages: ', messages);
-
-        // console.log('in messaging, renderEachMessage,conversationToShowArray: ', conversationToShowArray);
-        // console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-        // console.log('in messaging, renderEachMessage, messages: ', messages);
-        // console.log('in messaging, renderEachMessage, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-        // console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
-        return _.map(messages, (message, index) => {
-          // console.log('in messaging, renderEachMessage, message: ', message);
-          const date = new Date(message.created_at)
-          // if (index === messages.length - 1) {
-          //   this.scrollLastMessageIntoView();
-          // }
-          //yourFlat passed as props
-          if (this.props.currentUserIsOwner || this.props.thisIsYourFlat) {
-            // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
-            // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-            // console.log('in messaging, renderEachMessage, date message.created_at: ', message.created_at);
-            // console.log('in messaging, renderEachMessage, date message.read: ', message.read);
-            // console.log('in messaging, renderEachMessage, date: ', date);
-            if (message.sent_by_user) {
-              //sent by user means conversation.id == auth.id; so not flatOwner
-              return this.renderLeftMessages(message, date);
-            } else {
-              return this.renderRightMessages(message, date);
-            }
-            // return (
-            // );
-          } else {
-            if (message.sent_by_user) {
-              return this.renderRightMessages(message, date);
-            } else {
-              return this.renderLeftMessages(message, date);
-            }
+  renderEachMessage(conversationToShow) {
+    // conversationToShow is an object
+    if (conversationToShow) {
+      const messages = conversationToShow.messages;
+      // console.log('in messaging, renderEachMessage, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
+      return _.map(messages, (message) => {
+        // console.log('in messaging, renderEachMessage, message: ', message);
+        const date = new Date(message.created_at);
+        //yourFlat passed as props
+        // if you are the owner of the flat for the conversation,
+        // message sent_by_user is on the left side,
+        // Otherwise, your message is on right side
+        if (this.props.currentUserIsOwner || this.props.thisIsYourFlat) {
+          // console.log('in messaging, renderEachMessage, message.sent_by_user: ', message.sent_by_user);
+          if (message.sent_by_user) {
+            //sent by user means conversation.id == auth.id; so not flatOwner
+            return this.renderLeftMessage(message, date);
           }
-        });
-      }
-      // }
-    // }
+          return this.renderRightMessage(message, date);
+        } // end of if currentUserIsOwner or thisIsYourFlat
+        // if you are not the owner of the flat for the conversation,
+        // your message is on the right side and other messages on the left side
+        if (message.sent_by_user) {
+          return this.renderRightMessage(message, date);
+        }
+        return this.renderLeftMessage(message, date);
+      });
+    }
   }
 
-  renderRightMessages(message, date) {
+  renderRightMessage(message, date) {
     return (
       <div key={message.id} className="each-message-box">
         <div className="each-message-user">
@@ -269,7 +249,8 @@ class Messaging extends Component {
       </div>
     );
   }
-  renderLeftMessages(message, date) {
+
+  renderLeftMessage(message, date) {
     // <div className="each-message-read">{message.read ? 'Seen' : 'Unseen'}</div>
     return (
       <div key={message.id} className="each-message-box">
@@ -281,10 +262,25 @@ class Messaging extends Component {
     );
   }
 
+  renderUserTyping() {
+    console.log('in messaging, renderUserTyping called: ');
+    return (
+      <div className="each-message-box">
+        <div className="each-message">
+          <div className="each-message-content" style={{ border: '1px solid transparent' }}>
+            <Typing
+              typingTimer={this.props.typingTimer}
+              messageSender={this.props.messageSender}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   conversationToShow() {
     const { conversations } = this.props;
-    const conversationToShowArray = [];
-    // console.log('in messaging, conversationToShow. conversationId: ', this.props.conversationId);
+    let conversationToShow;
     // const conversationIdFromStorage = localStorage.getItem('conversationId');
     // console.log('in messaging, conversationToShow. conversationIdFromStorage: ', conversationIdFromStorage);
 
@@ -292,11 +288,11 @@ class Messaging extends Component {
       _.each(conversations, (conversation) => {
         //for some reason === does not work
         if (conversation.id == this.props.conversationId) {
-          conversationToShowArray.push(conversation);
+          conversationToShow = conversation;
         }
       });
-      // console.log('in messaging, conversationToShow. if each then returned, conversationToShowArray : ', conversationToShowArray);
-      return conversationToShowArray;
+      // console.log('in messaging, conversationToShow. if each then returned, conversationToShow : ', conversationToShow);
+      return conversationToShow;
     } else {
       // console.log('in messaging, conversationToShow. if else returned this.props.conversation: ', this.props.conversation);
       if (this.props.conversation.length < 1) {
@@ -310,45 +306,42 @@ class Messaging extends Component {
 
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
-    // console.log('in messaging, renderMessaging. this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-    // console.log('in messaging, renderMessaging. this.props.conversationId: ', this.props.conversationId);
     if (this.props.conversations) {
-      // console.log('in messaging, renderMessaging. this.props.conversations: ', this.props.conversations);
       // console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
       if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
         // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
-        const conversationToShowArray = this.conversationToShow();
-        // console.log('in messaging, renderMessaging. this.props.conversation, after if: ', this.props.conversation);
-        console.log('in messaging, renderMessaging. conversationToShowArray, after each: ', conversationToShowArray);
-        // console.log('in messaging, renderMessaging. conversationToShowArray, after each, this.props.fromShowPage: ', this.props.fromShowPage);
-        // console.log('in messaging, renderMessaging. conversationToShowArray, after each, this.props.noConversationForFlat: ', this.props.noConversationForFlat);
+        const conversationToShow = this.conversationToShow();
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
-        // {AppLanguages.noConversation[this.props.appLanguageCode]}
-        // console.log('in messaging, renderMessaging, <MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} />: ', <MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} />);
-        // <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>Send</button>
+        // renderUserTyping is rendered if passes test of if there is conversationToShow and user typing is not current user
         return (
           <div style={{ overflow: 'auto ' }}>
             <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
-              {this.props.noConversationForFlat && this.props.fromShowPage ? <div className="no-conversation-message">
-              <br/><br/><MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} /></div> : this.renderEachMessage(conversationToShowArray)}
-              </div>
+              {this.props.noConversationForFlat && this.props.fromShowPage ?
+                <div className="no-conversation-message"><br/><br/><MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} /></div>
+                : this.renderEachMessage(conversationToShow)}
+                {conversationToShow && (this.props.messageSender === this.props.auth.id)
+                  ? this.renderUserTyping()
+                  : ''}
+            </div>
             <textarea id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
-            {conversationToShowArray[0] ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
+            {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );
-        // }
       } else if (!this.props.fromShowPage) {
-        const conversationToShowArray = this.conversationToShow();
+        const conversationToShow = this.conversationToShow();
         return (
           <div style={{ overflow: 'auto ' }}>
             <div id={'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
-              this.renderEachMessage(conversationToShowArray)}
+              {this.renderEachMessage(conversationToShow)}
+              {conversationToShow && (this.props.messageSender === this.props.auth.id)
+                ? this.renderUserTyping()
+                : ''}
             </div>
             <textarea id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
-            {conversationToShowArray[0] ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
+            {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );
       }
