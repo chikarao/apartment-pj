@@ -52,7 +52,7 @@ class Typing extends Component {
     });
     // console.log('in typing, typingSubTimer in lapseTime, dotString ', dotString);
 
-    return { dotString, changedCount };
+    return { dotString, count: changedCount };
   }
 
   typingSubTimer() {
@@ -65,7 +65,7 @@ class Typing extends Component {
           subTimer--;
           dotStringObj = this.changeDots(dotCount, maxDotCount);
           // console.log('in typing, typingSubTimer in lapseTime, dotStringObj ', dotStringObj);
-          dotCount = dotStringObj.changedCount;
+          dotCount = dotStringObj.count;
           this.setState({ dots: dotStringObj.dotString }, () => {
             // console.log('in typing, typingSubTimer in lapseTime, this.state.dotString ', this.state.dotString);
           });
@@ -74,16 +74,16 @@ class Typing extends Component {
           clearInterval(timer);
           typingSubTimerOut = subTimer;
           dotStringObj = this.changeDots(dotCount, maxDotCount);
-          dotCount = dotStringObj.changedCount
+          dotCount = dotStringObj.count;
           this.setState({ dots: dotStringObj.dotString }, () => {
             // console.log('in typing, typingSubTimer in lapseTime, this.state.dotString in else ', this.state.dotString);
           });
         }
       };
-      let subTimer = 8;
+      let subTimer = 11;
       typingSubTimerOut = subTimer;
       const maxDotCount = 3;
-      const timer = setInterval(lapseTime, 500);
+      const timer = setInterval(lapseTime, 400);
     }
   }
 

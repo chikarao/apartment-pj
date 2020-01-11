@@ -263,9 +263,11 @@ class Messaging extends Component {
   }
 
   renderUserTyping() {
+    // To turn on and off while current user is typing,
+    // make !== this in renderMessages =>>>> this.props.messageSender === this.props.auth.id 
     console.log('in messaging, renderUserTyping called: ');
     return (
-      <div className="each-message-box">
+      <div className="each-message-box" style={{ minHeight: '35px' }}>
         <div className="each-message">
           <div className="each-message-content" style={{ border: '1px solid transparent' }}>
             <Typing
