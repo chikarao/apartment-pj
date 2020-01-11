@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import * as actions from '../actions';
 
@@ -873,6 +874,7 @@ class MessagingMain extends Component {
         noConversation={this.props.noConversation}
         // yourFlat={this.state.yourFlat}
         conversationId={this.props.conversationId}
+        conversationAddresseeId={this.props.addresseeId}
         onMessagingMain
         mobileView={this.state.windowWidth < RESIZE_BREAK_POINT}
         largeTextBox={this.state.windowWidth > RESIZE_BREAK_POINT}
@@ -980,8 +982,26 @@ class MessagingMain extends Component {
   }
 }
 
+function getConversation(convId, conversations) {
+  let returnedConv;
+  _.each(conversations, conv => {
+    if (conv.id === convId) {
+      returnedConv = conv;
+      return returnedConv;
+    }
+  });
+  return returnedConv;
+}
+
 function mapStateToProps(state) {
-  console.log('in messagingM, mapStateToProps, state: ', state);
+  console.log('in messagingMain, mapStateToProps, state: ', state);
+  let addresseeId;
+  if (state.conversation.conversationToShow) {
+    const conversationToShowRecord = getConversation(state.conversation.conversationToShow, state.conversation.conversationsByUser);
+    /// !!!! this ternary == needs to be == not ===.
+    const userIsOwner = state.auth.id == conversationToShowRecord.flat.user_id;
+    addresseeId = userIsOwner ? conversationToShowRecord.user_id : state.auth.id;
+  }
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,
     auth: state.auth,
@@ -996,8 +1016,8 @@ function mapStateToProps(state) {
     showConversationCards: state.conversation.showConversations,
     // separated from currentUserIsOwner since there is a check in the render method in messagin.js
     thisIsYourFlat: state.conversation.yourFlat,
-    appLanguageCode: state.languages.appLanguageCode
-
+    appLanguageCode: state.languages.appLanguageCode,
+    addresseeId,
   };
 }
 

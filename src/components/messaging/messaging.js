@@ -87,41 +87,41 @@ class Messaging extends Component {
 
   updateCurrentChatMessage(event) {
     console.log('messaging, updateCurrentChatMessage, before if this.props.conversationId ', this.props.conversationId);
-    if (this.props.conversationId) {
-      const userId = this.props.auth.id;
-      // const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
-      const conversationToShowArray = this.conversationToShow();
-      console.log('messaging, updateCurrentChatMessage, this.props.conversationId ', this.props.conversationId);
-      console.log('messaging, updateCurrentChatMessage, conversationToShowArray ', conversationToShowArray);
-      const userIsOwner = userId == conversationToShowArray[0].flat.user_id;
-      console.log('messaging, updateCurrentChatMessage, userId, conversationToShowArray[0].flat.user_id, userIsOwner ', userId, conversationToShowArray[0].flat.user_id, userIsOwner);
-      const addresseeId = userIsOwner ? conversationToShowArray[0].user_id : userId;
-      console.log('messaging, updateCurrentChatMessage, addresseeId, userId ', addresseeId, userId);
-    }
+    // if (this.props.conversationId) {
+    //   const userId = this.props.auth.id;
+    //   // const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
+    //   const conversationToShowArray = this.conversationToShow();
+    //   console.log('messaging, updateCurrentChatMessage, this.props.conversationId ', this.props.conversationId);
+    //   console.log('messaging, updateCurrentChatMessage, conversationToShowArray ', conversationToShowArray);
+    //   const userIsOwner = userId == conversationToShowArray[0].flat.user_id;
+    //   console.log('messaging, updateCurrentChatMessage, userId, conversationToShowArray[0].flat.user_id, userIsOwner ', userId, conversationToShowArray[0].flat.user_id, userIsOwner);
+    //   const addresseeId = userIsOwner ? conversationToShowArray[0].user_id : userId;
+    //   console.log('messaging, updateCurrentChatMessage, addresseeId, userId ', addresseeId, userId);
+    // }
     // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
     // typingTimerOut is a global variable
     // this.chats.typing is a command for the backend to send a notification to the addressee
     // that the sender is typing a message. Notifications are sent once per timer cycle.
     // The timer is started when typingTimerOut is 0, when decremented every second
     // When the timer is zero, the timer is ready to be started again.
-    // if (typingTimerOut === 0) {
-    //   const lapseTime = () => {
-    //     if (subTimer > 0) {
-    //       subTimer--;
-    //       console.log('updateCurrentChatMessage in received, in lapseTime, subTimer ', subTimer);
-    //     } else {
-    //       console.log('updateCurrentChatMessage in received, in lapseTime, subTimer in else ', subTimer);
-    //       // typingTimer--;
-    //       clearInterval(timer);
-    //       typingTimerOut = subTimer;
-    //     }
-    //   };
-    //   let subTimer = 5;
-    //   typingTimerOut = subTimer;
-    //   const timer = setInterval(lapseTime, 1000);
-    //   this.props.propsChats.typing(addresseeId);
-    //   // this.chats.typing(addresseeId);
-    // }
+    if (typingTimerOut === 0) {
+      const lapseTime = () => {
+        if (subTimer > 0) {
+          subTimer--;
+          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer ', subTimer);
+        } else {
+          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer in else ', subTimer);
+          // typingTimer--;
+          clearInterval(timer);
+          typingTimerOut = subTimer;
+        }
+      };
+      let subTimer = 5;
+      typingTimerOut = subTimer;
+      const timer = setInterval(lapseTime, 1000);
+      this.props.propsChats.typing(this.props.auth.id);
+      // this.chats.typing(addresseeId);
+    }
     this.setState({ currentChatMessage: event.target.value }, () => {
       console.log('in messaging, updateCurrentChatMessage, this.state.currentChatMessage: ', this.state.currentChatMessage);
     })
@@ -142,7 +142,8 @@ class Messaging extends Component {
     //this.props.conversation is an array!!!
     // console.log('in messaging, handleMessageSendClick, this.props.conversation', this.props.conversation);
     // console.log('in messaging, handleMessageSendClick, clicked: ', event);
-    const messageText = document.getElementById('message-textarea');
+    // const messageText = document.getElementById('message-textarea');
+    const messageText = { value: this.state.currentChatMessage};
     // console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
 
     let sentByUser;
@@ -167,7 +168,8 @@ class Messaging extends Component {
       this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
     }
     // this.createMessage()
-    messageText.value = '';
+    // messageText.value = '';
+    this.setState({ currentChatMessage : '' });
   }
 
   createConversationCallback(messageAttributes) {
@@ -373,13 +375,14 @@ function mapStateToProps(state) {
     flat: state.flat.selectedFlatFromParams,
     thisIsYourFlat: state.conversation.yourFlat,
     appLanguageCode: state.languages.appLanguageCode,
-    // For cable
+    // ******* For action cable websockets
     propsCable: state.conversation.propsCable,
     propsChats: state.conversation.propsChats,
     typingTimer: state.conversation.typingTimer,
     messageSender: state.conversation.messageSender,
     propsWebSocketConnected: state.conversation.webSocketConnected,
     propsWebSocketTimedOut: state.conversation.webSocketTimedOut,
+    // ******* For action cable websockets
     // yourFlat: state.conversation.yourFlat
   };
 }
