@@ -1851,8 +1851,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   height: 500px;
   /* border: 1px solid #ccc; */
 }
+
 #message-show-box {
   width: 100%;
+  padding: 3px;
   /* height: 300px; */
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -2001,6 +2003,15 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   color: gray;
   font-size: 15px;
   margin: 20px 0 0 0;
+}
+
+.message-show-box-cable-status-bar {
+  width: auto;
+  border: 1px solid #ccc;
+  margin: 0 0 3px 0;
+  padding: 5px;
+  display: flex;
+  justify-content: space-around;
 }
 
 #messaging-hamburger {

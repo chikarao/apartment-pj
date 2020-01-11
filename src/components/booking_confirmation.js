@@ -87,7 +87,6 @@ class BookingConfirmation extends Component {
     // }
     // this.createSocket2();
     console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
-
   }
 
   // shouldComponentUpdate(nextProps, nextState) {

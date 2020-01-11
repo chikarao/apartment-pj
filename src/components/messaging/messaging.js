@@ -303,6 +303,36 @@ class Messaging extends Component {
     }
   }
 
+  handleConnectEvent(event) {
+    console.log('in messaging, handleConnectEvent. if each then returned, clicked, event : ', event);
+    this.props.webSocketConnected({ timedOut: false });
+  }
+
+  renderCableStatusBar() {
+    return (
+      <div className="message-show-box-cable-status-bar" style={{ height: '30px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <div style={{ height: '10px', width: '10px', backgroundColor: this.props.propsWebSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+          {this.props.propsWebSocketConnected ?
+            <div style={{ padding: '8px' }}>Connected</div>
+            :
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <div style={{ padding: '8px' }}>
+                Connection timed out
+              </div>
+            <button
+              className='connect'
+              style={{ backgroundColor: 'white', border: '1px solid blue', borderRadius: '5px' }}
+              onClick={(e) => this.handleConnectEvent(e)}
+            >
+            reconnect
+            </button>
+            </div>}
+        </div>
+      </div>
+    );
+  }
+
 
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
@@ -319,6 +349,7 @@ class Messaging extends Component {
         return (
           <div style={{ overflow: 'auto ' }}>
             <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+              {this.renderCableStatusBar()}
               {this.props.noConversationForFlat && this.props.fromShowPage ?
                 <div className="no-conversation-message"><br/><br/><MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} /></div>
                 : this.renderEachMessage(conversationToShow)}
@@ -335,6 +366,7 @@ class Messaging extends Component {
         return (
           <div style={{ overflow: 'auto ' }}>
             <div id={'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
+              {this.renderCableStatusBar()}
               {this.renderEachMessage(conversationToShow)}
               {conversationToShow && (this.props.messageSender === this.props.auth.id)
                 ? this.renderUserTyping()

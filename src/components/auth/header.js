@@ -109,8 +109,9 @@ class Header extends Component {
      let userId = null;
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
        if (!this.state.webSocketConnected) {
-         userId = this.props.auth.id;
-         this.createSocket(userId);
+         // userId = this.props.auth.id;
+         // this.createSocket(userId);
+         this.createSocketConnection();
        }
      }
      // for when user logs off and authenticated = false
@@ -121,42 +122,51 @@ class Header extends Component {
      // but user is still logged on and authenticated = true
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
-       if (connectionTimer === 0) {
-         const lapseTime = () => {
-           if (subTimer > 0) {
-             subTimer--;
-             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ');
-           } else {
-             console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer in else ', subTimer);
-             // typingTimer--;
-             clearInterval(timer);
-             connectionTimer = subTimer;
-           }
-         };
-         let subTimer = 5;
-         connectionTimer = subTimer;
-         const timer = setInterval(lapseTime, 1000);
+       this.createSocketConnection();
+     }
 
-         // **************** Need to have in actioncable
-         userId = this.props.auth.id;
+     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut) {
+       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       this.createSocketConnection();
+     }
+   }
 
-         // this.createSocket(userId);
-         const cableAttributes = actioncableManager({
-           component_this: this,
-           setComponentState: this.setComponentState,
-           setTypingTimer: this.setTypingTimer,
-           propsWebSocketConnected: this.propsWebSocketConnected,
-           webSocketConnected: this.state.webSocketConnected,
-           setCableConnection: this.setCableConnection,
-           receiveConversation: this.receiveConversation,
-           userId,
-           makeConnection: true,
-           disconnect: false,
-           reconnect: false,
-         })
-         console.log('componentDidUpdate in not connected but authenticated, cableAttributes ', cableAttributes);
-         // this.context.testVariable = 'test_variable';
-       }
+   createSocketConnection() {
+     if (connectionTimer === 0) {
+       const lapseTime = () => {
+         if (subTimer > 0) {
+           subTimer--;
+           console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ');
+         } else {
+           console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer in else ', subTimer);
+           // typingTimer--;
+           clearInterval(timer);
+           connectionTimer = subTimer;
+         }
+       };
+       let subTimer = 5;
+       connectionTimer = subTimer;
+       const timer = setInterval(lapseTime, 1000);
+
+       // **************** Need to have in actioncable
+       const userId = this.props.auth.id;
+
+       // this.createSocket(userId);
+       const cableAttributes = actioncableManager({
+         component_this: this,
+         setComponentState: this.setComponentState,
+         setTypingTimer: this.setTypingTimer,
+         propsWebSocketConnected: this.propsWebSocketConnected,
+         webSocketConnected: this.state.webSocketConnected,
+         setCableConnection: this.setCableConnection,
+         receiveConversation: this.receiveConversation,
+         userId,
+         makeConnection: true,
+         disconnect: false,
+         reconnect: false,
+       })
+       console.log('componentDidUpdate in not connected but authenticated, cableAttributes ', cableAttributes);
+       // this.context.testVariable = 'test_variable';
      }
    }
 

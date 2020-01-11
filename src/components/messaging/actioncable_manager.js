@@ -19,7 +19,7 @@ export default function (props) {
   let subTimerDisconnect;
   let timerDisconnect;
   // disconnectTime is time required for connection to disconnect
-  const disconnectTime = 20;
+  const disconnectTime = 15;
 
   function actioncable_manager(id) {
     cable = Cable.createConsumer('ws://localhost:3000/cable');
