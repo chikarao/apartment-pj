@@ -939,7 +939,7 @@ class MessagingMain extends Component {
     return (
       <div>
         <div className="my-page-category-title">
-          <div className="my-page-category-left"><div id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick} ><i className="fa fa-bars"></i></div></div>
+          <div className="my-page-category-left"><div id="messaging-hamburger" className={this.props.showConversationCards ? 'hide' : ''} onClick={this.handleMessageHamburgerClick} ><i className="fa fa-list"></i></div></div>
           <div>Mail Box</div>
           <div className="my-page-category-right"></div>
         </div>

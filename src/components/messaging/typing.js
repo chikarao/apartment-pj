@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import * as actions from '../../actions';
+import typingWaitingGif from '../../assets/typing_waiting.gif'
 
 import AppLanguages from '../constants/app_languages';
 // import MultiLineText from '../functions/multi_line_text';
@@ -103,13 +104,14 @@ class Typing extends Component {
     // `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)`
     console.log('in Typing, render');
     // <div>{this.props.typingTimer > 0 ? `User ${this.props.messageSender}` + 'is typing' + `${this.state.dots}` : ''}</div>
+    // <img style={{ borderRadius: '5px' }} src={'https://res.cloudinary.com/chikarao/image/upload/w_50,h_40/v1578883625/apartmentpj-constant-assets/cat_typing.gif'} alt="" />
     return (
       <div>
       {this.props.typingTimer > 0 ?
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', padding: '3px' }}>
           <div style={{ padding: '4px' }}>{`User ${this.props.messageSender}` + ' is typing'}</div>
           <div>
-            <img src={'https://res.cloudinary.com/chikarao/image/upload/w_80,h_40/v1578883625/apartmentpj-constant-assets/typing_waiting.gif'} alt="" />
+          <img style={{ height: '50px', width: '90px', borderRadius: '5px' }} src={typingWaitingGif} alt="" />
           </div>
         </div>
 

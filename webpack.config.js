@@ -35,7 +35,9 @@ module.exports = {
     // wp4 loaders changed to rules
     rules: [
       {
-        test: /\.(jpg|png|svg)$/,
+        // test: /\.(jpg|png|gif|svg)$/i,
+        // test: /\.(jpg|png|svg)$/i,
+        test: /\.(jpg|png|gif|svg)$/i,
         // wp4 loaders changed to use
         use: [
           {
@@ -44,6 +46,7 @@ module.exports = {
             options: {
             // regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
               name: '[path][name].[hash].[ext]'
+              // name: '[path][name].[ext]'
             // context: ''
             }
           }

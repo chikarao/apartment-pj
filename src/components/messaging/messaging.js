@@ -381,8 +381,8 @@ class Messaging extends Component {
         const conversationToShow = this.conversationToShow();
         return (
           <div style={{ overflow: 'auto ' }}>
+          {this.renderCableStatusBar()}
             <div id={'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
-              {this.renderCableStatusBar()}
               {this.renderEachMessage(conversationToShow)}
               {conversationToShow && (this.props.messageSender === this.props.auth.id)
                 ? this.renderUserTyping()

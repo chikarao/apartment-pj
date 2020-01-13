@@ -1854,8 +1854,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 #message-show-box {
   width: 100%;
+  max-width: 350px;
   padding: 3px;
-  /* height: 300px; */
+  max-height: 350px;
   border: 1px solid #ccc;
   border-radius: 2px;
   overflow: hidden;
@@ -1864,6 +1865,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 #message-show-box-show-page {
   width: 100%;
+  max-width: 350px;
   height: 300px !important;
   border: 1px solid #ccc;
   background-color: white;
@@ -1871,9 +1873,11 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   overflow: hidden;
   overflow-y: scroll;
 }
+
 .message-input-box {
   margin-top: 5px;
   width: 100%;
+  max-width: 350px;
   height: 100px !important;
   /* height: 35%; */
   border: 1px solid #ccc;
@@ -1884,6 +1888,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .message-input-box-main {
   margin-top: 5px;
   width: 100%;
+  max-width: 350px;
+  float: left;
   height: 150px !important;
   /* height: 35%; */
   border: 1px solid #ccc;
@@ -2007,6 +2013,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .message-show-box-cable-status-bar {
   width: auto;
+  max-width: 350px;
   border: 1px solid #ccc;
   margin: 0 0 3px 0;
   padding: 5px;
@@ -2165,7 +2172,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   border-radius: 3px;
   margin: 5px 5px 0 0;
   min-width: 300px;
-  max-width: 550px;
+  max-width: 350px;
   padding: 3px;
   /* height: 100% */
 }
