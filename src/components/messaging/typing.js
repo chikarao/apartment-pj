@@ -21,7 +21,8 @@ class Typing extends Component {
 
   componentDidMount() {
     // console.log('in Typing, componentDidMount, called');
-    this.typingSubTimer();
+    // typingSubTimer replaced with GIF.
+    // this.typingSubTimer();
   }
   //
   // componentDidUpdate() {
@@ -87,6 +88,7 @@ class Typing extends Component {
     }
   }
 
+
   // shouldComponentUpdate(nextProps) {
   //   console.log('in Typing, shouldComponentUpdate, this.props, nextProps', this.props, nextProps);
   //   if (this.props.typingTimer !== nextProps.typingTimer) {
@@ -97,9 +99,23 @@ class Typing extends Component {
   // }
 
   render() {
+    // <img key={index} value={index} src={'url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60/apartmentpj-constant-assetstyping_waiting.jpg)} alt=""/>
+    // `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)`
     console.log('in Typing, render');
+    // <div>{this.props.typingTimer > 0 ? `User ${this.props.messageSender}` + 'is typing' + `${this.state.dots}` : ''}</div>
     return (
-      <div>{this.props.typingTimer > 0 ? `User ${this.props.messageSender}` + 'is typing' + `${this.state.dots}` : ''}</div>
+      <div>
+      {this.props.typingTimer > 0 ?
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', padding: '3px' }}>
+          <div style={{ padding: '4px' }}>{`User ${this.props.messageSender}` + ' is typing'}</div>
+          <div>
+            <img src={'https://res.cloudinary.com/chikarao/image/upload/w_80,h_40/v1578883625/apartmentpj-constant-assets/typing_waiting.gif'} alt="" />
+          </div>
+        </div>
+
+        :
+        ''}
+      </div>
     );
   }
 }
