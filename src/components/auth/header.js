@@ -131,7 +131,7 @@ class Header extends Component {
      }
      // logic for when websocked connection time out props CHANGES and IS NOT timed out
      // Case: not connected, is authenticated, IS a change in timeout, IS timed out and on cable connect page
-     // So case for reconnecting after being timedout 
+     // So case for reconnecting after being timedout
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection();
@@ -663,17 +663,17 @@ class Header extends Component {
            return [
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
-                <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
+                  <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
                </li>
                <li className="nav-item">
                 <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
                </li>
-               { this.props.conversations ?
+               { this.props.conversations && !onShowPage ?
                  <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
-                 <div className="header-mail-box">
-                 {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
-                 <i className="fa fa-envelope"></i>
-                 </div>
+                   <div className="header-mail-box">
+                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+                   <i className="fa fa-envelope"></i>
+                   </div>
                  </li> :
                  ''
                }

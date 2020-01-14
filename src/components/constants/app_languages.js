@@ -209,7 +209,7 @@ const appLanguages =
     messageDateNewest: { en: 'Message Date (newest)', jp: '日付で並べる(降順)' },
     orderBy: { en: 'Order by', jp: '並べを変える' },
     send: { en: 'Send', jp: '送信' },
-    noConversation: { en: 'You have not started a conversation... \nStart one by sending a message! \nMake sure to introduce yourself',
+    noConversation: { en: 'You have not started a conversation with the owner... \nStart one by sending a message! \nMake sure to introduce yourself',
       jp: 'まだコンバセーションを始めてません。\n  メッセージを送って始めましょう。\n　自己紹介を忘れない様に。' },
     // edit profile
     noConversationsYet: { en: 'You have no conversations.', jp: 'まだメッセージはありません。' },

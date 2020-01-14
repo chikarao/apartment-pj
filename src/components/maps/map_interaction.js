@@ -1145,7 +1145,7 @@ class MapInteraction extends Component {
     });
   }
 
-  renderMapInteractiion() {
+  renderMapInteraction() {
     // reference https://developers.google.com/places/web-service/supported_types
     // a tag reference: https://stackoverflow.com/questions/1801732/how-do-i-link-to-google-maps-with-a-particular-longitude-and-latitude
     // <div className="btn btn-small search-gm-button"><a href={'http://www.google.com/maps/place/ ' + this.props.flat.lat + ',' + this.props.flat.lng + '/@' + this.props.flat.lat + ',' + this.props.flat.lng + ',14z'} target="_blank" rel="https://wwww.google.com" >Open Google Maps and Search</a></div>
@@ -1153,8 +1153,14 @@ class MapInteraction extends Component {
     // {this.props.showFlat? '' : this.renderSearchSelection()}
     // <img src={images['apartment.jpg']} />
 
+    // <div className="map-interaction-container col-xs-12 col-sm-12 col-md-4">
     if (this.props.flat) {
-
+      // do not show the container if it is shown on the showflat page, AND the user is owner of the flat AND
+      // there are no places for the flat
+      const doNotShowContainer = this.props.showFlat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+      if (doNotShowContainer) {
+        return null;
+      }
       return (
         <div className="map-interaction-container">
           {this.props.showFlat ? '' : this.renderSearchBox()}
@@ -1168,7 +1174,7 @@ class MapInteraction extends Component {
   render() {
     return (
       <div>
-        {this.renderMapInteractiion()}
+        {this.renderMapInteraction()}
       </div>
     );
   }

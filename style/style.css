@@ -774,6 +774,10 @@ to override imposed max by API div */
   float: left;
 }
 
+.map-container {
+  margin: auto;
+}
+
 .place-search-btn {
 
 }
@@ -2020,6 +2024,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .no-conversation-message {
   color: gray;
   font-size: 17px;
+  padding: 3px;
 }
 
 .conversations-no-conversations {
@@ -2030,6 +2035,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .message-show-box-cable-status-bar {
   width: auto;
+  border-radius: 3px;
   max-width: 350px;
   border: 1px solid #ccc;
   margin: 0 0 3px 0;

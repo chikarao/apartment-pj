@@ -724,6 +724,8 @@ class ShowFlat extends Component {
     // {this.renderMessaging()}
   // !!!!!map needs to be id=map for the interaction to work
   // {this.renderFlat(this.props.match.params.id)}
+  // <div className="map-container" id="map">
+  const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
     return (
       <div className="show-flat-body">
           {this.state.messagingOpen ? this.renderMessagingModal() : ''}
@@ -736,19 +738,25 @@ class ShowFlat extends Component {
         </div>
         <div className="container">
           <div className="row">
-            <div className="map-container col-xs-12 col-sm-12 col-md-8" id="map">
+            <div className={doNotShowContainer ? 'map-container' : 'map-container col-xs-12 col-sm-12 col-md-8'} id="map">
               {this.renderMap()}
             </div>
-            <div className="col-xs-12 col-sm-12 col-md-4">
-              <MapInteraction
-                // check if props updated
-                flat={this.props.flat ? this.props.flat : {}}
-                places={this.props.flat ? this.props.flat.places : {}}
-                showFlat
-                // check if currentUserIsOwner to display right messages
-                currentUserIsOwner={this.currentUserIsOwner()}
-              />
-            </div>
+            {doNotShowContainer
+              ?
+              ''
+              :
+              <div className="col-xs-12 col-sm-12 col-md-4">
+                <MapInteraction
+                  // check if props updated
+                  flat={this.props.flat ? this.props.flat : null}
+                  places={this.props.flat ? this.props.flat.places : {}}
+                  showFlat
+                  // check if currentUserIsOwner to display right messages
+                  currentUserIsOwner={this.currentUserIsOwner()}
+                />
+              </div>
+            }
+
           </div>
         </div>
 
