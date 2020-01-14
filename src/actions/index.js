@@ -183,7 +183,8 @@ import {
   RECEIVE_CONVERSATION,
   SET_CABLE_CONNECTION,
   SET_TYPING_TIMER,
-  WEBSOCKET_CONNECTED
+  WEBSOCKET_CONNECTED,
+  CABLE_PAGE_OVERRIDE,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3148,6 +3149,15 @@ export function webSocketConnected(data) {
   return {
     type: WEBSOCKET_CONNECTED,
     payload: { data }
+  };
+}
+
+export function cablePageOverrideAction(pageBoolean) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, cablePageOverrideAction, pageBoolean:', pageBoolean);
+  return {
+    type: CABLE_PAGE_OVERRIDE,
+    payload: { pageBoolean }
   };
 }
 // Thunk example from docs

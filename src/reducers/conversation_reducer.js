@@ -17,7 +17,8 @@ import {
   RECEIVE_CONVERSATION,
   SET_CABLE_CONNECTION,
   SET_TYPING_TIMER,
-  WEBSOCKET_CONNECTED
+  WEBSOCKET_CONNECTED,
+  CABLE_PAGE_OVERRIDE,
 } from '../actions/types';
 
 export default function (state = {
@@ -33,7 +34,10 @@ export default function (state = {
   yourFlat: false,
   props_cable: null,
   props_chats: null,
-  typingTimer: 0
+  typingTimer: 0,
+  webSocketTimedOut: false,
+  webSocketConnected: false,
+  nonCablePageOverriden: false,
 }, action) {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
@@ -173,6 +177,11 @@ export default function (state = {
       console.log('in conversation reducer, WEBSOCKET_CONNECTED: ', action.payload);
       // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
       return { ...state, webSocketConnected: action.payload.data.connected, webSocketTimedOut: action.payload.data.timedOut };
+
+    case CABLE_PAGE_OVERRIDE:
+      console.log('in conversation reducer, CABLE_PAGE_OVERRIDE: ', action.payload);
+      // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
+      return { ...state, nonCablePageOverriden: action.payload.pageBoolean };
 
     case CREATE_CONVERSATION:
       // console.log('in conversation reducer, state: ', state);

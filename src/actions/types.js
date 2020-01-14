@@ -179,3 +179,4 @@ export const RECEIVE_CONVERSATION = 'receive_conversation';
 export const SET_CABLE_CONNECTION = 'set_cable_connection';
 export const SET_TYPING_TIMER = 'set_typing_timer';
 export const WEBSOCKET_CONNECTED = 'websocket_connected';
+export const CABLE_PAGE_OVERRIDE = 'CABLE_PAGE_OVERRIDE';

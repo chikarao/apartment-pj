@@ -13,8 +13,9 @@ import Languages from '../constants/languages';
 
 // import * as images from '../../images';
 
+// radius constant for searching for places near flat in meters.
 const NEARBY_SEARCH_RADIUS = 3000;
-// this compoenent is for creating and managing places on show and editflat
+// this component is for creating and managing places on show and editflat
 // on show, takes showFlat prop and shows only the places selected for flat
 // on edit flat page, user can select and add places with flat id associated
 class MapInteraction extends Component {
@@ -845,7 +846,7 @@ class MapInteraction extends Component {
   }
 
   createPlaceValueString(place) {
-    // for createing strings to attach as value attribute on place add button
+    // for creating strings to attach as value attribute on place add button
     // console.log('in map_interaction, createPlaceValueString, places: ', place);
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();

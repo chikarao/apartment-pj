@@ -1828,7 +1828,16 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   background-color: white;
   border-color: gray;
   color: gray;
+  margin-right: 30px;
+  height: 50px;
 }
+/* active is for when clicked, focus is after click */
+.btn-book-submit:active, .btn-book-submit:focus {
+  /* background-color: blue; */
+  background-color: white !important;
+  color: gray;
+}
+
 .btn-book-submit:hover {
   background-color: gray;
 }
@@ -1852,6 +1861,12 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   /* border: 1px solid #ccc; */
 }
 
+.message-show-box-container {
+  overflow: auto;
+  max-width: 350px;
+  margin: auto;
+}
+
 #message-show-box {
   width: 100%;
   max-width: 350px;
@@ -1866,6 +1881,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 #message-show-box-show-page {
   width: 100%;
   max-width: 350px;
+  margin: auto;
+  padding: 3px;
   height: 300px !important;
   border: 1px solid #ccc;
   background-color: white;
@@ -3499,6 +3516,7 @@ form {
   border-radius: 3px;
   margin: 5px 5px 0 0;
   background-color: white;
+  padding: 3px;
   /* display: flex;
   justify-content: center;
   align-content: center; */

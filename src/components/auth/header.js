@@ -89,9 +89,8 @@ class Header extends Component {
    // **************** Need to have in actioncable
 
    componentDidUpdate(prevProps) {
-     console.log('in header, componentDidUpdate, prevProps.auth: ', prevProps.auth);
-     console.log('in header, componentDidUpdate, this.props.auth: ', this.props.auth);
-     console.log('in header, componentDidUpdate, this.state.webSocketConnected: ', this.state.webSocketConnected);
+     // console.log('in header, componentDidUpdate, this.props.auth: ', this.props.auth);
+     // console.log('in header, componentDidUpdate, this.state.webSocketConnected: ', this.state.webSocketConnected);
      // specify which language at which the app state is currently set and change select box
      if (this.props.appLanguageCode) {
        const languageSelect = document.getElementById('header-language-selection-box-select')
@@ -107,6 +106,11 @@ class Header extends Component {
      }
      // for websocket connection to actioncable when user logs on and off
      let userId = null;
+     const onShowPage = this.props.location.pathname.includes('/show/');
+     const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden;
+     console.log('in header, componentDidUpdate, prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage: ', prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage);
+     console.log('in header, componentDidUpdate, prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut ', prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut);
+
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
        if (!this.state.webSocketConnected) {
          // userId = this.props.auth.id;
@@ -120,12 +124,20 @@ class Header extends Component {
      }
      // for when page opens and webSocketConnected is initialized to false
      // but user is still logged on and authenticated = true
-     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut) {
+     // Case: not connected, is authenticated, no change in timeout, is not timed out and on cable connect page
+     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
+       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       this.createSocketConnection();
+     }
+     // logic for when websocked connection time out props CHANGES and IS NOT timed out
+     // Case: not connected, is authenticated, IS a change in timeout, IS timed out and on cable connect page
+     // So case for reconnecting after being timedout 
+     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection();
      }
 
-     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut) {
+     if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && (prevProps.nonCablePageOverriden !== this.props.nonCablePageOverriden) && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection();
      }
@@ -370,7 +382,7 @@ class Header extends Component {
      // unsubscribe leading to reject does not fire onclose
      this.setState({ webSocketConnected: false }, () => {
        console.log('handleDisconnectEvent call back to this.state.webSocketConnected', this.state.webSocketConnected);
-       this.cable.disconnect();
+       this.props.propsCable.disconnect();
      });
      // this.chats.unsubscribeConnection(() => {
      // console.log('handleDisconnectEvent in call back to disconnect');
@@ -784,8 +796,11 @@ function mapStateToProps(state) {
     newMessages: state.conversation.newMessages,
     flats: state.flats.flatsByUser,
     appLanguageCode: state.languages.appLanguageCode,
+    propsCable: state.conversation.propsCable,
+    propsChats: state.conversation.propsChats,
     propsWebSocketConnected: state.conversation.webSocketConnected,
     propsWebSocketTimedOut: state.conversation.webSocketTimedOut,
+    nonCablePageOverriden: state.conversation.nonCablePageOverriden,
   };
 }
 

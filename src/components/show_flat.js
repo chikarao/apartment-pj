@@ -20,6 +20,7 @@ import MapInteraction from './maps/map_interaction';
 
 import AppLanguages from './constants/app_languages'
 import GmStyle from './maps/gm-style';
+import MessagingModal from './modals/messaging_modal'
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
@@ -37,11 +38,9 @@ class ShowFlat extends Component {
   constructor(props) {
    super(props);
    this.state = {
-     // placesResults: [],
-     // map: {},
-     // autoCompletePlace: {},
-     // clickedPlaceArray: []
+    messagingOpen: false,
    };
+
   this.handleImageClick = this.handleImageClick.bind(this);
   this.handleBookingClick = this.handleBookingClick.bind(this);
   this.handleEditFlatClick = this.handleEditFlatClick.bind(this);
@@ -49,6 +48,7 @@ class ShowFlat extends Component {
   this.handleBookingClick = this.handleBookingClick.bind(this);
   this.handleDateBlockSyncClick = this.handleDateBlockSyncClick.bind(this);
   this.handleSignInClick = this.handleSignInClick.bind(this);
+  this.handleMessagingOpenClick = this.handleMessagingOpenClick.bind(this);
  }
   componentDidMount() {
     // console.log('in show flat, componentDidMount, params', this.props.match.params);
@@ -477,16 +477,16 @@ class ShowFlat extends Component {
     this.props.showLoading();
   }
 
-    renderMessaging() {
+  renderMessaging() {
     if (!this.currentUserIsOwner() && this.props.conversation) {
-      // console.log('in show_flat, renderMessaging: ', this.currentUserIsOwner());
+      console.log('in show_flat, renderMessaging, this.currentUserIsOwner, this.props.conversation: ', this.currentUserIsOwner(), this.props.conversation);
       return (
         <div className="message-box-container">
           <div className="message-box">
           <h3>{AppLanguages.messages[this.props.appLanguageCode]}</h3>
             <Messaging
               currentUserIsOwner={this.currentUserIsOwner()}
-              conversation={this.props.conversation}
+              conversation={this.props.conversation[0]}
               noConversationForFlat={this.props.noConversationForFlat}
               // noConversation={this.props.noConversation}
               fromShowPage
@@ -501,11 +501,16 @@ class ShowFlat extends Component {
     // calls showAuthModal action to toggle boolean;
     this.props.showAuthModal();
   }
+
+  handleMessagingOpenClick() {
+    this.setState({ messagingOpen: true }, () => {
+      // console.log('in show_flat, handleMessagingOpenClick, this.state.messagingOpen: ', this.state.messagingOpen);
+    });
+  }
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
   renderButtons() {
-    // console.log('in show_flat, currentUserIsOwner: ', this.currentUserIsOwner());
     // console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
         if (!this.currentUserIsOwner()) {
@@ -513,6 +518,7 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-button-box">
               <button value="userBooking" onClick={this.handleBookingClick} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
+              <button value="message" style={{ padding: '5px 20px 5px 20px' }} onClick={this.handleMessagingOpenClick} className="btn btn-primary btn-lg btn-book-submit"><i style={{ fontSize: '35px' }} className="far fa-comment"></i></button>
             </div>
           );
         } else {
@@ -697,11 +703,30 @@ class ShowFlat extends Component {
     }
   }
 
+  renderMessagingModal() {
+    console.log('in show_flat, renderMessagingModal: ');
+    return (
+      <MessagingModal
+        show={this.state.messagingOpen}
+        // show
+        showMessagingModal={() => this.setState({ messagingOpen: false })}
+        currentUserIsOwner={this.currentUserIsOwner()}
+        conversation={this.props.conversation[0]}
+        noConversationForFlat={this.props.noConversationForFlat}
+        containerWidth='300px'
+        // noConversation={this.props.noConversation}
+        fromShowPage
+      />
+    );
+  }
+
   render() {
+    // {this.renderMessaging()}
   // !!!!!map needs to be id=map for the interaction to work
   // {this.renderFlat(this.props.match.params.id)}
     return (
       <div className="show-flat-body">
+          {this.state.messagingOpen ? this.renderMessagingModal() : ''}
           {this.renderLightboxScreen()}
         <div>
           {this.renderFlat()}
@@ -729,7 +754,6 @@ class ShowFlat extends Component {
 
           {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
 
-          {this.renderMessaging()}
 
           {this.renderReviews()}
         <div className="clear-div" style={{ height: '70px' }}></div>

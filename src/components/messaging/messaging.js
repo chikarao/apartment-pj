@@ -131,7 +131,7 @@ class Messaging extends Component {
 
   scrollLastMessageIntoView() {
     const items = document.querySelectorAll('.each-message-box');
-    // console.log('in messaging, scrollLastMessageIntoView, items: ', items);
+    console.log('in messaging, scrollLastMessageIntoView, items: ', items);
 
     const last = items[items.length - 1];
     // console.log('in messaging, scrollLastMessageIntoView, last: ', last);
@@ -298,7 +298,7 @@ class Messaging extends Component {
     const { conversations } = this.props;
     let conversationToShow;
     // const conversationIdFromStorage = localStorage.getItem('conversationId');
-    // console.log('in messaging, conversationToShow. conversationIdFromStorage: ', conversationIdFromStorage);
+    // console.log('in messaging, conversationToShow.: ',);
 
     if (!this.props.fromShowPage) {
       _.each(conversations, (conversation) => {
@@ -311,11 +311,11 @@ class Messaging extends Component {
       return conversationToShow;
     } else {
       // console.log('in messaging, conversationToShow. if else returned this.props.conversation: ', this.props.conversation);
-      if (this.props.conversation.length < 1) {
-        return this.props.conversations;
-      } else {
+      // if (this.props.conversation.length < 1) {
+        // return this.props.conversations;
+      // } else {
         return this.props.conversation;
-      }
+      // }
     }
   }
 
@@ -357,15 +357,15 @@ class Messaging extends Component {
       if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
-        // console.log('in messaging, renderMessaging. this.props.conversation.length < 1: ', this.props.conversatio  n.length < 1);
+        // console.log('in messaging, renderMessaging. this.props.containerWidth: ', this.props.containerWidth);
         const conversationToShow = this.conversationToShow();
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
         // renderUserTyping is rendered if passes test of if there is conversationToShow and user typing is not current user
         return (
-          <div style={{ overflow: 'auto ' }}>
+          <div className="message-show-box-container" style={{ width: this.props.containerWidth }}>
+            {this.renderCableStatusBar()}
             <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
-              {this.renderCableStatusBar()}
               {this.props.noConversationForFlat && this.props.fromShowPage ?
                 <div className="no-conversation-message"><br/><br/><MultiLineText text={AppLanguages.noConversation[this.props.appLanguageCode]} /></div>
                 : this.renderEachMessage(conversationToShow)}

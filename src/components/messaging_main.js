@@ -73,9 +73,6 @@ class MessagingMain extends Component {
   handleMessageBackClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in messagingMain, handleMessageBackClick, clickedElement: ', clickedElement);
-    // console.log('in messagingMain, handleMessageBackClick, elementVal: ', elementVal);
-    // this.props.checkedConversations(this.props.checkedConversationsArray);
     this.setState({ showAllConversations: true, showArchiveBin: false, showTrashBin: false });
   }
 
@@ -202,25 +199,17 @@ class MessagingMain extends Component {
     const inputElement = event.target;
       // !!!! inputElement.value works not elementVal.value Don't know why; Also dont need do event => this.handleSearchInput(event)
     this.setState({ searchInputVal: inputElement.value }, () => {
-      console.log('in messagingMain, handleSearchInput, this.state.searchInputVal: ', this.state.searchInputVal);
-    })
+    });
   }
 
   renderMessagingSubControls() {
     const conversationBox = document.getElementById('messaging-main-conversation-box')
     const elementSort = document.getElementById('messaging-main-large-archive-filter')
     let leftDiff = null;
-    // console.log('in messagingMain, renderMessagingSubControls, elementSort, conversationBox: ', elementSort, conversationBox);
-    // console.log('in messagingMain, renderMessagingSubControls: ', this.state.sortListingSelected);
     if (elementSort && conversationBox) {
       const rect = elementSort.getBoundingClientRect();
       const rectBox = conversationBox.getBoundingClientRect();
-      // console.log('in messagingMain, renderMessagingSubControls, rect.top, rect.right, rect.bottom, rect.left: ', rect.top, rect.right, rect.bottom, rect.left);
-      // console.log('in messagingMain, renderMessagingSubControls, rectBox.top, rectBox.right, rectBox.bottom, rectBox.left: ', rectBox.top, rectBox.right, rectBox.bottom, rectBox.left);
       leftDiff = rect.left - rectBox.left;
-      // console.log('in messagingMain, renderMessagingSubControls, leftDiff: ', leftDiff);
-      // const elementSortPos = elementSort.offsetLeft();
-      // const conversationBoxPos = conversationBox.offsetLeft();
     }
       return (
         <div className="messaging-main-messaging-sub-control-box-box" id="messaging-main-messaging-sub-control-box-box" style={{ left: `${leftDiff - 19}px` }}>
@@ -274,13 +263,11 @@ class MessagingMain extends Component {
   highlightOrder(newOrOld) {
     const orderDivs = document.getElementsByClassName('messaging-controls-div');
     _.each(orderDivs, eachDiv => {
-      // console.log('in messagingMain, highlightOrder, before if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
       if (newOrOld == eachDiv.getAttribute('name')) {
-        // console.log('in messagingMain, highlightOrder, if newOrOld, eachDiv.getAttribute(name): ', newOrOld, eachDiv.getAttribute('name'));
         const changedDiv = eachDiv;
         changedDiv.style.backgroundColor = 'gray'
       }
-    })
+    });
   }
 
   // after conversation checkbox checked, handles what to do with the conversations;
@@ -289,12 +276,8 @@ class MessagingMain extends Component {
     // const clickedElementParent = clickedElement.parentNode;
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
-    // console.log('in messagingMain, handleMessageEditClick, clickedElement: ', clickedElement);
-    // console.log('in messagingMain, handleMessageEditClick, elementVal: ', elementVal);
 
     const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
-    // console.log('in messagingMain, handleMessageEditClick, SUB_BOX_LISTING_CLASS_ARRAY: ', SUB_BOX_LISTING_CLASS_ARRAY);
-    // console.log('in messagingMain, handleMessageEditClick, listingClicked: ', listingClicked);
 
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
@@ -303,7 +286,6 @@ class MessagingMain extends Component {
         this.props.updateConversations(this.props.checkedConversationsArray, conversationAttributes, () => {
           this.props.checkedConversations(this.props.checkedConversationsArray);
         });
-      // this.setState({ checkedConversationsArray: [] });
       this.setState({ showAllConversations: true });
     }
 
@@ -377,44 +359,32 @@ class MessagingMain extends Component {
     // invoked when filter icon clicked to show subcontrol window
     if (elementVal == 'filter') {
       this.setState({ showMessageSubControls: !this.state.showMessageSubControls, showMessageControls: false }, () => {
-        // console.log('in messagingMain, handleMessageEditClick, this.state.showMessageSubControls: ', this.state.showMessageSubControls);
-        // this.filterConversations();
-        // if (this.state.showMessageSubControls) {
           if (this.state.showMessageSubControls) {
             const body = document.getElementById('messaging-main-main-container');
             body.addEventListener('click', this.messageControlCloseClick);
           }
-        // }
       })
     }
     // for case when 'all listings' clicked in sub control box
     if (elementVal == 'allListings') {
       // console.log('in messagingMain, handleMessageEditClick, == alllistings elementVal, this.state.sortListingSelected: ', elementVal, this.state.sortListingSelected);
-      this.unhighlightListing()
+      this.unhighlightListing();
       if (this.state.sortListingSelected) {
         this.setState({ sortListingId: null, sortListingSelected: false }, () => {
-          // console.log('in messagingMain, handleMessageEditClick, this.state.sortListingSelected: ', this.state.sortListingSelected);
         });
       }
     }
     // for case when order by date new or old clicked in control box
     if (elementVal == 'orderByDate') {
-      // this.unhighlightListing()
       if (elementName == 'new') {
         if (this.state.sortByDateOld) {
-          // this.unhighlightOrder();
           this.setState({ sortByDateNew: true, sortByDateOld: false }, () => {
-            // console.log('in messagingMain, handleMessageEditClick, this.state.sortByDateNew, this.state.sortByDateOld: ', this.state.sortByDateNew, this.state.sortByDateOld);
-            // this.highlightOrder(elementName);
           });
         }
       }
       if (elementName == 'old') {
         if (this.state.sortByDateNew) {
-          // this.unhighlightOrder();
           this.setState({ sortByDateNew: false, sortByDateOld: true }, () => {
-            // console.log('in messagingMain, handleMessageEditClick, this.state.sortByDateNew, this.state.sortByDateOld: ', this.state.sortByDateNew, this.state.sortByDateOld);
-            // this.highlightOrder(elementName);
           });
         }
       }
@@ -424,7 +394,6 @@ class MessagingMain extends Component {
       if (clickedElement.className !== 'messaging-main-sub-control-box-all-listings') {
         this.unhighlightListing(elementName);
         this.setState({ sortListingId: elementName, sortListingSelected: true }, () => {
-          // console.log('in messagingMain, handleMessageEditClick, listingClicked, this.state.sortListingId: ', this.state.sortListingId);
           this.highlightListing(this.state.sortListingId);
         })
       }
@@ -436,8 +405,6 @@ class MessagingMain extends Component {
     // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target: ', e.target);
     const clickedElement = e.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, e.target.className: ', e.target.className);
-    // console.log('in messagingMain, messageControlCloseClick, body.addEventListener, elementVal: ', elementVal);
     // get boxes elements and ellips elements (className returns array)
     // needed to use boxboxes so to have relative positioning on box for arrow
     const box = document.getElementById('messaging-main-messaging-control-box')
@@ -473,8 +440,6 @@ class MessagingMain extends Component {
     const filterIconClicked = (filterIcon.getAttribute('value') == elementVal)
 
     if ((!boxClicked & !subBoxClicked & !boxBoxClicked & !subBoxBoxClicked & !boxChildrenClicked & !subBoxChildrenClicked && !subBoxOtherDecendantsClicked)) {
-      // console.log('in messagingMain, messageControlCloseClick, after if !boxes...');
-
         // if controls open and user clicks something other than control box elements or filter and sort icons
         // get element to be clicked to close control boxes and remove addEventListener if any box open
         if (this.state.showMessageControls || this.state.showMessageSubControls) {
