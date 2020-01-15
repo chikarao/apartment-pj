@@ -65,7 +65,7 @@ class Header extends Component {
    // shouldComponentUpdate() {
    // }
 
-   // **************** Need to have in actioncable
+   // **************** Need to have to pass to actionCableManager
    setComponentState = (stateObject, callback) => {
      this.setState(stateObject, callback);
    }
@@ -86,26 +86,20 @@ class Header extends Component {
    receiveConversation = (conv) => {
      this.props.receiveConversation(conv);
    }
-   // **************** Need to have in actioncable
+   // **************** Need to have to pass to actionCableManager
 
    componentDidUpdate(prevProps) {
-     // console.log('in header, componentDidUpdate, this.props.auth: ', this.props.auth);
-     // console.log('in header, componentDidUpdate, this.state.webSocketConnected: ', this.state.webSocketConnected);
      // specify which language at which the app state is currently set and change select box
      if (this.props.appLanguageCode) {
-       const languageSelect = document.getElementById('header-language-selection-box-select')
-       // console.log('in header, componentDidMount, languageSelect: ', languageSelect);
-       // console.log('in header, componentDidMount, languages[this.props.appLanguageCode].name: ', languages[this.props.appLanguageCode].name);
+       const languageSelect = document.getElementById('header-language-selection-box-select');
        // console.log('in header, componentDidMount, this.props.appLanguageCode: ', this.props.appLanguageCode);
-       // languageSelect.setAttribute('value', this.props.appLanguageCode);
-       const optionIndex = this.getIndexOption()
-       // console.log('in header, componentDidMount, optionIndex: ', optionIndex);
+       const optionIndex = this.getIndexOption();
        if (languageSelect) {
          languageSelect.selectedIndex = optionIndex;
        }
      }
      // for websocket connection to actioncable when user logs on and off
-     let userId = null;
+
      const onShowPage = this.props.location.pathname.includes('/show/');
      // connect cable if 1) NOT on showFlat page, OR 2) nonCablePageOverriden (set in eg messaging modal) is true, OR currentUserIsOwner is true
      const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden || this.props.currentUserIsOwner;
@@ -114,8 +108,6 @@ class Header extends Component {
 
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
        if (!this.state.webSocketConnected) {
-         // userId = this.props.auth.id;
-         // this.createSocket(userId);
          this.createSocketConnection();
        }
      }
@@ -137,7 +129,8 @@ class Header extends Component {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection();
      }
-
+     // if CASE for 1) socket not connected, 2) authenticated, 3) NOT timed out with no change in timed out
+     // 4) nonCablePageOverriden changes (in showpage) and 5) is on page where cable is connected
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && (prevProps.nonCablePageOverriden !== this.props.nonCablePageOverriden) && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection();
@@ -164,8 +157,7 @@ class Header extends Component {
        // **************** Need to have in actioncable
        const userId = this.props.auth.id;
 
-       // this.createSocket(userId);
-       const cableAttributes = actioncableManager({
+       actioncableManager({
          component_this: this,
          setComponentState: this.setComponentState,
          setTypingTimer: this.setTypingTimer,
@@ -174,12 +166,8 @@ class Header extends Component {
          setCableConnection: this.setCableConnection,
          receiveConversation: this.receiveConversation,
          userId,
-         makeConnection: true,
-         disconnect: false,
-         reconnect: false,
-       })
-       console.log('componentDidUpdate in not connected but authenticated, cableAttributes ', cableAttributes);
-       // this.context.testVariable = 'test_variable';
+         makeConnection: true
+       });
      }
    }
 

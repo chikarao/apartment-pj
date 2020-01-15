@@ -7,8 +7,7 @@ import Cable from 'actioncable';
 
 
 export default function (props) {
-  // let cable;
-  // let chat;
+  // This function makes the websocket connection, handles typing, timeout
 
   console.log('in ActioncableManager, props', props);
   let cable = props.cable;
@@ -26,32 +25,28 @@ export default function (props) {
     // this.cable.connection.websocket.onclose = () => {
     //   // console.log('actioncable_manager this.cable.connection.websocket.onclose callback');
     // };
-    console.log('actioncable_manager cable.connnection', cable.connection);
-    console.log('actioncable_manager cable.connnection.consumer', cable.connection.consumer);
-    console.log('actioncable_manager cable.connnection.subscriptions', cable.connection.subscriptions);
-    console.log('actioncable_manager cable.connnection.webSocket', cable.connection.webSocket);
-    console.log('actioncable_manager this', this);
-    console.log('actioncable_manager id', id);
+    // console.log('actioncable_manager cable.connnection', cable.connection);
+    // console.log('actioncable_manager cable.connnection.consumer', cable.connection.consumer);
+    // console.log('actioncable_manager cable.connnection.subscriptions', cable.connection.subscriptions);
+    // console.log('actioncable_manager cable.connnection.webSocket', cable.connection.webSocket);
+    // console.log('actioncable_manager this', this);
+    // console.log('actioncable_manager id', id);
     const userId = localStorage.getItem('id') ? localStorage.getItem('id') : id;
-    console.log('actioncable_manager localStorage userId', userId);
+    // console.log('actioncable_manager localStorage userId', userId);
     // console.log('actioncable_manager Cable', Cable);
+    // chats creates a number of methods to call on chats, which is passed in
+    // app state as propsChats. It can be called to disconnect anywhere in app
     chats = cable.subscriptions.create({
       channel: 'ChatChannel', room: `messaging_room_${userId}`
       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
     }, {
       connected: (message) => {
           console.log('actioncable_manager in call back to connected message', message);
-          console.log('actioncable_manager in call back to connected cable.connection.subscription', cable.connection.subscription);
+          // console.log('actioncable_manager in call back to connected cable.connection.subscription', cable.connection.subscription);
           // console.log('actioncable_manager in call back to connected, this.chats', this.chats);
-          // console.log('actioncable_manager in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-
-          // if (!message && !this.state.webSocketConnected) {
+          // Call authenticate chat which sends user token to back end to auth the user
           authenticateChat();
-          // }
-          // this.cable.connection.webSocket.onclose = function (event) {
-          //   console.log('actioncable_manager in call back to connected, websocket onclose, connection closed, event', event);
-          // }
-          // this.webSocket = this.cable.connection.webSocket;
+          // if socket is not connected set app and header component state to true and timedout to false
           if (!props.webSocketConnected) {
             props.setComponentState({ webSocketConnected: true });
             props.propsWebSocketConnected({ connected: true, timedOut: false });
@@ -72,34 +67,34 @@ export default function (props) {
         this.perform('unsubscribe_connection', {});
       },
 
-      // unsubscribe: () => {
-      //     console.log('actioncable_manager in call back to unsubscribe');
-      // }, // end of connected
       authenticated: function (token) {
         this.perform('authenticated', { token });
         console.log('***** Authenticating Action Cable Connection *******');
       },
 
       received: (data) => {
-        console.log('actioncable_manager in received before if data', data);
+        // console.log('actioncable_manager in received before if data', data);
         if (data.conversation) {
-          // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
+          // receiveds data from back end and if data.conversation,
+          // calls redux action receiveConversation to update with new conversation and message
+          // sending user can get the conversation through ajax but the receiver
+          // cannot get message automatically unless connected to websocket and listening for messages
           const conversation = JSON.parse(data.conversation);
           console.log('actioncable_manager in data.conversation, conversation', conversation);
           props.receiveConversation(conversation);
-          // console.log('actioncable_manager this', this);
-          // chatLogs.push(conversation);
-          // this.setState({ chatLogs }, () => {
-          //   console.log('actioncable_manager received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-          //   }
-          // );  // end of setState
         } else if (data.notification) {
+          // backend sends data.notification used for authenticating and
+          // for typing. If sender types, the user on the receiving end
+          // will receive a notification which then is used to update app state,
+          // and shown on users messaging window to indicate the other is typing
           console.log('actioncable_manager in received, data ', data);
           if (data.notification === 'typing') {
-            // if user types, disconnect timer is reset
+            // if user types, disconnect for websockeet timer is reset
             resetDisconnectTimer({ time: disconnectTime, initial: false });
             // to show other user is typing, get notification from backend that other is typing
             // If the current timer is 0, then start the timer by reseting at typingTime declare at top
+            // Resetting only at 0 avoids too many timers going at once;
+            // Messaging.js handle message change also limits firing of notifications to every x seconds
             // Note: the timer is not reset while in countdown -- only when at 0.
             if (typingTimer === 0) {
               console.log('actioncable_manager in received, data.notification.typing ', data.notification);
@@ -120,14 +115,13 @@ export default function (props) {
               };
               // assign global constant typing time to subtimer to reset subtimer
               let subTimer = typingTime;
-              // if (typingTimer < typingTime) {
               // resets global typingTimer to make non-zero which would keep from resetting
               typingTimer = subTimer;
               // call action to set timer in app state; aset at typing time
               // the typing component will test if timer is 0 or not
               props.setTypingTimer({ typingTimer: subTimer, messageSender: data.user_id });
               console.log('actioncable_manager in received, data.notification.typing, typingTimer after setting at 5, messageSender ', typingTimer);
-              // }
+
               const timer = setInterval(lapseTime, 1000);
             } // end of if typingTimer === 0
           } else if (data.notification === 'authenticated') { // if typing
@@ -136,11 +130,11 @@ export default function (props) {
           }
         }
       }, // end of received
-
+      // this is not used but keep for reference
       create: function (chatContent) {
         this.perform('create', { content: chatContent });
       }, // end of create:
-
+      // typing called on chats to send notification of user typing
       typing: function (addresseeId) {
         console.log('actioncable_manager this', this);
         this.perform('typing', { user_id: userId, addressee_id: addresseeId });
@@ -178,26 +172,22 @@ export default function (props) {
     chats.authenticated(token);
     props.setCableConnection({ cable, chats })
     console.log('authenticateChat in call back to chat connection authenticated, cable.connection', cable.connection);
-    // console.log('authenticateChat in call back to chat connection authenticated, run');
-    // console.log('authenticateChat in call back to chat connection authenticated, this', this);
     // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
     cable.connection.webSocket.onclose = (m) => {
       // onclose listener for when websocket is closed or disconnected;
       // if rails server is shutdown, this fires, and when server restarted, automatically connects; by npm actioncable???
       console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
       // set webSocketConnected to false to change online indicator
+      // set cable and chats in app state to null
       props.setComponentState({ webSocketConnected: false }, () => {
         props.propsWebSocketConnected({ connected: false, timedOut: m.code === 1000 ? true : false });
         console.log('authenticateChat in call back to chat connection authenticated, props.webSocketConnected', props.webSocketConnected);
         props.setCableConnection({ cable: null, chats: null });
       });
-      // if webSocket connection is disconneted, actioncable_manager reconnects
-      // this.actioncable_manager();
     };
+    // KEEP for heartbeat ping; Need to figure out how to pong to backend ping
     // this.cable.connection.webSocket.onmessage = (m) => {
     // //onMessage listener for getting pings; This is onhold until can find out way to pong back.
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
     //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' } };
     //     const message = { command: 'message', identifier: this.cable.subscriptions.subscriptions[0].identifier, data: JSON.stringify({ action: 'message', data: m.data.message }) };
@@ -216,7 +206,6 @@ export default function (props) {
   }
 
   function handleDisconnectEvent(trigger) {
-    // event.preventDefault();
     // disconnects consumer and stops streaming
     // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
     // ChatChannel stopped streaming from test_room
@@ -228,34 +217,10 @@ export default function (props) {
       cable.disconnect();
       props.setCableConnection({ cable: null, chats: null });
     });
-    // this.chats.unsubscribeConnection(() => {
-    // console.log('handleDisconnectEvent in call back to disconnect');
-    // });
-    // this.chats.unsubscribed();
   }
 
+// calling main function
 actioncable_manager(props.userId);
-
-// const aVar = 'test a'
-// console.log('actioncableManager this outside function call', this);
-// function test(m) {
-//   // this.value = m;
-//   console.log('actioncableManager this in test function call m', m);
-// }
-//
-// function test1() {
-//   // this.test = 'test';
-//   console.log('actioncableManager this in test function call', this);
-//   console.log('actioncableManager this in test function aVar', aVar);
-// }
-//
-// // const testArrow = () => {
-// //   console.log('actioncableManager this in testArrowfunction call', this);
-// // };
-//
-// // const testObject = new test('test');
-// test('test');
-// test1();
-// testArrow();
+// no need to return but keep
 if (props.makeConnection) return { cable, chats };
-}
+} // end of function

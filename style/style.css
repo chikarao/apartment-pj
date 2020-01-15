@@ -1877,7 +1877,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 3px;
   max-height: 350px;
   border: 1px solid #ccc;
-  background-color: rgb(252, 252, 252);
+  background-color: rgb(249, 249, 249);
   border-radius: 2px;
   overflow: hidden;
   overflow-y: scroll;
@@ -1890,7 +1890,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 3px;
   height: 300px !important;
   border: 1px solid #ccc;
-  background-color: rgb(252, 252, 252);
+  background-color: rgb(249, 249, 249);
   /* background-color: white; */
   border-radius: 3px;
   overflow: hidden;
@@ -2043,7 +2043,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   margin: 0 0 3px 0;
   padding: 5px;
   display: flex;
-  background-color: rgb(252, 252, 252);
+  background-color: rgb(249, 249, 249);
   justify-content: space-around;
 }
 
