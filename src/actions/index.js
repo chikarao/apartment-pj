@@ -710,25 +710,26 @@ export function createConversation(conversationAttributes, messageAttributes, ca
 
   // const { } = flatAttributes;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/conversations`, { conversation: conversationAttributes }, {
+    axios.post(`${ROOT_URL}/api/v1/conversations`, { conversation: conversationAttributes, message: messageAttributes }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('response to createConversation, response: ', response);
       console.log('response to createConversation, response.data.data: ', response.data.data);
       dispatch({
-        type: CREATE_CONVERSATION
+        type: CREATE_CONVERSATION,
+        payload: response.data.data
         // payload: response.data.data.conversation
       });
-      const conversationId = response.data.data.conversation.id;
-      const userId = response.data.data.conversation.user_id;
-      const newMessageAttributes = messageAttributes;
-      const convId = 'conversation_id';
-      const uId = 'user_id';
-
-      newMessageAttributes[convId] = conversationId;
-      newMessageAttributes[uId] = userId;
-      callback(newMessageAttributes);
+      // const conversationId = response.data.data.conversation.id;
+      // const userId = response.data.data.conversation.user_id;
+      // const newMessageAttributes = messageAttributes;
+      // const convId = 'conversation_id';
+      // const uId = 'user_id';
+      //
+      // newMessageAttributes[convId] = conversationId;
+      // newMessageAttributes[uId] = userId;
+      callback();
     });
   };
 }

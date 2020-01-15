@@ -122,6 +122,11 @@ export default function (state = {
         console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
       return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
 
+    case CREATE_CONVERSATION:
+    // console.log('in conversation reducer, state: ', state);
+    // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
+    return { ...state, conversationToShow: action.payload.conversation, noConversationForFlat: false, noConversation: false, conversationsByUser: [action.payload.conversation], conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: [action.payload.conversation] };
+
     case RECEIVE_CONVERSATION:
     console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
@@ -183,10 +188,6 @@ export default function (state = {
       // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
       return { ...state, nonCablePageOverriden: action.payload.pageBoolean };
 
-    case CREATE_CONVERSATION:
-      // console.log('in conversation reducer, state: ', state);
-      // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
-      return { ...state };
 
     case NO_CONVERSATION:
       return { ...state, noConversation: true };

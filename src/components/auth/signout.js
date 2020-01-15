@@ -8,6 +8,8 @@ import AppLanguages from '../constants/app_languages';
 class SignOut extends Component {
   componentWillMount() {
     // if (this.props.authenticated) {
+      // disconnect cable only if propsCable is not null; ie cable is connected and not timedout  
+      if (this.props.propsCable) this.props.propsCable.disconnect();
       this.props.signoutUser(() => this.signoutFB());
     // }
   }
@@ -59,7 +61,8 @@ function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
     authenticated: state.auth.authenticated,
-    appLanguageCode: state.languages.appLanguageCode
+    appLanguageCode: state.languages.appLanguageCode,
+    propsCable: state.conversation.propsCable,
   };
 }
 

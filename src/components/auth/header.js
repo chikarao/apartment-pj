@@ -177,7 +177,6 @@ class Header extends Component {
      // console.log('in header, getIndexOption, optionTags : ', optionTags);
      const optionIndexArray = [];
      _.each(optionTags, (tag, i) => {
-       // console.log('in header, getIndexOption, tag.value, i : ', tag.value, i);
        // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
        if (tag.value == this.props.appLanguageCode) {
          optionIndexArray.push(i);
@@ -198,10 +197,11 @@ class Header extends Component {
      // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
      // ChatChannel stopped streaming from test_room
      // .disconnect causes webSocket.onclose listener to fire.
+     console.log('in header, handleDisconnectEvent, this.props.propsCable: ', this.props.propsCable);
      // unsubscribe leading to reject does not fire onclose
-     this.props.propsCable.disconnect();
+     if (this.props.propsCable) this.props.propsCable.disconnect();
      this.setState({ webSocketConnected: false }, () => {
-       console.log('handleDisconnectEvent call back to this.state.webSocketConnected', this.state.webSocketConnected);
+       // console.log('handleDisconnectEvent call back to this.state.webSocketConnected', this.state.webSocketConnected);
      });
    }
    // ************************** Websocket Actioncable *************************
@@ -423,16 +423,11 @@ class Header extends Component {
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
     // on show page pathname returned is like in string type: /show/2
     const onShowPage = this.props.location.pathname.includes('/show/');
-    // const currentFlatId = parseFloat(this.props.location.pathname)
+    //   const currentFlatId = this.props.location.pathname.match(/\d+/)
     // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
-    if (onShowPage) {
-      const currentFlatId = this.props.location.pathname.match(/\d+/)
-      const ownFlat = this.ownFlat(parseInt(currentFlatId[0], 10));
-    }
-    // console.log('in header, navigationLinks, this.props.location.pathname: ', this.props.location.pathname);
-    // console.log('in header, navigationLinks, this.props.location.pathname, onShowPage, ownFlat, currentFlatId, type of this.props.location.pathname ', this.props.location.pathname, onShowPage, ownFlat, currentFlatId, typeof this.props.location.pathname);
     if (this.props.authenticated) {
        // show link to signout and signed in as...
+       // Link to signout mounts the signout component, and its componentDidMount calls the signout action in redux
        if (onMyPage) {
          // console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
          return [
@@ -472,7 +467,6 @@ class Header extends Component {
            </ul>
          ];
        } else {
-         //consider opedning mypage in new tab...
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
            return [

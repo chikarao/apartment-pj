@@ -169,7 +169,8 @@ class Messaging extends Component {
 
     if (this.props.noConversationForFlat && this.props.fromShowPage) {
       // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
-      this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
+      // this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
+      this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, () => this.createMessageCallback());
     } else {
       const conversationToShow = this.conversationToShow();
       const { user_id, flat_id, id } = conversationToShow;
@@ -177,11 +178,6 @@ class Messaging extends Component {
       this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
     }
     //   console.log('in messaging, handleMessageSendClick, callback in setState this.state.CurrentChatMessage: ', this.state.currentChatMessage);
-  }
-
-  createConversationCallback(messageAttributes) {
-    // console.log('in show_flat, createConversationCallback, messageAttributes: ', messageAttributes);
-    this.props.createMessage(messageAttributes, (flatId) => this.createMessageCallback(flatId));
   }
 
   createMessageCallback() {
@@ -361,7 +357,7 @@ class Messaging extends Component {
                   : ''}
             </div>
             <textarea value={this.state.currentChatMessage} id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
-            {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
+            {conversationToShow || this.props.noConversationForFlat ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );
       } else if (!this.props.fromShowPage) {
@@ -376,7 +372,7 @@ class Messaging extends Component {
                 : ''}
             </div>
             <textarea value={this.state.currentChatMessage} id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
-            {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
+            {conversationToShow || this.props.noConversationForFlat ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );
       }
