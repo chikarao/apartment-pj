@@ -51,13 +51,13 @@ class ShowFlat extends Component {
   this.handleMessagingOpenClick = this.handleMessagingOpenClick.bind(this);
  }
   componentDidMount() {
-    // console.log('in show flat, componentDidMount, params', this.props.match.params);
     // gets flat id from params set in click of main_cards or infowindow detail click
     // this.props.match.params returns like this: { id: '43' })
     this.props.selectedFlatFromParams(this.props.match.params.id, () => {
       if (this.props.auth.authenticated) {
         this.props.getCurrentUser();
         this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
+        console.log('in show flat, componentDidMount, this.props.auth.id, this.props.flat', this.props.auth.id, this.props.flat);
       }
 
       this.props.fetchReviewsForFlat(this.props.match.params.id);
@@ -424,16 +424,16 @@ class ShowFlat extends Component {
     this.props.history.push(`/bookingconfirmation/${flatId}`);
   }
 
-  currentUserIsOwner() {
-    if (this.props.auth && this.props.flat) {
-      // console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
-      // console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
-      // console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
-      return (this.props.auth.id == this.props.flat.user_id);
-      // return true;
-      // return false;
-    }
-  }
+  // currentUserIsOwner() {
+  //   if (this.props.auth && this.props.flat) {
+  //     // console.log('in show_flat, currentUserIsOwner, this.props.auth.id: ', this.props.auth.id);
+  //     // console.log('in show_flat, currentUserIsOwner, this.props.flat: ', this.props.flat.user_id);
+  //     // console.log('in show_flat, currentUserIsOwner,this.props.auth.id == this.props.flat.user_id: ', (this.props.auth.id == this.props.flat.user_id));
+  //     return (this.props.auth.id == this.props.flat.user_id);
+  //     // return true;
+  //     // return false;
+  //   }
+  // }
 
   handleDateBlockSyncClick(event) {
     // console.log('in show_flat, handleDateBlockClick: ');
@@ -478,14 +478,14 @@ class ShowFlat extends Component {
   }
 
   renderMessaging() {
-    if (!this.currentUserIsOwner() && this.props.conversation) {
-      console.log('in show_flat, renderMessaging, this.currentUserIsOwner, this.props.conversation: ', this.currentUserIsOwner(), this.props.conversation);
+    if (!this.props.currentUserIsOwner && this.props.conversation) {
+      console.log('in show_flat, renderMessaging this.props.currentUserIsOwner, this.props.conversation: ', this.props.currentUserIsOwner, this.props.conversation);
       return (
         <div className="message-box-container">
           <div className="message-box">
           <h3>{AppLanguages.messages[this.props.appLanguageCode]}</h3>
             <Messaging
-              currentUserIsOwner={this.currentUserIsOwner()}
+              currentUserIsOwner={this.props.currentUserIsOwner}
               conversation={this.props.conversation[0]}
               noConversationForFlat={this.props.noConversationForFlat}
               // noConversation={this.props.noConversation}
@@ -513,7 +513,7 @@ class ShowFlat extends Component {
   renderButtons() {
     // console.log('in show_flat, renderButton, this.props.auth.authenticated: ', this.props.auth.authenticated);
       if (this.props.auth.authenticated) {
-        if (!this.currentUserIsOwner()) {
+        if (!this.props.currentUserIsOwner) {
           // console.log('in show_flat, renderButton, if, not current user; I am not the currentUserIsOwner: ', this.currentUserIsOwner());
           return (
             <div className="show-flat-button-box">
@@ -710,7 +710,7 @@ class ShowFlat extends Component {
         show={this.state.messagingOpen}
         // show
         showMessagingModal={() => this.setState({ messagingOpen: false })}
-        currentUserIsOwner={this.currentUserIsOwner()}
+        currentUserIsOwner={this.props.currentUserIsOwner}
         conversation={this.props.conversation[0]}
         noConversationForFlat={this.props.noConversationForFlat}
         containerWidth='300px'
@@ -721,11 +721,9 @@ class ShowFlat extends Component {
   }
 
   render() {
-    // {this.renderMessaging()}
-  // !!!!!map needs to be id=map for the interaction to work
-  // {this.renderFlat(this.props.match.params.id)}
-  // <div className="map-container" id="map">
-  const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+    // !!!!!map needs to be id=map for the interaction to work
+    // if currentUserIsOwner NOT owner and there are no places assigned to flat, do not show mapInteraction
+    const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
     return (
       <div className="show-flat-body">
           {this.state.messagingOpen ? this.renderMessagingModal() : ''}
@@ -752,17 +750,14 @@ class ShowFlat extends Component {
                   places={this.props.flat ? this.props.flat.places : {}}
                   showFlat
                   // check if currentUserIsOwner to display right messages
-                  currentUserIsOwner={this.currentUserIsOwner()}
+                  currentUserIsOwner={this.props.currentUserIsOwner}
                 />
               </div>
             }
-
           </div>
         </div>
 
-          {this.currentUserIsOwner() ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
-
-
+          {this.props.currentUserIsOwner ? <h4>This is your flat! <br/>Block out dates, edit or delete listing.</h4> : this.sendOwnerAMessage()}
           {this.renderReviews()}
         <div className="clear-div" style={{ height: '70px' }}></div>
         <footer className="show-flat-footer">
@@ -777,6 +772,7 @@ function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
     return {
       flat: state.flat.selectedFlatFromParams,
+      currentUserIsOwner: state.flat.currentUserIsOwner,
       selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
       auth: state.auth,
       conversation: state.conversation.conversationByFlat,
@@ -794,7 +790,6 @@ function mapStateToProps(state) {
       // or the appLanaguageCode == flat_language, the base language
       // flatLanguage,
       fetchedIcal: state.bookingData.fetchedIcal
-
     };
   }
 

@@ -353,6 +353,8 @@ const appLanguages =
     uploadDocument: { en: 'Upload Your Document', jp: 'ドキュメントをアップロード' },
     uploadTemplate: { en: 'Upload Your Template', jp: 'テンプレートをアップロード' },
     messageOwner: { en: 'Send a Message', jp: 'メッセージしよう' },
+    noNearbyPlaces: { en: 'No places selected. Go to Edit page and to choose places nearby your flat.', jp: 'プレースが選択されてません。編集ページで物件の近くのプレースを選択してください。' },
+    signOutMessage: { en: 'You have been signed out. \n\n Please come back soon!', jp: 'ログアウトしました。\n\nまたのご使用お待ち申し上げております。' },
     // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
     // staffTitle: { en: 'Title', jp: 'タイトル' },
     // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },

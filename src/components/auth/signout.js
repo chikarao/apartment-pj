@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
+import AppLanguages from '../constants/app_languages';
+
+
 class SignOut extends Component {
   componentWillMount() {
     // if (this.props.authenticated) {
@@ -36,7 +39,7 @@ class SignOut extends Component {
     // :
     // <div className="signout-page-message">&nbsp;&nbsp;&nbsp;You have been signed out. <br/><br/>Please come back soon!</div>;
     // return message;
-    return <div className="signout-page-message">&nbsp;&nbsp;&nbsp;You have been signed out. <br/><br/>Please come back soon!</div>;
+    return <div className="signout-page-message">{AppLanguages.signOutMessage[this.props.appLanguageCode]}</div>;
   }
 
   renderMessage() {
@@ -55,7 +58,9 @@ function mapStateToProps(state) {
 
   return {
     errorMessage: state.auth.error,
-    authenticated: state.auth.authenticated };
+    authenticated: state.auth.authenticated,
+    appLanguageCode: state.languages.appLanguageCode
+  };
 }
 
 export default connect(mapStateToProps, actions)(SignOut);

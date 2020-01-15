@@ -51,7 +51,8 @@ const INITIAL_STATE = {
   flatsResults: {},
   justFlats: {},
   flatBuildingsResultsId: {},
-  flatBuildingsResultsJustId: []
+  flatBuildingsResultsJustId: [],
+  currentUserIsOwner: false,
 };
 export default function (state = INITIAL_STATE, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
@@ -104,8 +105,17 @@ export default function (state = INITIAL_STATE, action) {
     case SELECTED_FLAT:
       return { ...state, selectedFlat: action.payload };
 
-    case SELECTED_FLAT_FROM_PARAMS:
-      return { ...state, selectedFlatFromParams: action.payload };
+    case SELECTED_FLAT_FROM_PARAMS: {
+      // if user logged in compare flat user_id to auth.id then pass as currentUserIsOwner to props
+      const userId = localStorage.getItem('id');
+      let currentUserIsOwner = false;
+      if (userId) {
+        // NOTE: the == comparison does not work with ===
+        currentUserIsOwner = action.payload.user_id == userId;
+      }
+      // console.log('in flats reducer, action.payload: ', action.payload);
+      return { ...state, selectedFlatFromParams: action.payload, currentUserIsOwner };
+    }
 
     case CREATE_FLAT:
       // return _.mapKeys(action.payload, 'id');

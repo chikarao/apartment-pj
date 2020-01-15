@@ -107,7 +107,8 @@ class Header extends Component {
      // for websocket connection to actioncable when user logs on and off
      let userId = null;
      const onShowPage = this.props.location.pathname.includes('/show/');
-     const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden;
+     // connect cable if 1) NOT on showFlat page, OR 2) nonCablePageOverriden (set in eg messaging modal) is true, OR currentUserIsOwner is true
+     const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden || this.props.currentUserIsOwner;
      console.log('in header, componentDidUpdate, prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage: ', prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage);
      console.log('in header, componentDidUpdate, prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut ', prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut);
 
@@ -202,177 +203,7 @@ class Header extends Component {
      window.removeEventListener('resize', this.handleResize);
    }
 
-   // ************************** Websocket Actioncable *************************
-
-   createSocket(id) {
-     this.cable = Cable.createConsumer('ws://localhost:3000/cable');
-     // this.cable.connection.websocket.onclose = () => {
-     //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
-     // };
-     console.log('createSocket this.cable.connnection', this.cable.connection);
-     console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
-     console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
-     console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
-     console.log('createSocket this', this);
-     console.log('createSocket id', id);
-     const userId = localStorage.getItem('id') ? localStorage.getItem('id') : id;
-     console.log('createSocket localStorage userId', userId);
-     // console.log('createSocket Cable', Cable);
-     this.chats = this.cable.subscriptions.create({
-       channel: 'ChatChannel', room: `messaging_room_${userId}`
-       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
-     }, {
-       connected: (message) => {
-           console.log('createSocket in call back to connected message', message);
-           console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
-           // console.log('createSocket in call back to connected, this.chats', this.chats);
-           // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-
-           // if (!message && !this.state.webSocketConnected) {
-             this.authenticateChat();
-           // }
-           // this.cable.connection.webSocket.onclose = function (event) {
-           //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
-           // }
-           // this.webSocket = this.cable.connection.webSocket;
-           if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
-       }, // end of connected
-
-       rejected: () => {
-         console.log('***** Connection Rejected *****');
-       },
-
-       unsubscribed: () => {
-         console.log('***** Connection Unsubscribed *****');
-         // this.perform('unsubscribed');
-       },
-
-       unsubscribeConnection: function () {
-         console.log('***** Unsubscribing from Connection *****');
-         this.perform('unsubscribe_connection', {});
-       },
-
-       // unsubscribe: () => {
-       //     console.log('createSocket in call back to unsubscribe');
-       // }, // end of connected
-       authenticated: function (token) {
-         this.perform('authenticated', { token });
-         console.log('***** Authenticating Action Cable Connection *******');
-       },
-
-       received: (data) => {
-         console.log('createSocket in received before if data', data);
-         if (data.conversation) {
-           // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
-           const conversation = JSON.parse(data.conversation);
-           this.props.receiveConversation(conversation);
-           console.log('createSocket this', this);
-           // chatLogs.push(conversation);
-           // this.setState({ chatLogs }, () => {
-           //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-           //   }
-           // );  // end of setState
-         } else if (data.notification) {
-           console.log('createSocket in received, data ', data);
-           if (data.notification === 'typing') {
-             if (this.state.typingTimer === 0) {
-               console.log('createSocket in received, data.notification.typing ', data.notification);
-               const lapseTime = () => {
-                 if (subTimer > 0) {
-                   subTimer--;
-                   console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
-                 } else {
-                   console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
-                   // typingTimer--;
-                   this.setState({ typingTimer: subTimer }, () => {
-                     console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
-                   });
-                   clearInterval(timer);
-                 }
-               };
-               // clearInterval(timer);
-               let subTimer = 5;
-               if (this.state.typingTimer < 5) {
-                 this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
-                   console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
-                 });
-               }
-               const timer = setInterval(lapseTime, 1000);
-             }
-           } else if (data.notification === 'authenticated') { // if typing
-             console.log('createSocket in received, data.notification else ', data.notification);
-             this.resetDisconnectTimer(20);
-           }
-         }
-       }, // end of received
-
-       create: function (chatContent) {
-         this.perform('create', { content: chatContent });
-       }, // end of create:
-
-       typing: function (addresseeId) {
-         console.log('createSocket this', this);
-         this.perform('typing', { user_id: userId, addressee_id: addresseeId });
-       },
-     }); // end of subscriptions.create and second object
-   }
-
-   resetDisconnectTimer(time) {
-     const lapseTime = () => {
-       if (subTimer > 0) {
-         subTimer--;
-         console.log('disconnectTimer lapseTime, subTimer ');
-       } else {
-         console.log('disconnectTimer lapseTime, subTimer in else TIME IS UP!!!!!!! ', subTimer);
-         // typingTimer--;
-         clearInterval(timer);
-         // disconnectTimer = subTimer;
-         this.handleDisconnectEvent();
-       }
-     };
-     let subTimer = time;
-     // disconnectTimer = subTimer;
-     const timer = setInterval(lapseTime, 1000);
-   }
-
-   authenticateChat() {
-     const token = localStorage.getItem('token');
-     this.chats.authenticated(token);
-     console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection', this.cable.connection);
-     console.log('authenticateChat in call back to chat connection authenticated, run');
-     // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
-     this.cable.connection.webSocket.onclose = (m) => {
-       // onclose listener for when websocket is closed or disconnected;
-       // if rails server is shutdown, this fires, and when server restarted, automatically connects; by npm actioncable???
-       console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
-       // set webSocketConnected to false to change online indicator
-       this.setState({ webSocketConnected: false }, () => {
-         console.log('authenticateChat in call back to chat connection authenticated, this.state.webSocketConnected', this.state.webSocketConnected);
-       });
-       // if webSocket connection is disconneted, createSocket reconnects
-       // this.createSocket();
-     };
-     // this.cable.connection.webSocket.onmessage = (m) => {
-     // //onMessage listener for getting pings; This is onhold until can find out way to pong back.
-     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
-     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
-     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
-     //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' } };
-     //     const message = { command: 'message', identifier: this.cable.subscriptions.subscriptions[0].identifier, data: JSON.stringify({ action: 'message', data: m.data.message }) };
-     //     // const message = { command: 'message', event: 'ping', identifier: JSON.stringify({ channel: 'ChatChannel', room: 'messaging_room_3' }), data: JSON.stringify({ action: 'message', data: m.data.message }) };
-     //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' }, data: JSON.stringify({ type: 'ping', message: m.data.message }) };
-     //     // const message = m.data.message;
-     //     this.cable.connection.webSocket.send(JSON.stringify(message));
-     //     // if (m.data.type === 'ping') {
-     //     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
-     //     //   return;
-     //     // }
-     //     // this.cable.connection.webSocket.send(message);
-     //   // if webSocket connection is disconneted, createSocket reconnects
-     //   // this.createSocket();
-     // };// end of on message
-   }
-
+   // !!! KEEP handleDisconnectEvent; Called in componentDidUpdate
    handleDisconnectEvent() {
      // event.preventDefault();
      // disconnects consumer and stops streaming
@@ -380,14 +211,10 @@ class Header extends Component {
      // ChatChannel stopped streaming from test_room
      // .disconnect causes webSocket.onclose listener to fire.
      // unsubscribe leading to reject does not fire onclose
+     this.props.propsCable.disconnect();
      this.setState({ webSocketConnected: false }, () => {
        console.log('handleDisconnectEvent call back to this.state.webSocketConnected', this.state.webSocketConnected);
-       this.props.propsCable.disconnect();
      });
-     // this.chats.unsubscribeConnection(() => {
-     // console.log('handleDisconnectEvent in call back to disconnect');
-     // });
-     // this.chats.unsubscribed();
    }
    // ************************** Websocket Actioncable *************************
 
@@ -566,9 +393,9 @@ class Header extends Component {
   }
 
   handleMailBoxClick() {
-    // this.props.history.push(`/messagingmain/${this.props.auth.id}`);
-    const win = window.open(`/messagingmain/${this.props.auth.id}`, '_blank');
-    win.focus();
+    this.props.history.push(`/messagingmain/${this.props.auth.id}`);
+    // const win = window.open(`/messagingmain/${this.props.auth.id}`, '_blank');
+    // win.focus();
     // console.log('in header, handleMailBoxClick: ');
   }
 
@@ -625,9 +452,6 @@ class Header extends Component {
              <li className="nav-item">
               <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
              </li>
-             <li className="nav-item header-language-selection-box-li">
-               {this.renderAppLanguageSelect()}
-             </li>
              <li className="nav-item">
               <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
              </li>
@@ -640,6 +464,9 @@ class Header extends Component {
                </li> :
                ''
              }
+             <li className="nav-item header-language-selection-box-li">
+              {this.renderAppLanguageSelect()}
+             </li>
            </ul>
          ];
        } else if (onMessagingMainPage) {
@@ -669,6 +496,15 @@ class Header extends Component {
                 <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
                </li>
                { this.props.conversations && !onShowPage ?
+                 <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
+                   <div className="header-mail-box">
+                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+                   <i className="fa fa-envelope"></i>
+                   </div>
+                 </li> :
+                 ''
+               }
+               { this.props.conversations && onShowPage && this.props.currentUserIsOwner ?
                  <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                    <div className="header-mail-box">
                    {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
@@ -785,9 +621,11 @@ class Header extends Component {
 // end of class
 function mapStateToProps(state) {
   console.log('in header, mapStateToProps, state: ', state)
+
   return {
     auth: state.auth,
     authenticated: state.auth.authenticated,
+    currentUserIsOwner: state.flat.currentUserIsOwner,
     email: state.auth.email,
     id: state.auth.id,
     showLoading: state.auth.showLoading,

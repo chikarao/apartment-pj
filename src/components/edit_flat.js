@@ -886,6 +886,7 @@ class EditFlat extends Component {
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
+    // const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
     // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
     // console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
 
@@ -1184,8 +1185,8 @@ class EditFlat extends Component {
           <div>
             {this.props.flat.images.length < MAX_NUM_FILES ?
               <Upload
-              flatId={this.props.flat.id}
-              flat={this.props.flat}
+                flatId={this.props.flat.id}
+                flat={this.props.flat}
               /> :
               ''
             }
@@ -1196,12 +1197,14 @@ class EditFlat extends Component {
             <div className="container" id="map">
             {this.renderMap()}
             </div>
-            <MapInteraction
-              flat={this.props.flat}
-              places={this.props.flat.places}
-              currentUserIsOwner={this.currentUserIsOwner()}
-              showFlat={false}
-            />
+              <div className="col-xs-12 col-sm-12 col-md-4">
+                <MapInteraction
+                  flat={this.props.flat ? this.props.flat : ''}
+                  places={this.props.flat ? this.props.flat.places : ''}
+                  currentUserIsOwner={this.props.currentUserIsOwner}
+                  showFlat={false}
+                />
+              </div>
           </div>
 
           <div className="back-button">
@@ -1442,6 +1445,7 @@ function mapStateToProps(state) {
     return {
       flat: state.selectedFlatFromParams.selectedFlatFromParams,
       buildings: state.flat.buildings,
+      currentUserIsOwner: state.flat.currentUserIsOwner,
       // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
       amenity: state.selectedFlatFromParams.selectedFlatFromParams.amenity,
       auth: state.auth,

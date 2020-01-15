@@ -1059,8 +1059,6 @@ class MapInteraction extends Component {
     );
   }
   renderMapLanguageSelectButtons() {
-    // console.log('in MapInteraction, renderMapLanguageSelectButtons, this.props.placeSearchLanguageCode: ', this.props.placeSearchLanguageCode);
-
     return (
       <div className="map-interaction-language-select-box">
         <div className="map-interaction-language-select-box-label">{AppLanguages.searchOutputLanguage[this.props.appLanguageCode]}</div>
@@ -1110,39 +1108,52 @@ class MapInteraction extends Component {
     const placesEmpty = _.isEmpty(places);
     // place each language code in places in an array if not in array already
     const placeLanguageArray = [];
+    // get the available languages in array of places and put them in array
     if (!placesEmpty) {
       _.each(places, eachPlace => {
+        console.log('in MapInteraction, renderPlacesBox eachPlace', eachPlace);
         if (!placeLanguageArray.includes(eachPlace.language)) {
-          placeLanguageArray.push(eachPlace.language)
+          placeLanguageArray.push(eachPlace.language);
         }
-      })
-    }
-    // console.log('in MapInteraction, renderPlacesBox, placeLanguageArray: ', placeLanguageArray);
-    // render places box for each language in places so that user can see
-    // each box for each place in a language that is added
-    return _.map(placeLanguageArray, eachPlaceLanguageCode => {
-      let renderIt = false;
-      // set flag true if user is on showflat and render only the language selected by user
-      this.props.showFlat && (this.props.appLanguageCode == eachPlaceLanguageCode) ? renderIt = true : '';
-      // if not on showflat, render all a box for each place language
-      !this.props.showFlat ? renderIt = true : '';
+      });
+      // render places box for each language in places so that user can see
+      // each box for each place in a language that is added
+      return _.map(placeLanguageArray, eachPlaceLanguageCode => {
+        let renderIt = false;
+        // set flag true if user is on showflat and render only the language selected by user
+        this.props.showFlat && (this.props.appLanguageCode == eachPlaceLanguageCode) ? renderIt = true : '';
+        // if not on showflat, render all a box for each place language
+        !this.props.showFlat ? renderIt = true : '';
 
-      if (renderIt) {
-        return (
-          <div key={eachPlaceLanguageCode} className="map-interaction-box">
-            <div className="map-interaction-title">
-              <i className="fa fa-chevron-circle-right"></i>
-              &nbsp;
-              {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}
-              &nbsp;{this.props.showFlat ? '' : Languages[eachPlaceLanguageCode].flag}
+        if (renderIt) {
+          return (
+            <div key={eachPlaceLanguageCode} className="map-interaction-box">
+              <div className="map-interaction-title">
+                <i className="fa fa-chevron-circle-right"></i>
+                &nbsp;
+                {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}
+                &nbsp;{this.props.showFlat ? '' : Languages[eachPlaceLanguageCode].flag}
+              </div>
+              <ul>
+                {this.renderSelectedResultsList(eachPlaceLanguageCode)}
+              </ul>
             </div>
-            <ul>
-              {this.renderSelectedResultsList(eachPlaceLanguageCode)}
-            </ul>
-          </div>
-        );
-      }
-    });
+          );
+        }
+      });
+    } // end of if places not empty
+    // if places empty, return box with no places selected message; Only for flat owners
+    // Non-owners will not see a box
+    return (
+      <div className="map-interaction-box">
+        <div className="map-interaction-title">
+          {AppLanguages.nearbyPlaces[this.props.appLanguageCode]}
+        </div>
+        <div style={{ width: 'auto', height: 'auto', padding: '50px', color: 'gray', fontSize: '15px' }}>
+          {AppLanguages.noNearbyPlaces[this.props.appLanguageCode]}
+        </div>
+      </div>
+    );
   }
 
   renderMapInteraction() {
@@ -1158,9 +1169,14 @@ class MapInteraction extends Component {
       // do not show the container if it is shown on the showflat page, AND the user is owner of the flat AND
       // there are no places for the flat
       const doNotShowContainer = this.props.showFlat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+      // const doNotShowContainer = this.props.showFlat && (this.props.flat.places.length < 1)
+      // const doNotShowContainerUserIsOwner = this.props.showFlat && this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+      console.log('in MapInteraction, renderMapInteraction, this.props.flat, this.props.currentUserIsOwner, this.props.showFlat: ', this.props.flat, this.props.currentUserIsOwner, this.props.showFlat);
+      console.log('in MapInteraction, renderMapInteraction, doNotShowContainer: ', doNotShowContainer);
       if (doNotShowContainer) {
         return null;
       }
+
       return (
         <div className="map-interaction-container">
           {this.props.showFlat ? '' : this.renderSearchBox()}

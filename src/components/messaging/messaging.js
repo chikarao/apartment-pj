@@ -27,16 +27,24 @@ class Messaging extends Component {
  }
 
   // componentDidMount() {
-    // console.log('in show flat, componentDidMount, params', this.props.match.params);
-    // // gets flat id from params set in click of main_cards or infowindow detail click
-      // this.scrollLastMessageIntoView();
+  //   console.log('in show flat, componentDidMount, params', this.props.match.params);
+  //   // gets flat id from params set in click of main_cards or infowindow detail click
+  //     this.scrollLastMessageIntoView();
   // }
 
-  componentDidUpdate() {
-    // if (this.state.inMessaging) {
+  componentDidUpdate(prevProps) {
+    // if not from show page scroll to the last message
     if (!this.props.fromShowPage) {
       this.scrollLastMessageIntoView();
     }
+
+    if (prevProps.typingTimer !== this.props.typingTimer && this.props.typingTimer > 0) {
+      this.scrollLastMessageIntoView();
+    }
+
+    // if (this.props.propsWebSocketTimedOut) {
+    //   this.props.webSocketConnected({ timedOut: false });
+    // }
   }
 
     // const messageBox = document.getElementById('message-show-box');
@@ -130,23 +138,26 @@ class Messaging extends Component {
   }
 
   scrollLastMessageIntoView() {
+    // Gets the last message and scrolls into view.
+    // also gets the typing indicator and scrolls into voew
     const items = document.querySelectorAll('.each-message-box');
+    const itemsTyping = document.querySelectorAll('.each-message-content');
     console.log('in messaging, scrollLastMessageIntoView, items: ', items);
 
     const last = items[items.length - 1];
+    const lastTyping = itemsTyping[itemsTyping.length - 1];
     // console.log('in messaging, scrollLastMessageIntoView, last: ', last);
     if (last) {
       last.scrollIntoView({ behavior: 'smooth' });
     }
+
+    if (lastTyping) {
+      last.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
-  handleMessageSendClick(event) {
-    //this.props.conversation is an array!!!
-    // console.log('in messaging, handleMessageSendClick, this.props.conversation', this.props.conversation);
-    // console.log('in messaging, handleMessageSendClick, clicked: ', event);
-    // const messageText = document.getElementById('message-textarea');
-    const messageText = { value: this.state.currentChatMessage};
-    // console.log('in messaging, handleMessageSendClick, messageText: ', messageText);
+  handleMessageSendClick() {
+    const messageText = { value: this.state.currentChatMessage };
 
     let sentByUser;
 
@@ -155,37 +166,31 @@ class Messaging extends Component {
     } else {
       sentByUser = !this.props.thisIsYourFlat;
     }
-    // console.log('in messaging, handleMessageSendClick, sentByUser: ', sentByUser);
-    // console.log('in messaging, handleMessageSendClick, this.props.currentUserIsOwner: ', this.props.currentUserIsOwner);
-    // console.log('in messaging, handleMessageSendClick, this.props.thisIsYourFlat: ', this.props.thisIsYourFlat);
 
     if (this.props.noConversationForFlat && this.props.fromShowPage) {
-      // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.noConversationForFlat);
       // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
       this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, flat_id: this.props.flat.id, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
     } else {
       const conversationToShow = this.conversationToShow();
-      const { user_id, flat_id, id } = conversationToShow[0];
+      const { user_id, flat_id, id } = conversationToShow;
       // console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
       this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
     }
-    // this.createMessage()
-    // messageText.value = '';
-    this.setState({ currentChatMessage: '' });
+    //   console.log('in messaging, handleMessageSendClick, callback in setState this.state.CurrentChatMessage: ', this.state.currentChatMessage);
   }
 
   createConversationCallback(messageAttributes) {
     // console.log('in show_flat, createConversationCallback, messageAttributes: ', messageAttributes);
-
     this.props.createMessage(messageAttributes, (flatId) => this.createMessageCallback(flatId));
   }
 
-  createMessageCallback(id) {
-    // console.log('in show_flat, createMessageCallback, id: ', id);
+  createMessageCallback() {
     // this.props.history.push(`/show/${id}`);
     // this.setState(this.state);
     // this.props.fetchConversationByFlatAndUser(id);
-    this.setState({ messagingToggle: !this.state.messagingToggle });
+    this.setState({ messagingToggle: !this.state.messagingToggle, currentChatMessage: '' }, () => {
+      console.log('in messaging, createMessageCallback, this.state.currentChatMessage: ', this.state.currentChatMessage);
+    });
     this.scrollLastMessageIntoView();
   }
 
@@ -261,24 +266,6 @@ class Messaging extends Component {
       </div>
     );
   }
-
-  // renderUserTyping() {
-  //   // To turn on and off while current user is typing,
-  //   // make !== this in renderMessages =>>>> this.props.messageSender === this.props.auth.id
-  //   console.log('in messaging, renderUserTyping called: ');
-  //   return (
-  //     <div className="each-message-box" style={{ minHeight: '35px' }}>
-  //       <div className="each-message">
-  //         <div className="each-message-content" style={{ border: '1px solid transparent' }}>
-  //           <Typing
-  //             typingTimer={this.props.typingTimer}
-  //             messageSender={this.props.messageSender}
-  //           />
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   renderUserTyping() {
     // To turn on and off while current user is typing,
@@ -373,7 +360,7 @@ class Messaging extends Component {
                   ? this.renderUserTyping()
                   : ''}
             </div>
-            <textarea id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
+            <textarea value={this.state.currentChatMessage} id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
             {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );
@@ -388,7 +375,7 @@ class Messaging extends Component {
                 ? this.renderUserTyping()
                 : ''}
             </div>
-            <textarea id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
+            <textarea value={this.state.currentChatMessage} id="message-textarea" onChange={this.updateCurrentChatMessage} className={this.props.largeTextBox ? 'message-input-box-main wideInput' : 'message-input-box wideInput'} type="text" maxLength="200" placeholder={AppLanguages.enterMessage[this.props.appLanguageCode]} />
             {conversationToShow ? <button className="btn btn-primary btn-sm message-btn" onClick={this.handleMessageSendClick}>{AppLanguages.send[this.props.appLanguageCode]}</button> : ''}
           </div>
         );

@@ -410,7 +410,7 @@ h3 {
 
 .header-mail-li {
   margin: 0;
-  padding: 12px 20px 0 0;
+  padding: 15px 20px 0 0;
 }
 
 .header-mail-box {
@@ -1877,6 +1877,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 3px;
   max-height: 350px;
   border: 1px solid #ccc;
+  background-color: rgb(252, 252, 252);
   border-radius: 2px;
   overflow: hidden;
   overflow-y: scroll;
@@ -1889,7 +1890,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 3px;
   height: 300px !important;
   border: 1px solid #ccc;
-  background-color: white;
+  background-color: rgb(252, 252, 252);
+  /* background-color: white; */
   border-radius: 3px;
   overflow: hidden;
   overflow-y: scroll;
@@ -2041,6 +2043,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   margin: 0 0 3px 0;
   padding: 5px;
   display: flex;
+  background-color: rgb(252, 252, 252);
   justify-content: space-around;
 }
 

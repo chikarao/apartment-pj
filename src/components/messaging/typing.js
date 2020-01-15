@@ -110,8 +110,8 @@ class Typing extends Component {
       {this.props.typingTimer > 0 ?
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', padding: '3px' }}>
           <div style={{ padding: '4px' }}>{`User ${this.props.messageSender}` + ' is typing'}</div>
-          <div>
-          <img style={{ height: '50px', width: '90px', borderRadius: '5px' }} src={typingWaitingGif} alt="" />
+          <div style={{ backgroundColor: 'white' }}>
+            <img style={{ height: '50px', width: '90px', borderRadius: '5px', backgroundColor: 'white !important' }} src={typingWaitingGif} alt="" />
           </div>
         </div>
 
