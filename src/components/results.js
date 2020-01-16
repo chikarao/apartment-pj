@@ -101,6 +101,8 @@ class Results extends Component {
 
   componentDidMount() {
     // handleResize works with windowWidth and RESIZE_BREAK_POINT
+    this.props.getGoogleMapBoundsKeys();
+
     window.addEventListener('resize', this.handleResize);
 
     const latOffsetNorth = latLngOffset.latOffsetNorth;
@@ -1627,7 +1629,7 @@ class Results extends Component {
   }
 
   renderShowFilterButton() {
-    // show map and handle click with one handler for both map and filter 
+    // show map and handle click with one handler for both map and filter
     return (
       <div className="results-show-filter-button" value="filter" onClick={this.handleShowMapFilterClick}>
         <i className="fa fa-filter" value="filter"></i>

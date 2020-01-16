@@ -30,10 +30,14 @@ class GoogleMap extends Component {
   }
 
   componentDidMount() {
-    // runs right after component is rendered to the screeen
-    // flatsEmpty is prop passed in map render
-    // and is true if there are no search results for the map area or criteria
-    this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
+    // renderMap has been moved to componentDidUpdate
+    // if (this.props.showFlat) this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
+    // NOTE: To deal with the problem of Google Map changing its API in bounds ie Ta.g
+    // the letters TA, g, i and etc are fetched from the backend in flats#get_google_map_bounds_keys
+    // The letters are fetched and componentDidUpdate test for null and populated keys and
+    // renderMap is called only if there is a state update where key is empty in prev and populated in this.props.
+    // called in results.js CDM and showFlat.js componentDidMount also call this.props.getGoogleMapBoundsKeys
+    // this.props.getGoogleMapBoundsKeys();
   }
   //end of componentDidMount
 
@@ -47,39 +51,22 @@ class GoogleMap extends Component {
   // and also setMap null; same for flatBuildings
 
   componentDidUpdate(prevProps) {
+    // console.log('in googlemaps componentDidUpdate, prevProps.googleMapBoundsKeys, this.props.googleMapBoundsKeys: ', prevProps.googleMapBoundsKeys, this.props.googleMapBoundsKeys);
+    // flatsEmpty is prop passed in map render
+    // and is true if there are no search results for the map area or criteria
+    // Note; googleMapBoundsKeys are passed from the backend to deal with frequent google api changes
+    // When these keys turn from null in prevProps to not null, call renderMap
+    // Action to fetch bounds keys is called in results.js componentDidMount
+    if (!prevProps.googleMapBoundsKeys && this.props.googleMapBoundsKeys) this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
+
     if (this.props.flatBuildings && this.props.flats) {
-    // takes state flatMarkersArray updated in this.createMarkers
-    // KEEP in case code below does not work
+    // Below code is for updating markers in map as user moves the map bounds or changes search criteria
+    // Deletes old markers and creates new markers with changes in search condition
     // Back end api does the logic for prevPropsFlatIdArray and currentPropsFlatArray
-    // const prevPropsFlatIdArray = [];
-    // _.each(prevProps.flats, flat => {
-    //   prevPropsFlatIdArray.push(flat.id);
-    // });
-
-    // and creates array of current flats with just IDs so that easy to compare this and prev props
-    // Somehow, will not work by using this.props. and prevProps flatsId
-    // probably due to timing of props update???? Get error length of undefined
-    // const currentPropsFlatIdArray = [];
-    // // const currentPropsFlatArray = [];
-    // _.each(this.props.flats, flat => {
-    //   currentPropsFlatIdArray.push(flat.id);
-    //   // since this.props.flats is an object of objects
-    //   // currentPropsFlatArray.push(flat);
-    // });
-
-    // and creates array of markers on map with just IDs so that easy to compare this and prev props
-    // const flatMarkersArrayIds = [];
-    // _.each(this.state.flatMarkersArray, marker => {
-    //   flatMarkersArrayIds.push(marker.flatId);
-    // });
-
     // and creates array of prev flats with just IDs so that easy to compare this and prev props
     const prevPropsFlatIdArray = prevProps.flatsId;
     const currentPropsFlatIdArray = this.props.flatsId;
-    console.log('in googlemaps componentDidUpdate, currentPropsFlatIdArray: ', currentPropsFlatIdArray);
-
-    // const prevPropsFlatIdArray = (prevProps.flatsId === undefined) || (prevProps.flatsId === null) ? [] : prevProps.flatsId;
-    // const currentPropsFlatIdArray = (this.props.flatsId === undefined) || (this.props.flatsId === null) ? [] : this.props.flatsId;
+    // console.log('in googlemaps componentDidUpdate, currentPropsFlatIdArray: ', currentPropsFlatIdArray);
 
     const newFlatsArray = [];
     // iterate over this.props.flats to get array of new flats and flat ids
@@ -90,7 +77,6 @@ class GoogleMap extends Component {
          if (!prevPropsFlatIdArray.includes(flat.id)) {
            // newFlatsIdArray.push(flat.id);
            newFlatsArray.push(flat);
-           // console.log('in googlemaps componentDidUpdate, flatMarkersArrayIds newMarkerArray: ', flatMarkersArrayIds, newMarkerArray);
          }
       // if prev props array had nothing in it, then ALL this.props.flat are new
        } else {
@@ -100,30 +86,6 @@ class GoogleMap extends Component {
      });
 
      // if current markers in state is NOT included in this.props.flats then they are old markers
-     // Note: id array
-     // const oldFlatMarkerIdArray = [];
-     // _.each(flatMarkersArrayIds, markerId => {
-     //   // console.log('in googlemaps componentWillReceiveProps, oldFlatMarkerIdArray each, markerId: ', markerId);
-     //   if (!currentPropsFlatIdArray.includes(markerId)) {
-     //     oldFlatMarkerIdArray.push(markerId);
-     //   }
-     // });
-     // // Note: NOT id array, marker array
-     // // console.log('in googlemaps componentDidUpdate, oldFlatMarkersArray: ', oldFlatMarkersArray);
-     // // iterate over oldMarkerArray to get the actual markers in state with id
-     // _.each(oldFlatMarkerIdArray, markerId => {
-     //    const oldMarker = this.state.flatMarkersArray.filter(flatMarker => {
-     //      // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
-     //     return flatMarker.flatId === markerId;
-     //   });
-     //   oldFlatMarkersArray.push(oldMarker[0]);
-     // });
-     // // take oldFlatMarkersArray and setMap null to remove from map
-     // _.each(oldFlatMarkersArray, marker => {
-     //   marker.setMap(null);
-     //   // clearMarkers(marker);
-     // });
-
      // go through each flat marker and if they are not included in
      // current props of flats, push into oldFlatMarkersArray to send to createMarkers
      // set map of null to take off of map
@@ -138,37 +100,12 @@ class GoogleMap extends Component {
      });
 
      //  ****************BUILDINGS ****************
-     // ********************************************
-     //
-       // const buildingMarkersArrayIds = [];
-       // _.each(this.state.buildingMarkersArray, marker => {
-       //   buildingMarkersArrayIds.push(marker.buildingId);
-       // });
-
-       // const prevPropsBuildingIdArray = [];
-       // // const prevPropsBuildingObject = {};
-       // _.each(prevProps.flatBuildings, building => {
-       //   prevPropsBuildingIdArray.push(building[0].building.id);
-       //   // prevPropsBuildingObject[building[0].building.id] = building;
-       // });
-       //
-       // const currentPropsBuildingIdArray = [];
-       // // const currentPropsBuildingArray = [];
-       // // const currentPropsBuildingObject = {};
-       // _.each(this.props.flatBuildings, building => {
-       //   currentPropsBuildingIdArray.push(building[0].building.id);
-       //   // since this.props.flats is an object of objects
-       //   // currentPropsBuildingArray.push(building);
-       //   // currentPropsBuildingObject[building[0].building.id] = building;
-       // });
-       // console.log('in googlemaps componentDidUpdate, currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray: ', currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray);
+        // console.log('in googlemaps componentDidUpdate, currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray: ', currentPropsBuildingIdArray, prevPropsBuildingIdArray, this.state.buildingMarkersArray);
        // Object for creating new buildings
        const newBuildingsObject = {};
        // Array for deleting old markers
        const oldBuildingsIdArray = []
        // Gets buildingsJustId from backend api so obviates need to iterate through this.props and prevProps.flatBuildings
-       // const prevPropsBuildingIdArray = (prevProps.buildingsJustId === undefined) || (prevProps.buildingsJustId === null) ? [] : prevProps.buildingsJustId;
-       // const currentPropsBuildingIdArray = (this.props.buildingsJustId === undefined) || (this.props.buildingsJustId === null) ? [] : this.props.buildingsJustId;
        const prevPropsBuildingIdArray = prevProps.buildingsJustId;
        const currentPropsBuildingIdArray = this.props.buildingsJustId;
 
@@ -191,29 +128,10 @@ class GoogleMap extends Component {
            // if prev props array had nothing in it, then ALL this.props.flatbuilding are new
          } else {
            // else for if prevPropsBuildingIdArray.length > 0
-           // newBuildingsArray.push(building);
            newBuildingsObject[buildingKey] = this.props.flatBuildings[buildingKey];
          }
        });
-       // condensed three loops into one below
-       // _.each(buildingMarkersArrayIds, markerId => {
-       //   if (!currentPropsBuildingIdArray.includes(markerId)) {
-       //     oldBuildingsIdArray.push(markerId);
-       //   }
-       // });
-       //
-       // _.each(oldBuildingsIdArray, markerId => {
-       //    const oldMarker = this.state.buildingMarkersArray.filter(buildingMarker => {
-       //      // returns array of markers (in each case just one) with flat.id of oldMarkers flat_id
-       //     return buildingMarker.buildingId === markerId;
-       //   });
-       //   oldBuildingMarkersArray.push(oldMarker[0]);
-       // });
-       //
-       // // take oldFlatMarkersArray and setMap null to remove from map
-       // _.each(oldBuildingMarkersArray, marker => {
-       //   marker.setMap(null);
-       // });
+
        const oldBuildingMarkersArray = []
        // go through each building marker and if they are not included in
        // current props of buildings, push into oldBuildingMarkersArray to send to createMarkers
@@ -241,10 +159,7 @@ class GoogleMap extends Component {
       // this is where initial zoom is set after city search and jump to results page
       initialZoom = 12;
     }
-    // console.log('in googlemap, componentDidMount, this.props.flatsEmpty:', this.props.flatsEmpty);
-    // console.log('in googlemap, componentDidMount, INITIAL_ZOOM:', INITIAL_ZOOM);
-    // console.log('in googlemap, renderMap, this.props.initialPosition:', this.props.initialPosition);
-
+    // console.log('in googlemap, renderMap, flats:', flats);
     const map = new google.maps.Map(this.refs.map, {
       // creates embedded map in component
       // zoom: initialZoom,
@@ -291,7 +206,7 @@ class GoogleMap extends Component {
         this.createMarkers(flats, [], buildings, []);
       }
     });
-    // Fired when map is moved; gets map dimensions
+    // Listner is fired when map is moved; gets map dimensions;
     // and call action fetchflats to get flats within map bounds
     // calls action updateMapDimensions for updating mapDimensions state
     // mapDimensions is used to render map when flats search result is empty
@@ -305,9 +220,7 @@ class GoogleMap extends Component {
       const bounds = map.getBounds();
       const mapCenter = map.getCenter();
       const mapZoom = map.getZoom();
-      console.log('in googlemap, bounds: ', bounds);
-      console.log('in googlemap, bounds.ka, bounds.pa: ', bounds.ka, bounds.pa);
-      console.log('in googlemap, bounds.ka.g, bounds.pa.g: ', bounds.ka.g, bounds.pa.g);
+      // console.log('in googlemap, bounds.ka, bounds.pa: ', bounds.ka, bounds.pa);
       //leaving just to show how mapbounds works
       // const ew = bounds.b; // LatLng of the north-east corner
       // const ns = bounds.f; // LatLng of the south-west corder
@@ -327,8 +240,9 @@ class GoogleMap extends Component {
       //   north,
       //   south
       // };
-      // for fetchFlats within the coordinate bounds
-      // got error of type error property f of undefined;
+      // for fetchFlats within the coordinate bounds; Gets map bounds and sends coordinartes for east/west/north/south
+      // And the backend fetches flats within the bounds. Same as when user moves map as when map first renders
+      // Got error of type error property f of undefined;
       // Looks like google maps changed its API so
       // change from b.f f.f to j.l and l.l
       // changed again 12/12/18 to ea.l and j and la.l and j
@@ -336,13 +250,28 @@ class GoogleMap extends Component {
       // changed again 1/16/19 to ga.l and j ma.l and j
       // changed yet again 4/19 to ia.l and j, na.l and j
       // changed yet again 7/24 to ga.l and j, na.l and j what for????
-      // changed yet again 12/17 or before to ka.h, ka.g, pa.h, pa.g
+      // changed yet again 12/17/2019 or before to ka.h, ka.g, pa.h, pa.g
+      // changed yet again 1/16/2020 to Ya.i, Ya.g, Ta.i, Ya.g
+      // !!!!!!!!!!!!! KEEP below console logs even in production
+      console.log('in googlemap, bounds: ', bounds);
+      console.log('in googlemap, bounds.Ya.g, bounds.Ta.g: ', bounds.Ya.g, bounds.Ta.g);
+      // NOTE: googleMapBoundsKeys is fetched from the backend flats#get_google_map_bounds_keys
+      // This is so that when this app has a mobile app version, there is a way to change the code from the backend
+      const { east_west_first, east_second, west_second, north_south_first, north_second, south_second } = this.props.googleMapBoundsKeys;
+      // const mapBounds = {
+      //   east: bounds.Ta.i,
+      //   west: bounds.Ta.g,
+      //   north: bounds.Ya.i,
+      //   south: bounds.Ya.g
+      // };
+      // map bouunds is defined with keys received from backend api
       const mapBounds = {
-        east: bounds.ka.h,
-        west: bounds.ka.g,
-        north: bounds.pa.h,
-        south: bounds.pa.g
+        east: bounds[east_west_first][east_second],
+        west: bounds[east_west_first][west_second],
+        north: bounds[north_south_first][north_second],
+        south: bounds[north_south_first][south_second]
       };
+      console.log('in googlemap, bounds mapBounds: ', mapBounds);
       // const mapBounds = {
       //   east: bounds.b.f,
       //   west: bounds.b.b,
@@ -352,23 +281,12 @@ class GoogleMap extends Component {
 
       MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
 
-      // console.log('in googlemap, mapBounds: ', mapBounds);
-      // console.log('in googlemap, mapCenter.lat: ', mapCenter.lat());
-      // console.log('in googlemap, mapCenter.lng: ', mapCenter.lng());
-      // console.log('in googlemap, mapZoom: ', mapZoom);
-      // console.log('in googlemap, MAP_DIMENSIONS, mapBounds: ', MAP_DIMENSIONS.mapBounds);
-      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lat: ', MAP_DIMENSIONS.mapCenter.lat());
-      // console.log('in googlemap, MAP_DIMENSIONS, mapCenter.lng: ', MAP_DIMENSIONS.mapCenter.lng());
-      // console.log('in googlemap, MAP_DIMENSIONS, mapZoom: ', MAP_DIMENSIONS.mapZoom);
-
       // updateMapBounds not available as app state obj but not currently used
 
       // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
       //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
       if (!this.props.showFlat && idleListenerOn) {
-        // console.log('in googlemap, MAP_DIMENSIONS:', MAP_DIMENSIONS);
-        // console.log('in googlemap, fetchFlats call, this:', this);
         // !!!!!!don't need updateMapDimensions now that results calls googleMap by using
         // searchFlatParams latlng and zoom; And if there is no searchFlatParams latlng
         // then if there is no latlng in searchFlatParams, then uses stored latlng and zoom
@@ -377,10 +295,6 @@ class GoogleMap extends Component {
         this.props.fetchFlats(mapBounds, this.props.searchFlatParams, () => this.fetchFlatsCallback('google maps'));
         this.props.showLoading('google maps');
       }
-      // for (let i = 0; i < this.state.flatMarkersArray.length - 1; i++) {
-      //   this.state.flatMarkersArray[i].setMap(null);
-      // }
-      // this.createMarkers();
     }); // end of addlistner idle
 
     // gets lat lng of point on map where click
@@ -397,6 +311,7 @@ class GoogleMap extends Component {
   }
 
   createCircle() {
+    // create circle for showflat map
     const circle = new google.maps.Circle({
       strokeColor: '#FF0000',
       strokeOpacity: 0.8,
@@ -481,20 +396,18 @@ class GoogleMap extends Component {
     const iwDetailTextBoxDiv = document.createElement('div');
     iwDetailTextBoxDiv.id = 'infowindow-box-detail-text-box';
     const iwDetailDescription = document.createElement('div');
-    // iwDetailDescription.id = 'infowindow-box-image-box-sib';
+
     iwDetailDescription.innerHTML = `<div style="color: gray; padding-top: 10px; height: auto;"><strong>${flat.description}</strong></div>`;
     const iwDetailArea = document.createElement('div');
-    // iwDetailDescription.id = 'infowindow-box-image-box-sib';
+
     iwDetailArea.innerHTML = `<div>${flat.area}</div>`;
     const iwDetailPrice = document.createElement('div');
-    // iwDetailDescription.id = 'infowindow-box-image-box-sib';
+
     iwDetailPrice.innerHTML = `<div>${this.props.currency}${parseFloat(flat.price_per_month).toFixed(0)} per month</div>`;
 
     iwDetailDiv.appendChild(iwDetailArrowBoxLeftDiv);
     iwDetailDiv.appendChild(iwDetailTextBoxDiv);
     iwDetailDiv.appendChild(iwDetailArrowBoxRightDiv);
-    // iwDetailDiv.appendChild(iwDetailArea);
-    // iwDetailDiv.appendChild(iwDetailPrice);
 
     iwDetailTextBoxDiv.appendChild(iwDetailDescription);
     iwDetailTextBoxDiv.appendChild(iwDetailArea);
@@ -502,7 +415,6 @@ class GoogleMap extends Component {
 
     iwDivParent.appendChild(iwImageDiv);
     iwDivParent.appendChild(iwDetailDiv);
-    // element.classList.add('mystyle');
     // !!!!End of creating elements; return iwDivParent at the very end after addListeners
     this.setIwDomReadyAddListener(infowindow);
     // addDomListener for left arrow in IW image carousel
@@ -510,18 +422,13 @@ class GoogleMap extends Component {
     // to test if image index is at zero or max number
     google.maps.event.addDomListener(iwImageLeftArrowDiv, 'click', () => {
       let indexAtZero = false;
-      // console.log('in googlemap, map iwImageLeftArrow clicked');
       const maxImageIndex = flat.images.length - 1;
-      // console.log('in googlemap, iwImageLeftArrow, maxImageIndex:', maxImageIndex);
       // console.log('in googlemap, iwImageLeftArrow, this.props.imageIndex, before if statement:', this.props.imageIndex.count);
       if (this.props.imageIndex.count <= 0) {
-        // console.log('in googlemap, iwImageLeftArrow, if statement, we are at 0');
         indexAtZero = true;
-        // console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
         this.props.decrementImageIndex(indexAtZero, maxImageIndex);
       } else {
         this.props.decrementImageIndex(indexAtZero, maxImageIndex);
-        // console.log('in googlemap, iwImageLeftArrow, if statement, indexAtZero', indexAtZero);
       }
 
       document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
@@ -530,17 +437,13 @@ class GoogleMap extends Component {
     google.maps.event.addDomListener(iwImageRightArrowDiv, 'click', () => {
       let indexAtMax = false;
       // console.log('in googlemap, map iwImageRightArrow clicked');
-      // const maxNumOfImages = infowindowClickHandler(flat);
       const maxImageIndex = flat.images.length - 1;
 
       if (this.props.imageIndex.count >= maxImageIndex) {
-        // console.log('in googlemap, iwImageRightArrow, if statement, we are at maxNumOfImages');
         indexAtMax = true;
         this.props.incrementImageIndex(indexAtMax, maxImageIndex);
-        // console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
       } else {
         this.props.incrementImageIndex(indexAtMax, maxImageIndex);
-        // console.log('in googlemap, iwImageRightArrow, if statement, we are at indexAtMax:', indexAtMax);
       }
       // console.log('in googlemap, iwImageRightArrow, imageIndex after if statement:', this.props.imageIndex.count);
       document.getElementById('infowindow-box-image-box').setAttribute('style', `background-image: url(http://res.cloudinary.com/chikarao/image/upload/w_200,h_140/${flat.images[this.props.imageIndex.count].publicid}.jpg)`);
@@ -556,7 +459,6 @@ class GoogleMap extends Component {
     if (fromBuilding) {
       google.maps.event.addDomListener(iwDetailArrowBoxLeftDiv, 'click', () => {
         console.log('in googlemap, map iwDetailArrowBoxLeftDiv clicked, back');
-        // iwImageDiv.classList.add('hide');
         this.setInfowindowContent({ flat, infowindow, marker, buildingWithFlats, flatMarker: false, fromBuilding })
       });
     }
@@ -588,48 +490,13 @@ class GoogleMap extends Component {
       // !!!!!!!! IMPORTANT AS OF 2/19/2019 no need for above code setting display none
       // on background and shadow elements
       // just need to assign CSS properties to gm-iw-style, gm-iw-style-c, gm-iw-style-d in sytle.css
-      // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-      // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIw:', gmStyleIw)
       const gmStyleIwD = document.getElementsByClassName('gm-style-iw-d');
-      // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIwD:', gmStyleIwD)
       // !!!!! ONLY styling attribute that cannot seem to go to style.css
       // since do not fit overflow options, visible|hidden|scroll|auto|initial|inherit
       // !!! Needs overflow = null to get rid of white space on div with class gm-style-iw-d
       gmStyleIwD[0].style.overflow = null;
-      // gmStyleIwD[0].style.maxWidth = '0';
-      // gmStyleIwD[0].style.width = '100%';
       // !!! Needs maxWidth = null to get rid of white space when first IW opened
       gmStyleIwD[0].style.maxWidth = null;
-      // gmStyleIwD[0].style.maxWidth = '310px';
-
-      // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-      // const gmStyleIw = document.getElementsByClassName('gm-style-iw');
-      // // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIw:', gmStyleIw)
-      // const gmStyleIwD = document.getElementsByClassName('gm-style-iw-d');
-      // // console.log('in googlemap, setIwDomReadyAddListener, gmStyleIwD:', gmStyleIwD)
-
-      // !!!!!!gmStyleIwAlt to deal with previousSibling of undefined error;
-      // somehow, building marker clicks trigger this error
-      // const gmStyleIwAlt = document.getElementsByClassName('google-map-gm-style-iw');
-      // const iwBackground = gmStyleIw[0] ? gmStyleIw[0].previousSibling : gmStyleIwAlt[0].previousSibling;
-      // const nextSibling = gmStyleIw[0] ? gmStyleIw[0].nextSibling : gmStyleIwAlt[0].nextSibling;
-      //gets the element with the white background and assign style of display none
-      // console.log('in googlemap, setIwDomReadyAddListener, iwBackground:', iwBackground)
-      // const iwBackgroundWhite = iwBackground.lastChild;
-      // iwBackgroundWhite.style.display = 'none';
-      // get element with shadow behind the IW and assign style of display none;
-      //item number is index
-      // const iwBackgroundShadow = iwBackground.getElementsByTagName('div').item(1);
-      // iwBackgroundShadow.style.display = 'none';
-
-      // name class so that .gm-style-iw styling does not clash with others
-      // gmStyleIw[0] ? gmStyleIw[0].setAttribute('class', 'google-map-gm-style-iw') : '';
-      // for taking out close button img that is standard with google map
-      // nextSibling.setAttribute('class', 'google-map-gm-style-iw-next');
-      // gmStyleIw[0].style.backgroundColor = 'transparent';
-      // gmStyleIw[0].style.boxShadow = 'none';
-      // gmStyleIw[0].style.maxHeight = 'none';
-      // gmStyleIwD[0].style.maxHeight = 'none';
     }); // end of addlistener
   }
 
@@ -826,11 +693,11 @@ class GoogleMap extends Component {
   getPriceRange(building) {
     // get range of flat prices for buildings
     building.sort((a, b) => {
-      return a.price_per_month - b.price_per_month
-    })
+      return a.price_per_month - b.price_per_month;
+    });
 
     const min = building[0].price_per_month;
-    const max = building[building.length - 1].price_per_month
+    const max = building[building.length - 1].price_per_month;
 
     return { min, max };
   }
@@ -839,7 +706,6 @@ class GoogleMap extends Component {
     // console.log('in googlemaps createEachBuildingMarker buildingWithFlats: ', buildingWithFlats);
     // create building markers with multiple flats
     const priceRange = this.getPriceRange(buildingWithFlats);
-    // let markerLabel = `${buildingWithFlats.length}` + ' Units' + '\n' + `$${parseFloat(buildingWithFlats[0].price_per_month).toFixed(0)}`;
     let markerLabel = `$${(parseFloat(priceRange.min) / 1000).toFixed(1)}k` + '~' + `$${(parseFloat(priceRange.max) / 1000).toFixed(1)}k`;
     // Marker sizes are expressed as a Size of X,Y where the origin of the image
     // (0,0) is located in the top left of the image.
@@ -928,11 +794,6 @@ class GoogleMap extends Component {
     } // end of if buildings
     // if user click on map, close any open infowindows
     google.maps.event.addListener(map, 'click', () => {
-      // const latitude = event.latLng.lat();
-      // const longitude = event.latLng.lng();
-      // console.log('in googlemaps clicked latitude: ', latitude);
-      // console.log('in googlemaps clicked longitude: ', longitude);
-
       //close all open infowindows on map click
       for (let i = 0; i < infowindowArray.length; i++) {
         infowindowArray[i].close();
@@ -955,7 +816,8 @@ function mapStateToProps(state) {
   return {
     imageIndex: state.imageIndex,
     mapBounds: state.mapBounds,
-    searchFlatParams: state.flats.searchFlatParameters
+    searchFlatParams: state.flats.searchFlatParameters,
+    googleMapBoundsKeys: state.flats.googleMapBoundsKeys
   };
 }
 

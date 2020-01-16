@@ -166,16 +166,18 @@ class Messaging extends Component {
     } else {
       sentByUser = !this.props.thisIsYourFlat;
     }
-
-    if (this.props.noConversationForFlat && this.props.fromShowPage) {
-      // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
-      // this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
-      this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, () => this.createMessageCallback());
-    } else {
-      const conversationToShow = this.conversationToShow();
-      const { user_id, flat_id, id } = conversationToShow;
-      // console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
-      this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
+    // check if currentChatMessage is not null or empty string
+    if (this.state.currentChatMessage) {
+      if (this.props.noConversationForFlat && this.props.fromShowPage) {
+        // console.log('in messaging, handleMessageSendClick, if this.props.noConversationForFlat: ', this.props.conversation);
+        // this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, (messageAttributes) => this.createConversationCallback(messageAttributes));
+        this.props.createConversation({ flat_id: this.props.flat.id }, { body: messageText.value, sent_by_user: true }, () => this.createMessageCallback());
+      } else {
+        const conversationToShow = this.conversationToShow();
+        const { user_id, flat_id, id } = conversationToShow;
+        // console.log('in messaging, handleMessageSendClick, in if else, this.props.conversation, flat_id, user_id, conversation_id: ', flat_id, user_id, id);
+        this.props.createMessage({ body: messageText.value, flat_id, user_id, conversation_id: id, sent_by_user: sentByUser }, (flatId) => this.createMessageCallback(flatId));
+      }
     }
     //   console.log('in messaging, handleMessageSendClick, callback in setState this.state.CurrentChatMessage: ', this.state.currentChatMessage);
   }

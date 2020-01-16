@@ -18,7 +18,7 @@ export default function (props) {
   let subTimerDisconnect;
   let timerDisconnect;
   // disconnectTime is time required for connection to disconnect
-  const disconnectTime = 15;
+  // const disconnectTime = 15;
 
   function actioncable_manager(id) {
     cable = Cable.createConsumer('ws://localhost:3000/cable');
@@ -90,7 +90,7 @@ export default function (props) {
           console.log('actioncable_manager in received, data ', data);
           if (data.notification === 'typing') {
             // if user types, disconnect for websockeet timer is reset
-            resetDisconnectTimer({ time: disconnectTime, initial: false });
+            resetDisconnectTimer({ time: props.disconnectTime, initial: false });
             // to show other user is typing, get notification from backend that other is typing
             // If the current timer is 0, then start the timer by reseting at typingTime declare at top
             // Resetting only at 0 avoids too many timers going at once;
@@ -126,7 +126,7 @@ export default function (props) {
             } // end of if typingTimer === 0
           } else if (data.notification === 'authenticated') { // if typing
             console.log('actioncable_manager in received, data.notification else ', data.notification);
-            resetDisconnectTimer({ time: disconnectTime, initial: true });
+            resetDisconnectTimer({ time: props.disconnectTime, initial: true });
           }
         }
       }, // end of received

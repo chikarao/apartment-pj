@@ -185,6 +185,7 @@ import {
   SET_TYPING_TIMER,
   WEBSOCKET_CONNECTED,
   CABLE_PAGE_OVERRIDE,
+  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3159,6 +3160,19 @@ export function cablePageOverrideAction(pageBoolean) {
   return {
     type: CABLE_PAGE_OVERRIDE,
     payload: { pageBoolean }
+  };
+}
+
+export function getGoogleMapBoundsKeys() {
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/get_google_map_bounds_keys`, {})
+    .then(response => {
+      console.log('response to getGoogleMapBoundsKeys: ', response.data);
+      dispatch({
+        type: GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
+        payload: response.data.data
+      });
+    });
   };
 }
 // Thunk example from docs

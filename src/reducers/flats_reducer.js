@@ -39,7 +39,8 @@ import {
   SELECTED_INSPECTION_ID,
   UPDATE_BUILDING_LANGUAGE,
   CREATE_BUILDING_LANGUAGE,
-  DELETE_BUILDING_LANGUAGE
+  DELETE_BUILDING_LANGUAGE,
+  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -53,6 +54,7 @@ const INITIAL_STATE = {
   flatBuildingsResultsId: {},
   flatBuildingsResultsJustId: [],
   currentUserIsOwner: false,
+  googleMapBoundsKeys: null,
 };
 export default function (state = INITIAL_STATE, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
@@ -256,6 +258,9 @@ export default function (state = INITIAL_STATE, action) {
 
     case DELETE_BUILDING_LANGUAGE:
     return { ...state, selectedFlatFromParams: action.payload };
+
+    case GET_GOOGLE_MAP_MAP_BOUNDS_KEYS:
+    return { ...state, googleMapBoundsKeys: action.payload };
 
     default:
       return state;

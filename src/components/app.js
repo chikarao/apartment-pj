@@ -16,7 +16,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // console.log('in app.js, componentDidUpdate, if this.props: ', this.props);
+    console.log('in app.js, componentDidMount, this.props: ', this.props);
     // placeSearchLanguageCode needed to reload google map api on to the page,
     // otherwise, multiple googlemap scripts will be loaded and cause problems
     // When user clicks on difference language, in map_interaction.js, sets state placeSearchLanguageCode,
@@ -44,6 +44,8 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log('in app.js, componentDidUpdate, this.props: ', this.props);
+
     if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
       localStorage.setItem('placeSearchLanguageCode', this.props.placeSearchLanguageCode);
       // console.log('in app.js, componentDidUpdate,  this.props.language, prevProps.language: ', this.props.placeSearchLanguageCode, prevProps.placeSearchLanguageCode);
@@ -123,7 +125,7 @@ class App extends Component {
 }
 //
 function mapStateToProps(state) {
-  // console.log('in app.js, mapStateToProps, state: ', state);
+  console.log('in app.js, mapStateToProps, state: ', state);
   return {
     placeSearchLanguageCode: state.languages.placeSearchLanguageCode,
     appLanguageCode: state.languages.appLanguageCode

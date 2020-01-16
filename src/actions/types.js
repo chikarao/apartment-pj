@@ -180,3 +180,4 @@ export const SET_CABLE_CONNECTION = 'set_cable_connection';
 export const SET_TYPING_TIMER = 'set_typing_timer';
 export const WEBSOCKET_CONNECTED = 'websocket_connected';
 export const CABLE_PAGE_OVERRIDE = 'CABLE_PAGE_OVERRIDE';
+export const GET_GOOGLE_MAP_MAP_BOUNDS_KEYS = 'GET_GOOGLE_MAP_MAP_BOUNDS_KEYS';

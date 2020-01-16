@@ -1645,6 +1645,10 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   /* border-radius: 4px; */
 }
 
+.loading-spinner-show-flat {
+  margin-top: 140px;
+}
+
 .show-flat-image-box {
   height: 280px;
   margin: 10px 0 0 0;

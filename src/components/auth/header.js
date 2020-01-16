@@ -108,43 +108,62 @@ class Header extends Component {
 
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
        if (!this.state.webSocketConnected) {
-         this.createSocketConnection();
+         this.createSocketConnection(onShowPage);
        }
      }
      // for when user logs off and authenticated = false
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && !this.props.auth.authenticated) {
-        this.handleDisconnectEvent();
+        this.handleDisconnectEvent(onShowPage);
      }
      // for when page opens and webSocketConnected is initialized to false
      // but user is still logged on and authenticated = true
      // Case: not connected, is authenticated, no change in timeout, is not timed out and on cable connect page
+     // also Connects when non currentUserIsOwner on showFlat jumps to non showflat page 
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
-       this.createSocketConnection();
+       this.createSocketConnection(onShowPage);
      }
      // logic for when websocked connection time out props CHANGES and IS NOT timed out
      // Case: not connected, is authenticated, IS a change in timeout, IS timed out and on cable connect page
      // So case for reconnecting after being timedout
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
-       this.createSocketConnection();
+       this.createSocketConnection(onShowPage);
      }
      // if CASE for 1) socket not connected, 2) authenticated, 3) NOT timed out with no change in timed out
      // 4) nonCablePageOverriden changes (in showpage) and 5) is on page where cable is connected
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && (prevProps.nonCablePageOverriden !== this.props.nonCablePageOverriden) && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
-       this.createSocketConnection();
+       this.createSocketConnection(onShowPage);
      }
+     // if CASE for user not currentUserIsOwner flat page jumps to other page that is not showFlat non currentUserIsOwner flat page
+     // if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && (prevProps.nonCablePageOverriden === this.props.nonCablePageOverriden) && cableConnectPage) {
+     //   console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+     //   this.createSocketConnection(onShowPage);
+     // }
    }
 
-   createSocketConnection() {
+   createSocketConnection(onShowPage) {
+     let disconnectTime = 0;
+     // !!!! Set disconnect time with below logic based on current page and if currentUserIsOwner
+     if (onShowPage) {
+       if (this.props.currentUserIsOwner) {
+         disconnectTime = 15;
+       } else {
+         // disconnect time in showFlat messaging
+         disconnectTime = 10;
+       } // end of if currentUserIsOwner
+     } else {
+       disconnectTime = 15;
+     } // end of if onShowPage
+
      if (connectionTimer === 0) {
        const lapseTime = () => {
          if (subTimer > 0) {
            subTimer--;
-           console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer ');
+           console.log('createSocketConnection in lapseTime, subTimer ');
          } else {
-           console.log('componentDidUpdate in not connected but authenticated, in lapseTime, subTimer in else ', subTimer);
+           console.log('createSocketConnection in lapseTime, subTimer in else ', subTimer);
            // typingTimer--;
            clearInterval(timer);
            connectionTimer = subTimer;
@@ -158,7 +177,6 @@ class Header extends Component {
        const userId = this.props.auth.id;
 
        actioncableManager({
-         component_this: this,
          setComponentState: this.setComponentState,
          setTypingTimer: this.setTypingTimer,
          propsWebSocketConnected: this.propsWebSocketConnected,
@@ -166,11 +184,11 @@ class Header extends Component {
          setCableConnection: this.setCableConnection,
          receiveConversation: this.receiveConversation,
          userId,
-         makeConnection: true
+         makeConnection: true,
+         disconnectTime
        });
      }
    }
-
 
    getIndexOption() {
      const optionTags = document.getElementsByClassName('header-language-option')

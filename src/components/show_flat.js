@@ -58,6 +58,7 @@ class ShowFlat extends Component {
         this.props.getCurrentUser();
         this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
         console.log('in show flat, componentDidMount, this.props.auth.id, this.props.flat', this.props.auth.id, this.props.flat);
+        this.props.getGoogleMapBoundsKeys();
       }
 
       this.props.fetchReviewsForFlat(this.props.match.params.id);
@@ -245,7 +246,7 @@ class ShowFlat extends Component {
       } else {
         return (
           <div>
-            <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+            <i className="fa fa-spinner fa-pulse fa-3x fa-fw loading-spinner-show-flat"></i>
             <div className="spinner">Loading flat...</div>
           </div>
         );
