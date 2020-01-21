@@ -73,7 +73,7 @@ export default function (props) {
       },
 
       received: (data) => {
-        // console.log('actioncable_manager in received before if data', data);
+        console.log('actioncable_manager in received before if data', data);
         if (data.conversation) {
           // receiveds data from back end and if data.conversation,
           // calls redux action receiveConversation to update with new conversation and message
@@ -109,7 +109,7 @@ export default function (props) {
                   // when subtimer is 0, assign typing timer at 0
                   typingTimer = subTimer;
                   props.setTypingTimer({ typingTimer: subTimer });
-                    console.log('actioncable_manager in received, data.notification.typing, in lapseTime, typingTimer in else ', typingTimer);
+                  console.log('actioncable_manager in received, data.notification.typing, in lapseTime, typingTimer in else ', typingTimer);
                   clearInterval(timer);
                 }
               };
@@ -216,6 +216,7 @@ export default function (props) {
       console.log('actioncableManager, handleDisconnectEvent call back to webSocketConnected', props.webSocketConnected);
       props.propsWebSocketConnected({ connected: false, timedOut: trigger === 'timedOut' ? true : false });
       cable.disconnect();
+      // chats.unsubscribe()
       props.setCableConnection({ cable: null, chats: null });
     });
   }

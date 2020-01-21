@@ -116,7 +116,7 @@ export default function (state = INITIAL_STATE, action) {
         currentUserIsOwner = action.payload.user_id == userId;
       }
       // console.log('in flats reducer, action.payload: ', action.payload);
-      return { ...state, selectedFlatFromParams: action.payload, currentUserIsOwner };
+      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner, userStatus: action.payload.user_status };
     }
 
     case CREATE_FLAT:

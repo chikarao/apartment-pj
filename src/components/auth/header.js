@@ -103,8 +103,8 @@ class Header extends Component {
      const onShowPage = this.props.location.pathname.includes('/show/');
      // connect cable if 1) NOT on showFlat page, OR 2) nonCablePageOverriden (set in eg messaging modal) is true, OR currentUserIsOwner is true
      const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden || this.props.currentUserIsOwner;
-     console.log('in header, componentDidUpdate, prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage: ', prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage);
-     console.log('in header, componentDidUpdate, prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut ', prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut);
+     // console.log('in header, componentDidUpdate, prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage: ', prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage);
+     // console.log('in header, componentDidUpdate, prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut ', prevProps.propsWebSocketTimedOut, this.props.propsWebSocketTimedOut);
 
      if (prevProps.auth.authenticated !== this.props.auth.authenticated && this.props.auth.authenticated) {
        if (!this.state.webSocketConnected) {
@@ -175,7 +175,7 @@ class Header extends Component {
 
        // **************** Need to have in actioncable
        const userId = this.props.auth.id;
-       // !!!! Calling actionCableManager.js 
+       // !!!! Calling actionCableManager.js
        actioncableManager({
          setComponentState: this.setComponentState,
          setTypingTimer: this.setTypingTimer,
@@ -185,7 +185,10 @@ class Header extends Component {
          receiveConversation: this.receiveConversation,
          userId,
          makeConnection: true,
-         disconnectTime
+         disconnectTime,
+         onShowPage,
+         currentUserIsOwner: this.props.currentUserIsOwner,
+         flat: this.props.flat
        });
      }
    }
@@ -633,6 +636,7 @@ function mapStateToProps(state) {
     conversations: state.conversation.conversationsByUser,
     newMessages: state.conversation.newMessages,
     flats: state.flats.flatsByUser,
+    flat: state.flats.selectedFlatFromParams,
     appLanguageCode: state.languages.appLanguageCode,
     propsCable: state.conversation.propsCable,
     propsChats: state.conversation.propsChats,

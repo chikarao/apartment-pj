@@ -876,7 +876,7 @@ export function selectedFlatFromParams(id, callback) {
       console.log('in actions index, response to selectedFlatFromParams, response: ', response);
       dispatch({
         type: SELECTED_FLAT_FROM_PARAMS,
-        payload: response.data.data.flat
+        payload: response.data.data
     });
     callback();
   });

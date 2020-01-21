@@ -358,11 +358,31 @@ class Messaging extends Component {
     );
   }
 
+  renderUserStatusBar() {
+    console.log('in messaging, renderUserStatusBar. this.props.flat.user: ', this.props.flat.user);
+    return (
+      <div className="message-show-box-user-status-bar" style={{ height: '40px', backgroundColor: 'white', border: 'none' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <div style={{ height: '40px', width: '40px', borderRadius: '50%', border: '1px solid #ccc' }}>
+            <img style={{ height: 'auto', width: 'auto', borderRadius: '50%' }} src={"http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/" + this.props.flat.user.image + '.jpg'} />
+          </div>
+          <div style={{ width: '200px', display: 'flex', flexDirection: 'column', padding: '3px 0 0 10px' }}>
+            <div style={{ textAlign: 'left' }}>
+              Name
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              last connected
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   renderMessaging() {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
     if (this.props.conversations) {
-      // console.log('in messaging, renderMessaging. this.props.conversation (comes from show flat page): ', this.props.conversation);
       if (!this.props.currentUserIsOwner) {
         // const conversationIsEmpty = this.props.conversation.length < 1;
         // if (!conversationIsEmpty) {
@@ -373,6 +393,7 @@ class Messaging extends Component {
         // renderUserTyping is rendered if passes test of if there is conversationToShow and user typing is not current user
         return (
           <div className="message-show-box-container" style={{ width: this.props.containerWidth }}>
+            {this.props.fromShowPage ? this.renderUserStatusBar() : ''}
             {this.renderCableStatusBar()}
             <div className="message-show-box" id={this.props.fromShowPage ? 'message-show-box-show-page' : 'message-show-box'} style={this.props.mobileView ? { height: '300px' } : { height: '500px' }}>
               {this.props.noConversationForFlat && this.props.fromShowPage ?
