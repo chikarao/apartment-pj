@@ -130,6 +130,7 @@ class Messaging extends Component {
       typingTimerOut = subTimer;
       const timer = setInterval(lapseTime, 1000);
       if (this.props.propsChats) this.props.propsChats.typing(this.props.auth.id);
+      // NOTE: this.props.propsChats is defined in src/messaging/action_cable_manager.js
       // this.chats.typing(addresseeId);
     }
     this.setState({ currentChatMessage: event.target.value }, () => {
@@ -141,12 +142,13 @@ class Messaging extends Component {
     // Gets the last message and scrolls into view.
     // also gets the typing indicator and scrolls into voew
     const items = document.querySelectorAll('.each-message-box');
-    const itemsTyping = document.querySelectorAll('.each-message-content');
+    const itemsTyping = document.querySelectorAll('.typing-message-content');
     console.log('in messaging, scrollLastMessageIntoView, items: ', items);
 
     const last = items[items.length - 1];
     const lastTyping = itemsTyping[itemsTyping.length - 1];
-    // console.log('in messaging, scrollLastMessageIntoView, last: ', last);
+    // if (lastTyping) lastTyping.setAttribute('style', 'border: none; position: absolute; bottom: 0; left: 0;');
+    console.log('in messaging, scrollLastMessageIntoView, lastTyping: ', lastTyping);
     if (last) {
       last.scrollIntoView({ behavior: 'smooth' });
     }
@@ -270,7 +272,7 @@ class Messaging extends Component {
     // make !== this in renderMessages =>>>> this.props.messageSender === this.props.auth.id
     console.log('in messaging, renderUserTyping called: ');
     return (
-      <div className="each-message-content" style={{ border: '1px solid transparent' }}>
+      <div className="typing-message-content" style={{ border: '1px solid transparent' }}>
         <Typing
           typingTimer={this.props.typingTimer}
           messageSender={this.props.messageSender}
@@ -310,13 +312,32 @@ class Messaging extends Component {
   }
 
   renderCableStatusBar() {
+    // original code without the connecting...
+    // {this.props.propsWebSocketConnected ?
+    //   <div style={{ padding: '8px' }}>Connected</div>
+    //   :
+    //   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+    //     <div style={{ padding: '8px' }}>
+    //       Connection timed out
+    //     </div>
+    //   <button
+    //     className='connect'
+    //     style={{ backgroundColor: 'white', border: '1px solid blue', borderRadius: '5px' }}
+    //     onClick={(e) => this.handleConnectEvent(e)}
+    //   >
+    //   reconnect
+    //   </button>
+    //   </div>}
+    // if propsWebSocketConnected, show connected.
+    // if NOT propsWebSocketConnected AND IS timed out , show timed out and a button
+    // if NOT connected BUT is NOT timed out, show in process of connecting...
     return (
       <div className="message-show-box-cable-status-bar" style={{ height: '30px' }}>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <div style={{ height: '10px', width: '10px', backgroundColor: this.props.propsWebSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
-          {this.props.propsWebSocketConnected ?
-            <div style={{ padding: '8px' }}>Connected</div>
-            :
+          { this.props.propsWebSocketConnected ?   <div style={{ padding: '8px' }}>Connected</div> : '' }
+          { !this.props.propsWebSocketConnected && this.props.propsWebSocketTimedOut
+            ?
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <div style={{ padding: '8px' }}>
                 Connection timed out
@@ -328,7 +349,10 @@ class Messaging extends Component {
             >
             reconnect
             </button>
-            </div>}
+            </div>
+             :
+             '' }
+             { !this.props.propsWebSocketConnected && !this.props.propsWebSocketTimedOut ? <div style={{ padding: '8px' }}>Connecting...</div> : '' }
         </div>
       </div>
     );

@@ -1885,6 +1885,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   border-radius: 2px;
   overflow: hidden;
   overflow-y: scroll;
+  /* position: relative; */
 }
 
 #message-show-box-show-page {
@@ -1899,6 +1900,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   border-radius: 3px;
   overflow: hidden;
   overflow-y: scroll;
+  /* position: relative; */
 }
 
 .message-input-box {
@@ -2020,11 +2022,28 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   text-align: left;
   border-radius: 10px;
   font-size: 15px;
+  background-color: white;
   height: auto;
   /* word-break: break-all; */
   padding: 5px;
   display: inline-block;
   float: left;
+}
+
+.typing-message-content {
+  max-width: 100%;
+  min-width: 100px;
+  border: none;
+  text-align: left;
+  border-radius: 10px;
+  font-size: 15px;
+  height: auto;
+  /* word-break: break-all; */
+  padding: 5px;
+  /* display: inline-block; */
+  /* position: absolute;
+  bottom: 0;
+  left: 0; */
 }
 
 .no-conversation-message {

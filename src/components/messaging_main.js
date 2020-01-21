@@ -964,8 +964,10 @@ function mapStateToProps(state) {
   if (state.conversation.conversationToShow) {
     const conversationToShowRecord = getConversation(state.conversation.conversationToShow, state.conversation.conversationsByUser);
     /// !!!! this ternary == needs to be == not ===.
-    const userIsOwner = state.auth.id == conversationToShowRecord.flat.user_id;
-    addresseeId = userIsOwner ? conversationToShowRecord.user_id : state.auth.id;
+    if (conversationToShowRecord) {
+      const userIsOwner = state.auth.id == conversationToShowRecord.flat.user_id;
+      addresseeId = userIsOwner ? conversationToShowRecord.user_id : state.auth.id;
+    }
   }
   return {
     // flat: state.selectedFlatFromParams.selectedFlat,

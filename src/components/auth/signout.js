@@ -8,9 +8,11 @@ import AppLanguages from '../constants/app_languages';
 class SignOut extends Component {
   componentWillMount() {
     // if (this.props.authenticated) {
-      // disconnect cable only if propsCable is not null; ie cable is connected and not timedout  
+      // disconnect cable only if propsCable is not null; ie cable is connected and not timedout
       if (this.props.propsCable) this.props.propsCable.disconnect();
-      this.props.signoutUser(() => this.signoutFB());
+      // Note: call action signoutUser to sign out on backend only if user is logged in
+      // and an auth token is in localStorage
+      if (localStorage.getItem('token')) this.props.signoutUser(() => this.signoutFB());
     // }
   }
   // below code signs user out of app as well as FB itself

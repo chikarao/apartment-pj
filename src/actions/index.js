@@ -376,19 +376,51 @@ export function authError(error) {
   };
 }
 
-export function signoutUser(callback) {
-  console.log('in actions index, signoutUser:');
+export function signoutUser() {
+  console.log('in actions index, signoutUser localStorage.getItem(token):', localStorage.getItem('token'));
 
-  //flip state boolean authenticated to false
-  // delete token from local storage
-  localStorage.removeItem('token');
-  localStorage.removeItem('email');
-  localStorage.removeItem('id');
-  localStorage.removeItem('image');
-  // localStorage.removeItem('customer_id');
-  callback();
-  return { type: UNAUTH_USER };
+  return function (dispatch) {
+    // redux thunk let's us call dispatch method; returns action
+    // NOTE: axios call takes url, then an object for params, THEN an object for
+    // request headers; use post not delete so that headers can be sent with auth token
+    // otherwise, need to sent in uri
+    axios.post(`${ROOT_URL}/api/v1/log_out`, {}, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+      .then(response => {
+        console.log('in action, index, signoutUser, response: ', response);
+        dispatch({ type: UNAUTH_USER });
+        // delete token from local storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        localStorage.removeItem('id');
+        localStorage.removeItem('image');
+        // localStorage.removeItem('customer_id');
+      })
+        .catch((error) => {
+          // take out error if hard coding error messages
+          // if request is bad
+          // show error to user
+          console.log('action index, signoutUser, catch, error.response.data.messages:', error.response.data.messages);
+          dispatch(authError(error.response.data.messages));
+          // dispatch(authError('Bad login info...'));
+        });
+  };
 }
+// Keep just for reference; Did not logout from backend
+// export function signoutUser(callback) {
+//   console.log('in actions index, signoutUser:');
+//
+//   //flip state boolean authenticated to false
+//   // delete token from local storage
+//   localStorage.removeItem('token');
+//   localStorage.removeItem('email');
+//   localStorage.removeItem('id');
+//   localStorage.removeItem('image');
+//   // localStorage.removeItem('customer_id');
+//   callback();
+//   return { type: UNAUTH_USER };
+// }
 
 export function showSigninModal() {
   console.log('in actions index, showSigninModal:');
@@ -834,12 +866,14 @@ export function selectedFlat(flat) {
 // takes id params in show flat page and fetches flat from api
 export function selectedFlatFromParams(id, callback) {
   console.log('in actions index, selectedFlatFromParams id: ', id);
+  // url for flats#show/id
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/flats/${id}`, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('in actions index, response to selectedFlatFromParams: ', response.data.data.flat);
+      // console.log('in actions index, response to selectedFlatFromParams, response.data.data.flat: ', response.data.data.flat);
+      console.log('in actions index, response to selectedFlatFromParams, response: ', response);
       dispatch({
         type: SELECTED_FLAT_FROM_PARAMS,
         payload: response.data.data.flat

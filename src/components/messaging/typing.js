@@ -100,11 +100,6 @@ class Typing extends Component {
   // }
 
   render() {
-    // <img key={index} value={index} src={'url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60/apartmentpj-constant-assetstyping_waiting.jpg)} alt=""/>
-    // `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)`
-    console.log('in Typing, render');
-    // <div>{this.props.typingTimer > 0 ? `User ${this.props.messageSender}` + 'is typing' + `${this.state.dots}` : ''}</div>
-    // <img style={{ borderRadius: '5px' }} src={'https://res.cloudinary.com/chikarao/image/upload/w_50,h_40/v1578883625/apartmentpj-constant-assets/cat_typing.gif'} alt="" />
     return (
       <div>
       {this.props.typingTimer > 0 ?

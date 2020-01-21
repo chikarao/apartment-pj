@@ -39,6 +39,7 @@ class Landing extends Component {
     // this.facebookLogin()
     // clear out all this.props.flats state attributes
     this.props.clearFlats();
+    // this.props.getGoogleMapBoundsKeys();
   }
 
   componentDidUpdate() {

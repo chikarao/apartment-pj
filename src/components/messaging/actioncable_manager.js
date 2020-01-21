@@ -138,6 +138,7 @@ export default function (props) {
       typing: function (addresseeId) {
         console.log('actioncable_manager this', this);
         this.perform('typing', { user_id: userId, addressee_id: addresseeId });
+        // userId is the one typing; addresseeId is the intended recipient
       },
     }); // end of subscriptions.create and second object
   }

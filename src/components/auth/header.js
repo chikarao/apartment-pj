@@ -118,7 +118,7 @@ class Header extends Component {
      // for when page opens and webSocketConnected is initialized to false
      // but user is still logged on and authenticated = true
      // Case: not connected, is authenticated, no change in timeout, is not timed out and on cable connect page
-     // also Connects when non currentUserIsOwner on showFlat jumps to non showflat page 
+     // also Connects when non currentUserIsOwner on showFlat jumps to non showflat page
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
        console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection(onShowPage);
@@ -175,7 +175,7 @@ class Header extends Component {
 
        // **************** Need to have in actioncable
        const userId = this.props.auth.id;
-
+       // !!!! Calling actionCableManager.js 
        actioncableManager({
          setComponentState: this.setComponentState,
          setTypingTimer: this.setTypingTimer,

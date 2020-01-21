@@ -38,6 +38,10 @@ class GoogleMap extends Component {
     // renderMap is called only if there is a state update where key is empty in prev and populated in this.props.
     // called in results.js CDM and showFlat.js componentDidMount also call this.props.getGoogleMapBoundsKeys
     // this.props.getGoogleMapBoundsKeys();
+    // NOTE: if googleMapBoundsKeys already exists when CDM is called, call render map;
+    // Otherwise, check in componentDidUpdate if googleMapBoundsKeys goes from null to not null
+    if (this.props.googleMapBoundsKeys) this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
+
   }
   //end of componentDidMount
 
@@ -254,7 +258,7 @@ class GoogleMap extends Component {
       // changed yet again 1/16/2020 to Ya.i, Ya.g, Ta.i, Ya.g
       // !!!!!!!!!!!!! KEEP below console logs even in production
       console.log('in googlemap, bounds: ', bounds);
-      console.log('in googlemap, bounds.Ya.g, bounds.Ta.g: ', bounds.Ya.g, bounds.Ta.g);
+      // console.log('in googlemap, bounds.Ya.g, bounds.Ta.g: ', bounds.Ya.g, bounds.Ta.g);
       // NOTE: googleMapBoundsKeys is fetched from the backend flats#get_google_map_bounds_keys
       // This is so that when this app has a mobile app version, there is a way to change the code from the backend
       const { east_west_first, east_second, west_second, north_south_first, north_second, south_second } = this.props.googleMapBoundsKeys;
