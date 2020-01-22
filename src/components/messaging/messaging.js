@@ -385,21 +385,21 @@ class Messaging extends Component {
     if (diffInTime > oneDay * 2) return 'Online more than two days ago';
     if (diffInTime > oneDay) return 'Online more than one day ago';
     if (diffInTime > oneHour * 6) return 'Online more than 6 hours ago';
-    if (diffInTime > oneHour * 2) return `Online ${diffInTime / oneHour} hours ago`;
+    if (diffInTime > oneHour * 2) return `Online ${Math.round(diffInTime / oneHour)} hours ago`;
     if (diffInTime > oneHour) return 'Online about an hour ago';
     if (diffInTime > oneMinute * 15 * 2) return 'Active about a half hour ago';
-    if (diffInTime > oneMinute * 5) return `Active ${diffInTime / oneMinute} minutes ago`;
+    if (diffInTime > oneMinute * 5) return `Active ${Math.round(diffInTime / oneMinute)} minutes ago`;
     if (diffInTime > oneMinute || diffInTime < oneMinute) return 'Active now';
   }
 
   renderUserStatusBar() {
-    console.log('in messaging, renderUserStatusBar. this.props.flat.user: ', this.props.flat.user);
+    console.log('in messaging, renderUserStatusBar. this.props.userStatus: ', this.props.userStatus);
     const userProfile = this.props.flat.user.profiles ? this.getUserProfile(this.props.flat.user.profiles) : { first_name: 'Owner' };
-    const lastActive = this.props.userStatus ? this.getUserLastActive(this.props.userStatus) : '';
-    // const onLine = this.props.userStatus ? this.props.userStatus.online : ''
+    const lastActive = this.props.ownerUserStatus ? this.getUserLastActive(this.props.ownerUserStatus) : '';
+    const onLine = this.props.ownerUserStatus ? this.props.ownerUserStatus.online : false
     console.log('in messaging, renderUserStatusBar. userProfile: ', userProfile);
-    // {!onLine ? 'Online' : 'Offline please leave a message'}
     // onError="this.onerror=null;this.src='http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/apartmentpj-constant-assets/blank_profile_picture_4.jpg';"
+    // {lastActive}
     return (
       <div className="message-show-box-user-status-bar" style={{ height: '40px', backgroundColor: 'white', border: 'none' }}>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -409,12 +409,12 @@ class Messaging extends Component {
               src={"http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/" + this.props.flat.user.image + '.jpg'}
             />
           </div>
-          <div style={{ width: '200px', display: 'flex', flexDirection: 'column', padding: '3px 0 0 10px' }}>
+          <div style={{ width: '250px', display: 'flex', flexDirection: 'column', padding: '3px 0 0 10px' }}>
             <div style={{ textAlign: 'left' }}>
               {userProfile.first_name}
             </div>
             <div style={{ textAlign: 'left', color: 'gray', fontSize: '11.5px' }}>
-              {lastActive}
+              {onLine ? 'Online' : 'Offline now... Please leave a message'}
             </div>
           </div>
         </div>
@@ -487,7 +487,8 @@ function mapStateToProps(state) {
     noConversation: state.conversation.noConversation,
     noConversationForFlat: state.conversation.noConversationForFlat,
     flat: state.flat.selectedFlatFromParams,
-    userStatus: state.flat.userStatus,
+    userStatus: state.auth.userStatus,
+    ownerUserStatus: state.flat.ownerUserStatus,
     thisIsYourFlat: state.conversation.yourFlat,
     appLanguageCode: state.languages.appLanguageCode,
     // ******* For action cable websockets

@@ -40,7 +40,8 @@ import {
   UPDATE_BUILDING_LANGUAGE,
   CREATE_BUILDING_LANGUAGE,
   DELETE_BUILDING_LANGUAGE,
-  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS
+  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
+  SET_OWNER_USER_STATUS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -116,7 +117,7 @@ export default function (state = INITIAL_STATE, action) {
         currentUserIsOwner = action.payload.user_id == userId;
       }
       // console.log('in flats reducer, action.payload: ', action.payload);
-      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner, userStatus: action.payload.user_status };
+      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner, ownerUserStatus: action.payload.user_status };
     }
 
     case CREATE_FLAT:
@@ -247,20 +248,23 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, selectedFlatFromParams: action.payload };
 
     case SELECTED_INSPECTION_ID:
-    return { ...state, selectedInspectionId: action.payload };
+      return { ...state, selectedInspectionId: action.payload };
 
     //put building language here so that flat is updated when building updated
     case CREATE_BUILDING_LANGUAGE:
-    return { ...state, selectedFlatFromParams: action.payload };
+      return { ...state, selectedFlatFromParams: action.payload };
 
     case UPDATE_BUILDING_LANGUAGE:
-    return { ...state, selectedFlatFromParams: action.payload };
+      return { ...state, selectedFlatFromParams: action.payload };
 
     case DELETE_BUILDING_LANGUAGE:
-    return { ...state, selectedFlatFromParams: action.payload };
+      return { ...state, selectedFlatFromParams: action.payload };
 
     case GET_GOOGLE_MAP_MAP_BOUNDS_KEYS:
-    return { ...state, googleMapBoundsKeys: action.payload };
+      return { ...state, googleMapBoundsKeys: action.payload };
+
+    case SET_OWNER_USER_STATUS:
+      return { ...state, ownerUserStatus: action.payload };
 
     default:
       return state;

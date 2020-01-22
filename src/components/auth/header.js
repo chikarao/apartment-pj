@@ -89,9 +89,13 @@ class Header extends Component {
      this.props.receiveConversation(conv);
    }
    // update app state when receive userStatus kept in redis in backend
-   // For current user; NOT flat owner user 
+   // For current user; NOT flat owner user
    setUserStatus = (userStatus) => {
      this.props.setUserStatus(userStatus);
+   }
+
+   setOwnerUserStatus = (userStatus) => {
+     this.props.setOwnerUserStatus(userStatus);
    }
    // **************** Need to have to pass to actionCableManager
 
@@ -191,6 +195,7 @@ class Header extends Component {
        // **************** Need to have in actioncable
        const userId = this.props.auth.id;
        // !!!! Calling actionCableManager.js
+       // Need to pass above defined actions to be used in actionCableManager
        actioncableManager({
          setComponentState: this.setComponentState,
          setTypingTimer: this.setTypingTimer,
@@ -205,6 +210,7 @@ class Header extends Component {
          currentUserIsOwner: this.props.currentUserIsOwner,
          flat: this.props.flat,
          setUserStatus: this.setUserStatus,
+         setOwnerUserStatus: this.setOwnerUserStatus,
        });
      }
    }

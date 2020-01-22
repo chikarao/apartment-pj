@@ -187,7 +187,8 @@ import {
   CABLE_PAGE_OVERRIDE,
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
   SET_GET_ONLINE_OFFLINE,
-  SET_USER_STATUS
+  SET_USER_STATUS,
+  SET_OWNER_USER_STATUS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3234,6 +3235,15 @@ export function setUserStatus(statusObject) {
   console.log('in actions index, setUserStatus, statusObject:', statusObject);
   return {
     type: SET_USER_STATUS,
+    payload: statusObject
+  };
+}
+
+export function setOwnerUserStatus(statusObject) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, setOwnerUserStatus, statusObject:', statusObject);
+  return {
+    type: SET_OWNER_USER_STATUS,
     payload: statusObject
   };
 }

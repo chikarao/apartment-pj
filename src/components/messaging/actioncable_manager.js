@@ -59,7 +59,11 @@ export default function (props) {
       },
 
       authenticated: function (token) {
-        this.perform('authenticated', { token });
+        if (props.onShowPage && !props.currentUserIsOwner) {
+          this.perform('authenticated', { token, owner_user_id: props.flat.user_id });
+        } else {
+          this.perform('authenticated', { token });
+        }
         console.log('***** Authenticating Action Cable Connection *******');
       },
 
@@ -116,9 +120,10 @@ export default function (props) {
               const timer = setInterval(lapseTime, 1000);
             } // end of if typingTimer === 0
           } else if (data.notification === 'authenticated') { // if typing
-            console.log('actioncable_manager in received, data.notification data.user_status else ', data.notification, data.user_status);
+            console.log('actioncable_manager in received, data.notification data.user_status, data.owner_user_status else ', data.notification, data.user_status, data.owner_user_status);
             resetDisconnectTimer({ time: props.disconnectTime, initial: true });
             props.setUserStatus(data.user_status);
+            if (data.owner_user_status) props.setOwnerUserStatus(data.owner_user_status);
           }
         }
       }, // end of received
