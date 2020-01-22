@@ -1,3 +1,5 @@
+// when pushing to production: reduce bundle size
+// reference: https://stackoverflow.com/questions/40093936/react-redux-bundle-js-is-too-big
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 

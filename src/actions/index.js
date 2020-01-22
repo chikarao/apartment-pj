@@ -185,7 +185,9 @@ import {
   SET_TYPING_TIMER,
   WEBSOCKET_CONNECTED,
   CABLE_PAGE_OVERRIDE,
-  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS
+  GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
+  SET_GET_ONLINE_OFFLINE,
+  SET_USER_STATUS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3207,6 +3209,32 @@ export function getGoogleMapBoundsKeys() {
         payload: response.data.data
       });
     });
+  };
+}
+
+export function setGetOnlineOffline(onlineAttributes) {
+  const { user_id, online, action } = onlineAttributes;
+  console.log('index action setGetOnlineOffline, user_id, online, action: ', user_id, online, action);
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/set_get_online_offline`, { set_get_online_offline: { user_id, online, action } }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to setGetOnlineOffline: ', response);
+      dispatch({
+        type: SET_GET_ONLINE_OFFLINE,
+        payload: response.data.data
+      });
+    });
+  };
+}
+
+export function setUserStatus(statusObject) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, setUserStatus, statusObject:', statusObject);
+  return {
+    type: SET_USER_STATUS,
+    payload: statusObject
   };
 }
 // Thunk example from docs

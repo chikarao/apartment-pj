@@ -25,15 +25,8 @@ export default function (props) {
     // this.cable.connection.websocket.onclose = () => {
     //   // console.log('actioncable_manager this.cable.connection.websocket.onclose callback');
     // };
-    // console.log('actioncable_manager cable.connnection', cable.connection);
-    // console.log('actioncable_manager cable.connnection.consumer', cable.connection.consumer);
-    // console.log('actioncable_manager cable.connnection.subscriptions', cable.connection.subscriptions);
-    // console.log('actioncable_manager cable.connnection.webSocket', cable.connection.webSocket);
-    // console.log('actioncable_manager this', this);
     // console.log('actioncable_manager id', id);
     const userId = localStorage.getItem('id') ? localStorage.getItem('id') : id;
-    // console.log('actioncable_manager localStorage userId', userId);
-    // console.log('actioncable_manager Cable', Cable);
     // chats creates a number of methods to call on chats, which is passed in
     // app state as propsChats. It can be called to disconnect anywhere in app
     chats = cable.subscriptions.create({
@@ -42,8 +35,6 @@ export default function (props) {
     }, {
       connected: (message) => {
           console.log('actioncable_manager in call back to connected message', message);
-          // console.log('actioncable_manager in call back to connected cable.connection.subscription', cable.connection.subscription);
-          // console.log('actioncable_manager in call back to connected, this.chats', this.chats);
           // Call authenticate chat which sends user token to back end to auth the user
           authenticateChat();
           // if socket is not connected set app and header component state to true and timedout to false
@@ -125,8 +116,9 @@ export default function (props) {
               const timer = setInterval(lapseTime, 1000);
             } // end of if typingTimer === 0
           } else if (data.notification === 'authenticated') { // if typing
-            console.log('actioncable_manager in received, data.notification else ', data.notification);
+            console.log('actioncable_manager in received, data.notification data.user_status else ', data.notification, data.user_status);
             resetDisconnectTimer({ time: props.disconnectTime, initial: true });
+            props.setUserStatus(data.user_status);
           }
         }
       }, // end of received

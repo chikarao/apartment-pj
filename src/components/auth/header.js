@@ -42,6 +42,7 @@ class Header extends Component {
        this.handleMailBoxClick = this.handleMailBoxClick.bind(this);
        this.handleAuthLinkClick = this.handleAuthLinkClick.bind(this);
        this.handleNavClick = this.handleNavClick.bind(this);
+       this.handleOnlineOfflineSelectChange = this.handleOnlineOfflineSelectChange.bind(this);
    }
 
   componentDidMount() {
@@ -58,6 +59,7 @@ class Header extends Component {
 
          if (userId) {
            this.props.fetchFlatsByUser(this.props.auth.id, () => {});
+           this.props.setGetOnlineOffline({ user_id: userId, action: 'get' })
          }
        }
    }
@@ -69,22 +71,27 @@ class Header extends Component {
    setComponentState = (stateObject, callback) => {
      this.setState(stateObject, callback);
    }
-
+   // redux action to share typing timer seconds with rest of app in frontend
    setTypingTimer = (timerAttributes) => {
      this.props.setTypingTimer(timerAttributes);
    }
-
+   // call action to set webSocketConnected and timed out in app state
    propsWebSocketConnected = (connected) => {
      // connected is a boolean
      this.props.webSocketConnected(connected);
    }
-
+   // action to keep chats and cable in app state to be called outside of this component
    setCableConnection = (cableAttributes) => {
      this.props.setCableConnection(cableAttributes);
    }
-
+   // update app state when receive conversation from backend in action cable chat_channel
    receiveConversation = (conv) => {
      this.props.receiveConversation(conv);
+   }
+   // update app state when receive userStatus kept in redis in backend
+   // For current user; NOT flat owner user 
+   setUserStatus = (userStatus) => {
+     this.props.setUserStatus(userStatus);
    }
    // **************** Need to have to pass to actionCableManager
 
@@ -93,9 +100,17 @@ class Header extends Component {
      if (this.props.appLanguageCode) {
        const languageSelect = document.getElementById('header-language-selection-box-select');
        // console.log('in header, componentDidMount, this.props.appLanguageCode: ', this.props.appLanguageCode);
-       const optionIndex = this.getIndexOption();
+       const optionIndex = this.getIndexOption('header-language-option', this.props.appLanguageCode, true);
        if (languageSelect) {
          languageSelect.selectedIndex = optionIndex;
+       }
+
+       if (this.props.userStatus) {
+         const onlineSelect = document.getElementById('header-online-selection-box-select');
+         const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
+         if (onlineSelect) {
+           onlineSelect.selectedIndex = optionOnlineIndex;
+         }
        }
      }
      // for websocket connection to actioncable when user logs on and off
@@ -188,22 +203,31 @@ class Header extends Component {
          disconnectTime,
          onShowPage,
          currentUserIsOwner: this.props.currentUserIsOwner,
-         flat: this.props.flat
+         flat: this.props.flat,
+         setUserStatus: this.setUserStatus,
        });
      }
    }
 
-   getIndexOption() {
-     const optionTags = document.getElementsByClassName('header-language-option')
+   getIndexOption(option, tagValue, language) {
+     const optionTags = document.getElementsByClassName(option)
      // console.log('in header, getIndexOption, optionTags : ', optionTags);
      const optionIndexArray = [];
+     console.log('in header, getIndexOption, optionTags : ', optionTags);
+     console.log('in header, getIndexOption, tagValue : ', tagValue);
      _.each(optionTags, (tag, i) => {
        // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
-       if (tag.value == this.props.appLanguageCode) {
+       if (language && tag.value == tagValue) {
+         console.log('in header, getIndexOption, tag.value, tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
+         optionIndexArray.push(i);
+       }
+
+       if (!language && parseInt(tag.value, 10) == tagValue) {
+         console.log('in header, getIndexOption, parseInt(tag.value, 10), tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
          optionIndexArray.push(i);
        }
      });
-     // console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
+     console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
      return optionIndexArray[0];
    }
 
@@ -414,6 +438,13 @@ class Header extends Component {
     this.props.setAppLanguageCode(changedElement.value);
   }
 
+  handleOnlineOfflineSelectChange(event) {
+    const changedElement = event.target;
+    // console.log('in header, handleLanguageSelectChange, changedElement.value: ', changedElement.value);
+    // this.props.setGetOnlineOffline({ online: parseInt(changedElement.value, 10), user_id: this.props.auth.id });
+    this.props.setGetOnlineOffline({ online: changedElement.value, user_id: this.props.auth.id, action: 'set' });
+  }
+
   renderAppLanguageSelect() {
     // <option className="header-language-option"></option>
     return (
@@ -421,6 +452,23 @@ class Header extends Component {
         <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange}>
           <option className="header-language-option" value="jp">{languages['jp'].flag} {languages['jp'].name}</option>
           <option className="header-language-option" value="en">{languages['en'].flag} {languages['en'].name}</option>
+        </select>
+      </div>
+    );
+  }
+
+  renderOnlineOfflineSelect() {
+    // <option className="header-language-option"></option>
+    // <div style={{ height: '10px', width: '10px', backgroundColor: '#39ff14', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+    return (
+      <div>
+        <select id="header-online-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleOnlineOfflineSelectChange}>
+          <option className="header-online-option" value="1">
+            ✳️  Online
+          </option>
+          <option className="header-online-option" value="0">
+            ✴️  Away
+          </option>
         </select>
       </div>
     );
@@ -471,6 +519,14 @@ class Header extends Component {
              <li className="nav-item header-language-selection-box-li">
               {this.renderAppLanguageSelect()}
              </li>
+             {this.props.authenticated
+               ?
+               <li className="nav-item header-language-selection-box-li">
+                {this.renderOnlineOfflineSelect()}
+               </li>
+               :
+               ''
+             }
            </ul>
          ];
        } else if (onMessagingMainPage) {
@@ -485,6 +541,14 @@ class Header extends Component {
              <li className="nav-item header-language-selection-box-li">
                {this.renderAppLanguageSelect()}
              </li>
+             {this.props.authenticated
+               ?
+               <li className="nav-item header-language-selection-box-li">
+                {this.renderOnlineOfflineSelect()}
+               </li>
+               :
+               ''
+             }
            </ul>
          ];
        } else {
@@ -519,6 +583,14 @@ class Header extends Component {
                <li className="nav-item header-language-selection-box-li">
                  {this.renderAppLanguageSelect()}
                </li>
+               {this.props.authenticated
+                 ?
+                 <li className="nav-item header-language-selection-box-li">
+                  {this.renderOnlineOfflineSelect()}
+                 </li>
+                 :
+                 ''
+               }
              </ul>
            ];
          // } // end of if this.props.conversations
@@ -627,6 +699,7 @@ function mapStateToProps(state) {
 
   return {
     auth: state.auth,
+    userStatus: state.auth.userStatus,
     authenticated: state.auth.authenticated,
     currentUserIsOwner: state.flat.currentUserIsOwner,
     email: state.auth.email,

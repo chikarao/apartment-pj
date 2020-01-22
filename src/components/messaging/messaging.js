@@ -358,20 +358,63 @@ class Messaging extends Component {
     );
   }
 
+  getUserProfile(profiles) {
+    let profileReturned;
+    // iterate through each profile
+    _.each(profiles, profile => {
+      // if there is an english one, assign to profileReturned for now
+      if (profile.language_code == 'en') profileReturned = profile;
+      // if there exists one for the chosen language, assign
+      if (profile.language_code == this.props.appLanguageCode) profileReturned = profile;
+    });
+    // if there is still no profile, get the first one in array
+    if (!profileReturned) profileReturned = profiles[0];
+    // return profile if there is one, if not return a dummy object
+    return profileReturned ? profileReturned : { first_name: 'Owner' };
+  }
+
+  getUserLastActive(userStatus) {
+    const timeNow = Date.now();
+    // console.log('in messaging, getUserLastActive. timeNow, userStatus.last_activity: ', timeNow, userStatus.last_activity);
+    const diffInTime = -(userStatus.last_activity - timeNow);
+    // console.log('in messaging, getUserLastActive. diffInTime / 1000 / 60 / 60: ', diffInTime / 1000 / 60 / 60);
+    const oneMinute = 60000;
+    const oneHour = 3600000;
+    const oneDay = 86400000;
+    if (diffInTime > oneDay * 7) return 'Online more than one week ago';
+    if (diffInTime > oneDay * 2) return 'Online more than two days ago';
+    if (diffInTime > oneDay) return 'Online more than one day ago';
+    if (diffInTime > oneHour * 6) return 'Online more than 6 hours ago';
+    if (diffInTime > oneHour * 2) return `Online ${diffInTime / oneHour} hours ago`;
+    if (diffInTime > oneHour) return 'Online about an hour ago';
+    if (diffInTime > oneMinute * 15 * 2) return 'Active about a half hour ago';
+    if (diffInTime > oneMinute * 5) return `Active ${diffInTime / oneMinute} minutes ago`;
+    if (diffInTime > oneMinute || diffInTime < oneMinute) return 'Active now';
+  }
+
   renderUserStatusBar() {
     console.log('in messaging, renderUserStatusBar. this.props.flat.user: ', this.props.flat.user);
+    const userProfile = this.props.flat.user.profiles ? this.getUserProfile(this.props.flat.user.profiles) : { first_name: 'Owner' };
+    const lastActive = this.props.userStatus ? this.getUserLastActive(this.props.userStatus) : '';
+    // const onLine = this.props.userStatus ? this.props.userStatus.online : ''
+    console.log('in messaging, renderUserStatusBar. userProfile: ', userProfile);
+    // {!onLine ? 'Online' : 'Offline please leave a message'}
+    // onError="this.onerror=null;this.src='http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/apartmentpj-constant-assets/blank_profile_picture_4.jpg';"
     return (
       <div className="message-show-box-user-status-bar" style={{ height: '40px', backgroundColor: 'white', border: 'none' }}>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <div style={{ height: '40px', width: '40px', borderRadius: '50%', border: '1px solid #ccc' }}>
-            <img style={{ height: 'auto', width: 'auto', borderRadius: '50%' }} src={"http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/" + this.props.flat.user.image + '.jpg'} />
+            <img
+              style={{ height: 'auto', width: 'auto', borderRadius: '50%' }}
+              src={"http://res.cloudinary.com/chikarao/image/upload//w_40,h_40/" + this.props.flat.user.image + '.jpg'}
+            />
           </div>
           <div style={{ width: '200px', display: 'flex', flexDirection: 'column', padding: '3px 0 0 10px' }}>
             <div style={{ textAlign: 'left' }}>
-              Name
+              {userProfile.first_name}
             </div>
-            <div style={{ textAlign: 'left' }}>
-              last connected
+            <div style={{ textAlign: 'left', color: 'gray', fontSize: '11.5px' }}>
+              {lastActive}
             </div>
           </div>
         </div>
@@ -444,6 +487,7 @@ function mapStateToProps(state) {
     noConversation: state.conversation.noConversation,
     noConversationForFlat: state.conversation.noConversationForFlat,
     flat: state.flat.selectedFlatFromParams,
+    userStatus: state.flat.userStatus,
     thisIsYourFlat: state.conversation.yourFlat,
     appLanguageCode: state.languages.appLanguageCode,
     // ******* For action cable websockets

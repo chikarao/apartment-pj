@@ -181,3 +181,5 @@ export const SET_TYPING_TIMER = 'set_typing_timer';
 export const WEBSOCKET_CONNECTED = 'websocket_connected';
 export const CABLE_PAGE_OVERRIDE = 'CABLE_PAGE_OVERRIDE';
 export const GET_GOOGLE_MAP_MAP_BOUNDS_KEYS = 'GET_GOOGLE_MAP_MAP_BOUNDS_KEYS';
+export const SET_GET_ONLINE_OFFLINE = 'set_get_online_offline';
+export const SET_USER_STATUS = 'set_user_status';

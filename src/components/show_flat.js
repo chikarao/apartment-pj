@@ -725,6 +725,7 @@ class ShowFlat extends Component {
     // !!!!!map needs to be id=map for the interaction to work
     // if currentUserIsOwner NOT owner and there are no places assigned to flat, do not show mapInteraction
     const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+    // {this.renderMap()}
     return (
       <div className="show-flat-body">
           {this.state.messagingOpen ? this.renderMessagingModal() : ''}
@@ -738,7 +739,6 @@ class ShowFlat extends Component {
         <div className="container">
           <div className="row">
             <div className={doNotShowContainer ? 'map-container' : 'map-container col-xs-12 col-sm-12 col-md-8'} id="map">
-              {this.renderMap()}
             </div>
             {doNotShowContainer
               ?

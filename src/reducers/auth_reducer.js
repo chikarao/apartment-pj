@@ -34,7 +34,9 @@ import {
   DELETE_CONTRACTOR,
   UPDATE_STAFF,
   CREATE_STAFF,
-  DELETE_STAFF
+  DELETE_STAFF,
+  SET_GET_ONLINE_OFFLINE,
+  SET_USER_STATUS,
  } from '../actions/types';
 
 export default function (state = {
@@ -46,7 +48,8 @@ export default function (state = {
   authenticated: false,
   existingUser: false,
   customer: {},
-  bankAccounts: []
+  bankAccounts: [],
+  userStatus: { online: 0 }
 }, action) {
   switch (action.type) {
     case AUTH_USER:
@@ -174,6 +177,12 @@ export default function (state = {
 
     case DELETE_STAFF:
       return { ...state, user: action.payload };
+
+    case SET_GET_ONLINE_OFFLINE:
+      return { ...state, userStatus: action.payload.user_status };
+
+    case SET_USER_STATUS:
+      return { ...state, userStatus: action.payload };
 
     default:
       return state;
