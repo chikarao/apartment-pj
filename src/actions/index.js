@@ -188,7 +188,7 @@ import {
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
   SET_GET_ONLINE_OFFLINE,
   SET_USER_STATUS,
-  SET_OWNER_USER_STATUS
+  SET_OTHER_USER_STATUS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -877,6 +877,7 @@ export function selectedFlatFromParams(id, callback) {
     .then(response => {
       // console.log('in actions index, response to selectedFlatFromParams, response.data.data.flat: ', response.data.data.flat);
       console.log('in actions index, response to selectedFlatFromParams, response: ', response);
+      // SELECTED_FLAT_FROM_PARAMS in flat reducer and conversation reducer for user_status
       dispatch({
         type: SELECTED_FLAT_FROM_PARAMS,
         payload: response.data.data
@@ -3233,17 +3234,19 @@ export function setGetOnlineOffline(onlineAttributes) {
 export function setUserStatus(statusObject) {
   // data is an object with connected and timedOut
   console.log('in actions index, setUserStatus, statusObject:', statusObject);
+  // SET_USER_STATUS in conversation reducer
   return {
     type: SET_USER_STATUS,
     payload: statusObject
   };
 }
 
-export function setOwnerUserStatus(statusObject) {
+export function setOtherUserStatus(statusObject) {
   // data is an object with connected and timedOut
-  console.log('in actions index, setOwnerUserStatus, statusObject:', statusObject);
+  console.log('in actions index, setOtherUserStatus, statusObject:', statusObject);
   return {
-    type: SET_OWNER_USER_STATUS,
+    // SET_USER_STATUS in conversation reducer
+    type: SET_OTHER_USER_STATUS,
     payload: statusObject
   };
 }

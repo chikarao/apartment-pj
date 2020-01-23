@@ -117,7 +117,7 @@ export default function (state = INITIAL_STATE, action) {
         currentUserIsOwner = action.payload.user_id == userId;
       }
       // console.log('in flats reducer, action.payload: ', action.payload);
-      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner, ownerUserStatus: action.payload.user_status };
+      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner };
     }
 
     case CREATE_FLAT:
@@ -262,9 +262,6 @@ export default function (state = INITIAL_STATE, action) {
 
     case GET_GOOGLE_MAP_MAP_BOUNDS_KEYS:
       return { ...state, googleMapBoundsKeys: action.payload };
-
-    case SET_OWNER_USER_STATUS:
-      return { ...state, ownerUserStatus: action.payload };
 
     default:
       return state;

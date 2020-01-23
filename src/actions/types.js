@@ -183,4 +183,4 @@ export const CABLE_PAGE_OVERRIDE = 'CABLE_PAGE_OVERRIDE';
 export const GET_GOOGLE_MAP_MAP_BOUNDS_KEYS = 'GET_GOOGLE_MAP_MAP_BOUNDS_KEYS';
 export const SET_GET_ONLINE_OFFLINE = 'set_get_online_offline';
 export const SET_USER_STATUS = 'set_user_status';
-export const SET_OWNER_USER_STATUS = 'set_owner_user_status';
+export const SET_OTHER_USER_STATUS = 'set_other_user_status';

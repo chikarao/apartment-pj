@@ -19,6 +19,11 @@ import {
   SET_TYPING_TIMER,
   WEBSOCKET_CONNECTED,
   CABLE_PAGE_OVERRIDE,
+  // SELECTED_FLAT_FROM_PARAMS payload contains other user_status is contains
+  SELECTED_FLAT_FROM_PARAMS,
+  SET_GET_ONLINE_OFFLINE,
+  SET_USER_STATUS,
+  SET_OTHER_USER_STATUS,
 } from '../actions/types';
 
 export default function (state = {
@@ -38,6 +43,8 @@ export default function (state = {
   webSocketTimedOut: false,
   webSocketConnected: false,
   nonCablePageOverriden: false,
+  userStatus: { online: 0 },
+  otherUserStatus: [{ user_id: 3 }, { user_id: 4 }]
 }, action) {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
@@ -204,10 +211,60 @@ export default function (state = {
     case SHOW_CONVERSATIONS:
       return { ...state, showConversations: !state.showConversations };
 
-    case CHECKED_CONVERSATIONS:
+    case SELECTED_FLAT_FROM_PARAMS: {
+      const newArray = [...state.otherUserStatus]; // make a separate copy of the array
+      // console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, newArray: ', newArray);
+      // Replace old user status object with new one or push to array a new one if no old one
+      // O(n + m)
+      const object = {};
+      _.each(state.otherUserStatus, (each, i) => {
+        object[each.user_id] = i;
+      });
+      console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, object: ', object);
+
+      _.each(action.payload.user_status, eachStatus => {
+        if (eachStatus.user_id in object) {
+          newArray[object[eachStatus.user_id]] = eachStatus;
+        } else {
+          newArray.push(eachStatus);
+        }
+      });
+
+      return { ...state, otherUserStatus: newArray };
+    }
+
+    case SET_GET_ONLINE_OFFLINE:
+      return { ...state, userStatus: action.payload.user_status };
+
+    case SET_USER_STATUS:
+      return { ...state, userStatus: action.payload };
+
+    case SET_OTHER_USER_STATUS: {
+      // sets user status of other users
+      // payload is an array of user statuses.
+      // iterate through current statuses to get object of user ids with their index in array
+      const newArray = [...state.otherUserStatus]; // make a separate copy of the array
+      const object = {};
+      _.each(state.otherUserStatus, (each, i) => {
+        object[each.user_id] = i;
+      });
+      // find out if object has new status and get their index and replace
+      // if no old one, push into array
+      _.each(action.payload.user_status, eachStatus => {
+        if (eachStatus.user_id in object) {
+          newArray[object[eachStatus.user_id]] = eachStatus;
+        } else {
+          newArray.push(eachStatus);
+        }
+      });
+      
+      return { ...state, otherUserStatus: newArray };
+    }
+
+
+    case CHECKED_CONVERSATIONS: {
       const newArray = state.checkedConversationsArray;
       const removeFromIndexArray = [];
-      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, action.payload: ', action.payload);
       // iterate through action.payload to get index of conversations in existing state;
@@ -234,11 +291,11 @@ export default function (state = {
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, after each newArray: ', newArray);
 
       return { ...state, checkedConversationsArray: newArray };
-
+    }
     // case CHECKED_CONVERSATIONS:
     //   return { ...state, checkedConversationsArray: action.payload };
 
-    case UPDATE_CONVERSATIONS:
+    case UPDATE_CONVERSATIONS: {
       const conversationUpdateArray = [];
       const conversationUpdateIdArray = [];
       // console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
@@ -257,6 +314,7 @@ export default function (state = {
       // console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
 
       return { ...state, conversationByUserAndFlat: conversationUpdateArray };
+    }
     // case UPDATE_CONVERSATIONS:
     //   const conversationUpdateArray = [];
     //   const conversationUpdateIdArray = [];
@@ -286,7 +344,7 @@ export default function (state = {
     case YOUR_FLAT:
       return { ...state, yourFlat: action.payload };
 
-    case MARK_MESSAGES_READ:
+    case MARK_MESSAGES_READ: {
     // console.log('in conversation reducer, MARK_MESSAGES_READ: ');
       let newMessages = 0;
       // go through old conversationByUserAndFlat and replace with new conversation with messages marked read
@@ -315,6 +373,7 @@ export default function (state = {
       });
 
       return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, conversationsByUser: conversationArray, newMessages };
+    }
 
     default:
       return state;

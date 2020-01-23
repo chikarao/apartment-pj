@@ -94,8 +94,8 @@ class Header extends Component {
      this.props.setUserStatus(userStatus);
    }
 
-   setOwnerUserStatus = (userStatus) => {
-     this.props.setOwnerUserStatus(userStatus);
+   setOtherUserStatus = (userStatus) => {
+     this.props.setOtherUserStatus(userStatus);
    }
    // **************** Need to have to pass to actionCableManager
 
@@ -210,7 +210,7 @@ class Header extends Component {
          currentUserIsOwner: this.props.currentUserIsOwner,
          flat: this.props.flat,
          setUserStatus: this.setUserStatus,
-         setOwnerUserStatus: this.setOwnerUserStatus,
+         setOtherUserStatus: this.setOtherUserStatus,
        });
      }
    }
@@ -705,7 +705,7 @@ function mapStateToProps(state) {
 
   return {
     auth: state.auth,
-    userStatus: state.auth.userStatus,
+    userStatus: state.conversation.userStatus,
     authenticated: state.auth.authenticated,
     currentUserIsOwner: state.flat.currentUserIsOwner,
     email: state.auth.email,
