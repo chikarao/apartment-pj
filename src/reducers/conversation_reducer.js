@@ -212,24 +212,26 @@ export default function (state = {
       return { ...state, showConversations: !state.showConversations };
 
     case SELECTED_FLAT_FROM_PARAMS: {
+      console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, action.payload: ', action.payload);
       const newArray = [...state.otherUserStatus]; // make a separate copy of the array
       // console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, newArray: ', newArray);
       // Replace old user status object with new one or push to array a new one if no old one
       // O(n + m)
       const object = {};
-      _.each(state.otherUserStatus, (each, i) => {
-        object[each.user_id] = i;
-      });
-      console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, object: ', object);
+      if (action.payload) {
+        _.each(state.otherUserStatus, (each, i) => {
+          object[each.user_id] = i;
+        });
+        console.log('in conversation reducer, SELECTED_FLAT_FROM_PARAMS, object: ', object);
 
-      _.each(action.payload.user_status, eachStatus => {
-        if (eachStatus.user_id in object) {
-          newArray[object[eachStatus.user_id]] = eachStatus;
-        } else {
-          newArray.push(eachStatus);
-        }
-      });
-
+        _.each(action.payload.user_status, eachStatus => {
+          if (eachStatus.user_id in object) {
+            newArray[object[eachStatus.user_id]] = eachStatus;
+          } else {
+            newArray.push(eachStatus);
+          }
+        });
+      }
       return { ...state, otherUserStatus: newArray };
     }
 
@@ -243,21 +245,25 @@ export default function (state = {
       // sets user status of other users
       // payload is an array of user statuses.
       // iterate through current statuses to get object of user ids with their index in array
+      console.log('in conversation reducer, SET_OTHER_USER_STATUS, action.payload: ', action.payload);
       const newArray = [...state.otherUserStatus]; // make a separate copy of the array
       const object = {};
-      _.each(state.otherUserStatus, (each, i) => {
-        object[each.user_id] = i;
-      });
-      // find out if object has new status and get their index and replace
-      // if no old one, push into array
-      _.each(action.payload.user_status, eachStatus => {
-        if (eachStatus.user_id in object) {
-          newArray[object[eachStatus.user_id]] = eachStatus;
-        } else {
-          newArray.push(eachStatus);
-        }
-      });
-      
+      if (action.payload.length > 0 && action.payload[0] !== null) {
+        _.each(state.otherUserStatus, (each, i) => {
+          object[each.user_id] = i;
+        });
+        // find out if object has new status and get their index and replace
+        // if no old one, push into array
+        _.each(action.payload, eachStatus => {
+          console.log('in conversation reducer, SET_OTHER_USER_STATUS, eachStatus: ', eachStatus);
+          if (eachStatus.user_id in object) {
+            newArray[object[eachStatus.user_id]] = eachStatus;
+          } else {
+            newArray.push(eachStatus);
+          }
+        });
+      }
+
       return { ...state, otherUserStatus: newArray };
     }
 
@@ -265,7 +271,6 @@ export default function (state = {
     case CHECKED_CONVERSATIONS: {
       const newArray = state.checkedConversationsArray;
       const removeFromIndexArray = [];
-      // console.log('in conversation reducer, CHECKED_CONVERSATIONS, state.checkedConversationsArray: ', state.checkedConversationsArray);
       // console.log('in conversation reducer, CHECKED_CONVERSATIONS, action.payload: ', action.payload);
       // iterate through action.payload to get index of conversations in existing state;
       _.each(action.payload, conversationId => {

@@ -129,6 +129,7 @@ export default function (props) {
             if (data.other_user_status) props.setOtherUserStatus(data.other_user_status);
           } else if (data.notification === 'others_user_status_change') {
             console.log('actioncable_manager in received, else others_user_status_change data ', data);
+            props.setOtherUserStatus(data.user_status);
           }
         }
       }, // end of received
