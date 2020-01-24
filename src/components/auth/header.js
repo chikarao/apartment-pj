@@ -494,100 +494,55 @@ class Header extends Component {
   renderNavigationLinks() {
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
-    // !!!!!!!!! WARNING !!!!!  FOR SOME REASON, LANGUAGE SELECCT AND USER ONLINE SELECT CANNOT BE IN THE
-    // SAME ORDER IN THREE OF THE VIEWS, SHOW, MY PAGE AND MAIN MESSAGING.
-    // OR THERE WILL BE A NASTY MESSAGE WHEN NAVIATING FROM PAGE TO PAGE
-    // SAYING "ATTEMPTING TO UPDATE A COMPONENT THAT IS NOT MOUNTED OR MOUTING"
-    // SO PUT THEM IN DIFFERENT ORDERS. I BELIEVE IT HAS TO DO WITH REACT DECIDING TO RERENNDER IF
-    // THERE ARE SAME COMPOENENTS ON A PAGE SUCH AS IN THE HEADER 
+    // LINS AND DIVS TO RENDER:
+    // userStatus select: every page escept logged out page;
+    // language select: every page;
+    // mail link: Every page except on logged out page and show flat that is not the current user's flat
+    // this is so that users will not click on mail and start a websocket connectdion
+    // log out link: only on my page;
+    // my page link: on every page except logged out page and my page:
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
     // on show page pathname returned is like in string type: /show/2
     const onShowPage = this.props.location.pathname.includes('/show/');
-    // console.log('in header, renderNavigationLinks, this.props.location: ', this.props.location);
+    // console.log('in header, renderNavigationLinks, onMessagingMainPage: ', onMessagingMainPage);
     // console.log('in header, renderNavigationLinks, onMyPage, onMessagingMainPage, onShowPage: ', onMyPage, onMessagingMainPage, onShowPage);
     //   const currentFlatId = this.props.location.pathname.match(/\d+/)
     // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
     if (this.props.authenticated) {
        // show link to signout and signed in as...
        // Link to signout mounts the signout component, and its componentDidMount calls the signout action in redux
-       if (onMyPage) {
-         console.log('in header, renderNavigationLinks, if on mypage: ');
-         return (
-           <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
-             <li className="nav-item">
-              <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
-             </li>
-             <li className="nav-item">
-              <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
-             </li>
-             { this.props.conversations
-               ?
-               <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
-                 <div className="header-mail-box">
-                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
-                  <i className="fa fa-envelope"></i>
-                 </div>
-               </li>
-               :
-               ''
-             }
-             <li className="nav-item header-language-selection-box-li">
-              {this.renderOnlineOfflineSelect()}
-             </li>
-             <li className="nav-item header-language-selection-box-li">
-              {this.renderAppLanguageSelect()}
-             </li>
-           </ul>
-         );
-       } else if (onMessagingMainPage) {
-         console.log('in header, renderNavigationLinks, if on onMessagingMainPage: ');
-         return (
-           <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
-             <li className="nav-item">
-              <Link className="nav-link header-auth-link" to={'/mypage'}>{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
-             </li>
-             <li className="nav-item">
-              <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
-             </li>
-             <li className="nav-item header-language-selection-box-li">
-               {this.renderAppLanguageSelect()}
-             </li>
-             <li className="nav-item header-language-selection-box-li">
-             {this.renderOnlineOfflineSelect()}
-             </li>
-           </ul>
-         );
-       } else {
-         console.log('in header, renderNavigationLinks, in else: ');
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
            return (
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
-               <li className="nav-item">
+              { onMyPage
+                ?
+                <li className="nav-item">
+                  <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
+                </li>
+                :
+                ''
+              }
+              { !onMyPage
+                ?
+                <li className="nav-item">
                   <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
-               </li>
+                </li>
+                :
+                ''
+              }
                <li className="nav-item">
                 <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
                </li>
-               { this.props.conversations && !onShowPage ?
-                 <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
-                   <div className="header-mail-box">
-                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
-                   <i className="fa fa-envelope"></i>
-                   </div>
-                 </li> :
-                 ''
-               }
-               { this.props.conversations && onShowPage && this.props.currentUserIsOwner
+               { this.props.conversations && ((!onShowPage && !onMessagingMainPage) || (onShowPage && this.props.currentUserIsOwner))
                  ?
                  <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                    <div className="header-mail-box">
-                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+                    {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                    <i className="fa fa-envelope"></i>
                    </div>
-                 </li>
-                 :
+                 </li> :
                  ''
                }
                <li className="nav-item header-language-selection-box-li">
@@ -599,7 +554,7 @@ class Header extends Component {
              </ul>
            );
          // } // end of if this.props.conversations
-       }
+
        //end of second if
     } else { // else of if authenticated
       // show link to sign in or sign out
@@ -618,6 +573,133 @@ class Header extends Component {
       ];
     }
   }
+  // renderNavigationLinks() {
+  //   // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
+  //   // added withRouter before connect
+  //   // !!!!!!!!! WARNING !!!!!  FOR SOME REASON, LANGUAGE SELECCT AND USER ONLINE SELECT CANNOT BE IN THE
+  //   // SAME ORDER IN THREE OF THE VIEWS, SHOW, MY PAGE AND MAIN MESSAGING.
+  //   // OR THERE WILL BE A NASTY MESSAGE WHEN NAVIATING FROM PAGE TO PAGE
+  //   // SAYING "ATTEMPTING TO UPDATE A COMPONENT THAT IS NOT MOUNTED OR MOUTING"
+  //   // SO PUT THEM IN DIFFERENT ORDERS. I BELIEVE IT HAS TO DO WITH REACT DECIDING TO RERENNDER IF
+  //   // THERE ARE SAME COMPOENENTS ON A PAGE SUCH AS IN THE HEADER
+  //   const onMyPage = this.props.location.pathname === '/mypage';
+  //   const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
+  //   // on show page pathname returned is like in string type: /show/2
+  //   const onShowPage = this.props.location.pathname.includes('/show/');
+  //   // console.log('in header, renderNavigationLinks, this.props.location: ', this.props.location);
+  //   // console.log('in header, renderNavigationLinks, onMyPage, onMessagingMainPage, onShowPage: ', onMyPage, onMessagingMainPage, onShowPage);
+  //   //   const currentFlatId = this.props.location.pathname.match(/\d+/)
+  //   // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
+  //   if (this.props.authenticated) {
+  //      // show link to signout and signed in as...
+  //      // Link to signout mounts the signout component, and its componentDidMount calls the signout action in redux
+  //      if (onMyPage) {
+  //        console.log('in header, renderNavigationLinks, if on mypage: ');
+  //        return (
+  //          <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
+  //            <li className="nav-item">
+  //               <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
+  //            </li>
+  //            <li className="nav-item">
+  //             <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
+  //            </li>
+  //            { this.props.conversations
+  //              ?
+  //              <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
+  //                <div className="header-mail-box">
+  //                 {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+  //                 <i className="fa fa-envelope"></i>
+  //                </div>
+  //              </li>
+  //              :
+  //              ''
+  //            }
+  //            <li className="nav-item header-language-selection-box-li">
+  //             {this.renderOnlineOfflineSelect()}
+  //            </li>
+  //            <li className="nav-item header-language-selection-box-li">
+  //             {this.renderAppLanguageSelect()}
+  //            </li>
+  //          </ul>
+  //        );
+  //      } else if (onMessagingMainPage) {
+  //        console.log('in header, renderNavigationLinks, if on onMessagingMainPage: ');
+  //        return (
+  //          <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
+  //            <li className="nav-item">
+  //             <Link className="nav-link header-auth-link" to={'/mypage'}>{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
+  //            </li>
+  //            <li className="nav-item">
+  //             <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
+  //            </li>
+  //            <li className="nav-item header-language-selection-box-li">
+  //              {this.renderAppLanguageSelect()}
+  //            </li>
+  //            <li className="nav-item header-language-selection-box-li">
+  //            {this.renderOnlineOfflineSelect()}
+  //            </li>
+  //          </ul>
+  //        );
+  //      } else {
+  //        console.log('in header, renderNavigationLinks, in else: ');
+  //        // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
+  //        // win.focus();
+  //          return (
+  //            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
+  //              <li className="nav-item">
+  //                 <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
+  //              </li>
+  //              <li className="nav-item">
+  //               <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
+  //              </li>
+  //              { this.props.conversations && !onShowPage ?
+  //                <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
+  //                  <div className="header-mail-box">
+  //                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+  //                  <i className="fa fa-envelope"></i>
+  //                  </div>
+  //                </li> :
+  //                ''
+  //              }
+  //              { this.props.conversations && onShowPage && this.props.currentUserIsOwner
+  //                ?
+  //                <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
+  //                  <div className="header-mail-box">
+  //                  {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
+  //                  <i className="fa fa-envelope"></i>
+  //                  </div>
+  //                </li>
+  //                :
+  //                ''
+  //              }
+  //              <li className="nav-item header-language-selection-box-li">
+  //                {this.renderAppLanguageSelect()}
+  //              </li>
+  //              <li className="nav-item header-language-selection-box-li">
+  //               {this.renderOnlineOfflineSelect()}
+  //              </li>
+  //            </ul>
+  //          );
+  //        // } // end of if this.props.conversations
+  //      }
+  //      //end of second if
+  //   } else { // else of if authenticated
+  //     // show link to sign in or sign out
+  //     return [
+  //       <ul key={'2'} className="header-list">
+  //         <li className="nav-item">
+  //           <div value="signin" className="header-links" onClick={this.handleAuthLinkClick}>{AppLanguages.signIn[this.props.appLanguageCode]}</div>
+  //         </li>
+  //         <li className="nav-item">
+  //           <div value="signup" className="header-links" onClick={this.handleAuthLinkClick}>{AppLanguages.signUp[this.props.appLanguageCode]}</div>
+  //         </li>
+  //         <li className="nav-item header-language-selection-box-li">
+  //           {this.renderAppLanguageSelect()}
+  //         </li>
+  //       </ul>
+  //     ];
+  //   }
+  // }
 
   resizeHeader(larger) {
     const header = document.getElementById('nav_container');
