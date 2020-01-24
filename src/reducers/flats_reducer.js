@@ -114,7 +114,7 @@ export default function (state = INITIAL_STATE, action) {
       let currentUserIsOwner = false;
       if (userId) {
         // NOTE: the == comparison does not work with ===
-        currentUserIsOwner = action.payload.user_id == userId;
+        currentUserIsOwner = action.payload.flat.user_id == userId;
       }
       // console.log('in flats reducer, action.payload: ', action.payload);
       return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner };

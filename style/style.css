@@ -222,6 +222,7 @@ h3 {
 
 .nav-link {
   font-size: 15px;
+  margin: 2px 0 0px 0px;
 }
 
 .mobile-header {
@@ -301,7 +302,7 @@ h3 {
 
 .navbar-brand {
   text-decoration: none;
-  font-size: 35px;
+  font-size: 30px;
   color: black;
   padding: 20px 0 0 20px;
 }
@@ -324,16 +325,18 @@ h3 {
   list-style-type: none;
   float: right;
   padding-top: 0;
-  padding: 20px 20px 0 20px;
+  padding: 20px 10px 5px 10px;
   margin: 0;
   font-size: 17px;
 }
 
 /* HEADER after modal */
 .header-links {
-  padding: 10px;
-  font-size: 17px;
   color: blue;
+  color: blue;
+  padding: 10px 10px 0 0px !important;
+  font-size: 17px;
+  margin: 0px 20px 0px 10px;
 }
 
 .header-links:hover {
@@ -410,7 +413,7 @@ h3 {
 
 .header-mail-li {
   margin: 0;
-  padding: 15px 20px 0 0;
+  padding: 15px 20px 0 20px;
 }
 
 .header-mail-box {
@@ -475,7 +478,7 @@ h3 {
   width: auto;
   height: auto;
   padding: 15px 10px 0 0;
-  margin: 0px 20px 1px 10px;
+  margin: 0px 0px 1px 10px;
 }
 
 .header-language-selection-box-select {
@@ -4826,7 +4829,7 @@ form {
     .header-language-selection-box-li {
 
       padding: 15px 0 0 0;
-      margin: 0px 20px 1px 10px !important;
+      margin: 0px 10px 1px 10px !important;
     }
 
     .messaging-main-main-container {

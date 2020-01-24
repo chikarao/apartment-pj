@@ -126,7 +126,7 @@ export default function (props) {
             // set currentUser's userStatus in app state conversation reducer
             props.setUserStatus(data.user_status);
             // set the owner's userStatus to be used in showFlat page in app state conversation reducer
-            if (data.other_user_status) props.setOtherUserStatus(data.other_user_status);
+            if (data.other_user_status && data.other_user_status.length > 0 && data.other_user_status[0] !== null) props.setOtherUserStatus(data.other_user_status);
           } else if (data.notification === 'others_user_status_change') {
             console.log('actioncable_manager in received, else others_user_status_change data ', data);
             props.setOtherUserStatus(data.user_status);

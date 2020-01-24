@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import _ from 'lodash';
-import Cable from 'actioncable';
+// import Cable from 'actioncable';
 
 import actioncableManager from '../messaging/actioncable_manager';
 // import DayPicker from 'react-day-picker';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+// import DayPickerInput from 'react-day-picker/DayPickerInput';
 // import $ from 'jquery';
 // import { Button, Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
 import SigninModal from './signin_modal';
@@ -59,7 +59,7 @@ class Header extends Component {
 
          if (userId) {
            this.props.fetchFlatsByUser(this.props.auth.id, () => {});
-           this.props.setGetOnlineOffline({ user_id: userId, action: 'get' })
+           this.props.setGetOnlineOffline({ user_id: userId, action: 'get' });
          }
        }
    }
@@ -103,18 +103,18 @@ class Header extends Component {
      // specify which language at which the app state is currently set and change select box
      if (this.props.appLanguageCode) {
        const languageSelect = document.getElementById('header-language-selection-box-select');
-       // console.log('in header, componentDidMount, this.props.appLanguageCode: ', this.props.appLanguageCode);
        const optionIndex = this.getIndexOption('header-language-option', this.props.appLanguageCode, true);
        if (languageSelect) {
          languageSelect.selectedIndex = optionIndex;
        }
+     }
 
-       if (this.props.userStatus) {
-         const onlineSelect = document.getElementById('header-online-selection-box-select');
-         const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
-         if (onlineSelect) {
-           onlineSelect.selectedIndex = optionOnlineIndex;
-         }
+     if (this.props.userStatus && (prevProps.location.pathname == this.props.location.pathname)) {
+       console.log('in header, componentDidMount, in if this.props.userStatus prevProps.location.pathname, this.props: ', prevProps.location.pathname, this.props.location.pathname);
+       const onlineSelect = document.getElementById('header-online-selection-box-select');
+       const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
+       if (onlineSelect) {
+         onlineSelect.selectedIndex = optionOnlineIndex;
        }
      }
      // for websocket connection to actioncable when user logs on and off
@@ -284,25 +284,26 @@ class Header extends Component {
       // switch off showAuthModal only if it is true
       if (this.props.auth.showAuthModal) {
         this.props.showAuthModal(); //switch off showAuthModal to hide all auth modals
-        this.props.authError('')
+        this.props.authError('');
       }
 
       if (this.props.auth.showSigninModal) {
         // if signin opened, switch off showSigninModal to hide signin modal
         this.props.showSigninModal();
-        this.props.authError('')
+        this.props.authError('');
       }
+
       if (this.props.auth.showSignupModal) {
         // if signin opened, switch off showSigninModal to hide signin modal
         this.props.showSignupModal();
-        this.props.authError('')
+        this.props.authError('');
       }
 
       if (this.props.auth.showResetPasswordModal) {
         // if reset password opened, switch off showResetPasswordModal to hide reset modal
         // so if sign in clicked, sign in opens since showResetPasswordModal is false
         this.props.showResetPasswordModal();
-        this.props.authError('')
+        this.props.authError('');
       }
 
       // if (this.props.auth.showEditProfileModal) {
@@ -490,22 +491,29 @@ class Header extends Component {
     return false;
   }
 
-  navigationLinks() {
-    // console.log('in header, navigationLinks, this.props.location: ', this.props.location);
+  renderNavigationLinks() {
     // reference: https://stackoverflow.com/questions/42253277/react-router-v4-how-to-get-current-route
     // added withRouter before connect
+    // !!!!!!!!! WARNING !!!!!  FOR SOME REASON, LANGUAGE SELECCT AND USER ONLINE SELECT CANNOT BE IN THE
+    // SAME ORDER IN THREE OF THE VIEWS, SHOW, MY PAGE AND MAIN MESSAGING.
+    // OR THERE WILL BE A NASTY MESSAGE WHEN NAVIATING FROM PAGE TO PAGE
+    // SAYING "ATTEMPTING TO UPDATE A COMPONENT THAT IS NOT MOUNTED OR MOUTING"
+    // SO PUT THEM IN DIFFERENT ORDERS. I BELIEVE IT HAS TO DO WITH REACT DECIDING TO RERENNDER IF
+    // THERE ARE SAME COMPOENENTS ON A PAGE SUCH AS IN THE HEADER 
     const onMyPage = this.props.location.pathname === '/mypage';
     const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
     // on show page pathname returned is like in string type: /show/2
     const onShowPage = this.props.location.pathname.includes('/show/');
+    // console.log('in header, renderNavigationLinks, this.props.location: ', this.props.location);
+    // console.log('in header, renderNavigationLinks, onMyPage, onMessagingMainPage, onShowPage: ', onMyPage, onMessagingMainPage, onShowPage);
     //   const currentFlatId = this.props.location.pathname.match(/\d+/)
     // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
     if (this.props.authenticated) {
        // show link to signout and signed in as...
        // Link to signout mounts the signout component, and its componentDidMount calls the signout action in redux
        if (onMyPage) {
-         // console.log('in header, navigationLinks, if on mypage, this.props.conversations: ', this.props.conversations);
-         return [
+         console.log('in header, renderNavigationLinks, if on mypage: ');
+         return (
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
               <Link className="nav-link header-auth-link" to="/signout">{AppLanguages.signOut[this.props.appLanguageCode]}</Link>
@@ -513,30 +521,28 @@ class Header extends Component {
              <li className="nav-item">
               <p className="nav-link">{AppLanguages.signedIn[this.props.appLanguageCode]} {this.props.email}</p>
              </li>
-             { this.props.conversations ?
+             { this.props.conversations
+               ?
                <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                  <div className="header-mail-box">
                   {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
-                 <i className="fa fa-envelope"></i>
-               </div>
-               </li> :
-               ''
-             }
-             <li className="nav-item header-language-selection-box-li">
-              {this.renderAppLanguageSelect()}
-             </li>
-             {this.props.authenticated
-               ?
-               <li className="nav-item header-language-selection-box-li">
-                {this.renderOnlineOfflineSelect()}
+                  <i className="fa fa-envelope"></i>
+                 </div>
                </li>
                :
                ''
              }
+             <li className="nav-item header-language-selection-box-li">
+              {this.renderOnlineOfflineSelect()}
+             </li>
+             <li className="nav-item header-language-selection-box-li">
+              {this.renderAppLanguageSelect()}
+             </li>
            </ul>
-         ];
+         );
        } else if (onMessagingMainPage) {
-         return [
+         console.log('in header, renderNavigationLinks, if on onMessagingMainPage: ');
+         return (
            <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
              <li className="nav-item">
               <Link className="nav-link header-auth-link" to={'/mypage'}>{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
@@ -547,20 +553,16 @@ class Header extends Component {
              <li className="nav-item header-language-selection-box-li">
                {this.renderAppLanguageSelect()}
              </li>
-             {this.props.authenticated
-               ?
-               <li className="nav-item header-language-selection-box-li">
-                {this.renderOnlineOfflineSelect()}
-               </li>
-               :
-               ''
-             }
+             <li className="nav-item header-language-selection-box-li">
+             {this.renderOnlineOfflineSelect()}
+             </li>
            </ul>
-         ];
+         );
        } else {
+         console.log('in header, renderNavigationLinks, in else: ');
          // const win = window.open(`/show/${this.props.flat.id}`, '_blank');
          // win.focus();
-           return [
+           return (
              <ul key={'1'} className={this.state.windowWidth <= RESIZE_BREAK_POINT ? 'mobile-header-list' : 'header-list'}>
                <li className="nav-item">
                   <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
@@ -577,43 +579,42 @@ class Header extends Component {
                  </li> :
                  ''
                }
-               { this.props.conversations && onShowPage && this.props.currentUserIsOwner ?
+               { this.props.conversations && onShowPage && this.props.currentUserIsOwner
+                 ?
                  <li className="nav-item header-mail-li" onClick={this.handleMailBoxClick}>
                    <div className="header-mail-box">
                    {this.props.newMessages ? <div className="header-mail-number-box"><div className="header-mail-number">{this.props.newMessages}</div></div> : ''}
                    <i className="fa fa-envelope"></i>
                    </div>
-                 </li> :
+                 </li>
+                 :
                  ''
                }
                <li className="nav-item header-language-selection-box-li">
                  {this.renderAppLanguageSelect()}
                </li>
-               {this.props.authenticated
-                 ?
-                 <li className="nav-item header-language-selection-box-li">
-                  {this.renderOnlineOfflineSelect()}
-                 </li>
-                 :
-                 ''
-               }
+               <li className="nav-item header-language-selection-box-li">
+                {this.renderOnlineOfflineSelect()}
+               </li>
              </ul>
-           ];
+           );
          // } // end of if this.props.conversations
        }
        //end of second if
-    } else {
+    } else { // else of if authenticated
       // show link to sign in or sign out
       return [
         <ul key={'2'} className="header-list">
           <li className="nav-item">
-            <div value="signin" className="header-links" onClick={this.handleAuthLinkClick}>Sign In</div>
+            <div value="signin" className="header-links" onClick={this.handleAuthLinkClick}>{AppLanguages.signIn[this.props.appLanguageCode]}</div>
           </li>
           <li className="nav-item">
-            <div value="signup" className="header-links" onClick={this.handleAuthLinkClick}>Sign Up</div>
+            <div value="signup" className="header-links" onClick={this.handleAuthLinkClick}>{AppLanguages.signUp[this.props.appLanguageCode]}</div>
+          </li>
+          <li className="nav-item header-language-selection-box-li">
+            {this.renderAppLanguageSelect()}
           </li>
         </ul>
-
       ];
     }
   }
@@ -646,7 +647,7 @@ class Header extends Component {
     if (this.state.mobileNavVisible) {
       return (
         <div className="mobile-header">
-          {this.navigationLinks()}
+          {this.renderNavigationLinks()}
         </div>
       );
     }
@@ -671,12 +672,12 @@ class Header extends Component {
           {this.renderMobileNav()}
         </div>
       ];
-    } else {
+    } else { // else to if windowWidth <= RESIZE_BREAK_POINT
       const larger = false;
       this.resizeHeader(larger);
       return [
         <div key={'4'} className="nav_menu header">
-          {this.navigationLinks()}
+          {this.renderNavigationLinks()}
         </div>
       ];
     }

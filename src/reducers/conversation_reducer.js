@@ -44,7 +44,8 @@ export default function (state = {
   webSocketConnected: false,
   nonCablePageOverriden: false,
   userStatus: { online: 0 },
-  otherUserStatus: [{ user_id: 3 }, { user_id: 4 }]
+  // otherUserStatus: [{ user_id: 3 }, { user_id: 4 }]
+  otherUserStatus: []
 }, action) {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);

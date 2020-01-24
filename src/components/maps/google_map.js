@@ -255,7 +255,8 @@ class GoogleMap extends Component {
       // changed yet again 4/19 to ia.l and j, na.l and j
       // changed yet again 7/24 to ga.l and j, na.l and j what for????
       // changed yet again 12/17/2019 or before to ka.h, ka.g, pa.h, pa.g
-      // changed yet again 1/16/2020 to Ya.i, Ya.g, Ta.i, Ya.g
+      // changed yet again 1/16/2020 to pa.i, pa.g, ka.i, ka.g
+      // changed yet again 1/24/2020 to Ya.i, Ya.g, Ta.i, Ta.g
       // !!!!!!!!!!!!! KEEP below console logs even in production
       console.log('in googlemap, bounds: ', bounds);
       // console.log('in googlemap, bounds.Ya.g, bounds.Ta.g: ', bounds.Ya.g, bounds.Ta.g);
@@ -269,6 +270,7 @@ class GoogleMap extends Component {
       //   south: bounds.Ya.g
       // };
       // map bouunds is defined with keys received from backend api
+
       const mapBounds = {
         east: bounds[east_west_first][east_second],
         west: bounds[east_west_first][west_second],
