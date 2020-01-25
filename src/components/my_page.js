@@ -62,7 +62,7 @@ class MyPage extends Component {
       lastPanel: 'showMyBookings',
       // actionType: 'Add a Card'
     };
-    
+
     this.handleResize = this.handleResize.bind(this);
     this.handleBookingCardClick = this.handleBookingCardClick.bind(this);
     this.handleFlatCardClick = this.handleFlatCardClick.bind(this);
@@ -1542,7 +1542,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     // userProfiles: state.auth.userProfiles,
     user: state.auth.user,
-    conversations: state.conversation.conversationByUserAndFlat,
+    conversations: state.conversation.conversationsByUser,
     noConversation: state.conversation.noConversation,
     conversationId: state.conversation.conversationToShow,
     showConversationCards: state.conversation.showConversations,

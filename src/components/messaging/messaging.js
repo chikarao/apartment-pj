@@ -484,7 +484,7 @@ function mapStateToProps(state) {
   console.log('in messaging, mapStateToProps, state: ', state);
   return {
     auth: state.auth,
-    conversations: state.conversation.conversationByUserAndFlat,
+    conversations: state.conversation.conversationsByUser,
     noConversation: state.conversation.noConversation,
     noConversationForFlat: state.conversation.noConversationForFlat,
     flat: state.flat.selectedFlatFromParams,

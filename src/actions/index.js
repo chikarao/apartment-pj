@@ -648,34 +648,34 @@ export function fetchConversationByFlat(flatId) {
   };
 }
 
-export function fetchConversationByUserAndFlat(flatIdArray) {
-  //flatIds is an array
-  console.log('in action index, fetchConversationByUserAndFlat, flatIdArray: ', flatIdArray);
-
-  return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/users/conversations/conversations_by_user_and_flat`, { conversation: { flat_id_array: flatIdArray } }, {
-      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-    })
-    .then(response => {
-      console.log('in action index, response to fetchConversationByUserAndFlat: ', response);
-      console.log('in action index, response to fetchConversationByUserAndFlat: ', response.data.data.conversations);
-      const { conversations } = response.data.data;
-      if (conversations.length === 0) {
-        console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversations.length === 0);
-        dispatch({
-          type: NO_CONVERSATION
-        });
-      }
-      dispatch({
-        type: FETCH_CONVERSATION_BY_USER_AND_FLAT,
-        payload: response.data.data.conversations
-      });
-    })
-    .catch(error => {
-      console.log('in action index, catch error to fetchConversationByUserAndFlat: ', error);
-    });
-  };
-}
+// export function fetchConversationByUserAndFlat(flatIdArray) {
+//   //flatIds is an array
+//   console.log('in action index, fetchConversationByUserAndFlat, flatIdArray: ', flatIdArray);
+//
+//   return function (dispatch) {
+//     axios.post(`${ROOT_URL}/api/v1/users/conversations/conversations_by_user_and_flat`, { conversation: { flat_id_array: flatIdArray } }, {
+//       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//     })
+//     .then(response => {
+//       console.log('in action index, response to fetchConversationByUserAndFlat: ', response);
+//       console.log('in action index, response to fetchConversationByUserAndFlat: ', response.data.data.conversations);
+//       const { conversations } = response.data.data;
+//       if (conversations.length === 0) {
+//         console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversations.length === 0);
+//         dispatch({
+//           type: NO_CONVERSATION
+//         });
+//       }
+//       dispatch({
+//         type: FETCH_CONVERSATION_BY_USER_AND_FLAT,
+//         payload: response.data.data.conversations
+//       });
+//     })
+//     .catch(error => {
+//       console.log('in action index, catch error to fetchConversationByUserAndFlat: ', error);
+//     });
+//   };
+// }
 export function fetchConversationsByUser(callback) {
   // better way to do this thn fetchConversationByUserAndFlat
   // gets @user to get conversation where user_id is @user.id and @flats where user id is user_id
@@ -696,7 +696,7 @@ export function fetchConversationsByUser(callback) {
       // }
       dispatch({
         type: FETCH_CONVERSATIONS_BY_USER,
-        payload: response.data.data.conversations
+        payload: response.data.data
       });
       callback();
     })

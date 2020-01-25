@@ -4,7 +4,7 @@ import {
   CREATE_CONVERSATION,
   NO_CONVERSATION,
   NO_CONVERSATION_FOR_FLAT,
-  FETCH_CONVERSATION_BY_USER_AND_FLAT,
+  // FETCH_CONVERSATION_BY_USER_AND_FLAT,
   FETCH_CONVERSATIONS_BY_USER,
   FETCH_CONVERSATION_BY_FLAT,
   MARK_MESSAGES_READ,
@@ -34,7 +34,7 @@ export default function (state = {
   showConversations: true,
   checkedConversationsArray: [],
   conversationByFlat: [],
-  conversationByUserAndFlat: [],
+  // conversationByUserAndFlat: [],
   conversationsByUser: [],
   yourFlat: false,
   props_cable: null,
@@ -80,19 +80,20 @@ export default function (state = {
       return { ...state, conversationByFlat: action.payload, currentUserAndFlatConversation, userFlatNewMessages: newMessagesNum };
     } // end of case
 
-    case FETCH_CONVERSATION_BY_USER_AND_FLAT:
-      // console.log('in conversation reducer, state: ', state);
-      return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
+    // case FETCH_CONVERSATION_BY_USER_AND_FLAT:
+    //   // console.log('in conversation reducer, state: ', state);
+    //   return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
 
     case FETCH_CONVERSATIONS_BY_USER:
-      console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
+      // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
+      console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, action.payload: ', action.payload);
       let currentUserId = localStorage.getItem('id');
       newMessagesNum = 0;
-      _.each(action.payload, conversation => {
+      _.each(action.payload.conversations, conversation => {
         // somehow needs to be == not ====
         userNotOwner = conversation.user_id == currentUserId
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
-        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
+        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.user_id: ', conversation.user_id);
         // if (conversation.id !== action.payload.id) {
@@ -115,7 +116,13 @@ export default function (state = {
         });
       });
       // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, newMessages: ', newMessagesBool);
-      return { ...state, conversationByUserAndFlat: action.payload, conversationsByUser: action.payload, noConversation: false, newMessages: newMessagesNum };
+      return { ...state,
+        // conversationByUserAndFlat: action.payload,
+        conversationsByUser: action.payload.conversations,
+        noConversation: false,
+        newMessages: newMessagesNum,
+        otherUserStatus: action.payload.other_user_status
+      };
 
     case CREATE_MESSAGE:
       // when message craeted, changing conversation with new message in conversationByUserAndFlat
@@ -123,7 +130,7 @@ export default function (state = {
       // Fixes bug in mypage where after message created and
       // toggle back to conversations, only the old conversation remains and it did not have
       // flat in the conversation object so threw and error
-      _.each(state.conversationByUserAndFlat, conversation => {
+      _.each(state.conversationsByUser, conversation => {
         if (conversation.id !== action.payload.conversation.id) {
           conversationArray.push(conversation);
         } else {
@@ -150,12 +157,25 @@ export default function (state = {
       });
       console.log('in conversation reducer, CREATE_MESSAGE conversationArray: ', conversationArray);
         console.log('in conversation reducer, CREATE_MESSAGE action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+      return { ...state,
+        noConversation: false,
+        conversationByFlat: [action.payload.conversation],
+        conversationsByUser: conversationArray,
+        // conversationByUserAndFlat: conversationArray,
+        noConversationForFlat: false,
+        newMessages: newMessagesNum };
 
     case CREATE_CONVERSATION:
     // console.log('in conversation reducer, state: ', state);
     // return { ...state, conversationCreated: action.payload, conversationByUserAndFlat: action.payload, noConversation: false };
-    return { ...state, conversationToShow: action.payload.conversation, noConversationForFlat: false, noConversation: false, conversationsByUser: [action.payload.conversation], conversationByFlat: [action.payload.conversation], conversationByUserAndFlat: [action.payload.conversation] };
+    return { ...state,
+      conversationToShow: action.payload.conversation,
+      noConversationForFlat: false,
+      noConversation: false,
+      conversationsByUser: [action.payload.conversation],
+      conversationByFlat: [action.payload.conversation],
+      // conversationByUserAndFlat: [action.payload.conversation]
+    };
 
     case RECEIVE_CONVERSATION:
     console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
@@ -164,7 +184,7 @@ export default function (state = {
       // Fixes bug in mypage where after message created and
       // toggle back to conversations, only the old conversation remains and it did not have
       // flat in the conversation object so threw and error
-      _.each(state.conversationByUserAndFlat, conversation => {
+      _.each(state.conversationsByUser, conversation => {
         if (conversation.id !== action.payload.conversation.id) {
           conversationArray.push(conversation);
         } else {
@@ -192,7 +212,14 @@ export default function (state = {
       // console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload.conversation: ', action.payload.conversation);
       // console.log('in conversation reducer, RECEIVE_CONVERSATION conversationArray: ', conversationArray);
         // console.log('in conversation reducer, RECEIVE_CONVERSATION action.payload: ', action.payload);
-      return { ...state, noConversation: false, conversationByFlat: [action.payload.conversation], conversationsByUser: conversationArray, conversationByUserAndFlat: conversationArray, noConversationForFlat: false, newMessages: newMessagesNum };
+      return { ...state,
+        noConversation: false,
+        conversationByFlat: [action.payload.conversation],
+        conversationsByUser: conversationArray,
+        // conversationByUserAndFlat: conversationArray,
+        noConversationForFlat: false,
+        newMessages: newMessagesNum
+      };
 
 
     case SET_CABLE_CONNECTION:
@@ -337,7 +364,7 @@ export default function (state = {
       const conversationUpdateArray = [];
       const conversationUpdateIdArray = [];
       // console.log('in conversation reducer, UPDATE_CONVERSATIONS, action.payload, state.conversationByUserAndFlat: ', action.payload, state.conversationByUserAndFlat);
-      _.each(state.conversationByUserAndFlat, conversation => {
+      _.each(state.conversationsByUser, conversation => {
         conversationUpdateIdArray.push(conversation.id);
         conversationUpdateArray.push(conversation);
       });
@@ -351,7 +378,7 @@ export default function (state = {
       // console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateArray: ', conversationUpdateArray);
       // console.log('in conversation reducer, UPDATE_CONVERSATIONS, conversationUpdateIdArray: ', conversationUpdateIdArray);
 
-      return { ...state, conversationByUserAndFlat: conversationUpdateArray };
+      return { ...state, conversationsByUser: conversationUpdateArray };
     }
     // case UPDATE_CONVERSATIONS:
     //   const conversationUpdateArray = [];
@@ -386,7 +413,7 @@ export default function (state = {
     // console.log('in conversation reducer, MARK_MESSAGES_READ: ');
       let newMessages = 0;
       // go through old conversationByUserAndFlat and replace with new conversation with messages marked read
-      _.each(state.conversationByUserAndFlat, conversation => {
+      _.each(state.conversationsByUser, conversation => {
         if (conversation.id !== action.payload.id) {
           conversationArray.push(conversation);
         } else {
@@ -417,7 +444,13 @@ export default function (state = {
         if (!mess.sent_by_user && !mess.read) newMessNum++;
       })
 
-      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, conversationsByUser: conversationArray, newMessages, userFlatNewMessages: newMessNum };
+      return { ...state, noConversation: false,
+        conversationByFlat: [action.payload],
+        // conversationByUserAndFlat: conversationArray,
+        conversationsByUser: conversationArray,
+        newMessages,
+        userFlatNewMessages: newMessNum
+      };
     }
 
     default:

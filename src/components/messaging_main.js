@@ -976,7 +976,7 @@ function mapStateToProps(state) {
     // selectedBookingDates: state.selectedBookingDates.selectedBookingDates,
     // bookingsByUser: state.fetchBookingsByUserData.fetchBookingsByUserData,
     // auth: state.auth,
-    conversations: state.conversation.conversationByUserAndFlat,
+    conversations: state.conversation.conversationsByUser,
     noConversation: state.conversation.noConversation,
     conversationId: state.conversation.conversationToShow,
     checkedConversationsArray: state.conversation.checkedConversationsArray,
