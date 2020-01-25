@@ -45,32 +45,54 @@ export default function (state = {
   nonCablePageOverriden: false,
   userStatus: { online: 0 },
   // otherUserStatus: [{ user_id: 3 }, { user_id: 4 }]
-  otherUserStatus: []
+  otherUserStatus: [],
+  userFlatNewMessages: 0,
 }, action) {
   // console.log('in conversation reducer, action.payload: ', action.payload);
   // console.log('in conversation reducer, MARK_MESSAGES_READ newMessagesOrNotd: ', newMessages);
   const conversationArray = [];
   let userNotOwner;
+  // declare newMessagesNum here since used multiple times but initialized each time
   let newMessagesNum;
 
   switch (action.type) {
-    case FETCH_CONVERSATION_BY_FLAT:
+    case FETCH_CONVERSATION_BY_FLAT: {
       // console.log('in conversation reducer, state: ', state);
-      return { ...state, conversationByFlat: action.payload };
+      // get id of current logged in user since reducer does not ahve access to auth state
+      let currentUserId = localStorage.getItem('id');
+      // get the conversation with current user and flat if any
+      // there should only be one conversation between a user and flat
+      // so return an hash object
+      let currentUserAndFlatConversation = null;
+      newMessagesNum = 0;
+      _.each(action.payload, conv => {
+        if (conv.user_id == currentUserId) {
+          // assign conv with same user id to variable to be stored in state
+          currentUserAndFlatConversation = conv;
+          // go through each messsage to see if there are any unread messages sent TO current user
+          // and store that number in state
+          _.each(conv.messages, mess => {
+            if (!mess.sent_by_user && !mess.read) newMessagesNum++;
+          });
+        }
+      });
+
+      return { ...state, conversationByFlat: action.payload, currentUserAndFlatConversation, userFlatNewMessages: newMessagesNum };
+    } // end of case
 
     case FETCH_CONVERSATION_BY_USER_AND_FLAT:
       // console.log('in conversation reducer, state: ', state);
       return { ...state, conversationByUserAndFlat: action.payload, noConversation: false };
 
     case FETCH_CONVERSATIONS_BY_USER:
-      // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
+      console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, localStorage.getItem: ', localStorage.getItem('id'));
       let currentUserId = localStorage.getItem('id');
       newMessagesNum = 0;
       _.each(action.payload, conversation => {
         // somehow needs to be == not ====
-        userNotOwner = conversation.user_id === currentUserId
-        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
-        // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
+        userNotOwner = conversation.user_id == currentUserId
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.id: ', conversation.user_id);
+        console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each userNotOwner: ', userNotOwner);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each currentUserId: ', currentUserId);
         // console.log('in conversation reducer, FETCH_CONVERSATIONS_BY_USER, each conversation.user_id: ', conversation.user_id);
         // if (conversation.id !== action.payload.id) {
@@ -219,6 +241,7 @@ export default function (state = {
       // Replace old user status object with new one or push to array a new one if no old one
       // O(n + m)
       const object = {};
+      let ownerUserStatus = null
       if (action.payload) {
         _.each(state.otherUserStatus, (each, i) => {
           object[each.user_id] = i;
@@ -232,8 +255,17 @@ export default function (state = {
             newArray.push(eachStatus);
           }
         });
+
+        // set ownerUserStatus from user_status array
+        _.each(action.payload.user_status, eachStatus => {
+          if (action.payload.flat.user_id == eachStatus.user_id) {
+            ownerUserStatus = eachStatus;
+          }
+        });
       }
-      return { ...state, otherUserStatus: newArray };
+
+
+      return { ...state, otherUserStatus: newArray, ownerUserStatus };
     }
 
     case SET_GET_ONLINE_OFFLINE:
@@ -364,7 +396,8 @@ export default function (state = {
       // take new conversations array and if any messages are unread, mark newMessages as true
       _.each(conversationArray, conversation => {
         const currentUserId2 = localStorage.getItem('id');
-        userNotOwner = conversation.user_id === currentUserId2;
+        // somehow needs to be == not ===
+        userNotOwner = conversation.user_id == currentUserId2;
         _.each(conversation.messages, message => {
           if (userNotOwner) {
             if (message.read === false && !message.sent_by_user) {
@@ -378,7 +411,13 @@ export default function (state = {
         });
       });
 
-      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, conversationsByUser: conversationArray, newMessages };
+      let newMessNum = 0;
+
+      _.each(action.payload.messages, mess => {
+        if (!mess.sent_by_user && !mess.read) newMessNum++;
+      })
+
+      return { ...state, noConversation: false, conversationByFlat: [action.payload], conversationByUserAndFlat: conversationArray, conversationsByUser: conversationArray, newMessages, userFlatNewMessages: newMessNum };
     }
 
     default:

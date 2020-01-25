@@ -508,6 +508,18 @@ class ShowFlat extends Component {
       // console.log('in show_flat, handleMessagingOpenClick, this.state.messagingOpen: ', this.state.messagingOpen);
     });
   }
+
+  renderChatMessageText() {
+    return (
+      <div
+        style={this.props.ownerUserStatus.online ? { color: '#39ff14', fontSize: '12px' } : {}}
+        className="show-flat-message-button-text"
+      >
+        {this.props.ownerUserStatus.online ? 'Chat' : 'Message'}
+      </div>
+    );
+  }
+
 // get boolean returned from currentUserIsOwner and render or do not render an appropriate buttton
 // current user that is owner of flat should be able to block out days on calendar without charge
 // also need an edit button if current user is owner
@@ -519,7 +531,14 @@ class ShowFlat extends Component {
           return (
             <div className="show-flat-button-box">
               <button value="userBooking" onClick={this.handleBookingClick} className="btn btn-primary btn-lg btn-book-submit">{AppLanguages.requestReservation[this.props.appLanguageCode]}</button>
-              <button value="message" style={{ padding: '5px 20px 5px 20px' }} onClick={this.handleMessagingOpenClick} className="btn btn-primary btn-lg btn-book-submit"><i style={{ fontSize: '35px' }} className="far fa-comment"></i></button>
+              <button value="message" style={{ padding: '5px 20px 5px 20px' }} onClick={this.handleMessagingOpenClick} className="btn btn-primary btn-lg btn-book-submit btn-message-modal-open">
+                <i style={{ fontSize: '40px' }} className="far fa-comment"></i>
+                {this.props.userFlatNewMessages ? <div className="show-flat-mail-number-box"><div className="header-mail-number">{this.props.userFlatNewMessages}</div></div> : ''}
+
+                <div className="show-flat-message-button-text-background">
+                  { this.props.ownerUserStatus ? this.renderChatMessageText() : <div className="show-flat-message-button-text">Message</div> }
+                </div>
+              </button>
             </div>
           );
         } else {
@@ -725,6 +744,7 @@ class ShowFlat extends Component {
     // !!!!!map needs to be id=map for the interaction to work
     // if currentUserIsOwner NOT owner and there are no places assigned to flat, do not show mapInteraction
     const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
+    // {this.renderMap()}
     return (
       <div className="show-flat-body">
           {this.state.messagingOpen ? this.renderMessagingModal() : ''}
@@ -738,7 +758,6 @@ class ShowFlat extends Component {
         <div className="container">
           <div className="row">
             <div className={doNotShowContainer ? 'map-container' : 'map-container col-xs-12 col-sm-12 col-md-8'} id="map">
-            {this.renderMap()}
             </div>
             {doNotShowContainer
               ?
@@ -769,6 +788,7 @@ class ShowFlat extends Component {
   }
 }
 
+
 function mapStateToProps(state) {
   console.log('in show_flat, mapStateToProps, state: ', state);
     return {
@@ -790,7 +810,10 @@ function mapStateToProps(state) {
       // null means user has not created that language
       // or the appLanaguageCode == flat_language, the base language
       // flatLanguage,
-      fetchedIcal: state.bookingData.fetchedIcal
+      fetchedIcal: state.bookingData.fetchedIcal,
+      ownerUserStatus: state.conversation.ownerUserStatus, // object not array of user statuses
+      // integer for new messages sent to current user for flat
+      userFlatNewMessages: state.conversation.userFlatNewMessages,
     };
   }
 

@@ -20,20 +20,37 @@ class MessagingModal extends Component {
   }
 
   componentDidMount() {
-    console.log('MessagingModal, componentDidMount');
+    // console.log('MessagingModal, componentDidMount');
     this.scrollLastMessageIntoView();
+    // if messaging is displayed show page, mark messages addresssed to current user as read: true
+    // called by action in conversations#update
+    if (this.props.fromShowPage && !this.props.noConversationForFlat) this.props.markMessagesRead(this.props.conversation.id);
+
+    // when modal opened by user, mark cablePageOverrideAction as true
+    // so that header componentDidUpdate can set the websocket connection
     this.props.cablePageOverrideAction(true);
     if (this.props.propsWebSocketTimedOut) {
       this.props.webSocketConnected({ timedOut: false });
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.scrollLastMessageIntoView();
+    if (!this.props.noConversationForFlat && (prevProps.conversation.messages.length !== this.props.conversation.messages.length)) {
+      // if there is conversation for the last and message length has changed
+      // the current user is owner and the last message is sent by user,
+      // the message is the current user's message
+      const myMessage = !this.props.currentUserIsOwner && (this.props.conversation.messages[this.props.conversation.messages.length - 1].sent_by_user)
+      if (!myMessage) {
+        // if not my message, mark as read
+        this.props.markMessagesRead(this.props.conversation.id);
+      }
+      // console.log('MessagingModal, componentDidUpdate, : ');
+    }
   }
 
   componentWillUnmount() {
-    console.log('MessagingModal, componentWillUnmount, : ');
+    // set false the override so that header componentDidUpdate will not reconnect the websocket
     this.props.cablePageOverrideAction(false);
   }
 
@@ -58,7 +75,7 @@ class MessagingModal extends Component {
 
   scrollLastMessageIntoView() {
     const items = document.querySelectorAll('.each-message-box');
-    // console.log('in MessagingModal, scrollLastMessageIntoView, items: ', items);
+    console.log('in MessagingModal, scrollLastMessageIntoView, items: ', items);
 
     const last = items[items.length - 1];
     // console.log('in messaging, scrollLastMessageIntoView, last: ', last);

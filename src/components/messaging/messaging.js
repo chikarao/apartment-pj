@@ -35,10 +35,12 @@ class Messaging extends Component {
   componentDidUpdate(prevProps) {
     // if not from show page scroll to the last message
     if (!this.props.fromShowPage) {
+      console.log('in messaging, componentDidUpdate, in if !fromShowPage: ', this.props.fromShowPage);
       this.scrollLastMessageIntoView();
     }
 
     if (prevProps.typingTimer !== this.props.typingTimer && this.props.typingTimer > 0) {
+      console.log('in messaging, componentDidUpdate, if (prevProps.typingTimer: ', prevProps.typingTimer);
       this.scrollLastMessageIntoView();
     }
 
@@ -48,7 +50,6 @@ class Messaging extends Component {
   }
 
     // const messageBox = document.getElementById('message-show-box');
-    // console.log('in messaging, componentDidUpdate, getElementById: ', messageBox);
     // if (messageBox) {
     //   // console.log('in messaging, componentDidUpdate, bounding this.inViewPort: ', this.isInViewport(messageBox));
     //   window.addEventListener('scroll', (event) => {
@@ -65,7 +66,6 @@ class Messaging extends Component {
     // }
     // this.inViewPort();
   // }
-
 
   // isInViewport(messageBox) {
   //   // console.log('in messaging, isInViewport, messageBox: ', messageBox);
@@ -143,14 +143,14 @@ class Messaging extends Component {
     // also gets the typing indicator and scrolls into voew
     const items = document.querySelectorAll('.each-message-box');
     const itemsTyping = document.querySelectorAll('.typing-message-content');
-    console.log('in messaging, scrollLastMessageIntoView, items: ', items);
+    // console.log('in messaging, scrollLastMessageIntoView, items: ', items);
 
     const last = items[items.length - 1];
     const lastTyping = itemsTyping[itemsTyping.length - 1];
     // if (lastTyping) lastTyping.setAttribute('style', 'border: none; position: absolute; bottom: 0; left: 0;');
-    console.log('in messaging, scrollLastMessageIntoView, lastTyping: ', lastTyping);
     if (last) {
       last.scrollIntoView({ behavior: 'smooth' });
+      // console.log('in messaging, scrollLastMessageIntoView, in if last this.props.conversation.id: ', this.props.conversation.id);
     }
 
     if (lastTyping) {

@@ -334,7 +334,7 @@ h3 {
 .header-links {
   color: blue;
   color: blue;
-  padding: 10px 10px 0 0px !important;
+  padding: 0px 10px 0 0px !important;
   font-size: 17px;
   margin: 0px 20px 0px 10px;
 }
@@ -1666,7 +1666,6 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-size: 20px;
 }
 
-
 .show-flat-description {
   color: blue;
   font-weight: bold;
@@ -1702,6 +1701,51 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-weight: normal;
   font-size: 15px;
   margin: 20px 20px;
+}
+
+.show-flat-message-button-text-background {
+  z-index: 10;
+  width: 40px;
+  height: 13.2px;
+  background-color: white;
+  /* opacity: 0.5; */
+  /* overflow-wrap: normal; */
+  position: absolute;
+  top: 28%;
+  left: 41%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.show-flat-message-button-text {
+  font-size: 10.5px;
+  color: orange;
+  font-weight: bold;
+}
+
+.show-flat-mail-number-box {
+  z-index: 11;
+  position: absolute;
+  top: 13%;
+  left: 2  0%;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+
+  flex-grow: 10px;
+  min-width: 17px;
+  width: auto;
+  height: 17px;
+  border-radius: 8.5px;
+  padding: 0 3px 0 3px;
+}
+
+.btn-message-modal-open {
+  position: relative;
+}
+
+.btn-message-modal-open:hover {
+  background-color: white !important;
 }
 
 .date-picker-container {
