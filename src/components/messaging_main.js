@@ -111,7 +111,7 @@ class MessagingMain extends Component {
           </div>
           <div value="archivebin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.archives[this.props.appLanguageCode]}</div>
           <div value="trashbin" className="btn messaging-main-large-archive" onClick={this.handleMessageEditClick}>{AppLanguages.trashBin[this.props.appLanguageCode]}</div>
-          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-sync"></i></div>
+          <div className="btn messaging-main-large-refresh" id="messaging-refresh" onClick={this.handleMessageRefreshClick}><i className="fa fa-redo"></i></div>
         </div>
       );
     }

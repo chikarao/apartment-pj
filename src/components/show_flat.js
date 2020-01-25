@@ -56,6 +56,7 @@ class ShowFlat extends Component {
     this.props.selectedFlatFromParams(this.props.match.params.id, () => {
       if (this.props.auth.authenticated) {
         this.props.getCurrentUser();
+        // fetchConversationByFlat get conversation between currentUser and flat; Not all converations for the flat
         this.props.fetchConversationByFlat({ flat_id: this.props.match.params.id });
         console.log('in show flat, componentDidMount, this.props.auth.id, this.props.flat', this.props.auth.id, this.props.flat);
         this.props.getGoogleMapBoundsKeys();
@@ -510,9 +511,11 @@ class ShowFlat extends Component {
   }
 
   renderChatMessageText() {
+    // style={this.props.ownerUserStatus.online ? { color: '#39ff14', fontSize: '12px' } : {}}
+    // online color code is lime green from html-colorcodes site
     return (
       <div
-        style={this.props.ownerUserStatus.online ? { color: '#39ff14', fontSize: '12px' } : {}}
+        style={this.props.ownerUserStatus.online ? { color: '#32cd32', fontSize: '12px' } : {}}
         className="show-flat-message-button-text"
       >
         {this.props.ownerUserStatus.online ? 'Chat' : 'Message'}

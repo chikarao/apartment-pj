@@ -1719,7 +1719,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 .show-flat-message-button-text {
   font-size: 10.5px;
-  color: orange;
+  /* color: orange; */
+  /* Giants orange from html-color codes site */
+  color: #ffa812;
   font-weight: bold;
 }
 
@@ -1727,7 +1729,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   z-index: 11;
   position: absolute;
   top: 13%;
-  left: 2  0%;
+  left: 17%;
   background-color: red;
   color: white;
   font-size: 10px;
@@ -2290,7 +2292,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .messaging-main-large-refresh {
   float: right;
   /* border: 1px solid #ccc; */
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   margin: 1px;
 }
 
@@ -2313,7 +2315,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-size: 13px;
   color: blue;
   font-weight: bold;
+  padding: 6px 5px;
 }
+
 .messaging-main-large-archive i {
   font-size: 23px;
   /* color: blue; */
