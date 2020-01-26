@@ -163,6 +163,7 @@ class Header extends Component {
    }
 
    createSocketConnection(onShowPage) {
+     console.log('in header, createSocketConnection, onShowPage : ', onShowPage);
      let disconnectTime = 0;
      // !!!! Set disconnect time with below logic based on current page and if currentUserIsOwner
      if (onShowPage) {
@@ -217,7 +218,6 @@ class Header extends Component {
 
    getIndexOption(option, tagValue, language) {
      const optionTags = document.getElementsByClassName(option)
-     // console.log('in header, getIndexOption, optionTags : ', optionTags);
      const optionIndexArray = [];
      console.log('in header, getIndexOption, optionTags : ', optionTags);
      console.log('in header, getIndexOption, tagValue : ', tagValue);

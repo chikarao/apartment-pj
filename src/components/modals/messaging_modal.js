@@ -35,8 +35,10 @@ class MessagingModal extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log('MessagingModal, componentDidUpdate, : ');
     this.scrollLastMessageIntoView();
     if (!this.props.noConversationForFlat && (prevProps.conversation.messages.length !== this.props.conversation.messages.length)) {
+      console.log('MessagingModal, componentDidUpdate, inside if : ');
       // if there is conversation for the last and message length has changed
       // the current user is owner and the last message is sent by user,
       // the message is the current user's message
@@ -45,7 +47,6 @@ class MessagingModal extends Component {
         // if not my message, mark as read
         this.props.markMessagesRead(this.props.conversation.id);
       }
-      // console.log('MessagingModal, componentDidUpdate, : ');
     }
   }
 

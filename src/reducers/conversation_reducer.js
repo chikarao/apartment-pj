@@ -57,7 +57,7 @@ export default function (state = {
 
   switch (action.type) {
     case FETCH_CONVERSATION_BY_FLAT: {
-      // console.log('in conversation reducer, state: ', state);
+      // console.log('in conversation reducer, FETCH_CONVERSATION_BY_FLAT, action.payload: ', action.payload);
       // get id of current logged in user since reducer does not ahve access to auth state
       let currentUserId = localStorage.getItem('id');
       // get the conversation with current user and flat if any

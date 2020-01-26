@@ -59,8 +59,9 @@ export default function (props) {
       },
 
       authenticated: function (token) {
+        // if on show page and user is NOT the owner send over the flat user id and the expiration (assigned the disconnectTime)
         if (props.onShowPage && !props.currentUserIsOwner) {
-          this.perform('authenticated', { token, other_user_id: props.flat.user_id, expiration: props.disconnectTime });
+          this.perform('authenticated', { token, other_user_id: [props.flat.user_id], expiration: props.disconnectTime });
         } else {
           this.perform('authenticated', { token });
         }
@@ -140,7 +141,13 @@ export default function (props) {
       // typing called on chats to send notification of user typing
       typing: function (addresseeId) {
         console.log('actioncable_manager this', this);
-        this.perform('typing', { user_id: userId, addressee_id: addresseeId });
+        // if on show page and user is not the owner of the flat send the expiration and the other user id (same as addresseeId)
+        if (props.onShowPage && !props.currentUserIsOwner) {
+          this.perform('typing', { user_id: userId, addressee_id: addresseeId, other_user_id: [props.flat.user_id], expiration: props.disconnectTime });
+          // this.perform('typing', { user_id: userId, addressee_id: addresseeId, expiration: props.disconnectTime });
+        } else {
+          this.perform('typing', { user_id: userId, addressee_id: addresseeId, expiration: props.disconnectTime });
+        }
         // userId is the one typing; addresseeId is the intended recipient
       },
     }); // end of subscriptions.create and second object
