@@ -22,6 +22,7 @@ import {
 } from './actions/types';
 
 const PUBLISHABLE_KEY = 'pk_test_1EdOYEpMsLV8B9UJvV6mnPrS';
+// const PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY;
 
 const token = localStorage.getItem('token');
 const email = localStorage.getItem('email');

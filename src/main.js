@@ -15,9 +15,10 @@ import EditFlat from './components/edit_flat';
 import BookingRequest from './components/booking_request';
 // NoMatch for when user inputs url that does not exist
 import NoMatch from './components/no_match';
+// MessagingMain works with conversation.rb and messaging.rb 
 import MessagingMain from './components/messaging_main';
 import StripeRedirect from './components/payments/stripe_redirect';
-
+// higher order componenet to test if user authented when navigating to page
 import RequireAuth from './components/auth/require_auth';
 
 // pages that are no longer used after implementing modals in /auth

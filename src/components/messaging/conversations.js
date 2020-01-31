@@ -53,7 +53,7 @@ class Conversations extends Component {
       // there is no rerender!!!!!
        this.props.markMessagesRead(elementVal);
 
-       // action creator to switch on and off show conversation in mypage
+       // action creator to switch on and off show conversation
        if (!this.props.onMessagingMain && !wasCheckBoxClicked) {
          this.props.showConversations();
        }
@@ -90,10 +90,45 @@ class Conversations extends Component {
    // const ownImage = localStorage.getItem('image');
    if (notOwnFlatConversation) {
      // w_100,h_100,c_crop,g_face,r_max
-     return (conversation.flat.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"} />;
+     return (conversation.flat.user.image)
+     ?
+     <img
+       className="my-page-messaging-image-user"
+       src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.user.image + '.jpg'}
+     />
+     :
+     <img className="my-page-messaging-image-user"
+     src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"}
+     />;
    } else {
-     return (conversation.user.image) ? <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'} /> : <img className="my-page-messaging-image-user" src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"} />;
+     return (conversation.user.image)
+     ?
+     <img
+       className="my-page-messaging-image-user"
+       src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.user.image + '.jpg'}
+     />
+     :
+     <img className="my-page-messaging-image-user"
+      src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/blank_profile_picture_1.jpg"}
+     />;
    }
+ }
+
+ getOtherUserStatus(notOwnFlatConversation, conversation) {
+   let userStatusReturned;
+
+   _.each(this.props.otherUserStatus, eachStatus => {
+     if (notOwnFlatConversation) {
+       if (eachStatus.user_id == conversation.flat.user_id) {
+         userStatusReturned = eachStatus;
+       }
+     } else { // own flat conversation
+       if (eachStatus.user_id == conversation.id) {
+         userStatusReturned = eachStatus;
+       }
+     }
+   });
+   return userStatusReturned || { online: 0 };
  }
 
  formatDate(date) {
@@ -125,16 +160,14 @@ handleConversationCheck(event) {
  renderEachConversation() {
    const { conversations, flats } = this.props;
    const conversationsEmpty = conversations.length < 1;
-   // console.log('in conversations, renderEachConversation, conversationsEmpty: ', conversationsEmpty);
-
+   // console.log('in conversations, renderEachConversation, this.props.otherUserStatus: ', this.props.otherUserStatus);
    // send props flats from message main
    if (this.state.showConversation) {
      // get flat id in array to check if meesage was sent by owner
-     // const flatIdArray = [];
-     // _.each(flats, (flat) => {
-     //   flatIdArray.push(flat.id);
-     // });
      // iterate through each conversation
+     // gets otherUserStatus stored in redis in fetchConversationdUser and gets user
+     // based on conversation.user_id or flat.user_id
+     // offline giants orange backgroundColor: #ffa812
      if (!conversationsEmpty) {
        return _.map(conversations, (conversation, index) => {
          const lastMessageIndex = conversation.messages.length - 1;
@@ -154,20 +187,19 @@ handleConversationCheck(event) {
                unreadMessages++;
              }
            }
-           // console.log('in conversations, renderEachConversation, unreadMessages: ', unreadMessages);
          });
          const date = new Date(conversation.messages[lastMessageIndex].created_at);
-         // console.log('in conversations, renderEachConversation, date: ', date);
          //show only first 26 characters of text
          const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
-
-         // const checkboxes = document.getElementsByClassName('conversations-input-checkbox')
 
          return (
            <li key={index} className="my-page-each-card">
              <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick}>
                <div className="my-page-messaging-image-box">
                  {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+                 <div className="my-page-messaging-image-box-user-status-container">
+                   <p style={{ height: '10px', width: '10px', backgroundColor: this.props.otherUserStatus && this.getOtherUserStatus(notOwnFlatConversation, conversation).online ? '#39ff14' : '#ffa812', borderRadius: '50%' }}></p>
+                 </div>
                  {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
                </div>
                <div className="my-page-details">
@@ -236,7 +268,7 @@ function mapStateToProps(state) {
     flat: state.flat.selectedFlatFromParams,
     // conversationId: state.conversation.conversationToShow
     appLanguageCode: state.languages.appLanguageCode,
-
+    otherUserStatus: state.conversation.otherUserStatus,
   };
 }
 

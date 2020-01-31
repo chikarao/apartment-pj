@@ -1,5 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
+// import { each } from 'lodash';
 // import { browserHistory } from 'react-router-dom';
 import {
   AUTH_USER,

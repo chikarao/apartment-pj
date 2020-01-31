@@ -1721,7 +1721,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   font-size: 10.5px;
   /* color: orange; */
   /* Giants orange from html-color codes site */
-  color: #ffa812;
+  /* color: #ffa812; */
   font-weight: bold;
 }
 
@@ -3721,6 +3721,23 @@ form {
   right: 0;
   z-index: 1;
 }
+
+.my-page-messaging-image-box-user-status-container {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 35%;
+  left: 80%;
+  background-color: white;
+  z-index: 10;
+  border-radius: 50%;
+  text-align:center;
+  padding: 3px;
+}
+
+/* .image-box-user-status-dot {
+  margin: 3px;
+} */
 
 .my-page-each-card img {
   width: 100px;

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+// import { each, map, isEmpty, mapKeys, round } from 'lodash';
+
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -512,10 +514,10 @@ class ShowFlat extends Component {
 
   renderChatMessageText() {
     // style={this.props.ownerUserStatus.online ? { color: '#39ff14', fontSize: '12px' } : {}}
-    // online color code is lime green from html-colorcodes site
+    // online color code is lime green from html-colorcodes site, offline color is giants-orange from same site
     return (
       <div
-        style={this.props.ownerUserStatus.online ? { color: '#32cd32', fontSize: '12px' } : {}}
+        style={this.props.ownerUserStatus.online ? { color: '#32cd32', fontSize: '12px' } : { color: '#ffa812' }}
         className="show-flat-message-button-text"
       >
         {this.props.ownerUserStatus.online ? 'Chat' : 'Message'}
