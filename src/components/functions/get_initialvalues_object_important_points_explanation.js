@@ -178,7 +178,7 @@ export default (props) => {
   // }
 
   function getContractor(workType) {
-    let returnedContractor;
+    let returnedContractor = {};
     _.each(contracts, eachContract => {
       if (eachContract.work_type == workType) {
         returnedContractor = eachContract.contractor;
@@ -200,7 +200,7 @@ export default (props) => {
   }
 
   function getContract(workType) {
-    let returnedContract;
+    let returnedContract = {};
     _.each(contracts, eachContract => {
       console.log('in get_initialvalues_object_important_points_explanation, eachContract: ', eachContract);
       if (eachContract.work_type == workType) {
@@ -302,7 +302,7 @@ export default (props) => {
   }
 
   function getLanguage(languages, languageCode) {
-    let objectReturned;
+    let objectReturned = {};
     _.each(languages, eachLanguage => {
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
       if (eachLanguage.language_code == languageCode) {
@@ -448,7 +448,7 @@ export default (props) => {
       });
       // form string for user tenant names
       if (tenantProfile.first_name && tenantProfile.last_name) {
-        const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
+        const fullName = tenantProfile.last_name ? tenantProfile.last_name.concat(` ${tenantProfile.first_name}`) : '';
         objectReturned.tenant_name = fullName;
         // objectReturned.tenant_phone = tenantProfile.phone;
       }
@@ -534,13 +534,13 @@ export default (props) => {
       });
       // assumes party to the rental agreement is the user
       if (ownerProfile.first_name && ownerProfile.last_name) {
-        const ownerFullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        const ownerFullName = ownerProfile.last_name ? ownerProfile.last_name.concat(` ${ownerProfile.first_name}`) : '';
         objectReturned.owner_name = ownerFullName;
         objectReturned.owner_address = createAddress(ownerProfile);
       }
 
       if (ownerProfileTranslation.first_name && ownerProfileTranslation.last_name) {
-        const fullName = ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`);
+        const fullName = ownerProfileTranslation.last_name ? ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`) : '';
         objectReturned.owner_name_translation = fullName;
         objectReturned.owner_address_translation = createAddress(ownerProfileTranslation);
       }
@@ -771,9 +771,9 @@ export default (props) => {
         objectReturned.management_company = managementProfile.company_name;
         objectReturned.management_company_translation = managementProfileTranslation.company_name;
         objectReturned.management_phone = managementProfile.phone;
-        const fullName = managementProfile.last_name.concat(` ${managementProfile.first_name}`);
+        const fullName = managementProfile.last_name ? managementProfile.last_name.concat(` ${managementProfile.first_name}`) : '';
         objectReturned.management_name = fullName;
-        const fullNameTranslation = managementProfileTranslation.last_name.concat(` ${managementProfileTranslation.first_name}`);
+        const fullNameTranslation = managementProfileTranslation.last_name ? managementProfileTranslation.last_name.concat(` ${managementProfileTranslation.first_name}`) : '';
         objectReturned.management_name_translation = fullNameTranslation;
         if (managementProfile.language_code = Documents[documentKey].baseLanguage) {
           objectReturned.management_registration_number_front = managementProfileTranslation.registration_number_front;
@@ -788,7 +788,7 @@ export default (props) => {
           if (managementProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
             // fullAddress = fullAddress.concat(`${managementProfile.address1} ${managementProfile.city} ${managementProfile.state} ${managementProfile.zip} ${managementProfile.country}`);
-            fullAddress = fullAddress.concat(`${managementProfile.zip}${managementProfile.state}${managementProfile.city}${managementProfile.address1}`);
+            fullAddress = fullAddress ? fullAddress.concat(`${managementProfile.zip}${managementProfile.state}${managementProfile.city}${managementProfile.address1}`) : '';
             objectReturned.management_address = fullAddress;
           }
         }
@@ -797,7 +797,7 @@ export default (props) => {
           console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, managementProfile, in managementProfileTranslation: ', managementProfile, managementProfileTranslation);
           if (managementProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
-            fullAddress = fullAddress.concat(`${managementProfileTranslation.address1} ${managementProfileTranslation.city} ${managementProfileTranslation.state} ${managementProfileTranslation.zip} ${managementProfileTranslation.country}`);
+            fullAddress = fullAddress ? fullAddress.concat(`${managementProfileTranslation.address1} ${managementProfileTranslation.city} ${managementProfileTranslation.state} ${managementProfileTranslation.zip} ${managementProfileTranslation.country}`) : '';
             objectReturned.management_address_translation = fullAddress;
           }
         }
@@ -818,7 +818,7 @@ export default (props) => {
           if (brokerProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
             // fullAddress = fullAddress.concat(`${brokerProfile.address1} ${brokerProfile.city} ${brokerProfile.state} ${brokerProfile.zip} ${brokerProfile.country}`);
-            fullAddress = fullAddress.concat(`${brokerProfile.zip}${brokerProfile.state}${brokerProfile.city}${brokerProfile.address1}`);
+            fullAddress = fullAddress ? fullAddress.concat(`${brokerProfile.zip}${brokerProfile.state}${brokerProfile.city}${brokerProfile.address1}`) : '';
             objectReturned.broker_address_hq = fullAddress;
           }
         }
@@ -826,14 +826,14 @@ export default (props) => {
         if (brokerProfileTranslation.address1 && brokerProfileTranslation.city) {
           if (brokerProfileTranslation.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
-            fullAddress = fullAddress.concat(`${brokerProfileTranslation.address1} ${brokerProfileTranslation.city} ${brokerProfileTranslation.state} ${brokerProfileTranslation.zip} ${brokerProfileTranslation.country}`);
+            fullAddress = fullAddress ? fullAddress.concat(`${brokerProfileTranslation.address1} ${brokerProfileTranslation.city} ${brokerProfileTranslation.state} ${brokerProfileTranslation.zip} ${brokerProfileTranslation.country}`) : '';
             objectReturned.broker_address_hq_translation = fullAddress;
           }
         }
         // console.log('in create_edit_document, getInitialValuesObject, brokerProfile.company_name, brokerProfileTranslation.company_name: ', brokerProfile.company_name, brokerProfileTranslation.company_name);
         objectReturned.broker_company_name = brokerProfile.company_name;
         objectReturned.broker_company_name_translation = brokerProfileTranslation.company_name;
-        const fullName = brokerProfile.last_name.concat(` ${brokerProfile.first_name}`);
+        const fullName = brokerProfile.last_name ? brokerProfile.last_name.concat(` ${brokerProfile.first_name}`) : '';
         objectReturned.broker_representative_name = fullName;
         const fullNameTranslation = brokerProfileTranslation.first_name.concat(` ${brokerProfileTranslation.last_name}`);
         objectReturned.broker_representative_name_translation = fullNameTranslation;
@@ -845,15 +845,15 @@ export default (props) => {
         objectReturned.broker_staff_registration_jurisdiction = brokerStaffProfile.registration_jurisdiction;
         objectReturned.broker_staff_registration_jurisdiction_translation = brokerStaffProfileTranslation.registration_jurisdiction;
         objectReturned.broker_staff_registration = brokerStaffProfile.registration;
-        const fullNameStaff = brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`);
+        const fullNameStaff = brokerStaffProfile.last_name ? brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`) : '';
         objectReturned.broker_staff_name = fullNameStaff;
-        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`);
+        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name ? brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`) : '';
         objectReturned.broker_staff_name_translation = fullNameStaffTranslation;
         if (brokerStaffProfile.address1 && brokerStaffProfile.city) {
           if (brokerStaffProfile.country.toLowerCase() == 'japan' || '日本'　|| '日本国') {
             let fullAddress = ''
             // fullAddress = fullAddress.concat(`${brokerStaffProfile.address1} ${brokerStaffProfile.city} ${brokerStaffProfile.state} ${brokerStaffProfile.zip} ${brokerStaffProfile.country}`);
-            fullAddress = fullAddress.concat(`${brokerStaffProfile.zip}${brokerStaffProfile.state}${brokerStaffProfile.city}${brokerStaffProfile.address1}`);
+            fullAddress = fullAddress ? fullAddress.concat(`${brokerStaffProfile.zip}${brokerStaffProfile.state}${brokerStaffProfile.city}${brokerStaffProfile.address1}`) : '';
             objectReturned.broker_staff_address = fullAddress;
           }
         }

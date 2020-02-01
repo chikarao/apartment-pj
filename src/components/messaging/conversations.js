@@ -157,70 +157,71 @@ handleConversationCheck(event) {
   // this.props.conversationToShow(parseInt(elementVal));
 }
 
+checkUnreadMessages(notOwnFlatConv, messages) {
+  let unread = 0;
+  _.each(messages, (message) => {
+    if (notOwnFlatConv) {
+      // console.log('in conversations, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
+      // console.log('in conversations, renderEachConversation, message.conversation_id: ', message.conversation_id);
+      if ((message.read === false) && (!message.sent_by_user)) unread++;
+    } else {
+      if ((message.read === false) && (message.sent_by_user)) unread++;
+    }
+  });
+  return unread;
+}
+
  renderEachConversation() {
-   const { conversations, flats } = this.props;
+   const { conversations } = this.props;
    const conversationsEmpty = conversations.length < 1;
    // console.log('in conversations, renderEachConversation, this.props.otherUserStatus: ', this.props.otherUserStatus);
-   // send props flats from message main
-   if (this.state.showConversation) {
-     // get flat id in array to check if meesage was sent by owner
+   // if (this.state.showConversation) {
+   // get flat id in array to check if meesage was sent by owner
+   // gets otherUserStatus stored in redis in fetchConversationdUser and gets user
+   // based on conversation.user_id or flat.user_id
+   // offline giants orange backgroundColor: #ffa812
+   if (!conversationsEmpty) {
      // iterate through each conversation
-     // gets otherUserStatus stored in redis in fetchConversationdUser and gets user
-     // based on conversation.user_id or flat.user_id
-     // offline giants orange backgroundColor: #ffa812
-     if (!conversationsEmpty) {
-       return _.map(conversations, (conversation, index) => {
-         const lastMessageIndex = conversation.messages.length - 1;
-         // check for unread messages and increment counter if message.read = false
-         // if there are unread messages, the healine chnages in style of li
-         const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
-         let unreadMessages = 0;
-         _.each(conversation.messages, (message) => {
-           if (notOwnFlatConversation) {
-             // console.log('in conversations, renderEachConversation,  message.conversation_id, message.read, message.id: ', message.conversation_id, message.read, message.id);
-             // console.log('in conversations, renderEachConversation, message.conversation_id: ', message.conversation_id);
-             if ((message.read === false) && (!message.sent_by_user)) {
-               unreadMessages++;
-             }
-           } else {
-             if ((message.read === false) && (message.sent_by_user)) {
-               unreadMessages++;
-             }
-           }
-         });
-         const date = new Date(conversation.messages[lastMessageIndex].created_at);
-         //show only first 26 characters of text
-         const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
-
-         return (
-           <li key={index} className="my-page-each-card">
-             <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick}>
-               <div className="my-page-messaging-image-box">
-                 {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
-                 <div className="my-page-messaging-image-box-user-status-container">
-                   <p style={{ height: '10px', width: '10px', backgroundColor: this.props.otherUserStatus && this.getOtherUserStatus(notOwnFlatConversation, conversation).online ? '#39ff14' : '#ffa812', borderRadius: '50%' }}></p>
-                 </div>
-                 {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
+     return _.map(conversations, (conversation, index) => {
+       const lastMessageIndex = conversation.messages.length - 1;
+       // check for unread messages and increment counter if message.read = false
+       // if there are unread messages, the healine chnages in style of li
+       const notOwnFlatConversation = (this.props.auth.id == conversation.user_id);
+       // let unreadMessages = 0;
+       const unreadMessages = this.checkUnreadMessages(notOwnFlatConversation, conversation.messages);
+       const date = new Date(conversation.messages[lastMessageIndex].created_at);
+       //show only first 26 characters of text
+       const stringToShow = conversation.messages[lastMessageIndex].body.substr(0, 25);
+       // user p tag in online status to center in parent div
+       return (
+         <li key={index} className="my-page-each-card">
+           <div value={conversation.id} className="my-page-each-card-click-box" onClick={this.handleConversationCardClick}>
+             <div className="my-page-messaging-image-box">
+               {conversation.flat.images[0] ? <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/" + conversation.flat.images[0].publicid + '.jpg'} /> : <img src={"http://res.cloudinary.com/chikarao/image/upload/v1524032785/no_image_placeholder_5.jpg"} />}
+               <div className="my-page-messaging-image-box-user-status-container">
+                 <p style={{ height: '10px', width: '10px', backgroundColor: this.props.otherUserStatus && this.getOtherUserStatus(notOwnFlatConversation, conversation).online ? '#39ff14' : '#ffa812', borderRadius: '50%' }}></p>
                </div>
-               <div className="my-page-details">
-                 <ul>
-                   <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="conversations-conversation-headline">{stringToShow}...</li>
-                   <li>{this.formatDate(date)}</li>
-                   <li>user id: {conversation.user.id}</li>
-                   <li>conversation id: {conversation.id}</li>
-                 </ul>
-               </div>
-               <div className="my-page-conversation-input">
-                 <input value={conversation.id} className="conversations-input-checkbox" type="checkbox" onChange={this.handleConversationCheck} />
-               </div>
+               {this.renderConversationUserImage(notOwnFlatConversation, conversation)}
              </div>
-           </li>
-         );
-       }); // end of map
-     } else {
-       return <div className="conversations-no-conversations">{AppLanguages.noConversationsYet[this.props.appLanguageCode]}</div>
-     }// end of if !conversationsEmpty
-   } // end of if showConversation
+             <div className="my-page-details">
+               <ul>
+                 <li style={unreadMessages > 0 ? { color: 'blue' } : { color: 'gray' }} className="conversations-conversation-headline">{stringToShow}...</li>
+                 <li>{this.formatDate(date)}</li>
+                 <li>user id: {conversation.user.id}</li>
+                 <li>conversation id: {conversation.id}</li>
+               </ul>
+             </div>
+             <div className="my-page-conversation-input">
+               <input value={conversation.id} className="conversations-input-checkbox" type="checkbox" onChange={this.handleConversationCheck} />
+             </div>
+           </div>
+         </li>
+       );
+     }); // end of map
+   }
+   // return for if conversations empty
+  return <div className="conversations-no-conversations">{AppLanguages.noConversationsYet[this.props.appLanguageCode]}</div>
+   // } // end of if showConversation
  }
 
  // conversationRollIn() {

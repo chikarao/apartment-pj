@@ -26,12 +26,10 @@ import DocumentEmailCreateModal from './modals/document_email_create_modal';
 import ConversationCreateModal from './modals/conversation_create_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import globalConstants from './constants/global_constants.js';
-import Typing from './messaging/typing.js';
 
 
 // import DocumentForm from './constants/document_form';
 let insertFieldObject = {};
-let typingTimerOut = 0;
 
 class BookingConfirmation extends Component {
   constructor(props) {
@@ -54,11 +52,12 @@ class BookingConfirmation extends Component {
       // webSocketConnected: false,
       typingTimer: 0,
       messageSender: '',
+      showTemplateCreate: false,
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
     this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
-    this.handleBookingRequsetApprovalClick = this.handleBookingRequsetApprovalClick.bind(this);
+    this.handleBookingRequestApprovalClick = this.handleBookingRequestApprovalClick.bind(this);
     this.handleEditReviewClick = this.handleEditReviewClick.bind(this);
     this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
     this.handleUploadPdfLink = this.handleUploadPdfLink.bind(this);
@@ -343,253 +342,6 @@ class BookingConfirmation extends Component {
 
     return returnedProfile;
   }
-  // test for actioncable take out later
-  updateCurrentChatMessage(event) {
-    const userId = this.props.auth.id;
-    const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
-    // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
-    // typingTimerOut is a global variable
-    // this.chats.typing is a command for the backend to send a notification to the addressee
-    // that the sender is typing a message. Notifications are sent once per timer cycle.
-    // The timer is started when typingTimerOut is 0, when decremented every second
-    // When the timer is zero, the timer is ready to be started again.
-    if (typingTimerOut === 0) {
-      const lapseTime = () => {
-        if (subTimer > 0) {
-          subTimer--;
-          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer ', subTimer);
-        } else {
-          console.log('updateCurrentChatMessage in received, in lapseTime, subTimer in else ', subTimer);
-          // typingTimer--;
-          clearInterval(timer);
-          typingTimerOut = subTimer;
-        }
-      };
-      let subTimer = 5;
-      typingTimerOut = subTimer;
-      const timer = setInterval(lapseTime, 1000);
-      this.props.propsChats.typing(addresseeId);
-      // this.chats.typing(addresseeId);
-    }
-    this.setState({
-      currentChatMessage: event.target.value
-    });
-  }
-
-  // createSocket() {
-  //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
-  //   // this.cable.connection.websocket.onclose = () => {
-  //   //   // console.log('createSocket this.cable.connection.websocket.onclose callback');
-  //   // };
-  //   console.log('createSocket this.cable.connnection', this.cable.connection);
-  //   console.log('createSocket this.cable.connnection.consumer', this.cable.connection.consumer);
-  //   console.log('createSocket this.cable.connnection.subscriptions', this.cable.connection.subscriptions);
-  //   console.log('createSocket this.cable.connnection.webSocket', this.cable.connection.webSocket);
-  //   console.log('createSocket this', this);
-  //   const userId = localStorage.getItem('id');
-  //   // console.log('createSocket this.props.auth.id', this.props.auth.id);
-  //   // console.log('createSocket Cable', Cable);
-  //   this.chats = this.cable.subscriptions.create({
-  //     channel: 'ChatChannel', room: `messaging_room_${userId}`
-  //     // channel: 'ChatChannel', room: `room${this.props.auth.id}`
-  //   }, {
-  //     connected: (message) => {
-  //         console.log('createSocket in call back to connected message', message);
-  //         console.log('createSocket in call back to connected this.cable.connection.subscription', this.cable.connection.subscription);
-  //         // console.log('createSocket in call back to connected, this.chats', this.chats);
-  //         // console.log('createSocket in call back to connected, this.cable.connection.webSocket', this.cable.connection.webSocket);
-  //
-  //         // if (!message && !this.state.webSocketConnected) {
-  //           this.authenticateChat();
-  //         // }
-  //         // this.cable.connection.webSocket.onclose = function (event) {
-  //         //   console.log('createSocket in call back to connected, websocket onclose, connection closed, event', event);
-  //         // }
-  //         // this.webSocket = this.cable.connection.webSocket;
-  //         if (!this.state.webSocketConnected) this.setState({ webSocketConnected: true });
-  //     }, // end of connected
-  //
-  //     rejected: () => {
-  //       console.log('***** Connection Rejected *****');
-  //     },
-  //
-  //     unsubscribed: () => {
-  //       console.log('***** Connection Unsubscribed *****');
-  //       // this.perform('unsubscribed');
-  //     },
-  //
-  //     unsubscribeConnection: function () {
-  //       console.log('***** Unsubscribing from Connection *****');
-  //       this.perform('unsubscribe_connection', {});
-  //     },
-  //
-  //     // unsubscribe: () => {
-  //     //     console.log('createSocket in call back to unsubscribe');
-  //     // }, // end of connected
-  //     authenticated: function (token) {
-  //       this.perform('authenticated', { token });
-  //       console.log('***** Authenticating Action Cable Connection *******');
-  //     },
-  //
-  //     received: (data) => {
-  //       console.log('createSocket in received before if data', data);
-  //       if (data.conversation) {
-  //         // const chatLogs = [...this.state.chatLogs]; // create copy of state.chatLogs
-  //         const conversation = JSON.parse(data.conversation);
-  //         this.props.receiveConversation(conversation);
-  //         console.log('createSocket this', this);
-  //         // chatLogs.push(conversation);
-  //         // this.setState({ chatLogs }, () => {
-  //         //   console.log('createSocket received Chatlogs after set state, this.state.chatLogs ', this.state.chatLogs);
-  //         //   }
-  //         // );  // end of setState
-  //       } else if (data.notification) {
-  //         console.log('createSocket in received, data ', data);
-  //         if (data.notification === 'typing') {
-  //           if (this.state.typingTimer === 0) {
-  //             console.log('createSocket in received, data.notification.typing ', data.notification);
-  //             const lapseTime = () => {
-  //               if (subTimer > 0) {
-  //                 subTimer--;
-  //                 console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
-  //               } else {
-  //                 console.log('createSocket in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
-  //                 // typingTimer--;
-  //                 this.setState({ typingTimer: subTimer }, () => {
-  //                   console.log('createSocket in received, data.notification.typing, in lapseTime, this.state.typingTimer in else ', this.state.typingTimer);
-  //                 });
-  //                 clearInterval(timer);
-  //               }
-  //             };
-  //             // clearInterval(timer);
-  //             let subTimer = 5;
-  //             if (this.state.typingTimer < 5) {
-  //               this.setState({ typingTimer: subTimer, messageSender: data.user_id }, () => {
-  //                 console.log('createSocket in received, data.notification.typing, this.state.typingTimer after setting at 5, messageSender ', this.state.typingTimer, this.state.messageSender);
-  //               });
-  //             }
-  //             const timer = setInterval(lapseTime, 1000);
-  //           }
-  //         }
-  //       }
-  //     }, // end of received
-  //
-  //     create: function (chatContent) {
-  //       this.perform('create', { content: chatContent });
-  //     }, // end of create:
-  //
-  //     typing: function (addresseeId) {
-  //       console.log('createSocket this', this);
-  //       this.perform('typing', { user_id: userId, addressee_id: addresseeId });
-  //     },
-  //   }); // end of subscriptions.create and second object
-  // }
-
-  authenticateChat() {
-    const token = localStorage.getItem('token');
-    this.chats.authenticated(token);
-    console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection', this.cable.connection);
-    console.log('authenticateChat in call back to chat connection authenticated, run');
-    // console.log('authenticateChat in call back to chat connection authenticated, this.cable.connection.webSocket.onclose', this.cable.connection.webSocket.onclose);
-    this.cable.connection.webSocket.onclose = (m) => {
-      // onclose listener for when websocket is closed or disconnected;
-      // if rails server is shutdown, this fires, and when server restarted, automatically connects; by npm actioncable???
-      console.log('authenticateChat in call back to chat connection authenticated, webSocket onclose listener fired!!!!', m);
-      // set webSocketConnected to false to change online indicator
-      this.setState({ webSocketConnected: false });
-      // if webSocket connection is disconneted, createSocket reconnects
-      // this.createSocket();
-    };
-    // this.cable.connection.webSocket.onmessage = (m) => {
-    // //onMessage listener for getting pings; This is onhold until can find out way to pong back.
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.connection.webSocket', this.cable.connection.webSocket);
-    //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!! this.cable.subscriptions.subscriptions[0].identifier', this.cable.subscriptions.subscriptions[0].identifier);
-    //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' } };
-    //     const message = { command: 'message', identifier: this.cable.subscriptions.subscriptions[0].identifier, data: JSON.stringify({ action: 'message', data: m.data.message }) };
-    //     // const message = { command: 'message', event: 'ping', identifier: JSON.stringify({ channel: 'ChatChannel', room: 'messaging_room_3' }), data: JSON.stringify({ action: 'message', data: m.data.message }) };
-    //     // const message = { command: 'message', identifier: { channel: 'ChatChannel', room: 'messaging_room_3' }, data: JSON.stringify({ type: 'ping', message: m.data.message }) };
-    //     // const message = m.data.message;
-    //     this.cable.connection.webSocket.send(JSON.stringify(message));
-    //     // if (m.data.type === 'ping') {
-    //     //   console.log('authenticateChat in call back to chat connection authenticated, webSocket onmessage listener fired!!!! m, m.data', m, m.data);
-    //     //   return;
-    //     // }
-    //     // this.cable.connection.webSocket.send(message);
-    //   // if webSocket connection is disconneted, createSocket reconnects
-    //   // this.createSocket();
-    // };// end of on message
-  }
-  // createSocket2() {
-  //   this.cable = Cable.createConsumer('ws://localhost:3000/cable');
-  //   console.log('createSocket this.cable', this.cable);
-  //   // console.log('createSocket Cable', Cable);
-  //   this.chats = this.cable.subscriptions.create({
-  //     channel: 'ChatChannel', room: 'test_room2'
-  //   }, {
-  //     connected: () => {
-  //         console.log('createSocket in call back to connected');
-  //         console.log('createSocket in call back to connected, this.chats', this.chats);
-  //     }, // end of connected
-  //     rejected: () => {
-  //       console.log('createSocket in call back to rejected');
-  //     },
-  //     // unsubscribe: () => {
-  //     //     console.log('createSocket in call back to unsubscribe');
-  //     // }, // end of connected
-  //     received: (data) => {
-  //       const chatLogs2 = [...this.state.chatLogs2]; // create copy of state.chatLogs
-  //       chatLogs2.push(data);
-  //       this.setState({ chatLogs2 }, () => {
-  //         console.log('Chatlogs after set state, this.state.chatLogs2 ', this.state.chatLogs2);
-  //         }
-  //       );
-  //     }, // end of received
-  //     create: function (chatContent) {
-  //       this.perform('create', {
-  //         content: chatContent
-  //       });
-  //     } // end of create:
-  //   }); // end of subscriptions.create and second object
-  // }
-
-  handleSendEvent(event) {
-    // event.preventDefault();
-    // this.chats.create(this.state.currentChatMessage);
-    this.props.createMessage({ conversation_id: 1, body: this.state.currentChatMessage, booking_id: 1, sent_by_user: false }, () => {});
-    this.setState({
-      currentChatMessage: ''
-    });
-  }
-
-  handleDisconnectEvent(event) {
-    // event.preventDefault();
-    // disconnects consumer and stops streaming
-    // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
-    // ChatChannel stopped streaming from test_room
-    // .disconnect causes webSocket.onclose listener to fire.
-    // unsubscribe leading to reject does not fire onclose
-    // this.cable.disconnect(() => {
-    // console.log('handleDisconnectEvent in call back to disconnect');
-    // });
-    this.props.propsCable.disconnect(() => {
-    console.log('handleDisconnectEvent in call back to disconnect');
-    });
-    // this.chats.unsubscribeConnection(() => {
-    // console.log('handleDisconnectEvent in call back to disconnect');
-    // });
-    // this.chats.unsubscribed();
-  }
-
-  handleConnectEvent(event) {
-    event.preventDefault();
-    // disconnects consumer and stops streaming
-    // message api: Finished "/cable/" [WebSocket] for 127.0.0.1 at 2019-12-19 15:51:01 +0900
-    // ChatChannel stopped streaming from test_room
-    this.createSocket(() => {
-    console.log('handleConnectEvent in call back to connect');
-    });
-  }
 
   renderBookingTenantInformation(booking) {
     // for some reason, cloudinary image does not render correctly if image obtained
@@ -608,45 +360,6 @@ class BookingConfirmation extends Component {
             {this.renderEachTenantLine(profileToUse)}
             {this.props.userIsOwner ? this.renderTenantIntroduction(profileToUse) : ''}
           </div>
-              <div style={{ width: 'auto', height: '150px'}}>
-                <div style={ { width: 'auto', height: '50%', border: 'gray', padding: '10px', textAlign: 'left', display: 'flex', alignItems: 'flex-end' }}>
-                  <div style={{ width: '200px', height: '30px', border: 'gray', padding: '10px', borderRadius: '3px' }}>
-                      <Typing
-                        typingTimer={this.props.typingTimer}
-                        messageSender={this.props.messageSender}
-                      />
-                  </div>
-                </div>
-                <input
-                  value={this.state.currentChatMessage}
-                  onChange={(e) => this.updateCurrentChatMessage(e) }
-                  type='text'
-                  placeholder='Enter your message...'
-                  className='chat-input'
-                  style={{ width: '80%' }}
-                />
-                <button
-                className='send'
-                onClick={(e) => this.handleSendEvent(e)}
-                >
-                  Send
-                  </button>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignContent: 'center', margin: 'auto', padding: '10px'}}>
-                  <div style={{ height: '10px', width: '10px', backgroundColor: this.props.propsWebSocketConnected ? '#39ff14' : '#ed2939', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
-                  <button
-                  className='disconnect'
-                  onClick={(e) => this.handleDisconnectEvent(e)}
-                  >
-                  Disconnect
-                  </button>
-                  <button
-                  className='connect'
-                  onClick={(e) => this.handleConnectEvent(e)}
-                  >
-                  Connect
-                  </button>
-                </div>
-              </div>
       </div>
     );
   }
@@ -672,20 +385,23 @@ class BookingConfirmation extends Component {
     // return <a key={i} target="_blank" rel="noopener noreferrer" href={`http://res.cloudinary.com/chikarao/image/upload/${eachAgreement.document_publicid}.pdf`}>Link</a>
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
-      return <div
-        key={i}
-        value={eachAgreement.document_code}
-        name={eachAgreement.id}
-        onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
-        className="booking-confirmation-document-create-link"
-      >
-        {eachAgreement.document_name} &nbsp;
-        {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}&nbsp;
-        {eachAgreement.sent_to_tenant ? <i className="far fa-envelope" aria-hidden="true" style={{ color: 'black' }}></i> : ''}
-        {eachAgreement.sent_to_tenant ? <span style={{ fontSize: '10px' }}>✅</span> : ''}&nbsp;
-        {eachAgreement.tenant_signed ? <i className="fas fa-stamp" aria-hidden="true" style={{ color: 'gray' }}></i> : ''}
-        {eachAgreement.tenant_signed ? <span style={{ fontSize: '10px' }}>✅</span> : ''}
-      </div>
+      // if agreement has a template file name render
+      if (!eachAgreement.language_code_1) {
+        return <div
+          key={i}
+          value={`${eachAgreement.document_code},${'template'}`}
+          name={eachAgreement.id}
+          onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
+          className="booking-confirmation-document-create-link"
+        >
+          {eachAgreement.document_name} &nbsp;
+          {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}&nbsp;
+          {eachAgreement.sent_to_tenant ? <i className="far fa-envelope" aria-hidden="true" style={{ color: 'black' }}></i> : ''}
+          {eachAgreement.sent_to_tenant ? <span style={{ fontSize: '10px' }}>✅</span> : ''}&nbsp;
+          {eachAgreement.tenant_signed ? <i className="fas fa-stamp" aria-hidden="true" style={{ color: 'gray' }}></i> : ''}
+          {eachAgreement.tenant_signed ? <span style={{ fontSize: '10px' }}>✅</span> : ''}
+        </div>
+      }
     });
   }
 
@@ -713,10 +429,86 @@ class BookingConfirmation extends Component {
     });
   }
 
-  handleDocumentUploadClick() {
-    this.setState({ uploadOwnDocument: true }, () => {
-      console.log('in booking confirmation, handleDocumentUploadClick, this.state.uploadOwnDocument:', this.state.uploadOwnDocument);
+  handleSavedDocumentShowClick(event) {
+    const clickedElement = event.target;
+    // elementVal is documentCode or document key in documents.js
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in booking confirmation, handleSavedDocumentShowClick, elementVal:', elementVal);
+    const elementValArray = elementVal.split(',')
+    const documentCode = elementValArray[0];
+    // boolean to test if doc is a template
+    const template = elementValArray[1] === 'template';
+
+    // elementName is agreement id
+    const elementName = clickedElement.getAttribute('name');
+    console.log('in booking confirmation, handleSavedDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
+
+    if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
+      this.setState({ showOwnUploadedDocument: false }, () => {
+        this.setConditionsForSavedDocuments(elementVal, elementName);
+      });
+    } else {
+      this.setConditionsForSavedDocuments(elementVal, elementName);
+    }
+  }
+
+  handleOwnDocumentShowClick(event) {
+    const clickedElement = event.target;
+    // elementVal is documentCode or document key in documents.js
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in booking confirmation, handleOwnDocumentShowClick, elementVal:', elementVal);
+    const elementValArray = elementVal.split(',')
+    const documentCode = elementValArray[0];
+    // boolean to test if doc is a template
+    const template = elementValArray[1] === 'template';
+    // elementName is agreement id
+    const elementName = clickedElement.getAttribute('name');
+    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
+    // first make false and nullout relavant state elements
+    // Then set relevant state to show own document
+    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+      this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
+        this.props.selectedAgreementId(elementName);
+        // this.setState({ showDocument: true });
+      });
+    });
+  }
+  //
+  // handleOwnTemplateShowClick() {
+  //
+  // }
+  //
+  // handleOwnSavedTemplateShowClick() {
+  //
+  // }
+
+  handleDocumentUploadClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal == 'template' ? true : false }, () => {
       this.props.showDocumentInsertCreateModal();
+    });
+  }
+  // When user clicks on a template saved, sets various component and app states to
+  // set
+  renderEachTemplateSaved() {
+    return _.map(this.props.booking.agreements, (eachAgreement, i) => {
+      // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
+      // change later language_code_1 is just a dummy field in Agreements
+      if (eachAgreement.language_code_1) {
+        return <div
+          key={i}
+          value={`${eachAgreement.document_code},${'template'}`}
+          name={eachAgreement.id}
+          onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
+          // onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnTemplateShowClick : this.handleOwnSavedTemplateShowClick}
+          className="booking-confirmation-document-create-link"
+        >
+          {eachAgreement.document_name} &nbsp;
+          {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}
+        </div>
+      }
     });
   }
 
@@ -738,9 +530,10 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadTemplate[appLanguageCode]}</div>
+              <div value="template" className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadTemplate[appLanguageCode]}</div>
             </div>
             <div className="booking-confirmation-document-box">
+              {this.renderEachTemplateSaved()}
             </div>
 
             <div className="booking-request-box-each-line">
@@ -774,7 +567,7 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <div className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadDocument[appLanguageCode]}</div>
+              <div value="document" className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadDocument[appLanguageCode]}</div>
             </div>
             <div className="booking-confirmation-document-box">
               {this.props.booking.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
@@ -784,7 +577,7 @@ class BookingConfirmation extends Component {
     }
   }
 
-  handleBookingRequsetApprovalClick(event) {
+  handleBookingRequestApprovalClick(event) {
     const { appLanguageCode } = this.props;
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
@@ -826,9 +619,9 @@ class BookingConfirmation extends Component {
           {AppLanguages.approveBookingRequest[appLanguageCode]}
         </div>
         <div className="booking-request-box-each-line-data">
-          {this.props.booking.approved ? <div className="booking-confirmation-unapprove-request-link" value={this.props.booking.id} onClick={this.handleBookingRequsetApprovalClick}>{AppLanguages.approved[appLanguageCode]} ✅</div>
+          {this.props.booking.approved ? <div className="booking-confirmation-unapprove-request-link" value={this.props.booking.id} onClick={this.handleBookingRequestApprovalClick}>{AppLanguages.approved[appLanguageCode]} ✅</div>
           :
-          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>{AppLanguages.approve[appLanguageCode]}</div>
+          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequestApprovalClick}>{AppLanguages.approve[appLanguageCode]}</div>
          }
         </div>
       </div>
@@ -893,7 +686,7 @@ class BookingConfirmation extends Component {
         <div className="booking-request-box-each-line-data">
           {this.props.booking.approved ? 'Yes ✅'
           :
-          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequsetApprovalClick}>Done</div>
+          <div value={this.props.booking.id} className="btn btn-md booking-confirmation-approve-request-btn" onClick={this.handleBookingRequestApprovalClick}>Done</div>
          }
         </div>
       </div>
@@ -1064,22 +857,11 @@ class BookingConfirmation extends Component {
 
   renderBookingData() {
     const { booking, appLanguageCode } = this.props;
-    // if (booking && !this.state.showDocument) {
     if (booking) {
-      // if (booking.flat) {
         // find out if any documents sent to tenant
         const documentsSent = this.findDocumentsStatus(booking.agreements, 'sent_to_tenant');
         const documentsSigned = this.findDocumentsStatus(booking.agreements, 'tenant_signed');
-
-        // }
-        // const documentsSent = booking.fetchBookingData ? this.findIfDocumentsSent(booking.fetchBookingData.agreements) : '';
-        // const data = this.props.booking.id;
-        // localStorage.setItem('data', data);
-        // const localData = localStorage.getItem('data');
         console.log('in booking confirmation, renderBookingData, booking: ', booking);
-        // <h4>
-        // This is your booking confirmation. <br/><br/>You can manage your bookings in My Page.
-        // </h4>
 
         return (
           <div>
@@ -1519,74 +1301,6 @@ setConditionsForSavedDocuments(elementVal, elementName) {
   }
 }
 
-handleSavedDocumentShowClick(event) {
-  const clickedElement = event.target;
-  // elementVal is documentCode or document key in documents.js
-  const elementVal = clickedElement.getAttribute('value');
-  // elementName is agreement id
-  const elementName = clickedElement.getAttribute('name');
-
-  if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
-    this.setState({ showOwnUploadedDocument: false }, () => {
-      this.setConditionsForSavedDocuments(elementVal, elementName);
-    });
-  } else {
-    this.setConditionsForSavedDocuments(elementVal, elementName);
-    // if (!this.state.showDocument) {
-    //     this.props.setCreateDocumentKey(elementVal, () => {
-    //       this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-    //     });
-    // } else {
-    //   // if showDocument is true (currently showing document),
-    //   // close document first then show new document, turn off and null out other state attributes
-    //   this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-    //     this.props.setCreateDocumentKey(elementVal, () => {
-    //       this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true });
-    //       // this.setState({ showDocument: true });
-    //     });
-    //   });
-    // }
-  }
-}
-
-handleOwnDocumentShowClick(event) {
-  const clickedElement = event.target;
-  // elementVal is documentCode or document key in documents.js
-  const elementVal = clickedElement.getAttribute('value');
-  // elementName is agreement id
-  const elementName = clickedElement.getAttribute('name');
-  this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-    this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-      this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
-      this.props.selectedAgreementId(elementName);
-      // this.setState({ showDocument: true });
-    });
-  });
-}
-
-// renderDocumentChoices() {
-//   return (
-//     <div className="booking-confirmation-create-document-box">
-//       <h4>Create Document</h4>
-//       <div onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">Teishaku</div>
-//     </div>
-//   );
-// }
-
-// renderBookingRequest() {
-//   return (
-//     <div className="container booking-request-container">
-//       <h3>{AppLanguages.bookingRequest[this.props.appLanguageCode]}</h3>
-//       <div className="row booking-request-row">
-//         <div className="booking-request-each-box">{this.renderBookingInfo()}</div>
-//         <div className="booking-request-each-box">{this.renderBookingPaymentDetails()}</div>
-//         <div className="booking-request-each-box">{this.renderFacilities()}</div>
-//         <div className="booking-request-each-box-personal">{this.renderUpdatePersonalDetails()}</div>
-//       </div>
-//     </div>
-//   );
-// }
-
 renderDocumentInsertCreateForm() {
   // console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
   return (
@@ -1594,6 +1308,7 @@ renderDocumentInsertCreateForm() {
       show={this.props.showDocumentInsertCreate}
       agreementId={this.state.agreementId}
       uploadOwnDocument={this.state.uploadOwnDocument}
+      templateCreate={this.state.showTemplateCreate}
     />
   );
 }
@@ -1635,18 +1350,13 @@ renderInsertFieldEditForm() {
 }
 
 renderDocumentEmailCreateForm() {
-  console.log('in booking confirmation, renderDocumentEmailCreateForm: ');
+  // console.log('in booking confirmation, renderDocumentEmailCreateForm: ');
   return (
     <DocumentEmailCreateModal
       show={this.state.showDocumentEmailCreateModal}
       handleClose={() => this.setState({ showDocumentEmailCreateModal: !this.state.showDocumentEmailCreateModal })}
       signedDocumentsModal={this.state.signedDocumentsModal}
       turnOffSignedDocuments={() => this.setState({ signedDocumentsModal: false })}
-      // show
-      // agreementId={this.state.agreementId}
-      // // documentInsertId={this.state.documentInsertId}
-      // insertFieldId={this.state.insertFieldId}
-      // documentInsertId={this.state.documentInsertId}
     />
   );
 }
@@ -1664,20 +1374,31 @@ renderConversationCreateForm() {
   );
 }
 
+// NOTE: renderDocument is for doing the following:
+// 1) create a document in 'Create Documents' by using an app-provided template
+// with already placed fields.
+// users can change the input in the fields but not move the fields.
+// 2) Edit 'Saved documents' by changing inputs but not change the placing of the fields
+// 3) Upload own document inserts to be inserted into documents created in 1)
+// 4) Upload own document that is an entire agreement to be used in the booking
+// by clicking 'Upload Your Document' which will be saved in 'Saved Document';
+// users can edit it by a) changing the name of the document
+// b) deleting it and/or c) uploading a new one
+// 5) Upload own template to place fields on it  
+
 render() {
+  console.log('in booking confirmation,  render, this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument: ', this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument);
   return (
-    // {this.renderReview()}
-    //
     <div>
-    {this.renderReviewEditModal()}
-    {this.renderBookingData()}
-    {this.state.showDocument ? this.renderDocument() : ''}
-    {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
-    {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
-    {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
-    {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
-    {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
-    {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
+      {this.renderReviewEditModal()}
+      {this.renderBookingData()}
+      {this.state.showDocument ? this.renderDocument() : ''}
+      {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
+      {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
+      {this.props.showInsertFieldCreate ? this.renderInsertFieldCreateForm() : ''}
+      {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
+      {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
+      {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
     </div>
    );
   }

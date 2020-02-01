@@ -17,6 +17,12 @@ let showHideClassName;
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = globalConstants.rootUrl;
 
+// NOTE: this modal enables upload of document inserts  and entire agreements
+// inserts are documents that are inserted into ready made documents provided by the app
+// inserts enables users to use a different contract with a summary provided by the app
+// Entire agreements are templates and completed agreeemnts
+// inserts and own agreements are differentiated by this.props.uploadOwnDocument
+
 class DocumentInsertCreateModal extends Component {
   constructor(props) {
     super(props);
@@ -97,7 +103,7 @@ class DocumentInsertCreateModal extends Component {
       // this.createImageCallback(imagesArray, 0, flatId);
       // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
       let dataToBeSent = {};
-      // if this is an entire document and not an insert to another document 
+      // if this is an entire document and not an insert to another document
       if (!this.props.uploadOwnDocument) {
         dataToBeSent = { document_insert: data };
         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
@@ -108,10 +114,14 @@ class DocumentInsertCreateModal extends Component {
         console.log('in Upload, handleCreateImages, axios all, then, else pages: ', pages);
         dataToChange.document_name = dataToChange.insert_name;
         dataToBeSent = { agreement: dataToChange };
+        // if this is to create an upload
+        if (this.props.templateCreate) dataToBeSent.agreement.language_code_1 = 'template';
         dataToBeSent.agreement.booking_id = this.props.booking.id;
         dataToBeSent.agreement.document_publicid = imagesArray[0];
         dataToBeSent.agreement.document_pages = pages;
         dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
+        // if (this.props.templateCreate) dataToBeSent.agreement.document_code = globalConstants.ownUploadedTemplateKey;
+        dataToBeSent.agreement.language_code = this.props.documentLanguageCode;
         dataToBeSent.document_field = [];
         this.props.createAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
       }
@@ -366,6 +376,7 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode,
       booking: state.bookingData.fetchBookingData,
       documentKey: state.documents.createDocumentKey,
+      documentLanguageCode: state.languages.documentLanguageCode,
       // documentInsertId: state.modals.selectedDocumentInsertId,
       // documentInsert,
       // addNew: state.modals.addNewDocumentInsert,

@@ -2124,13 +2124,21 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   width: auto;
   border-radius: 3px;
   max-width: 350px;
-  /* border: 1px solid #ccc; */
   margin: 0 0 3px 0;
   padding: 0 0 0 5px;
-  /* display: flex; */
-  /* background-color: rgb(249, 249, 249); */
-  /* justify-content: space-around; */
+}
 
+.messaging-user-status-container {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  z-index: 10;
+  border-radius: 50%;
+  text-align:center;
+  padding: 3px;
 }
 
 #messaging-hamburger {
@@ -3146,10 +3154,11 @@ form {
 }
 
 .booking-confirmation-image-box {
-  width: 70px;
+  min-width: 70px;
+  /* width: 70px; */
   height: 70px;
   border-radius: 50%;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   margin: 0 5px 0 25px;
 }
 

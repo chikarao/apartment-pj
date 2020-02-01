@@ -118,7 +118,7 @@ export default (props) => {
     console.log('in get_initialvalues_object-fixed-term-contract, createAddress, flat: ', flat);
     // if (flat.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
     // change order of address depending on country
-    if (flat.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
+    if (flat.country && flat.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
       addressFieldArray = ['zip', 'state', 'city', 'address2', 'address1'];
     } else {
       addressFieldArray = ['address1', 'address2', 'city', 'state', 'zip'];
@@ -163,15 +163,15 @@ export default (props) => {
   }
 
   function getLanguage(languages, languageCode) {
-    let objectReturned;
+    let objectReturned = {};
     _.each(languages, eachLanguage => {
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
       if (eachLanguage.language_code === languageCode) {
         objectReturned = eachLanguage;
         return;
       }
     });
-    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
+    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
     return objectReturned;
   }
 
@@ -475,7 +475,7 @@ export default (props) => {
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, ownerProfile, userOwner.profiles: ', ownerProfile, userOwner.profiles);
       // form string for user owner names
       if (ownerProfile.first_name && ownerProfile.last_name) {
-        const fullName = ownerProfile.last_name.concat(` ${ownerProfile.first_name}`);
+        const fullName = ownerProfile.last_name ? ownerProfile.last_name.concat(` ${ownerProfile.first_name}`) : '';
         objectReturned.owner_name = fullName;
         objectReturned.owner_phone = ownerProfile.phone;
         objectReturned.owner_name_1 = fullName;
@@ -483,7 +483,7 @@ export default (props) => {
       }
 
       if (ownerProfileTranslation.first_name && ownerProfileTranslation.last_name) {
-        const fullName = ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`);
+        const fullName = ownerProfileTranslation.last_name ? ownerProfileTranslation.last_name.concat(` ${ownerProfileTranslation.first_name}`) : '';
         objectReturned.owner_name_translation = fullName;
         objectReturned.owner_name_translation_1 = fullName;
       }
@@ -527,9 +527,9 @@ export default (props) => {
         objectReturned.management_company = managementProfile.company_name;
         objectReturned.management_company_translation = managementProfileTranslation.company_name;
         objectReturned.management_phone = managementProfile.phone;
-        const fullName = managementProfile.last_name.concat(` ${managementProfile.first_name}`);
+        const fullName = managementProfile.last_name ? managementProfile.last_name.concat(` ${managementProfile.first_name}`) : '';
         objectReturned.management_name = fullName;
-        const fullNameTranslation = managementProfileTranslation.last_name.concat(` ${managementProfileTranslation.first_name}`);
+        const fullNameTranslation = managementProfileTranslation.last_name ? managementProfileTranslation.last_name.concat(` ${managementProfileTranslation.first_name}`) : '';
         objectReturned.management_name_translation = fullNameTranslation;
         if (managementProfile.language_code = Documents[documentKey].baseLanguage) {
           objectReturned.management_registration_number_front = managementProfileTranslation.registration_number_front;
@@ -584,9 +584,9 @@ export default (props) => {
         }
         objectReturned.broker_company_name = brokerProfile.company_name;
         objectReturned.broker_company_name_translation = brokerProfileTranslation.company_name;
-        const fullName = brokerProfile.last_name.concat(` ${brokerProfile.first_name}`);
+        const fullName = brokerProfile.last_name ? brokerProfile.last_name.concat(` ${brokerProfile.first_name}`) : '';
         objectReturned.broker_representative_name = fullName;
-        const fullNameTranslation = brokerProfileTranslation.first_name.concat(` ${brokerProfileTranslation.last_name}`);
+        const fullNameTranslation = brokerProfileTranslation.first_name ? brokerProfileTranslation.first_name.concat(` ${brokerProfileTranslation.last_name}`) : '';
         objectReturned.broker_representative_name_translation = fullNameTranslation;
 
         const brokerStaffProfile = getManagement(staffTranslations, language);
@@ -595,9 +595,9 @@ export default (props) => {
         objectReturned.broker_staff_registration_jurisdiction = brokerStaffProfile.registration_jurisdiction;
         objectReturned.broker_staff_registration_jurisdiction_translation = brokerStaffProfileTranslation.registration_jurisdiction;
         objectReturned.broker_staff_registration = brokerStaffProfile.registration;
-        const fullNameStaff = brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`);
+        const fullNameStaff = brokerStaffProfile.last_name ? brokerStaffProfile.last_name.concat(` ${brokerStaffProfile.first_name}`) : '';
         objectReturned.broker_staff_name = fullNameStaff;
-        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`);
+        const fullNameStaffTranslation = brokerStaffProfileTranslation.first_name ? brokerStaffProfileTranslation.first_name.concat(` ${brokerStaffProfileTranslation.last_name}`) : '';
         objectReturned.broker_staff_name_translation = fullNameStaffTranslation;
       }
 
@@ -621,7 +621,7 @@ export default (props) => {
 
       // form string for user tenant names
       if (tenantProfile.first_name && tenantProfile.last_name) {
-        const fullName = tenantProfile.last_name.concat(` ${tenantProfile.first_name}`);
+        const fullName = tenantProfile.last_name ? tenantProfile.last_name.concat(` ${tenantProfile.first_name}`) : '';
         objectReturned.tenant_name = fullName;
         objectReturned.tenant_phone = tenantProfile.phone;
         objectReturned.tenant_name_1 = fullName;

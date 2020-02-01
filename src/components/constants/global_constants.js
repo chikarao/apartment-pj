@@ -9,6 +9,7 @@ const globalConstants = {
     a4Width: 792,
     a4Height: 1122,
     ownUploadedDocumentKey: 'own_uploaded_document',
+    ownUploadedTemplateKey: 'own_uploaded_template',
     resizeBreakPoint: 800,
 };
 

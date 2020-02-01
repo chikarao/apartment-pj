@@ -72,6 +72,7 @@ const Documents =
     },
 
     // Key kept in global constants
+    // [] allows variables to be used in setting the key 
     [globalConstants.ownUploadedDocumentKey]: {
       form: '',
       en: '',

@@ -791,6 +791,8 @@ renderEachDocumentField(page) {
   }
 
   renderDocument() {
+    // render each document page as a background image;
+    // render each document field and translation field on top of the image
     const initialValuesEmpty = _.isEmpty(this.props.initialValues);
     let pages = [];
     let showDocument = false;
@@ -836,14 +838,14 @@ renderEachDocumentField(page) {
           // console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
           return (
             <div
-            key={page}
-            value={page}
-            id="document-background"
-            className="test-image-pdf-jpg-background"
-            style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
+              key={page}
+              value={page}
+              id="document-background"
+              className="test-image-pdf-jpg-background"
+              style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
-            {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
-            {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
+              {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
+              {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
             </div>
           );
         });

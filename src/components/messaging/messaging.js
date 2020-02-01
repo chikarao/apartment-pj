@@ -26,88 +26,20 @@ class Messaging extends Component {
    this.updateCurrentChatMessage = this.updateCurrentChatMessage.bind(this);
  }
 
-  // componentDidMount() {
-  //   console.log('in show flat, componentDidMount, params', this.props.match.params);
-  //   // gets flat id from params set in click of main_cards or infowindow detail click
-  //     this.scrollLastMessageIntoView();
-  // }
-
   componentDidUpdate(prevProps) {
     // if not from show page scroll to the last message
     if (!this.props.fromShowPage) {
-      console.log('in messaging, componentDidUpdate, in if !fromShowPage: ', this.props.fromShowPage);
+      // console.log('in messaging, componentDidUpdate, in if !fromShowPage: ', this.props.fromShowPage);
       this.scrollLastMessageIntoView();
     }
 
     if (prevProps.typingTimer !== this.props.typingTimer && this.props.typingTimer > 0) {
-      console.log('in messaging, componentDidUpdate, if (prevProps.typingTimer: ', prevProps.typingTimer);
+      // console.log('in messaging, componentDidUpdate, if (prevProps.typingTimer: ', prevProps.typingTimer);
       this.scrollLastMessageIntoView();
     }
-
-    // if (this.props.propsWebSocketTimedOut) {
-    //   this.props.webSocketConnected({ timedOut: false });
-    // }
   }
 
-    // const messageBox = document.getElementById('message-show-box');
-    // if (messageBox) {
-    //   // console.log('in messaging, componentDidUpdate, bounding this.inViewPort: ', this.isInViewport(messageBox));
-    //   window.addEventListener('scroll', (event) => {
-    //     if (this.isInViewport(messageBox)) {
-    //       console.log('in messaging, componentDidUpdate, addEventListener, messageBox in view: ');
-    //       if(!this.state.inMessaging) {
-    //         this.scrollLastMessageIntoView();
-    //       }
-    //       this.setState({ inMessaging: true })
-    //     } else {
-    //       console.log('in messaging, componentDidUpdate, addEventListener, messageBox NOT in view: ');
-    //     }
-    //   }, false);
-    // }
-    // this.inViewPort();
-  // }
-
-  // isInViewport(messageBox) {
-  //   // console.log('in messaging, isInViewport, messageBox: ', messageBox);
-  //   if (messageBox) {
-  //     const bounding = messageBox.getBoundingClientRect();
-  //     // console.log('in messaging, inViewPort, bounding: ', bounding);
-  //     if (
-  //       bounding.top >= 0 &&
-  //       bounding.left >= 0 &&
-  //       bounding.right <= (window.innerWidth || document.documentElement.clientWidth) &&
-  //       bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-  //     ) {
-  //       // console.log('Boounding: In the viewport!');
-  //       return true;
-  //     } else {
-  //       // console.log('Bounding: Not in the viewport... whomp whomp');
-  //       return false;
-  //     }
-  //   }
-  //   // window.addEventListener('scroll', function (event) {
-  //   //    if (isInViewport(messageBox)) {
-  //   //        // image.innerHTML = '<img src="' + image.getAttribute('data-image') + '">';
-  //   //        console.log('in messaging, componentDidUpdate, in view port: ', items);
-  //   //       }
-  //   //     }, false);
-  //
-  // }
-
   updateCurrentChatMessage(event) {
-    console.log('messaging, updateCurrentChatMessage, before if this.props.conversationId ', this.props.conversationId);
-    // if (this.props.conversationId) {
-    //   const userId = this.props.auth.id;
-    //   // const addresseeId = this.props.auth.id === this.props.booking.user_id ? this.props.boooking.flat.user_id : userId;
-    //   const conversationToShow = this.conversationToShow();
-    //   console.log('messaging, updateCurrentChatMessage, this.props.conversationId ', this.props.conversationId);
-    //   console.log('messaging, updateCurrentChatMessage, conversationToShow ', conversationToShow);
-    //   const userIsOwner = userId == conversationToShow[0].flat.user_id;
-    //   console.log('messaging, updateCurrentChatMessage, userId, conversationToShow[0].flat.user_id, userIsOwner ', userId, conversationToShow[0].flat.user_id, userIsOwner);
-    //   const addresseeId = userIsOwner ? conversationToShow[0].user_id : userId;
-    //   console.log('messaging, updateCurrentChatMessage, addresseeId, userId ', addresseeId, userId);
-    // }
-    // const userId = this.props.booking.user_id === this.props.auth.id ? this.props.booking.user_id : this.props.booking.flat.user_id
     // typingTimerOut is a global variable
     // this.chats.typing is a command for the backend to send a notification to the addressee
     // that the sender is typing a message. Notifications are sent once per timer cycle.
@@ -134,7 +66,7 @@ class Messaging extends Component {
       // this.chats.typing(addresseeId);
     }
     this.setState({ currentChatMessage: event.target.value }, () => {
-      console.log('in messaging, updateCurrentChatMessage, this.state.currentChatMessage: ', this.state.currentChatMessage);
+      // console.log('in messaging, updateCurrentChatMessage, this.state.currentChatMessage: ', this.state.currentChatMessage);
     })
   }
 
@@ -189,11 +121,10 @@ class Messaging extends Component {
     // this.setState(this.state);
     // this.props.fetchConversationByFlatAndUser(id);
     this.setState({ messagingToggle: !this.state.messagingToggle, currentChatMessage: '' }, () => {
-      console.log('in messaging, createMessageCallback, this.state.currentChatMessage: ', this.state.currentChatMessage);
+      // console.log('in messaging, createMessageCallback, this.state.currentChatMessage: ', this.state.currentChatMessage);
     });
     this.scrollLastMessageIntoView();
   }
-
 
   formatDate(date) {
     // get date and time now
@@ -270,7 +201,7 @@ class Messaging extends Component {
   renderUserTyping() {
     // To turn on and off while current user is typing,
     // make !== this in renderMessages =>>>> this.props.messageSender === this.props.auth.id
-    console.log('in messaging, renderUserTyping called: ');
+    // console.log('in messaging, renderUserTyping called: ');
     return (
       <div className="typing-message-content" style={{ border: '1px solid transparent' }}>
         <Typing
@@ -312,22 +243,6 @@ class Messaging extends Component {
   }
 
   renderCableStatusBar() {
-    // original code without the connecting...
-    // {this.props.propsWebSocketConnected ?
-    //   <div style={{ padding: '8px' }}>Connected</div>
-    //   :
-    //   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-    //     <div style={{ padding: '8px' }}>
-    //       Connection timed out
-    //     </div>
-    //   <button
-    //     className='connect'
-    //     style={{ backgroundColor: 'white', border: '1px solid blue', borderRadius: '5px' }}
-    //     onClick={(e) => this.handleConnectEvent(e)}
-    //   >
-    //   reconnect
-    //   </button>
-    //   </div>}
     // if propsWebSocketConnected, show connected.
     // if NOT propsWebSocketConnected AND IS timed out , show timed out and a button
     // if NOT connected BUT is NOT timed out, show in process of connecting...
@@ -392,35 +307,56 @@ class Messaging extends Component {
     if (diffInTime > oneMinute || diffInTime < oneMinute) return 'Active now';
   }
 
+  getOtherUserStatus(notOwnFlatConversation, conversation) {
+    let userStatusReturned;
+
+    _.each(this.props.otherUserStatus, eachStatus => {
+      if (notOwnFlatConversation) {
+        if (eachStatus.user_id == this.props.flat.user_id) {
+          userStatusReturned = eachStatus;
+        }
+      } else { // if own flat conversation (there would not be a messaging on own flat)
+        if (conversation && eachStatus.user_id == conversation.id) {
+          userStatusReturned = eachStatus;
+        }
+      }
+    });
+    return userStatusReturned || { online: 0 };
+  }
+
   renderUserStatusBar() {
-    console.log('in messaging, renderUserStatusBar. this.props.userStatus: ', this.props.userStatus);
-    const userProfile = this.props.flat.user.profiles ? this.getUserProfile(this.props.flat.user.profiles) : { first_name: 'Owner' };
-    const lastActive = this.props.otherUserStatus[0] ? this.getUserLastActive(this.props.otherUserStatus[0]) : '';
-    const onLine = this.props.otherUserStatus[0] ? this.props.otherUserStatus[0].online : false
-    console.log('in messaging, renderUserStatusBar. userProfile: ', userProfile);
-    // <div style={{ textAlign: 'left', color: 'gray', fontSize: '11.5px' }}>
-    // {lastActive}
-    // </div>
-    return (
-      <div className="message-show-box-user-status-bar" style={{ height: '50px', backgroundColor: 'white', border: 'none' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <div style={{ height: '50px', width: '50px', borderRadius: '50%', border: '1px solid #ccc' }}>
-            <img
-              style={{ height: 'auto', width: 'auto', borderRadius: '50%' }}
-              src={"http://res.cloudinary.com/chikarao/image/upload//w_50,h_50/" + this.props.flat.user.image + '.jpg'}
-            />
-          </div>
-          <div style={{ width: '250px', display: 'flex', flexDirection: 'column', padding: '5px 0 5px 10px', height: '50px', justifyContent: 'space-evenly' }}>
-            <div style={{ textAlign: 'left' }}>
-              {userProfile.first_name}
+    if (this.props.otherUserStatus) {
+      const userProfile = this.props.flat.user.profiles ? this.getUserProfile(this.props.flat.user.profiles) : { first_name: 'Owner' };
+      const notOwnFlatConversation = this.props.flat.user_id !== this.props.auth.id;
+      const otherUserStatus =  this.getOtherUserStatus(notOwnFlatConversation, this.props.conversation)
+      // console.log('in messaging, renderUserStatusBar. this.props.otherUserStatus, otherUserStatus: ', this.props.otherUserStatus, otherUserStatus);
+      const lastActive = otherUserStatus ? this.getUserLastActive(otherUserStatus) : '';
+      const onLine = otherUserStatus ? otherUserStatus.online : false
+
+      return (
+        <div className="message-show-box-user-status-bar" style={{ height: '50px', backgroundColor: 'white', border: 'none' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <div style={{ height: '50px', width: '50px', borderRadius: '50%', border: '1px solid #ccc', position: 'relative' }}>
+              <div className="messaging-user-status-container">
+                <p style={{ height: '10px', width: '10px', backgroundColor: this.props.otherUserStatus && otherUserStatus.online ? '#39ff14' : '#ffa812', borderRadius: '50%' }}></p>
+              </div>
+              <img
+                style={{ height: 'auto', width: 'auto', borderRadius: '50%' }}
+                src={"http://res.cloudinary.com/chikarao/image/upload//w_50,h_50/" + this.props.flat.user.image + '.jpg'}
+              />
             </div>
-            <div style={{ textAlign: 'left', color: 'gray', fontSize: '11.5px' }}>
-              {onLine ? 'Online' : 'Offline now... Please leave a message'}
+            <div style={{ width: '250px', display: 'flex', flexDirection: 'column', padding: '5px 0 5px 10px', height: '50px', justifyContent: 'space-evenly' }}>
+              <div style={{ textAlign: 'left' }}>
+                {userProfile.first_name}
+              </div>
+              <div style={{ textAlign: 'left', color: 'gray', fontSize: '11.5px' }}>
+                {onLine ? 'Online' : 'Offline now... Please leave a message'}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
 
@@ -428,9 +364,6 @@ class Messaging extends Component {
     // const conversationIsEmpty = _.isEmpty(this.props.conversation);
     if (this.props.conversations) {
       if (!this.props.currentUserIsOwner) {
-        // const conversationIsEmpty = this.props.conversation.length < 1;
-        // if (!conversationIsEmpty) {
-        // console.log('in messaging, renderMessaging. this.props.containerWidth: ', this.props.containerWidth);
         const conversationToShow = this.conversationToShow();
         // check if from show page and there is no conversation for flat
         // if both true, show 'Start one...' message; otherwise, the massage is on message page so render each message
