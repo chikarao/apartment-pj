@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 // import cloudinary from 'cloudinary-core';
 import * as actions from '../../actions';
 // import DocumentForm from '../constants/document_form';
+// NOTE: Documents imports constants/fixed_term_rental_contract etc.
 import Documents from '../constants/documents';
-// import Building from '../constants/building';
-// import SelectField from '../forms/select_field';
+
 import DocumentChoices from './document_choices';
 import AppLanguages from '../constants/app_languages';
 import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
@@ -39,6 +39,7 @@ class CreateEditDocument extends Component {
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleViewPDFClick = this.handleViewPDFClick.bind(this);
     this.handleDocumentInsertCheckBox = this.handleDocumentInsertCheckBox.bind(this);
+    this.handleFieldChoiceClick = this.handleFieldChoiceClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -49,7 +50,7 @@ class CreateEditDocument extends Component {
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
     // document.addEventListener('click', this.printMousePos);
-    // document.addEventListener('click', this.printMousePos1);
+    document.addEventListener('click', this.printMousePos1);
     if (this.props.bookingData) {
       const {
         flat,
@@ -109,10 +110,7 @@ class CreateEditDocument extends Component {
       } else { // if this.props.showSavedDocument
         // if not save document ie creating new document, call method to assign initialValues
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject });
-        // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument documentKey, initialValuesObject, flat, booking, userOwner, tenant', documentKey, initialValuesObject, flat, booking, userOwner, tenant);
-        // console.log('in create_edit_document, componentDidMount, else in if showSavedDocument, initialValuesObject', initialValuesObject);
       }
-      // console.log('in create_edit_document, componentDidMount, this.props.agreementId, initialValuesObject', this.props.agreementId, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
@@ -168,39 +166,7 @@ class CreateEditDocument extends Component {
       agreementMappedById[eachField.id] = eachField;
     });
 
-    // if (!_.isEmpty(mainDocumentInsert)) {
-    //   _.each(mainDocumentInsert.insert_fields, eachInsertField => {
-    //     // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, mainDocumentInsert, eachInsertField: ', mainDocumentInsert, eachInsertField);
-    //     if (!mainInsertFieldsObject[eachInsertField.name]) {
-    //       mainInsertFieldsObject[eachInsertField.name] = [];
-    //       mainInsertFieldsObject[eachInsertField.name].push({ name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code });
-    //     } else {
-    //       mainInsertFieldsObject[eachInsertField.name].push({ name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code });
-    //     }
-    //   });
-    // }
-    //
-    // const documentForm = Documents[this.props.documentKey].form;
-    // _.each(Object.keys(documentForm), eachPage => {
-    //   _.each(Object.keys(mainInsertFieldsObject), eachFieldKey => {
-    //     if (documentForm[eachPage][eachFieldKey]) {
-    //       _.each(mainInsertFieldsObject[eachFieldKey], eachArrayItem => {
-    //         // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, before if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
-    //         if (eachArrayItem.language_code == Documents[this.props.documentKey].baseLanguage) {
-    //           // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
-    //           initialValuesObject[eachFieldKey] = eachArrayItem.value;
-    //         } else if (eachArrayItem.language_code == this.props.documentLanguageCode) {
-    //           // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, else if language_code == baseLanguage documentForm[eachPage][eachFieldKey], eachFieldKey, eachInsertField: ', documentForm[eachPage][eachFieldKey], eachFieldKey, eachArrayItem);
-    //           initialValuesObject[documentForm[eachPage][eachFieldKey].translation_field] = eachArrayItem.value;
-    //         }
-    //       });
-    //     }
-    //   });
-    // });
-    // console.log('in create_edit_document, getMainDocument, mainDocumentInsert, mainInsertFieldsObject: ', mainDocumentInsert, mainInsertFieldsObject);
-
     return { initialValuesObject, agreementMappedByName, agreementMappedById };
-    // return { initialValuesObject, agreementMappedByName, agreementMappedById, mainInsertFieldsObject };
   }
 
   getMainDocumentInsert(documentInsertsAll) {
@@ -223,39 +189,6 @@ class CreateEditDocument extends Component {
     // if (updateCount < 2) {
       // updateCount++;
     // }
-  // }
-
-  // printMousePos1 = (event) => {
-  //   // custom version of layerX; takes position of container and
-  //   // position of click inside container and takes difference to
-  //   // get the coorindates of click inside container on page
-  //   // yielded same as layerX and layerY
-  //   const clickedElement = event.target;
-  //   const elementVal = clickedElement.getAttribute('value');
-  //   // const documentContainerArray = document.getElementById('document-background')
-  //   const documentContainerArray = document.getElementsByClassName('test-image-pdf-jpg-background');
-  //   const pageIndex = elementVal - 1;
-  //   const documentContainer = documentContainerArray[pageIndex]
-  //   // console.log('in create_edit_document, printMousePos, documentContainer', documentContainer);
-  //   const documentContainerPosTop = documentContainer.offsetTop
-  //   const documentContainerPosLeft = documentContainer.offsetLeft
-  //   console.log('in create_edit_document, printMousePos1, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
-  //   const pageX = event.pageX;
-  //   const pageY = event.pageY;
-  //   console.log('in create_edit_document, printMousePos1, pageX, pageY', pageX, pageY);
-  //   console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
-  //   const x = (pageX - documentContainerPosLeft) / 792;
-  //   const y = (pageY - documentContainerPosTop) / 1122;
-  //   this.setState({ clickedInfo: { left: x, top: y, page: elementVal, name: 'new_input', component: 'input', width: '200px', height: '30px', type: 'string', className: 'form-control', borderColor: 'lightgray' } }, () => {
-  //     console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
-  //     this.props.createDocumentElementLocally(this.state.clickedInfo);
-  //     document.removeEventListener('click', this.printMousePos1);
-  //   })
-  //   // console.log('in create_edit_document, printMousePos, event.layerX / 792', event.layerX / 792);
-  //   // console.log('in create_edit_document, printMousePos, event.layerY / 1122', event.layerY / 1122);
-  //   // document.body.textContent =
-  //   //   'clientX: ' + event.clientX +
-  //   //   ' - clientY: ' + event.clientY;
   // }
 
   renderAlert() {
@@ -668,7 +601,7 @@ renderEachDocumentField(page) {
   let fieldComponent = '';
   // if (this.props.documentFields[page]) {
     return _.map(this.props.documentFields[page], (formField, i) => {
-      // console.log('in create_edit_document, renderEachDocumentField, formField', formField);
+      console.log('in create_edit_document, renderEachDocumentField, formField', formField);
       if (formField.component == 'DocumentChoices') {
         fieldComponent = DocumentChoices;
       } else {
@@ -693,6 +626,9 @@ renderEachDocumentField(page) {
       }
       // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
       // select objects that are not DocumentChoices components
+      // Field gets the initialValue from this.props.initialValues
+      // the 'name' attribute is matched with initialValues object keys
+      // and sets initial value of the field
       if (fieldComponent == 'select') {
         return (
           <div
@@ -726,36 +662,99 @@ renderEachDocumentField(page) {
             props={fieldComponent == DocumentChoices ? { page, required: formField.required, nullRequiredField, formFields: Documents[this.props.createDocumentKey].form, charLimit: formField.charLimit, otherChoiceValues, documentKey: this.props.documentKey } : {}}
             type={formField.input_type}
             className={formField.component == 'input' ? 'form-control' : ''}
-            style={formField.component == 'input' ? { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding, textAlign: formField.choices[0].params.text_align } : {}}
+            style={formField.component == 'input'
+                    ?
+                    { position: 'absolute', top: formField.choices[0].params.top, left: formField.choices[0].params.left, width: formField.choices[0].params.width, borderColor: formField.borderColor, height: formField.choices[0].params.height, padding: formField.choices[0].params.padding, textAlign: formField.choices[0].params.text_align }
+                    :
+                    {}}
           />
         );
       }
     });
     // }
   }
+
+  printMousePos1 = (event) => {
+    // custom version of layerX; takes position of container and
+    // position of click inside container and takes difference to
+    // get the coorindates of click inside container on page
+    // yielded same as layerX and layerY
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // const documentContainerArray = document.getElementById('document-background')
+    const documentContainerArray = document.getElementsByClassName('test-image-pdf-jpg-background');
+    const pageIndex = elementVal - 1;
+    const documentContainer = documentContainerArray[pageIndex]
+    // console.log('in create_edit_document, printMousePos, documentContainer', documentContainer);
+    const documentContainerPosTop = documentContainer.offsetTop
+    const documentContainerPosLeft = documentContainer.offsetLeft
+    console.log('in create_edit_document, printMousePos1, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
+    const pageX = event.pageX;
+    const pageY = event.pageY;
+    console.log('in create_edit_document, printMousePos1, pageX, pageY', pageX, pageY);
+    console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
+    const x = (pageX - documentContainerPosLeft) / 792;
+    const y = (pageY - documentContainerPosTop) / 1122;
+    this.setState({ clickedInfo: { left: x, top: y, page: elementVal, name: 'new_input', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' } }, () => {
+      console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
+      this.props.createDocumentElementLocally(this.state.clickedInfo);
+      document.removeEventListener('click', this.printMousePos1);
+    })
+    // console.log('in create_edit_document, printMousePos, event.layerX / 792', event.layerX / 792);
+    // console.log('in create_edit_document, printMousePos, event.layerY / 1122', event.layerY / 1122);
+    // document.body.textContent =
+    //   'clientX: ' + event.clientX +
+    //   ' - clientY: ' + event.clientY;
+  }
+
   // NOT USED; Experiment for creating new input fields
   renderNewElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
+    let fieldComponent = '';
+    // if (this.props.documentFields[page]) {
+    let count = 1;
     if (!documentEmpty) {
-      const { newElement } = this.props.documents;
-      console.log('in create_edit_document, renderNewElements, newElement: ', newElement);
-      if (newElement.page == page) {
-        // console.log('in create_edit_document, renderNewElements, newElement.page, page: ', newElement.page, page);
-        return (
-          <Field
-            key={newElement.name}
-            name={newElement.name}
-            component={newElement.component}
-            // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == DocumentChoices ? { page } : {}}
-            // props={fieldComponent == DocumentChoices ? { page } : {}}
-            type={newElement.type}
-            className={newElement.component == 'input' ? 'form-control' : ''}
-            style={newElement.component == 'input' ? { position: 'absolute', top: `${newElement.top * 100}%`, left: `${newElement.left * 100}%`, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
-            // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
-          />
-        );
-      }
+      const { newElements } = this.props.documents;
+      return _.map(newElements, eachElement => {
+        if (eachElement.component == 'DocumentChoices') {
+          fieldComponent = DocumentChoices;
+        } else {
+          fieldComponent = eachElement.component;
+        }
+        console.log('in create_edit_document, renderNewElements, eachElement: ', eachElement);
+        console.log('in create_edit_document, renderNewElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
+        // <div
+        // key={count}
+        // className="create-edit-new-element"
+        // style={{ top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, zIndex: 'count' }}
+        // >
+        // </div>
+        if (eachElement.page == page) {
+          count++
+          // Field gets the initialValue from this.props.initialValues
+          // the 'name' attribute is matched with initialValues object keys
+          // and sets initial value of the field
+          return (
+              <Field
+                key={eachElement.name}
+                name={eachElement.name}
+                // setting value here does not works unless its an <input or some native element
+                // value='Bobby'
+                component={fieldComponent}
+                // pass page to custom compoenent, if component is input then don't pass
+                props={fieldComponent == DocumentChoices ? { page } : {}}
+                // props={fieldComponent == DocumentChoices ? { page } : {}}
+                type={eachElement.type}
+                className={eachElement.component == 'input' ? 'document-rectangle' : ''}
+                // className={eachElement.component == 'input' ? 'form-control' : ''}
+                // className={eachElement.className}
+                style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+                // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+              />
+
+          );
+        }
+      })
     }
     // end of if documentEmpty
   }
@@ -788,6 +787,39 @@ renderEachDocumentField(page) {
       );
     });
     // }
+  }
+
+  handleFieldChoiceClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.props.document: ', elementVal, this.props.documents);
+  }
+
+  renderEachFieldChoice() {
+    return (
+      <div
+        className="create-edit-document-template-each-choice"
+        value={'name'}
+        onClick={this.handleFieldChoiceClick}
+      >
+      Name
+      </div>
+    );
+  }
+
+  renderTemplateEditFieldBox() {
+    return (
+      <div className="create-edit-document-template-edit-field-box">
+        {this.renderEachFieldChoice()}
+      </div>
+    );
+  }
+
+  renderTemplateEditFieldAction() {
+    return (
+      <div className="create-edit-document-template-edit-action-box">
+      </div>
+    );
   }
 
   renderDocument() {
@@ -833,9 +865,9 @@ renderEachDocumentField(page) {
 
         const bilingual = Documents[this.props.createDocumentKey].translation;
         // const page = 1;
-        // {this.renderNewElements(page)}
+
         return _.map(pages, page => {
-          // console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
+          console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
           return (
             <div
               key={page}
@@ -846,6 +878,9 @@ renderEachDocumentField(page) {
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
+              {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
+              {this.props.showTemplate ? this.renderNewElements(page) : ''}
             </div>
           );
         });
@@ -941,8 +976,7 @@ renderEachDocumentField(page) {
     if (showDocumentButtons) {
       // console.log('in create_edit_document, renderDocumentButtons, this.props.agreement: ', this.props.agreement);
 
-    // this.switchCreatePDFButton(saveButtonActive, agreementHasPdf)
-      return (
+    return (
         <div className="document-floating-button-box">
           {agreementHasPdf ?
             <button
@@ -996,6 +1030,7 @@ renderEachDocumentField(page) {
           <div
               value='save'
               // submit save only if formIsDirty
+              // handleSubmit has been destructured from this.props
               onClick={saveButtonActive ?
                 handleSubmit(data =>
                   this.handleFormSubmit({
@@ -1018,9 +1053,9 @@ renderEachDocumentField(page) {
   render() {
     return (
       <div className="test-image-pdf-jpg">
-            {this.renderDocument()}
-            {this.renderAlert()}
-            {this.renderDocumentButtons()}
+        {this.renderDocument()}
+        {this.renderAlert()}
+        {this.renderDocumentButtons()}
       </div>
     );
   }
@@ -1048,18 +1083,11 @@ CreateEditDocument = reduxForm({
 })(CreateEditDocument);
 
 function mapStateToProps(state) {
+  console.log('in create_edit_document, mapStateToProps, state: ', state);
   // const initialValuesObjectEmpty = _.isEmpty(state.documents.initialValuesObject);
   if (state.bookingData.fetchBookingData) {
     let initialValues = {};
     // bookingData.flat gives access to flat.building.inspections
-    // const flat = state.bookingData.flat;
-    // const booking = state.bookingData.fetchBookingData;
-    // const userOwner = state.bookingData.user;
-    // const tenant = state.bookingData.fetchBookingData.user;
-    // const appLanguageCode = state.languages.appLanguageCode;
-    // const documentLanguageCode = state.languages.documentLanguageCode;
-    // const assignments = state.bookingData.assignments;
-    // const contracts = state.bookingData.contracts;
     // // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
     // // setCreateDocumentKey action fired and app state set
     // // define new documents in constants/documents.js by identifying
@@ -1070,30 +1098,17 @@ function mapStateToProps(state) {
     const documentTranslations = state.documents.documentTranslations[documentKey];
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
-    // const values = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
-    // initialValues = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode });
     const agreements = state.bookingData.fetchBookingData.agreements
     initialValues = state.documents.initialValuesObject;
-    // const initialValues = { address: '1 Never never land' }
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
-    console.log('in create_edit_document, mapStateToProps, state: ', state);
-    console.log('in create_edit_document, mapStateToProps, documentKey, documentFields, documentTranslations, initialValues: ', documentKey, documentFields, documentTranslations, initialValues);
-    // console.log('in create_edit_document, mapStateToProps, documentTranslations: ', documentTranslations);
-    // console.log('in create_edit_document, mapStateToProps state:', state);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
       errorMessage: state.auth.error,
       auth: state.auth,
-      // appLanguageCode: state.languages.appLanguageCode,
-      // documentLanguageCode: state.languages.documentLanguageCode,
       bookingData: state.bookingData.fetchBookingData,
-      // userOwner: state.bookingData.user,
-      // tenant: state.bookingData.fetchBookingData.user,
-      // initialValues: state.documents.initialValuesObject,
       initialValues,
-      // initialValues: testObject,
       documents: state.documents,
       requiredFieldsNull: state.bookingData.requiredFields,
       createDocumentKey: state.documents.createDocumentKey,

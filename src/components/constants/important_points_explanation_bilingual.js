@@ -4,6 +4,8 @@ import Amenities from './amenities.js';
 import FlatForDocuments from '../constants/flat_for_documents.js';
 import Building from './building.js';
 
+// NOTE: imported into /contants/documents.js
+
 // constant file referred to as 'model'; record refers to backend records flat, profile, user
 // fieldset for inputs takes absolute positioning
 // fieldset form-group-document, takes params.top, params.left, params.width

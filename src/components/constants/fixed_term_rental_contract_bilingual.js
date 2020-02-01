@@ -1,5 +1,7 @@
 import Building from './building.js'
 
+// NOTE: imported into /contants/documents.js
+
 const FixedTermRentalContractBilingual = {
   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
   // fieldset for inputs takes absolute positioning
@@ -28,9 +30,9 @@ const FixedTermRentalContractBilingual = {
                       input_type: 'string',
                     }
                   }
-                },
-                required: true
-              },
+           },
+          required: true
+        },
 
         name: {
             name: 'name',
@@ -53,15 +55,16 @@ const FixedTermRentalContractBilingual = {
                       }
                     }
                   },
-                  required: true,
-                  // when there is a translation available for key, use below
-                  // translation record is the array of building languages associated with flat.building
-                  translation_record: 'building_languages',
-                  // name is the column in model building language
-                  translation_column: 'name',
-                  // translation field is the field in the document that takes the translation
-                  translation_field: 'name_translation'
-              },
+            required: true,
+            // when there is a translation available for key, use below
+            // translation record is the array of building languages associated with flat.building
+            translation_record: 'building_languages',
+            // name is the column in model building language
+            translation_column: 'name',
+            // translation field is the field in the document that takes the translation
+            translation_field: 'name_translation',
+            translation_object_key: 'name'
+          },
 
           name_translation: {
               name: 'name_translation',
@@ -152,219 +155,219 @@ const FixedTermRentalContractBilingual = {
             },
 
 
-      construction: {
-        name: 'construction',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'Wooden', top: '25%', left: '55.5%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } },
-          1: { params: { val: 'inputFieldValue', top: '30.3%', left: '57.6%', width: '10%', height: '1.8%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' }, selectChoices: Building.construction.choices }
+        construction: {
+          name: 'construction',
+          input_type: 'string',
+          choices: {
+            0: { params: { val: 'Wooden', top: '25%', left: '55.5%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } },
+            1: { params: { val: 'inputFieldValue', top: '30.3%', left: '57.6%', width: '10%', height: '1.8%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' }, selectChoices: Building.construction.choices }
+          },
+          box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
+          className: 'form-control-document',
+          height: '23px',
+          component: 'DocumentChoices',
+          required: true,
+          // hybrid_field if there are multipe types of fields eg button and input
+          hybrid_field: true,
         },
-        box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'cent' } },
-        className: 'form-control-document',
-        height: '23px',
-        component: 'DocumentChoices',
-        required: true,
-        // hybrid_field if there are multipe types of fields eg button and input
-        hybrid_field: true,
-      },
 
-      floors: {
-            name: 'floors',
+        floors: {
+              name: 'floors',
+              input_type: 'string',
+              choices: {
+                0: { params: { val: 'inputFieldValue', top: '32%', left: '63%', width: '4%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+              },
+              className: 'form-control-document',
+              component: 'DocumentChoices'
+            },
+
+        year_built: {
+          name: 'year_built',
+          input_type: 'string',
+          choices: {
+            0: { params: { val: 'inputFieldValue', top: '29.1%', left: '81%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        units: {
+          name: 'units',
+          input_type: 'string',
+          choices: {
+            0: { params: { val: 'inputFieldValue', top: '35.5%', left: '63.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        last_renovation_year: {
+          name: 'last_renovation_year',
+          input_type: 'string',
+          choices: {
+            0: { params: { val: 'inputFieldValue', top: '33.3%', left: '77.1%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        unit: {
+          name: 'unit',
+          input_type: 'string',
+          choices: {
+            0: { params: { val: 'inputFieldValue', top: '39.6%', left: '35%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        rooms: {
+            name: 'rooms',
             input_type: 'string',
             choices: {
-              0: { params: { val: 'inputFieldValue', top: '32%', left: '63%', width: '4%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+                0: { params: { val: 'inputFieldValue', top: '39.6%', left: '59%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+              },
+              className: 'form-control-document',
+              component: 'DocumentChoices'
             },
-            className: 'form-control-document',
-            component: 'DocumentChoices'
-          },
 
-      year_built: {
-        name: 'year_built',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'inputFieldValue', top: '29.1%', left: '81%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
+        layout: {
+            name: 'layout',
+            input_type: 'string',
+            choices: {
+                0: { params: { val: 'LDK', top: '39.6%', left: '64.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+                1: { params: { val: 'DK', top: '39.6%', left: '69.4%', width: '4%', class_name: 'document-rectangle', input_type: 'button' } },
+                2: { params: { val: 'K', top: '39.6%', left: '73.4%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
+                3: { params: { val: 'One Room', top: '39.6%', left: '76.5%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
+              },
+              box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
+              className: 'form-control-document',
+              height: '23px',
+              component: 'DocumentChoices'
+              // borderColor: 'blue'
+            },
 
-      units: {
-        name: 'units',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'inputFieldValue', top: '35.5%', left: '63.5%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
+        size: {
+            name: 'size',
+            input_type: 'string',
+            choices: {
+                0: { params: { val: 'inputFieldValue', top: '42.7%', left: '46%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+              },
+              className: 'form-control-document',
+              component: 'DocumentChoices'
+            },
 
-      last_renovation_year: {
-        name: 'last_renovation_year',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'inputFieldValue', top: '33.3%', left: '77.1%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
+        balcony_size: {
+            name: 'balcony_size',
+            input_type: 'string',
+            choices: {
+                0: { params: { val: 'inputFieldValue', top: '42.5%', left: '79.7%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
+              },
+              className: 'form-control-document',
+              component: 'DocumentChoices'
+            },
 
-      unit: {
-        name: 'unit',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'inputFieldValue', top: '39.6%', left: '35%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
 
-      rooms: {
-          name: 'rooms',
+        toilet: {
+          name: 'toilet',
           input_type: 'string',
           choices: {
-              0: { params: { val: 'inputFieldValue', top: '39.6%', left: '59%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-            },
-            className: 'form-control-document',
-            component: 'DocumentChoices'
+            0: { params: { val: 'Dedicated Flushing Toilet', top: '45.5%', left: '58.4%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+            1: { params: { val: 'Dedicated Non-flushing Toilet', top: '45.5%', left: '63.7%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
+            2: { params: { val: 'Shared Flushing Toilet', top: '45.5%', left: '77%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
+            3: { params: { val: 'Shared Non-flushing Toilet', top: '45.5%', left: '82%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } }
           },
+          className: 'form-control-document',
+          height: '23px',
+          component: 'DocumentChoices'
+          // borderColor: 'blue'
+        },
 
-      layout: {
-          name: 'layout',
-          input_type: 'string',
+        // !!!!!!bath is assuming if there is a shower, there is a bathingroom
+        bath_tub: {
+          name: 'bath_tub',
+          input_type: 'boolean',
           choices: {
-              0: { params: { val: 'LDK', top: '39.6%', left: '64.3%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-              1: { params: { val: 'DK', top: '39.6%', left: '69.4%', width: '4%', class_name: 'document-rectangle', input_type: 'button' } },
-              2: { params: { val: 'K', top: '39.6%', left: '73.4%', width: '3%', class_name: 'document-rectangle', input_type: 'button' } },
-              3: { params: { val: 'One Room', top: '39.6%', left: '76.5%', width: '10%', class_name: 'document-rectangle', input_type: 'button' } }
-            },
-            box: { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center' } },
-            className: 'form-control-document',
-            height: '23px',
-            component: 'DocumentChoices'
-            // borderColor: 'blue'
+            0: { valName: 'Y', params: { val: true, top: '50.9%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '50.9%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
           },
+          className: 'form-control-document',
+          component: 'DocumentChoices',
+          // attributes; keep just in case
+          attributes: { names: ['bath_tub'], input_type: 'boolean' }
+        },
 
-      size: {
-          name: 'size',
-          input_type: 'string',
+        shower: {
+          name: 'shower',
+          input_type: 'boolean',
           choices: {
-              0: { params: { val: 'inputFieldValue', top: '42.7%', left: '46%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-            },
-            className: 'form-control-document',
-            component: 'DocumentChoices'
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '53.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '53.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
           },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
 
-      balcony_size: {
-          name: 'balcony_size',
-          input_type: 'string',
+        wash_basin: {
+          name: 'wash_basin',
+          input_type: 'boolean',
           choices: {
-              0: { params: { val: 'inputFieldValue', top: '42.5%', left: '79.7%', width: '5%', class_name: 'document-rectangle', input_type: 'string', text_align: 'right' } },
-            },
-            className: 'form-control-document',
-            component: 'DocumentChoices'
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '56.7%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '56.7%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
           },
-
-
-      toilet: {
-        name: 'toilet',
-        input_type: 'string',
-        choices: {
-          0: { params: { val: 'Dedicated Flushing Toilet', top: '45.5%', left: '58.4%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-          1: { params: { val: 'Dedicated Non-flushing Toilet', top: '45.5%', left: '63.7%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } },
-          2: { params: { val: 'Shared Flushing Toilet', top: '45.5%', left: '77%', width: '5%', class_name: 'document-rectangle', input_type: 'button' } },
-          3: { params: { val: 'Shared Non-flushing Toilet', top: '45.5%', left: '82%', width: '7%', class_name: 'document-rectangle', input_type: 'button' } }
+          className: 'form-control-document',
+          component: 'DocumentChoices'
         },
-        className: 'form-control-document',
-        height: '23px',
-        component: 'DocumentChoices'
-        // borderColor: 'blue'
+
+        washer_dryer_area: {
+          name: 'washer_dryer_area',
+          input_type: 'boolean',
+          choices: {
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '59.4%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '59.4%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        hot_water: {
+          name: 'hot_water',
+          input_type: 'boolean',
+          choices: {
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '62.3%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '62.3%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        kitchen_grill: {
+          name: 'kitchen_grill',
+          input_type: 'boolean',
+          choices: {
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '65.1%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '65.1%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
+        },
+
+        parcel_delivery_box: {
+          name: 'parcel_delivery_box',
+          input_type: 'boolean',
+          choices: {
+            // add 1.5% to top
+            0: { valName: 'Y', params: { val: true, top: '67.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
+            1: { valName: 'N', params: { val: false, top: '67.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
+          },
+          className: 'form-control-document',
+          component: 'DocumentChoices'
       },
-
-      // !!!!!!bath is assuming if there is a shower, there is a bathingroom
-      bath_tub: {
-        name: 'bath_tub',
-        input_type: 'boolean',
-        choices: {
-          0: { valName: 'Y', params: { val: true, top: '50.9%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '50.9%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices',
-        // attributes; keep just in case
-        attributes: { names: ['bath_tub'], input_type: 'boolean' }
-      },
-
-      shower: {
-        name: 'shower',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '53.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '53.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
-
-      wash_basin: {
-        name: 'wash_basin',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '56.7%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '56.7%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
-
-      washer_dryer_area: {
-        name: 'washer_dryer_area',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '59.4%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '59.4%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
-
-      hot_water: {
-        name: 'hot_water',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '62.3%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '62.3%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
-
-      kitchen_grill: {
-        name: 'kitchen_grill',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '65.1%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '65.1%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-      },
-
-      parcel_delivery_box: {
-        name: 'parcel_delivery_box',
-        input_type: 'boolean',
-        choices: {
-          // add 1.5% to top
-          0: { valName: 'Y', params: { val: true, top: '67.8%', left: '53.45%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } },
-          1: { valName: 'N', params: { val: false, top: '67.8%', left: '57.15%', width: '2.7%', class_name: 'document-circle', input_type: 'button' } }
-        },
-        className: 'form-control-document',
-        component: 'DocumentChoices'
-    },
 
       ac: {
         name: 'ac',
@@ -437,7 +440,6 @@ const FixedTermRentalContractBilingual = {
         className: 'form-control-document',
         component: 'DocumentChoices'
       },
-
 
       lock_key: {
         name: 'lock_key',
@@ -525,8 +527,7 @@ const FixedTermRentalContractBilingual = {
         component: 'DocumentChoices'
         // borderColor: 'blue'
       },
-
-  },
+  }, // end of 1
   2: {
       parking_included: {
         name: 'parking_included',

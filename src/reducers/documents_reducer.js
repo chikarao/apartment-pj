@@ -18,7 +18,8 @@ export default function (state = {
   dirtyFieldExists: false,
   agreementMappedById: {},
   agreementMappedByName: {},
-  documentTranslations: {}
+  documentTranslations: {},
+  newElements: []
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -26,7 +27,7 @@ export default function (state = {
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY:
       // console.log('in booking reducer, state: ', state);
-      return { ...state, newElement: action.payload };
+      return { ...state, newElements: [...state.newElements, action.payload] };
 
     case SET_CREATE_DOCUMENT_KEY:
       // console.log('in booking reducer, state: ', state);

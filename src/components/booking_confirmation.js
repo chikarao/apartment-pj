@@ -53,6 +53,8 @@ class BookingConfirmation extends Component {
       typingTimer: 0,
       messageSender: '',
       showTemplateCreate: false,
+      showTemplate: false,
+      editTemplate: false,
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -468,7 +470,7 @@ class BookingConfirmation extends Component {
     // Then set relevant state to show own document
     this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
       this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true });
+        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
         this.props.selectedAgreementId(elementName);
         // this.setState({ showDocument: true });
       });
@@ -1233,6 +1235,7 @@ renderDocument() {
             agreement={agreementArray[0]}
             showDocumentInsertBox={showDocumentInsertBox}
             showOwnUploadedDocument={this.state.showOwnUploadedDocument}
+            showTemplate={this.state.showTemplate}
           />
         </div>
       );
@@ -1384,10 +1387,10 @@ renderConversationCreateForm() {
 // by clicking 'Upload Your Document' which will be saved in 'Saved Document';
 // users can edit it by a) changing the name of the document
 // b) deleting it and/or c) uploading a new one
-// 5) Upload own template to place fields on it  
+// 5) Upload own template to place fields on it
 
 render() {
-  console.log('in booking confirmation,  render, this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument: ', this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument);
+  console.log('in booking confirmation,  render, this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate: ', this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate);
   return (
     <div>
       {this.renderReviewEditModal()}

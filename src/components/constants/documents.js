@@ -72,13 +72,14 @@ const Documents =
     },
 
     // Key kept in global constants
-    // [] allows variables to be used in setting the key 
+    // [] allows variables to be used in setting the key
     [globalConstants.ownUploadedDocumentKey]: {
       form: '',
       en: '',
       jp: '',
       file: '',
       method: '',
+      allowDocumentInserts: false,
       // form: ImportantPointsExplanationBilingual,
       // en: 'Important Points Explanation Form Bilingual',
       // jp: '重要事項説明書 バイリンガル',
@@ -88,7 +89,6 @@ const Documents =
       // to indicate form is bilingual and needs translations from props
       // translation: true,
       // baseLanguage: 'jp',
-      allowDocumentInserts: false
       // method: '',
       // type: 'fixed_term_rental_contract'
     },

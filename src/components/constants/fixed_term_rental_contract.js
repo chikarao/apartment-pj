@@ -1,5 +1,7 @@
 import Building from './building.js'
 
+// NOTE: imported into /contants/documents.js
+
 const FixedTermRentalContract = {
   // flat_building_name: { top: '204px', left: '-120px', component: 'input', borderColor: 'blue', size: 'medium' }
   // fieldset for inputs takes absolute positioning
