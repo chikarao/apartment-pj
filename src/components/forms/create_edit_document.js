@@ -54,8 +54,9 @@ class CreateEditDocument extends Component {
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
-    // document.addEventListener('click', this.printMousePos);
-    document.addEventListener('click', this.printMousePos1);
+    document.addEventListener('click', this.printMousePos);
+    // document.getElementById('document-background').addEventListener('click', this.printMousePos);
+    console.log('in create_edit_document, componentDidMount, document', document);
     if (this.props.bookingData) {
       const {
         flat,
@@ -73,7 +74,6 @@ class CreateEditDocument extends Component {
       } = this.props;
       const documentFields = Documents[documentKey].form
       let initialValuesObject = {};
-      // console.log('in create_edit_document, componentDidMount, flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode', flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode);
       // const documentKey = state.documents.createDocumentKey;
       // if showing a saved document (props set in booking_confirmation.js)
       const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
@@ -118,6 +118,9 @@ class CreateEditDocument extends Component {
       }
       this.props.setInitialValuesObject(initialValuesObject);
     }
+  }
+
+  componentDidUpdate() {
   }
 
   countMainDocumentInserts(agreement) {
@@ -679,48 +682,39 @@ renderEachDocumentField(page) {
     // }
   }
 
-  printMousePos1 = (event) => {
+  printMousePos = (event) => {
     // custom version of layerX; takes position of container and
     // position of click inside container and takes difference to
     // get the coorindates of click inside container on page
     // yielded same as layerX and layerY
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // const documentContainerArray = document.getElementById('document-background')
-    const documentContainerArray = document.getElementsByClassName('test-image-pdf-jpg-background');
-    const pageIndex = elementVal - 1;
-    // const documentContainer = documentContainerArray[pageIndex]
-    // console.log('in create_edit_document, printMousePos, documentContainer', documentContainer);
-    // const documentContainerPosTop = documentContainer.offsetTop
-    // const documentContainerPosLeft = documentContainer.offsetLeft
-    // console.log('in create_edit_document, printMousePos1, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
-    // const pageX = event.pageX;
-    // const pageY = event.pageY;
-    const clientX = event.clientX;
-    const clientY = event.clientY;
-    const parentRect = event.target.getBoundingClientRect()
-    console.log('in create_edit_document, printMousePos1, clientX, clientY, parentRect', clientX, clientY, parentRect);
-    // element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
-
-    // console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
-    // const x = (pageX - documentContainerPosLeft) / 792;
-    // const y = (pageY - documentContainerPosTop) / 1122;
-    const x = ((clientX - parentRect.left) / (parentRect.right - parentRect.left)) * 100;
-    const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
-    console.log('in create_edit_document, printMousePos1, x, y', x, y);
-    this.setState({
-      templateElementCount: this.state.templateElementCount + 1,
-      clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
-    }, () => {
-      // console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
-      this.props.createDocumentElementLocally(this.state.clickedInfo);
-      document.removeEventListener('click', this.printMousePos1);
-    })
-    // console.log('in create_edit_document, printMousePos, event.layerX / 792', event.layerX / 792);
-    // console.log('in create_edit_document, printMousePos, event.layerY / 1122', event.layerY / 1122);
-    // document.body.textContent =
-    //   'clientX: ' + event.clientX +
-    //   ' - clientY: ' + event.clientY;
+    const background = document.getElementById('document-background')
+    console.log('in create_edit_document, printMousePos1, background, event.target', background, event.target);
+    // const documentContainerArray = document.getElementsByClassName('image-pdf-jpg-background');
+    // const pageIndex = elementVal - 1;
+    // get x and y positions in PX of cursor in browser view port (not page or parent)
+    if (clickedElement.id === 'document-background') {
+      const clientX = event.clientX;
+      const clientY = event.clientY;
+      // get dimensions top, bottom, left and right of parent in view port (each template document page)
+      const parentRect = event.target.getBoundingClientRect()
+      // console.log('in create_edit_document, printMousePos1, clientX, clientY, parentRect', clientX, clientY, parentRect);
+      // Get x and y PERCENTAGES (xx.xx%) inside the parent (template document pages)
+      const x = ((clientX - parentRect.left) / (parentRect.right - parentRect.left)) * 100;
+      const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
+      // console.log('in create_edit_document, printMousePos1, x, y', x, y);
+      // Set state with count of elements and new element in app state in state.templateElements
+      this.setState({
+        templateElementCount: this.state.templateElementCount + 1,
+        clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
+      }, () => {
+        // console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
+        this.props.createDocumentElementLocally(this.state.clickedInfo);
+        // remove listener
+        // document.removeEventListener('click', this.printMousePos1);
+      });
+    }
   }
 
   handleTemplateElementCheckClick(event) {
@@ -1076,7 +1070,7 @@ changeElementSize(element) {
               key={page}
               value={page}
               id="document-background"
-              className="test-image-pdf-jpg-background"
+              className="image-pdf-jpg-background"
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}

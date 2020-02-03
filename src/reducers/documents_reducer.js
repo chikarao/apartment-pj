@@ -27,8 +27,8 @@ export default function (state = {
   switch (action.type) {
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY:
-    // console.log('in booking reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, state.templateElements: ', state.templateElements);
-    // console.log('in booking reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+    console.log('in booking reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, state.templateElements: ', state.templateElements);
+    console.log('in booking reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
       return { ...state, templateElements: [...state.templateElements, action.payload] };
 
     case UPDATE_DOCUMENT_ELEMENT_LOCALLY: {
