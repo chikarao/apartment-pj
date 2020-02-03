@@ -689,22 +689,30 @@ renderEachDocumentField(page) {
     // const documentContainerArray = document.getElementById('document-background')
     const documentContainerArray = document.getElementsByClassName('test-image-pdf-jpg-background');
     const pageIndex = elementVal - 1;
-    const documentContainer = documentContainerArray[pageIndex]
+    // const documentContainer = documentContainerArray[pageIndex]
     // console.log('in create_edit_document, printMousePos, documentContainer', documentContainer);
-    const documentContainerPosTop = documentContainer.offsetTop
-    const documentContainerPosLeft = documentContainer.offsetLeft
-    console.log('in create_edit_document, printMousePos1, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
-    const pageX = event.pageX;
-    const pageY = event.pageY;
-    console.log('in create_edit_document, printMousePos1, pageX, pageY', pageX, pageY);
-    console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
-    const x = (pageX - documentContainerPosLeft) / 792;
-    const y = (pageY - documentContainerPosTop) / 1122;
+    // const documentContainerPosTop = documentContainer.offsetTop
+    // const documentContainerPosLeft = documentContainer.offsetLeft
+    // console.log('in create_edit_document, printMousePos1, documentContainerPosTop', documentContainerPosTop, documentContainerPosLeft);
+    // const pageX = event.pageX;
+    // const pageY = event.pageY;
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+    const parentRect = event.target.getBoundingClientRect()
+    console.log('in create_edit_document, printMousePos1, clientX, clientY, parentRect', clientX, clientY, parentRect);
+    // element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
+
+    // console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
+    // const x = (pageX - documentContainerPosLeft) / 792;
+    // const y = (pageY - documentContainerPosTop) / 1122;
+    const x = ((clientX - parentRect.left) / (parentRect.right - parentRect.left)) * 100;
+    const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
+    console.log('in create_edit_document, printMousePos1, x, y', x, y);
     this.setState({
       templateElementCount: this.state.templateElementCount + 1,
-      clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: x, top: y, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
+      clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
     }, () => {
-      console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
+      // console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
       this.props.createDocumentElementLocally(this.state.clickedInfo);
       document.removeEventListener('click', this.printMousePos1);
     })
@@ -719,23 +727,23 @@ renderEachDocumentField(page) {
     const clickedElement = event.target;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value')
-    console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
-    console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
+    // console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
+    // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
     if (!this.state.selectedTemplateElementArray.includes(elementVal)) {
       this.setState({ selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal] }, () => {
-        console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     } else {
       const newArray = [...this.state.selectedTemplateElementArray]
       const index = newArray.indexOf(elementVal);
       newArray.splice(index, 1);
       this.setState({ selectedTemplateElementArray: newArray }, () => {
-        console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     }
   }
 
-  dragElement(element, parentRect) {
+  dragElement(element, parentRect, callback) {
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
@@ -769,7 +777,7 @@ renderEachDocumentField(page) {
       // element.offsetTop is the number of pixels from the top of the closest relatively positioned parent element.
       // element.style.top = (element.offsetTop - pos2) + "px";
       // element.style.left = (element.offsetLeft - pos1) + "px";
-
+      // In percentages; Assign to element.
       element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
       element.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
       console.log('in create_edit_document, dragElement, element, ', element);
@@ -779,6 +787,11 @@ renderEachDocumentField(page) {
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
+
+      const updatedElementObject = { id: element.id.split('-')[2], left: element.style.left, top: element.style.top };
+      console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
+      console.log('in create_edit_document, dragElement, closeDragElement, updatedElementObject, ', updatedElementObject);
+      callback(updatedElementObject)
     }
 }
 
@@ -833,7 +846,10 @@ changeElementSize(element) {
     // const parentElement = element.parentElement;
     const parentRect = element.parentElement.getBoundingClientRect()
     console.log('in create_edit_document, handleTemplateElementMoveClick, parentRect ', parentRect);
-    this.dragElement(element, parentRect);
+    const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
+    // call dragElement and pass in the dragged element, the parent dimensions,
+    // and the action to update the element in app state
+    this.dragElement(element, parentRect, callback);
   }
 
   handleTemplateElementChangeSizeClick(event) {
@@ -843,7 +859,6 @@ changeElementSize(element) {
     const elementVal = clickedElement.getAttribute('value');
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, elementVal, ', elementVal);
     const element = document.getElementById(`template-element-${elementVal}`);
-    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, element, ', element);
   }
 
   // NOT USED; Experiment for creating new input fields
@@ -853,8 +868,8 @@ changeElementSize(element) {
     // if (this.props.documentFields[page]) {
     let count = 1;
     if (!documentEmpty) {
-      const { newElements } = this.props.documents;
-      return _.map(newElements, eachElement => {
+      const { templateElements } = this.props.documents;
+      return _.map(templateElements, eachElement => {
         if (eachElement.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
         } else {
@@ -882,6 +897,7 @@ changeElementSize(element) {
           // <i class="fas fa-arrows-alt"></i>
           // <i class="fas fa-expand-arrows-alt"></i>
           // <input type="checkbox" />
+          console.log('in create_edit_document, renderTemplateElements, eachElement.id.includes(template-element), ', eachElement.id.includes('template-element'));
           const selected = this.state.selectedTemplateElementArray.includes(eachElement.id)
           if (editTemplate) {
             return (
@@ -889,7 +905,7 @@ changeElementSize(element) {
                 key={eachElement.id}
                 id={`template-element-${eachElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: `${height + 23}px`, }}
+                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${height + 23}px`, }}
               >
                 <Field
                   key={eachElement.name}
