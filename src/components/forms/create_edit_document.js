@@ -54,8 +54,8 @@ class CreateEditDocument extends Component {
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
-    document.addEventListener('click', this.printMousePos);
-    // document.getElementById('document-background').addEventListener('click', this.printMousePos);
+    document.addEventListener('click', this.getMousePosition);
+    // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
     console.log('in create_edit_document, componentDidMount, document', document);
     if (this.props.bookingData) {
       const {
@@ -682,7 +682,7 @@ renderEachDocumentField(page) {
     // }
   }
 
-  printMousePos = (event) => {
+  getMousePosition = (event) => {
     // custom version of layerX; takes position of container and
     // position of click inside container and takes difference to
     // get the coorindates of click inside container on page
@@ -690,7 +690,7 @@ renderEachDocumentField(page) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const background = document.getElementById('document-background')
-    console.log('in create_edit_document, printMousePos1, background, event.target', background, event.target);
+    console.log('in create_edit_document, getMousePosition1, background, event.target', background, event.target);
     // const documentContainerArray = document.getElementsByClassName('image-pdf-jpg-background');
     // const pageIndex = elementVal - 1;
     // get x and y positions in PX of cursor in browser view port (not page or parent)
@@ -699,20 +699,20 @@ renderEachDocumentField(page) {
       const clientY = event.clientY;
       // get dimensions top, bottom, left and right of parent in view port (each template document page)
       const parentRect = event.target.getBoundingClientRect()
-      // console.log('in create_edit_document, printMousePos1, clientX, clientY, parentRect', clientX, clientY, parentRect);
+      // console.log('in create_edit_document, getMousePosition1, clientX, clientY, parentRect', clientX, clientY, parentRect);
       // Get x and y PERCENTAGES (xx.xx%) inside the parent (template document pages)
       const x = ((clientX - parentRect.left) / (parentRect.right - parentRect.left)) * 100;
       const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
-      // console.log('in create_edit_document, printMousePos1, x, y', x, y);
+      // console.log('in create_edit_document, getMousePosition1, x, y', x, y);
       // Set state with count of elements and new element in app state in state.templateElements
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
-        clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
+        clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '5%', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
       }, () => {
-        // console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
+        // console.log('in create_edit_document, getMousePosition1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
         this.props.createDocumentElementLocally(this.state.clickedInfo);
         // remove listener
-        // document.removeEventListener('click', this.printMousePos1);
+        // document.removeEventListener('click', this.getMousePosition1);
       });
     }
   }
@@ -737,7 +737,7 @@ renderEachDocumentField(page) {
     }
   }
 
-  dragElement(element, parentRect, callback) {
+  dragElement(element, parentRect, callback, move) {
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
@@ -762,18 +762,31 @@ renderEachDocumentField(page) {
       e = e || window.event;
       e.preventDefault();
       // calculate the new cursor position:
+      // pos 1 and 2 are deltas from the last round pos 3 and 4
       pos1 = pos3 - e.clientX;
       pos2 = pos4 - e.clientY;
+      // set this round to use for next round in pos 1 and 2
       pos3 = e.clientX;
       pos4 = e.clientY;
-      console.log('in create_edit_document, dragElement, pos3, pos4, ', pos3, pos4);
+      console.log('in create_edit_document, dragElement, pos3, pos4, parentRect, move ', pos3, pos4, parentRect, move);
       // set the element's new position:
       // element.offsetTop is the number of pixels from the top of the closest relatively positioned parent element.
       // element.style.top = (element.offsetTop - pos2) + "px";
       // element.style.left = (element.offsetLeft - pos1) + "px";
       // In percentages; Assign to element.
-      element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
-      element.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
+      if (move) {
+        element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
+        element.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
+      } else {
+        const originalWidth = parseFloat(element.style.width);
+        const originalHeight = parseFloat(element.style.height);
+        console.log('in create_edit_document, dragElement, element, originalWidth, originalHeight, ', element, originalWidth, originalHeight);
+        const pos2Percentage = (pos2 / parentRect.height) * 100
+        const pos1Percentage = (pos1 / parentRect.width) * 100
+        console.log('in create_edit_document, dragElement, pos2Percentage, pos1Percentage, ', pos2Percentage, pos1Percentage);
+        element.style.height = `${(originalHeight - pos2Percentage)}%`;
+        element.style.width = `${(originalWidth - pos1Percentage)}%`;
+      }
       console.log('in create_edit_document, dragElement, element, ', element);
     }
 
@@ -781,55 +794,59 @@ renderEachDocumentField(page) {
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
-
-      const updatedElementObject = { id: element.id.split('-')[2], left: element.style.left, top: element.style.top };
-      console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
-      console.log('in create_edit_document, dragElement, closeDragElement, updatedElementObject, ', updatedElementObject);
+      let updatedElementObject = null
+      if (move) {
+        const updatedElementObject = { id: element.id.split('-')[2], left: element.style.left, top: element.style.top };
+        console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
+        console.log('in create_edit_document, dragElement, closeDragElement, updatedElementObject, ', updatedElementObject);
+      } else {
+        const updatedElementObject = { id: element.id.split('-')[2], width: element.style.width, height: element.style.height };
+      }
       callback(updatedElementObject)
     }
 }
 
-changeElementSize(element) {
-  let pos1 = 0;
-  let pos2 = 0;
-  let pos3 = 0;
-  let pos4 = 0;
-
-  // element.onmousedown = dragMouseDown;
-  dragMouseDown();
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    // element.style.top = (element.offsetTop - pos2) + "px";
-    // element.style.left = (element.offsetLeft - pos1) + "px";
-    element.style.width = pos2 + "px";
-    element.style.height = pos1 + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
+// changeElementSize(element) {
+//   let pos1 = 0;
+//   let pos2 = 0;
+//   let pos3 = 0;
+//   let pos4 = 0;
+//
+//   // element.onmousedown = dragMouseDown;
+//   dragMouseDown();
+//
+//   function dragMouseDown(e) {
+//     e = e || window.event;
+//     e.preventDefault();
+//     // get the mouse cursor position at startup:
+//     pos3 = e.clientX;
+//     pos4 = e.clientY;
+//     document.onmouseup = closeDragElement;
+//     // call a function whenever the cursor moves:
+//     document.onmousemove = elementDrag;
+//   }
+//
+//   function elementDrag(e) {
+//     e = e || window.event;
+//     e.preventDefault();
+//     // calculate the new cursor position:
+//     pos1 = pos3 - e.clientX;
+//     pos2 = pos4 - e.clientY;
+//     pos3 = e.clientX;
+//     pos4 = e.clientY;
+//     // set the element's new position:
+//     // element.style.top = (element.offsetTop - pos2) + "px";
+//     // element.style.left = (element.offsetLeft - pos1) + "px";
+//     element.style.width = pos2 + "px";
+//     element.style.height = pos1 + "px";
+//   }
+//
+//   function closeDragElement() {
+//     // stop moving when mouse button is released:
+//     document.onmouseup = null;
+//     document.onmousemove = null;
+//   }
+// }
 
   handleTemplateElementMoveClick(event) {
     const clickedElement = event.target;
@@ -843,7 +860,7 @@ changeElementSize(element) {
     const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
-    this.dragElement(element, parentRect, callback);
+    this.dragElement(element, parentRect, callback, true);
   }
 
   handleTemplateElementChangeSizeClick(event) {
@@ -853,6 +870,9 @@ changeElementSize(element) {
     const elementVal = clickedElement.getAttribute('value');
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, elementVal, ', elementVal);
     const element = document.getElementById(`template-element-${elementVal}`);
+    const parentRect = element.parentElement.getBoundingClientRect()
+    const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
+    this.dragElement(element, parentRect, callback, false);
   }
 
   // NOT USED; Experiment for creating new input fields
@@ -880,9 +900,25 @@ changeElementSize(element) {
         if (eachElement.page == page) {
           const editTemplate = true;
           const width = parseInt(eachElement.width, 10)
-          const height = parseInt(eachElement.height, 10)
-          console.log('in create_edit_document, renderTemplateElements, width: ', width);
+          // const height = parseInt(eachElement.height, 10)
           count++
+          // tabWidth and height in px
+          const tabWidth = 70;
+          const tabHeight = 23;
+          const tabRearSpace = 5;
+          const background = document.getElementById('document-background');
+          const tabPercentOfContainerW = (tabWidth / background.getBoundingClientRect().width) * 100
+          const tabPercentOfContainerH = (tabHeight / background.getBoundingClientRect().height) * 100
+          const tabRearSpacePercentOfContainerW = (tabRearSpace / background.getBoundingClientRect().width) * 100
+          const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
+          const tabLeftMarginPx = eachElementWidthPx - tabWidth - tabRearSpace;
+          const inputHeightPercentage = (parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH)) * 100
+          // const containerHeightPx = tabWidth + eachElement.width;
+          // const containerWidthPx = tabHeight + eachElement.height;
+
+          console.log('in create_edit_document, renderTemplateElements, background, background.getBoundingClientRect: ', background, background.getBoundingClientRect());
+          console.log('in create_edit_document, renderTemplateElements, background, tabPercentOfContainerW, tabPercentOfContainerH: ', tabPercentOfContainerW, tabPercentOfContainerH);
+          console.log('in create_edit_document, renderTemplateElements, background, eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW: ', eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW);
           // Field gets the initialValue from this.props.initialValues
           // the 'name' attribute is matched with initialValues object keys
           // and sets initial value of the field
@@ -899,7 +935,7 @@ changeElementSize(element) {
                 key={eachElement.id}
                 id={`template-element-${eachElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${height + 23}px`, }}
+                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${parseFloat(eachElement.height) + tabPercentOfContainerH}%` }}
               >
                 <Field
                   key={eachElement.name}
@@ -916,14 +952,15 @@ changeElementSize(element) {
                   // className={eachElement.className}
                   style={eachElement.component == 'input' && editTemplate
                     ?
-                    { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+                    // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+                    { width: '100%', height: `${inputHeightPercentage}%`, borderColor: eachElement.borderColor, margin: '0px !important' }
                     :
                     {}}
                   // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
                 />
                 <div
                   className="create-edit-document-template-element-edit-tab"
-                  style={{ marginLeft: `${width - 70}px`}}
+                  style={{ height: `${tabHeight}px`, width: `${tabWidth}px`, marginLeft: `${tabLeftMarginPx}px` }}
                 >
                   <i value={eachElement.id} className="fas fa-check-circle" style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }} onClick={this.handleTemplateElementCheckClick}></i>
                   <i value={eachElement.id} className="fas fa-truck-moving" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementMoveClick}></i>
