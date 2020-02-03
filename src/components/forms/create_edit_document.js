@@ -30,6 +30,8 @@ class CreateEditDocument extends Component {
       inputFocused: {},
       showDocumentPdf: false,
       useMainDocumentInsert: false,
+      selectedTemplateElementArray: [],
+      templateElementCount: 0,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -40,6 +42,9 @@ class CreateEditDocument extends Component {
     this.handleViewPDFClick = this.handleViewPDFClick.bind(this);
     this.handleDocumentInsertCheckBox = this.handleDocumentInsertCheckBox.bind(this);
     this.handleFieldChoiceClick = this.handleFieldChoiceClick.bind(this);
+    this.handleTemplateElementCheckClick = this.handleTemplateElementCheckClick.bind(this);
+    this.handleTemplateElementMoveClick = this.handleTemplateElementMoveClick.bind(this);
+    this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -695,7 +700,10 @@ renderEachDocumentField(page) {
     console.log('in create_edit_document, printMousePos1, (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122', (pageX - documentContainerPosLeft) / 792, (pageY - documentContainerPosTop) / 1122);
     const x = (pageX - documentContainerPosLeft) / 792;
     const y = (pageY - documentContainerPosTop) / 1122;
-    this.setState({ clickedInfo: { left: x, top: y, page: elementVal, name: 'new_input', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' } }, () => {
+    this.setState({
+      templateElementCount: this.state.templateElementCount + 1,
+      clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: x, top: y, page: elementVal, name: 'name', component: 'input', width: '200px', height: '20px', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
+    }, () => {
       console.log('in create_edit_document, printMousePos1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
       this.props.createDocumentElementLocally(this.state.clickedInfo);
       document.removeEventListener('click', this.printMousePos1);
@@ -707,8 +715,139 @@ renderEachDocumentField(page) {
     //   ' - clientY: ' + event.clientY;
   }
 
+  handleTemplateElementCheckClick(event) {
+    const clickedElement = event.target;
+    // elementVal is id or id of template element
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
+    console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
+    if (!this.state.selectedTemplateElementArray.includes(elementVal)) {
+      this.setState({ selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal] }, () => {
+        console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+      });
+    } else {
+      const newArray = [...this.state.selectedTemplateElementArray]
+      const index = newArray.indexOf(elementVal);
+      newArray.splice(index, 1);
+      this.setState({ selectedTemplateElementArray: newArray }, () => {
+        console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+      });
+    }
+  }
+
+  dragElement(element, parentRect) {
+    let pos1 = 0;
+    let pos2 = 0;
+    let pos3 = 0;
+    let pos4 = 0;
+
+    // console.log('in create_edit_document, dragElement, parentElement.style.top, parentElement.leftstyle., ', parentElement.style.top, parentElement.style.left);
+    // element.onmousedown = dragMouseDown;
+    dragMouseDown();
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      console.log('in create_edit_document, dragElement, pos3, pos4, ', pos3, pos4);
+      // set the element's new position:
+      // element.offsetTop is the number of pixels from the top of the closest relatively positioned parent element.
+      // element.style.top = (element.offsetTop - pos2) + "px";
+      // element.style.left = (element.offsetLeft - pos1) + "px";
+
+      element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
+      element.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
+      console.log('in create_edit_document, dragElement, element, ', element);
+    }
+
+    function closeDragElement() {
+      // stop moving when mouse button is released:
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+}
+
+changeElementSize(element) {
+  let pos1 = 0;
+  let pos2 = 0;
+  let pos3 = 0;
+  let pos4 = 0;
+
+  // element.onmousedown = dragMouseDown;
+  dragMouseDown();
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    // element.style.top = (element.offsetTop - pos2) + "px";
+    // element.style.left = (element.offsetLeft - pos1) + "px";
+    element.style.width = pos2 + "px";
+    element.style.height = pos1 + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+  handleTemplateElementMoveClick(event) {
+    const clickedElement = event.target;
+    // elementVal is id or id of template element
+    const elementVal = clickedElement.getAttribute('value');
+    const element = document.getElementById(`template-element-${elementVal}`);
+    console.log('in create_edit_document, handleTemplateElementMoveClick, element, ', element);
+    // const parentElement = element.parentElement;
+    const parentRect = element.parentElement.getBoundingClientRect()
+    console.log('in create_edit_document, handleTemplateElementMoveClick, parentRect ', parentRect);
+    this.dragElement(element, parentRect);
+  }
+
+  handleTemplateElementChangeSizeClick(event) {
+    const clickedElement = event.target;
+    // elementVal is id of template element
+    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, clickedElement, ', clickedElement);
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, elementVal, ', elementVal);
+    const element = document.getElementById(`template-element-${elementVal}`);
+    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, element, ', element);
+  }
+
   // NOT USED; Experiment for creating new input fields
-  renderNewElements(page) {
+  renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
     // if (this.props.documentFields[page]) {
@@ -721,8 +860,8 @@ renderEachDocumentField(page) {
         } else {
           fieldComponent = eachElement.component;
         }
-        console.log('in create_edit_document, renderNewElements, eachElement: ', eachElement);
-        console.log('in create_edit_document, renderNewElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
+        console.log('in create_edit_document, renderTemplateElements, eachElement: ', eachElement);
+        console.log('in create_edit_document, renderTemplateElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
         // <div
         // key={count}
         // className="create-edit-new-element"
@@ -730,28 +869,76 @@ renderEachDocumentField(page) {
         // >
         // </div>
         if (eachElement.page == page) {
+          const editTemplate = true;
+          const width = parseInt(eachElement.width, 10)
+          const height = parseInt(eachElement.height, 10)
+          console.log('in create_edit_document, renderTemplateElements, width: ', width);
           count++
           // Field gets the initialValue from this.props.initialValues
           // the 'name' attribute is matched with initialValues object keys
           // and sets initial value of the field
+          // { top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+          // <i class="fas fa-equals"></i>
+          // <i class="fas fa-arrows-alt"></i>
+          // <i class="fas fa-expand-arrows-alt"></i>
+          // <input type="checkbox" />
+          const selected = this.state.selectedTemplateElementArray.includes(eachElement.id)
+          if (editTemplate) {
+            return (
+              <div
+                key={eachElement.id}
+                id={`template-element-${eachElement.id}`}
+                className="create-edit-document-template-element-container"
+                style={{ top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: `${height + 23}px`, }}
+              >
+                <Field
+                  key={eachElement.name}
+                  name={eachElement.name}
+                  // setting value here does not works unless its an <input or some native element
+                  // value='Bobby'
+                  component={fieldComponent}
+                  // pass page to custom compoenent, if component is input then don't pass
+                  props={fieldComponent == DocumentChoices ? { page } : {}}
+                  // props={fieldComponent == DocumentChoices ? { page } : {}}
+                  type={eachElement.type}
+                  className={eachElement.component == 'input' ? 'document-rectangle-template' : ''}
+                  // className={eachElement.component == 'input' ? 'form-control' : ''}
+                  // className={eachElement.className}
+                  style={eachElement.component == 'input' && editTemplate
+                    ?
+                    { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+                    :
+                    {}}
+                  // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+                />
+                <div
+                  className="create-edit-document-template-element-edit-tab"
+                  style={{ marginLeft: `${width - 70}px`}}
+                >
+                  <i value={eachElement.id} className="fas fa-check-circle" style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }} onClick={this.handleTemplateElementCheckClick}></i>
+                  <i value={eachElement.id} className="fas fa-truck-moving" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementMoveClick}></i>
+                  <i value={eachElement.id} className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementChangeSizeClick}></i>
+                </div>
+              </div>
+            );
+          } // end of if editTemplate
           return (
-              <Field
-                key={eachElement.name}
-                name={eachElement.name}
-                // setting value here does not works unless its an <input or some native element
-                // value='Bobby'
-                component={fieldComponent}
-                // pass page to custom compoenent, if component is input then don't pass
-                props={fieldComponent == DocumentChoices ? { page } : {}}
-                // props={fieldComponent == DocumentChoices ? { page } : {}}
-                type={eachElement.type}
-                className={eachElement.component == 'input' ? 'document-rectangle' : ''}
-                // className={eachElement.component == 'input' ? 'form-control' : ''}
-                // className={eachElement.className}
-                style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
-                // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
-              />
-
+            <Field
+              key={eachElement.name}
+              name={eachElement.name}
+              // setting value here does not works unless its an <input or some native element
+              // value='Bobby'
+              component={fieldComponent}
+              // pass page to custom compoenent, if component is input then don't pass
+              props={fieldComponent == DocumentChoices ? { page } : {}}
+              // props={fieldComponent == DocumentChoices ? { page } : {}}
+              type={eachElement.type}
+              className={eachElement.component == 'input' ? 'document-rectangle' : ''}
+              // className={eachElement.component == 'input' ? 'form-control' : ''}
+              // className={eachElement.className}
+              style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+              // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+            />
           );
         }
       })
@@ -880,7 +1067,7 @@ renderEachDocumentField(page) {
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
-              {this.props.showTemplate ? this.renderNewElements(page) : ''}
+              {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
             </div>
           );
         });
@@ -1099,7 +1286,8 @@ function mapStateToProps(state) {
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     const agreements = state.bookingData.fetchBookingData.agreements
-    initialValues = state.documents.initialValuesObject;
+    // initialValues = state.documents.initialValuesObject;
+    initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
