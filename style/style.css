@@ -4853,11 +4853,26 @@ form {
   z-index: 2;
   top: 15%;
   left: 34%;
-  width: 350px;
+  width: auto;
   height: 35px;
   border: 1.0px solid #ccc;
   border-radius: 4px;
   background-color: white;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.create-edit-document-template-edit-action-box-elements {
+  width: 40px;
+  height: 100%;
+  border-right: 1.0px solid #ccc;
+  padding: 6px;
+  font-size: 17px;
+  color: gray;
+}
+
+.create-edit-document-template-edit-action-box div:last-child {
+  border-right: none;
 }
 
 .create-edit-document-template-each-choice {

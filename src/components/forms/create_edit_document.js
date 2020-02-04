@@ -19,19 +19,28 @@ import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fiel
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
 // flatOwner is the title holder of the flat on documents
 //  and its input is taken on craeteFlat, editFlat and flatLanuages
+// const tabWidth = 70;
+// const tabHeight = 23;
+// const tabRearSpace = 5;
+
+const TAB_WIDTH = 70;
+const TAB_HEIGHT = 23;
+const TAB_REAR_SPACE = 5;
+
 
 class CreateEditDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // set up state to take input from user
-      clickedInfo: { elementX: '', elementY: '', page: '' },
+      templateElementAttributes: null,
       valueWhenInputFocused: '',
       inputFocused: {},
       showDocumentPdf: false,
       useMainDocumentInsert: false,
       selectedTemplateElementArray: [],
       templateElementCount: 0,
+      createNewTemplateElementOn: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -45,6 +54,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementCheckClick = this.handleTemplateElementCheckClick.bind(this);
     this.handleTemplateElementMoveClick = this.handleTemplateElementMoveClick.bind(this);
     this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
+    this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -54,7 +64,6 @@ class CreateEditDocument extends Component {
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
-    document.addEventListener('click', this.getMousePosition);
     // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
     console.log('in create_edit_document, componentDidMount, document', document);
     if (this.props.bookingData) {
@@ -707,12 +716,13 @@ renderEachDocumentField(page) {
       // Set state with count of elements and new element in app state in state.templateElements
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
-        clickedInfo: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '1.6%', type: 'string', className: 'document-rectangle', borderColor: 'lightgray' }
+        templateElementAttributes: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '1.6%', type: 'text', className: 'document-rectangle', borderColor: 'lightgray' },
+        createNewTemplateElementOn: false
       }, () => {
-        // console.log('in create_edit_document, getMousePosition1, clickedInfo.x, clickedInfo.page, ', this.state.clickedInfo.x, this.state.clickedInfo.y, this.state.clickedInfo.page);
-        this.props.createDocumentElementLocally(this.state.clickedInfo);
+        // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
+        this.props.createDocumentElementLocally(this.state.templateElementAttributes);
         // remove listener
-        // document.removeEventListener('click', this.getMousePosition1);
+        document.removeEventListener('click', this.getMousePosition);
       });
     }
   }
@@ -737,7 +747,7 @@ renderEachDocumentField(page) {
     }
   }
 
-  dragElement(element, tab, parentRect, callback, move) {
+  dragElement(element, tab, parentRect, callback, move, elementType) {
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
@@ -790,7 +800,7 @@ renderEachDocumentField(page) {
         const pos1Percentage = (pos1 / parentRect.width) * 100
         // console.log('in create_edit_document, dragElement, pos2Percentage, pos1Percentage, ', pos2Percentage, pos1Percentage);
         // subtract from, add to original attribute values and form strings to pass
-        element.style.height = `${(originalHeight - pos2Percentage)}%`;
+        elementType !== 'string' ? element.style.height = `${(originalHeight - pos2Percentage)}%` : '';
         element.style.width = `${(originalWidth - pos1Percentage)}%`;
         tab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
       }
@@ -811,10 +821,12 @@ renderEachDocumentField(page) {
         };
       } else {
         // if not move (resize) send object to update
+        // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
+        // to adjust input element height and avoid wrapping div height at render
         updatedElementObject = {
           id: element.id.split('-')[2],
           width: element.style.width,
-          height: element.style.height
+          height: element.style.height - TAB_HEIGHT
         };
       }
       console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
@@ -837,7 +849,7 @@ renderEachDocumentField(page) {
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
     // last true is for move or not; in this case this is for move element
-    this.dragElement(element, tab, parentRect, callback, true);
+    this.dragElement(element, tab, parentRect, callback, true, null);
   }
 
   handleTemplateElementChangeSizeClick(event) {
@@ -845,6 +857,7 @@ renderEachDocumentField(page) {
     // elementVal is id of template element
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, clickedElement, ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
+    const elementType = clickedElement.getAttribute('type')
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, elementVal, ', elementVal);
     // gets the wrapping div for the template element
     const element = document.getElementById(`template-element-${elementVal}`);
@@ -853,7 +866,7 @@ renderEachDocumentField(page) {
     const parentRect = element.parentElement.getBoundingClientRect()
     // callback for the action to update element array
     const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
-    this.dragElement(element, tab, parentRect, callback, false);
+    this.dragElement(element, tab, parentRect, callback, false, elementType);
   }
 
   // NOT USED; Experiment for creating new input fields
@@ -885,15 +898,13 @@ renderEachDocumentField(page) {
           // count for key and for z-index so elements overlap
           count++
           // tabWidth and height in px
-          const tabWidth = 70;
-          const tabHeight = 23;
-          const tabRearSpace = 5;
+
           const background = document.getElementById('document-background');
-          const tabPercentOfContainerW = (tabWidth / background.getBoundingClientRect().width) * 100
-          const tabPercentOfContainerH = (tabHeight / background.getBoundingClientRect().height) * 100
-          const tabRearSpacePercentOfContainerW = (tabRearSpace / background.getBoundingClientRect().width) * 100
+          const tabPercentOfContainerW = (TAB_WIDTH / background.getBoundingClientRect().width) * 100
+          const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
+          const tabRearSpacePercentOfContainerW = (TAB_REAR_SPACE / background.getBoundingClientRect().width) * 100
           const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
-          const tabLeftMarginPx = eachElementWidthPx - tabWidth - tabRearSpace;
+          const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
           const inputHeightPercentage = (parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH)) * 100
           // const containerHeightPx = tabWidth + eachElement.width;
           // const containerWidthPx = tabHeight + eachElement.height;
@@ -945,11 +956,11 @@ renderEachDocumentField(page) {
                 <div
                   id={`template-element-tab-${eachElement.id}`}
                   className="create-edit-document-template-element-edit-tab"
-                  style={{ height: `${tabHeight}px`, width: `${tabWidth}px`, marginLeft: `${tabLeftMarginPx}px` }}
+                  style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
                 >
                   <i value={eachElement.id} className="fas fa-check-circle" style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }} onClick={this.handleTemplateElementCheckClick}></i>
                   <i value={eachElement.id} className="fas fa-truck-moving" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementMoveClick}></i>
-                  <i value={eachElement.id} className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementChangeSizeClick}></i>
+                  <i type={eachElement.type} value={eachElement.id} className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementChangeSizeClick}></i>
                 </div>
               </div>
             );
@@ -1026,6 +1037,16 @@ renderEachDocumentField(page) {
     );
   }
 
+  handleEditTemplateOnClick() {
+    this.setState({ createNewTemplateElementOn: !this.state.createNewTemplateElementOn }, () => {
+      if (this.state.createNewTemplateElementOn) {
+        document.addEventListener('click', this.getMousePosition);
+      } else {
+        document.removeEventListener('click', this.getMousePosition);
+      }
+    });
+  }
+
   renderTemplateEditFieldBox() {
     return (
       <div className="create-edit-document-template-edit-field-box">
@@ -1037,6 +1058,58 @@ renderEachDocumentField(page) {
   renderTemplateEditFieldAction() {
     return (
       <div className="create-edit-document-template-edit-action-box">
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleEditTemplateOnClick}
+          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : {}}
+        >
+          <i className="far fa-edit"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-ruler-vertical"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-ruler-horizontal"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-angle-double-left"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-angle-left"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-angle-right"></i>
+        </div>
+        <div
+        className="create-edit-document-template-edit-action-box-elements"
+        >
+        <i className="fas fa-angle-double-right"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-undo"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="fas fa-redo"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i className="far fa-trash-alt"></i>
+        </div>
       </div>
     );
   }
