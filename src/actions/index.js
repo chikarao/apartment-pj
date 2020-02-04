@@ -105,6 +105,7 @@ import {
   CREATE_CONTRACT,
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
   UPDATE_DOCUMENT_ELEMENT_LOCALLY,
+  DELETE_DOCUMENT_ELEMENT_LOCALLY,
   SEARCH_BUILDINGS,
   SHOW_BUILDING_EDIT_MODAL,
   SHOW_BUILDING_CREATE_MODAL,
@@ -2115,13 +2116,19 @@ export function createBuilding(buildingAttributes, callback) {
 }
 
 export function createDocumentElementLocally(object) {
-  console.log('in actions index, createDocumentElementLocally id:', object);
+  console.log('in actions index, createDocumentElementLocally array:', object);
   return { type: CREATE_DOCUMENT_ELEMENT_LOCALLY, payload: object };
 }
 
-export function updateDocumentElementLocally(object) {
-  console.log('in actions index, updateDocumentElementLocally id:', object);
-  return { type: UPDATE_DOCUMENT_ELEMENT_LOCALLY, payload: object };
+export function updateDocumentElementLocally(array) {
+  console.log('in actions index, updateDocumentElementLocally array:', array);
+  return { type: UPDATE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
+}
+
+export function deleteDocumentElementLocally(array, callback) {
+  console.log('in actions index, deleteDocumentElementLocally array:', array);
+  callback();
+  return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
 }
 
 export function searchBuildings(buildingAttributes) {

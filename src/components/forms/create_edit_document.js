@@ -55,6 +55,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementMoveClick = this.handleTemplateElementMoveClick.bind(this);
     this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
     this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
+    this.handleTrashClick = this.handleTrashClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -728,26 +729,34 @@ renderEachDocumentField(page) {
   }
 
   handleTemplateElementCheckClick(event) {
+    // when user clicks on each template check icon
     const clickedElement = event.target;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value')
     console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
     // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
+    // when element has not been checked
     if (!this.state.selectedTemplateElementArray.includes(elementVal)) {
+      // place in array of checked elements
       this.setState({ selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal] }, () => {
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     } else {
+      // if user clicks on check icon of element in checked array
+      // form a new array from existing array since cannot mutate state elements
       const newArray = [...this.state.selectedTemplateElementArray]
+      // get index of element in array
       const index = newArray.indexOf(elementVal);
+      // take out element at index in array
       newArray.splice(index, 1);
+      // assign new array to state
       this.setState({ selectedTemplateElementArray: newArray }, () => {
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     }
   }
 
-  dragElement(element, tab, parentRect, callback, move, elementType) {
+  dragElement(element, tab, inputElement, parentRect, callback, move, elementType) {
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
@@ -804,7 +813,7 @@ renderEachDocumentField(page) {
         element.style.width = `${(originalWidth - pos1Percentage)}%`;
         tab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
       }
-      console.log('in create_edit_document, dragElement, element, tab, ', element, tab);
+      console.log('in create_edit_document, dragElement, inputElement, element, tab, ', inputElement, element, tab);
     }
 
     function closeDragElement() {
@@ -814,8 +823,9 @@ renderEachDocumentField(page) {
       let updatedElementObject = null
       if (move) {
         // id is the index 2 (third element) in split array
+        // the wrapper div top and left are same as input element top and left
         updatedElementObject = {
-          id: element.id.split('-')[2],
+          id: element.id.split('-')[2], // get the id part of template-element-[id]
           left: element.style.left,
           top: element.style.top
         };
@@ -823,15 +833,24 @@ renderEachDocumentField(page) {
         // if not move (resize) send object to update
         // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
         // to adjust input element height and avoid wrapping div height at render
+        // updatedElementObject = {
+        //   id: element.id.split('-')[2],
+        //   width: element.style.width,
+        //   height: `${parseFloat(element.style.height) - (TAB_HEIGHT / parentRect.height)}%`
+        // };
+        // the actual size of the input element to be updated in app state
+        const inputElementDimensions = inputElement.getBoundingClientRect()
         updatedElementObject = {
-          id: element.id.split('-')[2],
-          width: element.style.width,
-          height: element.style.height - TAB_HEIGHT
+          id: element.id.split('-')[2], // get the id part of template-element-[id]
+          width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
+          height: `${(inputElementDimensions.height / parentRect.height) * 100}%`
         };
+        console.log('in create_edit_document, dragElement, closeDragElement, inputElementDimensions, ', inputElementDimensions);
       }
       console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
       console.log('in create_edit_document, dragElement, closeDragElement, updatedElementObject, ', updatedElementObject);
-      callback(updatedElementObject);
+      // place in array to be processed in action and reducer
+      callback([updatedElementObject]);
     }
   }
 
@@ -849,7 +868,7 @@ renderEachDocumentField(page) {
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
     // last true is for move or not; in this case this is for move element
-    this.dragElement(element, tab, parentRect, callback, true, null);
+    this.dragElement(element, tab, null, parentRect, callback, true, null);
   }
 
   handleTemplateElementChangeSizeClick(event) {
@@ -858,15 +877,16 @@ renderEachDocumentField(page) {
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, clickedElement, ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementType = clickedElement.getAttribute('type')
-    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, elementVal, ', elementVal);
     // gets the wrapping div for the template element
     const element = document.getElementById(`template-element-${elementVal}`);
+    const inputElement = document.getElementById(`template-element-input-${elementVal}`);
     const tab = document.getElementById(`template-element-tab-${elementVal}`);
+    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElement.getBoundingClientRect(), ', inputElement.getBoundingClientRect());
     // gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
     // callback for the action to update element array
     const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
-    this.dragElement(element, tab, parentRect, callback, false, elementType);
+    this.dragElement(element, tab, inputElement, parentRect, callback, false, elementType);
   }
 
   // NOT USED; Experiment for creating new input fields
@@ -900,18 +920,18 @@ renderEachDocumentField(page) {
           // tabWidth and height in px
 
           const background = document.getElementById('document-background');
-          const tabPercentOfContainerW = (TAB_WIDTH / background.getBoundingClientRect().width) * 100
+          // const tabPercentOfContainerW = (TAB_WIDTH / background.getBoundingClientRect().width) * 100
           const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
-          const tabRearSpacePercentOfContainerW = (TAB_REAR_SPACE / background.getBoundingClientRect().width) * 100
+          // const tabRearSpacePercentOfContainerW = (TAB_REAR_SPACE / background.getBoundingClientRect().width) * 100
           const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
           const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
-          const inputHeightPercentage = (parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH)) * 100
+          // const inputHeightPercentage = (parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH)) * 100
           // const containerHeightPx = tabWidth + eachElement.width;
           // const containerWidthPx = tabHeight + eachElement.height;
 
-          console.log('in create_edit_document, renderTemplateElements, eachElement.height, tabPercentOfContainerH, inputHeightPercentage: ', eachElement.height, tabPercentOfContainerH, inputHeightPercentage);
+          // console.log('in create_edit_document, renderTemplateElements, eachElement.height, tabPercentOfContainerH, inputHeightPercentage: ', eachElement.height, tabPercentOfContainerH, inputHeightPercentage);
           // console.log('in create_edit_document, renderTemplateElements, background, background.getBoundingClientRect: ', background, background.getBoundingClientRect());
-          console.log('in create_edit_document, renderTemplateElements, background, tabPercentOfContainerW, tabPercentOfContainerH: ', tabPercentOfContainerW, tabPercentOfContainerH);
+          // console.log('in create_edit_document, renderTemplateElements, background, tabPercentOfContainerW, tabPercentOfContainerH: ', tabPercentOfContainerW, tabPercentOfContainerH);
           // console.log('in create_edit_document, renderTemplateElements, background, eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW: ', eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW);
           // Field gets the initialValue from this.props.initialValues
           // the 'name' attribute is matched with initialValues object keys
@@ -934,6 +954,7 @@ renderEachDocumentField(page) {
                 <Field
                   key={eachElement.name}
                   name={eachElement.name}
+                  id={`template-element-input-${eachElement.id}`}
                   // setting value here does not works unless its an <input or some native element
                   // value='Bobby'
                   component={fieldComponent}
@@ -948,7 +969,8 @@ renderEachDocumentField(page) {
                     ?
                     // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
                     // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
-                    { width: '100%', height: 'auto', borderColor: eachElement.borderColor, margin: '0px !important', flex: '1 1 auto' }
+                    // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
+                    { width: '100%', borderColor: eachElement.borderColor, margin: '0px !important', flex: '1 1 auto' }
                     :
                     {}}
                   // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
@@ -1047,6 +1069,14 @@ renderEachDocumentField(page) {
     });
   }
 
+  handleTrashClick() {
+   if (this.state.selectedTemplateElementArray.length > 0) {
+     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementArray, () => {
+       this.setState({ selectedTemplateElementArray: [] });
+     });
+    }
+  }
+
   renderTemplateEditFieldBox() {
     return (
       <div className="create-edit-document-template-edit-field-box">
@@ -1107,6 +1137,7 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTrashClick}
         >
           <i className="far fa-trash-alt"></i>
         </div>
