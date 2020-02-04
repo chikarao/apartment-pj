@@ -34,6 +34,7 @@ export default function (state = {
     case DELETE_DOCUMENT_ELEMENT_LOCALLY:
     console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
     // console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, state.templateElements: ', state.templateElements);
+      // iterate through each element in app state and see if included in array action.payload
       const newArrayDelete = [...state.templateElements]
       _.each(state.templateElements, (eachExisting, i) => {
         // console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, eachExisting: ', eachExisting);
@@ -49,7 +50,7 @@ export default function (state = {
       console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY action.payload: ', action.payload);
       console.log('in documents reducer, state, UPDATE_DOCUMENT_ELEMENT_LOCALLY, state.templateElements: ', state.templateElements);
       let index = 0;
-      let newArray = []
+      let newArrayUpdate = []
       function getUpdatedElement(element) {
         // console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY getUpdatedElement, element: ', element);
         let objectReturned = null;
@@ -63,19 +64,23 @@ export default function (state = {
         return { objectReturned, index };
       }
 
-      // const array = [...state.templateElements]
+      newArrayUpdate = [...state.templateElements];
+
       _.each(action.payload, (eachElement, i) => {
         const obj = getUpdatedElement(eachElement)
+        // Need to create a new object
+        const newObj = {};
         _.each(Object.keys(obj.objectReturned), eachKey => {
           if (eachKey in action.payload[i]) {
-            obj.objectReturned[eachKey] = action.payload[i][eachKey];
+            newObj[eachKey] = action.payload[i][eachKey];
+          } else {
+            newObj[eachKey] = obj.objectReturned[eachKey];
           }
         })
-        newArray = [...state.templateElements]
-        newArray[index] = obj.objectReturned;
+        newArrayUpdate[index] = newObj;
       })
-      // console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY updatedElement: ', updatedElement);
-      return { ...state, templateElements: newArray };
+      console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY state.templateElements === newArrayUpdate: ', state.templateElements === newArrayUpdate);
+      return { ...state, templateElements: newArrayUpdate };
     }
 
     case SET_CREATE_DOCUMENT_KEY:

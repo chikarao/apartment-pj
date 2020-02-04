@@ -56,6 +56,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
     this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
     this.handleTrashClick = this.handleTrashClick.bind(this);
+    this.handleVerticalHorizontalAlign = this.handleVerticalHorizontalAlign.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -130,8 +131,8 @@ class CreateEditDocument extends Component {
     }
   }
 
-  componentDidUpdate() {
-  }
+  // componentDidUpdate() {
+  // }
 
   countMainDocumentInserts(agreement) {
     let count = 0;
@@ -896,7 +897,7 @@ renderEachDocumentField(page) {
     // if (this.props.documentFields[page]) {
     let count = 1;
     if (!documentEmpty) {
-      const { templateElements } = this.props.documents;
+      const { templateElements } = this.props;
       return _.map(templateElements, eachElement => {
         if (eachElement.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
@@ -904,7 +905,7 @@ renderEachDocumentField(page) {
           fieldComponent = eachElement.component;
         }
         console.log('in create_edit_document, renderTemplateElements, eachElement: ', eachElement);
-        console.log('in create_edit_document, renderTemplateElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
+        // console.log('in create_edit_document, renderTemplateElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
         // <div
         // key={count}
         // className="create-edit-new-element"
@@ -1048,6 +1049,7 @@ renderEachDocumentField(page) {
   }
 
   renderEachFieldChoice() {
+    // NOT yet build out
     return (
       <div
         className="create-edit-document-template-each-choice"
@@ -1077,6 +1079,45 @@ renderEachDocumentField(page) {
     }
   }
 
+  getElement(elementArray, baseElementId) {
+    let objectReturned = null;
+    _.each(elementArray, eachElement => {
+      if (baseElementId === eachElement.id) {
+        objectReturned = eachElement;
+        return;
+      }
+    });
+    return objectReturned;
+  }
+
+  handleVerticalHorizontalAlign(event) {
+    const clickedElement = event.target;
+    // element val is horizontal or vertical strings
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleVerticalHorizontalAlign, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
+    if (this.state.selectedTemplateElementArray.length > 0) {
+      // if (elementVal === 'vertical') {
+        const firstClickedId = this.state.selectedTemplateElementArray[0];
+        const baseElement = this.getElement(this.props.templateElements, firstClickedId);
+        console.log('in create_edit_document, handleVerticalHorizontalAlign, baseElement: ', baseElement);
+        if (baseElement) {
+          const array = [];
+          _.each(this.props.templateElements, eachElement => {
+            if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+              if (elementVal === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
+              if (elementVal === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
+            } // end of if
+          }); // end of each
+          console.log('in create_edit_document, handleVerticalHorizontalAlign, array: ', array);
+          this.props.updateDocumentElementLocally(array);
+          this.setState({ selectedTemplateElementArray: [] });
+        } // end of if baseElement
+      // } else {
+      //
+      // }
+    }
+  }
+
   renderTemplateEditFieldBox() {
     return (
       <div className="create-edit-document-template-edit-field-box">
@@ -1097,18 +1138,22 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleVerticalHorizontalAlign}
+          value="vertical"
         >
-          <i className="fas fa-ruler-vertical"></i>
+          <i value="vertical" className="fas fa-ruler-vertical"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleVerticalHorizontalAlign}
+          value="horizontal"
+        >
+          <i value="horizontal" className="fas fa-ruler-horizontal"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
         >
-          <i className="fas fa-ruler-horizontal"></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-        >
-          <i className="fas fa-angle-double-left"></i>
+          <i value="horizontal" className="fas fa-angle-double-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1297,7 +1342,6 @@ renderEachDocumentField(page) {
     }
 
     if (showDocumentButtons) {
-      // console.log('in create_edit_document, renderDocumentButtons, this.props.agreement: ', this.props.agreement);
 
     return (
         <div className="document-floating-button-box">
@@ -1374,6 +1418,7 @@ renderEachDocumentField(page) {
   }
 
   render() {
+    // console.log('in create_edit_document, just render: ');
     return (
       <div className="test-image-pdf-jpg">
         {this.renderDocument()}
@@ -1459,6 +1504,7 @@ function mapStateToProps(state) {
       documentKey: state.documents.createDocumentKey,
       agreementMappedByName: state.documents.agreementMappedByName,
       agreementMappedById: state.documents.agreementMappedById,
+      templateElements: state.documents.templateElements,
       formIsDirty,
       agreements,
       documentInsertsAll: state.bookingData.documentInsertsAll
