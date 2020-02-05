@@ -26,7 +26,9 @@ import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fiel
 const TAB_WIDTH = 70;
 const TAB_HEIGHT = 23;
 const TAB_REAR_SPACE = 5;
-
+let explanationTimer = 3;
+let explanationTimerArray = [];
+// let explanationTimer = 0;
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -41,6 +43,7 @@ class CreateEditDocument extends Component {
       selectedTemplateElementArray: [],
       templateElementCount: 0,
       createNewTemplateElementOn: false,
+      actionExplanationObject: null,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -57,6 +60,8 @@ class CreateEditDocument extends Component {
     this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
     this.handleTrashClick = this.handleTrashClick.bind(this);
     this.handleVerticalHorizontalAlign = this.handleVerticalHorizontalAlign.bind(this);
+    this.handleMouseOverActionButtons = this.handleMouseOverActionButtons.bind(this);
+    this.handleMouseLeaveActionButtons = this.handleMouseLeaveActionButtons.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -1108,7 +1113,6 @@ renderEachDocumentField(page) {
               if (elementVal === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
             } // end of if
           }); // end of each
-          console.log('in create_edit_document, handleVerticalHorizontalAlign, array: ', array);
           this.props.updateDocumentElementLocally(array);
           this.setState({ selectedTemplateElementArray: [] });
         } // end of if baseElement
@@ -1126,96 +1130,255 @@ renderEachDocumentField(page) {
     );
   }
 
+  renderExplanationBox() {
+    console.log('in create_edit_document, renderExplanationBox, this.state.actionExplanation, this.state.actionExplanationObject: ', this.state.actionExplanationObject);
+    return (
+      <div
+        className="create-edit-document-explanation-box"
+        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left + 20)}px` }}
+      >
+        {this.state.actionExplanationObject.explanation}
+      </div>
+    );
+  }
+
+  setExplanationTimer(time, elementName, callback) {
+      const lapseTime = () => {
+        if (subTimer > 0) {
+          subTimer--;
+          console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
+          // explanationTimer = subTimer;
+        } else {
+          // when subtimer is 0, assign typing timer at 0
+          subTimer = 0;
+          console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
+          // explanationTimer = subTimer;
+          // this.setState({ actionExplanationObject: null });
+          callback();
+          clearInterval(timer);
+        }
+      };
+      let subTimer = time;
+      // if (stop) subtimer = 0;
+      const timer = setInterval(lapseTime, 1000);
+      explanationTimerArray.push({ timerId: timer, elementName });
+    }
+
+  clearAllTimers(callback) {
+    // let index = 0;
+    _.each(explanationTimerArray, eachTimerObj => {
+      // if (eachTimerObj && eachTimerObj.elementName === elementName) {
+        clearInterval(eachTimerObj.timerId);
+      // }
+      // index = explanationTimerArray.indexOf(eachTimerObj);
+      // explanationTimerArray.splice(explanationTimerArray.indexOf(eachTimerObj), 1);
+    });
+    explanationTimerArray = [];
+    callback();
+    console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
+  }
+
+  handleMouseOverActionButtons(event) {
+    const mousedOverElement = event.target;
+    // const elementVal = mousedOverElement.getAttribute('value');
+    // const elementParentDimensions = mousedOverElement.parentElement.getBoundingClientRect();
+    // console.log('in create_edit_document, handleMouseOverActionButtons, explanationTimerArray.length: ', explanationTimerArray.length);
+    // console.log('in create_edit_document, handleMouseOverActionButtons, elementDimensions, elementParentDimensions: ', elementDimensions, elementParentDimensions);
+    const elementName = mousedOverElement.getAttribute('name');
+    console.log('in create_edit_document, handleMouseOverActionButtons, mousedOverElement, mousedOverElement.tagName, elementName: ', mousedOverElement, mousedOverElement.tagName, elementName);
+    if (mousedOverElement.tagName == 'I' || mousedOverElement.tagName == 'SPAN') {
+      const elementDimensions = mousedOverElement.getBoundingClientRect();
+      // console.log('in create_edit_document, handleMouseOverActionButtons, elementDimensions: ', elementDimensions);
+      // if (this.state.actionExplanationObject) {
+      if (explanationTimerArray.length > 0 && this.state.actionExplanationObject) {
+        const callbackFirst = () => this.setState({
+          actionExplanationObject: null
+          // actionExplanationObject: {
+            //   top: elementDimensions.top,
+            //   left: elementDimensions.left,
+            //   explanation: elementName
+            // }
+          }, () => {
+            this.setState({
+              actionExplanationObject: {
+                top: elementDimensions.top,
+                left: elementDimensions.left,
+                explanation: elementName
+              }
+            });
+            // this.setExplanationTimer(3, callback);
+          }); // end of setState callback
+          this.clearAllTimers(callbackFirst);
+      } else {
+        console.log('in create_edit_document, handleMouseOverActionButtons, in else if explanationTimerArray > 0: ', explanationTimerArray);
+        const callbackSecond = () => this.setState({
+          actionExplanationObject: {
+            top: elementDimensions.top,
+            left: elementDimensions.left,
+            explanation: elementName
+          }
+        });
+        if (!this.state.actionExplanationObject) {
+          this.setExplanationTimer(3, elementName, callbackSecond);
+        } else {
+          callbackSecond();
+        }
+      }
+    }
+  }
+
+  handleMouseLeaveActionButtons(event) {
+    const mousedLeaveElement = event.target;
+    // const elementName = mousedLeaveElement.getAttribute('name')
+    console.log('in create_edit_document, handleMouseLeaveActionButtons, mousedLeaveElement, mousedLeaveElement.tagName : ', mousedLeaveElement, mousedLeaveElement.tagName);
+    // // this.resetTimer(0);
+    //
+    // if (mousedLeaveElement.tagName !== ('I') && mousedLeaveElement.tagName !== 'SPAN') {
+    //   // if (this.state.actionExplanationObject) {
+    //   //   this.setState({ actionExplanationObject: null });
+    //   // }
+    //   let index;
+    //   if (explanationTimerArray.length > 0) {
+    //     _.each(explanationTimerArray, eachTimerObj => {
+    //       if (eachTimerObj && eachTimerObj.elementName === elementName) {
+    //         clearInterval(eachTimerObj.timerId);
+    //       }
+    //       index = explanationTimerArray.indexOf(eachTimerObj);
+    //       explanationTimerArray.splice(index, 1);
+    //     });
+    //     console.log('in create_edit_document, handleMouseLeaveActionButtons, after each explanationTimerArray, elementName : ', explanationTimerArray, elementName);
+    //     if (explanationTimerArray.length === 0) this.setState({ actionExplanationObject: null });
+    //   }
+    // }
+    if (this.state.actionExplanationObject) {
+      this.setState({ actionExplanationObject: null });
+      this.clearAllTimers(() => {});
+    }
+  }
+
   renderTemplateEditFieldAction() {
     return (
-      <div className="create-edit-document-template-edit-action-box">
+      <div
+        className="create-edit-document-template-edit-action-box"
+        onMouseLeave={this.handleMouseLeaveActionButtons}
+      >
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.handleEditTemplateOnClick}
           style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : {}}
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Create a new field"
+          value="newField"
         >
-          <i className="far fa-edit"></i>
+          <i value="newField" name="Create a new field" className="far fa-edit"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.handleVerticalHorizontalAlign}
           value="vertical"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Align fields vertically"
         >
-          <i value="vertical" className="fas fa-ruler-vertical"></i>
+          <i value="vertical" name="Align fields vertically" className="fas fa-ruler-vertical"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.handleVerticalHorizontalAlign}
           value="horizontal"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Align fields horizontally"
         >
-          <i value="horizontal" className="fas fa-ruler-horizontal"></i>
+          <i value="horizontal" name="Align fields horizontally" className="fas fa-ruler-horizontal"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          value="doubleLeft"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Move fields left large step"
         >
-          <i value="horizontal" className="fas fa-angle-double-left"></i>
+          <i value="doubleLeft" name="Move fields left large step" className="fas fa-angle-double-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Move fields left small step"
         >
-          <i className="fas fa-angle-left"></i>
+          <i name="Move fields left small step" className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Move fields right small step"
         >
-          <i className="fas fa-angle-right"></i>
+          <i name="Move fields right small step" className="fas fa-angle-right"></i>
         </div>
         <div
         className="create-edit-document-template-edit-action-box-elements"
+        onMouseOver={this.handleMouseOverActionButtons}
+        name="Move fields right large step"
         >
-        <i className="fas fa-angle-double-right"></i>
+        <i name="Move fields right large step" className="fas fa-angle-double-right"></i>
         </div>
         <div
         className="create-edit-document-template-edit-action-box-elements"
         onClick={this.handleTrashClick}
+        onMouseOver={this.handleMouseOverActionButtons}
+        name="Throw away field"
         >
-        <i className="far fa-trash-alt"></i>
+        <i name="Throw away field" className="far fa-trash-alt"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Make font larger"
         >
-          <i className="fas fa-font"></i>
-          <i className="fas fa-sort-up"></i>
+          <i name="Make font larger" className="fas fa-font"></i>
+          <i name="Make font larger" className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Make font smaller"
         >
-          <i style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
-          <i className="fas fa-sort-down"></i>
+          <i name="Make font smaller" style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
+          <i name="Make font smaller" className="fas fa-sort-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements-double"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Change font style"
         >
-        Font
+          <span name="Change font style" style={{ width: 'auto' }}>Font</span>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Undo changes"
         >
-          <i className="fas fa-undo"></i>
+          <i name="Undo changes" className="fas fa-undo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Redo changes"
         >
-          <i className="fas fa-redo"></i>
+          <i name="Redo changes" className="fas fa-redo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Uncheck all fields"
         >
-          <i style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
-          <i style={{ fontSize: '12px', color: 'gray' }} className="fas fa-times"></i>
+          <i name="Uncheck all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <i name="Uncheck all fields" style={{ fontSize: '12px', color: 'gray' }} className="fas fa-times"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Check all fields"
         >
-          <i style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
-          <span style={{ fontSize: '5px' }}>all</span>
+          <i name="Check all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <span name="Check all fields" style={{ fontSize: '13px' }}>all</span>
         </div>
       </div>
     );
@@ -1279,6 +1442,7 @@ renderEachDocumentField(page) {
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
+              {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
             </div>
           );

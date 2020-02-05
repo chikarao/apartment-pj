@@ -4895,6 +4895,22 @@ form {
   border-bottom: none;
 }
 
+.create-edit-document-explanation-box {
+  /* NEEDS to be fixed to place on page not parent */
+  position: fixed;
+  width: auto;
+  height: auto;
+  min-width: 100px;
+  min-height: 30px;
+  z-index: 100;
+  background-color: #ccc;
+  border-right: 1.0px solid #ccc;
+  font-size: 12px;
+  color: gray;
+  padding: 15px;
+  border-radius: 5px;
+}
+
 .create-edit-document-template-each-choice {
   width: auto;
   height: 40px;
