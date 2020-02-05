@@ -4853,26 +4853,46 @@ form {
   z-index: 2;
   top: 15%;
   left: 34%;
-  width: auto;
-  height: 35px;
+  /* width: auto; */
+  width: 322px;
+  /* height: 35px; */
+  height: 70px;
   border: 1.0px solid #ccc;
   border-radius: 4px;
   background-color: white;
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .create-edit-document-template-edit-action-box-elements {
   width: 40px;
-  height: 100%;
+  /* height: 100%; */
+  height: 35px;
   border-right: 1.0px solid #ccc;
-  padding: 6px;
-  font-size: 17px;
+  border-bottom: 1.0px solid #ccc;
+  padding: 4.5px;
+  font-size: 18px;
   color: gray;
 }
 
-.create-edit-document-template-edit-action-box div:last-child {
+.create-edit-document-template-edit-action-box-elements-double {
+  width: 80px;
+  /* height: 100%; */
+  height: 35px;
+  border-right: 1.0px solid #ccc;
+  border-bottom: 1.0px solid #ccc;
+  padding: 4.5px;
+  font-size: 18px;
+  color: gray;
+}
+
+.create-edit-document-template-edit-action-box div:last-child, div:nth-child(8) {
   border-right: none;
+}
+
+.create-edit-document-template-edit-action-box div:nth-child(n+9)  {
+  border-bottom: none;
 }
 
 .create-edit-document-template-each-choice {

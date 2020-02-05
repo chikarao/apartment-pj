@@ -1171,6 +1171,31 @@ renderEachDocumentField(page) {
         <i className="fas fa-angle-double-right"></i>
         </div>
         <div
+        className="create-edit-document-template-edit-action-box-elements"
+        onClick={this.handleTrashClick}
+        >
+        <i className="far fa-trash-alt"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+
+        >
+          <i className="fas fa-font"></i>
+          <i className="fas fa-sort-up"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+
+        >
+          <i style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
+          <i className="fas fa-sort-down"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements-double"
+        >
+        Font
+        </div>
+        <div
           className="create-edit-document-template-edit-action-box-elements"
         >
           <i className="fas fa-undo"></i>
@@ -1182,9 +1207,15 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTrashClick}
         >
-          <i className="far fa-trash-alt"></i>
+          <i style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <i style={{ fontSize: '12px', color: 'gray' }} className="fas fa-times"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+        >
+          <i style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <span style={{ fontSize: '5px' }}>all</span>
         </div>
       </div>
     );
