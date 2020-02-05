@@ -1135,7 +1135,7 @@ renderEachDocumentField(page) {
     return (
       <div
         className="create-edit-document-explanation-box"
-        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left + 20)}px` }}
+        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left)}px` }}
       >
         {this.state.actionExplanationObject.explanation}
       </div>
@@ -1219,7 +1219,7 @@ renderEachDocumentField(page) {
           }
         });
         if (!this.state.actionExplanationObject) {
-          this.setExplanationTimer(3, elementName, callbackSecond);
+          this.setExplanationTimer(1, elementName, callbackSecond);
         } else {
           callbackSecond();
         }
@@ -1292,63 +1292,65 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          value="doubleLeft"
+          value="moveLeft"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Move fields left large step"
+          name="Move fields left"
         >
-          <i value="doubleLeft" name="Move fields left large step" className="fas fa-angle-double-left"></i>
+          <i value="moveLeft" name="Move fields left large step" className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          value="moveRight"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Move fields left small step"
+          name="Move fields right"
         >
-          <i name="Move fields left small step" className="fas fa-angle-left"></i>
+          <i name="Move fields right" className="fas fa-angle-right"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          value="moveDown"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Move fields right small step"
+          name="Move fields down"
         >
-          <i name="Move fields right small step" className="fas fa-angle-right"></i>
-        </div>
-        <div
-        className="create-edit-document-template-edit-action-box-elements"
-        onMouseOver={this.handleMouseOverActionButtons}
-        name="Move fields right large step"
-        >
-        <i name="Move fields right large step" className="fas fa-angle-double-right"></i>
-        </div>
-        <div
-        className="create-edit-document-template-edit-action-box-elements"
-        onClick={this.handleTrashClick}
-        onMouseOver={this.handleMouseOverActionButtons}
-        name="Throw away field"
-        >
-        <i name="Throw away field" className="far fa-trash-alt"></i>
+          <i name="Move fields down" className="fas fa-angle-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          value="moveUp"
           onMouseOver={this.handleMouseOverActionButtons}
+          name="Move fields up"
+        >
+          <i name="Move fields up" className="fas fa-angle-up"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTrashClick}
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Throw away field"
+        >
+          <i name="Throw away field" className="far fa-trash-alt"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font larger"
         >
-          <i name="Make font larger" className="fas fa-font"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
           <i name="Make font larger" className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onMouseOver={this.handleMouseOverActionButtons}
+          // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font smaller"
         >
-          <i name="Make font smaller" style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} name="Make font smaller" style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
           <i name="Make font smaller" className="fas fa-sort-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements-double"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Change font style"
         >
-          <span name="Change font style" style={{ width: 'auto' }}>Font</span>
+          <span onMouseOver={this.handleMouseOverActionButtons} name="Change font style" style={{ width: 'auto' }}>Font</span>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1366,18 +1368,16 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Uncheck all fields"
         >
-          <i name="Uncheck all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons}name="Uncheck all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
           <i name="Uncheck all fields" style={{ fontSize: '12px', color: 'gray' }} className="fas fa-times"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Check all fields"
         >
-          <i name="Check all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} name="Check all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
           <span name="Check all fields" style={{ fontSize: '13px' }}>all</span>
         </div>
       </div>

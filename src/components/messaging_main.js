@@ -165,13 +165,32 @@ class MessagingMain extends Component {
       // const conversationBoxPos = conversationBox.offsetLeft();
     }
       return (
-        <div className="messaging-main-messaging-control-box-box" id="messaging-main-messaging-control-box-box" style={{ left: `${leftDiff - 5}px` }}>
-          <div id="messaging-main-messaging-control-box" className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}>
-            <div style={{ fontWeight: 'bold' }}>{AppLanguages.orderBy[this.props.appLanguageCode]}</div>
-            <div value="orderByDate" name="new" className="messaging-controls-div" style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateNewest[this.props.appLanguageCode]}</div>
-            <div value="orderByDate" name="old" className="messaging-controls-div" style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateOldest[this.props.appLanguageCode]}</div>
+        <div
+          className="messaging-main-messaging-control-box-box"
+          id="messaging-main-messaging-control-box-box"
+          style={{ left: `${leftDiff - 5}px` }}
+        >
+          <div
+            id="messaging-main-messaging-control-box"
+            className={this.state.showMessageControls ? 'messaging-main-messaging-control-box' : 'hide'}
+          >
+            <div
+              style={{ fontWeight: 'bold' }}>{AppLanguages.orderBy[this.props.appLanguageCode]}
+            </div>
+            <div
+              value="orderByDate"
+              name="new"
+              className="messaging-controls-div"
+              style={this.state.sortByDateNew ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateNewest[this.props.appLanguageCode]}
+            </div>
+            <div
+              value="orderByDate"
+              name="old"
+              className="messaging-controls-div"
+              style={this.state.sortByDateOld ? { backgroundColor: 'lightgray', paddingLeft: '5px' } : { backgroundColor: 'white' }} onClick={this.handleMessageEditClick}>{AppLanguages.messageDateOldest[this.props.appLanguageCode]}
+            </div>
           </div>
-          </div>
+        </div>
       );
   }
 
