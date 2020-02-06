@@ -1358,8 +1358,9 @@ clearAllTimers(callback) {
       const elementDimensions = mousedOverElement.getBoundingClientRect();
       // console.log('in create_edit_document, handleMouseOverActionButtons, elementDimensions: ', elementDimensions);
       // if (this.state.actionExplanationObject) {
+      console.log('in create_edit_document, handleMouseOverActionButtons, explanationTimerArray: ', explanationTimerArray);
       if (explanationTimerArray.length > 0 && this.state.actionExplanationObject) {
-        const callbackFirst = () => this.setState({
+        const callback = () => this.setState({
           actionExplanationObject: null
           // actionExplanationObject: {
             //   top: elementDimensions.top,
@@ -1376,10 +1377,10 @@ clearAllTimers(callback) {
             });
             // this.setExplanationTimer(3, callback);
           }); // end of setState callback
-          this.clearAllTimers(callbackFirst);
+          this.clearAllTimers(callback);
       } else {
         console.log('in create_edit_document, handleMouseOverActionButtons, in else if explanationTimerArray > 0: ', explanationTimerArray);
-        const callbackSecond = () => this.setState({
+        const showExplantion = () => this.setState({
           actionExplanationObject: {
             top: elementDimensions.top,
             left: elementDimensions.left,
@@ -1387,9 +1388,10 @@ clearAllTimers(callback) {
           }
         });
         if (!this.state.actionExplanationObject) {
-          this.setExplanationTimer(1, elementName, callbackSecond);
+          this.clearAllTimers(() => {});
+          this.setExplanationTimer(1, elementName, showExplantion);
         } else {
-          callbackSecond();
+          showExplantion();
         }
       }
     }
@@ -1457,7 +1459,7 @@ clearAllTimers(callback) {
           onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields left"
         >
-          <i value="moveLeft" name="Move fields left large step" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
+          <i value="moveLeft" name="Move fields left" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
