@@ -4854,7 +4854,7 @@ form {
   top: 15%;
   left: 34%;
   /* width: auto; */
-  width: 322px;
+  width: 362px;
   /* height: 35px; */
   height: 70px;
   border: 1.0px solid #ccc;
@@ -4887,11 +4887,11 @@ form {
   color: gray;
 }
 
-.create-edit-document-template-edit-action-box div:last-child, div:nth-child(8) {
+.create-edit-document-template-edit-action-box div:last-child, div:nth-child(9) {
   border-right: none;
 }
 
-.create-edit-document-template-edit-action-box div:nth-child(n+9)  {
+.create-edit-document-template-edit-action-box div:nth-child(n+10)  {
   border-bottom: none;
 }
 
@@ -4903,8 +4903,9 @@ form {
   min-width: 100px;
   min-height: 20px;
   z-index: 100;
-  background-color: #ccc;
-  border-right: 1.0px solid #ccc;
+  /* background-color: #ccc; */
+  background-color: #ffffcc;
+  border: 1.0px solid #ccc;
   font-size: 12px;
   color: gray;
   padding: 10px;

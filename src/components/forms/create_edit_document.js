@@ -26,7 +26,8 @@ import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fiel
 const TAB_WIDTH = 70;
 const TAB_HEIGHT = 23;
 const TAB_REAR_SPACE = 5;
-let explanationTimer = 3;
+// let explanationTimer = 3;
+// explanationTimerArray for keeping timer ids so they can be cleared
 let explanationTimerArray = [];
 // let explanationTimer = 0;
 
@@ -44,6 +45,7 @@ class CreateEditDocument extends Component {
       templateElementCount: 0,
       createNewTemplateElementOn: false,
       actionExplanationObject: null,
+      allElementsChecked: false
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -59,7 +61,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
     this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
     this.handleTrashClick = this.handleTrashClick.bind(this);
-    this.handleVerticalHorizontalAlign = this.handleVerticalHorizontalAlign.bind(this);
+    this.handleTemplateElementActionClick = this.handleTemplateElementActionClick.bind(this);
     this.handleMouseOverActionButtons = this.handleMouseOverActionButtons.bind(this);
     this.handleMouseLeaveActionButtons = this.handleMouseLeaveActionButtons.bind(this);
   }
@@ -744,7 +746,15 @@ renderEachDocumentField(page) {
     // when element has not been checked
     if (!this.state.selectedTemplateElementArray.includes(elementVal)) {
       // place in array of checked elements
-      this.setState({ selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal] }, () => {
+      this.setState({
+        selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal],
+      }, () => {
+        // if all elements checked, set to true
+        this.setState({
+          allElementsChecked: this.state.selectedTemplateElementArray.length === this.props.templateElements.length
+        }, () => {
+          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
+        })
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     } else {
@@ -757,6 +767,11 @@ renderEachDocumentField(page) {
       newArray.splice(index, 1);
       // assign new array to state
       this.setState({ selectedTemplateElementArray: newArray }, () => {
+        this.setState({
+          allElementsChecked: this.state.selectedTemplateElementArray.length === this.props.templateElements.length
+        }, () => {
+          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
+        })
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
       });
     }
@@ -986,9 +1001,27 @@ renderEachDocumentField(page) {
                   className="create-edit-document-template-element-edit-tab"
                   style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
                 >
-                  <i value={eachElement.id} className="fas fa-check-circle" style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }} onClick={this.handleTemplateElementCheckClick}></i>
-                  <i value={eachElement.id} className="fas fa-truck-moving" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementMoveClick}></i>
-                  <i type={eachElement.type} value={eachElement.id} className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }} onMouseDown={this.handleTemplateElementChangeSizeClick}></i>
+                  <i
+                    value={eachElement.id}
+                    className="fas fa-check-circle"
+                    style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+                    onClick={this.handleTemplateElementCheckClick}
+                  >
+                  </i>
+                  <i
+                    value={eachElement.id}
+                    className="fas fa-truck-moving"
+                    style={{ lineHeight: '1.5', color: 'gray' }}
+                    onMouseDown={this.handleTemplateElementMoveClick}
+                  >
+                  </i>
+                  <i
+                    type={eachElement.type}
+                    value={eachElement.id}
+                    className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+                    onMouseDown={this.handleTemplateElementChangeSizeClick}
+                  >
+                  </i>
                 </div>
               </div>
             );
@@ -1074,6 +1107,15 @@ renderEachDocumentField(page) {
         document.removeEventListener('click', this.getMousePosition);
       }
     });
+    // turn off any explanations and timers when click
+    if (this.state.actionExplanationObject) {
+      this.setState({ actionExplanationObject: null });
+    }
+    this.clearAllTimers(() => {});
+    // clear all checks on elements
+    if (this.state.selectedTemplateElementArray.length > 0) {
+      this.setState({ selectedTemplateElementArray: [] });
+    }
   }
 
   handleTrashClick() {
@@ -1095,31 +1137,72 @@ renderEachDocumentField(page) {
     return objectReturned;
   }
 
-  handleVerticalHorizontalAlign(event) {
+  handleTemplateElementActionClick(event) {
     const clickedElement = event.target;
-    // element val is horizontal or vertical strings
+    // element val is value of i or div in action box eg horizontal or vertical strings
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleVerticalHorizontalAlign, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
-    if (this.state.selectedTemplateElementArray.length > 0) {
-      // if (elementVal === 'vertical') {
+    // function to be used for aligning horizontal and vertical values
+    // make fat arrow function to set context to be able to use this.props and state
+    const align = (horOrVer) => {
+      if (this.state.selectedTemplateElementArray.length > 0) {
+        // get the first element to be clicked to make as a basis for move
         const firstClickedId = this.state.selectedTemplateElementArray[0];
         const baseElement = this.getElement(this.props.templateElements, firstClickedId);
-        console.log('in create_edit_document, handleVerticalHorizontalAlign, baseElement: ', baseElement);
         if (baseElement) {
           const array = [];
           _.each(this.props.templateElements, eachElement => {
             if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementArray.includes(eachElement.id)) {
-              if (elementVal === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
-              if (elementVal === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
+              if (horOrVer === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
+              if (horOrVer === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
             } // end of if
           }); // end of each
+          // call action to update each template element object in reducer
           this.props.updateDocumentElementLocally(array);
+          // empty out array for selected fields
           this.setState({ selectedTemplateElementArray: [] });
         } // end of if baseElement
-      // } else {
-      //
-      // }
-    }
+      } // end of if state selectedTemplateElementArray
+    };
+
+    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
+      switch (elementVal) {
+        case ('vertical' || 'horizontal'):
+          align(elementVal);
+          break;
+
+        case 'horizontal':
+          align(elementVal);
+          break;
+
+        case 'checkAll': {
+          const checkAllArray = [...this.state.selectedTemplateElementArray];
+          _.each(this.props.templateElements, eachElement => {
+            if (!this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+              checkAllArray.push(eachElement.id);
+            }
+          });
+
+          if (checkAllArray.length > 0) {
+            this.setState({
+              allElementsChecked: true,
+              selectedTemplateElementArray: checkAllArray
+            });
+          }
+          // }
+          break;
+        } // looks like lint requires having block when case logic too long
+
+        case 'uncheckAll':
+          // if there are checked elements clear out selectedTemplateElementArray
+          // and uncheckAll
+            this.setState({
+              selectedTemplateElementArray: [],
+              allElementsChecked: false
+            });
+            break;
+
+        default: return null;
+      }
   }
 
   renderTemplateEditFieldBox() {
@@ -1135,7 +1218,7 @@ renderEachDocumentField(page) {
     return (
       <div
         className="create-edit-document-explanation-box"
-        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left)}px` }}
+        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left + 20)}px` }}
       >
         {this.state.actionExplanationObject.explanation}
       </div>
@@ -1168,7 +1251,7 @@ renderEachDocumentField(page) {
     // let index = 0;
     _.each(explanationTimerArray, eachTimerObj => {
       // if (eachTimerObj && eachTimerObj.elementName === elementName) {
-        clearInterval(eachTimerObj.timerId);
+      clearInterval(eachTimerObj.timerId);
       // }
       // index = explanationTimerArray.indexOf(eachTimerObj);
       // explanationTimerArray.splice(explanationTimerArray.indexOf(eachTimerObj), 1);
@@ -1246,17 +1329,24 @@ renderEachDocumentField(page) {
     //       index = explanationTimerArray.indexOf(eachTimerObj);
     //       explanationTimerArray.splice(index, 1);
     //     });
-    //     console.log('in create_edit_document, handleMouseLeaveActionButtons, after each explanationTimerArray, elementName : ', explanationTimerArray, elementName);
     //     if (explanationTimerArray.length === 0) this.setState({ actionExplanationObject: null });
     //   }
     // }
     if (this.state.actionExplanationObject) {
       this.setState({ actionExplanationObject: null });
-      this.clearAllTimers(() => {});
     }
+    this.clearAllTimers(() => {});
   }
 
   renderTemplateEditFieldAction() {
+    // <span onMouseOver={this.handleMouseOverActionButtons} name="Change font style" style={{ width: 'auto' }}>
+    //   Font
+    // </span>
+    // const createNewElement = this.state.createNewTemplateElementOn
+    const elementsChecked = this.state.selectedTemplateElementArray.length > 0;
+    const disableCheckAll = !this.props.templateElements || (this.props.templateElements.length < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
+        console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
+        console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -1265,7 +1355,7 @@ renderEachDocumentField(page) {
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.handleEditTemplateOnClick}
-          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : {}}
+          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray', color: 'blue' } : {}}
           onMouseOver={this.handleMouseOverActionButtons}
           name="Create a new field"
           value="newField"
@@ -1274,21 +1364,21 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleVerticalHorizontalAlign}
+          onClick={this.handleTemplateElementActionClick}
           value="vertical"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Align fields vertically"
         >
-          <i value="vertical" name="Align fields vertically" className="fas fa-ruler-vertical"></i>
+          <i value="vertical" name="Align fields vertically" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-vertical"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleVerticalHorizontalAlign}
+          onClick={this.handleTemplateElementActionClick}
           value="horizontal"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Align fields horizontally"
         >
-          <i value="horizontal" name="Align fields horizontally" className="fas fa-ruler-horizontal"></i>
+          <i value="horizontal" name="Align fields horizontally"  style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-horizontal"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1296,89 +1386,114 @@ renderEachDocumentField(page) {
           onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields left"
         >
-          <i value="moveLeft" name="Move fields left large step" className="fas fa-angle-left"></i>
+          <i value="moveLeft" name="Move fields left large step"  style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           value="moveRight"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields right"
         >
-          <i name="Move fields right" className="fas fa-angle-right"></i>
+          <i name="Move fields right" onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-right"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           value="moveDown"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields down"
         >
-          <i name="Move fields down" className="fas fa-angle-down"></i>
+          <i name="Move fields down" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           value="moveUp"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields up"
         >
-          <i name="Move fields up" className="fas fa-angle-up"></i>
+          <i name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.handleTrashClick}
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Throw away field"
+          value="trash"
         >
-          <i name="Throw away field" className="far fa-trash-alt"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Throw away field" className="far fa-trash-alt"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font larger"
+          value="fontLarger"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
-          <i name="Make font larger" className="fas fa-sort-up"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger" className="fas fa-font"></i>
+          <i name="Make font larger" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font smaller"
+          value="fontSmaller"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} name="Make font smaller" style={{ fontSize: '12px', padding: '3px' }} className="fas fa-font"></i>
-          <i name="Make font smaller" className="fas fa-sort-down"></i>
+          <i name="Make font smaller" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray'  }} onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
+          <i className="fas fa-sort-down" style={{ color: elementsChecked ? 'blue' : 'gray' }}></i>
         </div>
         <div
-          className="create-edit-document-template-edit-action-box-elements-double"
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Change font family"
+          value="fontFamily"
+        >
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font family" className="fas fa-font"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
           name="Change font style"
+          value="fontStyle"
         >
-          <span onMouseOver={this.handleMouseOverActionButtons} name="Change font style" style={{ width: 'auto' }}>Font</span>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font style" className="fas fa-italic"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Undo changes"
+          value="undo"
         >
-          <i name="Undo changes" className="fas fa-undo"></i>
+          <i name="Undo changes"  style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-undo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onMouseOver={this.handleMouseOverActionButtons}
           name="Redo changes"
+          value="redo"
         >
-          <i name="Redo changes" className="fas fa-redo"></i>
+          <i name="Redo changes" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-redo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          name="Align field height"
+          value="alignHeight"
+        >
+          <i name="Align field height" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Align field width"
+          value="alignWidth"
+        >
+          <i name="Align field width" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           name="Uncheck all fields"
+          value="uncheckAll"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons}name="Uncheck all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
-          <i name="Uncheck all fields" style={{ fontSize: '12px', color: 'gray' }} className="fas fa-times"></i>
+          <i value="uncheckAll" onMouseOver={this.handleMouseOverActionButtons} name="Uncheck all fields" style={{ fontSize: '15px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-check"></i>
+          <i name="Uncheck all fields" value="uncheckAll" style={{ fontSize: '12px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-times"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           name="Check all fields"
+          value="checkAll"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} name="Check all fields" style={{ fontSize: '15px', color: 'gray' }} className="fas fa-check"></i>
-          <span name="Check all fields" style={{ fontSize: '13px' }}>all</span>
+          <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
+          <span name="Check all fields" value="checkAll" style={{ fontSize: '13px', color: disableCheckAll ? 'gray' : 'blue' }}>all</span>
         </div>
       </div>
     );
