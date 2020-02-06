@@ -1286,19 +1286,19 @@ clearAllTimers(callback) {
 
         case 'moveLeft':
           move(elementVal);
-        break;
+          break;
 
         case 'moveRight':
           move(elementVal);
-        break;
+          break;
 
         case 'moveDown':
           move(elementVal);
-        break;
+          break;
 
         case 'moveUp':
           move(elementVal);
-        break;
+          break;
 
         default: return null;
       }
@@ -1314,72 +1314,66 @@ clearAllTimers(callback) {
 
   renderExplanationBox() {
     console.log('in create_edit_document, renderExplanationBox, this.state.actionExplanation, this.state.actionExplanationObject: ', this.state.actionExplanationObject);
+    const placement = this.state.actionExplanationObject.explanation.split(',')[1]
+    const explanation = this.state.actionExplanationObject.explanation.split(',')[0]
+    const height = placement === 'top' ? -47 : 27;
+    // {this.state.actionExplanationObject.explanation}
     return (
       <div
         className="create-edit-document-explanation-box"
-        style={{ top: `${(this.state.actionExplanationObject.top + 35)}px`, left: `${(this.state.actionExplanationObject.left + 20)}px` }}
+        style={{ top: `${(this.state.actionExplanationObject.top + height)}px`, left: `${(this.state.actionExplanationObject.left + 0)}px` }}
       >
-        {this.state.actionExplanationObject.explanation}
+        {explanation}
       </div>
     );
   }
 
   setExplanationTimer(time, elementName, callback) {
-      const lapseTime = () => {
-        if (subTimer > 0) {
-          subTimer--;
-          console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
-          // explanationTimer = subTimer;
-        } else {
-          // when subtimer is 0, assign typing timer at 0
-          subTimer = 0;
-          console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
-          // explanationTimer = subTimer;
-          // this.setState({ actionExplanationObject: null });
-          callback();
-          clearInterval(timer);
-        }
-      };
-      let subTimer = time;
-      // if (stop) subtimer = 0;
-      const timer = setInterval(lapseTime, 1000);
-      explanationTimerArray.push({ timerId: timer, elementName });
-    }
+    const lapseTime = () => {
+      if (subTimer > 0) {
+        subTimer--;
+        console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
+      } else {
+        // when subtimer is 0, assign typing timer at 0
+        subTimer = 0;
+        console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
+        // this.setState({ actionExplanationObject: null });
+        callback();
+        clearInterval(timer);
+      }
+    };
+    let subTimer = time;
+    // timer variable is assigned an integer id
+    const timer = setInterval(lapseTime, 1000);
+    explanationTimerArray.push({ timerId: timer, elementName });
+  }
 
   handleMouseOverActionButtons(event) {
+    // When user mouses over a button, show explanation after x seconds over the button;
+    // Logic is tricky as timers need to be cleared each time user moves to another button
     const mousedOverElement = event.target;
-    // const elementVal = mousedOverElement.getAttribute('value');
-    // const elementParentDimensions = mousedOverElement.parentElement.getBoundingClientRect();
-    // console.log('in create_edit_document, handleMouseOverActionButtons, explanationTimerArray.length: ', explanationTimerArray.length);
-    // console.log('in create_edit_document, handleMouseOverActionButtons, elementDimensions, elementParentDimensions: ', elementDimensions, elementParentDimensions);
+    // mousedOverElement.style.backgroundColor = '#ccc';
     const elementName = mousedOverElement.getAttribute('name');
-    console.log('in create_edit_document, handleMouseOverActionButtons, mousedOverElement, mousedOverElement.tagName, elementName: ', mousedOverElement, mousedOverElement.tagName, elementName);
-    if (mousedOverElement.tagName == 'I' || mousedOverElement.tagName == 'SPAN') {
+    // if moused over element I an i (icon) or SPAN (NOT DIV) to avoid
+    // both children and parent setting off this handler
+    if (mousedOverElement.tagName === 'I' || mousedOverElement.tagName === 'SPAN') {
       const elementDimensions = mousedOverElement.getBoundingClientRect();
-      // console.log('in create_edit_document, handleMouseOverActionButtons, elementDimensions: ', elementDimensions);
-      // if (this.state.actionExplanationObject) {
-      console.log('in create_edit_document, handleMouseOverActionButtons, explanationTimerArray: ', explanationTimerArray);
+      // if there are timers running AND explanation is showing
+      // ie going from one button to another when explanation showing
       if (explanationTimerArray.length > 0 && this.state.actionExplanationObject) {
+        // Callback setting existing explanation t null and set new one
         const callback = () => this.setState({
-          actionExplanationObject: null
-          // actionExplanationObject: {
-            //   top: elementDimensions.top,
-            //   left: elementDimensions.left,
-            //   explanation: elementName
-            // }
-          }, () => {
-            this.setState({
-              actionExplanationObject: {
-                top: elementDimensions.top,
-                left: elementDimensions.left,
-                explanation: elementName
-              }
-            });
-            // this.setExplanationTimer(3, callback);
-          }); // end of setState callback
+          actionExplanationObject: {
+            top: elementDimensions.top,
+            left: elementDimensions.left,
+            explanation: elementName
+          }
+        });
+        // end of setState callback
+        console.log('in create_edit_document, handleMouseOverActionButtons, in if: ', explanationTimerArray);
+          // clear timers with callback to null out explantion object and setting new one
           this.clearAllTimers(callback);
-      } else {
-        console.log('in create_edit_document, handleMouseOverActionButtons, in else if explanationTimerArray > 0: ', explanationTimerArray);
+      } else { // if timer not runnig and explantion does not show simultaneously
         const showExplantion = () => this.setState({
           actionExplanationObject: {
             top: elementDimensions.top,
@@ -1387,11 +1381,17 @@ clearAllTimers(callback) {
             explanation: elementName
           }
         });
+        // if there is no explanation showing
         if (!this.state.actionExplanationObject) {
+          console.log('in create_edit_document, handleMouseOverActionButtons, in else if : ', explanationTimerArray);
+          // clear timers in case there are timers running
           this.clearAllTimers(() => {});
+          // set timer with second, text to show, and callback
           this.setExplanationTimer(1, elementName, showExplantion);
-        } else {
-          showExplantion();
+        } else { // catch all
+          console.log('in create_edit_document, handleMouseOverActionButtons, in else if else1  : ', explanationTimerArray);
+          // !!! Somehow, this handler does not work without this else showExplantion
+          showExplantion(); // function call
         }
       }
     }
@@ -1429,149 +1429,149 @@ clearAllTimers(callback) {
           onClick={disableCreateNewElement ? this.handleCreateNewTemplateElement : () => {}}
           style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementIdArray.length > 0 ? 'gray' : 'blue' }}
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Create a new field"
+          name="Create a new field,top"
           value="newField"
         >
-          <i value="newField" name="Create a new field" className="far fa-edit"></i>
+          <i value="newField" name="Create a new field,top" className="far fa-edit"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
           value="vertical"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Align fields vertically"
+          name="Align fields vertically,top"
         >
-          <i value="vertical" name="Align fields vertically" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-vertical"></i>
+          <i value="vertical" name="Align fields vertically,top" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-vertical"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
           value="horizontal"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Align fields horizontally"
+          name="Align fields horizontally,top"
         >
-          <i value="horizontal" name="Align fields horizontally"  style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-horizontal"></i>
+          <i value="horizontal" name="Align fields horizontally,top" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-horizontal"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveLeft"
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Move fields left"
+          name="Move fields left,top"
         >
-          <i value="moveLeft" name="Move fields left" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
+          <i value="moveLeft" name="Move fields left,top" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveRight"
-          name="Move fields right"
+          name="Move fields right,top"
         >
-          <i value="moveRight" name="Move fields right" onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-right"></i>
+          <i value="moveRight" name="Move fields right,top" onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-right"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveDown"
-          name="Move fields down"
+          name="Move fields down,top"
         >
-          <i value="moveDown" name="Move fields down" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-down"></i>
+          <i value="moveDown" name="Move fields down,top" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveUp"
-          name="Move fields up"
+          name="Move fields up,top"
         >
-          <i value="moveUp" name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
+          <i value="moveUp" name="Move fields up,top" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={elementsChecked ? this.handleTrashClick : () => {}}
-          name="Throw away field"
+          name="Throw away field,top"
           value="trash"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Throw away field" className="far fa-trash-alt"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Throw away field,top" className="far fa-trash-alt"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
-          name="Make font larger"
+          name="Make font larger,top"
           value="fontLarger"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger" className="fas fa-font"></i>
-          <i name="Make font larger" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger,top" className="fas fa-font"></i>
+          <i name="Make font larger,top" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
-          name="Make font smaller"
+          name="Make font smaller,bottom"
           value="fontSmaller"
         >
-          <i name="Make font smaller" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray'  }} onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
+          <i name="Make font smaller,bottom" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray'  }} onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
           <i className="fas fa-sort-down" style={{ color: elementsChecked ? 'blue' : 'gray' }}></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Change font family"
+          name="Change font family,bottom"
           value="fontFamily"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font family" className="fas fa-font"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font family,bottom" className="fas fa-font"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Change font style"
+          name="Change font style,bottom"
           value="fontStyle"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font style" className="fas fa-italic"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font style,bottom" className="fas fa-italic"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Undo changes"
+          name="Undo changes,bottom"
           value="undo"
         >
-          <i name="Undo changes" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-undo"></i>
+          <i name="Undo changes,bottom" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-undo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Redo changes"
+          name="Redo changes,bottom"
           value="redo"
         >
-          <i name="Redo changes" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-redo"></i>
+          <i name="Redo changes,bottom,bottom" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-redo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
-          name="Align field width"
+          name="Align field width,bottom"
           value="alignWidth"
         >
-          <i value="alignWidth" name="Align field width" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+          <i value="alignWidth" name="Align field width,bottom" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
-          name="Align field height"
+          name="Align field height,bottom"
           value="alignHeight"
         >
-          <i value="alignHeight" name="Align field height" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+          <i value="alignHeight" name="Align field height,bottom" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={elementsChecked ? this.handleTemplateElementActionClick : () => {}}
-          name="Uncheck all fields"
+          name="Uncheck all fields,bottom"
           value="uncheckAll"
         >
-          <i value="uncheckAll" onMouseOver={this.handleMouseOverActionButtons} name="Uncheck all fields" style={{ fontSize: '15px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-check"></i>
-          <i name="Uncheck all fields" value="uncheckAll" style={{ fontSize: '12px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-times"></i>
+          <i value="uncheckAll" onMouseOver={this.handleMouseOverActionButtons} name="Uncheck all fields,bottom" style={{ fontSize: '15px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-check"></i>
+          <i name="Uncheck all fields,bottom" value="uncheckAll" style={{ fontSize: '12px', color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-times"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={!disableCheckAll ? this.handleTemplateElementActionClick : () => {}}
-          name="Check all fields"
+          name="Check all fields,bottom"
           value="checkAll"
         >
-          <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
-          <span name="Check all fields" value="checkAll" style={{ fontSize: '13px', color: disableCheckAll ? 'gray' : 'blue' }}>all</span>
+          <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields,bottom" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
+          <span name="Check all fields,bottom" value="checkAll" style={{ fontSize: '13px', color: disableCheckAll ? 'gray' : 'blue' }}>all</span>
         </div>
       </div>
     );
