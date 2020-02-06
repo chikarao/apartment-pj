@@ -59,7 +59,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementCheckClick = this.handleTemplateElementCheckClick.bind(this);
     this.handleTemplateElementMoveClick = this.handleTemplateElementMoveClick.bind(this);
     this.handleTemplateElementChangeSizeClick = this.handleTemplateElementChangeSizeClick.bind(this);
-    this.handleEditTemplateOnClick = this.handleEditTemplateOnClick.bind(this);
+    this.handleCreateNewTemplateElement = this.handleCreateNewTemplateElement.bind(this);
     this.handleTrashClick = this.handleTrashClick.bind(this);
     this.handleTemplateElementActionClick = this.handleTemplateElementActionClick.bind(this);
     this.handleMouseOverActionButtons = this.handleMouseOverActionButtons.bind(this);
@@ -1099,7 +1099,7 @@ renderEachDocumentField(page) {
     );
   }
 
-  handleEditTemplateOnClick() {
+  handleCreateNewTemplateElement() {
     this.setState({ createNewTemplateElementOn: !this.state.createNewTemplateElementOn }, () => {
       if (this.state.createNewTemplateElementOn) {
         document.addEventListener('click', this.getMousePosition);
@@ -1158,7 +1158,7 @@ renderEachDocumentField(page) {
     const elementVal = clickedElement.getAttribute('value');
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
-    const align = (horOrVer) => {
+    const align = (alignWhat) => {
       if (this.state.selectedTemplateElementArray.length > 0) {
         // get the first element to be clicked to make as a basis for move
         const firstClickedId = this.state.selectedTemplateElementArray[0];
@@ -1167,10 +1167,13 @@ renderEachDocumentField(page) {
           const array = [];
           _.each(this.props.templateElements, eachElement => {
             if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementArray.includes(eachElement.id)) {
-              if (horOrVer === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
-              if (horOrVer === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
+              if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
+              if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
+              if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width })
+              if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height })
             } // end of if
           }); // end of each
+          console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, array: ', elementVal, array);
           // call action to update each template element object in reducer
           this.props.updateDocumentElementLocally(array);
           // empty out array for selected fields
@@ -1189,17 +1192,24 @@ renderEachDocumentField(page) {
           if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%` })
         } // end of if
       }); // end of each
-      console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, array: ', elementVal, array);
       this.props.updateDocumentElementLocally(array);
     }
 
     console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
       switch (elementVal) {
-        case ('vertical' || 'horizontal'):
+        case 'vertical':
           align(elementVal);
           break;
 
         case 'horizontal':
+          align(elementVal);
+          break;
+
+        case 'alignWidth':
+          align(elementVal);
+          break;
+
+        case 'alignHeight':
           align(elementVal);
           break;
 
@@ -1375,7 +1385,10 @@ renderEachDocumentField(page) {
     // </span>
     // const createNewElement = this.state.createNewTemplateElementOn
     const elementsChecked = this.state.selectedTemplateElementArray.length > 0;
+    const multipleElementsChecked = this.state.selectedTemplateElementArray.length > 1;
     const disableCheckAll = !this.props.templateElements || (this.props.templateElements.length < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
+    const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementArray.length < 1;
+    // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementArray.length < 1;
         console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
         console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
     return (
@@ -1385,8 +1398,8 @@ renderEachDocumentField(page) {
       >
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleEditTemplateOnClick}
-          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray', color: 'blue' } : {}}
+          onClick={disableCreateNewElement ? this.handleCreateNewTemplateElement : () => {}}
+          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementArray.length > 0 ? 'gray' : 'blue' }}
           onMouseOver={this.handleMouseOverActionButtons}
           name="Create a new field"
           value="newField"
@@ -1395,25 +1408,25 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
           value="vertical"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Align fields vertically"
         >
-          <i value="vertical" name="Align fields vertically" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-vertical"></i>
+          <i value="vertical" name="Align fields vertically" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-vertical"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
           value="horizontal"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Align fields horizontally"
         >
-          <i value="horizontal" name="Align fields horizontally"  style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-horizontal"></i>
+          <i value="horizontal" name="Align fields horizontally"  style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} className="fas fa-ruler-horizontal"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveLeft"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields left"
@@ -1422,7 +1435,7 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveRight"
           name="Move fields right"
         >
@@ -1430,7 +1443,7 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveDown"
           name="Move fields down"
         >
@@ -1438,15 +1451,15 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveUp"
           name="Move fields up"
         >
-          <i  value="moveUp" name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
+          <i value="moveUp" name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTrashClick}
+          onClick={elementsChecked ? this.handleTrashClick : () => {}}
           name="Throw away field"
           value="trash"
         >
@@ -1489,7 +1502,7 @@ renderEachDocumentField(page) {
           name="Undo changes"
           value="undo"
         >
-          <i name="Undo changes"  style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-undo"></i>
+          <i name="Undo changes" style={{ color: 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-undo"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1500,21 +1513,23 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Align field height"
-          value="alignHeight"
-        >
-          <i name="Align field height" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
+          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
           name="Align field width"
           value="alignWidth"
         >
-          <i name="Align field width" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+          <i value="alignWidth" name="Align field width" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+          name="Align field height"
+          value="alignHeight"
+        >
+          <i value="alignHeight" name="Align field height" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          onClick={elementsChecked ? this.handleTemplateElementActionClick : () => {}}
           name="Uncheck all fields"
           value="uncheckAll"
         >
@@ -1523,7 +1538,7 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleTemplateElementActionClick}
+          onClick={!disableCheckAll ? this.handleTemplateElementActionClick : () => {}}
           name="Check all fields"
           value="checkAll"
         >
