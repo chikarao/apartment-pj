@@ -41,7 +41,8 @@ class CreateEditDocument extends Component {
       inputFocused: {},
       showDocumentPdf: false,
       useMainDocumentInsert: false,
-      selectedTemplateElementArray: [],
+      selectedTemplateElementIdArray: [],
+      selectedTemplateElementObjectArray: [],
       templateElementCount: 0,
       createNewTemplateElementOn: false,
       actionExplanationObject: null,
@@ -744,47 +745,47 @@ renderEachDocumentField(page) {
     console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
     // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
     // when element has not been checked
-    if (!this.state.selectedTemplateElementArray.includes(elementVal)) {
+    if (!this.state.selectedTemplateElementIdArray.includes(elementVal)) {
       // place in array of checked elements
       this.setState({
-        selectedTemplateElementArray: [...this.state.selectedTemplateElementArray, elementVal],
+        selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
       }, () => {
         // if all elements checked, set to true
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementArray.length === this.props.templateElements.length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === this.props.templateElements.length
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         })
-        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
       });
     } else {
       // if user clicks on check icon of element in checked array
       // form a new array from existing array since cannot mutate state elements
-      const newArray = [...this.state.selectedTemplateElementArray]
+      const newArray = [...this.state.selectedTemplateElementIdArray]
       // get index of element in array
       const index = newArray.indexOf(elementVal);
       // take out element at index in array
       newArray.splice(index, 1);
       // assign new array to state
-      this.setState({ selectedTemplateElementArray: newArray }, () => {
+      this.setState({ selectedTemplateElementIdArray: newArray }, () => {
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementArray.length === this.props.templateElements.length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === this.props.templateElements.length
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         })
-        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementArray, ', this.state.selectedTemplateElementArray);
+        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
       });
     }
   }
 
-  dragElement(element, tab, inputElement, parentRect, callback, move, elementType) {
+  dragElement(element, tabs, inputElements, parentRect, callback, move, elementType, selectedElements) {
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
     let pos4 = 0;
-
     // console.log('in create_edit_document, dragElement, parentElement.style.top, parentElement.leftstyle., ', parentElement.style.top, parentElement.style.left);
     // element.onmousedown = dragMouseDown;
+    // CAll main function
     dragMouseDown();
 
     function dragMouseDown(e) {
@@ -793,6 +794,7 @@ renderEachDocumentField(page) {
       // get the mouse cursor position at startup:
       pos3 = e.clientX;
       pos4 = e.clientY;
+      // assign close and drag callbacks to native handlers
       document.onmouseup = closeDragElement;
       // call a function whenever the cursor moves:
       document.onmousemove = elementDrag;
@@ -817,39 +819,67 @@ renderEachDocumentField(page) {
       if (move) {
         element.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
         element.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
+        if (selectedElements.length > 0) {
+          _.each(selectedElements, eachElement => {
+            if (eachElement.id !== element.id) {
+              eachElement.style.top = `${((eachElement.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
+              eachElement.style.left = `${((eachElement.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
+            }
+          })
+        }
       } else {
         // get original width and height of element to subtract from or add to
-        const originalWidth = parseFloat(element.style.width);
-        const originalHeight = parseFloat(element.style.height);
+        let originalWidth = parseFloat(element.style.width);
+        let originalHeight = parseFloat(element.style.height);
         // margin in PX
-        const originalTabMarginLeft = parseFloat(tab.style.marginLeft);
         // console.log('in create_edit_document, dragElement, element, originalWidth, originalHeight, ', element, originalWidth, originalHeight);
-        // console.log('in create_edit_document, dragElement, tab, originalTabMarginLeft, pos1 ', tab, originalTabMarginLeft, pos1);
+        // console.log('in create_edit_document, dragElement, tabs, originalTabMarginLeft, pos1 ', tabs, originalTabMarginLeft, pos1);
         // get percentage of the position delta in relation to parent element size in px
         const pos2Percentage = (pos2 / parentRect.height) * 100
         const pos1Percentage = (pos1 / parentRect.width) * 100
-        // console.log('in create_edit_document, dragElement, pos2Percentage, pos1Percentage, ', pos2Percentage, pos1Percentage);
+        console.log('in create_edit_document, dragElement, selectedElements, ', selectedElements);
         // subtract from, add to original attribute values and form strings to pass
         elementType !== 'string' ? element.style.height = `${(originalHeight - pos2Percentage)}%` : '';
         element.style.width = `${(originalWidth - pos1Percentage)}%`;
-        tab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
+
+        if (selectedElements.length > 0) {
+          _.each(selectedElements, eachElement => {
+            if (eachElement.id !== element.id) {
+              originalWidth = parseFloat(eachElement.style.width);
+              originalHeight = parseFloat(eachElement.style.height);
+              elementType !== 'string' ? eachElement.style.height = `${(originalHeight - pos2Percentage)}%` : '';
+              eachElement.style.width = `${(originalWidth - pos1Percentage)}%`;
+            }
+          })
+        }
+
+        // change tabs margin to move with width and height changes
+        _.each(tabs, eachTab => {
+          const originalTabMarginLeft = parseFloat(eachTab.style.marginLeft);
+          eachTab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
+        });
       }
-      console.log('in create_edit_document, dragElement, inputElement, element, tab, ', inputElement, element, tab);
+      console.log('in create_edit_document, dragElement, selectedElements, inputElement, element, tabs, ', selectedElements, inputElements, element, tabs);
     }
 
     function closeDragElement() {
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
-      let updatedElementObject = null
+
+      let updatedElementObject = null;
+      const array = [];
       if (move) {
         // id is the index 2 (third element) in split array
         // the wrapper div top and left are same as input element top and left
-        updatedElementObject = {
-          id: element.id.split('-')[2], // get the id part of template-element-[id]
-          left: element.style.left,
-          top: element.style.top
-        };
+        _.each(selectedElements, eachElement => {
+          updatedElementObject = {
+            id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
+            left: eachElement.style.left,
+            top: eachElement.style.top
+          };
+          array.push(updatedElementObject);
+        });
       } else {
         // if not move (resize) send object to update
         // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
@@ -860,39 +890,54 @@ renderEachDocumentField(page) {
         //   height: `${parseFloat(element.style.height) - (TAB_HEIGHT / parentRect.height)}%`
         // };
         // the actual size of the input element to be updated in app state
-        const inputElementDimensions = inputElement.getBoundingClientRect()
-        updatedElementObject = {
-          id: element.id.split('-')[2], // get the id part of template-element-[id]
-          width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
-          height: `${(inputElementDimensions.height / parentRect.height) * 100}%`
-        };
-        console.log('in create_edit_document, dragElement, closeDragElement, inputElementDimensions, ', inputElementDimensions);
-      }
-      console.log('in create_edit_document, dragElement, closeDragElement, element, ', element);
-      console.log('in create_edit_document, dragElement, closeDragElement, updatedElementObject, ', updatedElementObject);
+        _.each(selectedElements, eachElement => {
+            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, ', eachElement, inputElements);
+          const inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
+          const inputElementDimensions = inputElement[0].getBoundingClientRect()
+          updatedElementObject = {
+            id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
+            width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
+            height: `${(inputElementDimensions.height / parentRect.height) * 100}%`
+          };
+          array.push(updatedElementObject);
+          // console.log('in create_edit_document, dragElement, closeDragElement, eachElement, inputElement, inputElementDimensions, ', eachElement, inputElement, inputElementDimensions);
+        })
+      } // end of else
       // place in array to be processed in action and reducer
-      callback([updatedElementObject]);
+      callback(array);
     }
   }
 
+  getSelectedActualElements(elementIdString, ids) {
+    const array = [];
+    _.each(ids, id => {
+      array.push(document.getElementById(`${elementIdString}${id}`));
+    });
+    return array;
+  }
+
   handleTemplateElementMoveClick(event) {
+    // let selectedElementsId = [];
+    let selectedElements = [];
     const clickedElement = event.target;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value');
     const element = document.getElementById(`template-element-${elementVal}`);
-    console.log('in create_edit_document, handleTemplateElementMoveClick, element, ', element);
     // const parentElement = element.parentElement;
     const parentRect = element.parentElement.getBoundingClientRect()
     console.log('in create_edit_document, handleTemplateElementMoveClick, parentRect ', parentRect);
     const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
     const tab = document.getElementById(`template-element-tab-${elementVal}`);
+    // selectedElementsId = this.props.templateElements.length > 0 ? this.props.templateElements.filter(eachElement => this.state.selectedTemplateElementIdArray.includes(eachElement.id)) : [];
+    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
     // last true is for move or not; in this case this is for move element
-    this.dragElement(element, tab, null, parentRect, callback, true, null);
+    this.dragElement(element, null, null, parentRect, callback, true, null, selectedElements);
   }
 
   handleTemplateElementChangeSizeClick(event) {
+    let selectedElements = [];
     const clickedElement = event.target;
     // elementVal is id of template element
     console.log('in create_edit_document, handleTemplateElementChangeSizeClick, clickedElement, ', clickedElement);
@@ -900,14 +945,17 @@ renderEachDocumentField(page) {
     const elementType = clickedElement.getAttribute('type')
     // gets the wrapping div for the template element
     const element = document.getElementById(`template-element-${elementVal}`);
-    const inputElement = document.getElementById(`template-element-input-${elementVal}`);
-    const tab = document.getElementById(`template-element-tab-${elementVal}`);
-    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElement.getBoundingClientRect(), ', inputElement.getBoundingClientRect());
+    // const inputElement = document.getElementById(`template-element-input-${elementVal}`);
+    const inputElements = this.getSelectedActualElements('template-element-input-', this.state.selectedTemplateElementIdArray)
+    // const tab = document.getElementById(`template-element-tab-${elementVal}`);
+    const tabs = this.getSelectedActualElements('template-element-tab-', this.state.selectedTemplateElementIdArray)
+    // console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElement.getBoundingClientRect(), ', inputElement.getBoundingClientRect());
     // gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
+    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
     // callback for the action to update element array
     const callback = (updatedElementObject) => this.props.updateDocumentElementLocally(updatedElementObject);
-    this.dragElement(element, tab, inputElement, parentRect, callback, false, elementType);
+    this.dragElement(element, tabs, inputElements, parentRect, callback, false, elementType, selectedElements);
   }
 
   // NOT USED; Experiment for creating new input fields
@@ -963,7 +1011,7 @@ renderEachDocumentField(page) {
           // <i class="fas fa-expand-arrows-alt"></i>
           // <input type="checkbox" />
           // console.log('in create_edit_document, renderTemplateElements, eachElement.id.includes(template-element), ', eachElement.id.includes('template-element'));
-          const selected = this.state.selectedTemplateElementArray.includes(eachElement.id)
+          const selected = this.state.selectedTemplateElementIdArray.includes(eachElement.id)
           if (editTemplate) {
             return (
               <div
@@ -1113,32 +1161,28 @@ renderEachDocumentField(page) {
     }
     this.clearAllTimers(() => {});
     // clear all checks on elements
-    if (this.state.selectedTemplateElementArray.length > 0) {
-      this.setState({ selectedTemplateElementArray: [] });
+    if (this.state.selectedTemplateElementIdArray.length > 0) {
+      this.setState({ selectedTemplateElementIdArray: [] });
     }
   }
 
   handleTrashClick() {
-   if (this.state.selectedTemplateElementArray.length > 0) {
-     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementArray, () => {
-       this.setState({ selectedTemplateElementArray: [] });
+   if (this.state.selectedTemplateElementIdArray.length > 0) {
+     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => {
+       this.setState({ selectedTemplateElementIdArray: [] });
      });
     }
   }
 
-  clearAllTimers(callback) {
-    // let index = 0;
-    _.each(explanationTimerArray, eachTimerObj => {
-      // if (eachTimerObj && eachTimerObj.elementName === elementName) {
-      clearInterval(eachTimerObj.timerId);
-      // }
-      // index = explanationTimerArray.indexOf(eachTimerObj);
-      // explanationTimerArray.splice(explanationTimerArray.indexOf(eachTimerObj), 1);
-    });
-    explanationTimerArray = [];
-    callback();
-    console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
-  }
+clearAllTimers(callback) {
+  _.each(explanationTimerArray, eachTimerObj => {
+    clearInterval(eachTimerObj.timerId);
+  });
+  // set global variable explanationTimerArray
+  explanationTimerArray = [];
+  callback();
+  // console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
+}
 
   getElement(elementArray, baseElementId) {
     let objectReturned = null;
@@ -1159,14 +1203,14 @@ renderEachDocumentField(page) {
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     const align = (alignWhat) => {
-      if (this.state.selectedTemplateElementArray.length > 0) {
+      if (this.state.selectedTemplateElementIdArray.length > 0) {
         // get the first element to be clicked to make as a basis for move
-        const firstClickedId = this.state.selectedTemplateElementArray[0];
+        const firstClickedId = this.state.selectedTemplateElementIdArray[0];
         const baseElement = this.getElement(this.props.templateElements, firstClickedId);
         if (baseElement) {
           const array = [];
           _.each(this.props.templateElements, eachElement => {
-            if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+            if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
               if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left })
               if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top })
               if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width })
@@ -1177,15 +1221,15 @@ renderEachDocumentField(page) {
           // call action to update each template element object in reducer
           this.props.updateDocumentElementLocally(array);
           // empty out array for selected fields
-          this.setState({ selectedTemplateElementArray: [] });
+          this.setState({ selectedTemplateElementIdArray: [] });
         } // end of if baseElement
-      } // end of if state selectedTemplateElementArray
+      } // end of if state selectedTemplateElementIdArray
     };
 
     const move = (direction) => {
       const array = [];
       _.each(this.props.templateElements, eachElement => {
-        if (this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+        if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
           if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%` })
           if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%` })
           if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%` })
@@ -1195,7 +1239,7 @@ renderEachDocumentField(page) {
       this.props.updateDocumentElementLocally(array);
     }
 
-    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
+    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementIdArray: ', clickedElement, elementVal, this.state.selectedTemplateElementIdArray);
       switch (elementVal) {
         case 'vertical':
           align(elementVal);
@@ -1214,9 +1258,9 @@ renderEachDocumentField(page) {
           break;
 
         case 'checkAll': {
-          const checkAllArray = [...this.state.selectedTemplateElementArray];
+          const checkAllArray = [...this.state.selectedTemplateElementIdArray];
           _.each(this.props.templateElements, eachElement => {
-            if (!this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+            if (!this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
               checkAllArray.push(eachElement.id);
             }
           });
@@ -1224,7 +1268,7 @@ renderEachDocumentField(page) {
           if (checkAllArray.length > 0) {
             this.setState({
               allElementsChecked: true,
-              selectedTemplateElementArray: checkAllArray
+              selectedTemplateElementIdArray: checkAllArray
             });
           }
           // }
@@ -1232,10 +1276,10 @@ renderEachDocumentField(page) {
         } // looks like lint requires having block when case logic too long
 
         case 'uncheckAll':
-          // if there are checked elements clear out selectedTemplateElementArray
+          // if there are checked elements clear out selectedTemplateElementIdArray
           // and uncheckAll
             this.setState({
-              selectedTemplateElementArray: [],
+              selectedTemplateElementIdArray: [],
               allElementsChecked: false
             });
             break;
@@ -1355,24 +1399,6 @@ renderEachDocumentField(page) {
     const mousedLeaveElement = event.target;
     // const elementName = mousedLeaveElement.getAttribute('name')
     console.log('in create_edit_document, handleMouseLeaveActionButtons, mousedLeaveElement, mousedLeaveElement.tagName : ', mousedLeaveElement, mousedLeaveElement.tagName);
-    // // this.resetTimer(0);
-    //
-    // if (mousedLeaveElement.tagName !== ('I') && mousedLeaveElement.tagName !== 'SPAN') {
-    //   // if (this.state.actionExplanationObject) {
-    //   //   this.setState({ actionExplanationObject: null });
-    //   // }
-    //   let index;
-    //   if (explanationTimerArray.length > 0) {
-    //     _.each(explanationTimerArray, eachTimerObj => {
-    //       if (eachTimerObj && eachTimerObj.elementName === elementName) {
-    //         clearInterval(eachTimerObj.timerId);
-    //       }
-    //       index = explanationTimerArray.indexOf(eachTimerObj);
-    //       explanationTimerArray.splice(index, 1);
-    //     });
-    //     if (explanationTimerArray.length === 0) this.setState({ actionExplanationObject: null });
-    //   }
-    // }
     if (this.state.actionExplanationObject) {
       this.setState({ actionExplanationObject: null });
     }
@@ -1384,11 +1410,11 @@ renderEachDocumentField(page) {
     //   Font
     // </span>
     // const createNewElement = this.state.createNewTemplateElementOn
-    const elementsChecked = this.state.selectedTemplateElementArray.length > 0;
-    const multipleElementsChecked = this.state.selectedTemplateElementArray.length > 1;
+    const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
+    const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const disableCheckAll = !this.props.templateElements || (this.props.templateElements.length < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
-    const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementArray.length < 1;
-    // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementArray.length < 1;
+    const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
+    // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
         console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
         console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
     return (
@@ -1399,7 +1425,7 @@ renderEachDocumentField(page) {
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={disableCreateNewElement ? this.handleCreateNewTemplateElement : () => {}}
-          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementArray.length > 0 ? 'gray' : 'blue' }}
+          style={this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementIdArray.length > 0 ? 'gray' : 'blue' }}
           onMouseOver={this.handleMouseOverActionButtons}
           name="Create a new field"
           value="newField"
