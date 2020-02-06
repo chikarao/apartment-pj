@@ -1126,6 +1126,20 @@ renderEachDocumentField(page) {
     }
   }
 
+  clearAllTimers(callback) {
+    // let index = 0;
+    _.each(explanationTimerArray, eachTimerObj => {
+      // if (eachTimerObj && eachTimerObj.elementName === elementName) {
+      clearInterval(eachTimerObj.timerId);
+      // }
+      // index = explanationTimerArray.indexOf(eachTimerObj);
+      // explanationTimerArray.splice(explanationTimerArray.indexOf(eachTimerObj), 1);
+    });
+    explanationTimerArray = [];
+    callback();
+    console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
+  }
+
   getElement(elementArray, baseElementId) {
     let objectReturned = null;
     _.each(elementArray, eachElement => {
@@ -1138,6 +1152,7 @@ renderEachDocumentField(page) {
   }
 
   handleTemplateElementActionClick(event) {
+    this.clearAllTimers(() => {});
     const clickedElement = event.target;
     // element val is value of i or div in action box eg horizontal or vertical strings
     const elementVal = clickedElement.getAttribute('value');
@@ -1163,6 +1178,20 @@ renderEachDocumentField(page) {
         } // end of if baseElement
       } // end of if state selectedTemplateElementArray
     };
+
+    const move = (direction) => {
+      const array = [];
+      _.each(this.props.templateElements, eachElement => {
+        if (this.state.selectedTemplateElementArray.includes(eachElement.id)) {
+          if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%` })
+          if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%` })
+          if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%` })
+          if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%` })
+        } // end of if
+      }); // end of each
+      console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, array: ', elementVal, array);
+      this.props.updateDocumentElementLocally(array);
+    }
 
     console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementArray: ', clickedElement, elementVal, this.state.selectedTemplateElementArray);
       switch (elementVal) {
@@ -1200,6 +1229,22 @@ renderEachDocumentField(page) {
               allElementsChecked: false
             });
             break;
+
+        case 'moveLeft':
+          move(elementVal);
+        break;
+
+        case 'moveRight':
+          move(elementVal);
+        break;
+
+        case 'moveDown':
+          move(elementVal);
+        break;
+
+        case 'moveUp':
+          move(elementVal);
+        break;
 
         default: return null;
       }
@@ -1246,20 +1291,6 @@ renderEachDocumentField(page) {
       const timer = setInterval(lapseTime, 1000);
       explanationTimerArray.push({ timerId: timer, elementName });
     }
-
-  clearAllTimers(callback) {
-    // let index = 0;
-    _.each(explanationTimerArray, eachTimerObj => {
-      // if (eachTimerObj && eachTimerObj.elementName === elementName) {
-      clearInterval(eachTimerObj.timerId);
-      // }
-      // index = explanationTimerArray.indexOf(eachTimerObj);
-      // explanationTimerArray.splice(explanationTimerArray.indexOf(eachTimerObj), 1);
-    });
-    explanationTimerArray = [];
-    callback();
-    console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
-  }
 
   handleMouseOverActionButtons(event) {
     const mousedOverElement = event.target;
@@ -1382,32 +1413,36 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           value="moveLeft"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields left"
         >
-          <i value="moveLeft" name="Move fields left large step"  style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
+          <i value="moveLeft" name="Move fields left large step" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-left"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           value="moveRight"
           name="Move fields right"
         >
-          <i name="Move fields right" onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-right"></i>
+          <i value="moveRight" name="Move fields right" onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-angle-right"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           value="moveDown"
           name="Move fields down"
         >
-          <i name="Move fields down" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-down"></i>
+          <i value="moveDown" name="Move fields down" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-down"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          onClick={this.handleTemplateElementActionClick}
           value="moveUp"
           name="Move fields up"
         >
-          <i name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
+          <i  value="moveUp" name="Move fields up" style={{ color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-angle-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
