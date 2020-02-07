@@ -240,13 +240,15 @@ function getInitialValues(staff) {
 }
 
 function getLanguageArray(staffs, baseStaff) {
-  let array = [];
+  const array = [];
   _.each(staffs, eachStaff => {
     if (eachStaff.base_record_id == baseStaff.id) {
-      if (!array.includes(eachStaff.language_code)) {
+      if (array.indexOf(eachStaff.language_code) === -1) {
+      // if (!array.includes(eachStaff.language_code)) {
         array.push(eachStaff.language_code);
       }
-      if (!array.includes(baseStaff.language_code)) {
+      if (array.indexOf(baseStaff.language_code) === -1) {
+      // if (!array.includes(baseStaff.language_code)) {
         array.push(baseStaff.language_code);
       }
     }

@@ -330,10 +330,12 @@ function getLanguageArray(documentInserts, baseDocumentInsert) {
   let array = [];
   _.each(documentInserts, eachDocumentInsert => {
     if (eachDocumentInsert.base_record_id == baseDocumentInsert.id) {
-      if (!array.includes(eachDocumentInsert.language_code)) {
+      if (array.indexOf(eachDocumentInsert.language_code) === -1) {
+      // if (!array.includes(eachDocumentInsert.language_code)) {
         array.push(eachDocumentInsert.language_code);
       }
-      if (!array.includes(baseDocumentInsert.language_code)) {
+      // if (!array.includes(baseDocumentInsert.language_code) === -1) {
+      if (array.indexOf(baseDocumentInsert.language_code) === -1) {
         array.push(baseDocumentInsert.language_code);
       }
     }

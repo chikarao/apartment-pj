@@ -149,7 +149,8 @@ ProfileCreateModal = reduxForm({
 function getLanguageArray(profiles) {
   let array = [];
   _.each(profiles, eachProfile => {
-    if (!array.includes(eachProfile.language_code)) {
+    // if (!array.includes(eachProfile.language_code)) {
+    if (array.indexOf(eachProfile.language_code) === -1) {
       array.push(eachProfile.language_code)
     }
   });

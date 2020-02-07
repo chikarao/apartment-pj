@@ -196,7 +196,8 @@ class FormChoices extends Component {
             if (insertFieldObject[formValues[contingentRenderColumn]]) {
               languageCodeArray = insertFieldObject[formValues[contingentRenderColumn]].map(insertField => insertField.language_code)
               // get array of language codes for each insert field in obect
-              if (!languageCodeArray.includes(choice.value)) {
+              // if (!languageCodeArray.includes(choice.value)) {
+              if (languageCodeArray.indexOf(choice.value) === -1) {
                 // if has value find out what languages are in the field
                 return choice.type == 'string' ? inputElement : buttonElement;
               }
@@ -223,7 +224,8 @@ class FormChoices extends Component {
                 // languageCodeArray = insertFieldObject[eachChoice.value]
                 let count = 0;
                 _.each(implementedLanguages, eachImplementedLanguage => {
-                  if (!languageCodeArray.includes(eachImplementedLanguage)) {
+                  // if (!languageCodeArray.includes(eachImplementedLanguage)) {
+                  if (languageCodeArray.indexOf(eachImplementedLanguage) === -1) {
                     count++;
                     // return choice.type == 'string' ? inputElement : buttonElement;
                   }
@@ -261,7 +263,8 @@ class FormChoices extends Component {
               // if an array with existing contractor language is true
               if (this.props.existingLanguageArray) {
                 // if choice language is not included in the array, render the choice else return
-                if (!this.props.existingLanguageArray.includes(choice.value)) {
+                // if (!this.props.existingLanguageArray.includes(choice.value)) {
+                if (this.props.existingLanguageArray.indexOf(choice.value) === -1) {
                   return choice.type == 'string' ? inputElement : buttonElement;
                 } else {
                   return;

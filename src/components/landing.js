@@ -210,7 +210,8 @@ class Landing extends Component {
       // let bookingCount = 0;
       _.each(lines, (line) => {
         // console.log('in landing, readIcal, line: ', line);
-        if (line.includes('DTSTART')) {
+        // if (line.includes('DTSTART')) {
+        if (line.indexOf('DTSTART') !== -1) {
           bookings = {};
           // if there is DTSTART in a line
           const dateStart = line.split(':');
@@ -227,7 +228,8 @@ class Landing extends Component {
           // console.log('in landing, readIcal, startDay: ', startDay);
           // consolstartog('in landing, readIcal, dateStart bookings: ', bookings);
         }
-        if (line.includes('DTEND')) {
+        if (line.indexOf('DTEND') !== -1) {
+        // if (line.includes('DTEND')) {
           const dateEnd = line.split(':');
           // bookings[bookingCount].date_end = dateEnd[1];
           bookings.date_end = this.formatIcalDate(dateEnd[1]);

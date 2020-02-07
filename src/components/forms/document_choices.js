@@ -272,7 +272,8 @@ class DocumentChoices extends Component {
     return (
         <select
           {...input}
-          value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
+          // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
+          value={(this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value}
           id="valueInput"
           maxLength={this.props.charLimit}
           key={choice.params.val}

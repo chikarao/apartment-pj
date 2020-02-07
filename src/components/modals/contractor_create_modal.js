@@ -227,10 +227,12 @@ function getLanguageArray(contractors, baseContractor) {
   let array = [];
   _.each(contractors, eachContractor => {
     if (eachContractor.base_record_id == baseContractor.id) {
-      if (!array.includes(eachContractor.language_code)) {
+      // if (!array.includes(eachContractor.language_code)) {
+      if (array.indexOf(eachContractor.language_code) === -1) {
         array.push(eachContractor.language_code);
       }
-      if (!array.includes(baseContractor.language_code)) {
+      // if (!array.includes(baseContractor.language_code)) {
+      if (array.indexOf(baseContractor.language_code) === -1) {
         array.push(baseContractor.language_code);
       }
     }

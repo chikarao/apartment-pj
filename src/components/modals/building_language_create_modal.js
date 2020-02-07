@@ -157,7 +157,8 @@ function getLanguageArray(buildingLanguages) {
   console.log('in buildingLanguage_create_modal, getLanguageArray, buildingLanguages: ', buildingLanguages);
   let array = [];
   _.each(buildingLanguages, eachBuildingLanguage => {
-    if (!array.includes(eachBuildingLanguage.language_code)) {
+    // if (!array.includes(eachBuildingLanguage.language_code)) {
+    if (array.indexOf(eachBuildingLanguage.language_code) === -1) {
       array.push(eachBuildingLanguage.language_code)
     }
   });

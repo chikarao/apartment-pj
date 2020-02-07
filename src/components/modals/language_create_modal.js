@@ -97,7 +97,8 @@ class LanguageCreateModal extends Component {
       languageCodesArray.push(language.language_code);
     });
     return _.map(languages, (v, k) => {
-      const languageAlreadyCreated = languageCodesArray.includes(k);
+      // const languageAlreadyCreated = languageCodesArray.includes(k);
+      const languageAlreadyCreated = languageCodesArray.indexOf(k) !== -1;
         // console.log('in modal, in renderLanguageSelectOptions, v, k:', v, k);
         if ((this.props.flat.language_code !== k) && !languageAlreadyCreated) {
           return (

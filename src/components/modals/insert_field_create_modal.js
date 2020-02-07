@@ -327,7 +327,8 @@ function getExistingInsertFieldsObject(insertFields) {
       objectReturned[eachField.name] = [];
       objectReturned[eachField.name].push(eachField.language_code);
     } else {
-      if (!objectReturned[eachField.name].includes(eachField.language_code)) {
+      // if (!objectReturned[eachField.name].includes(eachField.language_code)) {
+      if (objectReturned[eachField.name].indexOf(eachField.language_code) === -1) {
         objectReturned[eachField.name].push(eachField.language_code);
       }
     }

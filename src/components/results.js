@@ -1382,7 +1382,8 @@ class Results extends Component {
 
     // if checked element (amenity) is included in the state amenitySearchArray, take it out
     // and create a new state array with out the unchecked array
-    if (amenitySearchArray.includes(elementVal)) {
+    // if (amenitySearchArray.includes(elementVal)) {
+    if (amenitySearchArray.indexOf(elementVal) !== -1) {
         const newArray = [...amenitySearchArray]; // make a separate copy of the array
         // _.each(amenitySearchArray, amenity => { // iterate throught he existing array
           // if (amenity == elementVal) { // if amenity in existing array is equal to the checked amenity
@@ -1420,7 +1421,7 @@ class Results extends Component {
           return (
             <div key={i} className="amenity-input-each col-xs-11 col-sm-3 col-md-3">
               <label className="amenity-radio">{amenities[a][this.props.appLanguageCode]}</label>
-              <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={this.state.amenitySearchArray.includes(a) ? true : false} onChange={this.handleAmenityCheck} />
+              <input value={a} type="checkbox" className="createFlatAmenityCheckBox" checked={(this.state.amenitySearchArray.indexOf(a) !== -1) ? true : false} onChange={this.handleAmenityCheck} />
             </div>
           );
         // }
@@ -1552,7 +1553,7 @@ class Results extends Component {
                 {AppLanguages.size[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-                {selectedTabArray.includes(0) ? `${floorSpaceMin} m² ~ ${floorSpaceMax} m²` : `${floorSpaceMin} m² ~` }
+                {(selectedTabArray.indexOf(0) !== -1) ? `${floorSpaceMin} m² ~ ${floorSpaceMax} m²` : `${floorSpaceMin} m² ~` }
               </div>
             </div>
             <div className="results-search-box-sub" >
@@ -1560,7 +1561,7 @@ class Results extends Component {
                 {AppLanguages.bedrooms[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-                {selectedTabArray.includes(1) ? `${bedrooms}` : `${bedroomsMin} ~` }
+                {(selectedTabArray.indexOf(1) !== -1) ? `${bedrooms}` : `${bedroomsMin} ~` }
               </div>
             </div>
             <div className="results-search-box-sub">
@@ -1568,7 +1569,7 @@ class Results extends Component {
                 {AppLanguages.station[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-                {selectedTabArray.includes(2) ? `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~ ${stationMax}   ${AppLanguages.mins[this.props.appLanguageCode]}` : `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~` }
+                {(selectedTabArray.indexOf(2) !== -1) ? `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~ ${stationMax}   ${AppLanguages.mins[this.props.appLanguageCode]}` : `${stationMin}   ${AppLanguages.mins[this.props.appLanguageCode]} ~` }
               </div>
             </div>
             <div className="results-search-box-sub">
@@ -1576,7 +1577,7 @@ class Results extends Component {
                 {AppLanguages.price[this.props.appLanguageCode]}
               </div>
               <div className="results-search-box-sub-display">
-                {selectedTabArray.includes(3) ? `$${priceMin} ~ ${priceMax}` : `$${priceMin} ~` }
+                {(selectedTabArray.indexOf(3) !== -1) ? `$${priceMin} ~ ${priceMax}` : `$${priceMin} ~` }
               </div>
             </div>
           </div>

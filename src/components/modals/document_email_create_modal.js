@@ -166,7 +166,8 @@ class DocumentEmailCreateModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const parsedElementVal = parseFloat(elementVal, 10);
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
-    const alreadyChecked = this.state.checkedDocumentsArray.includes(parsedElementVal);
+    // const alreadyChecked = this.state.checkedDocumentsArray.includes(parsedElementVal);
+    const alreadyChecked = this.state.checkedDocumentsArray.indexOf(parsedElementVal) !== -1;
     // console.log('in DocumentEmailCreateModal, handleDocumentSelectCheck, elementVal: ', elementVal);
 
     if (alreadyChecked) {

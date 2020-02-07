@@ -640,7 +640,8 @@ renderEachDocumentField(page) {
       let nullRequiredField = false;
       if (this.props.requiredFieldsNull) {
         if (this.props.requiredFieldsNull.length > 0) {
-          nullRequiredField = this.props.requiredFieldsNull.includes(formField.name);
+          // nullRequiredField = this.props.requiredFieldsNull.includes(formField.name);
+          nullRequiredField = this.props.requiredFieldsNull.indexOf(formField.name) !== -1;
         }
       }
 
@@ -750,7 +751,8 @@ renderEachDocumentField(page) {
     console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
     // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
     // when element has not been checked
-    if (!this.state.selectedTemplateElementIdArray.includes(elementVal)) {
+    // if (!this.state.selectedTemplateElementIdArray.includes(elementVal)) {
+    if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
       this.setState({
         selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
@@ -1044,7 +1046,8 @@ renderEachDocumentField(page) {
           // <i class="fas fa-expand-arrows-alt"></i>
           // <input type="checkbox" />
           // console.log('in create_edit_document, renderTemplateElements, eachElement.id.includes(template-element), ', eachElement.id.includes('template-element'));
-          const selected = this.state.selectedTemplateElementIdArray.includes(eachElement.id)
+          // const selected = this.state.selectedTemplateElementIdArray.includes(eachElement.id)
+          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
           if (editTemplate) {
             return (
               <div
@@ -1208,7 +1211,8 @@ renderEachDocumentField(page) {
      const array = [];
      _.each(this.props.templateElements, eachElement => {
        console.log('in create_edit_document, handleTrashClick, eachElement: ', eachElement);
-       if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+       // if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+       if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
          console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray: ', this.state.selectedTemplateElementIdArray);
          const modifiedEach = eachElement;
          modifiedEach.action = 'delete';
@@ -1263,7 +1267,8 @@ clearAllTimers(callback) {
         if (baseElement) {
           const array = [];
           _.each(this.props.templateElements, eachElement => {
-            if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+            if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
+            // if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
               if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left, action: 'update' });
               if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top, action: 'update' });
               if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, action: 'update' });
@@ -1287,7 +1292,8 @@ clearAllTimers(callback) {
     const move = (direction) => {
       const array = [];
       _.each(this.props.templateElements, eachElement => {
-        if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+        // if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+        if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
           if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, action: 'update' });
           if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, action: 'update' });
           if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, action: 'update' });
@@ -1307,7 +1313,7 @@ clearAllTimers(callback) {
         // index starts at -1, the last element in index
         const index = this.state.historyIndex
         const lastActionArray = this.state.templateEditHistoryArray[index]
-        console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, lastActionArray: ', elementVal, lastActionArray);
+        console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
 
       } else {
 
@@ -1335,7 +1341,9 @@ clearAllTimers(callback) {
         case 'checkAll': {
           const checkAllArray = [...this.state.selectedTemplateElementIdArray];
           _.each(this.props.templateElements, eachElement => {
-            if (!this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+            // if (!this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
+            // IE does not support includes
+            if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) === -1) {
               checkAllArray.push(eachElement.id);
             }
           });

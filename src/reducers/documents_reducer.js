@@ -36,9 +36,10 @@ export default function (state = {
     // console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, state.templateElements: ', state.templateElements);
       // iterate through each element in app state and see if included in array action.payload
       const newArrayDelete = [...state.templateElements]
-      _.each(state.templateElements, (eachExisting, i) => {
+      _.each(state.templateElements, (eachExisting) => {
         // console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, eachExisting: ', eachExisting);
-        if (action.payload.includes(eachExisting.id)) {
+        // if (action.payload.includes(eachExisting.id)) {
+        if (action.payload.indexOf(eachExisting.id) !== -1) {
           const indexDelete = newArrayDelete.indexOf(eachExisting.id, 1);
           newArrayDelete.splice(indexDelete, 1);
         }

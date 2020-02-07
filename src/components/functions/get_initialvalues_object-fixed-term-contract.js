@@ -404,7 +404,8 @@ export default (props) => {
           _.each(Facility.facility_type.choices, eachChoice => {
             // iterate over each facility assigned to flat
             _.each(booking.facilities, eachFacility => {
-              if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
+              // if (eachFacility.facility_type == eachChoice.value && facilityTypes.includes(eachFacility.facility_type)) {
+              if (eachFacility.facility_type == eachChoice.value && facilityTypes.indexOf(eachFacility.facility_type) !== -1) {
                 // if there is a facility that match the choices and the types that we care about
                 // push them in respective arrays
                 eachFacility.facility_type == 'car_parking' ? carParkingArray.push(eachFacility) : '';

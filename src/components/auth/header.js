@@ -119,7 +119,8 @@ class Header extends Component {
      }
      // for websocket connection to actioncable when user logs on and off
 
-     const onShowPage = this.props.location.pathname.includes('/show/');
+     // const onShowPage = this.props.location.pathname.includes('/show/');
+     const onShowPage = this.props.location.pathname.indexOf('/show/') !== -1;
      // connect cable if 1) NOT on showFlat page, OR 2) nonCablePageOverriden (set in eg messaging modal) is true, OR currentUserIsOwner is true
      const cableConnectPage = !onShowPage || this.props.nonCablePageOverriden || this.props.currentUserIsOwner;
      // console.log('in header, componentDidUpdate, prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage: ', prevProps.nonCablePageOverriden, this.props.nonCablePageOverriden, cableConnectPage);
@@ -393,7 +394,8 @@ class Header extends Component {
       let newMessages = false;
       // console.log('in header, newMessagesOrNot, conversations: ', conversations);
       _.each(conversations, conversation => {
-        const ownFlatConversation = flatIdArray.includes(conversation.flat_id);
+        // const ownFlatConversation = flatIdArray.includes(conversation.flat_id);
+        const ownFlatConversation = flatIdArray.indexOf(conversation.flat_id) !== -1;
         _.each(conversation.messages, message => {
           if (ownFlatConversation && message.sent_by_user) {
             if (message.read === false) {
@@ -486,7 +488,8 @@ class Header extends Component {
       const onMyPage = this.props.location.pathname === '/mypage';
       const onMessagingMainPage = this.props.location.pathname === `/messagingmain/${this.props.auth.id}`;
       // on show page pathname returned is like in string type: /show/2
-      const onShowPage = this.props.location.pathname.includes('/show/');
+      // const onShowPage = this.props.location.pathname.includes('/show/');
+      const onShowPage = this.props.location.pathname.indexOf('/show/') !== -1;
       //   const currentFlatId = this.props.location.pathname.match(/\d+/)
       // regex to match one or more numbers in the pathname to get if user is owner of the flat; returns object
        // show link to signout and signed in as...

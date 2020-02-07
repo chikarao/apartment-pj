@@ -766,7 +766,8 @@ formatDate(date) {
   getProfileLanguages(profiles) {
     const array = [];
     _.each(profiles, eachProfile => {
-      if (!array.includes(eachProfile.language_code)) {
+      // if (!array.includes(eachProfile.language_code)) {
+      if (array.indexOf(eachProfile.language_code) === -1) {
         array.push(eachProfile.language_code)
       }
     });
@@ -1127,7 +1128,8 @@ formatDate(date) {
       if (eachRecord.base_record_id == baseRecord.id) {
         arrayReturned.push(eachRecord.language_code);
       }
-      if (!arrayReturned.includes(baseRecord.language_code)) {
+      if (arrayReturned.indexOf(baseRecord.language_code) === -1) {
+      // if (!arrayReturned.includes(baseRecord.language_code)) {
         arrayReturned.push(baseRecord.language_code);
       }
     });
@@ -1477,7 +1479,8 @@ formatDate(date) {
     // check if clicked element is included in the donotClosearray
     let clickedInsideChoiceBox = false;
     _.each(donotClosearray, each => {
-      if (classArray && classArray.includes(each)) {
+      // if (classArray && classArray.includes(each)) {
+      if (classArray && classArray.indexOf(each) !== -1) {
         clickedInsideChoiceBox = true;
       }
     });

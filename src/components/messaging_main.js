@@ -296,7 +296,8 @@ class MessagingMain extends Component {
     const elementVal = clickedElement.getAttribute('value');
     const elementName = clickedElement.getAttribute('name');
 
-    const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
+    // const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.includes(clickedElement.className)
+    const listingClicked = SUB_BOX_LISTING_CLASS_ARRAY.indexOf(clickedElement.className) !== -1;
 
     // eleementVal is the conversation id
     // calls action to update conversation in api to mark them archived = true
@@ -447,9 +448,12 @@ class MessagingMain extends Component {
     // !!! If any classes added below subBox, add into this array subBoxOtherDecendantsArray so that any clicks inside will not close box!!!!!
     const subBoxOtherDecendantsArray = SUB_BOX_LISTING_CLASS_ARRAY;
     // test for clicks on elements inside boxes
-    const boxChildrenClicked = boxChildNodeArray.includes(e.target.className);
-    const subBoxChildrenClicked = subBoxChildNodeArray.includes(e.target.className);
-    const subBoxOtherDecendantsClicked = subBoxOtherDecendantsArray.includes(e.target.className);
+    // const boxChildrenClicked = boxChildNodeArray.includes(e.target.className);
+    const boxChildrenClicked = boxChildNodeArray.indexOf(e.target.className) !== -1;
+    // const subBoxChildrenClicked = subBoxChildNodeArray.includes(e.target.className);
+    const subBoxChildrenClicked = subBoxChildNodeArray.indexOf(e.target.className) !== -1;
+    // const subBoxOtherDecendantsClicked = subBoxOtherDecendantsArray.includes(e.target.className);
+    const subBoxOtherDecendantsClicked = subBoxOtherDecendantsArray.indexOf(e.target.className) !== -1;
     const boxClicked = (box.className == e.target.className)
     const subBoxClicked = (subBox.className == e.target.className)
     const boxBoxClicked = (boxBox.className == e.target.className)
@@ -514,8 +518,10 @@ class MessagingMain extends Component {
         // console.log('in messagingMain, searchConversation, conversation, splitInputVal : ', splitInputVal);
         // if message has any one of input words, check if that word has already been counted
         // if not coiunted, add to array to be counted and increment counter
-        if (lowerCaseBody.includes(eachWord.toLowerCase())) {
-          if (!countedArray.includes(eachWord)) {
+        // if (lowerCaseBody.includes(eachWord.toLowerCase())) {
+        if (lowerCaseBody.indexOf(eachWord.toLowerCase()) !== -1) {
+          // if (!countedArray.includes(eachWord)) {
+          if (countedArray.indexOf(eachWord) === -1) {
             countedArray.push(eachWord);
             counter++;
           }
@@ -594,7 +600,8 @@ class MessagingMain extends Component {
               // if strings included in one of messages, add to array of conversation
               // and ids to make sure there is no duplicate
               if (convHasSearchWords) {
-                if (!filteredConversationsIdArray.includes(conv.id)) {
+                // if (!filteredConversationsIdArray.includes(conv.id)) {
+                if (filteredConversationsIdArray.indexOf(conv.id) === -1) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
                   // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.trashed_by_user: ', convByCurrentUser, conv.trashed_by_user);
@@ -602,7 +609,8 @@ class MessagingMain extends Component {
               } // end of if convHasSearchWords
             } else { // if searchInputVal has no value ie user is not searching
               // just add to array if not added  already
-              if (!filteredConversationsIdArray.includes(conv.id)) {
+              // if (!filteredConversationsIdArray.includes(conv.id)) {
+              if (filteredConversationsIdArray.indexOf(conv.id) === -1) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
                 // console.log('in messagingMain, initialFilteredConversations, convByCurrentUser, conv.trashed_by_user: ', convByCurrentUser, conv.trashed_by_user);
@@ -623,7 +631,8 @@ class MessagingMain extends Component {
               // console.log('in messagingMain, initialFilteredConversations, convHasSearchWords: ', convHasSearchWords);
               // if strings included in one of messages, add to array
               if (convHasSearchWords) {
-                if (!filteredConversationsIdArray.includes(conv.id)) {
+                // if (!filteredConversationsIdArray.includes(conv.id)) {
+                if (filteredConversationsIdArray.indexOf(conv.id) === -1) {
                   filteredConversationsArray.push(conv);
                   filteredConversationsIdArray.push(conv.id);
                   // console.log('in messagingMain, initialFilteredConversations, not convByCurrentUser, conv.trashed: ', convByCurrentUser, conv.trashed);
@@ -631,7 +640,8 @@ class MessagingMain extends Component {
               } // end of if convHasSearchWords
             } else { // if searchInputVal does not have value
               // just add to array if not already
-              if (!filteredConversationsIdArray.includes(conv.id)) {
+              if (filteredConversationsIdArray.indexOf(conv.id) === -1) {
+              // if (!filteredConversationsIdArray.includes(conv.id)) {
                 filteredConversationsArray.push(conv);
                 filteredConversationsIdArray.push(conv.id);
                 // console.log('in messagingMain, initialFilteredConversations, not convByCurrentUser, conv.trashed: ', convByCurrentUser, conv.trashed);

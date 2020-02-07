@@ -927,7 +927,8 @@ class MapInteraction extends Component {
     const categoriesArray = [];
     // console.log('in map_interaction, getCategoriesArray, places: ', places);
     _.each(places, place => {
-      if (!categoriesArray.includes(place.category) && place.language == placeLanguageCode) {
+      // if (!categoriesArray.includes(place.category) && place.language == placeLanguageCode) {
+      if ((categoriesArray.indexOf(place.category) === -1) && place.language == placeLanguageCode) {
         categoriesArray.push(place.category);
       }
     });
@@ -1112,7 +1113,8 @@ class MapInteraction extends Component {
     if (!placesEmpty) {
       _.each(places, eachPlace => {
         console.log('in MapInteraction, renderPlacesBox eachPlace', eachPlace);
-        if (!placeLanguageArray.includes(eachPlace.language)) {
+        // if (!placeLanguageArray.includes(eachPlace.language)) {
+        if (placeLanguageArray.indexOf(eachPlace.language) === -1) {
           placeLanguageArray.push(eachPlace.language);
         }
       });

@@ -78,7 +78,8 @@ class GoogleMap extends Component {
       // if prev props had flat ids
        if (prevPropsFlatIdArray.length > 0) {
         // if prev props did NOT include current flat id, then those are new
-         if (!prevPropsFlatIdArray.includes(flat.id)) {
+         // if (!prevPropsFlatIdArray.includes(flat.id)) {
+         if (prevPropsFlatIdArray.indexOf(flat.id) === -1) {
            // newFlatsIdArray.push(flat.id);
            newFlatsArray.push(flat);
          }
@@ -96,7 +97,8 @@ class GoogleMap extends Component {
      const oldFlatMarkersArray = [];
      _.each(this.state.flatMarkersArray, marker => {
        // flatMarkersArrayIds.push(marker.flatId);
-       if (!currentPropsFlatIdArray.includes(marker.flatId)) {
+       // if (!currentPropsFlatIdArray.includes(marker.flatId)) {
+       if (currentPropsFlatIdArray.indexOf(marker.flatId) === -1) {
       //     oldFlatMarkerIdArray.push(markerId);
         oldFlatMarkersArray.push(marker);
         marker.setMap(null);
@@ -117,7 +119,8 @@ class GoogleMap extends Component {
          // if prev props had building ids
          if (prevPropsBuildingIdArray.length > 0) {
            // if prev props did NOT include current building id, then those are new
-           if (!prevPropsBuildingIdArray.includes(parseInt(buildingKey, 10))) {
+           // if (!prevPropsBuildingIdArray.includes(parseInt(buildingKey, 10))) {
+           if (prevPropsBuildingIdArray.indexOf(parseInt(buildingKey, 10)) === -1) {
              // newBuildingsArray.push(building);
              newBuildingsObject[buildingKey] = this.props.flatBuildings[buildingKey];
            } else {
@@ -141,7 +144,8 @@ class GoogleMap extends Component {
        // current props of buildings, push into oldBuildingMarkersArray to send to createMarkers
        // set map of null to take off of map
        _.each(this.state.buildingMarkersArray, marker => {
-         if (!currentPropsBuildingIdArray.includes(marker.buildingId)) {
+         // if (!currentPropsBuildingIdArray.includes(marker.buildingId)) {
+         if (currentPropsBuildingIdArray.indexOf(marker.buildingId) === -1) {
             oldBuildingMarkersArray.push(marker);
             marker.setMap(null);
           }

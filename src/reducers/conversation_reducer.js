@@ -335,7 +335,8 @@ export default function (state = {
       // iterate through action.payload to get index of conversations in existing state;
       _.each(action.payload, conversationId => {
         // console.log('in conversation reducer, CHECKED_CONVERSATIONS, before if includes newArray, conversationId: ', newArray, conversationId);
-        if (newArray.includes(conversationId)) {
+        if (newArray.indexOf(conversationId) !== -1) {
+        // if (newArray.includes(conversationId)) {
           // console.log('in conversation reducer, CHECKED_CONVERSATIONS, if includes before splice newArray: ', newArray);
           const index = newArray.indexOf(conversationId); // get the index of the element
           // add index of ids and push them into array for later
