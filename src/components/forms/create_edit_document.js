@@ -728,16 +728,20 @@ renderEachDocumentField(page) {
       const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
       // console.log('in create_edit_document, getMousePosition1, x, y', x, y);
       // Set state with count of elements and new element in app state in state.templateElements
+      // const templateElementCount = this.state.templateElementCount;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
-        templateElementAttributes: { id: `${this.state.templateElementCount + 1}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '1.6%', type: 'text', className: 'document-rectangle', borderColor: 'lightgray' },
-        createNewTemplateElementOn: false
+        createNewTemplateElementOn: false,
+        // historyIndex: this.historyIndex + 1
       }, () => {
         // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
-        this.props.createDocumentElementLocally(this.state.templateElementAttributes);
+        const templateElementAttributes = { id: `${this.state.templateElementCount}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '1.6%', type: 'text', className: 'document-rectangle', borderColor: 'lightgray' }
+        this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
-        this.state.templateElementAttributes.action = 'create'
-        this.setState({ templateEditHistoryArray: [...this.state.templateEditHistoryArray, [this.state.templateElementAttributes]] })
+        // const elementCopy = this.getNewElementObject(templateElementAttributes)
+        // elementCopy.action = 'create'
+        this.setUpdatedTemplateHistoryArray(templateElementAttributes, 'create')
+        // this.setState({ templateEditHistoryArray: [...this.state.templateEditHistoryArray, [templateElementAttributes]] })
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
       });
@@ -760,7 +764,7 @@ renderEachDocumentField(page) {
       }, () => {
         // if all elements checked, set to true
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementIdArray.length === this.props.templateElements.length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         })
@@ -777,7 +781,7 @@ renderEachDocumentField(page) {
       // assign new array to state
       this.setState({ selectedTemplateElementIdArray: newArray }, () => {
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementIdArray.length === this.props.templateElements.length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         })
@@ -1207,55 +1211,81 @@ renderEachDocumentField(page) {
     }
   }
 
+  getNewElementObject(element) {
+    const object = {};
+    _.each(Object.keys(element), eachKey => {
+      object[eachKey] = element[eachKey];
+    });
+    return object;
+  }
+
+  setUpdatedTemplateHistoryArray(element, action) {
+    // Called when
+    const getNewExistingHistoryArray = () => {
+      const newArray = [];
+      _.each(this.state.templateEditHistoryArray, eachHistoryArray => {
+        const arr = [];
+        _.each(eachHistoryArray, eachElement => {
+          const obj = {};
+          _.each(Object.keys(eachElement), eachKey => {
+            obj[eachKey] = eachElement[eachKey];
+          });
+          arr.push(obj);
+        });
+        newArray.push(arr);
+      });
+      return newArray;
+    };
+
+    const array = [];
+    // get new history array since cannot modify state elements
+    const newArray = getNewExistingHistoryArray();
+    // iterate through each selected element ids
+    // if there is no element in parameters, ie the action was based on selected eleemnts
+    if (!element) {
+      _.each(this.state.selectedTemplateElementIdArray, eachSelectedId => {
+        // if id is in mapped template elements object { id: {element} }
+        if (this.props.templateElements[eachSelectedId]) {
+          // Get a new object to modify so all other objects in templateEditHistoryArray
+          // do not get modified
+          const modifiedEach = this.getNewElementObject(this.props.templateElements[eachSelectedId]);
+          modifiedEach.action = action;
+          array.push(modifiedEach);
+        }
+      });
+    } else { // else there is an element e.g. new element
+      const modifiedElement = this.getNewElementObject(element);
+      modifiedElement.action = action;
+      array.push(modifiedElement);
+    }
+    // console.log('in create_edit_document, handleTrashClick, array: ', array);
+    // elements are deleted in logic in action and reducers, when sent an array of elements
+    // elements are marked deleted in edit history in component state
+    // const newArray = [...this.state.templateEditHistoryArray];
+    // splice(start) remove all elements after index start; start is INCLUSIVE
+    console.log('in create_edit_document, setUpdatedTemplateHistoryArray, before setting state action, array: ', action, array);
+    newArray.splice(this.state.historyIndex + 1);
+
+    this.setState({
+      selectedTemplateElementIdArray: [], // empty out selected elements array
+      allElementsChecked: false, // all elements are not checked anymore
+      templateEditHistoryArray: [...newArray, array] // add new array of history
+    }, () => {
+      console.log('in create_edit_document, setUpdatedTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
+      this.setState({
+        undoingAndRedoing: false,
+        historyIndex: this.state.templateEditHistoryArray.length - 1,
+      }, () => {
+        console.log('in create_edit_document, setUpdatedTemplateHistoryArray, this.state.undoingAndRedoing, this.state.templateEditHistoryArray: ', this.state.undoingAndRedoing, this.state.templateEditHistoryArray);
+      });
+    });// end of setState
+  }
+
   handleTrashClick() {
    if (this.state.selectedTemplateElementIdArray.length > 0) {
-     const array = [];
-     const newArray = [];
-     _.each(this.state.templateEditHistoryArray, eachHistoryArray => {
-       const arr = [];
-       _.each(eachHistoryArray, eachElement => {
-         const obj = {};
-         _.each(Object.keys(eachElement), eachKey => {
-           obj[eachKey] = eachElement[eachKey];
-         });
-         arr.push(obj);
-       });
-       newArray.push(arr);
-     });
-     
-     _.each(this.props.templateElements, eachElement => {
-       console.log('in create_edit_document, handleTrashClick, eachElement: ', eachElement);
-       // if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
-       if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
-         console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray: ', this.state.selectedTemplateElementIdArray);
-         const modifiedEach = eachElement;
-         modifiedEach.action = 'delete';
-         array.push(modifiedEach);
-       }
-     });
-     console.log('in create_edit_document, handleTrashClick, array: ', array);
-     // elements are deleted in logic in action and reducers,
-     // elements are marked deleted in edit history in component state
-     // const newArray = [...this.state.templateEditHistoryArray];
-     // splice(start) remove all elements after index start; start is INCLUSIVE
-     newArray.splice(this.state.historyIndex + 1);
-     console.log('in create_edit_document, handleTrashClick, newArray, his.state.historyIndex: ', newArray, this.state.historyIndex);
-     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => {
-       this.setState({
-         selectedTemplateElementIdArray: [],
-         allElementsChecked: false,
-         templateEditHistoryArray: [...newArray, array]
-       }, () => {
-         console.log('in create_edit_document, handleTrashClick, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
-         this.setState({
-           undoingAndRedoing: false,
-           historyIndex: this.state.templateEditHistoryArray.length - 1,
-         }, () => {
-           console.log('in create_edit_document, handleTrashClick, this.state.undoingAndRedoing, this.state.templateEditHistoryArray: ', this.state.undoingAndRedoing, this.state.templateEditHistoryArray);
-         });
-       });
-     });
-    }
+     // const array = this.setUpdatedTemplateHistoryArray('delete');
+     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => this.setUpdatedTemplateHistoryArray(null, 'delete'));
+   } // end of if selectedTemplateElementIdArray.length > 0
   }
 
 clearAllTimers(callback) {
@@ -1290,7 +1320,8 @@ clearAllTimers(callback) {
       if (this.state.selectedTemplateElementIdArray.length > 0) {
         // get the first element to be clicked to make as a basis for move
         const firstClickedId = this.state.selectedTemplateElementIdArray[0];
-        const baseElement = this.getElement(this.props.templateElements, firstClickedId);
+        const baseElement = this.props.templateElements[firstClickedId];
+        // const baseElement = this.getElement(this.props.templateElements, firstClickedId);
         if (baseElement) {
           const array = [];
           _.each(this.props.templateElements, eachElement => {
@@ -1340,14 +1371,23 @@ clearAllTimers(callback) {
     }
 
     const deleteElement = (elementsIdArray) => {
-      this.props.deleteDocumentElementLocally(elementsIdArray, () => {})
+      this.props.deleteDocumentElementLocally(elementsIdArray, () => {});
     }
 
     const updateElement = (elementsArray) => {
-      this.props.updateDocumentElementLocally(elementsArray)
-    }
+      this.props.updateDocumentElementLocally(elementsArray);
+    };
 
-    function redoUndoAction(lastActionArray, doWhatNow) {
+    const redoUndoAction = (lastActionArray, doWhatNow) => {
+      const removeActionAttribute = (lastActionArr) => {
+        const array = [];
+        _.each(lastActionArr, each => {
+          const eachModified = this.getNewElementObject(each);
+          delete eachModified.action;
+          array.push(eachModified);
+        });
+        return array;
+      }
       // if the last action taken was to craete an element,
       // if from undo action, call delete, and if redo, call create
       if (lastActionArray[0].action === 'create') {
@@ -1358,20 +1398,24 @@ clearAllTimers(callback) {
 
       if (lastActionArray[0].action === 'update') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
-        updateElement(lastActionArray);
+        const newLastAction = removeActionAttribute(lastActionArray);
+        updateElement(newLastAction);
       }
 
       if (lastActionArray[0].action === 'delete') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
+        const newLastAction = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
-          _.each(lastActionArray, eachElement => {
+          _.each(newLastAction, eachElement => {
+            const modifiedElement = eachElement;
+            delete modifiedElement.action;
             createElement(eachElement);
           });
         }
 
         if (doWhatNow === 'redo') {
           const elementsIdArray = [];
-          _.each(lastActionArray, eachElement => {
+          _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
           });
           deleteElement(elementsIdArray);
@@ -1384,26 +1428,25 @@ clearAllTimers(callback) {
       if (doWhat === 'undo') {
         // if user is not currently undoing or redoing actions,
         // set undoingAndRedoing to true and set index to last in templateEditHistoryArray
-        if (!this.state.undoingAndRedoing) {
-          this.setState({
-            undoingAndRedoing: true,
-            historyIndex: this.state.templateEditHistoryArray.length - 1
-          }, () => {
-            lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
-            // if the last action was to create, delete
-            console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-            redoUndoAction(lastActionArray, doWhat)
-            this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
-              console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing after set state elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-
-            })
-          });
-        } else { // if !state.undoingAndRedoing
+        // if (!this.state.undoingAndRedoing) {
+        //   this.setState({
+        //     undoingAndRedoing: true,
+        //     historyIndex: this.state.templateEditHistoryArray.length - 1
+        //   }, () => {
+        //     lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
+        //     // if the last action was to create, delete
+        //     console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+        //     redoUndoAction(lastActionArray, doWhat)
+        //     this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
+        //       console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing after set state elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+        //     })
+        //   });
+        // } else { // if !state.undoingAndRedoing
           if (this.state.historyIndex >= 0) {
-            this.setState({
+            // this.setState({
               // historyIndex: this.state.templateEditHistoryArray - 1,
-              historyIndex: this.state.historyIndex,
-            }, () => {
+              // historyIndex: this.state.historyIndex,
+            // }, () => {
               lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
               console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
               // if the last action was to create, delete
@@ -1411,9 +1454,9 @@ clearAllTimers(callback) {
               this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
                 console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
               })
-            });
+            // });
           }
-        } // end of else if !state.undoingAndRedoing
+        // } // end of else if !state.undoingAndRedoing
         // this.state.historyIndex
         console.log('in create_edit_document, handleTemplateElementActionClick, after all if else elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
 
@@ -1621,6 +1664,7 @@ clearAllTimers(callback) {
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
     const enableRedo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1;
+    const templateElementsLength = Object.keys(this.props.templateElements)
 
     // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
         console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
@@ -1660,7 +1704,7 @@ clearAllTimers(callback) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          onClick={templateElementsLength > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveLeft"
           onMouseOver={this.handleMouseOverActionButtons}
           name="Move fields left,top"
@@ -1669,7 +1713,7 @@ clearAllTimers(callback) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          onClick={templateElementsLength > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveRight"
           name="Move fields right,top"
         >
@@ -1677,7 +1721,7 @@ clearAllTimers(callback) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          onClick={templateElementsLength > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveDown"
           name="Move fields down,top"
         >
@@ -1685,7 +1729,7 @@ clearAllTimers(callback) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.props.templateElements.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          onClick={templateElementsLength > 0 ? this.handleTemplateElementActionClick : () => {}}
           value="moveUp"
           name="Move fields up,top"
         >

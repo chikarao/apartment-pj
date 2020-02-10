@@ -2126,7 +2126,7 @@ export function updateDocumentElementLocally(array) {
 }
 
 export function deleteDocumentElementLocally(array, callback) {
-  console.log('in actions index, deleteDocumentElementLocally array:', array);
+  console.log('in actions index, deleteDocumentElementLocally array, callback:', array, callback);
   callback();
   return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
 }
