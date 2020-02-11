@@ -795,18 +795,28 @@ renderEachDocumentField(page) {
     let pos2 = 0;
     let pos3 = 0;
     let pos4 = 0;
-    // console.log('in create_edit_document, dragElement, parentElement.style.top, parentElement.leftstyle., ', parentElement.style.top, parentElement.style.left);
-    // element.onmousedown = dragMouseDown;
+    console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
-    _.each(selectedElements, eachElement => {
-      originalValueObject[eachElement.id.split('-')[2]] = {
-        originalTop: eachElement.style.top,
-        originalLeft: eachElement.style.left,
-        originalWidth: eachElement.style.width,
-        originalHeight: eachElement.style.height,
+    // If no elements are selected, get the original values of the one element's attributes
+    if (inputElements.length > 0) {
+      _.each(inputElements, eachElement => {
+        const inputElementDimensions = eachElement.getBoundingClientRect();
+        originalValueObject[eachElement.id.split('-')[3]] = {
+          top: inputElementDimensions.top,
+          left: inputElementDimensions.left,
+          width: inputElementDimensions.width,
+          height: inputElementDimensions.height,
+        };
+      });
+    } else {
+      originalValueObject[element.id.split('-')[3]] = {
+        top: element.style.top,
+        left: element.style.left,
+        width: element.style.width,
+        height: element.style.height,
       };
-    });
+    }
 
     // CAll main function
     dragMouseDown();
@@ -845,10 +855,10 @@ renderEachDocumentField(page) {
         modifiedElement.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
         if (selectedElements.length > 0) {
           _.each(selectedElements, eachElement => {
-            // const originalTop = eachElement.top;
+            // const top = eachElement.top;
             // const originalLeft = eachElement.left;
-            // originalValueObject[eachElement.id.split('-')[2]] = { originalTop: eachElement.style.top, originalLeft: eachElement.style.left };
-            console.log('in create_edit_document, dragElement, in each selectedElements, eachElement, ', eachElement);
+            // originalValueObject[eachElement.id.split('-')[2]] = { top: eachElement.style.top, originalLeft: eachElement.style.left };
+            // console.log('in create_edit_document, dragElement, in each selectedElements, eachElement, ', eachElement);
             const modifiedElem = eachElement;
             if (eachElement.id !== element.id) {
               modifiedElem.style.top = `${((eachElement.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
@@ -865,7 +875,7 @@ renderEachDocumentField(page) {
         // get percentage of the position delta in relation to parent element size in px
         const pos2Percentage = (pos2 / parentRect.height) * 100
         const pos1Percentage = (pos1 / parentRect.width) * 100
-        console.log('in create_edit_document, dragElement, selectedElements, ', selectedElements);
+        // console.log('in create_edit_document, dragElement, selectedElements, ', selectedElements);
         // subtract from, add to original attribute values and form strings to pass
         const modifiedElement = element;
         elementType !== 'string' ? modifiedElement.style.height = `${(originalHeight - pos2Percentage)}%` : '';
@@ -891,7 +901,7 @@ renderEachDocumentField(page) {
           modifiedTab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
         });
       }
-      console.log('in create_edit_document, dragElement, selectedElements, inputElement, element, tabs, ', selectedElements, inputElements, element, tabs);
+      // console.log('in create_edit_document, dragElement, selectedElements, inputElement, element, tabs, ', selectedElements, inputElements, element, tabs);
     }
 
     function closeDragElement() {
@@ -899,9 +909,11 @@ renderEachDocumentField(page) {
       document.onmouseup = null;
       document.onmousemove = null;
 
+      // Object to be sent to reducer in array below
       let updatedElementObject = null;
       const array = [];
-      const interatedElements = selectedElements.length > 0 ? selectedElements : [element]
+      // If no elements selected, use the one element dragged in array
+      const interatedElements = selectedElements.length > 0 ? selectedElements : [element];
 
       if (move) {
         // id is the index 2 (third element) in split array
@@ -911,8 +923,10 @@ renderEachDocumentField(page) {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             left: eachElement.style.left,
             top: eachElement.style.top,
-            oLeft: originalValueObject[eachElement.id.split('-')[2]].originalLeft,
-            oTop: originalValueObject[eachElement.id.split('-')[2]].originalTop,
+            oLeft: `${(originalValueObject[eachElement.id.split('-')[2]].left / parentRect.left) * 100}%`,
+            oTop: `${(originalValueObject[eachElement.id.split('-')[2]].top / parentRect.top) * 100}%`,
+            // oLeft: originalValueObject[eachElement.id.split('-')[2]].left,
+            // oTop: originalValueObject[eachElement.id.split('-')[2]].top,
             action: 'update'
           };
           console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
@@ -937,8 +951,10 @@ renderEachDocumentField(page) {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
             height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
-            oWidth: originalValueObject[eachElement.id.split('-')[2]].originalWidth,
-            oHeight: originalValueObject[eachElement.id.split('-')[2]].originalHeight,
+            oWidth: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
+            oHeight: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
+            // oWidth: originalValueObject[eachElement.id.split('-')[2]].width,
+            // oHeight: originalValueObject[eachElement.id.split('-')[2]].height,
             action: 'update',
           };
           console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
@@ -947,10 +963,11 @@ renderEachDocumentField(page) {
         });
       } // end of else
       console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
+      // Callback defined in resize and move handlers
       actionCallback(array);
     }
   }
-
+  // Gets the actual elements (not just ids) of selected elements in handlers resize and mvoe
   getSelectedActualElements(elementIdString, ids) {
     const array = [];
     _.each(ids, id => {
@@ -1354,45 +1371,59 @@ clearAllTimers(callback) {
         // const baseElement = this.getElement(this.props.templateElements, firstClickedId);
         if (baseElement) {
           const array = [];
+          const originalValueObject = {};
           // _.each(this.props.templateElements, eachElement => {
           _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
             const eachElement = this.props.templateElements[eachElementId];
             if (eachElement && eachElement.id !== baseElement.id) {
+              originalValueObject[eachElement.id] = {
+                top: eachElement.top,
+                left: eachElement.left,
+                width: eachElement.width,
+                height: eachElement.height
+              };
             // if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
             // if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
-              if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left, action: 'update' });
-              if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top, action: 'update' });
-              if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, action: 'update' });
-              if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height, action: 'update' });
+              if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
+              if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top, oTop: originalValueObject[eachElement.id].top, action: 'update' });
+              if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, oWidth: originalValueObject[eachElement.id].width, action: 'update' });
+              if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height, oHeight: originalValueObject[eachElement.id].height, action: 'update' });
             } // end of if
           }); // end of each
           console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, array: ', elementVal, array);
           // call action to update each template element object in reducer
           this.props.updateDocumentElementLocally(array);
+          this.setUpdatedTemplateHistoryArray(array, 'update');
           // empty out array for selected fields
-          this.setState({
-            // selectedTemplateElementIdArray: [],
-            templateEditHistoryArray: [...this.state.templateEditHistoryArray, array]
-          }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, this.state.templateEditHistoryArray: ', elementVal, this.state.templateEditHistoryArray);
-          });
+          // this.setState({
+          //   // selectedTemplateElementIdArray: [],
+          //   templateEditHistoryArray: [...this.state.templateEditHistoryArray, array]
+          // }, () => {
+          //   console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, this.state.templateEditHistoryArray: ', elementVal, this.state.templateEditHistoryArray);
+          // });
         } // end of if baseElement
       } // end of if state selectedTemplateElementIdArray
     };
 
-    const move = (direction) => {
+    const moveElements = (direction) => {
       console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       const array = [];
+      const originalValueObject = {};
+
       _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
       // _.each(this.props.templateElements, eachElement => {
         // if (this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
         const eachElement = this.props.templateElements[eachElementId];
         // if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
         if (eachElement) {
-          if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, action: 'update' });
-          if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, action: 'update' });
-          if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, action: 'update' });
-          if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%`, action: 'update' });
+          originalValueObject[eachElement.id] = {
+            top: eachElement.top,
+            left: eachElement.left,
+          };
+          if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
+          if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
+          if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, oTop: originalValueObject[eachElement.id].top, action: 'update' });
+          if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%`, oTop: originalValueObject[eachElement.id].top, action: 'update' });
         } // end of if
       }); // end of each
 
@@ -1461,11 +1492,12 @@ clearAllTimers(callback) {
 
       if (lastActionArray[0].action === 'update') {
         if (doWhatNow === 'undo') {
-          // get attributes without 'o' infront
+          // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
+          // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         }
@@ -1591,19 +1623,19 @@ clearAllTimers(callback) {
             break;
 
         case 'moveLeft':
-          move(elementVal);
+          moveElements(elementVal);
           break;
 
         case 'moveRight':
-          move(elementVal);
+          moveElements(elementVal);
           break;
 
         case 'moveDown':
-          move(elementVal);
+          moveElements(elementVal);
           break;
 
         case 'moveUp':
-          move(elementVal);
+          moveElements(elementVal);
           break;
 
         case 'undo':
