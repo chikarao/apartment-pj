@@ -795,11 +795,12 @@ renderEachDocumentField(page) {
     let pos2 = 0;
     let pos3 = 0;
     let pos4 = 0;
-    console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
+    // console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
-    // If no elements are selected, get the original values of the one element's attributes
-    if (inputElements.length > 0) {
+    // Use input elements and not selectedElements since input element dimensions
+    // drive the size of the wrapper and the tabs
+    if (inputElements) {
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
         originalValueObject[eachElement.id.split('-')[3]] = {
@@ -810,12 +811,15 @@ renderEachDocumentField(page) {
         };
       });
     } else {
-      originalValueObject[element.id.split('-')[3]] = {
-        top: element.style.top,
-        left: element.style.left,
-        width: element.style.width,
-        height: element.style.height,
-      };
+      _.each(selectedElements, eachElement => {
+        // const inputElementDimensions = eachElement.getBoundingClientRect();
+        originalValueObject[eachElement.id.split('-')[2]] = {
+          top: eachElement.style.top,
+          left: eachElement.style.left,
+          // width: eachElement.width,
+          // height: eachElement.height,
+        };
+      });
     }
 
     // CAll main function
@@ -845,9 +849,6 @@ renderEachDocumentField(page) {
       pos4 = e.clientY;
       // console.log('in create_edit_document, dragElement, pos3, pos4, parentRect, move ', pos3, pos4, parentRect, move);
       // set the element's new position:
-      // element.offsetTop is the number of pixels from the top of the closest relatively positioned parent element.
-      // element.style.top = (element.offsetTop - pos2) + "px";
-      // element.style.left = (element.offsetLeft - pos1) + "px";
       // In percentages; Assign to element.
       if (move) {
         const modifiedElement = element;
@@ -855,9 +856,6 @@ renderEachDocumentField(page) {
         modifiedElement.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
         if (selectedElements.length > 0) {
           _.each(selectedElements, eachElement => {
-            // const top = eachElement.top;
-            // const originalLeft = eachElement.left;
-            // originalValueObject[eachElement.id.split('-')[2]] = { top: eachElement.style.top, originalLeft: eachElement.style.left };
             // console.log('in create_edit_document, dragElement, in each selectedElements, eachElement, ', eachElement);
             const modifiedElem = eachElement;
             if (eachElement.id !== element.id) {
@@ -871,11 +869,9 @@ renderEachDocumentField(page) {
         let originalWidth = parseFloat(element.style.width);
         let originalHeight = parseFloat(element.style.height);
         // margin in PX
-        // console.log('in create_edit_document, dragElement, tabs, originalTabMarginLeft, pos1 ', tabs, originalTabMarginLeft, pos1);
         // get percentage of the position delta in relation to parent element size in px
         const pos2Percentage = (pos2 / parentRect.height) * 100
         const pos1Percentage = (pos1 / parentRect.width) * 100
-        // console.log('in create_edit_document, dragElement, selectedElements, ', selectedElements);
         // subtract from, add to original attribute values and form strings to pass
         const modifiedElement = element;
         elementType !== 'string' ? modifiedElement.style.height = `${(originalHeight - pos2Percentage)}%` : '';
@@ -891,7 +887,7 @@ renderEachDocumentField(page) {
               elementType !== 'string' ? modifiedElem.style.height = `${(originalHeight - pos2Percentage)}%` : '';
               modifiedElem.style.width = `${(originalWidth - pos1Percentage)}%`;
             }
-          })
+          });
         }
 
         // change tabs margin to move with width and height changes
@@ -919,17 +915,15 @@ renderEachDocumentField(page) {
         // id is the index 2 (third element) in split array
         // the wrapper div top and left are same as input element top and left
         _.each(interatedElements, eachElement => {
+          console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
           updatedElementObject = {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             left: eachElement.style.left,
             top: eachElement.style.top,
-            oLeft: `${(originalValueObject[eachElement.id.split('-')[2]].left / parentRect.left) * 100}%`,
-            oTop: `${(originalValueObject[eachElement.id.split('-')[2]].top / parentRect.top) * 100}%`,
-            // oLeft: originalValueObject[eachElement.id.split('-')[2]].left,
-            // oTop: originalValueObject[eachElement.id.split('-')[2]].top,
+            oLeft: originalValueObject[eachElement.id.split('-')[2]].left,
+            oTop: originalValueObject[eachElement.id.split('-')[2]].top,
             action: 'update'
           };
-          console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
           // place in array to be processed in action and reducer
           array.push(updatedElementObject);
         });
@@ -937,11 +931,6 @@ renderEachDocumentField(page) {
         // if not move (resize) send object to update
         // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
         // to adjust input element height and avoid wrapping div height at render
-        // updatedElementObject = {
-        //   id: element.id.split('-')[2],
-        //   width: element.style.width,
-        //   height: `${parseFloat(element.style.height) - (TAB_HEIGHT / parentRect.height)}%`
-        // };
         // the actual size of the input element to be updated in app state
         _.each(interatedElements, eachElement => {
           const inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
@@ -953,16 +942,14 @@ renderEachDocumentField(page) {
             height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
             oWidth: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
             oHeight: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
-            // oWidth: originalValueObject[eachElement.id.split('-')[2]].width,
-            // oHeight: originalValueObject[eachElement.id.split('-')[2]].height,
             action: 'update',
           };
-          console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
+          // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
           // place in array to be processed in action and reducer
           array.push(updatedElementObject);
         });
       } // end of else
-      console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
+      // console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
       // Callback defined in resize and move handlers
       actionCallback(array);
     }
