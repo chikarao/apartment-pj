@@ -1473,7 +1473,18 @@ clearAllTimers(callback) {
       // if from undo action, call delete, and if redo, call create
       if (lastActionArray[0].action === 'create') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action create lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
-        if (doWhatNow === 'undo') deleteElement([lastActionArray[0].id]); // send array of id
+        if (doWhatNow === 'undo') {
+          deleteElement([lastActionArray[0].id])
+          // Take the checked element ids out of selectedTemplateElementIdArray
+          const newArray = [...this.state.selectedTemplateElementIdArray];
+          // If element id is in selectedTemplateElementIdArray, take it out of the array
+          const index = this.state.selectedTemplateElementIdArray.indexOf(lastActionArray[0].id);
+          if (index !== -1) {
+            newArray.splice(index, 1);
+            this.setState({ selectedTemplateElementIdArray: newArray });
+          }
+        } // send array of id
+
         if (doWhatNow === 'redo') createElement(lastActionArray[0]); // send just object hash
       }
 
@@ -1496,69 +1507,51 @@ clearAllTimers(callback) {
         if (doWhatNow === 'undo') {
           _.each(newLastAction, eachElement => {
             const modifiedElement = eachElement;
-            delete modifiedElement.action;
+            // delete modifiedElement.action;
             createElement(eachElement);
           });
         }
 
         if (doWhatNow === 'redo') {
           const elementsIdArray = [];
+          const newArray = [...this.state.selectedTemplateElementIdArray];
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
+            // if element id is in selectedTemplateElementIdArray, remove it 
+            const index = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id);
+            if (index !== -1) {
+              newArray.splice(index, 1);
+              this.setState({ selectedTemplateElementIdArray: newArray });
+            }
           });
           deleteElement(elementsIdArray);
         }
       }
-    }
+    };
 
     const redoUndo = (doWhat) => {
       let lastActionArray = [];
       if (doWhat === 'undo') {
-        // if user is not currently undoing or redoing actions,
-        // set undoingAndRedoing to true and set index to last in templateEditHistoryArray
-        // if (!this.state.undoingAndRedoing) {
-        //   this.setState({
-        //     undoingAndRedoing: true,
-        //     historyIndex: this.state.templateEditHistoryArray.length - 1
-        //   }, () => {
-        //     lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
-        //     // if the last action was to create, delete
-        //     console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-        //     redoUndoAction(lastActionArray, doWhat)
-        //     this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
-        //       console.log('in create_edit_document, handleTemplateElementActionClick, in if state !undoingAndRedoing after set state elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-        //     })
-        //   });
-        // } else { // if !state.undoingAndRedoing
-          if (this.state.historyIndex >= 0) {
-            // this.setState({
-              // historyIndex: this.state.templateEditHistoryArray - 1,
-              // historyIndex: this.state.historyIndex,
-            // }, () => {
-              lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
-              console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-              // if the last action was to create, delete
-              redoUndoAction(lastActionArray, doWhat)
-              this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
-                console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-              })
-            // });
-          }
-        // } // end of else if !state.undoingAndRedoing
-        // this.state.historyIndex
-        console.log('in create_edit_document, handleTemplateElementActionClick, after all if else elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-
+        if (this.state.historyIndex >= 0) {
+          // Get the array of objects at historyIndex
+          lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex];
+          // Call the action
+          redoUndoAction(lastActionArray, doWhat)
+          // Decrement historyIndex
+          this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
+            console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+          })
+        }
       } else { // else for if doWhat undo; else REDO
         console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+        // First increment historyIndex
         this.setState({
           historyIndex: this.state.historyIndex + 1
         }, () => {
+          // Get array of objects at historyIndex
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
           console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-          // if (this.historyIndex < this.state.templateEditHistoryArray.length - 1) {
-          //   this.setState({ historyIndex: this.state.historyIndex + 1 });
-          // }
         });
       }
     };
