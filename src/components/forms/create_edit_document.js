@@ -26,7 +26,7 @@ import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fiel
 const TAB_WIDTH = 70;
 const TAB_HEIGHT = 23;
 const TAB_REAR_SPACE = 5;
-const MAX_HISTORY_ARRAY = 10;
+const MAX_HISTORY_ARRAY_LENGTH = 10;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared
 let explanationTimerArray = [];
@@ -79,7 +79,20 @@ class CreateEditDocument extends Component {
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
     // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
-    console.log('in create_edit_document, componentDidMount, document', document);
+    const localStorageHistory = localStorage.getItem('documentHistory');
+    console.log('in create_edit_document, componentDidMount, localStorageHistory', localStorageHistory);
+    let destringifiedHistory = {};
+    if (localStorageHistory) {
+      destringifiedHistory = JSON.parse(localStorageHistory);
+      this.setState({
+        templateEditHistoryArray: destringifiedHistory,
+      }, () => {
+        this.setState({ historyIndex: this.state.templateEditHistoryArray.length - 1 }, () => {
+          console.log('in create_edit_document, componentDidMount, this.state.templateEditHistoryArray', this.state.templateEditHistoryArray);
+        })
+      })
+    }
+
     if (this.props.bookingData) {
       const {
         flat,
@@ -802,6 +815,7 @@ renderEachDocumentField(page) {
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
+      // if inputElement then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
         originalValueObject[eachElement.id.split('-')[3]] = {
@@ -811,16 +825,19 @@ renderEachDocumentField(page) {
           height: inputElementDimensions.height,
         };
       });
-    } else {
+    } else if (selectedElements.length > 0) {
       _.each(selectedElements, eachElement => {
-        // const inputElementDimensions = eachElement.getBoundingClientRect();
         originalValueObject[eachElement.id.split('-')[2]] = {
           top: eachElement.style.top,
           left: eachElement.style.left,
-          // width: eachElement.width,
-          // height: eachElement.height,
         };
       });
+    } else {
+      // if selectedElements is empty, must be a single eleemnt drag move
+      originalValueObject[element.id.split('-')[2]] = {
+        top: element.style.top,
+        left: element.style.left,
+      };
     }
 
     // CAll main function
@@ -1297,13 +1314,13 @@ renderEachDocumentField(page) {
     // console.log('in create_edit_document, handleTrashClick, array: ', array);
     // elements are deleted in logic in action and reducers, when sent an array of elements
     // elements are marked deleted in edit history in component state
-    // const newArray = [...this.state.templateEditHistoryArray];
     // splice(start) remove all elements after index start; start is INCLUSIVE
     console.log('in create_edit_document, setTemplateHistoryArray, before setting state action, array: ', action, array);
     newArray.splice(this.state.historyIndex + 1);
-
+    // if the new array equals MAX_HISTORY_ARRAY_LENGTH, drop the first element in the array
+    // to make room for new array
     let droppedHistory = null;
-    if (newArray.length >= MAX_HISTORY_ARRAY) droppedHistory = newArray.shift();
+    if (newArray.length >= MAX_HISTORY_ARRAY_LENGTH) droppedHistory = newArray.shift();
 
     this.setState({
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
@@ -1316,6 +1333,15 @@ renderEachDocumentField(page) {
         historyIndex: this.state.templateEditHistoryArray.length - 1,
       }, () => {
         console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
+        let destringifiedHistory = {};
+        const localStorageHistory = localStorage.getItem('documentHistory');
+        console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
+        if (localStorageHistory) {
+          // if historystring, unstringify it and add agreementId = historyArray
+          destringifiedHistory = JSON.parse(localStorageHistory);
+        }
+        destringifiedHistory[this.props.agreement.id] = this.state.templateEditHistoryArray
+        localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
       });
     });// end of setState
   }
