@@ -797,7 +797,7 @@ renderEachDocumentField(page) {
     let pos4 = 0;
     // console.log('in create_edit_document, dragElement, parentElement.style.top, parentElement.leftstyle., ', parentElement.style.top, parentElement.style.left);
     // element.onmousedown = dragMouseDown;
-    // CAll main function
+    // Get the original values of each element selected for use in history array
     const originalValueObject = {};
     _.each(selectedElements, eachElement => {
       originalValueObject[eachElement.id.split('-')[2]] = {
@@ -808,6 +808,7 @@ renderEachDocumentField(page) {
       };
     });
 
+    // CAll main function
     dragMouseDown();
 
     function dragMouseDown(e) {
@@ -915,6 +916,7 @@ renderEachDocumentField(page) {
             action: 'update'
           };
           console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
+          // place in array to be processed in action and reducer
           array.push(updatedElementObject);
         });
       } else {
@@ -930,6 +932,7 @@ renderEachDocumentField(page) {
         _.each(interatedElements, eachElement => {
           const inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
           const inputElementDimensions = inputElement[0].getBoundingClientRect()
+          // oWidth and oHeight for original values for use in history
           updatedElementObject = {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
@@ -939,10 +942,10 @@ renderEachDocumentField(page) {
             action: 'update',
           };
           console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
+          // place in array to be processed in action and reducer
           array.push(updatedElementObject);
         });
       } // end of else
-      // place in array to be processed in action and reducer
       console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
       actionCallback(array);
     }
@@ -962,20 +965,18 @@ renderEachDocumentField(page) {
     const clickedElement = event.target;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value');
+    // Get the element being dragged directly
     const element = document.getElementById(`template-element-${elementVal}`);
-    // const parentElement = element.parentElement;
+    // Get the dimensions of the parent element
     const parentRect = element.parentElement.getBoundingClientRect()
     // console.log('in create_edit_document, handleTemplateElementMoveClick, parentRect ', parentRect);
+    // define callback to be called in dragElement closeDragElement
     const callback = (updatedElementsArray) => {
       console.log('in create_edit_document, handleTemplateElementMoveClick, updatedElementsArray, ', updatedElementsArray);
       this.props.updateDocumentElementLocally(updatedElementsArray);
-      // this.setState({ templateEditHistoryArray: [...this.state.templateEditHistoryArray, updatedElementsArray] }, () => {
-      //   console.log('in create_edit_document, handleTemplateElementMoveClick, this.state.templateEditHistoryArray, ', this.state.templateEditHistoryArray);
-      // });
       this.setUpdatedTemplateHistoryArray(updatedElementsArray, 'update');
     };
-    // const tab = document.getElementById(`template-element-tab-${elementVal}`);
-    // selectedElementsId = this.props.templateElements.length > 0 ? this.props.templateElements.filter(eachElement => this.state.selectedTemplateElementIdArray.includes(eachElement.id)) : [];
+    // Get array of elements selected or checked by user
     selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
@@ -996,30 +997,33 @@ renderEachDocumentField(page) {
     // This is the base element for attribute changes
     const element = document.getElementById(`template-element-${elementVal}`);
     // const inputElement = document.getElementById(`template-element-input-${elementVal}`);
+    // Get the actual input elements so they can be resized directly
     if (this.state.selectedTemplateElementIdArray.length > 0) {
+      // If multiple elements selected, get array of multiple input elements
       inputElements = this.getSelectedActualElements('template-element-input-', this.state.selectedTemplateElementIdArray)
       // const tab = document.getElementById(`template-element-tab-${elementVal}`);
+      // Get array of tabs attached to elements so marginLeft can be set dynamically
       tabs = this.getSelectedActualElements('template-element-tab-', this.state.selectedTemplateElementIdArray)
     } else {
+      // If no other elements are selected, just put the one element into an array
       inputElements = [document.getElementById(`template-element-input-${elementVal}`)];
+      // Place the one tab into an array
       tabs = [document.getElementById(`template-element-tab-${elementVal}`)];
     }
     // console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElements, tabs, ', inputElements, tabs);
     // gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
     selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
-    // callback for the action to update element array
+    // callback for the action to update element array, and to update history array and historyIndex
     const callback = (updatedElementsArray) => {
       this.props.updateDocumentElementLocally(updatedElementsArray);
-      // this.setState({ templateEditHistoryArray: [...this.state.templateEditHistoryArray, updatedElementsArray] }, () => {
-      //   console.log('in create_edit_document, handleTemplateElementChangeSizeClick, this.state.templateEditHistoryArray, ', this.state.templateEditHistoryArray);
-      // });
       this.setUpdatedTemplateHistoryArray(updatedElementsArray, 'update');
     };
+    // Call drag element
     this.dragElement(element, tabs, inputElements, parentRect, callback, false, elementType, selectedElements);
   }
 
-  // NOT USED; Experiment for creating new input fields
+  // For creating new input fields
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
@@ -1414,15 +1418,39 @@ clearAllTimers(callback) {
     };
 
     const redoUndoAction = (lastActionArray, doWhatNow) => {
+      // Remove action attribute from object when recreating and updating elements
       const removeActionAttribute = (lastActionArr) => {
         const array = [];
-        _.each(lastActionArr, each => {
-          const eachModified = this.getNewElementObject(each);
-          delete eachModified.action;
-          array.push(eachModified);
+        _.each(lastActionArr, eachObject => {
+          const eachObjectModified = this.getNewElementObject(eachObject);
+          delete eachObjectModified.action;
+          array.push(eachObjectModified);
         });
         return array;
       }
+
+      const getOriginalAttributes = (lastActionArr) => {
+        const array = [];
+        _.each(lastActionArr, eachObject => {
+          // const eachModified = this.getNewElementObject(each);
+          const object = {};
+          _.each(Object.keys(eachObject), eachKey => {
+            if ((eachKey[0] === 'o' && eachKey[1] === eachKey[1].toUpperCase())) {
+              // substring is (inclusive, exclusive)
+              const withoutO = eachKey.substring(1, eachKey.length);
+              const newKey = withoutO[0].toLowerCase() + withoutO.substring(1);
+              // console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, getOriginalAttributes typeof eachKey, eachKey, newKey: ', typeof eachKey, eachKey, newKey);
+              object[newKey] = eachObject[eachKey];
+            }
+
+            if (eachKey === 'id') {
+              object[eachKey] = eachObject[eachKey];
+            }
+          });
+          array.push(object);
+        });
+        return array;
+      };
       // if the last action taken was to craete an element,
       // if from undo action, call delete, and if redo, call create
       if (lastActionArray[0].action === 'create') {
@@ -1432,9 +1460,15 @@ clearAllTimers(callback) {
       }
 
       if (lastActionArray[0].action === 'update') {
-        console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
-        const newLastAction = removeActionAttribute(lastActionArray);
-        updateElement(newLastAction);
+        if (doWhatNow === 'undo') {
+          // get attributes without 'o' infront
+          const newLastAction = getOriginalAttributes(lastActionArray);
+          updateElement(newLastAction);
+          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
+        } else {
+          updateElement(lastActionArray);
+          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
+        }
       }
 
       if (lastActionArray[0].action === 'delete') {
