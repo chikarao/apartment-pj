@@ -1789,6 +1789,7 @@ clearAllTimers(callback) {
       'create-edit-document-font-style-button-box',
       'create-edit-document-font-style-button'
     ];
+    // If className of clicked element is NOT in the array
     if (fontControlClassesArray.indexOf(clickedElement.className) === -1) {
       this.setState({ showFontControlBox: false });
       document.removeEventListener('click', this.handleFontControlCloseClick);
@@ -1796,16 +1797,51 @@ clearAllTimers(callback) {
     // remove event listener
   }
 
+  getFontElementAttributes() {
+    const object = { fontFamily: {}, fontSize: {}, fontWeight: {}, fontStyle: {} };
+    let eachElement = null;
+    if (this.state.selectedTemplateElementIdArray.length > 0) {
+      _.each(this.state.selectedTemplateElementIdArray, eachId => {
+        eachElement = this.props.templateElements[eachId];
+        console.log('in create_edit_document, getFontElementAttributes, eachElement: ', eachElement);
+        _.each(Object.keys(object), eachKey => {
+          if (!object[eachKey][eachElement[eachKey]]) {
+            object[eachKey][eachElement[eachKey]] = [];
+            object[eachKey][eachElement[eachKey]].push(eachElement.id);
+            console.log('in create_edit_document, getFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+          } else {
+            console.log('in create_edit_document, getFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+            object[eachKey][eachElement[eachKey]].push(eachElement.id);
+          }
+        });
+      });
+    }
+    return object;
+  }
+
   renderFontControlBox() {
+    // Get the font button in array
     const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
+    // Get the font button dimension so that a control box can be placed below it
     const fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
-    const controlBoxWidth = '165px';
+    // const controlBoxWidth = '165px';
+    // add listner for clicks outside the control box opened
     document.addEventListener('click', this.handleFontControlCloseClick)
+    const fontAttributeObject = this.getFontElementAttributes();
+    const fontFamily = document.getElementById('fontFamily')
+    console.log('in create_edit_document, renderFontControlBox, fontAttributeObject, fontFamily: ', fontAttributeObject, fontFamily);
+    // let objectLength;
+    // _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
+    //   objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
+    //   const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
+    //   if (objectLength === 1 && eachFontAttribute === 'fontFamily') fontFamily.value = selectValue[0];
+    // })
 
     return (
       <div
         className="create-edit-document-font-control-box"
-        style={{ width: controlBoxWidth, top: fontButtonDimensions.top + 55, left: fontButtonDimensions.left - 40 }}
+        // Set the top and left of control box to be right underneath the button
+        style={{ top: fontButtonDimensions.top + 55, left: fontButtonDimensions.left - 40 }}
       >
         <select
           className="create-edit-document-font-family-select"
@@ -1820,7 +1856,8 @@ clearAllTimers(callback) {
           <option value="arial">Arial</option>
           <option value="times new roman">Times New Roman</option>
         </select>
-        Font Size
+        <div style={{ margin: '5px', float: 'left' }}>Font Size</div>
+
         <select
           className="create-edit-document-font-size-select"
           name="fontSize"

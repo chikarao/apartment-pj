@@ -4916,6 +4916,7 @@ form {
   z-index: 14;
   position: fixed;
   height: 22%;
+  width: 165px;
   padding: 15px 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
