@@ -51,6 +51,7 @@ class CreateEditDocument extends Component {
       templateEditHistoryArray: [],
       historyIndex: 0,
       undoingAndRedoing: false,
+      showFontControlBox: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -69,6 +70,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateElementActionClick = this.handleTemplateElementActionClick.bind(this);
     this.handleMouseOverActionButtons = this.handleMouseOverActionButtons.bind(this);
     this.handleMouseLeaveActionButtons = this.handleMouseLeaveActionButtons.bind(this);
+    this.handleFontControlCloseClick = this.handleFontControlCloseClick.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -156,8 +158,10 @@ class CreateEditDocument extends Component {
     }
   }
 
-  // componentDidUpdate() {
-  // }
+  componentWillUnmount() {
+    document.removeEventListener('click', this.getMousePosition);
+    document.removeEventListener('click', this.handleFontControlCloseClick);
+  }
 
   countMainDocumentInserts(agreement) {
     let count = 0;
@@ -815,7 +819,7 @@ renderEachDocumentField(page) {
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
-      // if inputElement then must be resize drag
+      // if inputElements exists then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
         originalValueObject[eachElement.id.split('-')[3]] = {
@@ -826,6 +830,8 @@ renderEachDocumentField(page) {
         };
       });
     } else if (selectedElements.length > 0) {
+      // if inputElement is null and selectedElements is populated,
+      // must be a multiple element move
       _.each(selectedElements, eachElement => {
         originalValueObject[eachElement.id.split('-')[2]] = {
           top: eachElement.style.top,
@@ -833,7 +839,7 @@ renderEachDocumentField(page) {
         };
       });
     } else {
-      // if selectedElements is empty, must be a single eleemnt drag move
+      // if even selectedElements is empty, must be a single eleemnt drag move
       originalValueObject[element.id.split('-')[2]] = {
         top: element.style.top,
         left: element.style.left,
@@ -1127,7 +1133,7 @@ renderEachDocumentField(page) {
                     // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
                     // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
                     // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
-                    { width: '100%', borderColor: eachElement.borderColor, margin: '0px !important', flex: '1 1 auto' }
+                    { width: '100%', fontSize: '14px', borderColor: eachElement.borderColor, margin: '0px !important', flex: '1 1 auto' }
                     :
                     {}}
                   // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
@@ -1341,6 +1347,7 @@ renderEachDocumentField(page) {
           destringifiedHistory = JSON.parse(localStorageHistory);
         }
         destringifiedHistory[this.props.agreement.id] = this.state.templateEditHistoryArray
+        console.log('in create_edit_document, setTemplateHistoryArray, destringifiedHistory: ', destringifiedHistory);
         localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
       });
     });// end of setState
@@ -1686,6 +1693,71 @@ clearAllTimers(callback) {
     );
   }
 
+  handleFontControlCloseClick(event) {
+    const clickedElement = event.target;
+    // if clicked element does not include any elements in the font control box,
+    // call setState to close the showFontControlBox
+    const fontControlClassesArray = [
+      'create-edit-document-font-control-box',
+      'create-edit-document-font-family-select',
+      'create-edit-document-font-size-select',
+      'create-edit-document-font-style-button-box',
+      'create-edit-document-font-style-button'
+    ];
+    if (fontControlClassesArray.indexOf(clickedElement.className) === -1) {
+      this.setState({ showFontControlBox: false });
+    }
+    // remove event listener
+    document.removeEventListener('click', this.handleFontControlCloseClick);
+  }
+
+  renderFontControlBox() {
+    const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
+    const fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
+    const controlBoxWidth = '165px';
+    document.addEventListener('click', this.handleFontControlCloseClick)
+
+    return (
+      <div
+        className="create-edit-document-font-control-box"
+        style={{ width: controlBoxWidth, top: fontButtonDimensions.top + 55, left: fontButtonDimensions.left - 40 }}
+      >
+        <select className="create-edit-document-font-family-select" name="fontFamily" id="fontFamily" style={{ width: '100%', backgroundColor: 'white' }}>
+          <option value="MSゴシック">MSゴシック</option>
+          <option value="MS　Pゴシック">MS　Pゴシック</option>
+          <option value="osaka">Osaka</option>
+          <option value="arial">Arial</option>
+          <option value="times new roman">Times New Roman</option>
+        </select>
+        Font Size
+        <select className="create-edit-document-font-size-select" name="fontSize" id="fontSize" style={{ width: '100%', backgroundColor: 'white' }}>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="10.5">10.5</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="14">14</option>
+          <option value="14">16</option>
+          <option value="14">18</option>
+          <option value="14">20</option>
+          <option value="14">22</option>
+          <option value="14">24</option>
+          <option value="14">26</option>
+          <option value="14">28</option>
+          <option value="14">36</option>
+          <option value="14">48</option>
+        </select>
+        <div
+          className="create-edit-document-font-style-button-box"
+        >
+          <div className="create-edit-document-font-style-button" id="fontStyleBold" style={{ fontWeight: 'bold' }}>Bold</div>
+          <div className="create-edit-document-font-style-button" id="fontStyleItalic" style={{ fontStyle: 'italic' }}>Italic</div>
+        </div>
+      </div>
+    );
+  }
+
   setExplanationTimer(time, elementName, callback) {
     const lapseTime = () => {
       if (subTimer > 0) {
@@ -1773,6 +1845,7 @@ clearAllTimers(callback) {
     const templateElementsLength = Object.keys(this.props.templateElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
+    const disableSave = !this.props.templateElements || (this.state.templateEditHistoryArray.length < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
@@ -1795,6 +1868,20 @@ clearAllTimers(callback) {
           value="newField"
         >
           <i value="newField" name="Create a new field,top" className="far fa-edit"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Save your work,top"
+          value="save"
+        >
+          <i value="save" onMouseOver={this.handleMouseOverActionButtons} name="Save your work,top" style={{ fontSize: '19px', padding: '4px 0 0 2px', color: disableSave ? 'gray' : 'blue' }} className="far fa-save"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Check all fields,bottom"
+          value="checkAll"
+        >
+          <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields,bottom" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1889,11 +1976,11 @@ clearAllTimers(callback) {
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
-          name="Make font larger,top"
+          name="Make font larger,bottom"
           value="fontLarger"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger,top" className="fas fa-font"></i>
-          <i name="Make font larger,top" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger,bottom" className="fas fa-font"></i>
+          <i name="Make font larger,bottom" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1901,52 +1988,22 @@ clearAllTimers(callback) {
           name="Make font smaller,bottom"
           value="fontSmaller"
         >
-          <i name="Make font smaller,bottom" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray'  }} onMouseOver={this.handleMouseOverActionButtons} name="Make font larger" className="fas fa-font"></i>
+          <i name="Make font smaller,bottom" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-font"></i>
           <i className="fas fa-sort-down" style={{ color: elementsChecked ? 'blue' : 'gray' }}></i>
         </div>
         <div
-          className="create-edit-document-template-edit-action-box-elements"
-          name="Change font family,bottom"
-          value="fontFamily"
-        >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font family,bottom" className="fas fa-font"></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          name="Change font style,bottom"
+          className="create-edit-document-template-edit-action-box-elements-double"
           value="fontStyle"
+          // onMouseOver={this.handleMouseOverActionButtons}
+          onClick={() => this.setState({ showFontControlBox: !this.state.showFontControlBox })}
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Change font style,bottom" className="fas fa-italic"></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          name="Undo changes,bottom"
-          value="undo"
-        >
-          <i
-            name="Undo changes,bottom"
-            value="undo"
-            style={{ color: enableUndo ? 'blue' : 'gray' }}
-            onClick={enableUndo ? this.handleTemplateElementActionClick : () => {}}
+          <span
+            style={{ width: 'auto', color: elementsChecked ? 'blue' : 'gray', fontSize: '10px', padding: '10px 0 0 0', fontFamily: 'MSゴシック', fontStyle: 'italic', fontWeight: 'bold' }}
             onMouseOver={this.handleMouseOverActionButtons}
-            className="fas fa-undo"
+            name="Change font family and style,bottom"
           >
-          </i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          name="Redo changes,bottom"
-          value="redo"
-        >
-          <i
-            name="Redo changes,bottom,bottom"
-            value="redo"
-            style={{ color: enableRedo ? 'blue' : 'gray' }}
-            onClick={enableRedo ? this.handleTemplateElementActionClick : () => {}}
-            onMouseOver={this.handleMouseOverActionButtons}
-            className="fas fa-redo"
-          >
-          </i>
+            MSゴシック
+          </span>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -1963,6 +2020,36 @@ clearAllTimers(callback) {
           value="alignHeight"
         >
           <i value="alignHeight" name="Align field height,bottom" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Undo changes,bottom"
+          value="undo"
+        >
+        <i
+          name="Undo changes,bottom"
+          value="undo"
+          style={{ color: enableUndo ? 'blue' : 'gray' }}
+          onClick={enableUndo ? this.handleTemplateElementActionClick : () => {}}
+          onMouseOver={this.handleMouseOverActionButtons}
+          className="fas fa-undo"
+        >
+        </i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
+          name="Redo changes,bottom"
+          value="redo"
+        >
+        <i
+          name="Redo changes,bottom,bottom"
+          value="redo"
+          style={{ color: enableRedo ? 'blue' : 'gray' }}
+          onClick={enableRedo ? this.handleTemplateElementActionClick : () => {}}
+          onMouseOver={this.handleMouseOverActionButtons}
+          className="fas fa-redo"
+        >
+        </i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -2045,6 +2132,7 @@ clearAllTimers(callback) {
               {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
+              {this.props.showTemplate && this.state.showFontControlBox ? this.renderFontControlBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
             </div>
           );

@@ -4854,7 +4854,7 @@ form {
   top: 15%;
   left: 34%;
   /* width: auto; */
-  width: 362px;
+  width: 402px;
   /* height: 35px; */
   height: 70px;
   border: 1.0px solid #ccc;
@@ -4882,16 +4882,16 @@ form {
   height: 35px;
   border-right: 1.0px solid #ccc;
   border-bottom: 1.0px solid #ccc;
-  padding: 4.5px;
+  padding: 3.5px;
   font-size: 18px;
   color: gray;
 }
 
-.create-edit-document-template-edit-action-box div:last-child, div:nth-child(9) {
+.create-edit-document-template-edit-action-box div:last-child, div:nth-child(10) {
   border-right: none;
 }
 
-.create-edit-document-template-edit-action-box div:nth-child(n+10)  {
+.create-edit-document-template-edit-action-box div:nth-child(n+11)  {
   border-bottom: none;
 }
 
@@ -4902,7 +4902,7 @@ form {
   height: auto;
   min-width: 100px;
   min-height: 20px;
-  z-index: 100;
+  z-index: 15;
   /* background-color: #ccc; */
   background-color: #ffffcc;
   border: 1.0px solid #ccc;
@@ -4911,6 +4911,59 @@ form {
   padding: 10px;
   border-radius: 5px;
 }
+
+.create-edit-document-font-control-box {
+  z-index: 14;
+  position: fixed;
+  height: 22%;
+  padding: 15px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.create-edit-document-font-control-box:after, .create-edit-document-font-control-box:before {
+  bottom: 99.47%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+  border-radius: 4px;
+}
+
+.create-edit-document-font-control-box:after {
+  border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+  border-width: 20px;
+	margin-left: -20px;
+}
+
+.create-edit-document-font-control-box:before {
+  border-color: rgba(204, 204, 204, 0);
+  border-bottom-color: #ccc;
+  border-width: 21px;
+  margin-left: -21px;
+}
+
+.create-edit-document-font-style-button-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: auto;
+}
+
+.create-edit-document-font-style-button {
+  width: 43%;
+  height: 50px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 15px 5px 5px 5px;
+}
+
 
 .create-edit-document-template-each-choice {
   width: auto;
@@ -4940,7 +4993,8 @@ form {
 }
 
 .document-rectangle-template {
-  height: 17px;
+  /* height: 17px; */
+  height: auto;
   /* width: 22px; */
   border-radius: 5px;
   margin: 0 0 0 5px;
@@ -4948,6 +5002,7 @@ form {
   border: 1.5px solid #ccc;
   background-color: transparent;
   text-align: left;
+  padding: 0 0 0 1px;
 }
 
 .create-edit-document-template-element-edit-tab {

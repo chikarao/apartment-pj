@@ -415,7 +415,7 @@ class MessagingMain extends Component {
         this.unhighlightListing(elementName);
         this.setState({ sortListingId: elementName, sortListingSelected: true }, () => {
           this.highlightListing(this.state.sortListingId);
-        })
+        });
       }
     }
   }
