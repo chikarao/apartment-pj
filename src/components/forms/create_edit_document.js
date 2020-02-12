@@ -753,7 +753,23 @@ renderEachDocumentField(page) {
         // historyIndex: this.historyIndex + 1
       }, () => {
         // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
-        const templateElementAttributes = { id: `${this.state.templateElementCount}a`, left: `${x}%`, top: `${y}%`, page: elementVal, name: 'name', component: 'input', width: '25%', height: '1.6%', type: 'text', className: 'document-rectangle', borderColor: 'lightgray' }
+        const templateElementAttributes = {
+          id: `${this.state.templateElementCount}a`,
+          left: `${x}%`,
+          top: `${y}%`,
+          page: elementVal,
+          name: 'name',
+          component: 'input',
+          width: '25%',
+          height: '1.6%',
+          type: 'text',
+          className: 'document-rectangle',
+          borderColor: 'lightgray',
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+          fontFamily: 'arial',
+          fontSize: '12'
+        };
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
         // const elementCopy = this.getNewElementObject(templateElementAttributes)
@@ -1133,7 +1149,16 @@ renderEachDocumentField(page) {
                     // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
                     // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
                     // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
-                    { width: '100%', fontSize: '14px', borderColor: eachElement.borderColor, margin: '0px !important', flex: '1 1 auto' }
+                    {
+                      width: '100%',
+                      fontSize: eachElement.fontSize,
+                      fontFamily: eachElement.fontFamily,
+                      fontStyle: eachElement.fontStyle,
+                      fontWeight: eachElement.fontWeight,
+                      borderColor: eachElement.borderColor,
+                      margin: '0px !important',
+                      flex: '1 1 auto'
+                    }
                     :
                     {}}
                   // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
@@ -1386,7 +1411,18 @@ clearAllTimers(callback) {
     this.clearAllTimers(() => {});
     const clickedElement = event.target;
     // element val is value of i or div in action box eg horizontal or vertical strings
-    const elementVal = clickedElement.getAttribute('value');
+    let elementVal = clickedElement.getAttribute('value');
+    let elementValue = '';
+    // elementName is for select inputs in font control box
+    const elementName = clickedElement.getAttribute('name');
+    // Select inputs and font control box buttons (bold and italic) are sent via 'name'
+    const fontControlSelectArray = ['fontFamily', 'fontSize', 'fontStyleItalic', 'fontStyleBold'];
+    // if element name is included in fontControlArray, then reassign elementVal to elementName for the switch
+    if (fontControlSelectArray.indexOf(elementName) !== -1) {
+      elementValue = elementVal;
+      elementVal = elementName;
+    };
+    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, clickedElement.value: ', clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     const align = (alignWhat) => {
@@ -1446,6 +1482,7 @@ clearAllTimers(callback) {
             top: eachElement.top,
             left: eachElement.left,
           };
+
           if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
           if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
           if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, oTop: originalValueObject[eachElement.id].top, action: 'update' });
@@ -1460,6 +1497,28 @@ clearAllTimers(callback) {
       // }, () => {
       //   console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, this.state.templateEditHistoryArray: ', elementVal, this.state.templateEditHistoryArray);
       // });
+    };
+
+    const changeFont = (fontAttribute) => {
+      const array = [];
+      const originalValueObject = {};
+      _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
+        const eachElement = this.props.templateElements[eachElementId];
+        if (eachElement) {
+          originalValueObject[eachElement.id] = {
+            fontFamily: eachElement.fontFamily,
+            fontSize: eachElement.fontSize,
+            fontStyle: eachElement.fontStyle,
+            fontWeight: eachElement.fontWeight
+          };
+        }
+        if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, fontFamily: clickedElement.value, oFontFamily: originalValueObject[eachElement.id].fontFamily, action: 'update' });
+        if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+        if (fontAttribute === 'fontStyleBold') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
+        if (fontAttribute === 'fontStyleItalic') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+      });
+      this.setTemplateHistoryArray(array, 'update');
+      this.props.updateDocumentElementLocally(array);
     };
 
     const createElement = (elementObject) => {
@@ -1665,6 +1724,22 @@ clearAllTimers(callback) {
           redoUndo(elementVal);
           break;
 
+        case 'fontFamily':
+          changeFont(elementVal);
+          break;
+
+        case 'fontSize':
+          changeFont(elementVal);
+          break;
+
+        case 'fontStyleBold':
+          changeFont(elementVal);
+          break;
+
+        case 'fontStyleItalic':
+          changeFont(elementVal);
+          break;
+
         default: return null;
       }
   }
@@ -1706,9 +1781,9 @@ clearAllTimers(callback) {
     ];
     if (fontControlClassesArray.indexOf(clickedElement.className) === -1) {
       this.setState({ showFontControlBox: false });
+      document.removeEventListener('click', this.handleFontControlCloseClick);
     }
     // remove event listener
-    document.removeEventListener('click', this.handleFontControlCloseClick);
   }
 
   renderFontControlBox() {
@@ -1722,7 +1797,13 @@ clearAllTimers(callback) {
         className="create-edit-document-font-control-box"
         style={{ width: controlBoxWidth, top: fontButtonDimensions.top + 55, left: fontButtonDimensions.left - 40 }}
       >
-        <select className="create-edit-document-font-family-select" name="fontFamily" id="fontFamily" style={{ width: '100%', backgroundColor: 'white' }}>
+        <select
+          className="create-edit-document-font-family-select"
+          name="fontFamily"
+          id="fontFamily"
+          style={{ width: '100%', backgroundColor: 'white' }}
+          onChange={this.handleTemplateElementActionClick}
+        >
           <option value="MSゴシック">MSゴシック</option>
           <option value="MS　Pゴシック">MS　Pゴシック</option>
           <option value="osaka">Osaka</option>
@@ -1730,29 +1811,53 @@ clearAllTimers(callback) {
           <option value="times new roman">Times New Roman</option>
         </select>
         Font Size
-        <select className="create-edit-document-font-size-select" name="fontSize" id="fontSize" style={{ width: '100%', backgroundColor: 'white' }}>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="10.5">10.5</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="14">14</option>
-          <option value="14">16</option>
-          <option value="14">18</option>
-          <option value="14">20</option>
-          <option value="14">22</option>
-          <option value="14">24</option>
-          <option value="14">26</option>
-          <option value="14">28</option>
-          <option value="14">36</option>
-          <option value="14">48</option>
+        <select
+          className="create-edit-document-font-size-select"
+          name="fontSize"
+          id="fontSize"
+          style={{ width: '100%', backgroundColor: 'white' }}
+          onChange={this.handleTemplateElementActionClick}
+        >
+          <option value="8px">8</option>
+          <option value="9px">9</option>
+          <option value="10px">10</option>
+          <option value="10.5px">10.5</option>
+          <option value="11px">11</option>
+          <option value="12px">12</option>
+          <option value="14px">14</option>
+          <option value="16px">16</option>
+          <option value="18px">18</option>
+          <option value="20px">20</option>
+          <option value="22px">22</option>
+          <option value="24px">24</option>
+          <option value="26px">26</option>
+          <option value="28px">28</option>
+          <option value="36px">36</option>
+          <option value="48px">48</option>
         </select>
         <div
           className="create-edit-document-font-style-button-box"
         >
-          <div className="create-edit-document-font-style-button" id="fontStyleBold" style={{ fontWeight: 'bold' }}>Bold</div>
-          <div className="create-edit-document-font-style-button" id="fontStyleItalic" style={{ fontStyle: 'italic' }}>Italic</div>
+          <div
+            className="create-edit-document-font-style-button"
+            id="fontStyleBold"
+            value="bold"
+            name="fontStyleBold"
+            style={{ fontWeight: 'bold' }}
+            onClick={this.handleTemplateElementActionClick}
+          >
+            Bold
+          </div>
+          <div
+            className="create-edit-document-font-style-button"
+            id="fontStyleItalic"
+            value="italic"
+            name="fontStyleItalic"
+            style={{ fontStyle: 'italic' }}
+            onClick={this.handleTemplateElementActionClick}
+          >
+            Italic
+          </div>
         </div>
       </div>
     );
