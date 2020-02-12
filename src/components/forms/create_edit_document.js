@@ -768,7 +768,7 @@ renderEachDocumentField(page) {
           fontStyle: 'normal',
           fontWeight: 'normal',
           fontFamily: 'arial',
-          fontSize: '12'
+          fontSize: '12px'
         };
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
@@ -1516,6 +1516,8 @@ clearAllTimers(callback) {
         if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
         if (fontAttribute === 'fontStyleBold') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
         if (fontAttribute === 'fontStyleItalic') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+        if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+        if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
       });
       this.setTemplateHistoryArray(array, 'update');
       this.props.updateDocumentElementLocally(array);
@@ -1737,6 +1739,14 @@ clearAllTimers(callback) {
           break;
 
         case 'fontStyleItalic':
+          changeFont(elementVal);
+          break;
+
+        case 'fontSmaller':
+          changeFont(elementVal);
+          break;
+
+        case 'fontLarger':
           changeFont(elementVal);
           break;
 
@@ -2082,18 +2092,32 @@ clearAllTimers(callback) {
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font larger,bottom"
-          value="fontLarger"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Make font larger,bottom" className="fas fa-font"></i>
+          <i
+            onMouseOver={this.handleMouseOverActionButtons}
+            value="fontLarger"
+            onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+            style={{ color: elementsChecked ? 'blue' : 'gray' }}
+            name="Make font larger,bottom"
+            className="fas fa-font"
+          >
+          </i>
           <i name="Make font larger,bottom" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
           // onMouseOver={this.handleMouseOverActionButtons}
           name="Make font smaller,bottom"
-          value="fontSmaller"
         >
-          <i name="Make font smaller,bottom" style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-font"></i>
+          <i
+            onMouseOver={this.handleMouseOverActionButtons}
+            onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+            value="fontSmaller"
+            name="Make font smaller,bottom"
+            style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray' }}
+            className="fas fa-font"
+          >
+          </i>
           <i className="fas fa-sort-down" style={{ color: elementsChecked ? 'blue' : 'gray' }}></i>
         </div>
         <div
@@ -2107,7 +2131,7 @@ clearAllTimers(callback) {
             onMouseOver={this.handleMouseOverActionButtons}
             name="Change font family and style,bottom"
           >
-            MSゴシック
+            Font
           </span>
         </div>
         <div
