@@ -24,19 +24,62 @@ export default function (state = {
   templateElements: {}
 }, action) {
   // console.log('in documents reducer, action.payload: ', action.payload);
+  const fontObject = { fontFamily: {}, fontSize: {}, fontStyle: {}, fontWeight: {} };
+
+  function getElementFontAttributes(elements) {
+    // Get a map of the attributes font family, size style and weight used
+    // in the document
+    console.log('in create_edit_document, getElementFontAttributes, elements: ', elements);
+    // Go through each element and each of the keys in fontObject
+    _.each(Object.keys(elements), eachElementKey => {
+      // If the element is a text or string element place in object with an array with element ids
+      if (elements[eachElementKey].type === 'text' || elements[eachElementKey].type === 'string') {
+        console.log('in create_edit_document, getElementFontAttributes, eachElementKey: ', eachElementKey);
+        _.each(Object.keys(fontObject), eachKey => {
+          if (!fontObject[eachKey][elements[eachElementKey][eachKey]]) {
+            fontObject[eachKey][elements[eachElementKey][eachKey]] = [elements[eachElementKey].id];
+          } else {
+            fontObject[eachKey][elements[eachElementKey][eachKey]].push(elements[eachElementKey].id);
+          }
+        });
+      }
+    });
+    // Looks like { fontFamily: { arial: [1, 2, 3] }, fontSize: { 12px: [1, 2, 3] }... }
+    return fontObject;
+  }
+
+  function getOnlyFontAttributes(object) {
+    // Get the font attribute that is the only attribute for document
+    const returnObject = {};
+    _.each(Object.keys(fontObject), eachKey => {
+      if (Object.keys(object[eachKey]).length === 1) {
+        returnObject[eachKey] = Object.keys(object[eachKey])[0];
+      } else {
+        returnObject[eachKey] = null;
+      }
+    });
+    return returnObject;
+  }
+
+  let fontAttributeObject = null;
+  let onlyFontAttributeObject = null;
 
   switch (action.type) {
 
-    case CREATE_DOCUMENT_ELEMENT_LOCALLY:
-    console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
-    const newObject = {}
-    // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
-    // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
-    const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
-      return { ...state, templateElements: mergedObject };
+    case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+      const newObject = {}
+      // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
+      // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
+      const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
+      fontAttributeObject = getElementFontAttributes(mergedObject);
+      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
 
-    case DELETE_DOCUMENT_ELEMENT_LOCALLY:
-    console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject };
+    }
+
+    case DELETE_DOCUMENT_ELEMENT_LOCALLY: {
+      console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
       // Get shallow copy of template elements in new object
       // Needs to be new object so redux will find a new updated state.
       const newDeleteObject = _.merge({}, state.templateElements);
@@ -46,7 +89,12 @@ export default function (state = {
         // delete key in templateElements copy object
         delete newDeleteObject[eachElementId]
       });
-      return { ...state, templateElements: newDeleteObject };
+
+      fontAttributeObject = getElementFontAttributes(newDeleteObject);
+      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+
+      return { ...state, templateElements: newDeleteObject, fontAttributeObject, onlyFontAttributeObject };
+    }
 
     case UPDATE_DOCUMENT_ELEMENT_LOCALLY: {
       console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY action.payload: ', action.payload);
@@ -76,7 +124,11 @@ export default function (state = {
         // ie cannot be ...state.templateElements
         newUpdateObject[eachElementId] = newObj;
       }); // end of each Object.keys actionPayloadMapped
-      return { ...state, templateElements: newUpdateObject };
+
+      fontAttributeObject = getElementFontAttributes(newUpdateObject)
+      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+
+      return { ...state, templateElements: newUpdateObject, fontAttributeObject, onlyFontAttributeObject };
     }
 
     case SET_CREATE_DOCUMENT_KEY:

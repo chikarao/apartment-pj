@@ -52,6 +52,13 @@ class CreateEditDocument extends Component {
       historyIndex: 0,
       undoingAndRedoing: false,
       showFontControlBox: false,
+      newFontStyleObject: {
+        fontFamily: 'arial',
+        fontSize: '12px',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        override: false
+      },
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -71,6 +78,7 @@ class CreateEditDocument extends Component {
     this.handleMouseOverActionButtons = this.handleMouseOverActionButtons.bind(this);
     this.handleMouseLeaveActionButtons = this.handleMouseLeaveActionButtons.bind(this);
     this.handleFontControlCloseClick = this.handleFontControlCloseClick.bind(this);
+    this.handleShowFontControlBox = this.handleShowFontControlBox.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -762,13 +770,13 @@ renderEachDocumentField(page) {
           component: 'input',
           width: '25%',
           height: '1.6%',
-          type: 'text',
+          type: 'text', // or 'string' if an input component
           className: 'document-rectangle',
           borderColor: 'lightgray',
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-          fontFamily: 'arial',
-          fontSize: '12px'
+          fontStyle: this.state.newFontStyleObject.fontStyle,
+          fontWeight: this.state.newFontStyleObject.fontWeight,
+          fontFamily: this.state.newFontStyleObject.fontFamily,
+          fontSize: this.state.newFontStyleObject.fontSize
         };
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
@@ -795,6 +803,7 @@ renderEachDocumentField(page) {
       // place in array of checked elements
       this.setState({
         selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
+        newFontStyleObject: { ...this.state.newFontStyleObject, override: false }
       }, () => {
         // if all elements checked, set to true
         this.setState({
@@ -815,7 +824,8 @@ renderEachDocumentField(page) {
       // assign new array to state
       this.setState({ selectedTemplateElementIdArray: newArray }, () => {
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
+          newFontStyleObject: { ...this.state.newFontStyleObject, override: true }
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         })
@@ -1412,17 +1422,19 @@ clearAllTimers(callback) {
     const clickedElement = event.target;
     // element val is value of i or div in action box eg horizontal or vertical strings
     let elementVal = clickedElement.getAttribute('value');
+    // elementValue is for FONTS!!!!!
     let elementValue = '';
     // elementName is for select inputs in font control box
     const elementName = clickedElement.getAttribute('name');
     // Select inputs and font control box buttons (bold and italic) are sent via 'name'
-    const fontControlSelectArray = ['fontFamily', 'fontSize', 'fontStyleItalic', 'fontStyleBold'];
+    const fontControlSelectArray = ['fontFamily', 'fontSize', 'fontStyle', 'fontWeight'];
     // if element name is included in fontControlArray, then reassign elementVal to elementName for the switch
+    console.log('in create_edit_document, handleTemplateElementActionClick, before re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     if (fontControlSelectArray.indexOf(elementName) !== -1) {
       elementValue = elementVal;
       elementVal = elementName;
     };
-    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, clickedElement.value: ', clickedElement, clickedElement.value);
+    console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     const align = (alignWhat) => {
@@ -1502,26 +1514,54 @@ clearAllTimers(callback) {
     const changeFont = (fontAttribute) => {
       const array = [];
       const originalValueObject = {};
-      _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-        const eachElement = this.props.templateElements[eachElementId];
-        if (eachElement) {
-          originalValueObject[eachElement.id] = {
-            fontFamily: eachElement.fontFamily,
-            fontSize: eachElement.fontSize,
-            fontStyle: eachElement.fontStyle,
-            fontWeight: eachElement.fontWeight
-          };
-        }
-        if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, fontFamily: clickedElement.value, oFontFamily: originalValueObject[eachElement.id].fontFamily, action: 'update' });
-        if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-        if (fontAttribute === 'fontStyleBold') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
-        if (fontAttribute === 'fontStyleItalic') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
-        if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-        if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-      });
-      this.setTemplateHistoryArray(array, 'update');
-      this.props.updateDocumentElementLocally(array);
-    };
+      // If elements have been selected, apply changes to selected elements
+      if (this.state.selectedTemplateElementIdArray.length > 0) {
+        _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
+          const eachElement = this.props.templateElements[eachElementId];
+          if (eachElement) {
+            originalValueObject[eachElement.id] = {
+              fontFamily: eachElement.fontFamily,
+              fontSize: eachElement.fontSize,
+              fontStyle: eachElement.fontStyle,
+              fontWeight: eachElement.fontWeight
+            };
+          } // end of if eachElement
+          if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, fontFamily: clickedElement.value, oFontFamily: originalValueObject[eachElement.id].fontFamily, action: 'update' });
+          if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
+          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+          if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+        }); // end of each
+        this.setTemplateHistoryArray(array, 'update');
+        this.props.updateDocumentElementLocally(array);
+      } else { // else of if selectedTemplateElementIdArray.length > 0
+        // if there is no element selected turn override true so that
+        // font button will show the attributes user wants for new element
+        this.setState({
+          newFontStyleObject: {
+            // fontFamily: fontAttribute === 'fontFamily' ? clickedElement.value : this.state.newFontStyleObject.fontFamily,
+            // fontSize: fontAttribute === 'fontSize' ? clickedElement.value : this.state.newFontStyleObject.fontSize,
+            // fontStyle: fontAttribute === 'fontStyle' ? clickedElement.value : this.state.newFontStyleObject.fontStyle,
+            // fontWeight: fontAttribute === 'fontWeight' ? clickedElement.value : this.state.newFontStyleObject.fontWeight,
+            ...this.state.newFontStyleObject,
+            [fontAttribute]: elementValue || clickedElement.value,
+            override: true
+          }
+        }, () => {
+          console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontStyleObject: ', this.state.newFontStyleObject);
+        });
+        // this.setState({
+        //   newFontStyleObject: {
+        //     fontFamily: fontAttribute === 'fontFamily' ? clickedElement.value : this.state.newFontStyleObject.fontFamily,
+        //     fontSize: fontAttribute === 'fontSize' ? clickedElement.value : this.state.newFontStyleObject.fontSize,
+        //     fontStyle: fontAttribute === 'fontStyle' ? clickedElement.value : this.state.newFontStyleObject.fontStyle,
+        //     fontWeight: fontAttribute === 'fontWeight' ? clickedElement.value : this.state.newFontStyleObject.fontWeight,
+        //     override: true
+        //   }
+        // });
+      }
+    }; // end of changeFont
 
     const createElement = (elementObject) => {
       this.props.createDocumentElementLocally(elementObject);
@@ -1686,7 +1726,8 @@ clearAllTimers(callback) {
           if (checkAllArray.length > 0) {
             this.setState({
               allElementsChecked: true,
-              selectedTemplateElementIdArray: checkAllArray
+              selectedTemplateElementIdArray: checkAllArray,
+              newFontStyleObject: { ...this.state.newFontStyleObject, override: false }
             });
           }
           // }
@@ -1734,11 +1775,11 @@ clearAllTimers(callback) {
           changeFont(elementVal);
           break;
 
-        case 'fontStyleBold':
+        case 'fontWeight':
           changeFont(elementVal);
           break;
 
-        case 'fontStyleItalic':
+        case 'fontStyle':
           changeFont(elementVal);
           break;
 
@@ -1792,56 +1833,28 @@ clearAllTimers(callback) {
     // If className of clicked element is NOT in the array
     if (fontControlClassesArray.indexOf(clickedElement.className) === -1) {
       this.setState({ showFontControlBox: false });
+      const fontControlBox = document.getElementById('create-edit-document-font-control-box');
+      fontControlBox.style.display = 'none';
+      // console.log('in create_edit_document, handleFontControlCloseClick, fontControlBox: ', fontControlBox);
       document.removeEventListener('click', this.handleFontControlCloseClick);
     }
     // remove event listener
   }
 
-  getFontElementAttributes() {
-    const object = { fontFamily: {}, fontSize: {}, fontWeight: {}, fontStyle: {} };
-    let eachElement = null;
-    if (this.state.selectedTemplateElementIdArray.length > 0) {
-      _.each(this.state.selectedTemplateElementIdArray, eachId => {
-        eachElement = this.props.templateElements[eachId];
-        console.log('in create_edit_document, getFontElementAttributes, eachElement: ', eachElement);
-        _.each(Object.keys(object), eachKey => {
-          if (!object[eachKey][eachElement[eachKey]]) {
-            object[eachKey][eachElement[eachKey]] = [];
-            object[eachKey][eachElement[eachKey]].push(eachElement.id);
-            console.log('in create_edit_document, getFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
-          } else {
-            console.log('in create_edit_document, getFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
-            object[eachKey][eachElement[eachKey]].push(eachElement.id);
-          }
-        });
-      });
-    }
-    return object;
-  }
-
   renderFontControlBox() {
     // Get the font button in array
+    let fontButtonDimensions = {};
     const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
     // Get the font button dimension so that a control box can be placed below it
-    const fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
+    if (fontButtonArray.length > 0) fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
     // const controlBoxWidth = '165px';
     // add listner for clicks outside the control box opened
-    document.addEventListener('click', this.handleFontControlCloseClick)
-    const fontAttributeObject = this.getFontElementAttributes();
-    const fontFamily = document.getElementById('fontFamily')
-    console.log('in create_edit_document, renderFontControlBox, fontAttributeObject, fontFamily: ', fontAttributeObject, fontFamily);
-    // let objectLength;
-    // _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
-    //   objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
-    //   const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
-    //   if (objectLength === 1 && eachFontAttribute === 'fontFamily') fontFamily.value = selectValue[0];
-    // })
-
     return (
       <div
         className="create-edit-document-font-control-box"
+        id="create-edit-document-font-control-box"
         // Set the top and left of control box to be right underneath the button
-        style={{ top: fontButtonDimensions.top + 55, left: fontButtonDimensions.left - 40 }}
+        style={{ display: 'none', top: fontButtonArray.length > 0 ? fontButtonDimensions.top + 55 : null, left: fontButtonArray.length > 0 ? fontButtonDimensions.left - 40 : null }}
       >
         <select
           className="create-edit-document-font-family-select"
@@ -1851,10 +1864,12 @@ clearAllTimers(callback) {
           onChange={this.handleTemplateElementActionClick}
         >
           <option value="MSゴシック">MSゴシック</option>
-          <option value="MS　Pゴシック">MS　Pゴシック</option>
+          <option value="ＭＳ Ｐ明朝">ＭＳ Ｐ明朝</option>
           <option value="osaka">Osaka</option>
           <option value="arial">Arial</option>
           <option value="times new roman">Times New Roman</option>
+          <option value="helvetica">Helvetica</option>
+          <option value="century gothic">Century Gothic</option>
         </select>
         <div style={{ margin: '5px', float: 'left' }}>Font Size</div>
 
@@ -1887,9 +1902,9 @@ clearAllTimers(callback) {
         >
           <div
             className="create-edit-document-font-style-button"
-            id="fontStyleBold"
+            id="fontWeight"
             value="bold"
-            name="fontStyleBold"
+            name="fontWeight"
             style={{ fontWeight: 'bold' }}
             onClick={this.handleTemplateElementActionClick}
           >
@@ -1897,9 +1912,9 @@ clearAllTimers(callback) {
           </div>
           <div
             className="create-edit-document-font-style-button"
-            id="fontStyleItalic"
+            id="fontStyle"
             value="italic"
-            name="fontStyleItalic"
+            name="fontStyle"
             style={{ fontStyle: 'italic' }}
             onClick={this.handleTemplateElementActionClick}
           >
@@ -1989,6 +2004,53 @@ clearAllTimers(callback) {
     this.clearAllTimers(() => {});
   }
 
+  getSelectedFontElementAttributes() {
+    const object = { fontFamily: {}, fontSize: {}, fontWeight: {}, fontStyle: {} };
+    let eachElement = null;
+    if (this.state.selectedTemplateElementIdArray.length > 0) {
+      _.each(this.state.selectedTemplateElementIdArray, eachId => {
+        eachElement = this.props.templateElements[eachId];
+        _.each(Object.keys(object), eachKey => {
+          if (!object[eachKey][eachElement[eachKey]]) {
+            object[eachKey][eachElement[eachKey]] = [];
+            object[eachKey][eachElement[eachKey]].push(eachElement.id);
+            console.log('in create_edit_document, getSelectedFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+          } else {
+            console.log('in create_edit_document, getSelectedFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+            object[eachKey][eachElement[eachKey]].push(eachElement.id);
+          }
+        });
+      });
+    }
+    return object;
+  }
+
+  handleShowFontControlBox() {
+    const fontControlBox = document.getElementById('create-edit-document-font-control-box')
+    fontControlBox.style.display = 'block';
+    document.addEventListener('click', this.handleFontControlCloseClick)
+    // Get object with attributes assigned to each element (ie fontFamily: { arial: [id]})
+    const fontAttributeObject = this.getSelectedFontElementAttributes();
+    // Gets the select field for fontFamily
+    const fontFamily = document.getElementById('fontFamily')
+    const fontSize = document.getElementById('fontSize')
+    console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject, fontFamily: ', fontAttributeObject, fontFamily);
+    let objectLength;
+    // Go through array of fontAttributeObject ie fontFamily, fontSize, fontWeight, fontStyle
+    _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
+      // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
+      // would be 2
+      objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
+      // Get an array of actual fonts used in selected elements
+      const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
+      console.log('in create_edit_document, handleShowFontControlBox, selectValue: ', selectValue);
+      if (objectLength === 1 && eachFontAttribute === 'fontFamily') fontFamily.value = selectValue[0];
+      if (objectLength === 1 && eachFontAttribute === 'fontSize') fontSize.value = selectValue[0];
+      // if (objectLength === 1 && eachFontAttribute === 'fontWeight') fontFamily.value = selectValue[0];
+      // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
+    })
+  }
+
   renderTemplateEditFieldAction() {
     // <span onMouseOver={this.handleMouseOverActionButtons} name="Change font style" style={{ width: 'auto' }}>
     //   Font
@@ -2003,9 +2065,12 @@ clearAllTimers(callback) {
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
     const enableRedo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1;
 
+    const onlyFontAttributeObject = this.props.onlyFontAttributeObject ? this.props.onlyFontAttributeObject : this.state.newFontStyleObject;
+
     // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
-        console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
-        console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
+    // console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
+    console.log('in create_edit_document, renderTemplateEditFieldAction, after each, this.props.fontAttributeObject, this.props.onlyFontAttributeObject : ', this.props.fontAttributeObject, this.props.onlyFontAttributeObject, onlyFontAttributeObject);
+        // console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -2161,14 +2226,25 @@ clearAllTimers(callback) {
           className="create-edit-document-template-edit-action-box-elements-double"
           value="fontStyle"
           // onMouseOver={this.handleMouseOverActionButtons}
-          onClick={() => this.setState({ showFontControlBox: !this.state.showFontControlBox })}
+          // onClick={() => this.setState({ showFontControlBox: !this.state.showFontControlBox })}
+          onClick={this.handleShowFontControlBox}
         >
           <span
-            style={{ width: 'auto', color: elementsChecked ? 'blue' : 'gray', fontSize: '10px', padding: '10px 0 0 0', fontFamily: 'MSゴシック', fontStyle: 'italic', fontWeight: 'bold' }}
+            style={{
+              width: 'auto',
+              // fontSize: onlyFontAttributeObject.fontSize && parseFloat(onlyFontAttributeObject.fontSize) < 20 ? onlyFontAttributeObject.fontSize : '12px',
+              fontSize: '11.5px',
+              fontFamily: onlyFontAttributeObject.fontFamily ? onlyFontAttributeObject.fontFamily : this.state.newFontStyleObject.fontFamily,
+              fontStyle: onlyFontAttributeObject.fontStyle ? onlyFontAttributeObject.fontStyle : this.state.newFontStyleObject.fontStyle,
+              fontWeight: onlyFontAttributeObject.fontWeight ? onlyFontAttributeObject.fontWeight : this.state.newFontStyleObject.fontWeight,
+              color: elementsChecked ? 'blue' : 'gray',
+              padding: '10px 0 0 0',
+              overFlow: 'hidden'
+            }}
             onMouseOver={this.handleMouseOverActionButtons}
             name="Change font family and style,bottom"
           >
-            Font
+            {onlyFontAttributeObject.fontFamily ? `${(onlyFontAttributeObject.fontFamily).charAt(0).toUpperCase() + onlyFontAttributeObject.fontFamily.slice(1)}` : 'Font'}
           </span>
         </div>
         <div
@@ -2298,7 +2374,7 @@ clearAllTimers(callback) {
               {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
-              {this.props.showTemplate && this.state.showFontControlBox ? this.renderFontControlBox() : ''}
+              {this.props.showTemplate ? this.renderFontControlBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
             </div>
           );
@@ -2495,6 +2571,24 @@ clearAllTimers(callback) {
   // }
 }
 
+// function getElementFontAttributes(elements) {
+//   const object = { fontFamily: {}, fontSize: {}, fontStyle: {}, fontWeight: {} };
+//   console.log('in create_edit_document, getElementFontAttributes, elements: ', elements);
+//   _.each(Object.keys(elements), eachElementKey => {
+//     if (elements[eachElementKey].type === 'text' || elements[eachElementKey].type === 'string') {
+//       console.log('in create_edit_document, getElementFontAttributes, eachElementKey: ', eachElementKey);
+//       _.each(Object.keys(object), eachKey => {
+//         if (!object[eachKey][elements[eachElementKey][eachKey]]) {
+//           object[eachKey][elements[eachElementKey][eachKey]] = [elements[eachElementKey].id];
+//         } else {
+//           object[eachKey][elements[eachElementKey][eachKey]].push(elements[eachElementKey].id);
+//         }
+//       });
+//     }
+//   });
+//   return object;
+// }
+
 CreateEditDocument = reduxForm({
   form: 'CreateEditDocument',
   enableReinitialize: true,
@@ -2506,6 +2600,13 @@ function mapStateToProps(state) {
   // const initialValuesObjectEmpty = _.isEmpty(state.documents.initialValuesObject);
   if (state.bookingData.fetchBookingData) {
     let initialValues = {};
+    // let fontAttributeObject = {};
+    // const elementsEmpty = _.isEmpty(state.documents.templateElements)
+    // console.log('in create_edit_document, mapStateToProps, elementsEmpty: ', elementsEmpty);
+    // if (!elementsEmpty) {
+    //   fontAttributeObject = getElementFontAttributes(state.documents.templateElements);
+    //   console.log('in create_edit_document, mapStateToProps, in if !elementsEmpty: ', elementsEmpty);
+    // }
     // bookingData.flat gives access to flat.building.inspections
     // // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
     // // setCreateDocumentKey action fired and app state set
@@ -2558,12 +2659,14 @@ function mapStateToProps(state) {
       templateElements: state.documents.templateElements,
       formIsDirty,
       agreements,
-      documentInsertsAll: state.bookingData.documentInsertsAll
+      documentInsertsAll: state.bookingData.documentInsertsAll,
       // isDirty: isDirty('CreateEditDocument')(state)
+      fontAttributeObject: state.documents.fontAttributeObject,
+      onlyFontAttributeObject: state.documents.onlyFontAttributeObject
     };
-  } else {
-    return {};
   }
+
+  return {};
 }
 
 export default connect(mapStateToProps, actions)(CreateEditDocument);
