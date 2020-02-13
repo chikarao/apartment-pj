@@ -94,10 +94,19 @@ class CreateEditDocument extends Component {
     let destringifiedHistory = {};
     if (localStorageHistory) {
       destringifiedHistory = JSON.parse(localStorageHistory);
+      if (destringifiedHistory[this.props.agreement.id].elements) {
+        _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
+          this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
+        })
+      }
+      console.log('in create_edit_document, componentDidMount, destringifiedHistory', destringifiedHistory);
       this.setState({
-        templateEditHistoryArray: destringifiedHistory,
+        templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history,
       }, () => {
-        this.setState({ historyIndex: this.state.templateEditHistoryArray.length - 1 }, () => {
+        this.setState({
+          // historyIndex: this.state.templateEditHistoryArray.length - 1
+          historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex
+        }, () => {
           console.log('in create_edit_document, componentDidMount, this.state.templateEditHistoryArray', this.state.templateEditHistoryArray);
         })
       })
@@ -1081,6 +1090,7 @@ renderEachDocumentField(page) {
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
+    const noTabs = false;
     // if (this.props.documentFields[page]) {
     let count = 1;
     if (!documentEmpty) {
@@ -1092,47 +1102,18 @@ renderEachDocumentField(page) {
           fieldComponent = eachElement.component;
         }
         console.log('in create_edit_document, renderTemplateElements, eachElement: ', eachElement);
-        // console.log('in create_edit_document, renderTemplateElements, eachElement.page, page, eachElement == page: ', eachElement.page, page, eachElement.page == parseInt(page, 10));
-        // <div
-        // key={count}
-        // className="create-edit-new-element"
-        // style={{ top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, zIndex: 'count' }}
-        // >
-        // </div>
+
         if (eachElement.page == page) {
           const editTemplate = true;
           const width = parseInt(eachElement.width, 10)
-          // const height = parseInt(eachElement.height, 10)
-          // count for key and for z-index so elements overlap
           count++
-          // tabWidth and height in px
-
           const background = document.getElementById('document-background');
-          // const tabPercentOfContainerW = (TAB_WIDTH / background.getBoundingClientRect().width) * 100
-          const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
-          // const tabRearSpacePercentOfContainerW = (TAB_REAR_SPACE / background.getBoundingClientRect().width) * 100
-          const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
-          const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
-          // const inputHeightPercentage = (parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH)) * 100
-          // const containerHeightPx = tabWidth + eachElement.width;
-          // const containerWidthPx = tabHeight + eachElement.height;
-
-          // console.log('in create_edit_document, renderTemplateElements, eachElement.height, tabPercentOfContainerH, inputHeightPercentage: ', eachElement.height, tabPercentOfContainerH, inputHeightPercentage);
-          // console.log('in create_edit_document, renderTemplateElements, background, background.getBoundingClientRect: ', background, background.getBoundingClientRect());
-          // console.log('in create_edit_document, renderTemplateElements, background, tabPercentOfContainerW, tabPercentOfContainerH: ', tabPercentOfContainerW, tabPercentOfContainerH);
-          // console.log('in create_edit_document, renderTemplateElements, background, eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW: ', eachElement.width, tabPercentOfContainerW, tabRearSpacePercentOfContainerW);
-          // Field gets the initialValue from this.props.initialValues
-          // the 'name' attribute is matched with initialValues object keys
-          // and sets initial value of the field
-          // { top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
-          // <i class="fas fa-equals"></i>
-          // <i class="fas fa-arrows-alt"></i>
-          // <i class="fas fa-expand-arrows-alt"></i>
-          // <input type="checkbox" />
-          // console.log('in create_edit_document, renderTemplateElements, eachElement.id.includes(template-element), ', eachElement.id.includes('template-element'));
-          // const selected = this.state.selectedTemplateElementIdArray.includes(eachElement.id)
           const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
-          if (editTemplate) {
+          if (editTemplate && background) {
+            console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement: ', eachElement);
+            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
+            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
+            const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             return (
               <div
                 key={eachElement.id}
@@ -1149,11 +1130,9 @@ renderEachDocumentField(page) {
                   component={fieldComponent}
                   // pass page to custom compoenent, if component is input then don't pass
                   props={fieldComponent == DocumentChoices ? { page } : {}}
-                  // props={fieldComponent == DocumentChoices ? { page } : {}}
                   type={eachElement.type}
                   className={eachElement.component == 'input' ? 'document-rectangle-template' : ''}
-                  // className={eachElement.component == 'input' ? 'form-control' : ''}
-                  // className={eachElement.className}
+
                   style={eachElement.component == 'input' && editTemplate
                     ?
                     // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
@@ -1171,7 +1150,6 @@ renderEachDocumentField(page) {
                     }
                     :
                     {}}
-                  // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
                 />
                 <div
                   id={`template-element-tab-${eachElement.id}`}
@@ -1203,26 +1181,28 @@ renderEachDocumentField(page) {
               </div>
             );
           } // end of if editTemplate
-          return (
-            <Field
-              key={eachElement.name}
-              name={eachElement.name}
-              // setting value here does not works unless its an <input or some native element
-              // value='Bobby'
-              component={fieldComponent}
-              // pass page to custom compoenent, if component is input then don't pass
-              props={fieldComponent == DocumentChoices ? { page } : {}}
-              // props={fieldComponent == DocumentChoices ? { page } : {}}
-              type={eachElement.type}
-              className={eachElement.component == 'input' ? 'document-rectangle' : ''}
-              // className={eachElement.component == 'input' ? 'form-control' : ''}
-              // className={eachElement.className}
-              style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
-              // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
-            />
-          );
+          if (noTabs) { // noTabs a placeholder for now
+            return (
+              <Field
+                key={eachElement.name}
+                name={eachElement.name}
+                // setting value here does not works unless its an <input or some native element
+                // value='Bobby'
+                component={fieldComponent}
+                // pass page to custom compoenent, if component is input then don't pass
+                props={fieldComponent == DocumentChoices ? { page } : {}}
+                // props={fieldComponent == DocumentChoices ? { page } : {}}
+                type={eachElement.type}
+                className={eachElement.component == 'input' ? 'document-rectangle' : ''}
+                // className={eachElement.component == 'input' ? 'form-control' : ''}
+                // className={eachElement.className}
+                style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+                // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+              />
+            );
+          } // end of if no tabs
         }
-      })
+      });
     }
     // end of if documentEmpty
   }
@@ -1307,6 +1287,19 @@ renderEachDocumentField(page) {
     return object;
   }
 
+  setLocalStorageHistory() {
+    let destringifiedHistory = {};
+    const localStorageHistory = localStorage.getItem('documentHistory');
+    console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', this.state.historyIndex, this.state.templateEditHistoryArray);
+    if (localStorageHistory) {
+      // if historystring, unstringify it and add agreementId = historyArray
+      destringifiedHistory = JSON.parse(localStorageHistory);
+    }
+    destringifiedHistory[this.props.agreement.id] = { history: this.state.templateEditHistoryArray, elements: this.props.templateElements, historyIndex: this.state.historyIndex }
+    console.log('in create_edit_document, setTemplateHistoryArray, destringifiedHistory: ', destringifiedHistory);
+    localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
+  }
+
   setTemplateHistoryArray(elementArray, action) {
     // !!! ONLY set historyId and history array HERE to avoid unruly code !!!!!
     console.log('in create_edit_document, setTemplateHistoryArray, action, elementArray: ', action, elementArray);
@@ -1374,16 +1367,7 @@ renderEachDocumentField(page) {
         historyIndex: this.state.templateEditHistoryArray.length - 1,
       }, () => {
         console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
-        let destringifiedHistory = {};
-        const localStorageHistory = localStorage.getItem('documentHistory');
-        console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
-        if (localStorageHistory) {
-          // if historystring, unstringify it and add agreementId = historyArray
-          destringifiedHistory = JSON.parse(localStorageHistory);
-        }
-        destringifiedHistory[this.props.agreement.id] = this.state.templateEditHistoryArray
-        console.log('in create_edit_document, setTemplateHistoryArray, destringifiedHistory: ', destringifiedHistory);
-        localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
+        this.setLocalStorageHistory();
       });
     });// end of setState
   }
@@ -1429,12 +1413,15 @@ clearAllTimers(callback) {
     // Select inputs and font control box buttons (bold and italic) are sent via 'name'
     const fontControlSelectArray = ['fontFamily', 'fontSize', 'fontStyle', 'fontWeight'];
     // if element name is included in fontControlArray, then reassign elementVal to elementName for the switch
-    console.log('in create_edit_document, handleTemplateElementActionClick, before re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
+    // NOTE: The select field does not have a value attribute but can access clickedElement.value when option is selected
+    // So, the select passes what is 'elementVal' by name attribute;
+    //  The bold and italic buttons have value and name so assign as follows
+    // elementValue will be null for the select fields; elementName is assigned to elementVal for swith
     if (fontControlSelectArray.indexOf(elementName) !== -1) {
       elementValue = elementVal;
       elementVal = elementName;
     };
-    console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
+    // console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     const align = (alignWhat) => {
@@ -1480,7 +1467,7 @@ clearAllTimers(callback) {
     };
 
     const moveElements = (direction) => {
-      console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
+      // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       const array = [];
       const originalValueObject = {};
 
@@ -1540,26 +1527,14 @@ clearAllTimers(callback) {
         // font button will show the attributes user wants for new element
         this.setState({
           newFontStyleObject: {
-            // fontFamily: fontAttribute === 'fontFamily' ? clickedElement.value : this.state.newFontStyleObject.fontFamily,
-            // fontSize: fontAttribute === 'fontSize' ? clickedElement.value : this.state.newFontStyleObject.fontSize,
-            // fontStyle: fontAttribute === 'fontStyle' ? clickedElement.value : this.state.newFontStyleObject.fontStyle,
-            // fontWeight: fontAttribute === 'fontWeight' ? clickedElement.value : this.state.newFontStyleObject.fontWeight,
-            ...this.state.newFontStyleObject,
+            ...this.state.newFontStyleObject, // spread operator to copy the state object
+            // elementValue will be null for the select fields so use clickedElement.value (the selected option)
             [fontAttribute]: elementValue || clickedElement.value,
             override: true
           }
         }, () => {
           console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontStyleObject: ', this.state.newFontStyleObject);
-        });
-        // this.setState({
-        //   newFontStyleObject: {
-        //     fontFamily: fontAttribute === 'fontFamily' ? clickedElement.value : this.state.newFontStyleObject.fontFamily,
-        //     fontSize: fontAttribute === 'fontSize' ? clickedElement.value : this.state.newFontStyleObject.fontSize,
-        //     fontStyle: fontAttribute === 'fontStyle' ? clickedElement.value : this.state.newFontStyleObject.fontStyle,
-        //     fontWeight: fontAttribute === 'fontWeight' ? clickedElement.value : this.state.newFontStyleObject.fontWeight,
-        //     override: true
-        //   }
-        // });
+        })
       }
     }; // end of changeFont
 
@@ -1680,6 +1655,7 @@ clearAllTimers(callback) {
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
             console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+            this.setLocalStorageHistory();
           })
         }
       } else { // else for if doWhat undo; else REDO
@@ -1692,6 +1668,7 @@ clearAllTimers(callback) {
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
           console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+          this.setLocalStorageHistory()
         });
       }
     };
@@ -2064,8 +2041,10 @@ clearAllTimers(callback) {
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
     const enableRedo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1;
+    // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
+    let onlyFontAttributeObject = this.props.onlyFontAttributeObject ? this.props.onlyFontAttributeObject : this.state.newFontStyleObject;
+    if (this.state.newFontStyleObject.override) onlyFontAttributeObject = this.state.newFontStyleObject;
 
-    const onlyFontAttributeObject = this.props.onlyFontAttributeObject ? this.props.onlyFontAttributeObject : this.state.newFontStyleObject;
 
     // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     // console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
