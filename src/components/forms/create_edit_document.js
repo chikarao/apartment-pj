@@ -56,10 +56,10 @@ class CreateEditDocument extends Component {
       // selectedElementFontObject is for fonts for checked elements
       // If all elements are checked, selectedElementFontObject === newFontObject
       newFontObject: {
-        fontFamily: 'arial',
-        fontSize: '12px',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
+        font_family: 'arial',
+        font_size: '12px',
+        font_style: 'normal',
+        font_weight: 'normal',
         override: false
       },
       selectedElementFontObject: null,
@@ -828,11 +828,11 @@ renderEachDocumentField(page) {
           height: '1.6%',
           type: 'text', // or 'string' if an input component
           className: 'document-rectangle',
-          borderColor: 'lightgray',
-          fontStyle: this.state.newFontObject.fontStyle,
-          fontWeight: this.state.newFontObject.fontWeight,
-          fontFamily: this.state.newFontObject.fontFamily,
-          fontSize: this.state.newFontObject.fontSize
+          border_color: 'lightgray',
+          font_style: this.state.newFontObject.font_style,
+          font_weight: this.state.newFontObject.font_weight,
+          font_family: this.state.newFontObject.font_family,
+          font_size: this.state.newFontObject.font_size
         };
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
@@ -1034,8 +1034,8 @@ renderEachDocumentField(page) {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             left: eachElement.style.left,
             top: eachElement.style.top,
-            oLeft: originalValueObject[eachElement.id.split('-')[2]].left,
-            oTop: originalValueObject[eachElement.id.split('-')[2]].top,
+            o_left: originalValueObject[eachElement.id.split('-')[2]].left,
+            o_top: originalValueObject[eachElement.id.split('-')[2]].top,
             action: 'update'
           };
           // place in array to be processed in action and reducer
@@ -1197,11 +1197,11 @@ renderEachDocumentField(page) {
                     // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
                     {
                       width: '100%',
-                      fontSize: eachElement.fontSize,
-                      fontFamily: eachElement.fontFamily,
-                      fontStyle: eachElement.fontStyle,
-                      fontWeight: eachElement.fontWeight,
-                      borderColor: eachElement.borderColor,
+                      fontSize: eachElement.font_size,
+                      fontFamily: eachElement.font_family,
+                      fontStyle: eachElement.font_style,
+                      fontWeight: eachElement.font_weight,
+                      borderColor: eachElement.border_color,
                       margin: '0px !important',
                       flex: '1 1 auto'
                     }
@@ -1513,8 +1513,8 @@ renderEachDocumentField(page) {
               };
             // if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
             // if (eachElement.id !== baseElement.id && this.state.selectedTemplateElementIdArray.includes(eachElement.id)) {
-              if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
-              if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top, oTop: originalValueObject[eachElement.id].top, action: 'update' });
+              if (alignWhat === 'vertical') array.push({ id: eachElement.id, left: baseElement.left, o_left: originalValueObject[eachElement.id].left, action: 'update' });
+              if (alignWhat === 'horizontal') array.push({ id: eachElement.id, top: baseElement.top, o_top: originalValueObject[eachElement.id].top, action: 'update' });
               if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, oWidth: originalValueObject[eachElement.id].width, action: 'update' });
               if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height, oHeight: originalValueObject[eachElement.id].height, action: 'update' });
             } // end of if
@@ -1550,10 +1550,10 @@ renderEachDocumentField(page) {
             left: eachElement.left,
           };
 
-          if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
-          if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, oLeft: originalValueObject[eachElement.id].left, action: 'update' });
-          if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, oTop: originalValueObject[eachElement.id].top, action: 'update' });
-          if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%`, oTop: originalValueObject[eachElement.id].top, action: 'update' });
+          if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - 0.1}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
+          if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + 0.1}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
+          if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + 0.1}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
+          if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - 0.1}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
         } // end of if
       }); // end of each
 
@@ -1569,48 +1569,49 @@ renderEachDocumentField(page) {
     const changeFont = (fontAttribute) => {
       const array = [];
       const originalValueObject = {};
+      const fontKeySwitch = { fontFamily: 'font_family', fontSize: 'font_size', fontWeight: 'font_weight', fontStyle: 'font_style' };
       // If elements have been selected, apply changes to selected elements
       if (this.state.selectedTemplateElementIdArray.length > 0) {
         _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
           const eachElement = this.props.templateElements[eachElementId];
           if (eachElement) {
             originalValueObject[eachElement.id] = {
-              fontFamily: eachElement.fontFamily,
-              fontSize: eachElement.fontSize,
-              fontStyle: eachElement.fontStyle,
-              fontWeight: eachElement.fontWeight
+              fontFamily: eachElement.font_family,
+              fontSize: eachElement.font_size,
+              fontStyle: eachElement.font_style,
+              fontWeight: eachElement.font_weight
             };
           } // end of if eachElement
           // Set elemntValue to turn on and off bold and italic
           console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, before turning on and off style and weight fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked);
-          if (fontAttribute === 'fontWeight') elementValue = eachElement.fontWeight === 'bold' ? 'normal' : elementValue;
-          if (fontAttribute === 'fontStyle') elementValue = eachElement.fontStyle === 'italic' ? 'normal' : elementValue
+          if (fontAttribute === 'fontWeight') elementValue = eachElement.font_weight === 'bold' ? 'normal' : elementValue;
+          if (fontAttribute === 'fontStyle') elementValue = eachElement.font_style === 'italic' ? 'normal' : elementValue
 
-          if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, fontFamily: clickedElement.value, oFontFamily: originalValueObject[eachElement.id].fontFamily, action: 'update' });
-          if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
-          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+          if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, font_family: clickedElement.value, o_font_family: originalValueObject[eachElement.id].fontFamily, action: 'update' });
+          if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, font_size: clickedElement.value, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, font_weight: elementValue, o_font_weight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
+          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, font_style: elementValue, o_font_style: originalValueObject[eachElement.id].fontStyle, action: 'update' });
           // const originalontWeight = eachElement.fontWeight === 'bold' ? 'normal' : elementValue;
           // const originalontStyle = eachElement.fontStyle === 'italic' ? 'normal' : elementValue
           // if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
           // if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
-          if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-          if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) < 48 ? `${parseFloat(eachElement.font_size) + 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) > 8 ? `${parseFloat(eachElement.font_size) - 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
         }); // end of each
         // If ALL elements are checked, update the newFontObject
         if (this.state.allElementsChecked) {
           this.setState({
             newFontObject: {
               ...this.state.newFontObject,
-              [fontAttribute]: elementValue || clickedElement.value,
+              [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
               override: true
             },
             selectedElementFontObject: {
               ...this.state.selectedElementFontObject,
-              [fontAttribute]: elementValue || clickedElement.value,
+              [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             }
           }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
@@ -1619,10 +1620,10 @@ renderEachDocumentField(page) {
           this.setState({
             selectedElementFontObject: {
               ...this.state.selectedElementFontObject,
-              [fontAttribute]: elementValue || clickedElement.value,
+              [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             }
           }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if not all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
@@ -1639,7 +1640,7 @@ renderEachDocumentField(page) {
           newFontObject: {
             ...this.state.newFontObject, // spread operator to copy the state object
             // elementValue will be null for the select fields so use clickedElement.value (the selected option)
-            [fontAttribute]: elementValue || clickedElement.value,
+            [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             override: true
           }
         }, () => {
@@ -1680,12 +1681,14 @@ renderEachDocumentField(page) {
           // const eachModified = this.getNewElementObject(each);
           const object = {};
           _.each(Object.keys(eachObject), eachKey => {
-            if ((eachKey[0] === 'o' && eachKey[1] === eachKey[1].toUpperCase())) {
+            // if ((eachKey[0] === 'o' && eachKey[1] === eachKey[1].toUpperCase())) {
+            if ((eachKey[0] === 'o' && eachKey[1] === '_')) {
               // substring is (inclusive, exclusive)
-              const withoutO = eachKey.substring(1, eachKey.length);
-              const newKey = withoutO[0].toLowerCase() + withoutO.substring(1);
+              const withoutO = eachKey.substring(2, eachKey.length);
+              // const newKey = withoutO[0].toLowerCase() + withoutO.substring(1);
               // console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, getOriginalAttributes typeof eachKey, eachKey, newKey: ', typeof eachKey, eachKey, newKey);
-              object[newKey] = eachObject[eachKey];
+              // object[newKey] = eachObject[eachKey];
+              object[withoutO] = eachObject[eachKey];
             }
 
             if (eachKey === 'id') {
@@ -1823,7 +1826,7 @@ renderEachDocumentField(page) {
               // Gets a map of all font attributes used in elements on agreement
               const fontObject = this.getSelectedFontElementAttributes();
               // fontObject is { object: {element font mapping}, selectObject: { fontFamily: 'arial', fontSize: '12px' ...}}
-              console.log('in create_edit_document, handleTemplateElementActionClick, fontObject: ', fontObject);
+              console.log('in create_edit_document, handleTemplateElementActionClick, fontObject, this.state.newFontObject: ', fontObject, this.state.newFontObject);
               this.setState({ selectedElementFontObject: fontObject.selectObject })
             });
           }
@@ -2105,12 +2108,13 @@ renderEachDocumentField(page) {
 
   getSelectedFontElementAttributes() {
     // getCheckElementFontObject
-    const object = { fontFamily: {}, fontSize: {}, fontWeight: {}, fontStyle: {} };
+    const object = { font_family: {}, font_size: {}, font_weight: {}, font_style: {} };
     const selectObject = {};
     let eachElement = null;
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       _.each(this.state.selectedTemplateElementIdArray, eachId => {
         eachElement = this.props.templateElements[eachId];
+        console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
         _.each(Object.keys(object), eachKey => {
           if (!object[eachKey][eachElement[eachKey]]) {
             object[eachKey][eachElement[eachKey]] = [];
@@ -2166,9 +2170,9 @@ renderEachDocumentField(page) {
       // Get an array of actual fonts used in selected elements
       // const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
       console.log('in create_edit_document, setFontControlBoxValues, fontAttributeObject[eachFontAttribute]: ', fontAttributeObject[eachFontAttribute]);
-      if (eachFontAttribute === 'fontFamily') fontFamily.value = fontAttributeObject[eachFontAttribute];
-      if (eachFontAttribute === 'fontSize') fontSize.value = fontAttributeObject[eachFontAttribute];
-      if (eachFontAttribute === 'fontWeight') {
+      if (eachFontAttribute === 'font_family') fontFamily.value = fontAttributeObject[eachFontAttribute];
+      if (eachFontAttribute === 'font_size') fontSize.value = fontAttributeObject[eachFontAttribute];
+      if (eachFontAttribute === 'font_weight') {
          if (fontAttributeObject[eachFontAttribute] === 'bold') {
            // fontWeight.style.border = '1px solid black'
            fontWeight.style.fontWeight = 'bold'
@@ -2178,7 +2182,7 @@ renderEachDocumentField(page) {
          }
       }
 
-      if (eachFontAttribute === 'fontStyle') {
+      if (eachFontAttribute === 'font_style') {
         if (fontAttributeObject[eachFontAttribute] === 'italic') {
           fontStyle.style.fontStyle = 'italic';
         } else {
@@ -2397,9 +2401,9 @@ renderEachDocumentField(page) {
               width: 'auto',
               // fontSize: onlyFontAttributeObject.fontSize && parseFloat(onlyFontAttributeObject.fontSize) < 20 ? onlyFontAttributeObject.fontSize : '12px',
               fontSize: '11.5px',
-              fontFamily: onlyFontAttributeObject.fontFamily ? onlyFontAttributeObject.fontFamily : this.state.newFontObject.fontFamily,
-              fontStyle: onlyFontAttributeObject.fontStyle ? onlyFontAttributeObject.fontStyle : this.state.newFontObject.fontStyle,
-              fontWeight: onlyFontAttributeObject.fontWeight ? onlyFontAttributeObject.fontWeight : this.state.newFontObject.fontWeight,
+              fontFamily: onlyFontAttributeObject.font_family ? onlyFontAttributeObject.font_family : this.state.newFontObject.font_family,
+              fontStyle: onlyFontAttributeObject.font_style ? onlyFontAttributeObject.font_style : this.state.newFontObject.font_style,
+              fontWeight: onlyFontAttributeObject.font_weight ? onlyFontAttributeObject.font_weight : this.state.newFontObject.font_weight,
               color: elementsChecked ? 'blue' : 'gray',
               padding: '10px 0 0 0',
               overFlow: 'hidden'
@@ -2407,7 +2411,7 @@ renderEachDocumentField(page) {
             onMouseOver={this.handleMouseOverActionButtons}
             name="Change font family and style,bottom"
           >
-            {onlyFontAttributeObject.fontFamily ? `${(onlyFontAttributeObject.fontFamily).charAt(0).toUpperCase() + onlyFontAttributeObject.fontFamily.slice(1)}` : 'Font'}
+            {onlyFontAttributeObject.font_family ? `${(onlyFontAttributeObject.font_family).charAt(0).toUpperCase() + onlyFontAttributeObject.font_family.slice(1)}` : 'Font'}
           </span>
         </div>
         <div
