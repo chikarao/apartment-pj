@@ -1391,7 +1391,7 @@ renderEachDocumentField(page) {
 
     this.setState({
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
-      allElementsChecked: action !== 'delete', // if action IS delete, all elements are not checked anymore
+      allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length, // if action IS delete, all elements are not checked anymore
       templateEditHistoryArray: [...newArray, array] // add new array of history
     }, () => {
       console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
