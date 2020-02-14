@@ -186,3 +186,4 @@ export const GET_GOOGLE_MAP_MAP_BOUNDS_KEYS = 'GET_GOOGLE_MAP_MAP_BOUNDS_KEYS';
 export const SET_GET_ONLINE_OFFLINE = 'set_get_online_offline';
 export const SET_USER_STATUS = 'set_user_status';
 export const SET_OTHER_USER_STATUS = 'set_other_user_status';
+export const SAVE_TEMPLATE_DOCUMENT_FIELDS = 'save_template_document_fields';

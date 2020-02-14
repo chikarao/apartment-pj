@@ -388,6 +388,38 @@ class CreateEditDocument extends Component {
     return booleanReturned;
   }
 
+  handleTemplateFormSubmit({ data, submitAction }) {
+    const documentFieldArray = [];
+    const newDocumentFieldArray = [];
+    const paramsObject = {
+      flat_id: this.props.flat.id,
+      booking_id: this.props.booking.id,
+      document_name: this.props.agreement.document_name,
+      document_field: documentFieldArray,
+      new_document_field: newDocumentFieldArray,
+      agreement_id: this.props.agreement ? this.props.agreement.id : null,
+      document_language_code: this.props.documentLanguageCode,
+    };
+
+    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
+    _.each(Object.keys(this.props.templateElements), eachKey => {
+      console.log('in create_edit_document, handleTemplateFormSubmit, eachKey.indexOf(a): ', eachKey.indexOf('a'));
+      const documentField = this.props.templateElements[eachKey]
+      const elementName = documentField.name
+      const value = data[elementName];
+      documentField.value = value;
+
+      if (eachKey.indexOf('a') !== -1) {
+        newDocumentFieldArray.push(documentField);
+      } else {
+        newDocumentFieldArray.push(documentField);
+      }
+    });
+
+    console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
+    this.props.saveTemplateDocumentFields(paramsObject, () => {});
+  }
+
   handleFormSubmit({ data, submitAction }) {
     console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
     // object to send to API; set flat_id
@@ -2182,6 +2214,7 @@ renderEachDocumentField(page) {
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
     const enableRedo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1;
+    const saveButtonActive = this.state.templateEditHistoryArray.length > 0;
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
     // let onlyFontAttributeObject = this.state.newFontObject;
@@ -2213,7 +2246,15 @@ renderEachDocumentField(page) {
           name="Save your work,top"
           value="save"
         >
-          <i value="save" onMouseOver={this.handleMouseOverActionButtons} name="Save your work,top" style={{ fontSize: '19px', padding: '4px 0 0 2px', color: disableSave ? 'gray' : 'blue' }} className="far fa-save"></i>
+          <i
+            value="save"
+            onMouseOver={this.handleMouseOverActionButtons}
+            name="Save your work,top"
+            style={{ fontSize: '19px', padding: '4px 0 0 2px', color: disableSave ? 'gray' : 'blue' }}
+            className="far fa-save"
+            onClick={saveButtonActive ? this.props.handleSubmit(data => this.handleTemplateFormSubmit({ data, submitAction: 'save' })) : () => {}}
+          >
+          </i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"

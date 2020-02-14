@@ -495,6 +495,8 @@ class BookingConfirmation extends Component {
   // When user clicks on a template saved, sets various component and app states to
   // set
   renderEachTemplateSaved() {
+    // console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements:', this.props.booking.agreements);
+
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // change later language_code_1 is just a dummy field in Agreements
@@ -595,7 +597,6 @@ class BookingConfirmation extends Component {
   }
 
   handlePrepareEmailClick() {
-    console.log('in booking confirmation, handlePrepareEmailClick:');
     this.setState({ showDocumentEmailCreateModal: true });
   }
 

@@ -191,7 +191,8 @@ import {
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
   SET_GET_ONLINE_OFFLINE,
   SET_USER_STATUS,
-  SET_OTHER_USER_STATUS
+  SET_OTHER_USER_STATUS,
+  SAVE_TEMPLATE_DOCUMENT_FIELDS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -2919,6 +2920,28 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
       });
       // sends back to createflat.js the flat_id and the images
       callback(response.data.data.agreement);
+    });
+  };
+}
+
+export function saveTemplateDocumentFields(agreementFieldAttributes, callback) {
+  console.log('in actions index, saveTemplateDocumentFields, agreementFieldAttributes: ', agreementFieldAttributes);
+  console.log('in actions index, saveTemplateDocumentFields: localStorage.getItem, token; ', localStorage.getItem('token'));
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/save_template_agreement_fields`, agreementFieldAttributes, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to saveTemplateDocumentFields, response: ', response);
+      console.log('response to saveTemplateDocumentFields, response.data.data: ', response.data.data);
+      // EDIT_AGREEMENT_FIELDS called in booking and document reducer
+      dispatch({
+        type: SAVE_TEMPLATE_DOCUMENT_FIELDS,
+        payload: response.data.data
+      });
+      // sends back to createflat.js the flat_id and the images
+      callback();
     });
   };
 }
