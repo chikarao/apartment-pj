@@ -52,13 +52,17 @@ class CreateEditDocument extends Component {
       historyIndex: 0,
       undoingAndRedoing: false,
       showFontControlBox: false,
-      newFontStyleObject: {
+      // NOTE: newFontObject is for setting font attributes for new objects
+      // selectedElementFontObject is for fonts for checked elements
+      // If all elements are checked, selectedElementFontObject === newFontObject
+      newFontObject: {
         fontFamily: 'arial',
         fontSize: '12px',
         fontStyle: 'normal',
         fontWeight: 'normal',
         override: false
       },
+      selectedElementFontObject: null,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -89,28 +93,35 @@ class CreateEditDocument extends Component {
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
   componentDidMount() {
     // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
+    // If change name 'documentHistory', comment out this localStorageHistory section
+    // before running the code or will raise error of undefined newFontObject and other state objects
     const localStorageHistory = localStorage.getItem('documentHistory');
     console.log('in create_edit_document, componentDidMount, localStorageHistory', localStorageHistory);
     let destringifiedHistory = {};
+    // if localStorageHistory exists, set state to previous values
+    // if localStorageHistory does not exist, all state values are set in constructor
+    // and next time user refreshes or mounts component on the same machine, it will be there
     if (localStorageHistory) {
       destringifiedHistory = JSON.parse(localStorageHistory);
       if (destringifiedHistory[this.props.agreement.id].elements) {
         _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
           this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
         })
-      }
-      console.log('in create_edit_document, componentDidMount, destringifiedHistory', destringifiedHistory);
-      this.setState({
-        templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history,
-      }, () => {
+        console.log('in create_edit_document, componentDidMount, destringifiedHistory', destringifiedHistory);
+        // Set state with || in case localStorageHistory exists but history and other objects do not exist
         this.setState({
-          // historyIndex: this.state.templateEditHistoryArray.length - 1
-          historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex
+          templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+          newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject
         }, () => {
-          console.log('in create_edit_document, componentDidMount, this.state.templateEditHistoryArray', this.state.templateEditHistoryArray);
+          this.setState({
+            // historyIndex: this.state.templateEditHistoryArray.length - 1
+            historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
+          }, () => {
+            console.log('in create_edit_document, componentDidMount, this.state.templateEditHistoryArray', this.state.templateEditHistoryArray);
+          })
         })
-      })
-    }
+      }
+    } // end of if localStorageHistory
 
     if (this.props.bookingData) {
       const {
@@ -174,10 +185,21 @@ class CreateEditDocument extends Component {
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
+  // Do not need componentDidUpdate for setLocalStorageHistory since done in setTemplateHistoryArray
+  // componentDidUpdate(prevProps) {
+  //   console.log('in create_edit_document, componentDidUpdate, outside if prevProps.templateElements !== this.props.templateElements', prevProps.templateElements !== this.props.templateElements);
+  //   if (!_.isEmpty(prevProps.templateElements) && Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length) {
+  //     console.log('in create_edit_document, componentDidUpdate, inside if prevProps.templateElements !== this.props.templateElements', prevProps.templateElements !== this.props.templateElements);
+  //     // this.setLocalStorageHistory('componentDidUpdate');
+  //   }
+  // }
 
   componentWillUnmount() {
+    // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
+    this.setLocalStorageHistory('componentWillUnmount')
+    console.log('in create_edit_document, componentWillUnmount ');
   }
 
   countMainDocumentInserts(agreement) {
@@ -248,13 +270,6 @@ class CreateEditDocument extends Component {
     }
     return objectReturned;
   }
-
-
-  // componentDidUpdate() {
-    // if (updateCount < 2) {
-      // updateCount++;
-    // }
-  // }
 
   renderAlert() {
     if (this.props.errorMessage) {
@@ -782,10 +797,10 @@ renderEachDocumentField(page) {
           type: 'text', // or 'string' if an input component
           className: 'document-rectangle',
           borderColor: 'lightgray',
-          fontStyle: this.state.newFontStyleObject.fontStyle,
-          fontWeight: this.state.newFontStyleObject.fontWeight,
-          fontFamily: this.state.newFontStyleObject.fontFamily,
-          fontSize: this.state.newFontStyleObject.fontSize
+          fontStyle: this.state.newFontObject.fontStyle,
+          fontWeight: this.state.newFontObject.fontWeight,
+          fontFamily: this.state.newFontObject.fontFamily,
+          fontSize: this.state.newFontObject.fontSize
         };
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
@@ -812,9 +827,10 @@ renderEachDocumentField(page) {
       // place in array of checked elements
       this.setState({
         selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
-        newFontStyleObject: { ...this.state.newFontStyleObject, override: false }
+        newFontObject: { ...this.state.newFontObject, override: false }
       }, () => {
         // if all elements checked, set to true
+        this.getSelectedFontElementAttributes()
         this.setState({
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
         }, () => {
@@ -834,9 +850,14 @@ renderEachDocumentField(page) {
       this.setState({ selectedTemplateElementIdArray: newArray }, () => {
         this.setState({
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
-          newFontStyleObject: { ...this.state.newFontStyleObject, override: true }
+          newFontObject: { ...this.state.newFontObject, override: true }
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
+          // If there are no more checked elements, set selectedElementFontObject to null
+          // That means newFontObject will kick in on the font button on the element edit control box
+          if (this.state.selectedTemplateElementIdArray.length === 0) {
+            this.setState({ selectedElementFontObject: null })
+          }
         })
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
       });
@@ -844,6 +865,8 @@ renderEachDocumentField(page) {
   }
 
   dragElement(element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements) {
+    // pos1 and 2 are for getting delta of pointer position;
+    // pos3 and 4 are for getting updated mouse position
     let pos1 = 0;
     let pos2 = 0;
     let pos3 = 0;
@@ -1023,6 +1046,7 @@ renderEachDocumentField(page) {
   }
 
   handleTemplateElementMoveClick(event) {
+    // For dragging and moving template elements; Use with dragElement function
     // let selectedElementsId = [];
     let selectedElements = [];
     const clickedElement = event.target;
@@ -1048,6 +1072,7 @@ renderEachDocumentField(page) {
   }
 
   handleTemplateElementChangeSizeClick(event) {
+    // For dragging and resizing template elements
     let selectedElements = [];
     let inputElements = [];
     let tabs = [];
@@ -1287,23 +1312,31 @@ renderEachDocumentField(page) {
     return object;
   }
 
-  setLocalStorageHistory() {
+  setLocalStorageHistory(fromWhere) {
+    // Set storage object for given point in time for agreement for when user accidentally has to refresh
+    // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
     let destringifiedHistory = {};
     const localStorageHistory = localStorage.getItem('documentHistory');
-    console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', this.state.historyIndex, this.state.templateEditHistoryArray);
+    console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere);
     if (localStorageHistory) {
       // if historystring, unstringify it and add agreementId = historyArray
       destringifiedHistory = JSON.parse(localStorageHistory);
     }
-    destringifiedHistory[this.props.agreement.id] = { history: this.state.templateEditHistoryArray, elements: this.props.templateElements, historyIndex: this.state.historyIndex }
-    console.log('in create_edit_document, setTemplateHistoryArray, destringifiedHistory: ', destringifiedHistory);
+    destringifiedHistory[this.props.agreement.id] = {
+      history: this.state.templateEditHistoryArray,
+      elements: this.props.templateElements,
+      historyIndex: this.state.historyIndex,
+      newFontObject: this.state.newFontObject
+    }
+    // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
+    // console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory: ', destringifiedHistory);
     localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
   }
 
   setTemplateHistoryArray(elementArray, action) {
-    // !!! ONLY set historyId and history array HERE to avoid unruly code !!!!!
+    // !!! NOTE: ONLY set historyId and history array HERE to avoid unruly code !!!!!
     console.log('in create_edit_document, setTemplateHistoryArray, action, elementArray: ', action, elementArray);
-    // Called when
+    // Function to create a new array so don't have to mutate state
     const getNewExistingHistoryArray = () => {
       const newArray = [];
       _.each(this.state.templateEditHistoryArray, eachHistoryArray => {
@@ -1363,11 +1396,12 @@ renderEachDocumentField(page) {
     }, () => {
       console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
       this.setState({
-        // undoingAndRedoing: false,
+        // !!!!! Index is set at End of array when user creates, deletes or updates (not in redo or undo)
         historyIndex: this.state.templateEditHistoryArray.length - 1,
       }, () => {
         console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
-        this.setLocalStorageHistory();
+        // Persist the history objects in localStorage
+        this.setLocalStorageHistory('setTemplateHistoryArray');
       });
     });// end of setState
   }
@@ -1380,15 +1414,15 @@ renderEachDocumentField(page) {
    } // end of if selectedTemplateElementIdArray.length > 0
   }
 
-clearAllTimers(callback) {
-  _.each(explanationTimerArray, eachTimerObj => {
-    clearInterval(eachTimerObj.timerId);
-  });
-  // set global variable explanationTimerArray
-  explanationTimerArray = [];
-  callback();
-  // console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
-}
+  clearAllTimers(callback) {
+    _.each(explanationTimerArray, eachTimerObj => {
+      clearInterval(eachTimerObj.timerId);
+    });
+    // set global variable explanationTimerArray
+    explanationTimerArray = [];
+    callback();
+    // console.log('in create_edit_document, clearAllTimers, explanationTimerArray.length: ', explanationTimerArray.length);
+  }
 
   getElement(elementArray, baseElementId) {
     let objectReturned = null;
@@ -1402,6 +1436,8 @@ clearAllTimers(callback) {
   }
 
   handleTemplateElementActionClick(event) {
+    // Main function for handling template element action box button clicks
+    // e.g. align, redo, trash buttons, etc
     this.clearAllTimers(() => {});
     const clickedElement = event.target;
     // element val is value of i or div in action box eg horizontal or vertical strings
@@ -1520,20 +1556,37 @@ clearAllTimers(callback) {
           if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
           if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
         }); // end of each
-        this.setTemplateHistoryArray(array, 'update');
-        this.props.updateDocumentElementLocally(array);
+        // If ALL elements are checked, update the newFontObject
+        if (this.state.allElementsChecked) {
+          this.setState({
+            newFontObject: {
+              ...this.state.newFontObject,
+              [fontAttribute]: elementValue || clickedElement.value,
+              override: true
+            },
+            selectedElementFontObject: {
+              ...this.state.selectedElementFontObject,
+              [fontAttribute]: elementValue || clickedElement.value,
+            }
+          }, () => {
+            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            this.props.updateDocumentElementLocally(array);
+            this.setTemplateHistoryArray(array, 'update');
+          });
+        }
       } else { // else of if selectedTemplateElementIdArray.length > 0
-        // if there is no element selected turn override true so that
+        // if there are NO elements selected turn override true so that
         // font button will show the attributes user wants for new element
         this.setState({
-          newFontStyleObject: {
-            ...this.state.newFontStyleObject, // spread operator to copy the state object
+          newFontObject: {
+            ...this.state.newFontObject, // spread operator to copy the state object
             // elementValue will be null for the select fields so use clickedElement.value (the selected option)
             [fontAttribute]: elementValue || clickedElement.value,
             override: true
           }
         }, () => {
-          console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontStyleObject: ', this.state.newFontStyleObject);
+          this.setTemplateHistoryArray(array, 'update');
+          console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontObject: ', this.state.newFontObject);
         })
       }
     }; // end of changeFont
@@ -1655,7 +1708,7 @@ clearAllTimers(callback) {
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
             console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-            this.setLocalStorageHistory();
+            this.setLocalStorageHistory('redoUndo');
           })
         }
       } else { // else for if doWhat undo; else REDO
@@ -1668,7 +1721,7 @@ clearAllTimers(callback) {
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
           console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-          this.setLocalStorageHistory()
+          this.setLocalStorageHistory('redoUndoElse')
         });
       }
     };
@@ -1700,11 +1753,18 @@ clearAllTimers(callback) {
             }
           });
 
+
           if (checkAllArray.length > 0) {
             this.setState({
               allElementsChecked: true,
               selectedTemplateElementIdArray: checkAllArray,
-              newFontStyleObject: { ...this.state.newFontStyleObject, override: false }
+              newFontObject: { ...this.state.newFontObject, override: false },
+              // selectedElementFontObject: fontObject.selectObject
+            }, () => {
+              const fontObject = this.getSelectedFontElementAttributes();
+              // fontObject is { object: {element font mapping}, selectObject: { fontFamily: 'arial', fontSize: '12px' ...}}
+              console.log('in create_edit_document, handleTemplateElementActionClick, fontObject: ', fontObject);
+              this.setState({ selectedElementFontObject: fontObject.selectObject })
             });
           }
           // }
@@ -1716,7 +1776,8 @@ clearAllTimers(callback) {
           // and uncheckAll
             this.setState({
               selectedTemplateElementIdArray: [],
-              allElementsChecked: false
+              allElementsChecked: false,
+              selectedElementFontObject: null
             });
             break;
 
@@ -1819,6 +1880,7 @@ clearAllTimers(callback) {
   }
 
   renderFontControlBox() {
+    // For rendering box for setting font family, size, style and weight
     // Get the font button in array
     let fontButtonDimensions = {};
     const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
@@ -1982,7 +2044,9 @@ clearAllTimers(callback) {
   }
 
   getSelectedFontElementAttributes() {
+    // getCheckElementFontObject
     const object = { fontFamily: {}, fontSize: {}, fontWeight: {}, fontStyle: {} };
+    const selectObject = {};
     let eachElement = null;
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       _.each(this.state.selectedTemplateElementIdArray, eachId => {
@@ -1998,41 +2062,62 @@ clearAllTimers(callback) {
           }
         });
       });
+
+      // let objectLength = 0;
+      let selectValue = [];
+
+      _.each(Object.keys(object), eachFontAttribute => {
+        // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
+        // would be 2
+        // objectLength = Object.keys(object[eachFontAttribute]).length;
+        // Get an array of actual fonts used in selected elements
+        selectValue = Object.keys(object[eachFontAttribute])
+        selectObject[eachFontAttribute] = null;
+        if (selectValue.length === 1) {
+          selectObject[eachFontAttribute] = selectValue[0];
+        }
+        // if (objectLength === 1 && eachFontAttribute === 'fontSize') fontSize.value = selectValue[0];
+        // if (objectLength === 1 && eachFontAttribute === 'fontWeight') fontFamily.value = selectValue[0];
+        // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
+      })
+      // this.setState({ selectedElementFontObject: })
     }
-    return object;
+
+    console.log('in create_edit_document, getSelectedFontElementAttributes, object, selectObject: ', object, selectObject);
+    this.setState({ selectedElementFontObject: _.isEmpty(selectObject) ? null : selectObject });
+    return { object, selectObject };
   }
 
   handleShowFontControlBox() {
     const fontControlBox = document.getElementById('create-edit-document-font-control-box')
+    // 'Open' the font control box by setting display to 'block'
     fontControlBox.style.display = 'block';
+    // Add a listener for user clicks outside the box to close and set display: 'none'
     document.addEventListener('click', this.handleFontControlCloseClick)
     // Get object with attributes assigned to each element (ie fontFamily: { arial: [id]})
     const fontAttributeObject = this.getSelectedFontElementAttributes();
     // Gets the select field for fontFamily
     const fontFamily = document.getElementById('fontFamily')
     const fontSize = document.getElementById('fontSize')
-    console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject, fontFamily: ', fontAttributeObject, fontFamily);
-    let objectLength;
+    console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject, fontSize, fontFamily: ', fontAttributeObject, fontSize, fontFamily);
+    // let objectLength;
     // Go through array of fontAttributeObject ie fontFamily, fontSize, fontWeight, fontStyle
-    _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
+    _.each(Object.keys(fontAttributeObject.selectObject), eachFontAttribute => {
       // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
       // would be 2
-      objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
+      // objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
       // Get an array of actual fonts used in selected elements
-      const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
-      console.log('in create_edit_document, handleShowFontControlBox, selectValue: ', selectValue);
-      if (objectLength === 1 && eachFontAttribute === 'fontFamily') fontFamily.value = selectValue[0];
-      if (objectLength === 1 && eachFontAttribute === 'fontSize') fontSize.value = selectValue[0];
+      // const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
+      console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject.selectObject[eachFontAttribute]: ', fontAttributeObject.selectObject[eachFontAttribute]);
+      if (eachFontAttribute === 'fontFamily') fontFamily.value = fontAttributeObject.selectObject[eachFontAttribute];
+      if (eachFontAttribute === 'fontSize') fontSize.value = fontAttributeObject.selectObject[eachFontAttribute];
       // if (objectLength === 1 && eachFontAttribute === 'fontWeight') fontFamily.value = selectValue[0];
       // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
     })
   }
 
-  renderTemplateEditFieldAction() {
-    // <span onMouseOver={this.handleMouseOverActionButtons} name="Change font style" style={{ width: 'auto' }}>
-    //   Font
-    // </span>
-    // const createNewElement = this.state.createNewTemplateElementOn
+  renderTemplateElementEditAction() {
+    // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = Object.keys(this.props.templateElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
@@ -2042,14 +2127,16 @@ clearAllTimers(callback) {
     const enableUndo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1;
     const enableRedo = this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1;
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
-    let onlyFontAttributeObject = this.props.onlyFontAttributeObject ? this.props.onlyFontAttributeObject : this.state.newFontStyleObject;
-    if (this.state.newFontStyleObject.override) onlyFontAttributeObject = this.state.newFontStyleObject;
+    let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
+    // let onlyFontAttributeObject = this.state.newFontObject;
+    // if (this.state.newFontObject.override) onlyFontAttributeObject = this.state.newFontObject;
 
 
     // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
-    // console.log('in create_edit_document, renderTemplateEditFieldAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
-    console.log('in create_edit_document, renderTemplateEditFieldAction, after each, this.props.fontAttributeObject, this.props.onlyFontAttributeObject : ', this.props.fontAttributeObject, this.props.onlyFontAttributeObject, onlyFontAttributeObject);
-        // console.log('in create_edit_document, renderTemplateEditFieldAction, after each, disableCheckAll : ', disableCheckAll);
+    // console.log('in create_edit_document, renderTemplateElementEditAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
+    console.log('in create_edit_document, renderTemplateElementEditAction, after each, onlyFontAttributeObject, this.state.newFontObject, this.state.selectedElementFontObject : ', onlyFontAttributeObject, this.state.newFontObject, this.state.selectedElementFontObject);
+    // console.log('in create_edit_document, renderTemplateElementEditAction, this.state.selectedElementFontObject : ', this.state.selectedElementFontObject);
+        // console.log('in create_edit_document, renderTemplateElementEditAction, after each, disableCheckAll : ', disableCheckAll);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -2213,9 +2300,9 @@ clearAllTimers(callback) {
               width: 'auto',
               // fontSize: onlyFontAttributeObject.fontSize && parseFloat(onlyFontAttributeObject.fontSize) < 20 ? onlyFontAttributeObject.fontSize : '12px',
               fontSize: '11.5px',
-              fontFamily: onlyFontAttributeObject.fontFamily ? onlyFontAttributeObject.fontFamily : this.state.newFontStyleObject.fontFamily,
-              fontStyle: onlyFontAttributeObject.fontStyle ? onlyFontAttributeObject.fontStyle : this.state.newFontStyleObject.fontStyle,
-              fontWeight: onlyFontAttributeObject.fontWeight ? onlyFontAttributeObject.fontWeight : this.state.newFontStyleObject.fontWeight,
+              fontFamily: onlyFontAttributeObject.fontFamily ? onlyFontAttributeObject.fontFamily : this.state.newFontObject.fontFamily,
+              fontStyle: onlyFontAttributeObject.fontStyle ? onlyFontAttributeObject.fontStyle : this.state.newFontObject.fontStyle,
+              fontWeight: onlyFontAttributeObject.fontWeight ? onlyFontAttributeObject.fontWeight : this.state.newFontObject.fontWeight,
               color: elementsChecked ? 'blue' : 'gray',
               padding: '10px 0 0 0',
               overFlow: 'hidden'
@@ -2351,7 +2438,7 @@ clearAllTimers(callback) {
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
               {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate ? this.renderTemplateEditFieldAction() : ''}
+              {this.props.showTemplate ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
               {this.props.showTemplate ? this.renderFontControlBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
@@ -2550,24 +2637,6 @@ clearAllTimers(callback) {
   // }
 }
 
-// function getElementFontAttributes(elements) {
-//   const object = { fontFamily: {}, fontSize: {}, fontStyle: {}, fontWeight: {} };
-//   console.log('in create_edit_document, getElementFontAttributes, elements: ', elements);
-//   _.each(Object.keys(elements), eachElementKey => {
-//     if (elements[eachElementKey].type === 'text' || elements[eachElementKey].type === 'string') {
-//       console.log('in create_edit_document, getElementFontAttributes, eachElementKey: ', eachElementKey);
-//       _.each(Object.keys(object), eachKey => {
-//         if (!object[eachKey][elements[eachElementKey][eachKey]]) {
-//           object[eachKey][elements[eachElementKey][eachKey]] = [elements[eachElementKey].id];
-//         } else {
-//           object[eachKey][elements[eachElementKey][eachKey]].push(elements[eachElementKey].id);
-//         }
-//       });
-//     }
-//   });
-//   return object;
-// }
-
 CreateEditDocument = reduxForm({
   form: 'CreateEditDocument',
   enableReinitialize: true,
@@ -2649,3 +2718,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, actions)(CreateEditDocument);
+
+// renderTemplateElementEditAction
+// handleShowFontControlBox
+// getSelectedFontElementAttributes
+// handleTemplateElementCheckClick
