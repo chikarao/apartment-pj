@@ -1391,7 +1391,7 @@ renderEachDocumentField(page) {
 
     this.setState({
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
-      allElementsChecked: false, // all elements are not checked anymore
+      allElementsChecked: action !== 'delete', // if action IS delete, all elements are not checked anymore
       templateEditHistoryArray: [...newArray, array] // add new array of history
     }, () => {
       console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
@@ -1549,10 +1549,19 @@ renderEachDocumentField(page) {
               fontWeight: eachElement.fontWeight
             };
           } // end of if eachElement
+          // Set elemntValue to turn on and off bold and italic
+          console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, before turning on and off style and weight fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked);
+          if (fontAttribute === 'fontWeight') elementValue = eachElement.fontWeight === 'bold' ? 'normal' : elementValue;
+          if (fontAttribute === 'fontStyle') elementValue = eachElement.fontStyle === 'italic' ? 'normal' : elementValue
+
           if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, fontFamily: clickedElement.value, oFontFamily: originalValueObject[eachElement.id].fontFamily, action: 'update' });
           if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, fontSize: clickedElement.value, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
-          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
-          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
+          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
+          // const originalontWeight = eachElement.fontWeight === 'bold' ? 'normal' : elementValue;
+          // const originalontStyle = eachElement.fontStyle === 'italic' ? 'normal' : elementValue
+          // if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
+          // if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
           if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) < 48 ? `${parseFloat(eachElement.fontSize) + 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
           if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, fontSize: parseFloat(eachElement.fontSize) > 8 ? `${parseFloat(eachElement.fontSize) - 0.5}px` : eachElement.fontSize, oFontSize: originalValueObject[eachElement.id].fontSize, action: 'update' });
         }); // end of each
@@ -1569,12 +1578,29 @@ renderEachDocumentField(page) {
               [fontAttribute]: elementValue || clickedElement.value,
             }
           }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
+            this.setFontControlBoxValues();
+          });
+        } else { // if one or more but not all checked
+          this.setState({
+            selectedElementFontObject: {
+              ...this.state.selectedElementFontObject,
+              [fontAttribute]: elementValue || clickedElement.value,
+            }
+          }, () => {
+            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            this.props.updateDocumentElementLocally(array);
+            this.setTemplateHistoryArray(array, 'update');
+            this.setFontControlBoxValues();
           });
         }
       } else { // else of if selectedTemplateElementIdArray.length > 0
+        console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, in else before turning on and off style and weight fontAttribute, elementVal, elementName, elementValue, clickedElement.value: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value);
+        if (fontAttribute === 'fontWeight') elementValue = this.state.newFontObject.fontWeight === 'bold' ? 'normal' : elementValue;
+        if (fontAttribute === 'fontStyle') elementValue = this.state.newFontObject.fontStyle === 'italic' ? 'normal' : elementValue
+        console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, in else no selected id fontAttribute, elementVal, elementName, elementValue, clickedElement.value: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value);
         // if there are NO elements selected turn override true so that
         // font button will show the attributes user wants for new element
         this.setState({
@@ -1586,7 +1612,8 @@ renderEachDocumentField(page) {
           }
         }, () => {
           this.setTemplateHistoryArray(array, 'update');
-          console.log('in create_edit_document, handleTemplateElementActionClick, this.state.newFontObject: ', this.state.newFontObject);
+          this.setFontControlBoxValues();
+          console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject: ', this.state.newFontObject);
         })
       }
     }; // end of changeFont
@@ -1761,6 +1788,7 @@ renderEachDocumentField(page) {
               newFontObject: { ...this.state.newFontObject, override: false },
               // selectedElementFontObject: fontObject.selectObject
             }, () => {
+              // Gets a map of all font attributes used in elements on agreement
               const fontObject = this.getSelectedFontElementAttributes();
               // fontObject is { object: {element font mapping}, selectObject: { fontFamily: 'arial', fontSize: '12px' ...}}
               console.log('in create_edit_document, handleTemplateElementActionClick, fontObject: ', fontObject);
@@ -1772,7 +1800,7 @@ renderEachDocumentField(page) {
         } // looks like lint requires having block when case logic too long
 
         case 'uncheckAll':
-          // if there are checked elements clear out selectedTemplateElementIdArray
+          // if there are checked elements clear out selectedTemplateElementIdArray, and nullout selectedElementFontObject
           // and uncheckAll
             this.setState({
               selectedTemplateElementIdArray: [],
@@ -2088,6 +2116,51 @@ renderEachDocumentField(page) {
     return { object, selectObject };
   }
 
+  setFontControlBoxValues() {
+    const fontAttributeObject = this.state.selectedElementFontObject || this.state.newFontObject;
+    // Gets the select field for fontFamily
+    const fontFamily = document.getElementById('fontFamily');
+    const fontSize = document.getElementById('fontSize');
+    const fontWeight = document.getElementById('fontWeight');
+    const fontStyle = document.getElementById('fontStyle');
+    // const fontInputs = [fontFamily, fontSize, fontWeight, fontStyle];
+    console.log('in create_edit_document, setFontControlBoxValues, fontAttributeObject, fontSize, fontFamily: ', fontAttributeObject, fontSize, fontFamily);
+    // let objectLength;
+    // Go through array of fontAttributeObject ie fontFamily, fontSize, fontWeight, fontStyle
+    _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
+      // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
+      // would be 2
+      // objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
+      // Get an array of actual fonts used in selected elements
+      // const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
+      console.log('in create_edit_document, setFontControlBoxValues, fontAttributeObject[eachFontAttribute]: ', fontAttributeObject[eachFontAttribute]);
+      if (eachFontAttribute === 'fontFamily') fontFamily.value = fontAttributeObject[eachFontAttribute];
+      if (eachFontAttribute === 'fontSize') fontSize.value = fontAttributeObject[eachFontAttribute];
+      if (eachFontAttribute === 'fontWeight') {
+         if (fontAttributeObject[eachFontAttribute] === 'bold') {
+           // fontWeight.style.border = '1px solid black'
+           fontWeight.style.fontWeight = 'bold'
+         } else {
+           // fontWeight.style.border = '1px solid #ccc'
+           fontWeight.style.fontWeight = 'normal'
+         }
+      }
+
+      if (eachFontAttribute === 'fontStyle') {
+        if (fontAttributeObject[eachFontAttribute] === 'italic') {
+          fontStyle.style.fontStyle = 'italic';
+        } else {
+          fontStyle.style.fontStyle = 'normal';
+        }
+      }
+      // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
+      // _.each(fontInputs, eachInput => {
+      //   const modEachInput = eachInput;
+      //   modEachInput.value = fontAttributeObject[eachFontAttribute];
+      // });
+    });
+  }
+
   handleShowFontControlBox() {
     const fontControlBox = document.getElementById('create-edit-document-font-control-box')
     // 'Open' the font control box by setting display to 'block'
@@ -2095,25 +2168,8 @@ renderEachDocumentField(page) {
     // Add a listener for user clicks outside the box to close and set display: 'none'
     document.addEventListener('click', this.handleFontControlCloseClick)
     // Get object with attributes assigned to each element (ie fontFamily: { arial: [id]})
-    const fontAttributeObject = this.getSelectedFontElementAttributes();
-    // Gets the select field for fontFamily
-    const fontFamily = document.getElementById('fontFamily')
-    const fontSize = document.getElementById('fontSize')
-    console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject, fontSize, fontFamily: ', fontAttributeObject, fontSize, fontFamily);
-    // let objectLength;
-    // Go through array of fontAttributeObject ie fontFamily, fontSize, fontWeight, fontStyle
-    _.each(Object.keys(fontAttributeObject.selectObject), eachFontAttribute => {
-      // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
-      // would be 2
-      // objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
-      // Get an array of actual fonts used in selected elements
-      // const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
-      console.log('in create_edit_document, handleShowFontControlBox, fontAttributeObject.selectObject[eachFontAttribute]: ', fontAttributeObject.selectObject[eachFontAttribute]);
-      if (eachFontAttribute === 'fontFamily') fontFamily.value = fontAttributeObject.selectObject[eachFontAttribute];
-      if (eachFontAttribute === 'fontSize') fontSize.value = fontAttributeObject.selectObject[eachFontAttribute];
-      // if (objectLength === 1 && eachFontAttribute === 'fontWeight') fontFamily.value = selectValue[0];
-      // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
-    })
+    // const fontAttributeObject = this.getSelectedFontElementAttributes();
+    this.setFontControlBoxValues();
   }
 
   renderTemplateElementEditAction() {
@@ -2161,7 +2217,7 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="Check all fields,bottom"
+          name="This is a placeholder,top"
           value="checkAll"
         >
           <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields,bottom" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
@@ -2719,7 +2775,8 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, actions)(CreateEditDocument);
 
-// renderTemplateElementEditAction
-// handleShowFontControlBox
-// getSelectedFontElementAttributes
-// handleTemplateElementCheckClick
+// renderTemplateElementEditAction(
+// handleShowFontControlBox(
+// getSelectedFontElementAttributes(
+// handleTemplateElementCheckClick(
+// setTemplateHistoryArray(
