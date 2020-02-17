@@ -3,12 +3,13 @@ import {
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
   UPDATE_DOCUMENT_ELEMENT_LOCALLY,
   DELETE_DOCUMENT_ELEMENT_LOCALLY,
+  POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
   SET_CREATE_DOCUMENT_KEY,
   SET_INITIAL_VALUES_OBJECT,
   EDIT_HISTORY,
   EDIT_AGREEMENT_FIELDS,
   FETCH_DOCUMENT_TRANSLATION,
-  SAVE_TEMPLATE_DOCUMENT_FIELDS
+  SAVE_TEMPLATE_DOCUMENT_FIELDS,
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -67,6 +68,14 @@ export default function (state = {
 
   switch (action.type) {
 
+    case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
+      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements: ', action.payload, state.templateElements);
+      const newObject = {}
+      const mergedObject = _.merge(newObject, state.templateElements, _.mapKeys(action.payload, 'id'));
+
+      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject };
+    }
+
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
       // const newObject = {}
@@ -84,7 +93,7 @@ export default function (state = {
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements: ', action.payload, state.templateElements);
       const newObject = {}
       // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }

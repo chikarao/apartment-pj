@@ -99,6 +99,7 @@ export const CREATE_CONTRACT = 'create_contract';
 export const CREATE_DOCUMENT_ELEMENT_LOCALLY = 'create_document_element_locally';
 export const UPDATE_DOCUMENT_ELEMENT_LOCALLY = 'update_document_element_locally';
 export const DELETE_DOCUMENT_ELEMENT_LOCALLY = 'delete_document_element_locally';
+export const POPULATE_TEMPLATE_ELEMENTS_LOCALLY = 'populate_template_elements_locally';
 export const SEARCH_BUILDINGS = 'search_buildings';
 export const SHOW_BUILDING_EDIT_MODAL = 'show_building_edit_modal';
 export const SHOW_BUILDING_CREATE_MODAL = 'show_building_create_modal';

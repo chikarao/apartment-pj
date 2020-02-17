@@ -97,39 +97,45 @@ class CreateEditDocument extends Component {
     // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
     // If change name 'documentHistory', comment out this localStorageHistory section
     // before running the code or will raise error of undefined newFontObject and other state objects
-    const localStorageHistory = localStorage.getItem('documentHistory');
-    console.log('in create_edit_document, componentDidMount, localStorageHistory', localStorageHistory);
-    let destringifiedHistory = {};
-    // if localStorageHistory exists, set state to previous values
-    // if localStorageHistory does not exist, all state values are set in constructor
-    // and next time user refreshes or mounts component on the same machine, it will be there
-    if (localStorageHistory) {
-      destringifiedHistory = JSON.parse(localStorageHistory);
-      // get the highest id to avoid duplicate element id after templateElements repopulated 
-      let highestId = 0;
-      if (destringifiedHistory[this.props.agreement.id].elements) {
-        _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
-          highestId = highestId > parseInt(eachElementKey, 10) ? highestId : parseInt(eachElementKey, 10)
-          this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
-        })
-        console.log('in create_edit_document, componentDidMount, destringifiedHistory', destringifiedHistory);
-        // Set state with || in case localStorageHistory exists but history and other objects do not exist
-        this.setState({
-          templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
-          newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
-          deletedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].deletedPersistedElementsArray || this.state.deletedPersistedElementsArray,
-          templateElementCount: highestId
-        }, () => {
-          this.setState({
-            // historyIndex: this.state.templateEditHistoryArray.length - 1
-            historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
-          }, () => {
-            console.log('in create_edit_document, componentDidMount, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
+    const getLocalHistory = () => {
+      const localStorageHistory = localStorage.getItem('documentHistory');
+      console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
+      let destringifiedHistory = {};
+      // if localStorageHistory exists, set state to previous values
+      // if localStorageHistory does not exist, all state values are set in constructor
+      // and next time user refreshes or mounts component on the same machine, it will be there
+      if (localStorageHistory) {
+        destringifiedHistory = JSON.parse(localStorageHistory);
+        // get the highest id to avoid duplicate element id after templateElements repopulated
+        let highestElementId = 0;
+        if (destringifiedHistory[this.props.agreement.id].elements) {
+          _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
+            highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+            this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
           })
-        })
-      }
-    } // end of if localStorageHistory
+          console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
+          // Set state with || in case localStorageHistory exists but history and other objects do not exist
+          this.setState({
+            templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+            newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
+            deletedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].deletedPersistedElementsArray || this.state.deletedPersistedElementsArray,
+            templateElementCount: highestElementId
+          }, () => {
+            this.setState({
+              // historyIndex: this.state.templateEditHistoryArray.length - 1
+              historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
+            }, () => {
+              console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
+            })
+          })
+        }
+      } // end of if localStorageHistory
+    } // end of getLocalHistory
 
+    console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
+    this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
+
+    console.log('in create_edit_document, componentDidMount, this.props.agreement', this.props.agreement);
     if (this.props.bookingData) {
       const {
         flat,
@@ -401,7 +407,7 @@ class CreateEditDocument extends Component {
       templateEditHistoryArray: [],
       historyIndex: 0,
     }, () => {
-      this.setLocalStorageHistory();
+      this.setLocalStorageHistory('handleTemplateSubmitCallback');
     });
   }
 
@@ -1374,9 +1380,19 @@ renderEachDocumentField(page) {
       // if historystring, unstringify it and add agreementId = historyArray
       destringifiedHistory = JSON.parse(localStorageHistory);
     }
+
+    const unsavedTemplateElements = {};
+    _.each(Object.keys(this.props.templateElements), eachElementKey => {
+      // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
+      if (eachElementKey.toString().indexOf('a') !== -1) {
+        unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
+      }
+    });
+    // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
+
     destringifiedHistory[this.props.agreement.id] = {
       history: this.state.templateEditHistoryArray,
-      elements: this.props.templateElements,
+      elements: unsavedTemplateElements,
       historyIndex: this.state.historyIndex,
       newFontObject: this.state.newFontObject,
       deletedPersistedElementsArray: this.state.deletedPersistedElementsArray
@@ -1745,23 +1761,20 @@ renderEachDocumentField(page) {
           deleteElement([lastActionArray[0].id])
           // Take the checked element ids out of selectedTemplateElementIdArray
           const newArray = [...this.state.selectedTemplateElementIdArray];
-          const deletdPersistedArray = [...this.state.deletedPersistedElementsArray];
+          const deletedPersistedArray = [...this.state.deletedPersistedElementsArray];
 
           // If element id is in selectedTemplateElementIdArray, take it out of the array
           const index = this.state.selectedTemplateElementIdArray.indexOf(lastActionArray[0].id);
-          const deletedPersistedIndex = this.state.deletedPersistedElementsArray.indexOf(lastActionArray[0].id);
 
           if (index !== -1) {
             newArray.splice(index, 1);
           }
 
-          if (deletedPersistedIndex !== -1) {
-            deletdPersistedArray.splice(deletedPersistedIndex, 1);
-          }
+          deletedPersistedArray.push(lastActionArray[0].id);
 
           this.setState({
             selectedTemplateElementIdArray: newArray,
-            deletedPersistedElementsArray: deletdPersistedArray
+            deletedPersistedElementsArray: deletedPersistedArray
           });
         } // send array of id
 
@@ -1785,16 +1798,25 @@ renderEachDocumentField(page) {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         const newLastAction = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
+          const deletedPersistedArray = [...this.state.deletedPersistedElementsArray];
+
           _.each(newLastAction, eachElement => {
             const modifiedElement = eachElement;
             // delete modifiedElement.action;
             createElement(eachElement);
+            const deletedPersistedIndex = this.state.deletedPersistedElementsArray.indexOf(lastActionArray[0].id);
+            if (deletedPersistedIndex !== -1) {
+              deletedPersistedArray.splice(deletedPersistedIndex, 1);
+            }
           });
+
+          this.setState({ deletedPersistedElementsArray: deletedPersistedArray });
         }
 
         if (doWhatNow === 'redo') {
           const elementsIdArray = [];
           const newArray = [...this.state.selectedTemplateElementIdArray];
+          const deletedPersistedArray = [...this.state.deletedPersistedElementsArray];
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
             // if element id is in selectedTemplateElementIdArray, remove it
@@ -1803,8 +1825,10 @@ renderEachDocumentField(page) {
               newArray.splice(index, 1);
               this.setState({ selectedTemplateElementIdArray: newArray });
             }
+            deletedPersistedArray.push(eachElement.id);
           });
           deleteElement(elementsIdArray);
+          this.setState({ deletedPersistedElementsArray: deletedPersistedArray });
         }
       }
     };

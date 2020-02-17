@@ -106,6 +106,7 @@ import {
   CREATE_DOCUMENT_ELEMENT_LOCALLY,
   UPDATE_DOCUMENT_ELEMENT_LOCALLY,
   DELETE_DOCUMENT_ELEMENT_LOCALLY,
+  POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
   SEARCH_BUILDINGS,
   SHOW_BUILDING_EDIT_MODAL,
   SHOW_BUILDING_CREATE_MODAL,
@@ -2130,6 +2131,12 @@ export function deleteDocumentElementLocally(array, callback) {
   console.log('in actions index, deleteDocumentElementLocally array, callback:', array, callback);
   callback();
   return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
+}
+
+export function populateTemplateElementsLocally(array, callback) {
+  console.log('in actions index, populateTemplateElements array, callback:', array, callback);
+  callback();
+  return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: array };
 }
 
 export function searchBuildings(buildingAttributes) {
