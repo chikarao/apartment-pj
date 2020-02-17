@@ -388,7 +388,7 @@ class BookingConfirmation extends Component {
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // if agreement has a template file name render
-      if (!eachAgreement.language_code_1) {
+      if (eachAgreement.document_type !== 'template') {
         return <div
           key={i}
           value={`${eachAgreement.document_code},${'template'}`}
@@ -499,8 +499,7 @@ class BookingConfirmation extends Component {
 
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
-      // change later language_code_1 is just a dummy field in Agreements
-      if (eachAgreement.language_code_1) {
+      if (eachAgreement.document_type === 'template') {
         return <div
           key={i}
           value={`${eachAgreement.document_code},${'template'}`}

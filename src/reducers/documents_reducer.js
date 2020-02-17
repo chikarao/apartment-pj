@@ -7,7 +7,8 @@ import {
   SET_INITIAL_VALUES_OBJECT,
   EDIT_HISTORY,
   EDIT_AGREEMENT_FIELDS,
-  FETCH_DOCUMENT_TRANSLATION
+  FETCH_DOCUMENT_TRANSLATION,
+  SAVE_TEMPLATE_DOCUMENT_FIELDS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -65,6 +66,22 @@ export default function (state = {
   let onlyFontAttributeObject = null;
 
   switch (action.type) {
+
+    case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+      // const newObject = {}
+      // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
+      // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
+      // const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
+      fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
+      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      // Temporary until another column 'action' added in backend !!!!
+      _.each(action.payload.agreement.document_fields, eachElement => {
+        eachElement.action = 'create'
+      });
+
+      return { ...state, templateElements: _.mapKeys(action.payload.agreement.document_fields, 'id'), fontAttributeObject, onlyFontAttributeObject };
+    }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
