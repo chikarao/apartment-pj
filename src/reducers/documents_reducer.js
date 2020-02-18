@@ -63,6 +63,21 @@ export default function (state = {
     return returnObject;
   }
 
+  function getMappedObjectWithStringIds(elementsArray, actionCreate) {
+    // time complexity about same as calling _.mapKeys but with extra functionality
+    const object = {};
+    let modifiedElement = {};
+
+    _.each(elementsArray, eachElement => {
+      modifiedElement = eachElement;
+      modifiedElement.id = eachElement.id.toString();
+      if (actionCreate) modifiedElement.action = 'create';
+      object[modifiedElement.id.toString()] = modifiedElement;
+    });
+
+    return object;
+  }
+
   let fontAttributeObject = null;
   let onlyFontAttributeObject = null;
 
@@ -70,8 +85,13 @@ export default function (state = {
 
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements: ', action.payload, state.templateElements);
-      const newObject = {}
-      const mergedObject = _.merge(newObject, state.templateElements, _.mapKeys(action.payload, 'id'));
+      const newObject = {};
+      // Rather than calling _.mapKeys, do the same thing
+      // and turn ids into strings and assign action: create
+      const mapKeysObject = getMappedObjectWithStringIds(action.payload, true);
+      // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
+      // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
+      const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject);
 
       return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject };
     }
@@ -79,17 +99,14 @@ export default function (state = {
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
       // const newObject = {}
-      // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
-      // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       // const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
       fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
       onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
-      // Temporary until another column 'action' added in backend !!!!
-      _.each(action.payload.agreement.document_fields, eachElement => {
-        eachElement.action = 'create'
-      });
+      // Rather than calling _.mapKeys, do the same thing
+      // and turn ids into strings and assign action: create
+      const mapKeysObject = getMappedObjectWithStringIds(action.payload, true);
 
-      return { ...state, templateElements: _.mapKeys(action.payload.agreement.document_fields, 'id'), fontAttributeObject, onlyFontAttributeObject };
+      return { ...state, templateElements: mapKeysObject, fontAttributeObject, onlyFontAttributeObject };
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {

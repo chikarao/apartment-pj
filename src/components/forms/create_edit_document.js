@@ -882,7 +882,8 @@ renderEachDocumentField(page) {
     if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
       this.setState({
-        selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal.toString()],
+        // Push id into array in string type so as to enable temporary id with '1a' char in it
+        selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
         newFontObject: { ...this.state.newFontObject, override: false }
       }, () => {
         // Get the font attributes of selected elements to show on the control box font button
@@ -1194,7 +1195,7 @@ renderEachDocumentField(page) {
           count++
           // Wait until document-background class is rendered to enable some logic
           const background = document.getElementById('document-background');
-          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id.toString()) !== -1;
+          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
           if (editTemplate && background) {
             console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
@@ -1379,15 +1380,17 @@ renderEachDocumentField(page) {
     let destringifiedHistory = {};
     const localStorageHistory = localStorage.getItem('documentHistory');
     console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere);
+    // Get latest localHistory object
     if (localStorageHistory) {
       // if historystring, unstringify it and add agreementId = historyArray
       destringifiedHistory = JSON.parse(localStorageHistory);
     }
 
     const unsavedTemplateElements = {};
+
     _.each(Object.keys(this.props.templateElements), eachElementKey => {
       // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
-      if (eachElementKey.toString().indexOf('a') !== -1) {
+      if (eachElementKey.indexOf('a') !== -1) {
         unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
       }
     });
@@ -1424,7 +1427,7 @@ renderEachDocumentField(page) {
       });
       return newArray;
     };
-
+    // For the newest rung of edits to be put into templateEditHistoryArray
     const array = [];
     // get new history array since cannot modify state elements
     const newArray = getNewExistingHistoryArray();
@@ -1461,6 +1464,8 @@ renderEachDocumentField(page) {
     let droppedHistory = null;
     if (newArray.length >= MAX_HISTORY_ARRAY_LENGTH) droppedHistory = newArray.shift();
 
+    // if action was to delete, empty out selectedTemplateElementIdArray and allElementsChecked false
+    // templateEditHistoryArray gets a new shifted, splced array with a new rung of edits in an array
     this.setState({
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
       allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length, // if action IS delete, all elements are not checked anymore
@@ -1480,18 +1485,19 @@ renderEachDocumentField(page) {
 
   handleTrashClick() {
    if (this.state.selectedTemplateElementIdArray.length > 0) {
-     const array = [];
+     const array = [...this.state.deletedPersistedElementsArray];
      // const array = this.setTemplateHistoryArray('delete');
      // Go through each id in selectedTemplateElementIdArray and put them in an array
      // if they do not have 'a' in the id (they are persisted in the DB so need to delete them
     // in the backend later when user saves work)
      _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
        console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray, eachElementId: ', this.state.selectedTemplateElementIdArray, eachElementId);
-       if (eachElementId.toString().indexOf('a') === -1) {
-         array.push(eachElementId);
+       if (eachElementId.indexOf('a') === -1) {
+         // push a NEGATIVE integer id so as to distinguish from an update which is a positive number
+         array.push(-eachElementId);
        }
      });
-
+     // assign the array with deleted ids to state array
      this.setState({
        deletedPersistedElementsArray: array
      }, () => {
@@ -1772,8 +1778,9 @@ renderEachDocumentField(page) {
           if (index !== -1) {
             newArray.splice(index, 1);
           }
-
-          deletedPersistedArray.push(lastActionArray[0].id);
+          // Push into array a NEGATIVE number to distinguish from update which is positive
+          // Parse into since existing ids can become strings when moved or resized in dragElement
+          deletedPersistedArray.push(-parseInt(lastActionArray[0].id, 10));
 
           this.setState({
             selectedTemplateElementIdArray: newArray,
@@ -1804,10 +1811,10 @@ renderEachDocumentField(page) {
           const deletedPersistedArray = [...this.state.deletedPersistedElementsArray];
 
           _.each(newLastAction, eachElement => {
-            const modifiedElement = eachElement;
+            // const modifiedElement = eachElement;
             // delete modifiedElement.action;
             createElement(eachElement);
-            const deletedPersistedIndex = this.state.deletedPersistedElementsArray.indexOf(lastActionArray[0].id);
+            const deletedPersistedIndex = deletedPersistedArray.indexOf(-parseInt(eachElement.id, 10));
             if (deletedPersistedIndex !== -1) {
               deletedPersistedArray.splice(deletedPersistedIndex, 1);
             }
@@ -1823,15 +1830,17 @@ renderEachDocumentField(page) {
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
             // if element id is in selectedTemplateElementIdArray, remove it
-            const index = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id);
+            const index = this.state.newArray.indexOf(eachElement.id);
             if (index !== -1) {
               newArray.splice(index, 1);
-              this.setState({ selectedTemplateElementIdArray: newArray });
             }
-            deletedPersistedArray.push(eachElement.id);
+            deletedPersistedArray.push(-parseInt(eachElement.id, 10));
           });
           deleteElement(elementsIdArray);
-          this.setState({ deletedPersistedElementsArray: deletedPersistedArray });
+          this.setState({
+            selectedTemplateElementIdArray: newArray,
+            deletedPersistedElementsArray: deletedPersistedArray
+          });
         }
       }
     };
@@ -1887,8 +1896,9 @@ renderEachDocumentField(page) {
           const checkAllArray = [...this.state.selectedTemplateElementIdArray];
           _.each(this.props.templateElements, eachElement => {
             // IE does not support includes
-            if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) === -1) {
-              checkAllArray.push(eachElement.id.toString());
+            if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id === -1)) {
+              // Push id into array in string type so as to enable temporary id with '1a' char in it
+              checkAllArray.push(eachElement.id);
             }
           });
 
