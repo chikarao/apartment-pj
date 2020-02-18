@@ -882,15 +882,16 @@ renderEachDocumentField(page) {
     if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
       this.setState({
-        selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
+        selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal.toString()],
         newFontObject: { ...this.state.newFontObject, override: false }
       }, () => {
-        // if all elements checked, set to true
+        // Get the font attributes of selected elements to show on the control box font button
         this.getSelectedFontElementAttributes()
+        // if all elements checked, set to true
         this.setState({
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
         }, () => {
-          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
+          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, this.state.selectedTemplateElementIdArray, ', this.state.allElementsChecked, this.state.selectedTemplateElementIdArray);
         })
         // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
       });
@@ -1178,6 +1179,7 @@ renderEachDocumentField(page) {
     let count = 1;
     if (!documentEmpty) {
       const { templateElements } = this.props;
+      // Map through each element
       return _.map(templateElements, eachElement => {
         if (eachElement.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
@@ -1186,14 +1188,15 @@ renderEachDocumentField(page) {
         }
         console.log('in create_edit_document, renderTemplateElements, eachElement: ', eachElement);
 
-        if (eachElement.page == page) {
+        if (eachElement.page === page) {
           const editTemplate = true;
           const width = parseInt(eachElement.width, 10)
           count++
+          // Wait until document-background class is rendered to enable some logic
           const background = document.getElementById('document-background');
-          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
+          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id.toString()) !== -1;
           if (editTemplate && background) {
-            console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement: ', eachElement);
+            console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
             const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
@@ -1885,7 +1888,7 @@ renderEachDocumentField(page) {
           _.each(this.props.templateElements, eachElement => {
             // IE does not support includes
             if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) === -1) {
-              checkAllArray.push(eachElement.id);
+              checkAllArray.push(eachElement.id.toString());
             }
           });
 
