@@ -148,7 +148,7 @@ class CreateEditDocument extends Component {
     // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
     // templateEditHistory can be null in later code;
     // all local state values set in constructor already
-    templateEditHistory = getLocalHistory();
+    // templateEditHistory = getLocalHistory();
     // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
     // calculate highestElementId for templateElementCount (for numbering element temporary ids)
     if (templateEditHistory && templateEditHistory.elements) {
@@ -1413,36 +1413,62 @@ renderEachDocumentField(page) {
     return object;
   }
 
-  getModifiedObject() {
-    const returnObject = {};
+  // For leeping track of modifications in elements both persisted
+  // and new template elements. Final object ooks like
+  // { 1a: { deleted: false, updated: 1 }, 25: { deleted: true, updated: 3} }.
+  // This will drive save button enabling and how element creation and updates will be done. So no need to iterate through all elements everytime save is run; AND centralizes persisted code for identifying elements to be created and updated, AS WELL AS updating persisted elements in action creator populate persisted template elements
+  getModifiedObject(redoOrUndo) {
+    const returnObject = { ...this.state.modifiedPersistedElementsObject };
 
-    function setEditObject(editObject) {
+    const setEditObject = (editObject) => {
+      console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
       if (returnObject[editObject.id]) {
-        if (editObject.action === 'delete') returnObject[editObject.id].deleted = true;
-        if (editObject.action === 'delete' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+        if (editObject.action === 'delete') {
+          if (editObject.id.indexOf('a') === -1) returnObject[editObject.id].deleted = true;
+          if (editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id].deleted = false;
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+        }
         if (editObject.action === 'update') returnObject[editObject.id].updated = returnObject[editObject.id].updated + 1;
       } else { // if object with element id does not exist in object
         if (editObject.action === 'delete') {
           returnObject[editObject.id] = { deleted: true, updated: 0 };
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
         }
         if (editObject.action === 'update') {
           returnObject[editObject.id] = { deleted: false, updated: 1 };
         }
         if (editObject.action === 'create') {
           returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') === -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
         }
       }
     }
     // templateEditHistoryArray is an array of array of objects;
     // [[{ id: '1', width: 10, action: update }, { id: '1a', font_family: 'arial'... action: 'create'}], [...]]
     // Each array within the outermost array is i.
-    _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
-      if (i <= this.state.historyIndex) {
-        _.each(eachEditArray, eachEditObject => {
-          setEditObject(eachEditObject);
-        });
-      }
-    });
+    let index = this.state.historyIndex;
+    if (redoOrUndo === 'undo') index = this.state.historyIndex + 1;
+    if (redoOrUndo === 'redo') index = this.state.historyIndex - 1;
+
+    if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
+      _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
+        if (i <= index) {
+        // if (i <= this.state.historyIndex) {
+          _.each(eachEditArray, eachEditObject => {
+            setEditObject(eachEditObject);
+          });
+        }
+      });
+    } else {
+      // if modifiedPersistedElementsObject has at least one object in it,
+      // adjust index to get the history array that is redone or undone
+      _.each(this.state.templateEditHistoryArray[index], eachEditObject => {
+        setEditObject(eachEditObject);
+      });
+    }
 
     return returnObject;
   }
@@ -1469,7 +1495,7 @@ renderEachDocumentField(page) {
       }
     });
     // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
-    const modifiedObject = this.getModifiedObject();
+    const modifiedObject = this.getModifiedObject(fromWhere);
 
     destringifiedHistory[this.props.agreement.id] = {
       history: this.state.templateEditHistoryArray,
@@ -1481,7 +1507,7 @@ renderEachDocumentField(page) {
       modifiedPersistedElementsObject: modifiedObject
     }
     // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
-    console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory: ', destringifiedHistory);
+    console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory, destringifiedHistory.modifiedPersistedElementsObject: ', destringifiedHistory, destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject);
     localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
   }
 
@@ -2084,7 +2110,7 @@ renderEachDocumentField(page) {
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
             console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-            this.setLocalStorageHistory('redoUndo');
+            this.setLocalStorageHistory('undo');
           })
         }
       } else { // else for if doWhat undo; else REDO
@@ -2097,7 +2123,7 @@ renderEachDocumentField(page) {
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
           console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
-          this.setLocalStorageHistory('redoUndoElse')
+          this.setLocalStorageHistory('redo')
         });
       }
     };
