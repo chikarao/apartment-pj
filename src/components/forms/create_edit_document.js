@@ -65,8 +65,8 @@ class CreateEditDocument extends Component {
       selectedElementFontObject: null,
       // modifiedPersistedElementsArray is for elements that have been persisted in backend DB
       modifiedPersistedElementsArray: [],
-      modifiedPersistedElementsArray: [],
       modifiedPersistedElementsObject: {},
+      originalPersistedTemplateElements: {}
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -108,36 +108,63 @@ class CreateEditDocument extends Component {
       // and next time user refreshes or mounts component on the same machine, it will be there
       if (localStorageHistory) {
         destringifiedHistory = JSON.parse(localStorageHistory);
-        // get the highest id to avoid duplicate element id after templateElements repopulated
-        let highestElementId = 0;
         if (destringifiedHistory[this.props.agreement.id].elements) {
-          _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
-            highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
-            this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
-          })
+          // _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
+          //   highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+          //   this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
+          // }) // end of each elements
           console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
           // Set state with || in case localStorageHistory exists but history and other objects do not exist
           this.setState({
             templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
             newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
             modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
-            modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
             modifiedPersistedElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject || this.state.modifiedPersistedElementsObject,
-            templateElementCount: highestElementId
+            // templateElementCount: highestElementId,
+            originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
           }, () => {
             this.setState({
               // historyIndex: this.state.templateEditHistoryArray.length - 1
               historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
             }, () => {
               console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
-            })
-          })
-        }
+            }); // end of second setState
+          }); // end of first setState
+        } // end of if destringifiedHistory elements
+        // if there is localStorageHistory return an object for use in document reducer
+        return {
+          templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+          historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex,
+          elements: destringifiedHistory[this.props.agreement.id].elements
+        };
       } // end of if localStorageHistory
-    } // end of getLocalHistory
+      // if there is no localStorageHistory return null
+      return null;
+    }; // end of getLocalHistory
+
+    let templateEditHistory = null;
+    // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
+    // templateEditHistory can be null in later code;
+    // all local state values set in constructor already
+    templateEditHistory = getLocalHistory();
+    // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
+    // calculate highestElementId for templateElementCount (for numbering element temporary ids)
+    if (templateEditHistory && templateEditHistory.elements) {
+      let highestElementId = 0;
+      _.each(Object.keys(templateEditHistory.elements), eachElementKey => {
+        // get the highest id to avoid duplicate element id after templateElements repopulated
+        highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+        this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
+      }); // end of each elements
+      this.setState({ templateElementCount: highestElementId });
+    }
 
     console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
-    this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
+    // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
+    // If there are elements persisted in backend DB, populate this.props.templateElements
+    if (this.props.agreement.document_fields.length > 0) {
+      this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
+    }
 
     console.log('in create_edit_document, componentDidMount, this.props.agreement', this.props.agreement);
     if (this.props.bookingData) {
@@ -850,7 +877,7 @@ renderEachDocumentField(page) {
           id: `${this.state.templateElementCount}a`,
           left: `${x}%`,
           top: `${y}%`,
-          page: elementVal,
+          page: parseInt(elementVal, 10),
           name: 'name',
           component: 'input',
           width: '25%',
@@ -1192,15 +1219,16 @@ renderEachDocumentField(page) {
         } else {
           fieldComponent = eachElement.component;
         }
-        console.log('in create_edit_document, renderTemplateElements, eachElement: ', eachElement);
+        console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
 
         if (eachElement.page === page) {
           const editTemplate = true;
           const width = parseInt(eachElement.width, 10)
-          count++
+          count++;
           // Wait until document-background class is rendered to enable some logic
           const background = document.getElementById('document-background');
           const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
+          console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
           if (editTemplate && background) {
             console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
@@ -1962,7 +1990,7 @@ renderEachDocumentField(page) {
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
             // if element id is in selectedTemplateElementIdArray, remove it
-            const index = this.state.newArray.indexOf(eachElement.id);
+            const index = newArray.indexOf(eachElement.id);
             if (index !== -1) {
               newArray.splice(index, 1);
             }

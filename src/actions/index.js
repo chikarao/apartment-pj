@@ -2133,10 +2133,10 @@ export function deleteDocumentElementLocally(array, callback) {
   return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
 }
 
-export function populateTemplateElementsLocally(array, callback) {
+export function populateTemplateElementsLocally(array, callback, templateEditHistory) {
   console.log('in actions index, populateTemplateElements array, callback:', array, callback);
   callback();
-  return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: array };
+  return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array, templateEditHistory } };
 }
 
 export function searchBuildings(buildingAttributes) {

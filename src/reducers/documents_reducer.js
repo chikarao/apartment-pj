@@ -63,17 +63,63 @@ export default function (state = {
     return returnObject;
   }
 
-  function getMappedObjectWithStringIds(elementsArray, actionCreate) {
+  function getMappedObjectWithStringIds(elementsArray, templateEditHistory, actionCreate) {
+    // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, elementsArray, templateEditHistory, actionCreate: ', elementsArray, templateEditHistory, actionCreate);
     // time complexity about same as calling _.mapKeys but with extra functionality
     const object = {};
     let modifiedElement = {};
 
+    function updateElements(element) {
+      let modifiedElem = {};
+      let returnString = '';
+      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, templateEditHistory: ', element, templateEditHistory);
+       // each with i history array, iterate through each history array of arrays of objects;
+       // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
+      _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
+        // Do until this.state.historyIndex is greater than or equal to i;
+        // So if user has undone or redone, stop there
+        if (i <= templateEditHistory.historyIndex) {
+          // Iterate through each array of objects; object looks like  { id: 1, width: 10, o_width: 9, action: 'update' }
+          _.each(eachEditArray, eachEditObject => {
+            console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, eachEditObject, eachEditObject.action, eachEditObject.action === delete: ', element, eachEditObject, eachEditObject.action, eachEditObject.action === 'delete');
+            // if object id is equal to id of element in backend, do
+            if (eachEditObject.id === element.id.toString()) {
+              // if object action is delete, assign delete to returnstring to be returned
+              if (eachEditObject.action === 'delete') returnString = 'deleted';
+              // Iterate through each attribute in object ie { width, font_style ...}
+              _.each(Object.keys(eachEditObject), eachKey => {
+                if (element[eachKey] !== eachEditObject[eachKey] && eachKey !== 'action') {
+                  modifiedElem = element;
+                  modifiedElem[eachKey] = eachEditObject[eachKey];
+                }
+              }); // end of third each
+            }
+          }); // end of second each
+        } // end of if
+      }); // end of first each
+      // return null, delete or ok; if ok, the element is placed in this.props.templateElements
+      return returnString || 'ok';
+    }
+    // Iterate through each element persisted as agreement.document_fields
     _.each(elementsArray, eachElement => {
+      // Assign to modified
       modifiedElement = eachElement;
+      // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
+      // Assign create so redo and undo of create works in undoRedoAction
       if (actionCreate) modifiedElement.action = 'create';
-      object[modifiedElement.id.toString()] = modifiedElement;
-    });
+      // If there is history for this agreement template elements, update elements along with map keys
+      if (templateEditHistory) {
+        // update elements returns null, delete or ok; if ok,
+        // put modifeid object in in mapped object
+        if (updateElements(modifiedElement) === 'ok') {
+          object[modifiedElement.id.toString()] = modifiedElement;
+        }
+      } else { // else for if templateEditHistory
+        // if no templateEditHistory, just put into the mapped object
+        object[modifiedElement.id.toString()] = modifiedElement;
+      }
+    }); // end of each
 
     return object;
   }
@@ -82,18 +128,21 @@ export default function (state = {
   let onlyFontAttributeObject = null;
 
   switch (action.type) {
-
+    // Populate template elememts to get document_fields from agreement and combine with
+    // local template elements retrieved from localStorage
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements: ', action.payload, state.templateElements);
       const newObject = {};
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
-      const mapKeysObject = getMappedObjectWithStringIds(action.payload, true);
+      const mapKeysObject = getMappedObjectWithStringIds(action.payload.array, action.payload.templateEditHistory, true);
+      // Keep object with original values for elements persisted in backend to check for changes
+      const originalPersistedTemplateElements = mapKeysObject;
       // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject);
 
-      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject };
+      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject, originalPersistedTemplateElements };
     }
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
