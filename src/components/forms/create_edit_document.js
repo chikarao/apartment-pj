@@ -26,7 +26,9 @@ import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fiel
 const TAB_WIDTH = 70;
 const TAB_HEIGHT = 23;
 const TAB_REAR_SPACE = 5;
-const MAX_HISTORY_ARRAY_LENGTH = 10;
+// Since need to update persisted elements from beginning of history array,
+// Cannot have a finite MAX_HISTORY_ARRAY_LENGTH; Array length is zeroed out at every save
+const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared
 let explanationTimerArray = [];
@@ -64,7 +66,7 @@ class CreateEditDocument extends Component {
       },
       selectedElementFontObject: null,
       // modifiedPersistedElementsArray is for elements that have been persisted in backend DB
-      modifiedPersistedElementsArray: [],
+      // modifiedPersistedElementsArray: [],
       modifiedPersistedElementsObject: {},
       originalPersistedTemplateElements: {}
     };
@@ -118,7 +120,7 @@ class CreateEditDocument extends Component {
           this.setState({
             templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
             newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
-            modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
+            // modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
             modifiedPersistedElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject || this.state.modifiedPersistedElementsObject,
             // templateElementCount: highestElementId,
             originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
@@ -434,7 +436,7 @@ class CreateEditDocument extends Component {
 
   handleTemplateSubmitCallback() {
     this.setState({
-      modifiedPersistedElementsArray: [],
+      // modifiedPersistedElementsArray: [],
       modifiedPersistedElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
@@ -454,10 +456,14 @@ class CreateEditDocument extends Component {
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
-      deleted_document_field: this.state.modifiedPersistedElementsArray,
+      // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
-    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
+    // const modifiedObject = this.getModifiedObject();
+    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction, modifiedObject: ', data, submitAction, modifiedObject);
+
+
+    // console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
     _.each(Object.keys(this.props.templateElements), eachKey => {
       console.log('in create_edit_document, handleTemplateFormSubmit, eachKey.indexOf(a): ', eachKey.indexOf('a'));
       const documentField = this.props.templateElements[eachKey]
@@ -472,8 +478,8 @@ class CreateEditDocument extends Component {
       // }
     });
 
-    console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
-    this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+    // console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
+    // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -1407,6 +1413,41 @@ renderEachDocumentField(page) {
     return object;
   }
 
+  getModifiedObject() {
+    const returnObject = {};
+
+    function setEditObject(editObject) {
+      if (returnObject[editObject.id]) {
+        if (editObject.action === 'delete') returnObject[editObject.id].deleted = true;
+        if (editObject.action === 'delete' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+        if (editObject.action === 'update') returnObject[editObject.id].updated = returnObject[editObject.id].updated + 1;
+      } else { // if object with element id does not exist in object
+        if (editObject.action === 'delete') {
+          returnObject[editObject.id] = { deleted: true, updated: 0 };
+        }
+        if (editObject.action === 'update') {
+          returnObject[editObject.id] = { deleted: false, updated: 1 };
+        }
+        if (editObject.action === 'create') {
+          returnObject[editObject.id] = { deleted: false, updated: 0 };
+        }
+      }
+    }
+    // templateEditHistoryArray is an array of array of objects;
+    // [[{ id: '1', width: 10, action: update }, { id: '1a', font_family: 'arial'... action: 'create'}], [...]]
+    // Each array within the outermost array is i.
+    _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
+      if (i <= this.state.historyIndex) {
+        _.each(eachEditArray, eachEditObject => {
+          setEditObject(eachEditObject);
+        });
+      }
+    });
+
+    return returnObject;
+  }
+
+
   setLocalStorageHistory(fromWhere) {
     // Set storage object for given point in time for agreement for when user accidentally has to refresh
     // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
@@ -1428,14 +1469,16 @@ renderEachDocumentField(page) {
       }
     });
     // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
+    const modifiedObject = this.getModifiedObject();
 
     destringifiedHistory[this.props.agreement.id] = {
       history: this.state.templateEditHistoryArray,
       elements: unsavedTemplateElements,
       historyIndex: this.state.historyIndex,
       newFontObject: this.state.newFontObject,
-      modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
-      modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
+      // modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
+      // modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
+      modifiedPersistedElementsObject: modifiedObject
     }
     // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
     console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory: ', destringifiedHistory);
@@ -1443,7 +1486,7 @@ renderEachDocumentField(page) {
   }
 
   setTemplateHistoryArray(elementArray, action) {
-    // !!! NOTE: ONLY set historyId and history array HERE to avoid unruly code !!!!!
+    // !!! NOTE: ONLY set historyId and templateEditHistoryArray HERE to avoid unruly code !!!!!
     console.log('in create_edit_document, setTemplateHistoryArray, action, elementArray: ', action, elementArray);
     // Function to create a new array so don't have to mutate state
     const getNewExistingHistoryArray = () => {
@@ -1463,8 +1506,8 @@ renderEachDocumentField(page) {
     };
     // For the newest rung of edits to be put into templateEditHistoryArray
     const array = [];
-    const modifiedPersistedArray = [...this.state.modifiedPersistedElementsArray]
-    const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject }
+    // const modifiedPersistedArray = [...this.state.modifiedPersistedElementsArray]
+    // const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject }
     // get new history array since cannot modify state elements
     const newArray = getNewExistingHistoryArray();
     // iterate through each selected element ids
@@ -1481,36 +1524,36 @@ renderEachDocumentField(page) {
           array.push(modifiedElement);
           // if the element is one persisted in backend DB,
           // put in array for assignment to this.state.modifiedPersistedElementsArray
-          if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
-            // Index somehow could not be put into one line with === -1
-            const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
-            if (index === -1) {
-              modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
-            }
-          }
+          // if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
+          //   // Index somehow could not be put into one line with === -1
+          //   const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
+          //   if (index === -1) {
+          //     modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
+          //   }
+          // }
           // OBJECT
-          if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
-            console.log('in create_edit_document, in if key in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
-            if (action === 'update') {
-              modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
-            }
+          // if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
+          //   console.log('in create_edit_document, in if key in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
+          //   if (action === 'update') {
+          //     modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
+          //   }
+          //
+          //   if (action === 'delete') {
+          //     modifiedPersistedObject[modifiedElement.id].deleted = true
+          //   }
+          // }
 
-            if (action === 'delete') {
-              modifiedPersistedObject[modifiedElement.id].deleted = true
-            }
-          }
-
-          if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) {
-            console.log('in create_edit_document, in if key not in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
-            modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
-            if (action === 'update') {
-              modifiedPersistedObject[modifiedElement.id].updated = 1
-            }
-
-            if (action === 'delete') {
-              modifiedPersistedObject[modifiedElement.id].deleted = true
-            }
-          } // end of modifiedPersistedObject
+          // if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) {
+          //   console.log('in create_edit_document, in if key not in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
+          //   modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
+          //   if (action === 'update') {
+          //     modifiedPersistedObject[modifiedElement.id].updated = 1
+          //   }
+          //
+          //   if (action === 'delete') {
+          //     modifiedPersistedObject[modifiedElement.id].deleted = true
+          //   }
+          // } // end of modifiedPersistedObject
         }
       });
     } else { // else there is an element e.g. new element
@@ -1523,37 +1566,37 @@ renderEachDocumentField(page) {
         // console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, action, elementArray, modifiedPersistedArray, parseInt(modifiedElement.id, 10), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10) === -1): ', action, elementArray, modifiedPersistedArray, parseInt(modifiedElement.id, 10), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10)), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10) === -1), 0 === -1);
         // if the element is one persisted in backend DB, and action is 'update'
         // put in array for assignment to this.state.modifiedPersistedElementsArray
-        if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
-          // Index somehow could not be put into one line with === -1
-          const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
-          if (index === -1) {
-            console.log('in create_edit_document, setTemplateHistoryArray, if else before setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
-            modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
-          }
-        }
+        // if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
+        //   // Index somehow could not be put into one line with === -1
+        //   const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
+        //   if (index === -1) {
+        //     console.log('in create_edit_document, setTemplateHistoryArray, if else before setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
+        //     modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
+        //   }
+        // }
 
         // OBJECT
-        if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
-          if (action === 'update') {
-            console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, has ID, update action, elementArray, this.state.modifiedPersistedElementsObject, type of object, : ', action, elementArray, this.state.modifiedPersistedElementsObject, typeof modifiedPersistedObject[modifiedElement.id].updated);
-            modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
-          }
+        // if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
+        //   if (action === 'update') {
+        //     console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, has ID, update action, elementArray, this.state.modifiedPersistedElementsObject, type of object, : ', action, elementArray, this.state.modifiedPersistedElementsObject, typeof modifiedPersistedObject[modifiedElement.id].updated);
+        //     modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
+        //   }
+        //
+        //   if (action === 'delete') {
+        //     modifiedPersistedObject[modifiedElement.id].deleted = true
+        //   }
+        // }
 
-          if (action === 'delete') {
-            modifiedPersistedObject[modifiedElement.id].deleted = true
-          }
-        }
-
-        if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) { // if id is not in modifiedPersistedObject
-          modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
-          if (action === 'update') {
-            modifiedPersistedObject[modifiedElement.id].updated = 1
-          }
-
-          if (action === 'delete') {
-            modifiedPersistedObject[modifiedElement.id].deleted = true
-          }
-        } // end of modifiedPersistedObject
+        // if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) { // if id is not in modifiedPersistedObject
+        //   modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
+        //   if (action === 'update') {
+        //     modifiedPersistedObject[modifiedElement.id].updated = 1
+        //   }
+        //
+        //   if (action === 'delete') {
+        //     modifiedPersistedObject[modifiedElement.id].deleted = true
+        //   }
+        // } // end of modifiedPersistedObject
       }); // end of each
     } // end of if else !elementArray
     // console.log('in create_edit_document, handleTrashClick, array: ', array);
@@ -1573,11 +1616,11 @@ renderEachDocumentField(page) {
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
       allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length, // if action IS delete, all elements are not checked anymore
       templateEditHistoryArray: [...newArray, array], // add new array of history
-      modifiedPersistedElementsArray: modifiedPersistedArray,
-      modifiedPersistedElementsObject: modifiedPersistedObject
+      // modifiedPersistedElementsArray: modifiedPersistedArray,
+      // modifiedPersistedElementsObject: modifiedPersistedObject
     }, () => {
       console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
-      console.log('in create_edit_document, setTemplateHistoryArray, if else before after setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
+      // console.log('in create_edit_document, setTemplateHistoryArray, if else before after setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
       this.setState({
         // !!!!! Index is set at End of array when user creates, deletes or updates (not in redo or undo)
         historyIndex: this.state.templateEditHistoryArray.length - 1,
@@ -1591,41 +1634,40 @@ renderEachDocumentField(page) {
 
   handleTrashClick() {
    if (this.state.selectedTemplateElementIdArray.length > 0) {
-     const array = [...this.state.modifiedPersistedElementsArray];
-     const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject };
-     // const array = this.setTemplateHistoryArray('delete');
-     // Go through each id in selectedTemplateElementIdArray and put them in an array
-     // if they do not have 'a' in the id (they are persisted in the DB so need to delete them
-    // in the backend later when user saves work)
-     _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-       console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray, eachElementId: ', this.state.selectedTemplateElementIdArray, eachElementId);
-       if (eachElementId.indexOf('a') === -1) {
-         // if id is already in the array as a modified element, take it out
-         // push a NEGATIVE integer id so as to
-         // distinguish from an update which is a positive number;
-         // NOTE: updated and deleted ids will stay together due to the complexity
-         // of keeping track of an element that has been updated, deleted and undone
-         array.push(-eachElementId);
-       }
-
-       if (eachElementId.indexOf('a') === -1 && modifiedPersistedObject[eachElementId]) {
-         modifiedPersistedObject[eachElementId].deleted = true;
-       } else { // if id is not in modifiedPersistedObject
-         modifiedPersistedObject[eachElementId] = { deleted: false, updated: 0 };
-         modifiedPersistedObject[eachElementId].deleted = true;
-       } // end of modifiedPersistedObject
-     });
+    //  const array = [...this.state.modifiedPersistedElementsArray];
+    //  // const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject };
+    //  // const array = this.setTemplateHistoryArray('delete');
+    //  // Go through each id in selectedTemplateElementIdArray and put them in an array
+    //  // if they do not have 'a' in the id (they are persisted in the DB so need to delete them
+    // // in the backend later when user saves work)
+    //  _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
+    //    console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray, eachElementId: ', this.state.selectedTemplateElementIdArray, eachElementId);
+    //    // if (eachElementId.indexOf('a') === -1) {
+    //    //   // if id is already in the array as a modified element, take it out
+    //    //   // push a NEGATIVE integer id so as to
+    //    //   // distinguish from an update which is a positive number;
+    //    //   // NOTE: updated and deleted ids will stay together due to the complexity
+    //    //   // of keeping track of an element that has been updated, deleted and undone
+    //    //   array.push(-eachElementId);
+    //    // }
+    //    // if (eachElementId.indexOf('a') === -1 && modifiedPersistedObject[eachElementId]) {
+    //    //   modifiedPersistedObject[eachElementId].deleted = true;
+    //    // } else { // if id is not in modifiedPersistedObject
+    //    //   modifiedPersistedObject[eachElementId] = { deleted: false, updated: 0 };
+    //    //   modifiedPersistedObject[eachElementId].deleted = true;
+    //    // } // end of modifiedPersistedObject
+    //  });
      // assign the array with deleted ids to state array
-     this.setState({
-       modifiedPersistedElementsArray: array,
-       modifiedPersistedElementsObject: modifiedPersistedObject
-     }, () => {
+     // this.setState({
+     //   modifiedPersistedElementsArray: array,
+       // modifiedPersistedElementsObject: modifiedPersistedObject
+     // }, () => {
        // call delete in callback to setState so modifiedPersistedElementsArray is in state
        // to be stringified in localStorage
        this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => this.setTemplateHistoryArray(null, 'delete'));
-       this.setState({ selectedTemplateElementIdArray: [] })
-       console.log('in create_edit_document, handleTrashClick, this.state.modifiedPersistedElementsArray: ', this.state.modifiedPersistedElementsArray);
-     });
+       // this.setState({ selectedTemplateElementIdArray: [] })
+       // console.log('in create_edit_document, handleTrashClick, this.state.modifiedPersistedElementsArray: ', this.state.modifiedPersistedElementsArray);
+     // });
    } // end of if selectedTemplateElementIdArray.length > 0
   }
 
@@ -1889,8 +1931,8 @@ renderEachDocumentField(page) {
           deleteElement([lastActionArray[0].id])
           // Take the checked element ids out of selectedTemplateElementIdArray
           const newArray = [...this.state.selectedTemplateElementIdArray];
-          const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
+          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
+          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
           // If element id is in selectedTemplateElementIdArray, take it out of the array
           const index = this.state.selectedTemplateElementIdArray.indexOf(lastActionArray[0].id);
@@ -1900,21 +1942,21 @@ renderEachDocumentField(page) {
           }
           // Push into array a NEGATIVE number to distinguish from update which is positive
           // Parse into since existing ids can become strings when moved or resized in dragElement
-          if (lastActionArray[0].id.indexOf('a') === -1) deletedPersistedArray.push(-parseInt(lastActionArray[0].id, 10));
-
-          if (lastActionArray[0].id.indexOf('a') === -1 && modifiedPersistedObject[lastActionArray[0].id]) {
-            modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          }
-
-          if (lastActionArray[0].id.indexOf('a') === -1 && !modifiedPersistedObject[lastActionArray[0].id]) { // if id is not in modifiedPersistedObject
-            modifiedPersistedObject[lastActionArray[0].id] = { deleted: false, updated: 0 };
-            modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          } // end of modifiedPersistedObject
+          // if (lastActionArray[0].id.indexOf('a') === -1) deletedPersistedArray.push(-parseInt(lastActionArray[0].id, 10));
+          //
+          // if (lastActionArray[0].id.indexOf('a') === -1 && modifiedPersistedObject[lastActionArray[0].id]) {
+          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
+          // }
+          //
+          // if (lastActionArray[0].id.indexOf('a') === -1 && !modifiedPersistedObject[lastActionArray[0].id]) { // if id is not in modifiedPersistedObject
+          //   modifiedPersistedObject[lastActionArray[0].id] = { deleted: false, updated: 0 };
+          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
+          // } // end of modifiedPersistedObject
 
           this.setState({
             selectedTemplateElementIdArray: newArray,
-            modifiedPersistedElementsArray: deletedPersistedArray,
-            modifiedPersistedElementsObject: modifiedPersistedObject
+            // modifiedPersistedElementsArray: deletedPersistedArray,
+            // modifiedPersistedElementsObject: modifiedPersistedObject
           });
         } // send array of id
         // No need to do logic for persisted elements since none are created just fetched from backend
@@ -1922,12 +1964,18 @@ renderEachDocumentField(page) {
       }
 
       if (lastActionArray[0].action === 'update') {
-        const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
+        // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
         if (doWhatNow === 'undo') {
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
+          // _.each(newLastAction, eachObject => {
+          //   modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated - 1;
+          //   if (modifiedPersistedObject[eachObject.id].deleted === false && modifiedPersistedObject[eachObject.id].updated === 0) {
+          //     delete modifiedPersistedObject[eachObject.id];
+          //   }
+          // })
           // _.each(lastActionArray)
           // if (lastActionArray[0].id.indexOf('a') === -1 && modifiedPersistedObject[lastActionArray[0].id]) {
           //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
@@ -1941,33 +1989,43 @@ renderEachDocumentField(page) {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
+          // _.each(lastActionArray, eachObject => {
+          //   if (modifiedPersistedObject[eachObject.id]) {
+          //     modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated + 1;
+          //   } else {
+          //     modifiedPersistedObject[eachObject.id] = { deleted: false, updated: 0 };
+          //     modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated + 1;
+          //   }
+          // })
         }
+
+        // this.setState({ modifiedPersistedElementsObject: modifiedPersistedObject })
       }
 
       if (lastActionArray[0].action === 'delete') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         const newLastAction = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
-          const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
+          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
+          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
           _.each(newLastAction, eachElement => {
             // const modifiedElement = eachElement;
             // delete modifiedElement.action;
             createElement(eachElement);
-            const deletedPersistedIndex = deletedPersistedArray.indexOf(-parseInt(eachElement.id, 10));
+            // const deletedPersistedIndex = deletedPersistedArray.indexOf(-parseInt(eachElement.id, 10));
 
-            if (deletedPersistedIndex !== -1) {
-              deletedPersistedArray.splice(deletedPersistedIndex, 1);
-            }
+            // if (deletedPersistedIndex !== -1) {
+            //   deletedPersistedArray.splice(deletedPersistedIndex, 1);
+            // }
 
-            if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
-              if (modifiedPersistedObject[eachElement.id].updated) {
-                modifiedPersistedObject[eachElement.id].deleted = false;
-              } else {
-                delete modifiedPersistedObject[eachElement.id];
-              }
-            }
+            // if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
+            //   if (modifiedPersistedObject[eachElement.id].updated) {
+            //     modifiedPersistedObject[eachElement.id].deleted = false;
+            //   } else {
+            //     delete modifiedPersistedObject[eachElement.id];
+            //   }
+            // }
 
             // if (eachElement.id.indexOf('a') === -1 && !modifiedPersistedObject[eachElement.id]) { // if id is not in modifiedPersistedObject
             //   modifiedPersistedObject[eachElement.id] = { deleted: false, updated: 0 };
@@ -1975,17 +2033,17 @@ renderEachDocumentField(page) {
             // } // end of modifiedPersistedObject
           });
 
-          this.setState({
-             modifiedPersistedElementsArray: deletedPersistedArray,
-             modifiedPersistedElementsObject: modifiedPersistedObject
-           });
+          // this.setState({
+          //    modifiedPersistedElementsArray: deletedPersistedArray,
+          //    modifiedPersistedElementsObject: modifiedPersistedObject
+          //  });
         }
 
         if (doWhatNow === 'redo') {
           const elementsIdArray = [];
           const newArray = [...this.state.selectedTemplateElementIdArray];
-          const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
+          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
+          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
@@ -1994,22 +2052,22 @@ renderEachDocumentField(page) {
             if (index !== -1) {
               newArray.splice(index, 1);
             }
-            deletedPersistedArray.push(-parseInt(eachElement.id, 10));
+            // deletedPersistedArray.push(-parseInt(eachElement.id, 10));
 
-            if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
-              modifiedPersistedObject[eachElement.id].deleted = true;
-            }
+            // if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
+            //   modifiedPersistedObject[eachElement.id].deleted = true;
+            // }
 
-            if (eachElement.id.indexOf('a') === -1 && !modifiedPersistedObject[eachElement.id]) { // if id is not in modifiedPersistedObject
-                modifiedPersistedObject[eachElement.id] = { deleted: false, updated: 0 };
-                modifiedPersistedObject[eachElement.id].deleted = true;
-            } // end of modifiedPersistedObject
+            // if (eachElement.id.indexOf('a') === -1 && !modifiedPersistedObject[eachElement.id]) { // if id is not in modifiedPersistedObject
+            //     modifiedPersistedObject[eachElement.id] = { deleted: false, updated: 0 };
+            //     modifiedPersistedObject[eachElement.id].deleted = true;
+            // } // end of modifiedPersistedObject
           });
           deleteElement(elementsIdArray);
           this.setState({
             selectedTemplateElementIdArray: newArray,
-            modifiedPersistedElementsArray: deletedPersistedArray,
-            modifiedPersistedElementsObject: modifiedPersistedObject
+            // modifiedPersistedElementsArray: deletedPersistedArray,
+            // modifiedPersistedElementsObject: modifiedPersistedObject
           });
         }
       }
@@ -2470,7 +2528,7 @@ renderEachDocumentField(page) {
     const templateElementsLength = Object.keys(this.props.templateElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
-    const disableSave = !this.props.templateElements || (this.state.templateEditHistoryArray.length < 1) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
+    const disableSave = !this.props.templateElements || _.isEmpty(this.state.modifiedPersistedElementsObject) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
     const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
