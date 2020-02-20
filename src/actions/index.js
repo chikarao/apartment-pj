@@ -2949,6 +2949,14 @@ export function saveTemplateDocumentFields(agreementFieldAttributes, callback) {
       });
       // sends back to createflat.js the flat_id and the images
       callback();
+    })
+    .catch((error) => {
+      // take out error if hard coding error messages
+      // if request is bad
+      // show error to user
+      console.log('action index, saveTemplateDocumentFields, catch, error.response.data.messages:', error.response.data.messages);
+      dispatch(authError(error.response.data.messages));
+      // dispatch(authError('Bad login info...'));
     });
   };
 }

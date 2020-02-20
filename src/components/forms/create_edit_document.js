@@ -148,7 +148,7 @@ class CreateEditDocument extends Component {
     // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
     // templateEditHistory can be null in later code;
     // all local state values set in constructor already
-    // templateEditHistory = getLocalHistory();
+    templateEditHistory = getLocalHistory();
     // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
     // calculate highestElementId for templateElementCount (for numbering element temporary ids)
     if (templateEditHistory && templateEditHistory.elements) {
@@ -436,50 +436,61 @@ class CreateEditDocument extends Component {
 
   handleTemplateSubmitCallback() {
     this.setState({
-      // modifiedPersistedElementsArray: [],
       modifiedPersistedElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
+      this.props.showLoading();
     });
   }
+  // What's saved in localStorageHistory
+  // history: this.state.templateEditHistoryArray,
+  // elements: unsavedTemplateElements,
+  // historyIndex: this.state.historyIndex,
+  // newFontObject: this.state.newFontObject,
+  // modifiedPersistedElementsObject; this.state.modifiedPersistedElementsObject
 
   handleTemplateFormSubmit({ data, submitAction }) {
     const documentFieldArray = [];
+    const deletedDocumentFieldIdArray = [];
     // const newDocumentFieldArray = [];
     const paramsObject = {
       flat_id: this.props.flat.id,
       booking_id: this.props.booking.id,
       document_name: this.props.agreement.document_name,
       document_field: documentFieldArray,
+        deleted_document_field_id_array: deletedDocumentFieldIdArray,
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
       // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
-    // const modifiedObject = this.getModifiedObject();
-    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction, modifiedObject: ', data, submitAction, modifiedObject);
-
+    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
 
     // console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
-    _.each(Object.keys(this.props.templateElements), eachKey => {
-      console.log('in create_edit_document, handleTemplateFormSubmit, eachKey.indexOf(a): ', eachKey.indexOf('a'));
-      const documentField = this.props.templateElements[eachKey]
-      const elementName = documentField.name
-      const value = data[elementName];
-      documentField.value = value;
+    _.each(Object.keys(this.state.modifiedPersistedElementsObject), eachKey => {
+      let documentField = null;
+      // console.log('in create_edit_document, handleTemplateFormSubmit, eachKey.indexOf(a): ', eachKey.indexOf('a'));
+      console.log('in create_edit_document, handleTemplateFormSubmit, eachKey, this.state.modifiedPersistedElementsObject[eachKey]: ', eachKey, this.state.modifiedPersistedElementsObject[eachKey]);
+      if (this.state.modifiedPersistedElementsObject[eachKey].deleted === true) {
+        deletedDocumentFieldIdArray.push(eachKey);
+      } else {
+        // if not deleted === true, its been modified or newly created
+        documentField = this.props.templateElements[eachKey];
+      }
 
-      // if (eachKey.indexOf('a') !== -1) {
-      //   newDocumentFieldArray.push(documentField);
-      // } else {
-      documentFieldArray.push(documentField);
-      // }
+      if (documentField) {
+        const value = data[documentField.name];
+        documentField.value = value;
+        documentFieldArray.push(documentField);
+      }
     });
 
-    // console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
-    // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+    console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
+    this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+    this.props.showLoading()
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -1444,7 +1455,7 @@ renderEachDocumentField(page) {
             // NOTE: temporary template element may come to have negagtive update
             // since their can modifiedPersistedElementsObject
             // can be deleted even when their update number is non-zero;
-            // The only thing that matters is their deleted attribute 
+            // The only thing that matters is their deleted attribute
             returnObject[editObject.id].updated--;
             if (returnObject[editObject.id].deleted === false && editObject.id.indexOf('a') === -1) delete returnObject[editObject.id];
           }
@@ -1495,12 +1506,11 @@ renderEachDocumentField(page) {
     }
     // templateEditHistoryArray is an array of array of objects;
     // [[{ id: '1', width: 10, action: update }, { id: '1a', font_family: 'arial'... action: 'create'}], [...]]
-    // Each array within the outermost array is i.
+    // Each array within the outermost array is i. No need to adjust for redo
     let index = this.state.historyIndex;
     if (redoOrUndo === 'undo') index = this.state.historyIndex + 1;
     // if (redoOrUndo === 'redo') index = this.state.historyIndex - 1;
 
-    console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in before if !isEmpty, this.historyIndex, index, this.state.modifiedPersistedElementsObject, this.state.templateEditHistoryArray: ', redoOrUndo, this.state.historyIndex, index, this.state.modifiedPersistedElementsObject, this.state.templateEditHistoryArray);
     if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
       _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
         if (i <= index) {
@@ -1534,17 +1544,20 @@ renderEachDocumentField(page) {
     }
 
     const unsavedTemplateElements = {};
-
-    _.each(Object.keys(this.props.templateElements), eachElementKey => {
-      // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
-      if (eachElementKey.indexOf('a') !== -1) {
-        unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
-      }
-    });
+    if (fromWhere !== 'handleTemplateSubmitCallback') {
+      _.each(Object.keys(this.props.templateElements), eachElementKey => {
+        // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
+        if (eachElementKey.indexOf('a') !== -1) {
+          unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
+        }
+      });
+    }
     // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
     const modifiedObject = this.getModifiedObject(fromWhere);
 
-    this.setState({ modifiedPersistedElementsObject: modifiedObject }, () => {
+    this.setState({
+      modifiedPersistedElementsObject: modifiedObject
+    }, () => {
       destringifiedHistory[this.props.agreement.id] = {
         history: this.state.templateEditHistoryArray,
         // unsavedTemplateElements is not saved in state

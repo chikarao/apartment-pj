@@ -146,14 +146,14 @@ export default function (state = {
     }
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
+      console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);
       // const newObject = {}
       // const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
       fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
       onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
-      const mapKeysObject = getMappedObjectWithStringIds(action.payload, true);
+      const mapKeysObject = getMappedObjectWithStringIds(action.payload.agreement.document_fields, true);
 
       return { ...state, templateElements: mapKeysObject, fontAttributeObject, onlyFontAttributeObject };
     }
