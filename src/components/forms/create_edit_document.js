@@ -1423,26 +1423,73 @@ renderEachDocumentField(page) {
     const setEditObject = (editObject) => {
       console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
       if (returnObject[editObject.id]) {
-        if (editObject.action === 'delete') {
-          if (editObject.id.indexOf('a') === -1) returnObject[editObject.id].deleted = true;
-          if (editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
-          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id].deleted = false;
-          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+        // Think 1. CRUD (Create, [Read], Update, Delete),
+        // 2. temporary and persisted elements,
+        // 3. Undo and Redo
+        if (editObject.action === 'create') {
+          console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
+          // Create undo can only happen to temporary elements with ids with 'a' ie '1a'
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
         }
-        if (editObject.action === 'update') returnObject[editObject.id].updated = returnObject[editObject.id].updated + 1;
-      } else { // if object with element id does not exist in object
+
+        if (editObject.action === 'update') {
+          console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in update redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
+          // In case of update and object exists, increment up update
+          if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') returnObject[editObject.id].updated++;
+          // returnObject[editObject.id].updated++;
+          // In case of undo update and object exists, increment up update, decrement if undo
+          // if (redoOrUndo === 'undo') returnObject[editObject.id].updated = returnObject[editObject.id].updated - 1;
+          if (redoOrUndo === 'undo') {
+            // NOTE: temporary template element may come to have negagtive update
+            // since their can modifiedPersistedElementsObject
+            // can be deleted even when their update number is non-zero;
+            // The only thing that matters is their deleted attribute 
+            returnObject[editObject.id].updated--;
+            if (returnObject[editObject.id].deleted === false && editObject.id.indexOf('a') === -1) delete returnObject[editObject.id];
+          }
+          if (redoOrUndo === 'redo') returnObject[editObject.id].updated++;
+        }
+        // In case of delete and object exists in modifiedPersistedElementsObject
         if (editObject.action === 'delete') {
-          returnObject[editObject.id] = { deleted: true, updated: 0 };
+          // If persisted element id, update delete to true
+          if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') {
+            if (editObject.id.indexOf('a') === -1) returnObject[editObject.id].deleted = true;
+            // Case of temporary id ie '1a', take out the key '1a'
+            if (editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          }
+          // Don't worry about updated count for temporary elements since only matter if they exist
           if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') === -1) {
+            returnObject[editObject.id].deleted = false
+            if (returnObject[editObject.id].updated === 0) delete returnObject[editObject.id]
+          }
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') === -1) returnObject[editObject.id].deleted = true;
         }
+      } else { // if object with element id does not exist in object
+        // If object for element does not exist in modifiedPersistedElementsObject
+        if (editObject.action === 'create') {
+          console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in else create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
+          if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+          // undo create for temporary elements not needed since object will have been created
+          // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
+          // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') === -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+        }
+
+        // If object does not exist for element, create object with updated 1;
+        // Don't need redo or undo since object will have been created in modifiedPersistedElementsObject
         if (editObject.action === 'update') {
           returnObject[editObject.id] = { deleted: false, updated: 1 };
         }
-        if (editObject.action === 'create') {
-          returnObject[editObject.id] = { deleted: false, updated: 0 };
-          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
-          // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') === -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
-          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+
+        if (editObject.action === 'delete') {
+          // In case of delete, can only happen to backend-persisted elements
+          if (editObject.id.indexOf('a') === -1) returnObject[editObject.id] = { deleted: true, updated: 0 };
+          // Can only undo delete if object does not exist for temporary elements
+          // If redo delete, there would be an object existing
+          if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
         }
       }
     }
@@ -1451,8 +1498,9 @@ renderEachDocumentField(page) {
     // Each array within the outermost array is i.
     let index = this.state.historyIndex;
     if (redoOrUndo === 'undo') index = this.state.historyIndex + 1;
-    if (redoOrUndo === 'redo') index = this.state.historyIndex - 1;
+    // if (redoOrUndo === 'redo') index = this.state.historyIndex - 1;
 
+    console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in before if !isEmpty, this.historyIndex, index, this.state.modifiedPersistedElementsObject, this.state.templateEditHistoryArray: ', redoOrUndo, this.state.historyIndex, index, this.state.modifiedPersistedElementsObject, this.state.templateEditHistoryArray);
     if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
       _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
         if (i <= index) {
@@ -1472,7 +1520,6 @@ renderEachDocumentField(page) {
 
     return returnObject;
   }
-
 
   setLocalStorageHistory(fromWhere) {
     // Set storage object for given point in time for agreement for when user accidentally has to refresh
@@ -1497,18 +1544,21 @@ renderEachDocumentField(page) {
     // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
     const modifiedObject = this.getModifiedObject(fromWhere);
 
-    destringifiedHistory[this.props.agreement.id] = {
-      history: this.state.templateEditHistoryArray,
-      elements: unsavedTemplateElements,
-      historyIndex: this.state.historyIndex,
-      newFontObject: this.state.newFontObject,
-      // modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
-      // modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
-      modifiedPersistedElementsObject: modifiedObject
-    }
-    // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
-    console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory, destringifiedHistory.modifiedPersistedElementsObject: ', destringifiedHistory, destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject);
-    localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory))
+    this.setState({ modifiedPersistedElementsObject: modifiedObject }, () => {
+      destringifiedHistory[this.props.agreement.id] = {
+        history: this.state.templateEditHistoryArray,
+        // unsavedTemplateElements is not saved in state
+        elements: unsavedTemplateElements,
+        historyIndex: this.state.historyIndex,
+        newFontObject: this.state.newFontObject,
+        // modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
+        // modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
+        modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
+      }
+      // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
+      console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory, destringifiedHistory.modifiedPersistedElementsObject: ', destringifiedHistory, destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject);
+      localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory));
+    })
   }
 
   setTemplateHistoryArray(elementArray, action) {
