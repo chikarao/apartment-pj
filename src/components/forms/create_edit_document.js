@@ -17,6 +17,7 @@ import * as actions from '../../actions';
 import Documents from '../constants/documents';
 
 import DocumentChoices from './document_choices';
+import DocumentChoicesTemplate from './document_choices_template';
 import AppLanguages from '../constants/app_languages';
 import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
 // import UploadForProfile from '../images/upload_for_profile';
@@ -898,12 +899,12 @@ renderEachDocumentField(page) {
       // console.log('in create_edit_document, getMousePosition1, x, y', x, y);
       // Set state with count of elements and new element in app state in state.templateElements
       // const templateElementCount = this.state.templateElementCount;
-      const templateElementChoice = false;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
         createNewTemplateElementOn: false,
         // historyIndex: this.historyIndex + 1
       }, () => {
+        const templateElementChoice = true;
         // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
         let templateElementAttributes = {};
         if (templateElementChoice) {
@@ -926,16 +927,15 @@ renderEachDocumentField(page) {
             // font_family: this.state.newFontObject.font_family,
             // font_size: this.state.newFontObject.font_size,
             document_field_choices: {
-              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
             }
           };
           // in get_initialvalues_object_important_points_explanation.js
           // 0: { params: { val: 'Public Water', top: '66.7%', left: '17.3%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
           // 1: { params: { val: 'Tank', top: '66.7%', left: '23.3%', width: '6.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
           // 2: { params: { val: 'Well', top: '66.7%', left: '30%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-
         } else {
           templateElementAttributes = {
             id: `${this.state.templateElementCount}a`,
@@ -1278,19 +1278,55 @@ renderEachDocumentField(page) {
     let noTabs = false;
     let newElement = false;
     let inputElement = true;
+
+    const renderTab = (eachElement, selected, tabLeftMarginPx) => {
+      return (
+        <div
+          id={`template-element-tab-${eachElement.id}`}
+          className="create-edit-document-template-element-edit-tab"
+          style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
+        >
+          <i
+            value={eachElement.id}
+            className="fas fa-check-circle"
+            style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+            onClick={this.handleTemplateElementCheckClick}
+          >
+          </i>
+          <i
+            value={eachElement.id}
+            className="fas fa-truck-moving"
+            style={{ lineHeight: '1.5', color: 'gray' }}
+            onMouseDown={this.handleTemplateElementMoveClick}
+          >
+          </i>
+          <i
+            type={eachElement.input_type}
+            value={eachElement.id}
+            className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+            onMouseDown={this.handleTemplateElementChangeSizeClick}
+          >
+          </i>
+        </div>
+      );
+    };
     // if (this.props.documentFields[page]) {
     // let count = 1;
     if (!documentEmpty) {
-      const { templateElements } = this.props;
+      // const { templateElements } = this.props;
       // Map through each element
       // return _.map(templateElements, eachElement => {
-      return _.map(this.props.templateDocumentChoicesObject[page], eachElement => {
+      return _.map(this.props.templateElementsByPage[page], eachElement => {
+        // if there are document_field_choices, assign true else false
+        inputElement = !eachElement.document_field_choices;
+        newElement = eachElement.document_field_choices && eachElement.top && !eachElement.document_field_choices[0].top;
+        const modifiedElement = eachElement;
         if (eachElement.component == 'DocumentChoices') {
-          fieldComponent = DocumentChoices;
+          fieldComponent = DocumentChoicesTemplate;
         } else {
           fieldComponent = eachElement.component;
         }
-        console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+        console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement: ', eachElement, page, inputElement, newElement);
 
         // if (eachElement.page === page) {
           const editTemplate = true;
@@ -1300,75 +1336,116 @@ renderEachDocumentField(page) {
           // count++;
           // Wait until document-background class is rendered to enable some logic
           const background = document.getElementById('document-background');
-          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.choices[0].params.element_id) !== -1;
+          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
           // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
           // Wait for the background to be rendered to get its dimensions
           if (editTemplate && background) {
             // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
-            // if (eachElement.document_field_choices) {
-            //   inputElement = false;
-            //   // const { document_field_choices } = eachElement;
-            //   // if document_field_choices first element does not have a top,
-            //   // it is a new element just created
-            //   // if (!eachElement.document_field_choice[0].top) {
-            //   //   newElement = true;
-            //   //   console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
-            //   //
-            //   // }
-            // }
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
-            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.choices[0].params.width) / 100)
+            let eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(modifiedElement.width) / 100)
             const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
-            const wrappingDivDocumentCreateH = parseFloat(eachElement.choices[0].params.height) / (parseFloat(eachElement.choices[0].params.height) + tabPercentOfContainerH);
+            let wrappingDivDocumentCreateH = parseFloat(modifiedElement.height) / (parseFloat(modifiedElement.height) + tabPercentOfContainerH);
+
+            if (eachElement.document_field_choices) {
+              const { document_field_choices } = eachElement;
+              // if document_field_choices first element does not have a top,
+              // it is a new element just created
+              if (newElement) {
+                let totalHeight = 0;
+                let totalWidth = 0;
+                const marginBetween = 0.25;
+                _.each(Object.keys(document_field_choices), (eachKey, i) => {
+                  const eachChoice = document_field_choices[eachKey];
+                  console.log('in create_edit_document, renderTemplateElements, eachElement, page, totalWidth, totalHeight, eachChoice: ', eachElement, page, totalWidth, totalHeight, eachChoice);
+                  if (eachChoice.class_name === 'document-circle') {
+                    totalWidth = parseFloat(eachChoice.width);
+                    totalHeight = parseFloat(eachChoice.height);
+                    if (i === Object.keys(document_field_choices).length - 1) totalWidth += (i * marginBetween);
+                  }
+
+                  if (eachChoice.class_name === 'document-rectangle') {
+                    totalWidth = parseFloat(eachChoice.width)
+                    totalHeight += parseFloat(eachChoice.height)
+                    if (i === Object.keys(document_field_choices).length - 1) totalHeight += (i * marginBetween);
+                  }
+                }) // end of each document_field_choices
+                console.log('in create_edit_document, renderTemplateElements, eachElement, page, totalWidth, totalHeight: ', eachElement, page, totalWidth, totalHeight);
+                modifiedElement.width = `${totalWidth}%`;
+                modifiedElement.height = `${totalHeight}%`;
+              } // end of if newElement
+            } // end of if eachElement.document_field_choices
             // if ()
             if (inputElement) {
               return (
                 <div
-                  key={eachElement.choices[0].params.element_id}
-                  id={`template-element-${eachElement.choices[0].params.element_id}`}
+                  key={modifiedElement.id}
+                  id={`template-element-${modifiedElement.id}`}
                   className="create-edit-document-template-element-container"
-                  style={{ top: eachElement.choices[0].params.top, left: eachElement.choices[0].params.left, width: eachElement.choices[0].params.width, height: `${parseFloat(eachElement.choices[0].params.height) + tabPercentOfContainerH}%` }}
+                  style={{ top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
                 >
                   <Field
-                    key={eachElement.choices[0].params.name}
-                    name={eachElement.name}
-                    // id={`template-element-input-${eachElement.choices[0].params.element_id}`}
+                    key={modifiedElement.name}
+                    name={modifiedElement.name}
+                    // id={`template-element-input-${modifiedElement.choices[0].params.element_id}`}
                     // setting value here does not works unless its an <input or some native element
                     // value='Bobby'
                     component={fieldComponent}
                     // pass page to custom compoenent, if component is input then don't pass
                     // props={fieldComponent == DocumentChoices ? { page } : {}}
-                    props={fieldComponent == DocumentChoices ?
+                    props={fieldComponent === DocumentChoicesTemplate ?
                       {
                         page,
-                        required: eachElement.required,
+                        required: modifiedElement.required,
                         nullRequiredField,
-                        formFields: newElement ? {} : this.props.templateDocumentChoicesObject,
-                        charLimit: eachElement.choices[0].params.charLimit,
+                        formFields: newElement
+                          ?
+                          // {}
+                          this.props.templateElementsByPage // doesn't have choices for input element
+                          :
+                          // create a templateElementsByPage with choices just for the input element
+                          { [modifiedElement.page]: { [modifiedElement.id]:
+                            { choices: { 0: { val: 'inputFieldValue',
+                                              top: modifiedElement.top,
+                                              left: modifiedElement.left,
+                                              width: modifiedElement.width,
+                                              height: modifiedElement.height,
+                                              font_size: modifiedElement.font_size,
+                                              font_family: modifiedElement.font_family,
+                                              font_style: modifiedElement.font_style,
+                                              font_weight: modifiedElement.font_weight,
+                                              // change from input componnet use document-rectange
+                                              // class_name: 'document-rectangle',
+                                              class_name: modifiedElement.class_name,
+                                              // !!! height works only with px
+                                              input_type: modifiedElement.input_type,
+                                              element_id: modifiedElement.id
+                            } } } } },
+                        charLimit: modifiedElement.charLimit,
                         otherChoiceValues,
                         documentKey: this.props.documentKey,
                         editTemplate,
                         wrappingDivDocumentCreateH,
-                        eachElement,
-                        elementName: eachElement.elementName
+                        modifiedElement,
+                        elementName: modifiedElement.name,
+                        elementId: modifiedElement.id
                       }
                       :
                       {}}
-                    type={eachElement.choices[0].params.input_type}
-                    className={eachElement.choices[0].params.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
+                    type={modifiedElement.input_type}
+                    className={modifiedElement.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
                     // onBlur={this.handleUserInput}
-                    style={eachElement.choices[0].params.component == 'input' && editTemplate
+                    style={modifiedElement.component == 'input' && editTemplate
                       ?
-                      // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+                      // { width: modifiedElement.width, height: modifiedElement.height, borderColor: modifiedElement.borderColor, margin: '0px !important' }
                       // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
                       // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
                       {
                         width: '100%',
-                        fontSize: eachElement.choices[0].params.font_size,
-                        fontFamily: eachElement.choices[0].params.font_family,
-                        fontStyle: eachElement.choices[0].params.font_style,
-                        fontWeight: eachElement.choices[0].params.font_weight,
-                        borderColor: eachElement.choices[0].params.border_color,
+                        fontSize: modifiedElement.font_size,
+                        fontFamily: modifiedElement.font_family,
+                        fontStyle: modifiedElement.font_style,
+                        fontWeight: modifiedElement.font_weight,
+                        borderColor: modifiedElement.border_color,
                         margin: '0px !important',
                         flex: '1 1 auto'
                       }
@@ -1376,62 +1453,55 @@ renderEachDocumentField(page) {
                       {}
                     }
                   />
-                  <div
-                    id={`template-element-tab-${eachElement.choices[0].params.element_id}`}
-                    className="create-edit-document-template-element-edit-tab"
-                    style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
-                  >
-                    <i
-                      value={eachElement.choices[0].params.element_id}
-                      className="fas fa-check-circle"
-                      style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
-                      onClick={this.handleTemplateElementCheckClick}
-                    >
-                    </i>
-                    <i
-                      value={eachElement.choices[0].params.element_id}
-                      className="fas fa-truck-moving"
-                      style={{ lineHeight: '1.5', color: 'gray' }}
-                      onMouseDown={this.handleTemplateElementMoveClick}
-                    >
-                    </i>
-                    <i
-                      type={eachElement.choices[0].params.input_type}
-                      value={eachElement.choices[0].params.element_id}
-                      className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
-                      onMouseDown={this.handleTemplateElementChangeSizeClick}
-                    >
-                    </i>
-                  </div>
+                  {renderTab(modifiedElement, selected, tabLeftMarginPx)}
                 </div>
               );
-            } // end of if editTemplate
+            } else { // else if inputElement
+              console.log('in create_edit_document, renderTemplateElements, else if inputElement: ', modifiedElement, page, this.props.templateElementsByPage);
+              return (
+                <div
+                  key={modifiedElement.id}
+                  id={`template-element-${modifiedElement.id}`}
+                  className="create-edit-document-template-element-container"
+                  style={{ top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
+                >
+                <div
+                  key={modifiedElement.id}
+                  className="create-edit-document-template-element-container-choice-innner"
+                >
+                Hello
+                </div>
+                </div>
+              );
+            }// end of if inputElement
+
             if (noTabs) { // noTabs a placeholder for now
               return (
                 <Field
-                  key={eachElement.name}
-                  name={eachElement.name}
+                  key={modifiedElement.name}
+                  name={modifiedElement.name}
                   // setting value here does not works unless its an <input or some native element
                   // value='Bobby'
                   component={fieldComponent}
                   // pass page to custom compoenent, if component is input then don't pass
                   props={fieldComponent == DocumentChoices ? { page } : {}}
                   // props={fieldComponent == DocumentChoices ? { page } : {}}
-                  type={eachElement.input_type}
-                  className={eachElement.component == 'input' ? 'document-rectangle' : ''}
-                  // className={eachElement.component == 'input' ? 'form-control' : ''}
-                  // className={eachElement.className}
-                  style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+                  type={modifiedElement.input_type}
+                  className={modifiedElement.component == 'input' ? 'document-rectangle' : ''}
+                  // className={modifiedElement.component == 'input' ? 'form-control' : ''}
+                  // className={modifiedElement.className}
+                  style={modifiedElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
                   // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
                 />
               );
             } // end of if no tabs
-          }
+          } // end of if editTemplate && background
         // } // eachElement page === page
       });
     }
     // end of if documentEmpty
   }
+
   renderTemplateElements1(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
@@ -1470,7 +1540,7 @@ renderEachDocumentField(page) {
               // const { document_field_choices } = eachElement;
               // if document_field_choices first element does not have a top,
               // it is a new element just created
-              if (!eachElement.document_field_choice[0].top) {
+              if (!eachElement.document_field_choices[0].top) {
                 newElement = true;
                 console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
 
@@ -3290,6 +3360,7 @@ function mapStateToProps(state) {
       // fontAttributeObject: state.documents.fontAttributeObject,
       // onlyFontAttributeObject: state.documents.onlyFontAttributeObject,
       templateDocumentChoicesObject: state.documents.templateDocumentChoicesObject,
+      templateElementsByPage: state.documents.templateElementsByPage,
       // meta is for getting touched, active and visited for initialValue key
       // meta: getFormMeta('CreateEditDocument')(state)
     };
