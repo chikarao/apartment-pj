@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { reduxForm, Field, isDirty } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  isDirty,
+  getFormMeta
+} from 'redux-form';
 // gettting proptypes warning with isDirty
 // import { isDirty } from 'redux-form/immutable'
 import { connect } from 'react-redux';
@@ -89,6 +94,7 @@ class CreateEditDocument extends Component {
     this.handleMouseLeaveActionButtons = this.handleMouseLeaveActionButtons.bind(this);
     this.handleFontControlCloseClick = this.handleFontControlCloseClick.bind(this);
     this.handleShowFontControlBox = this.handleShowFontControlBox.bind(this);
+    this.handleUserInput = this.handleUserInput.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -145,28 +151,33 @@ class CreateEditDocument extends Component {
     }; // end of getLocalHistory
 
     let templateEditHistory = null;
-    // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
-    // templateEditHistory can be null in later code;
-    // all local state values set in constructor already
-    templateEditHistory = getLocalHistory();
-    // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
-    // calculate highestElementId for templateElementCount (for numbering element temporary ids)
-    if (templateEditHistory && templateEditHistory.elements) {
-      let highestElementId = 0;
-      _.each(Object.keys(templateEditHistory.elements), eachElementKey => {
-        // get the highest id to avoid duplicate element id after templateElements repopulated
-        highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
-        this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
-      }); // end of each elements
-      this.setState({ templateElementCount: highestElementId });
+    if (this.props.showTemplate) {
+      // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
+      // templateEditHistory can be null in later code;
+      // all local state values set in constructor already
+      // templateEditHistory = getLocalHistory();
+      // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
+      // calculate highestElementId for templateElementCount (for numbering element temporary ids)
+      if (templateEditHistory && templateEditHistory.elements) {
+        let highestElementId = 0;
+        _.each(Object.keys(templateEditHistory.elements), eachElementKey => {
+          // get the highest id to avoid duplicate element id after templateElements repopulated
+          highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+          this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
+        }); // end of each elements
+        this.setState({ templateElementCount: highestElementId });
+      }
+
+      console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
+      // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
+      // If there are elements persisted in backend DB, populate this.props.templateElements
+      if (this.props.agreement.document_fields.length > 0) {
+        this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
+      }
+
     }
 
-    console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
-    // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
-    // If there are elements persisted in backend DB, populate this.props.templateElements
-    if (this.props.agreement.document_fields.length > 0) {
-      this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
-    }
+    // window.addEventListener('onblur', this.handleUserInput);
 
     console.log('in create_edit_document, componentDidMount, this.props.agreement', this.props.agreement);
     if (this.props.bookingData) {
@@ -240,11 +251,14 @@ class CreateEditDocument extends Component {
   //   }
   // }
 
+
   componentWillUnmount() {
     // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
-    this.setLocalStorageHistory('componentWillUnmount')
+    this.setLocalStorageHistory('componentWillUnmount');
+    // window.removeEventListener('onBlur', this.handleUserInput);
+
     console.log('in create_edit_document, componentWillUnmount ');
   }
 
@@ -884,29 +898,65 @@ renderEachDocumentField(page) {
       // console.log('in create_edit_document, getMousePosition1, x, y', x, y);
       // Set state with count of elements and new element in app state in state.templateElements
       // const templateElementCount = this.state.templateElementCount;
+      const templateElementChoice = false;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
         createNewTemplateElementOn: false,
         // historyIndex: this.historyIndex + 1
       }, () => {
         // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
-        const templateElementAttributes = {
-          id: `${this.state.templateElementCount}a`,
-          left: `${x}%`,
-          top: `${y}%`,
-          page: parseInt(elementVal, 10),
-          name: 'name',
-          component: 'input',
-          width: '25%',
-          height: '1.6%',
-          type: 'text', // or 'string' if an input component
-          class_name: 'document-rectangle',
-          border_color: 'lightgray',
-          font_style: this.state.newFontObject.font_style,
-          font_weight: this.state.newFontObject.font_weight,
-          font_family: this.state.newFontObject.font_family,
-          font_size: this.state.newFontObject.font_size
-        };
+        let templateElementAttributes = {};
+        if (templateElementChoice) {
+          templateElementAttributes = {
+            id: `${this.state.templateElementCount}a`,
+            left: `${x}%`,
+            top: `${y}%`,
+            page: parseInt(elementVal, 10),
+            name: 'name',
+            component: 'DocumentChoices',
+            // component: 'input',
+            // width: '25%',
+            // height: '1.6%',
+            // type: 'text', // or 'string' if an input component
+            input_type: 'button', // or 'string' if an input component
+            class_name: 'document-rectangle-template',
+            border_color: 'lightgray',
+            // font_style: this.state.newFontObject.font_style,
+            // font_weight: this.state.newFontObject.font_weight,
+            // font_family: this.state.newFontObject.font_family,
+            // font_size: this.state.newFontObject.font_size,
+            document_field_choices: {
+              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '5.5%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+            }
+          };
+          // in get_initialvalues_object_important_points_explanation.js
+          // 0: { params: { val: 'Public Water', top: '66.7%', left: '17.3%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+          // 1: { params: { val: 'Tank', top: '66.7%', left: '23.3%', width: '6.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+          // 2: { params: { val: 'Well', top: '66.7%', left: '30%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+
+        } else {
+          templateElementAttributes = {
+            id: `${this.state.templateElementCount}a`,
+            left: `${x}%`,
+            top: `${y}%`,
+            page: parseInt(elementVal, 10),
+            name: 'name',
+            component: 'DocumentChoices',
+            // component: 'input',
+            width: '25%',
+            height: '1.6%',
+            input_type: 'text', // or 'string' if an input component
+            class_name: 'document-rectangle-template',
+            border_color: 'lightgray',
+            font_style: this.state.newFontObject.font_style,
+            font_weight: this.state.newFontObject.font_weight,
+            font_family: this.state.newFontObject.font_family,
+            font_size: this.state.newFontObject.font_size
+          };
+        }
+
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
         // const elementCopy = this.getNewElementObject(templateElementAttributes)
@@ -1053,7 +1103,7 @@ renderEachDocumentField(page) {
             }
           })
         }
-      } else {
+      } else { // if resize
         // get original width and height of element to subtract from or add to
         let originalWidth = parseFloat(element.style.width);
         let originalHeight = parseFloat(element.style.height);
@@ -1131,8 +1181,8 @@ renderEachDocumentField(page) {
             id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
             width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
             height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
-            oWidth: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
-            oHeight: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
+            o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
+            o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
             action: 'update',
           };
           // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
@@ -1207,6 +1257,7 @@ renderEachDocumentField(page) {
       // Place the one tab into an array
       tabs = [document.getElementById(`template-element-tab-${elementVal}`)];
     }
+    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElements, elementVal, ', inputElements, elementVal);
     // console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElements, tabs, ', inputElements, tabs);
     // gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
@@ -1224,13 +1275,176 @@ renderEachDocumentField(page) {
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
-    const noTabs = false;
+    let noTabs = false;
+    let newElement = false;
+    let inputElement = true;
     // if (this.props.documentFields[page]) {
-    let count = 1;
+    // let count = 1;
     if (!documentEmpty) {
       const { templateElements } = this.props;
       // Map through each element
-      return _.map(templateElements, eachElement => {
+      // return _.map(templateElements, eachElement => {
+      return _.map(this.props.templateDocumentChoicesObject[page], eachElement => {
+        if (eachElement.component == 'DocumentChoices') {
+          fieldComponent = DocumentChoices;
+        } else {
+          fieldComponent = eachElement.component;
+        }
+        console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+
+        // if (eachElement.page === page) {
+          const editTemplate = true;
+          // const width = parseInt(eachElement.width, 10)
+          const nullRequiredField = false;
+          const otherChoiceValues = [];
+          // count++;
+          // Wait until document-background class is rendered to enable some logic
+          const background = document.getElementById('document-background');
+          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.choices[0].params.element_id) !== -1;
+          // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
+          // Wait for the background to be rendered to get its dimensions
+          if (editTemplate && background) {
+            // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
+            // if (eachElement.document_field_choices) {
+            //   inputElement = false;
+            //   // const { document_field_choices } = eachElement;
+            //   // if document_field_choices first element does not have a top,
+            //   // it is a new element just created
+            //   // if (!eachElement.document_field_choice[0].top) {
+            //   //   newElement = true;
+            //   //   console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+            //   //
+            //   // }
+            // }
+            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
+            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.choices[0].params.width) / 100)
+            const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            const wrappingDivDocumentCreateH = parseFloat(eachElement.choices[0].params.height) / (parseFloat(eachElement.choices[0].params.height) + tabPercentOfContainerH);
+            // if ()
+            if (inputElement) {
+              return (
+                <div
+                  key={eachElement.choices[0].params.element_id}
+                  id={`template-element-${eachElement.choices[0].params.element_id}`}
+                  className="create-edit-document-template-element-container"
+                  style={{ top: eachElement.choices[0].params.top, left: eachElement.choices[0].params.left, width: eachElement.choices[0].params.width, height: `${parseFloat(eachElement.choices[0].params.height) + tabPercentOfContainerH}%` }}
+                >
+                  <Field
+                    key={eachElement.choices[0].params.name}
+                    name={eachElement.name}
+                    // id={`template-element-input-${eachElement.choices[0].params.element_id}`}
+                    // setting value here does not works unless its an <input or some native element
+                    // value='Bobby'
+                    component={fieldComponent}
+                    // pass page to custom compoenent, if component is input then don't pass
+                    // props={fieldComponent == DocumentChoices ? { page } : {}}
+                    props={fieldComponent == DocumentChoices ?
+                      {
+                        page,
+                        required: eachElement.required,
+                        nullRequiredField,
+                        formFields: newElement ? {} : this.props.templateDocumentChoicesObject,
+                        charLimit: eachElement.choices[0].params.charLimit,
+                        otherChoiceValues,
+                        documentKey: this.props.documentKey,
+                        editTemplate,
+                        wrappingDivDocumentCreateH,
+                        eachElement,
+                        elementName: eachElement.elementName
+                      }
+                      :
+                      {}}
+                    type={eachElement.choices[0].params.input_type}
+                    className={eachElement.choices[0].params.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
+                    // onBlur={this.handleUserInput}
+                    style={eachElement.choices[0].params.component == 'input' && editTemplate
+                      ?
+                      // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+                      // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
+                      // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
+                      {
+                        width: '100%',
+                        fontSize: eachElement.choices[0].params.font_size,
+                        fontFamily: eachElement.choices[0].params.font_family,
+                        fontStyle: eachElement.choices[0].params.font_style,
+                        fontWeight: eachElement.choices[0].params.font_weight,
+                        borderColor: eachElement.choices[0].params.border_color,
+                        margin: '0px !important',
+                        flex: '1 1 auto'
+                      }
+                      :
+                      {}
+                    }
+                  />
+                  <div
+                    id={`template-element-tab-${eachElement.choices[0].params.element_id}`}
+                    className="create-edit-document-template-element-edit-tab"
+                    style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
+                  >
+                    <i
+                      value={eachElement.choices[0].params.element_id}
+                      className="fas fa-check-circle"
+                      style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+                      onClick={this.handleTemplateElementCheckClick}
+                    >
+                    </i>
+                    <i
+                      value={eachElement.choices[0].params.element_id}
+                      className="fas fa-truck-moving"
+                      style={{ lineHeight: '1.5', color: 'gray' }}
+                      onMouseDown={this.handleTemplateElementMoveClick}
+                    >
+                    </i>
+                    <i
+                      type={eachElement.choices[0].params.input_type}
+                      value={eachElement.choices[0].params.element_id}
+                      className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+                      onMouseDown={this.handleTemplateElementChangeSizeClick}
+                    >
+                    </i>
+                  </div>
+                </div>
+              );
+            } // end of if editTemplate
+            if (noTabs) { // noTabs a placeholder for now
+              return (
+                <Field
+                  key={eachElement.name}
+                  name={eachElement.name}
+                  // setting value here does not works unless its an <input or some native element
+                  // value='Bobby'
+                  component={fieldComponent}
+                  // pass page to custom compoenent, if component is input then don't pass
+                  props={fieldComponent == DocumentChoices ? { page } : {}}
+                  // props={fieldComponent == DocumentChoices ? { page } : {}}
+                  type={eachElement.input_type}
+                  className={eachElement.component == 'input' ? 'document-rectangle' : ''}
+                  // className={eachElement.component == 'input' ? 'form-control' : ''}
+                  // className={eachElement.className}
+                  style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+                  // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+                />
+              );
+            } // end of if no tabs
+          }
+        // } // eachElement page === page
+      });
+    }
+    // end of if documentEmpty
+  }
+  renderTemplateElements1(page) {
+    const documentEmpty = _.isEmpty(this.props.documents);
+    let fieldComponent = '';
+    let noTabs = false;
+    let newElement = false;
+    let inputElement = true;
+    // if (this.props.documentFields[page]) {
+    // let count = 1;
+    if (!documentEmpty) {
+      const { templateElements } = this.props;
+      // Map through each element
+      // return _.map(templateElements, eachElement => {
+      return _.map(this.props.templateElements, eachElement => {
         if (eachElement.component == 'DocumentChoices') {
           fieldComponent = DocumentChoices;
         } else {
@@ -1240,17 +1454,36 @@ renderEachDocumentField(page) {
 
         if (eachElement.page === page) {
           const editTemplate = true;
-          const width = parseInt(eachElement.width, 10)
-          count++;
+          // const width = parseInt(eachElement.width, 10)
+          const nullRequiredField = false;
+          const otherChoiceValues = [];
+          // count++;
           // Wait until document-background class is rendered to enable some logic
           const background = document.getElementById('document-background');
           const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
-          console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
+          // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
+          // Wait for the background to be rendered to get its dimensions
           if (editTemplate && background) {
-            console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
+            // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
+            if (eachElement.document_field_choices) {
+              inputElement = false;
+              // const { document_field_choices } = eachElement;
+              // if document_field_choices first element does not have a top,
+              // it is a new element just created
+              if (!eachElement.document_field_choice[0].top) {
+                newElement = true;
+                console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+
+              }
+            }
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
             const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
+            // if ()
+            if (inputElement) {
+
+            }
             return (
               <div
                 key={eachElement.id}
@@ -1266,10 +1499,25 @@ renderEachDocumentField(page) {
                   // value='Bobby'
                   component={fieldComponent}
                   // pass page to custom compoenent, if component is input then don't pass
-                  props={fieldComponent == DocumentChoices ? { page } : {}}
-                  type={eachElement.type}
-                  className={eachElement.component == 'input' ? 'document-rectangle-template' : ''}
-
+                  // props={fieldComponent == DocumentChoices ? { page } : {}}
+                  props={fieldComponent == DocumentChoices ?
+                    {
+                      page,
+                      required: eachElement.required,
+                      nullRequiredField,
+                      formFields: newElement ? {} : this.props.templateDocumentChoicesObject,
+                      charLimit: eachElement.charLimit,
+                      otherChoiceValues,
+                      documentKey: this.props.documentKey,
+                      editTemplate,
+                      wrappingDivDocumentCreateH,
+                      eachElement
+                    }
+                    :
+                    {}}
+                  type={eachElement.input_type}
+                  className={eachElement.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
+                  // onBlur={this.handleUserInput}
                   style={eachElement.component == 'input' && editTemplate
                     ?
                     // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
@@ -1286,7 +1534,8 @@ renderEachDocumentField(page) {
                       flex: '1 1 auto'
                     }
                     :
-                    {}}
+                    {}
+                  }
                 />
                 <div
                   id={`template-element-tab-${eachElement.id}`}
@@ -1308,7 +1557,7 @@ renderEachDocumentField(page) {
                   >
                   </i>
                   <i
-                    type={eachElement.type}
+                    type={eachElement.input_type}
                     value={eachElement.id}
                     className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
                     onMouseDown={this.handleTemplateElementChangeSizeClick}
@@ -1329,7 +1578,7 @@ renderEachDocumentField(page) {
                 // pass page to custom compoenent, if component is input then don't pass
                 props={fieldComponent == DocumentChoices ? { page } : {}}
                 // props={fieldComponent == DocumentChoices ? { page } : {}}
-                type={eachElement.type}
+                type={eachElement.input_type}
                 className={eachElement.component == 'input' ? 'document-rectangle' : ''}
                 // className={eachElement.component == 'input' ? 'form-control' : ''}
                 // className={eachElement.className}
@@ -1338,7 +1587,7 @@ renderEachDocumentField(page) {
               />
             );
           } // end of if no tabs
-        }
+        } // eachElement page === page
       });
     }
     // end of if documentEmpty
@@ -1457,7 +1706,7 @@ renderEachDocumentField(page) {
             // can be deleted even when their update number is non-zero;
             // The only thing that matters is their deleted attribute
             returnObject[editObject.id].updated--;
-            if (returnObject[editObject.id].deleted === false && editObject.id.indexOf('a') === -1) delete returnObject[editObject.id];
+            if (returnObject[editObject.id].deleted === false && editObject.id.indexOf('a') === -1 && returnObject[editObject.id].updated === 0) delete returnObject[editObject.id];
           }
           if (redoOrUndo === 'redo') returnObject[editObject.id].updated++;
         }
@@ -1543,17 +1792,24 @@ renderEachDocumentField(page) {
       destringifiedHistory = JSON.parse(localStorageHistory);
     }
 
+    // Get an object like lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
+    // To be used
+    const modifiedObject = this.getModifiedObject(fromWhere);
+
+    // Save new elements not persisted in backend DB
+    // Go thorough each modifiedObject to become modifiedPersistedElementsObject
+    // lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
+    // Get ids of elements in modified object and get element from this.props.templateElements
     const unsavedTemplateElements = {};
+    // Run only if not called from handleTemplateSubmitCallback()
     if (fromWhere !== 'handleTemplateSubmitCallback') {
-      _.each(Object.keys(this.props.templateElements), eachElementKey => {
+      _.each(Object.keys(modifiedObject), eachElementKey => {
         // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
         if (eachElementKey.indexOf('a') !== -1) {
           unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
         }
       });
     }
-    // console.log('in create_edit_document, setLocalStorageHistory, unsavedTemplateElements: ', unsavedTemplateElements);
-    const modifiedObject = this.getModifiedObject(fromWhere);
 
     this.setState({
       modifiedPersistedElementsObject: modifiedObject
@@ -1595,10 +1851,9 @@ renderEachDocumentField(page) {
     };
     // For the newest rung of edits to be put into templateEditHistoryArray
     const array = [];
-    // const modifiedPersistedArray = [...this.state.modifiedPersistedElementsArray]
-    // const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject }
-    // get new history array since cannot modify state elements
-    const newArray = getNewExistingHistoryArray();
+    // get new history array since cannot modify state elements; Looks like spread operator is good enough
+    // const newArray = getNewExistingHistoryArray();
+    const newArray = [...this.state.templateEditHistoryArray];
     // iterate through each selected element ids
     // if there is no element in parameters, ie the action was based on selected elements
     if (!elementArray) {
@@ -1611,38 +1866,6 @@ renderEachDocumentField(page) {
           const modifiedElement = this.getNewElementObject(this.props.templateElements[eachSelectedId]);
           modifiedElement.action = action;
           array.push(modifiedElement);
-          // if the element is one persisted in backend DB,
-          // put in array for assignment to this.state.modifiedPersistedElementsArray
-          // if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
-          //   // Index somehow could not be put into one line with === -1
-          //   const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
-          //   if (index === -1) {
-          //     modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
-          //   }
-          // }
-          // OBJECT
-          // if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
-          //   console.log('in create_edit_document, in if key in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
-          //   if (action === 'update') {
-          //     modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
-          //   }
-          //
-          //   if (action === 'delete') {
-          //     modifiedPersistedObject[modifiedElement.id].deleted = true
-          //   }
-          // }
-
-          // if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) {
-          //   console.log('in create_edit_document, in if key not in object setTemplateHistoryArray, if !elementArray: ', action, elementArray);
-          //   modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
-          //   if (action === 'update') {
-          //     modifiedPersistedObject[modifiedElement.id].updated = 1
-          //   }
-          //
-          //   if (action === 'delete') {
-          //     modifiedPersistedObject[modifiedElement.id].deleted = true
-          //   }
-          // } // end of modifiedPersistedObject
         }
       });
     } else { // else there is an element e.g. new element
@@ -1651,65 +1874,27 @@ renderEachDocumentField(page) {
         const modifiedElement = this.getNewElementObject(eachElement);
         modifiedElement.action = action;
         array.push(modifiedElement);
-        // console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray.indexOf(parseInt(modifiedElement.id, 10) === -1): ', action, elementArray, modifiedPersistedArray, (modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10) === -1)));
-        // console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, action, elementArray, modifiedPersistedArray, parseInt(modifiedElement.id, 10), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10) === -1): ', action, elementArray, modifiedPersistedArray, parseInt(modifiedElement.id, 10), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10)), modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10) === -1), 0 === -1);
-        // if the element is one persisted in backend DB, and action is 'update'
-        // put in array for assignment to this.state.modifiedPersistedElementsArray
-        // if (modifiedElement.id.indexOf('a') === -1 && action === 'update') {
-        //   // Index somehow could not be put into one line with === -1
-        //   const index = modifiedPersistedArray.indexOf(parseInt(modifiedElement.id, 10));
-        //   if (index === -1) {
-        //     console.log('in create_edit_document, setTemplateHistoryArray, if else before setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
-        //     modifiedPersistedArray.push(parseInt(modifiedElement.id, 10));
-        //   }
-        // }
-
-        // OBJECT
-        // if (modifiedElement.id.indexOf('a') === -1 && modifiedPersistedObject[modifiedElement.id]) {
-        //   if (action === 'update') {
-        //     console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, has ID, update action, elementArray, this.state.modifiedPersistedElementsObject, type of object, : ', action, elementArray, this.state.modifiedPersistedElementsObject, typeof modifiedPersistedObject[modifiedElement.id].updated);
-        //     modifiedPersistedObject[modifiedElement.id].updated = modifiedPersistedObject[modifiedElement.id].updated + 1;
-        //   }
-        //
-        //   if (action === 'delete') {
-        //     modifiedPersistedObject[modifiedElement.id].deleted = true
-        //   }
-        // }
-
-        // if (modifiedElement.id.indexOf('a') === -1 && !modifiedPersistedObject[modifiedElement.id]) { // if id is not in modifiedPersistedObject
-        //   modifiedPersistedObject[modifiedElement.id] = { deleted: false, updated: 0 }
-        //   if (action === 'update') {
-        //     modifiedPersistedObject[modifiedElement.id].updated = 1
-        //   }
-        //
-        //   if (action === 'delete') {
-        //     modifiedPersistedObject[modifiedElement.id].deleted = true
-        //   }
-        // } // end of modifiedPersistedObject
       }); // end of each
     } // end of if else !elementArray
-    // console.log('in create_edit_document, handleTrashClick, array: ', array);
     // elements are deleted in logic in action and reducers, when sent an array of elements
     // elements are marked deleted in edit history in component state
     // splice(start) remove all elements after index start; start is INCLUSIVE
-    console.log('in create_edit_document, setTemplateHistoryArray, before setting state action, array: ', action, array);
     newArray.splice(this.state.historyIndex + 1);
     // if the new array equals MAX_HISTORY_ARRAY_LENGTH, drop the first element in the array
-    // to make room for new array
+    // to make room for new array; Not used effectively since max is set so high
     let droppedHistory = null;
     if (newArray.length >= MAX_HISTORY_ARRAY_LENGTH) droppedHistory = newArray.shift();
 
     // if action was to delete, empty out selectedTemplateElementIdArray and allElementsChecked false
     // templateEditHistoryArray gets a new shifted, splced array with a new rung of edits in an array
     this.setState({
-      selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray, // empty out selected elements array
-      allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length, // if action IS delete, all elements are not checked anymore
+      // empty out selected elements array
+      selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray,
+      // if action IS delete, all elements are not checked anymore
+      allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
       templateEditHistoryArray: [...newArray, array], // add new array of history
-      // modifiedPersistedElementsArray: modifiedPersistedArray,
-      // modifiedPersistedElementsObject: modifiedPersistedObject
     }, () => {
-      console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
-      // console.log('in create_edit_document, setTemplateHistoryArray, if else before after setState !elementArray, action, elementArray, this.state.modifiedPersistedElementsArray, : ', action, elementArray, this.state.modifiedPersistedElementsArray);
+      // console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
       this.setState({
         // !!!!! Index is set at End of array when user creates, deletes or updates (not in redo or undo)
         historyIndex: this.state.templateEditHistoryArray.length - 1,
@@ -1723,40 +1908,9 @@ renderEachDocumentField(page) {
 
   handleTrashClick() {
    if (this.state.selectedTemplateElementIdArray.length > 0) {
-    //  const array = [...this.state.modifiedPersistedElementsArray];
-    //  // const modifiedPersistedObject = { ...this.state.modifiedPersistedElementsObject };
-    //  // const array = this.setTemplateHistoryArray('delete');
-    //  // Go through each id in selectedTemplateElementIdArray and put them in an array
-    //  // if they do not have 'a' in the id (they are persisted in the DB so need to delete them
-    // // in the backend later when user saves work)
-    //  _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-    //    console.log('in create_edit_document, handleTrashClick, this.state.selectedTemplateElementIdArray, eachElementId: ', this.state.selectedTemplateElementIdArray, eachElementId);
-    //    // if (eachElementId.indexOf('a') === -1) {
-    //    //   // if id is already in the array as a modified element, take it out
-    //    //   // push a NEGATIVE integer id so as to
-    //    //   // distinguish from an update which is a positive number;
-    //    //   // NOTE: updated and deleted ids will stay together due to the complexity
-    //    //   // of keeping track of an element that has been updated, deleted and undone
-    //    //   array.push(-eachElementId);
-    //    // }
-    //    // if (eachElementId.indexOf('a') === -1 && modifiedPersistedObject[eachElementId]) {
-    //    //   modifiedPersistedObject[eachElementId].deleted = true;
-    //    // } else { // if id is not in modifiedPersistedObject
-    //    //   modifiedPersistedObject[eachElementId] = { deleted: false, updated: 0 };
-    //    //   modifiedPersistedObject[eachElementId].deleted = true;
-    //    // } // end of modifiedPersistedObject
-    //  });
-     // assign the array with deleted ids to state array
-     // this.setState({
-     //   modifiedPersistedElementsArray: array,
-       // modifiedPersistedElementsObject: modifiedPersistedObject
-     // }, () => {
-       // call delete in callback to setState so modifiedPersistedElementsArray is in state
-       // to be stringified in localStorage
-       this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => this.setTemplateHistoryArray(null, 'delete'));
-       // this.setState({ selectedTemplateElementIdArray: [] })
-       // console.log('in create_edit_document, handleTrashClick, this.state.modifiedPersistedElementsArray: ', this.state.modifiedPersistedElementsArray);
-     // });
+     // call setTemplateHistoryArray delete in callback to setState so modifiedPersistedElementsArray is in state
+     // to be stringified in localStorage
+     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => this.setTemplateHistoryArray(null, 'delete'));
    } // end of if selectedTemplateElementIdArray.length > 0
   }
 
@@ -1904,10 +2058,6 @@ renderEachDocumentField(page) {
           if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, font_size: clickedElement.value, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
           if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, font_weight: elementValue, o_font_weight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
           if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, font_style: elementValue, o_font_style: originalValueObject[eachElement.id].fontStyle, action: 'update' });
-          // const originalontWeight = eachElement.fontWeight === 'bold' ? 'normal' : elementValue;
-          // const originalontStyle = eachElement.fontStyle === 'italic' ? 'normal' : elementValue
-          // if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, fontWeight: eachElement.fontWeight === 'bold' ? 'normal' : elementValue, oFontWeight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
-          // if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, fontStyle: eachElement.fontStyle === 'italic' ? 'normal' : elementValue, oFontStyle: originalValueObject[eachElement.id].fontStyle, action: 'update' });
           if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) < 48 ? `${parseFloat(eachElement.font_size) + 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
           if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) > 8 ? `${parseFloat(eachElement.font_size) - 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
         }); // end of each
@@ -1924,7 +2074,7 @@ renderEachDocumentField(page) {
               [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             }
           }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
+            // console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
@@ -1936,17 +2086,14 @@ renderEachDocumentField(page) {
               [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             }
           }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if not all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
           });
         }
       } else { // else of if selectedTemplateElementIdArray.length > 0
-        console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, in else before turning on and off style and weight fontAttribute, elementVal, elementName, elementValue, clickedElement.value: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value);
         if (fontAttribute === 'fontWeight') elementValue = this.state.newFontObject.fontWeight === 'bold' ? 'normal' : elementValue;
         if (fontAttribute === 'fontStyle') elementValue = this.state.newFontObject.fontStyle === 'italic' ? 'normal' : elementValue
-        console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, in else no selected id fontAttribute, elementVal, elementName, elementValue, clickedElement.value: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value);
         // if there are NO elements selected turn override true so that
         // font button will show the attributes user wants for new element
         this.setState({
@@ -2020,32 +2167,15 @@ renderEachDocumentField(page) {
           deleteElement([lastActionArray[0].id])
           // Take the checked element ids out of selectedTemplateElementIdArray
           const newArray = [...this.state.selectedTemplateElementIdArray];
-          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
-
           // If element id is in selectedTemplateElementIdArray, take it out of the array
           const index = this.state.selectedTemplateElementIdArray.indexOf(lastActionArray[0].id);
 
           if (index !== -1) {
             newArray.splice(index, 1);
           }
-          // Push into array a NEGATIVE number to distinguish from update which is positive
-          // Parse into since existing ids can become strings when moved or resized in dragElement
-          // if (lastActionArray[0].id.indexOf('a') === -1) deletedPersistedArray.push(-parseInt(lastActionArray[0].id, 10));
-          //
-          // if (lastActionArray[0].id.indexOf('a') === -1 && modifiedPersistedObject[lastActionArray[0].id]) {
-          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          // }
-          //
-          // if (lastActionArray[0].id.indexOf('a') === -1 && !modifiedPersistedObject[lastActionArray[0].id]) { // if id is not in modifiedPersistedObject
-          //   modifiedPersistedObject[lastActionArray[0].id] = { deleted: false, updated: 0 };
-          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          // } // end of modifiedPersistedObject
 
           this.setState({
             selectedTemplateElementIdArray: newArray,
-            // modifiedPersistedElementsArray: deletedPersistedArray,
-            // modifiedPersistedElementsObject: modifiedPersistedObject
           });
         } // send array of id
         // No need to do logic for persisted elements since none are created just fetched from backend
@@ -2059,80 +2189,26 @@ renderEachDocumentField(page) {
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
-          // _.each(newLastAction, eachObject => {
-          //   modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated - 1;
-          //   if (modifiedPersistedObject[eachObject.id].deleted === false && modifiedPersistedObject[eachObject.id].updated === 0) {
-          //     delete modifiedPersistedObject[eachObject.id];
-          //   }
-          // })
-          // _.each(lastActionArray)
-          // if (lastActionArray[0].id.indexOf('a') === -1 && modifiedPersistedObject[lastActionArray[0].id]) {
-          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          // } else { // if id is not in modifiedPersistedObject
-          //   modifiedPersistedObject[lastActionArray[0].id] = { deleted: false, updated: 0 };
-          //   modifiedPersistedObject[lastActionArray[0].id].deleted = true;
-          // } // end of modifiedPersistedObject
-
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
-          // _.each(lastActionArray, eachObject => {
-          //   if (modifiedPersistedObject[eachObject.id]) {
-          //     modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated + 1;
-          //   } else {
-          //     modifiedPersistedObject[eachObject.id] = { deleted: false, updated: 0 };
-          //     modifiedPersistedObject[eachObject.id].updated = modifiedPersistedObject[eachObject.id].updated + 1;
-          //   }
-          // })
         }
-
-        // this.setState({ modifiedPersistedElementsObject: modifiedPersistedObject })
       }
 
       if (lastActionArray[0].action === 'delete') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         const newLastAction = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
-          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
-
           _.each(newLastAction, eachElement => {
-            // const modifiedElement = eachElement;
-            // delete modifiedElement.action;
             createElement(eachElement);
-            // const deletedPersistedIndex = deletedPersistedArray.indexOf(-parseInt(eachElement.id, 10));
-
-            // if (deletedPersistedIndex !== -1) {
-            //   deletedPersistedArray.splice(deletedPersistedIndex, 1);
-            // }
-
-            // if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
-            //   if (modifiedPersistedObject[eachElement.id].updated) {
-            //     modifiedPersistedObject[eachElement.id].deleted = false;
-            //   } else {
-            //     delete modifiedPersistedObject[eachElement.id];
-            //   }
-            // }
-
-            // if (eachElement.id.indexOf('a') === -1 && !modifiedPersistedObject[eachElement.id]) { // if id is not in modifiedPersistedObject
-            //   modifiedPersistedObject[eachElement.id] = { deleted: false, updated: 0 };
-            //   modifiedPersistedObject[eachElement.id].deleted = false;
-            // } // end of modifiedPersistedObject
           });
-
-          // this.setState({
-          //    modifiedPersistedElementsArray: deletedPersistedArray,
-          //    modifiedPersistedElementsObject: modifiedPersistedObject
-          //  });
         }
 
         if (doWhatNow === 'redo') {
           const elementsIdArray = [];
           const newArray = [...this.state.selectedTemplateElementIdArray];
-          // const deletedPersistedArray = [...this.state.modifiedPersistedElementsArray];
-          // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
           _.each(newLastAction, eachElement => {
             elementsIdArray.push(eachElement.id);
@@ -2141,22 +2217,11 @@ renderEachDocumentField(page) {
             if (index !== -1) {
               newArray.splice(index, 1);
             }
-            // deletedPersistedArray.push(-parseInt(eachElement.id, 10));
-
-            // if (eachElement.id.indexOf('a') === -1 && modifiedPersistedObject[eachElement.id]) {
-            //   modifiedPersistedObject[eachElement.id].deleted = true;
-            // }
-
-            // if (eachElement.id.indexOf('a') === -1 && !modifiedPersistedObject[eachElement.id]) { // if id is not in modifiedPersistedObject
-            //     modifiedPersistedObject[eachElement.id] = { deleted: false, updated: 0 };
-            //     modifiedPersistedObject[eachElement.id].deleted = true;
-            // } // end of modifiedPersistedObject
           });
+
           deleteElement(elementsIdArray);
           this.setState({
             selectedTemplateElementIdArray: newArray,
-            // modifiedPersistedElementsArray: deletedPersistedArray,
-            // modifiedPersistedElementsObject: modifiedPersistedObject
           });
         }
       }
@@ -2172,12 +2237,12 @@ renderEachDocumentField(page) {
           redoUndoAction(lastActionArray, doWhat)
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+            // console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
             this.setLocalStorageHistory('undo');
           })
         }
       } else { // else for if doWhat undo; else REDO
-        console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+        // console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
         // First increment historyIndex
         this.setState({
           historyIndex: this.state.historyIndex + 1
@@ -2185,7 +2250,7 @@ renderEachDocumentField(page) {
           // Get array of objects at historyIndex
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
-          console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+          // console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
           this.setLocalStorageHistory('redo')
         });
       }
@@ -2601,6 +2666,11 @@ renderEachDocumentField(page) {
     });
   }
 
+  handleUserInput(event) {
+    const blurredElement = event.target;
+    console.log('in create_edit_document, handleUserInput, blurredElement ', blurredElement);
+  }
+
   handleShowFontControlBox() {
     const fontControlBox = document.getElementById('create-edit-document-font-control-box')
     // 'Open' the font control box by setting display to 'block'
@@ -2617,7 +2687,10 @@ renderEachDocumentField(page) {
     const templateElementsLength = Object.keys(this.props.templateElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
-    const disableSave = !this.props.templateElements || _.isEmpty(this.state.modifiedPersistedElementsObject) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
+    // NOTE: disableSave does not work after saving since initialValues have to be updated
+    const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
+    // const enableSave = !this.props.templateElements || _.isEmpty(this.state.modifiedPersistedElementsObject) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
+    // disableSave = !this.props.formIsDirty;
     const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
@@ -2631,7 +2704,7 @@ renderEachDocumentField(page) {
 
     // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     // console.log('in create_edit_document, renderTemplateElementEditAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
-    console.log('in create_edit_document, renderTemplateElementEditAction, after each, onlyFontAttributeObject, this.state.newFontObject, this.state.selectedElementFontObject : ', onlyFontAttributeObject, this.state.newFontObject, this.state.selectedElementFontObject);
+    console.log('in create_edit_document, renderTemplateElementEditAction, this.props.formIsDirty : ', this.props.formIsDirty);
     // console.log('in create_edit_document, renderTemplateElementEditAction, this.state.selectedElementFontObject : ', this.state.selectedElementFontObject);
         // console.log('in create_edit_document, renderTemplateElementEditAction, after each, disableCheckAll : ', disableCheckAll);
     return (
@@ -3214,8 +3287,11 @@ function mapStateToProps(state) {
       agreements,
       documentInsertsAll: state.bookingData.documentInsertsAll,
       // isDirty: isDirty('CreateEditDocument')(state)
-      fontAttributeObject: state.documents.fontAttributeObject,
-      onlyFontAttributeObject: state.documents.onlyFontAttributeObject
+      // fontAttributeObject: state.documents.fontAttributeObject,
+      // onlyFontAttributeObject: state.documents.onlyFontAttributeObject,
+      templateDocumentChoicesObject: state.documents.templateDocumentChoicesObject,
+      // meta is for getting touched, active and visited for initialValue key
+      // meta: getFormMeta('CreateEditDocument')(state)
     };
   }
 

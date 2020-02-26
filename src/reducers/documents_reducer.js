@@ -124,6 +124,116 @@ export default function (state = {
     return object;
   }
 
+  function getDocumentChoicesObject(mappedElements) {
+    // mappedElements looks like { 1: { id: 1, width: 10, ...}}
+    const returnObject = {};
+    // const returnObject = { ...state.templateDocumentChoicesObject };
+    let object = {};
+    let page = null;
+    let name = null;
+    let element = null;
+    let count = 0;
+    _.each(Object.keys(mappedElements), eachIdKey => {
+      element = mappedElements[eachIdKey];
+      page = element.page;
+      console.log('in documents reducer, getDocumentChoicesObject, element: ', element);
+
+      object = {
+        name: element.name,
+        component: element.component,
+        borderColor: element.border_color,
+        // top: element.top,
+        // left: element.left,
+        // width: element.width,
+        // height: element.height,
+        choices: {
+          0: {
+            params: {
+              val: element.input_type === 'string' || element.input_type === 'text' ? 'inputFieldValue' : '',
+              top: element.top,
+              left: element.left,
+              width: element.width,
+              height: element.height,
+              font_size: element.font_size,
+              font_family: element.font_family,
+              font_style: element.font_style,
+              font_weight: element.font_weight,
+              // change from input componnet use document-rectange
+              // class_name: 'document-rectangle',
+              class_name: element.class_name,
+              // !!! height works only with px
+              input_type: element.input_type,
+              element_id: element.id
+            } // end of params
+          } // end of one choice
+        }, // end of choices
+        required: false
+      }; // end of object
+
+      if (element.document_field_choices) {
+        const { document_field_choices } = element;
+        const choices = {};
+        // const choiceObject = {};
+        console.log('in documents reducer, getDocumentChoicesObject, element, document_field_choices: ', element, document_field_choices);
+        _.each(Object.keys(document_field_choices), eachKey => {
+          console.log('in documents reducer, getDocumentChoicesObject, element, document_field_choices, eachKey: ', element, document_field_choices, eachKey);
+          choices[eachKey] = {};
+          if (element.input_type === 'boolean') {
+            choices[eachKey].valName = document_field_choices[eachKey].val ? 'Y' : 'N'
+          }
+
+          choices[eachKey].params = {
+              val: element.input_type === 'string' || element.input_type === 'text' ? 'inputFieldValue' : document_field_choices[eachKey].val,
+              // top: document_field_choices[eachKey].top,
+              // left: document_field_choices[eachKey].left,
+              // width: document_field_choices[eachKey].width,
+              // height: document_field_choices[eachKey].height,
+              font_size: document_field_choices[eachKey].font_size,
+              font_family: document_field_choices[eachKey].font_family,
+              font_style: document_field_choices[eachKey].font_style,
+              font_weight: document_field_choices[eachKey].font_weight,
+              // change from input componnet use document-rectange
+              // class_name: 'document-rectangle',
+              class_name: document_field_choices[eachKey].class_name,
+              // !!! height works only with px
+              input_type: document_field_choices[eachKey].input_type,
+              element_id: element.id
+            }; // end of params
+
+          // choices[eachKey] = choices;
+        }); // end of each
+        object.choices = choices;
+      }
+      // Enable multiple names on same page
+      if (returnObject[page]) {
+        // if element.name is already on the page, increment count and
+        if (returnObject[page][element.name]) {
+          count++;
+          name = `${element.name}_${count}`;
+        } else {
+          name = element.name;
+        }
+
+        returnObject[page][name] = object;
+      } else {
+        returnObject[page] = {};
+        if (returnObject[page][name]) {
+          count++;
+          name = `${element.name}_${count}`;
+          returnObject[page][name] = object;
+        } else {
+          count = 0;
+          name = element.name;
+          returnObject[page][name] = object;
+        }
+      }
+      object.elementName = name;
+    }); // end of each
+
+    console.log('in documents reducer, getDocumentChoicesObject, returnObject: ', returnObject);
+    return returnObject;
+  } // end of function
+
   let fontAttributeObject = null;
   let onlyFontAttributeObject = null;
 
@@ -137,25 +247,28 @@ export default function (state = {
       // and turn ids into strings and assign action: create
       const mapKeysObject = getMappedObjectWithStringIds(action.payload.array, action.payload.templateEditHistory, true);
       // Keep object with original values for elements persisted in backend to check for changes
-      const originalPersistedTemplateElements = mapKeysObject;
+      // const originalPersistedTemplateElements = mapKeysObject;
       // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject);
 
-      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject, originalPersistedTemplateElements };
+      const templateDocumentChoicesObject = getDocumentChoicesObject(mergedObject);
+      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, templateDocumentChoicesObject, mergedObject: ', templateDocumentChoicesObject, mergedObject);
+
+      return { ...state, templateElements: mergedObject, templateDocumentChoicesObject };
     }
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
       console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);
       // const newObject = {}
       // const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
-      fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
-      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      // fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
+      // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
       const mapKeysObject = getMappedObjectWithStringIds(action.payload.agreement.document_fields, true);
 
-      return { ...state, templateElements: mapKeysObject, fontAttributeObject, onlyFontAttributeObject };
+      return { ...state, templateElements: mapKeysObject };
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
@@ -164,10 +277,11 @@ export default function (state = {
       // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
-      fontAttributeObject = getElementFontAttributes(mergedObject);
-      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      // fontAttributeObject = getElementFontAttributes(mergedObject);
+      // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      const templateDocumentChoicesObject = getDocumentChoicesObject(mergedObject);
 
-      return { ...state, templateElements: mergedObject, fontAttributeObject, onlyFontAttributeObject };
+      return { ...state, templateElements: mergedObject, templateDocumentChoicesObject };
     }
 
     case DELETE_DOCUMENT_ELEMENT_LOCALLY: {
@@ -217,10 +331,12 @@ export default function (state = {
         newUpdateObject[eachElementId] = newObj;
       }); // end of each Object.keys actionPayloadMapped
 
-      fontAttributeObject = getElementFontAttributes(newUpdateObject)
-      onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY action.payload, newUpdateObject: ', action.payload, newUpdateObject);
+      // fontAttributeObject = getElementFontAttributes(newUpdateObject)
+      // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      const templateDocumentChoicesObject = getDocumentChoicesObject(newUpdateObject);
 
-      return { ...state, templateElements: newUpdateObject, fontAttributeObject, onlyFontAttributeObject };
+      return { ...state, templateElements: newUpdateObject, templateDocumentChoicesObject };
     }
 
     case SET_CREATE_DOCUMENT_KEY:

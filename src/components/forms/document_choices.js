@@ -33,8 +33,12 @@ class DocumentChoices extends Component {
     // if (nextProps.meta.initial != this.props.meta.initial) {
     //   this.props.editHistory({ action: 'dirtyFieldCount', count: 1 })
     // }
-    // console.log('DocumentChoices, shouldComponentUpdate nextProps.input, this.props.input', nextProps.input.value, this.props.input.value);
-    return nextProps.input.value != this.props.input.value;
+    console.log('DocumentChoices, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
+    let elementChanged = false;
+    let valueUpdated = false;
+    if (this.props.editTemplate) elementChanged = nextProps.eachElement !== this.props.eachElement
+    valueUpdated = nextProps.input.value != this.props.input.value
+    return elementChanged || valueUpdated;
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -96,12 +100,26 @@ class DocumentChoices extends Component {
 
   getStyleOfInputElement(value, choice) {
     let elementStyle = {};
-    // console.log('DocumentChoices, getStyleOfInputElement ');
+    console.log('DocumentChoices, getStyleOfInputElement, value, choice ', value, choice);
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.params.top, left: choice.params.left, borderColor: 'blue', width: choice.params.width };
       elementStyle = { borderColor: 'blue', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size, textAlign: choice.params.text_align };
     } else {
       elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.params.top, left: choice.params.left, width: choice.params.width, height: choice.params.height, fontSize: choice.params.font_size, textAlign: choice.params.text_align };
+    }
+
+    if (this.props.editTemplate) {
+      elementStyle = {
+          width: '100%',
+          height: '100%',
+          fontSize: choice.params.font_size,
+          fontFamily: choice.params.font_family,
+          fontStyle: choice.params.font_style,
+          fontWeight: choice.params.font_weight,
+          borderColor: choice.params.border_color,
+          margin: '0px !important',
+          flex: '1 1 auto'
+        };
     }
 
     return elementStyle;
@@ -234,7 +252,8 @@ class DocumentChoices extends Component {
         // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
         // override standard input props below
         onChange={this.handleInputChange}
-        id="valueInput"
+        // id="valueInput"
+        id={this.props.editTemplate ? `template-element-input-${choice.params.element_id}` : 'valueTextarea'}
         maxLength={this.props.charLimit}
         // value with this.state.inputValue is no longer need in RF v7.4.2;
         key={choice.params.val}
@@ -291,23 +310,26 @@ class DocumentChoices extends Component {
   }
 
   createTextareaElement({ choice, value, input }) {
-    console.log('DocumentChoices, createTextareaElement');
+    console.log('DocumentChoices, createTextareaElement choice, value, input', choice, value, input);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <textarea
           {...input}
-          id="valueTextarea"
+          id={this.props.editTemplate ? `template-element-input-${choice.params.element_id}` : 'valueTextarea'}
+          // id={'valueTextarea'}
           name={choice.params.name}
           maxLength={this.props.charLimit}
           // value={this.anyOfOtherValues(name, this.state.inputValue) ? '' : this.state.inputValue}
           // value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           // value={this.props.otherChoiceValues.includes(dirtyValue.toString().toLowerCase()) ? '' : dirtyValue}
           key={choice.params.val}
-          // onChange={this.handleInputChange.bind(this)}
+          onChange={this.handleInputChange.bind(this)}
           type={choice.params.input_type}
           onBlur={this.handleOnBlur}
           onFocus={this.handleOnFocus}
           className={choice.params.class_name}
+          // width={choice.params.width}
+          // height={choice.params.height}
           // style={{ borderColor: 'lightgray', top: choice.params.top, left: choice.params.left, width: choice.params.width }}
           style={this.getStyleOfInputElement(value, choice)}
         />
@@ -316,7 +338,7 @@ class DocumentChoices extends Component {
 
   renderEachChoice(choices) {
     const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
-    console.log('DocumentChoices, renderEachChoice name, value, input', name, value, input)
+    console.log('DocumentChoices, renderEachChoice name, value, input, this.props.', name, value, input, this.props)
     // console.log('DocumentChoices, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
@@ -348,10 +370,19 @@ class DocumentChoices extends Component {
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { name } } = this.props;
+    console.log('in document_choices, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields[this.props.page]);
+    if (this.props.editTemplate) {
+      return (
+        <div key={name} style={this.props.editTemplate ? { width: '100%', height: `${this.props.wrappingDivDocumentCreateH * 100}%` } : {}}>
+        {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementName].choices)}
+        </div>
+      );
+    }
+    // else return below
     return (
       <div key={name}>
-         {this.renderEachChoice(this.props.formFields[this.props.page][name].choices)}
-        </div>
+      {this.renderEachChoice(this.props.formFields[this.props.page][name].choices)}
+      </div>
     );
   }
 }
