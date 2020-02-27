@@ -82,17 +82,17 @@ class DocumentChoicesTemplate extends Component {
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
     console.log('DocumentChoicesTemplate, getStyleOfButton, name, value ', name, value);
     if ((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) && !choice.enclosed_text) {
-      elementStyle = { top: choice.top, left: choice.left, borderColor: 'black', width: choice.width };
+      elementStyle = { top: choice.top, left: choice.left, borderColor: 'black', width: choice.width, height: choice.height };
     } else {
-      elementStyle = { top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width };
+      elementStyle = { top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width, height: choice.height };
     }
 
     if (this.props.nullRequiredField && !value) {
-      elementStyle = { borderColor: 'blue', top: choice.top, left: choice.left, width: choice.width };
+      elementStyle = { borderColor: 'blue', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     if (inactive) {
-      elementStyle = { borderColor: 'transparent', top: choice.top, left: choice.left, width: choice.width };
+      elementStyle = { borderColor: 'transparent', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     return elementStyle;
@@ -171,16 +171,18 @@ class DocumentChoicesTemplate extends Component {
   createButtonElement({ choice, meta, onChange, value, name }) {
     console.log('DocumentChoicesTemplate, createButtonElement, name, choice, value', name, choice, value);
 
-    const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
+    // const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
+    const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][this.props.elementId].inactive);
     return (
       <div
         key={choice.val}
         type={choice.input_type}
+        id={`template-element-button-${choice.element_id}-${choice.choice_index}`}
         onClick={() => {
           // check if inactive key
           // console.log('DocumentChoicesTemplate, createButtonElement this.props.formFields[this.props.page][name]', this.props.formFields[this.props.page][name])
           if (!fieldInactive) {
-            if (value == choice.val && this.props.formFields[this.props.page][name].second_click_off) {
+            if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
               // this.setState({ enclosedText: '' });
               onChange('');
             } else {
@@ -193,11 +195,11 @@ class DocumentChoicesTemplate extends Component {
                 } else {
                   this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value);
                 }
-              } else if (this.props.formFields[this.props.page][name].degradationKey) {
+              } else if (this.props.formFields[this.props.page][this.props.elementId].degradationKey) {
                 // console.log('DocumentChoicesTemplate, createButtonElement degradationKey true')
                 this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
                 onChange(choice.val);
-                this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][name].wooden, meta, lastClickedValue: choice.val, name })
+                this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][this.props.elementId].wooden, meta, lastClickedValue: choice.val, name })
               } else {
                 // if no need to change other field values, just chnage own field value
                 this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
@@ -373,7 +375,14 @@ class DocumentChoicesTemplate extends Component {
     console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields);
     // if (this.props.editTemplate) {
     return (
-      <div key={name} style={this.props.editTemplate ? { width: '100%', height: `${this.props.wrappingDivDocumentCreateH * 100}%` } : {}}>
+      <div key={name} style={
+        {
+          // wrapping div fits the outer div to house inputs and buttons
+          width: '100%',
+          height: '100%',
+          // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
+        }}
+      >
         {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
       </div>
     );

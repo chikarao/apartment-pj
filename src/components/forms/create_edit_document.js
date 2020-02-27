@@ -1271,6 +1271,7 @@ renderEachDocumentField(page) {
     this.dragElement(element, tabs, inputElements, parentRect, callback, false, elementType, selectedElements);
   }
 
+
   // For creating new input fields
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
@@ -1278,13 +1279,15 @@ renderEachDocumentField(page) {
     let noTabs = false;
     let newElement = false;
     let inputElement = true;
+    let localTemplateElementsByPage = null;
 
     const renderTab = (eachElement, selected, tabLeftMarginPx) => {
+      const tabWidth = inputElement ? TAB_WIDTH : 55;
       return (
         <div
           id={`template-element-tab-${eachElement.id}`}
           className="create-edit-document-template-element-edit-tab"
-          style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
+          style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${tabLeftMarginPx}px` }}
         >
           <i
             value={eachElement.id}
@@ -1300,15 +1303,60 @@ renderEachDocumentField(page) {
             onMouseDown={this.handleTemplateElementMoveClick}
           >
           </i>
-          <i
-            type={eachElement.input_type}
-            value={eachElement.id}
-            className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
-            onMouseDown={this.handleTemplateElementChangeSizeClick}
-          >
-          </i>
+          {inputElement
+            ?
+            <i
+              type={eachElement.input_type}
+              value={eachElement.id}
+              className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+              onMouseDown={this.handleTemplateElementChangeSizeClick}
+            >
+          </i> : null}
         </div>
       );
+    };
+
+    const getLocalTemplateElementsByPage = (eachElement, box, backgroundDim, marginBetween, isNew) => {
+      const { document_field_choices } = eachElement;
+      const object = { [eachElement.page]: { [eachElement.id]: { choices: {} } } };
+      const choicesObject = object[eachElement.page][eachElement.id].choices;
+      let currentTop = '0%';
+      let top = 0;
+      console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
+
+      // choicesObj[eachElement.page][eachElement.id] = { choices: {} };
+      // const choicesObject = choicesObject[eachElement.page][eachElement.id].choices;
+
+        _.each(document_field_choices, (eachChoice, i) => {
+          // Convert NaN to zero
+          top = (currentTop / box.height) || 0;
+
+          choicesObject[i] = {};
+          choicesObject[i].val = eachChoice.val;
+
+          choicesObject[i].width = `${(parseFloat(eachChoice.width) / box.width) * 100}%`;
+          choicesObject[i].height = `${(parseFloat(eachChoice.height) / box.height) * 100}%`;
+          choicesObject[i].left = isNew ? '0.0%' : '0.0%';
+
+          // choicesObject[i].top = `${(currentTop / box.height) * 100}%`;
+          choicesObject[i].top = `${top * 100}%`;
+
+          choicesObject[i].class_name = eachChoice.class_name;
+          choicesObject[i].border_radius = eachChoice.border_radius;
+          choicesObject[i].border = eachChoice.border;
+          choicesObject[i].input_type = eachChoice.input_type;
+          choicesObject[i].choice_index = parseInt(i, 10);
+          choicesObject[i].element_id = eachElement.id;
+          choicesObject[i].name = eachElement.name;
+          // if (i === 0) {
+            // choicesObject[i].top = '0.0%';
+          // } else {
+          // }
+          currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
+        });
+
+        console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, object: ', object);
+        return object;
     };
     // if (this.props.documentFields[page]) {
     // let count = 1;
@@ -1342,8 +1390,11 @@ renderEachDocumentField(page) {
           if (editTemplate && background) {
             // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
-            let eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(modifiedElement.width) / 100)
-            const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(modifiedElement.width) / 100)
+            let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            if (eachElementWidthPx < TAB_WIDTH) {
+              tabLeftMarginPx = 0;
+            }
             let wrappingDivDocumentCreateH = parseFloat(modifiedElement.height) / (parseFloat(modifiedElement.height) + tabPercentOfContainerH);
 
             if (eachElement.document_field_choices) {
@@ -1372,6 +1423,7 @@ renderEachDocumentField(page) {
                 console.log('in create_edit_document, renderTemplateElements, eachElement, page, totalWidth, totalHeight: ', eachElement, page, totalWidth, totalHeight);
                 modifiedElement.width = `${totalWidth}%`;
                 modifiedElement.height = `${totalHeight}%`;
+                localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: totalWidth, height: totalHeight }, background.getBoundingClientRect(), marginBetween, true);
               } // end of if newElement
             } // end of if eachElement.document_field_choices
             // if ()
@@ -1465,12 +1517,83 @@ renderEachDocumentField(page) {
                   className="create-edit-document-template-element-container"
                   style={{ top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
                 >
-                <div
-                  key={modifiedElement.id}
-                  className="create-edit-document-template-element-container-choice-innner"
-                >
-                Hello
-                </div>
+                  <div
+                    key={modifiedElement.id}
+                    className="create-edit-document-template-element-container-choice-innner"
+                  >
+                  <Field
+                    key={modifiedElement.name}
+                    name={modifiedElement.name}
+                    // id={`template-element-buttons-box-${modifiedElement.choices[0].element_id}`}
+                    // setting value here does not works unless its an <input or some native element
+                    // value='Bobby'
+                    component={fieldComponent}
+                    // pass page to custom compoenent, if component is input then don't pass
+                    // props={fieldComponent == DocumentChoices ? { page } : {}}
+                    props={fieldComponent === DocumentChoicesTemplate ?
+                      {
+                        page,
+                        required: modifiedElement.required,
+                        nullRequiredField,
+                        formFields: !newElement
+                          ?
+                          // {}
+                          this.props.templateElementsByPage // doesn't have choices for input element
+                          :
+                          // create a templateElementsByPage with choices just for the input element
+                          localTemplateElementsByPage,
+                          // { [modifiedElement.page]: { [modifiedElement.id]:
+                          //   { choices: { 0: { val: 'inputFieldValue',
+                          //                     top: '50%',
+                          //                     left: '50%',
+                          //                     width: '50%',
+                          //                     height: '50%',
+                          //                     font_size: modifiedElement.font_size,
+                          //                     font_family: modifiedElement.font_family,
+                          //                     font_style: modifiedElement.font_style,
+                          //                     font_weight: modifiedElement.font_weight,
+                          //                     // change from input componnet use document-rectange
+                          //                     // class_name: 'document-rectangle',
+                          //                     class_name: modifiedElement.class_name,
+                          //                     // !!! height works only with px
+                          //                     input_type: modifiedElement.input_type,
+                          //                     element_id: modifiedElement.id
+                          //   } } } } },
+                        charLimit: modifiedElement.charLimit,
+                        otherChoiceValues,
+                        documentKey: this.props.documentKey,
+                        editTemplate,
+                        wrappingDivDocumentCreateH,
+                        modifiedElement,
+                        elementName: modifiedElement.name,
+                        elementId: modifiedElement.id
+                      }
+                      :
+                      {}}
+                    type={modifiedElement.input_type}
+                    className={modifiedElement.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
+                    // onBlur={this.handleUserInput}
+                    style={modifiedElement.component == 'input' && editTemplate
+                      ?
+                      // { width: modifiedElement.width, height: modifiedElement.height, borderColor: modifiedElement.borderColor, margin: '0px !important' }
+                      // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
+                      // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
+                      {
+                        width: '100%',
+                        fontSize: modifiedElement.font_size,
+                        fontFamily: modifiedElement.font_family,
+                        fontStyle: modifiedElement.font_style,
+                        fontWeight: modifiedElement.font_weight,
+                        borderColor: modifiedElement.border_color,
+                        margin: '0px !important',
+                        flex: '1 1 auto'
+                      }
+                      :
+                      {}
+                    }
+                  />
+                  </div>
+                  {renderTab(modifiedElement, selected, tabLeftMarginPx)}
                 </div>
               );
             }// end of if inputElement
@@ -1548,12 +1671,12 @@ renderEachDocumentField(page) {
             }
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
-            const tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             // if ()
-            if (inputElement) {
-
-            }
+            // if (inputElement) {
+            //
+            // }
             return (
               <div
                 key={eachElement.id}
