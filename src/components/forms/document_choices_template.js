@@ -23,7 +23,7 @@ class DocumentChoicesTemplate extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
+    // this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
   }
 
 
@@ -172,58 +172,58 @@ class DocumentChoicesTemplate extends Component {
     }
   }
 
-  dragChoice() {
-    // pos1 and 2 are for getting delta of pointer position;
-    // pos3 and 4 are for getting updated mouse position
-    let pos1 = 0;
-    let pos2 = 0;
-    let pos3 = 0;
-    let pos4 = 0;
+//   dragChoice() {
+//     // pos1 and 2 are for getting delta of pointer position;
+//     // pos3 and 4 are for getting updated mouse position
+//     let pos1 = 0;
+//     let pos2 = 0;
+//     let pos3 = 0;
+//     let pos4 = 0;
+//
+//     console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+//
+//     // CAll main function
+//     dragMouseDown();
+//
+//     function dragMouseDown(e) {
+//       e = e || window.event;
+//       e.preventDefault();
+//       console.log('in create_edit_document, dragChoice, dragMouseDown e, ', e);
+//       // get the mouse cursor position at startup:
+//       pos3 = e.clientX;
+//       pos4 = e.clientY;
+//       // assign close and drag callbacks to native handlers
+//       document.onmouseup = closeDragElement;
+//       // call a function whenever the cursor moves:
+//       document.onmousemove = elementDrag;
+//     }
+//
+//     function elementDrag(e) {
+//       e = e || window.event;
+//       e.preventDefault();
+//       // calculate the new cursor position:
+//       // pos 1 and 2 are deltas from the last round pos 3 and 4
+//       pos1 = pos3 - e.clientX;
+//       pos2 = pos4 - e.clientY;
+//       // set this round to use for next round in pos 1 and 2
+//       pos3 = e.clientX;
+//       pos4 = e.clientY;
+//
+//       console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+//     }
+//
+//     function closeDragElement() {
+//       // stop moving when mouse button is released:
+//       document.onmouseup = null;
+//       document.onmousemove = null;
+//       console.log('in create_edit_document, dragChoice, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
+//   }
+// }
 
-    console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
-
-    // CAll main function
-    dragMouseDown();
-
-    function dragMouseDown(e) {
-      e = e || window.event;
-      e.preventDefault();
-      console.log('in create_edit_document, dragChoice, dragMouseDown e, ', e);
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      // assign close and drag callbacks to native handlers
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // calculate the new cursor position:
-      // pos 1 and 2 are deltas from the last round pos 3 and 4
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      // set this round to use for next round in pos 1 and 2
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-
-      console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
-    }
-
-    function closeDragElement() {
-      // stop moving when mouse button is released:
-      document.onmouseup = null;
-      document.onmousemove = null;
-      console.log('in create_edit_document, dragChoice, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
-  }
-}
-
-  handleButtonTemplateElementMove(event) {
-    console.log('DocumentChoicesTemplate, handleButtonTemplateElementMove, event', event);
-    this.dragChoice();
-  }
+  // handleButtonTemplateElementMove(event) {
+  //   console.log('DocumentChoicesTemplate, handleButtonTemplateElementMove, event', event);
+  //   this.dragChoice();
+  // }
 
   createButtonElement({ choice, meta, onChange, value, name, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
@@ -279,7 +279,7 @@ class DocumentChoicesTemplate extends Component {
         type={choice.input_type}
         name={`${choice.element_id},${choice.choice_index}`}
         id={`template-element-button-${elementIdAndIndex}`}
-        onMouseDown={this.handleButtonTemplateElementMove}
+        onMouseDown={this.props.handleButtonTemplateElementMove(elementIdAndIndex)}
         className={choice.class_name}
         style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >

@@ -1322,10 +1322,10 @@ renderEachDocumentField(page) {
   }
 
   handleButtonTemplateElementMove(event) {
-    // const clickedElement = event.target;
-    // const elementName = clickedElement.getAttribute('name')
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
     // console.log('in create_edit_document, handleButtonTemplateElementMove, elementName, ', elementName);
-    console.log('in create_edit_document, handleButtonTemplateElementMove, event, ', event);
+    console.log('in create_edit_document, handleButtonTemplateElementMove, clickedElement, elementName, ', clickedElement, elementName);
     this.dragChoice();
   }
   // For creating new input fields
@@ -1623,7 +1623,7 @@ renderEachDocumentField(page) {
                         modifiedElement,
                         elementName: modifiedElement.name,
                         elementId: modifiedElement.id,
-                        // handleButtonTemplateElementMove: (a) => this.handleButtonTemplateElementMove(a),
+                        handleButtonTemplateElementMove: () => this.handleButtonTemplateElementMove,
                         editFieldsOn: this.state.editFieldsOn,
                         // dragChoice: () => this.dragChoice()
                       }
