@@ -96,6 +96,8 @@ class CreateEditDocument extends Component {
     this.handleFontControlCloseClick = this.handleFontControlCloseClick.bind(this);
     this.handleShowFontControlBox = this.handleShowFontControlBox.bind(this);
     this.handleUserInput = this.handleUserInput.bind(this);
+    this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
+    // this.dragChoice = this.dragChoice.bind(this);
   }
 
   // initialValues section implement after redux form v7.4.2 updgrade
@@ -1195,6 +1197,54 @@ renderEachDocumentField(page) {
       actionCallback(array);
     }
   }
+
+  dragChoice() {
+    // pos1 and 2 are for getting delta of pointer position;
+    // pos3 and 4 are for getting updated mouse position
+    let pos1 = 0;
+    let pos2 = 0;
+    let pos3 = 0;
+    let pos4 = 0;
+
+    console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+
+    // CAll main function
+    dragMouseDown();
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      console.log('in create_edit_document, dragChoice, dragMouseDown e, ', e);
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // assign close and drag callbacks to native handlers
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      // pos 1 and 2 are deltas from the last round pos 3 and 4
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      // set this round to use for next round in pos 1 and 2
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+
+      console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+    }
+
+    function closeDragElement() {
+      // stop moving when mouse button is released:
+      document.onmouseup = null;
+      document.onmousemove = null;
+      console.log('in create_edit_document, dragChoice, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
+  }
+}
   // Gets the actual elements (not just ids) of selected elements in handlers resize and mvoe
   getSelectedActualElements(elementIdString, ids) {
     const array = [];
@@ -1271,7 +1321,13 @@ renderEachDocumentField(page) {
     this.dragElement(element, tabs, inputElements, parentRect, callback, false, elementType, selectedElements);
   }
 
-
+  handleButtonTemplateElementMove(event) {
+    // const clickedElement = event.target;
+    // const elementName = clickedElement.getAttribute('name')
+    // console.log('in create_edit_document, handleButtonTemplateElementMove, elementName, ', elementName);
+    console.log('in create_edit_document, handleButtonTemplateElementMove, event, ', event);
+    this.dragChoice();
+  }
   // For creating new input fields
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
@@ -1566,7 +1622,10 @@ renderEachDocumentField(page) {
                         wrappingDivDocumentCreateH,
                         modifiedElement,
                         elementName: modifiedElement.name,
-                        elementId: modifiedElement.id
+                        elementId: modifiedElement.id,
+                        // handleButtonTemplateElementMove: (a) => this.handleButtonTemplateElementMove(a),
+                        editFieldsOn: this.state.editFieldsOn,
+                        // dragChoice: () => this.dragChoice()
                       }
                       :
                       {}}
@@ -1625,166 +1684,166 @@ renderEachDocumentField(page) {
     // end of if documentEmpty
   }
 
-  renderTemplateElements1(page) {
-    const documentEmpty = _.isEmpty(this.props.documents);
-    let fieldComponent = '';
-    let noTabs = false;
-    let newElement = false;
-    let inputElement = true;
-    // if (this.props.documentFields[page]) {
-    // let count = 1;
-    if (!documentEmpty) {
-      const { templateElements } = this.props;
-      // Map through each element
-      // return _.map(templateElements, eachElement => {
-      return _.map(this.props.templateElements, eachElement => {
-        if (eachElement.component == 'DocumentChoices') {
-          fieldComponent = DocumentChoices;
-        } else {
-          fieldComponent = eachElement.component;
-        }
-        console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
-
-        if (eachElement.page === page) {
-          const editTemplate = true;
-          // const width = parseInt(eachElement.width, 10)
-          const nullRequiredField = false;
-          const otherChoiceValues = [];
-          // count++;
-          // Wait until document-background class is rendered to enable some logic
-          const background = document.getElementById('document-background');
-          const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
-          // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
-          // Wait for the background to be rendered to get its dimensions
-          if (editTemplate && background) {
-            // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
-            if (eachElement.document_field_choices) {
-              inputElement = false;
-              // const { document_field_choices } = eachElement;
-              // if document_field_choices first element does not have a top,
-              // it is a new element just created
-              if (!eachElement.document_field_choices[0].top) {
-                newElement = true;
-                console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
-
-              }
-            }
-            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
-            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
-            let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
-            const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
-            // if ()
-            // if (inputElement) {
-            //
-            // }
-            return (
-              <div
-                key={eachElement.id}
-                id={`template-element-${eachElement.id}`}
-                className="create-edit-document-template-element-container"
-                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${parseFloat(eachElement.height) + tabPercentOfContainerH}%` }}
-              >
-                <Field
-                  key={eachElement.name}
-                  name={eachElement.name}
-                  id={`template-element-input-${eachElement.id}`}
-                  // setting value here does not works unless its an <input or some native element
-                  // value='Bobby'
-                  component={fieldComponent}
-                  // pass page to custom compoenent, if component is input then don't pass
-                  // props={fieldComponent == DocumentChoices ? { page } : {}}
-                  props={fieldComponent == DocumentChoices ?
-                    {
-                      page,
-                      required: eachElement.required,
-                      nullRequiredField,
-                      formFields: newElement ? {} : this.props.templateDocumentChoicesObject,
-                      charLimit: eachElement.charLimit,
-                      otherChoiceValues,
-                      documentKey: this.props.documentKey,
-                      editTemplate,
-                      wrappingDivDocumentCreateH,
-                      eachElement
-                    }
-                    :
-                    {}}
-                  type={eachElement.input_type}
-                  className={eachElement.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
-                  // onBlur={this.handleUserInput}
-                  style={eachElement.component == 'input' && editTemplate
-                    ?
-                    // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
-                    // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
-                    // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
-                    {
-                      width: '100%',
-                      fontSize: eachElement.font_size,
-                      fontFamily: eachElement.font_family,
-                      fontStyle: eachElement.font_style,
-                      fontWeight: eachElement.font_weight,
-                      borderColor: eachElement.border_color,
-                      margin: '0px !important',
-                      flex: '1 1 auto'
-                    }
-                    :
-                    {}
-                  }
-                />
-                <div
-                  id={`template-element-tab-${eachElement.id}`}
-                  className="create-edit-document-template-element-edit-tab"
-                  style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
-                >
-                  <i
-                    value={eachElement.id}
-                    className="fas fa-check-circle"
-                    style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
-                    onClick={this.handleTemplateElementCheckClick}
-                  >
-                  </i>
-                  <i
-                    value={eachElement.id}
-                    className="fas fa-truck-moving"
-                    style={{ lineHeight: '1.5', color: 'gray' }}
-                    onMouseDown={this.handleTemplateElementMoveClick}
-                  >
-                  </i>
-                  <i
-                    type={eachElement.input_type}
-                    value={eachElement.id}
-                    className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
-                    onMouseDown={this.handleTemplateElementChangeSizeClick}
-                  >
-                  </i>
-                </div>
-              </div>
-            );
-          } // end of if editTemplate
-          if (noTabs) { // noTabs a placeholder for now
-            return (
-              <Field
-                key={eachElement.name}
-                name={eachElement.name}
-                // setting value here does not works unless its an <input or some native element
-                // value='Bobby'
-                component={fieldComponent}
-                // pass page to custom compoenent, if component is input then don't pass
-                props={fieldComponent == DocumentChoices ? { page } : {}}
-                // props={fieldComponent == DocumentChoices ? { page } : {}}
-                type={eachElement.input_type}
-                className={eachElement.component == 'input' ? 'document-rectangle' : ''}
-                // className={eachElement.component == 'input' ? 'form-control' : ''}
-                // className={eachElement.className}
-                style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
-                // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
-              />
-            );
-          } // end of if no tabs
-        } // eachElement page === page
-      });
-    }
-    // end of if documentEmpty
-  }
+  // renderTemplateElements1(page) {
+  //   const documentEmpty = _.isEmpty(this.props.documents);
+  //   let fieldComponent = '';
+  //   let noTabs = false;
+  //   let newElement = false;
+  //   let inputElement = true;
+  //   // if (this.props.documentFields[page]) {
+  //   // let count = 1;
+  //   if (!documentEmpty) {
+  //     const { templateElements } = this.props;
+  //     // Map through each element
+  //     // return _.map(templateElements, eachElement => {
+  //     return _.map(this.props.templateElements, eachElement => {
+  //       if (eachElement.component == 'DocumentChoices') {
+  //         fieldComponent = DocumentChoices;
+  //       } else {
+  //         fieldComponent = eachElement.component;
+  //       }
+  //       console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+  //
+  //       if (eachElement.page === page) {
+  //         const editTemplate = true;
+  //         // const width = parseInt(eachElement.width, 10)
+  //         const nullRequiredField = false;
+  //         const otherChoiceValues = [];
+  //         // count++;
+  //         // Wait until document-background class is rendered to enable some logic
+  //         const background = document.getElementById('document-background');
+  //         const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
+  //         // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
+  //         // Wait for the background to be rendered to get its dimensions
+  //         if (editTemplate && background) {
+  //           // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
+  //           if (eachElement.document_field_choices) {
+  //             inputElement = false;
+  //             // const { document_field_choices } = eachElement;
+  //             // if document_field_choices first element does not have a top,
+  //             // it is a new element just created
+  //             if (!eachElement.document_field_choices[0].top) {
+  //               newElement = true;
+  //               console.log('in create_edit_document, renderTemplateElements, eachElement, page: ', eachElement, page);
+  //
+  //             }
+  //           }
+  //           const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
+  //           const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
+  //           let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+  //           const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
+  //           // if ()
+  //           // if (inputElement) {
+  //           //
+  //           // }
+  //           return (
+  //             <div
+  //               key={eachElement.id}
+  //               id={`template-element-${eachElement.id}`}
+  //               className="create-edit-document-template-element-container"
+  //               style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${parseFloat(eachElement.height) + tabPercentOfContainerH}%` }}
+  //             >
+  //               <Field
+  //                 key={eachElement.name}
+  //                 name={eachElement.name}
+  //                 id={`template-element-input-${eachElement.id}`}
+  //                 // setting value here does not works unless its an <input or some native element
+  //                 // value='Bobby'
+  //                 component={fieldComponent}
+  //                 // pass page to custom compoenent, if component is input then don't pass
+  //                 // props={fieldComponent == DocumentChoices ? { page } : {}}
+  //                 props={fieldComponent == DocumentChoices ?
+  //                   {
+  //                     page,
+  //                     required: eachElement.required,
+  //                     nullRequiredField,
+  //                     formFields: newElement ? {} : this.props.templateDocumentChoicesObject,
+  //                     charLimit: eachElement.charLimit,
+  //                     otherChoiceValues,
+  //                     documentKey: this.props.documentKey,
+  //                     editTemplate,
+  //                     wrappingDivDocumentCreateH,
+  //                     eachElement
+  //                   }
+  //                   :
+  //                   {}}
+  //                 type={eachElement.input_type}
+  //                 className={eachElement.component == 'input' ? 'document-rectangle-template' : 'document-rectangle-template'}
+  //                 // onBlur={this.handleUserInput}
+  //                 style={eachElement.component == 'input' && editTemplate
+  //                   ?
+  //                   // { width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' }
+  //                   // flex: flex-grow, flex-shrink , flex-basis; flex basis sets initial length of flexible item.
+  //                   // user flex: 1 and take out height: auto; later get the actual size of the input when resize drag
+  //                   {
+  //                     width: '100%',
+  //                     fontSize: eachElement.font_size,
+  //                     fontFamily: eachElement.font_family,
+  //                     fontStyle: eachElement.font_style,
+  //                     fontWeight: eachElement.font_weight,
+  //                     borderColor: eachElement.border_color,
+  //                     margin: '0px !important',
+  //                     flex: '1 1 auto'
+  //                   }
+  //                   :
+  //                   {}
+  //                 }
+  //               />
+  //               <div
+  //                 id={`template-element-tab-${eachElement.id}`}
+  //                 className="create-edit-document-template-element-edit-tab"
+  //                 style={{ height: `${TAB_HEIGHT}px`, width: `${TAB_WIDTH}px`, marginLeft: `${tabLeftMarginPx}px` }}
+  //               >
+  //                 <i
+  //                   value={eachElement.id}
+  //                   className="fas fa-check-circle"
+  //                   style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+  //                   onClick={this.handleTemplateElementCheckClick}
+  //                 >
+  //                 </i>
+  //                 <i
+  //                   value={eachElement.id}
+  //                   className="fas fa-truck-moving"
+  //                   style={{ lineHeight: '1.5', color: 'gray' }}
+  //                   onMouseDown={this.handleTemplateElementMoveClick}
+  //                 >
+  //                 </i>
+  //                 <i
+  //                   type={eachElement.input_type}
+  //                   value={eachElement.id}
+  //                   className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+  //                   onMouseDown={this.handleTemplateElementChangeSizeClick}
+  //                 >
+  //                 </i>
+  //               </div>
+  //             </div>
+  //           );
+  //         } // end of if editTemplate
+  //         if (noTabs) { // noTabs a placeholder for now
+  //           return (
+  //             <Field
+  //               key={eachElement.name}
+  //               name={eachElement.name}
+  //               // setting value here does not works unless its an <input or some native element
+  //               // value='Bobby'
+  //               component={fieldComponent}
+  //               // pass page to custom compoenent, if component is input then don't pass
+  //               props={fieldComponent == DocumentChoices ? { page } : {}}
+  //               // props={fieldComponent == DocumentChoices ? { page } : {}}
+  //               type={eachElement.input_type}
+  //               className={eachElement.component == 'input' ? 'document-rectangle' : ''}
+  //               // className={eachElement.component == 'input' ? 'form-control' : ''}
+  //               // className={eachElement.className}
+  //               style={eachElement.component == 'input' ? { position: 'absolute', top: `${eachElement.top * 100}%`, left: `${eachElement.left * 100}%`, width: eachElement.width, height: eachElement.height, borderColor: eachElement.borderColor, margin: '0px !important' } : {}}
+  //               // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
+  //             />
+  //           );
+  //         } // end of if no tabs
+  //       } // eachElement page === page
+  //     });
+  //   }
+  //   // end of if documentEmpty
+  // }
 
   renderEachDocumentTranslation(page) {
     // only render document translations when !showDocumentPdf
@@ -2451,6 +2510,12 @@ renderEachDocumentField(page) {
 
     console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementIdArray: ', clickedElement, elementVal, this.state.selectedTemplateElementIdArray);
       switch (elementVal) {
+        case 'editFields':
+          this.setState({ editFieldsOn: !this.state.editFieldsOn }, () => {
+            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
+          })
+          break;
+
         case 'vertical':
           align(elementVal);
           break;
@@ -2891,6 +2956,7 @@ renderEachDocumentField(page) {
     // const saveButtonActive = this.state.templateEditHistoryArray.length > 0;
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
+    const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
     // let onlyFontAttributeObject = this.state.newFontObject;
     // if (this.state.newFontObject.override) onlyFontAttributeObject = this.state.newFontObject;
 
@@ -2913,7 +2979,7 @@ renderEachDocumentField(page) {
           name="Create a new field,top"
           value="newField"
         >
-          <i value="newField" name="Create a new field,top" className="far fa-edit"></i>
+          <i value="newField" name="Create a new field,top" className="fas fa-plus-circle"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -2932,10 +2998,11 @@ renderEachDocumentField(page) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          name="This is a placeholder,top"
-          value="checkAll"
+          onClick={this.handleTemplateElementActionClick}
+          name="Edit document fields,top"
+          value="editFields"
         >
-          <i value="checkAll" onMouseOver={this.handleMouseOverActionButtons} name="Check all fields,bottom" style={{ fontSize: '15px', color: disableCheckAll ? 'gray' : 'blue' }} className="fas fa-check"></i>
+          <i value="editFields" onMouseOver={this.handleMouseOverActionButtons} name="Edit document fields,top" style={{ fontSize: '17px', color: disableEditFields ? 'gray' : 'blue' }} className="far fa-edit"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
