@@ -37,12 +37,16 @@ class DocumentChoicesTemplate extends Component {
     console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
     let elementChanged = false;
     let valueUpdated = false;
+    let choiceSelectedUnselected = false;
+    if (this.props.selectedChoiceIdArray) {
+      choiceSelectedUnselected = this.props.selectedChoiceIdArray.length !== nextProps.selectedChoiceIdArray.length;
+    }
 
     const editFieldOnChanged = nextProps.editFieldsOn !== this.props.editFieldsOn;
 
     if (this.props.editTemplate) elementChanged = nextProps.eachElement !== this.props.eachElement
     valueUpdated = nextProps.input.value != this.props.input.value;
-    return elementChanged || valueUpdated || editFieldOnChanged;
+    return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -84,7 +88,7 @@ class DocumentChoicesTemplate extends Component {
     let elementStyle = {};
 
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
-    console.log('DocumentChoicesTemplate, getStyleOfButton, name, value ', name, value);
+    console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
     if ((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) && !choice.enclosed_text) {
       elementStyle = { top: choice.top, left: choice.left, borderColor: 'black', width: choice.width, height: choice.height };
     } else {
@@ -97,6 +101,10 @@ class DocumentChoicesTemplate extends Component {
 
     if (inactive) {
       elementStyle = { borderColor: 'transparent', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
+    }
+
+    if (this.props.selectedChoiceIdArray.indexOf(`${choice.element_id}-${choice.choice_index}`) !== -1) {
+      elementStyle = { borderColor: 'green', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     return elementStyle;
@@ -266,10 +274,6 @@ class DocumentChoicesTemplate extends Component {
       // }
     }
 
-    const handleDrag = () => {
-      console.log('DocumentChoicesTemplate, createButtonElement, handleDrag', handleDrag);
-      this.props.dragChoice();
-    }
     // const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
     const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][this.props.elementId].inactive);
     if (this.props.editFieldsOn) {
@@ -279,7 +283,8 @@ class DocumentChoicesTemplate extends Component {
         type={choice.input_type}
         name={`${choice.element_id},${choice.choice_index}`}
         id={`template-element-button-${elementIdAndIndex}`}
-        onMouseDown={this.props.handleButtonTemplateElementMove(elementIdAndIndex)}
+        onMouseDown={this.props.handleButtonTemplateElementMove()}
+        onClick={this.props.handleButtonTemplateElementClick()}
         className={choice.class_name}
         style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >
@@ -287,6 +292,7 @@ class DocumentChoicesTemplate extends Component {
         </div>
       );
     }
+    // else editFieldsOn
     return (
       <div
         key={choice.val}

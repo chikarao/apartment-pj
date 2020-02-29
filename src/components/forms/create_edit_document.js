@@ -38,6 +38,8 @@ const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared
 let explanationTimerArray = [];
+let choiceTimerArray = [];
+let mouseUp = false;
 // let explanationTimer = 0;
 
 class CreateEditDocument extends Component {
@@ -74,7 +76,8 @@ class CreateEditDocument extends Component {
       // modifiedPersistedElementsArray is for elements that have been persisted in backend DB
       // modifiedPersistedElementsArray: [],
       modifiedPersistedElementsObject: {},
-      originalPersistedTemplateElements: {}
+      originalPersistedTemplateElements: {},
+      selectedChoiceIdArray: [],
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -97,6 +100,7 @@ class CreateEditDocument extends Component {
     this.handleShowFontControlBox = this.handleShowFontControlBox.bind(this);
     this.handleUserInput = this.handleUserInput.bind(this);
     this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
+    this.handleButtonTemplateElementClick = this.handleButtonTemplateElementClick.bind(this);
     // this.dragChoice = this.dragChoice.bind(this);
   }
 
@@ -1206,7 +1210,7 @@ renderEachDocumentField(page) {
     let pos3 = 0;
     let pos4 = 0;
 
-    console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+    console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
 
     // CAll main function
     dragMouseDown();
@@ -1235,7 +1239,7 @@ renderEachDocumentField(page) {
       pos3 = e.clientX;
       pos4 = e.clientY;
 
-      console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
+      console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     }
 
     function closeDragElement() {
@@ -1321,13 +1325,101 @@ renderEachDocumentField(page) {
     this.dragElement(element, tabs, inputElements, parentRect, callback, false, elementType, selectedElements);
   }
 
+  handleButtonTemplateElementClick(event) {
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    const elementId = elementName.split(',')[0];
+    const choiceIndex = elementName.split(',')[1];
+    console.log('in create_edit_document, handleButtonTemplateElementClick, clickedElement, elementName, elementId, choiceIndex, ', clickedElement, elementName, elementId, choiceIndex);
+
+    if (this.state.selectedChoiceIdArray.indexOf(`${elementId}-${choiceIndex}`) === -1) {
+      this.setState({ selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`] }, () => {
+        console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
+        // window.removeEventListener('mouseup', mouseUpFunc);
+      });
+    } else {
+      const newArray = [...this.state.selectedChoiceIdArray];
+      const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
+      newArray.splice(index, 1);
+      this.setState({ selectedChoiceIdArray: newArray }, () => {
+        console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
+        // window.removeEventListener('mouseup', mouseUpFunc);
+      });
+    }
+  }
+
   handleButtonTemplateElementMove(event) {
+    // const setChoiceTimer = (time, callback) => {
+    //   const lapseTime = () => {
+    //     if (subTimer > 0) {
+    //       subTimer--;
+    //       console.log('in create_edit_document, handleButtonTemplateElementMove, setChoiceTimer, subTimer > 0: ', subTimer);
+    //     } else {
+    //       // when subtimer is 0, assign typing timer at 0
+    //       subTimer = 0;
+    //       console.log('in create_edit_document, handleButtonTemplateElementMove, setChoiceTimer, subTimer == 0: ', subTimer);
+    //       // this.setState({ actionExplanationObject: null });
+    //       callback();
+    //       // clearInterval(timerId);
+    //       this.setState({ choiceDragArray: [] })
+    //     }
+    //   };
+    //   let subTimer = time;
+    //   // timerId variable is assigned an integer id
+    //   const timerId = setInterval(lapseTime, 1000);
+    //   choiceTimerArray.push(timerId);
+    // }
+    //
+    // function sleep(milliseconds) {
+    //   const date = Date.now();
+    //   let currentDate = null;
+    //   do {
+    //     currentDate = Date.now();
+    //     console.log('in create_edit_document, handleButtonTemplateElementMove, sleep, currentDate, ', currentDate);
+    //   } while (currentDate - date < milliseconds);
+    // }
+
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
     // console.log('in create_edit_document, handleButtonTemplateElementMove, elementName, ', elementName);
-    console.log('in create_edit_document, handleButtonTemplateElementMove, clickedElement, elementName, ', clickedElement, elementName);
-    this.dragChoice();
+    const elementId = elementName.split(',')[0];
+    const choiceIndex = elementName.split(',')[1];
+    console.log('in create_edit_document, handleButtonTemplateElementMove, clickedElement, elementName, elementId, choiceIndex, ', clickedElement, elementName, elementId, choiceIndex);
+
+    // const callback = () => {
+    //   this.dragChoice();
+    // }
+    // setChoiceTimer(1, callback);
+    // this.dragChoice();
+    // let mouseUp = false;
+    // const mouseUpFunc = (e) => {
+    //   mouseUp = true;
+    //   console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, mouse is up!!!, e, mouseUp, ', e, mouseUp);
+    //   if (this.state.selectedChoiceIdArray.indexOf(`${elementId}-${choiceIndex}`) === -1) {
+    //     this.setState({ selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`] }, () => {
+    //       console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
+    //       window.removeEventListener('mouseup', mouseUpFunc);
+    //     });
+    //   } else {
+    //     const newArray = [...this.state.selectedChoiceIdArray];
+    //     const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
+    //     newArray.splice(index, 1);
+    //     this.setState({ selectedChoiceIdArray: newArray }, () => {
+    //       console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
+    //       window.removeEventListener('mouseup', mouseUpFunc);
+    //     });
+    //   }
+    // };
+
+    // window.addEventListener('mouseup', mouseUpFunc);
+    // sleep(1000);
+    // if (!mouseUp) {
+      console.log('in create_edit_document, handleButtonTemplateElementMove, in if !mouseUp, mouseUp, this.state.selectedChoiceIdArray, ', mouseUp, this.state.selectedChoiceIdArray);
+      this.dragChoice();
+      // window.removeEventListener('mouseup', mouseUpFunc);
+    // }
   }
+
   // For creating new input fields
   renderTemplateElements(page) {
     const documentEmpty = _.isEmpty(this.props.documents);
@@ -1624,7 +1716,9 @@ renderEachDocumentField(page) {
                         elementName: modifiedElement.name,
                         elementId: modifiedElement.id,
                         handleButtonTemplateElementMove: () => this.handleButtonTemplateElementMove,
+                        handleButtonTemplateElementClick: () => this.handleButtonTemplateElementClick,
                         editFieldsOn: this.state.editFieldsOn,
+                        selectedChoiceIdArray: this.state.selectedChoiceIdArray
                         // dragChoice: () => this.dragChoice()
                       }
                       :
