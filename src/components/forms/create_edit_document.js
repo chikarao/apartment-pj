@@ -933,9 +933,9 @@ renderEachDocumentField(page) {
             // font_family: this.state.newFontObject.font_family,
             // font_size: this.state.newFontObject.font_size,
             document_field_choices: {
-              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
             }
           };
           // in get_initialvalues_object_important_points_explanation.js
@@ -1095,6 +1095,7 @@ renderEachDocumentField(page) {
       // console.log('in create_edit_document, dragElement, pos3, pos4, parentRect, move ', pos3, pos4, parentRect, move);
       // set the element's new position:
       // In percentages; Assign to element.
+      // offsetTop returns the distance of the current element relative to the top of the offsetParent node
       if (move) {
         const modifiedElement = element;
         modifiedElement.style.top = `${((element.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
@@ -1202,7 +1203,7 @@ renderEachDocumentField(page) {
     }
   }
 
-  dragChoice() {
+  dragChoice(choiceButton, otherChoicesArray, wrapperDiv, wrapperDivDimensions, backgroundDimensions) {
     // pos1 and 2 are for getting delta of pointer position;
     // pos3 and 4 are for getting updated mouse position
     let pos1 = 0;
@@ -1210,8 +1211,25 @@ renderEachDocumentField(page) {
     let pos3 = 0;
     let pos4 = 0;
 
-    console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
+    let pos2Cumul = 0;
+    let pos1Cumul = 0;
 
+    console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
+    let newWrapperDivDimensions = null;
+    const choiceButtonHeightInPx = (parseFloat(choiceButton.style.height) / 100) * wrapperDivDimensions.height;
+    const choiceButtonWidthInPx = (parseFloat(choiceButton.style.width) / 100) * wrapperDivDimensions.width;
+    const otherChoicesObject = {};
+    _.each(otherChoicesArray, (each, i) => {
+      otherChoicesObject[i] = {};
+      otherChoicesObject[i].widthInPx = (parseFloat(each.style.width) / 100) * wrapperDivDimensions.width;
+      otherChoicesObject[i].heightInPx = (parseFloat(each.style.height) / 100) * wrapperDivDimensions.height;
+      otherChoicesObject[i].originalTopInPx = (parseFloat(each.style.top) / 100) * wrapperDivDimensions.height;
+      otherChoicesObject[i].originalLeftInPx = (parseFloat(each.style.left) / 100) * wrapperDivDimensions.width;
+      otherChoicesObject[i].element = each;
+    });
+
+    let wrapperDivSizeAdjustmentH = 1;
+    let wrapperDivSizeAdjustmentW = 1;
     // CAll main function
     dragMouseDown();
 
@@ -1238,8 +1256,63 @@ renderEachDocumentField(page) {
       // set this round to use for next round in pos 1 and 2
       pos3 = e.clientX;
       pos4 = e.clientY;
+      // to deal with NaN do || 0
+      pos2Cumul = pos2Cumul || 0;
+      pos1Cumul = pos1Cumul || 0;
 
-      console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
+      pos2Cumul += pos2;
+      pos1Cumul += pos1;
+
+      console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4, pos2Cumul, pos1Cumul ', pos1, pos2, pos3, pos4, pos2Cumul, pos1Cumul);
+      // console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4, choiceButton.offsetTop ', pos1, pos2, pos3, pos4, choiceButton.offsetTop);
+      // console.log('in create_edit_document, dragChoice, elementDrag, choiceButton, otherChoicesArray, wrapperDiv, wrapperDivDimensions, backgroundDimensions ', choiceButton, otherChoicesArray, wrapperDiv, wrapperDivDimensions, backgroundDimensions);
+      const modifiedChoiceButton = choiceButton;
+      const modifiedwrapperDiv = wrapperDiv;
+      // console.log('in create_edit_document, dragChoice, elementDrag, modifiedwrapperDiv, modifiedwrapperDiv.height, parseFloat(modifiedwrapperDiv.height) / 100, backgroundDimensions.height, pos2, backgroundDimensions.height  ', modifiedwrapperDiv, modifiedwrapperDiv.height, parseFloat(modifiedwrapperDiv.height) / 100, backgroundDimensions.height, pos2, backgroundDimensions.height);
+      // resize wrapper div if any of the choice button hits sides
+      newWrapperDivDimensions = modifiedwrapperDiv.getBoundingClientRect()
+      wrapperDivSizeAdjustmentH = wrapperDivDimensions.height / newWrapperDivDimensions.height;
+      // If there is vertical movement
+      if (pos2 !== 0) {
+        // if there is no more px between top of wrapperDiv and choiceButton
+        if (choiceButton.offsetTop <= 0) {
+          modifiedwrapperDiv.style.height = `${((newWrapperDivDimensions.height + pos2) / backgroundDimensions.height) * 100}%`;
+          modifiedwrapperDiv.style.top = `${((((parseFloat(modifiedwrapperDiv.style.top) / 100) * backgroundDimensions.height) - pos2) / backgroundDimensions.height) * 100}%`;
+          // modifiedChoiceButton.style.top = `${((modifiedChoiceButton.offsetTop - pos2) / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+          modifiedChoiceButton.style.top = '0%';
+          modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+          // Adjust height of other buttons since the wrapper div height will change
+          _.each(Object.keys(otherChoicesObject), eachIndex => {
+            console.log('in create_edit_document, dragChoice, elementDrag, if (pos2 !== 0) otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul);
+            otherChoicesObject[eachIndex].element.style.height = `${(otherChoicesObject[eachIndex].heightInPx / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+            otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx + pos2Cumul) / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+          })
+        } else { // else if offsetTop <== 0
+          modifiedChoiceButton.style.top = `${((((parseFloat(modifiedChoiceButton.style.top) / 100) * newWrapperDivDimensions.height) - pos2) / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+        }
+      } // end of if pos2 !== 0
+
+      if (pos1 !== 0) {
+        console.log('in create_edit_document, dragChoice, before if pos1 !== 0 elem pos1, pos2, pos3, pos4, pos1Cumul, pos2Cumul, pos1 !== 0, choiceButton.offsetLeft ', pos1, pos2, pos3, pos4, pos1Cumul, pos2Cumul, pos1 !== 0, choiceButton.offsetLeft);
+        if (choiceButton.offsetLeft <= 0) {
+          modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width + pos1) / backgroundDimensions.width) * 100}%`;
+          modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
+          // modifiedChoiceButton.style.top = `${((modifiedChoiceButton.offsetTop - pos2) / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+          modifiedChoiceButton.style.left = '0%';
+          modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
+          _.each(Object.keys(otherChoicesObject), eachIndex => {
+            console.log('in create_edit_document, dragChoice, if pos1 !== 0 elementDrag, otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul);
+            otherChoicesObject[eachIndex].element.style.width = `${(otherChoicesObject[eachIndex].widthInPx / (newWrapperDivDimensions.width)) * 100}%`;
+            otherChoicesObject[eachIndex].element.style.left = `${((otherChoicesObject[eachIndex].originalLeftInPx + pos1Cumul) / (newWrapperDivDimensions.width)) * 100}%`;
+          })
+        } else { // if choiceButton.offsetLeft <= 0
+          modifiedChoiceButton.style.left = `${((((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
+        }
+      }
+      // move choice button top and left in relation to wrapper div
+      // console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4, choiceButton.offsetTop,  modifiedwrapperDiv.height, newWrapperDivDimensions ', pos1, pos2, pos3, pos4, choiceButton.offsetTop, modifiedwrapperDiv.style.height, newWrapperDivDimensions);
+      // modifiedElement.style.left = `${((choiceButton.offsetLeft - pos1) / (wrapperDivDimensions.right - wrapperDivDimensions.left)) * 100}%`;
+      // keep other buttons in its place
     }
 
     function closeDragElement() {
@@ -1349,75 +1422,32 @@ renderEachDocumentField(page) {
   }
 
   handleButtonTemplateElementMove(event) {
-    // const setChoiceTimer = (time, callback) => {
-    //   const lapseTime = () => {
-    //     if (subTimer > 0) {
-    //       subTimer--;
-    //       console.log('in create_edit_document, handleButtonTemplateElementMove, setChoiceTimer, subTimer > 0: ', subTimer);
-    //     } else {
-    //       // when subtimer is 0, assign typing timer at 0
-    //       subTimer = 0;
-    //       console.log('in create_edit_document, handleButtonTemplateElementMove, setChoiceTimer, subTimer == 0: ', subTimer);
-    //       // this.setState({ actionExplanationObject: null });
-    //       callback();
-    //       // clearInterval(timerId);
-    //       this.setState({ choiceDragArray: [] })
-    //     }
-    //   };
-    //   let subTimer = time;
-    //   // timerId variable is assigned an integer id
-    //   const timerId = setInterval(lapseTime, 1000);
-    //   choiceTimerArray.push(timerId);
-    // }
-    //
-    // function sleep(milliseconds) {
-    //   const date = Date.now();
-    //   let currentDate = null;
-    //   do {
-    //     currentDate = Date.now();
-    //     console.log('in create_edit_document, handleButtonTemplateElementMove, sleep, currentDate, ', currentDate);
-    //   } while (currentDate - date < milliseconds);
-    // }
-
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
     // console.log('in create_edit_document, handleButtonTemplateElementMove, elementName, ', elementName);
     const elementId = elementName.split(',')[0];
     const choiceIndex = elementName.split(',')[1];
-    console.log('in create_edit_document, handleButtonTemplateElementMove, clickedElement, elementName, elementId, choiceIndex, ', clickedElement, elementName, elementId, choiceIndex);
 
-    // const callback = () => {
-    //   this.dragChoice();
-    // }
-    // setChoiceTimer(1, callback);
-    // this.dragChoice();
-    // let mouseUp = false;
-    // const mouseUpFunc = (e) => {
-    //   mouseUp = true;
-    //   console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, mouse is up!!!, e, mouseUp, ', e, mouseUp);
-    //   if (this.state.selectedChoiceIdArray.indexOf(`${elementId}-${choiceIndex}`) === -1) {
-    //     this.setState({ selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`] }, () => {
-    //       console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
-    //       window.removeEventListener('mouseup', mouseUpFunc);
-    //     });
-    //   } else {
-    //     const newArray = [...this.state.selectedChoiceIdArray];
-    //     const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
-    //     newArray.splice(index, 1);
-    //     this.setState({ selectedChoiceIdArray: newArray }, () => {
-    //       console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
-    //       window.removeEventListener('mouseup', mouseUpFunc);
-    //     });
-    //   }
-    // };
+    const choiceButton = document.getElementById(`template-element-button-${elementId},${choiceIndex}`);
+    const wrapperDiv = choiceButton.parentElement.parentElement.parentElement;
+    const choiceButtonDimensions = choiceButton.getBoundingClientRect();
+    const wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
+    const backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
+    const documentFieldChoices = this.props.templateElements[elementId].document_field_choices;
+    console.log('in create_edit_document, handleButtonTemplateElementMove, clickedElement, elementName, elementId, choiceIndex, documentFieldChoices, ', clickedElement, elementName, elementId, choiceIndex, documentFieldChoices);
+    const otherChoicesArray = [];
+    let button = null;
+    _.times(Object.keys(documentFieldChoices).length, (i) => {
+      // button = document.getElementById(`template-element-button-${elementId},${choiceIndex}`);
+      if (i !== parseInt(choiceIndex, 10)) {
+        button = document.getElementById(`template-element-button-${elementId},${i}`);
+        console.log('in create_edit_document, handleButtonTemplateElementMove, times i, button.style, ', i, button.style);
+        otherChoicesArray.push(button);
+      }
+    });
 
-    // window.addEventListener('mouseup', mouseUpFunc);
-    // sleep(1000);
-    // if (!mouseUp) {
-      console.log('in create_edit_document, handleButtonTemplateElementMove, in if !mouseUp, mouseUp, this.state.selectedChoiceIdArray, ', mouseUp, this.state.selectedChoiceIdArray);
-      this.dragChoice();
-      // window.removeEventListener('mouseup', mouseUpFunc);
-    // }
+    console.log('in create_edit_document, handleButtonTemplateElementMove, choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray: ', choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray);
+    this.dragChoice(choiceButton, otherChoicesArray, wrapperDiv, wrapperDivDimensions, backgroundDimensions);
   }
 
   // For creating new input fields
@@ -1562,7 +1592,7 @@ renderEachDocumentField(page) {
                     if (i === Object.keys(document_field_choices).length - 1) totalWidth += (i * marginBetween);
                   }
 
-                  if (eachChoice.class_name === 'document-rectangle') {
+                  if (eachChoice.class_name === 'document-rectangle-template-button') {
                     totalWidth = parseFloat(eachChoice.width)
                     totalHeight += parseFloat(eachChoice.height)
                     if (i === Object.keys(document_field_choices).length - 1) totalHeight += (i * marginBetween);
@@ -1663,7 +1693,7 @@ renderEachDocumentField(page) {
                   key={modifiedElement.id}
                   id={`template-element-${modifiedElement.id}`}
                   className="create-edit-document-template-element-container"
-                  style={{ top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
+                  style={{ border: '1px solid #ccc', top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
                 >
                   <div
                     key={modifiedElement.id}

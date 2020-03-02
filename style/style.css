@@ -5013,6 +5013,19 @@ form {
   padding: 0 0 0 1px;
 }
 
+.document-rectangle-template-button {
+  /* width varies */
+  height: 17px;
+  /* width: 22px; */
+  border-radius: 5px;
+  /* margin: 0 0 0 5px; */
+  /* border-color: red !important; */
+  border: 1.5px solid #ccc;
+  background-color: transparent;
+  position: absolute;
+  text-align: left;
+}
+
 .create-edit-document-template-element-edit-tab {
   border: 1.5px solid #ccc;
   border-top: none;
