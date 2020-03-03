@@ -1217,6 +1217,7 @@ renderEachDocumentField(page) {
     let pos2Cumul = 0;
     let pos1Cumul = 0;
 
+
     console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     let newWrapperDivDimensions = null;
     let newChoiceButtonDimensions = null;
@@ -1271,6 +1272,7 @@ renderEachDocumentField(page) {
       pos4 = e.clientY;
       // to deal with NaN do || 0
       pos2Cumul = pos2Cumul || 0;
+      pos1Cumul = pos1Cumul || 0;
       pos1Cumul = pos1Cumul || 0;
 
 
@@ -1364,10 +1366,28 @@ renderEachDocumentField(page) {
           modifiedChoiceButton.style.left = `${((((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
         }
       }
-      // move choice button top and left in relation to wrapper div
-      // console.log('in create_edit_document, dragChoice, elementDrag, pos1, pos2, pos3, pos4, choiceButton.offsetTop,  modifiedwrapperDiv.height, newWrapperDivDimensions ', pos1, pos2, pos3, pos4, choiceButton.offsetTop, modifiedwrapperDiv.style.height, newWrapperDivDimensions);
-      // modifiedElement.style.left = `${((choiceButton.offsetLeft - pos1) / (wrapperDivDimensions.right - wrapperDivDimensions.left)) * 100}%`;
-      // keep other buttons in its place
+
+      if (offsetRight <= 0) {
+        pos1Cumul += pos1;
+        // Set width and left of wrapperDiv
+        modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width - pos1) / backgroundDimensions.width) * 100}%`;
+        // modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
+        // modifiedChoiceButton.style.top = `${((modifiedChoiceButton.offsetTop - pos2) / (newWrapperDivDimensions.bottom - newWrapperDivDimensions.top)) * 100}%`;
+        // Set width and left of choiceBox left is kept at 0%
+        modifiedChoiceButton.style.left = `${(1 - (newChoiceButtonDimensions.width / newWrapperDivDimensions.width)) * 100}%`;
+        modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
+        // Set left and width of other elements within the wrapper
+        _.each(Object.keys(otherChoicesObject), eachIndex => {
+          // console.log('in create_edit_document, dragChoice, if pos1 !== 0 elementDrag, otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul);
+          otherChoicesObject[eachIndex].element.style.width = `${(otherChoicesObject[eachIndex].widthInPx / (newWrapperDivDimensions.width)) * 100}%`;
+          otherChoicesObject[eachIndex].element.style.left = `${((otherChoicesObject[eachIndex].originalLeftInPx - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
+        })
+
+      } else {
+        modifiedChoiceButton.style.left = `${((((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
+
+      }
+
     }
 
     function closeDragElement() {
