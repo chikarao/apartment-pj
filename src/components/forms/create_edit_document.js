@@ -1214,127 +1214,60 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     const modifiedChoiceButton = choiceButton;
     const modifiedwrapperDiv = wrapperDiv;
 
-    let pos2Cumul = 0;
-    let pos1Cumul = 0;
-
     let highestTopInPx = 0;
     let lowestBottomInPx = 0;
     let mostLeftInPx = 0;
     let mostRightInPx = 0;
-    const wrapperDimensions = {};
-
-    let otherTopInPct = 0;
-    let otherBottomInPct = 0;
-    let otherLeftInPct = 0;
-    let otherRightInPct = 0;
-
-    let otherHighestTopInPct = 0;
-    let otherLowestBottomInPct = 0;
-    let otherMostLeftInPct = 0;
-    let otherMostRightInPct = 0;
-
-    // console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
+      // console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     let newWrapperDivDimensions = null;
     let newChoiceButtonDimensions = null;
-    let newInnerDivDimensions = null;
-    let adjWrapperBottom = null;
-    let adjWrapperHeight = null;
 
     const choiceButtonHeightInPx = choiceButtonDimensions.height;
     const choiceButtonWidthInPx = choiceButtonDimensions.width;
-    // const choiceButtonHeightInPx = (parseFloat(choiceButton.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT);
-    // const choiceButtonWidthInPx = (parseFloat(choiceButton.style.width) / 100) * wrapperDivDimensions.width;
     const otherChoicesObject = {};
 
     _.each(otherChoicesArray, (each, i) => {
       otherChoicesObject[i] = {};
       const eachDims = each.getBoundingClientRect();
       otherChoicesObject[i].widthInPx = (parseFloat(each.style.width) / 100) * wrapperDivDimensions.width;
-      // otherChoicesObject[i].widthInPx = eachDims.width;
-      // otherChoicesObject[i].heightInPx = (parseFloat(each.style.height) / 100) * wrapperDivDimensions.height;
       otherChoicesObject[i].heightInPx = eachDims.height;
       otherChoicesObject[i].originalTopInPx = eachDims.top - wrapperDivDimensions.top;
-      // otherChoicesObject[i].originalTopInPx = ((parseFloat(each.style.top) / 100) * wrapperDivDimensions;
       otherChoicesObject[i].originalTopDiffInPx = ((parseFloat(each.style.top) / 100) * wrapperDivDimensions.height) - wrapperDivDimensions.top;
       otherChoicesObject[i].originalBottomInPx = ((parseFloat(each.style.top) + parseFloat(each.style.height)) / 100) * wrapperDivDimensions.height;
-      // otherChoicesObject[i].originalLeftInPx = eachDims.left;
       otherChoicesObject[i].originalLeftInPx = (parseFloat(each.style.left) / 100) * wrapperDivDimensions.width;
       otherChoicesObject[i].originalRightInPx = ((parseFloat(each.style.left) + parseFloat(each.style.width)) / 100) * wrapperDivDimensions.width;
       otherChoicesObject[i].element = each;
-    })
-    // let wrapperDivSizeAdjustmentH = 1;
-    // let wrapperDivSizeAdjustmentW = 1;
+    });
+
     // Create offsets or distance between element and wrapperDiv; There is no native function
     let offsetRight = 0;
     let offsetBottom = 0;
     let offsetTop = 1000;
 
     let againstTop = false;
+    let againstBottom = false;
     let againstLeft = false;
     let againstRight = false;
-    let againstBottom = false;
 
     let againstOtherTop = false;
     let againstOtherBottom = false;
-    // let offsetTop = 0;
-
+    let againstOtherLeft = false;
+    let againstOtherRight = false;
     // *************************
-    // let elementsArray = [];
-    // let elementsArray = [];
-    let dimensions = {}
-    let otherDimensions = {}
-    let updatedWrapperDimensions = {}
-
-    // const setWrapperBoundaries = (element, elements, wrapperDimensions) => {
-    //   elementsArray = [...elements, element];
-    //   _.each(elementsArray, eachElement => {
-    //     highestTopInPx = highestTopInPx > (parseFloat(eachElement.style.top) / 100) * wrapperDimensions.height ? highestTopInPx : (parseFloat(eachElement.style.top) / 100) * wrapperDimensions.height ;
-    //     lowestBottomInPx = lowestBottomInPx > ((parseFloat(eachElement.style.top) + parseFloat(eachElement.style.height)) / 100) * wrapperDimensions.height ? lowestBottomInPx : ((parseFloat(eachElement.style.top) + parseFloat(eachElement.style.height)) / 100) * wrapperDimensions.height;
-    //     mostLeftInPx = mostLeftInPx > (parseFloat(eachElement.style.left) / 100) * wrapperDimensions.width ? mostLeftInPx : (parseFloat(eachElement.style.left) / 100) * wrapperDimensions.width;
-    //     mostRightInPx = mostRightInPx > ((parseFloat(eachElement.style.left) + parseFloat(eachElement.style.width)) / 100) * wrapperDimensions.width ? mostRightInPx : ((parseFloat(eachElement.style.left) + parseFloat(eachElement.style.width)) / 100) * wrapperDimensions.width;
-    //   })
-    //
-    //   dimensions = {
-    //     top: `${(highestTopInPx / backgroundDimensions.height) * 100}%`,
-    //     left: `${(mostLeftInPx / backgroundDimensions.width) * 100}%`,
-    //     width: `${((mostRightInPx - mostLeftInPx) / backgroundDimensions.width) * 100}%`,
-    //     height: `${((lowestBottomInPx - highestTopInPx) / backgroundDimensions.height) * 100}%`,
-    //   };
-    //
-    //   return dimensions
-    // }
-
     let otherDimensionsObject = {};
 
     const setOtherBoundaries = (elementsArray, newWrapperDims) => {
-   // const setWrapperBoundaries = (element, elements, pos1, pos2) => {
-     // elementsArray = [...elements, element];
      highestTopInPx = 10000; // set at really high value so first lower will be selected
      lowestBottomInPx = 0;
      mostLeftInPx = 0;
      mostRightInPx = 0;
 
      _.each(elementsArray, elementDimensions => {
-       // elementDimensions = eachElement.getBoundingClientRect();
        // console.log('in create_edit_document, dragChoice, setOtherBoundaries elementDimensions ', elementDimensions);
        highestTopInPx = highestTopInPx > elementDimensions.top ? elementDimensions.top : highestTopInPx;
        lowestBottomInPx = lowestBottomInPx < elementDimensions.bottom ? elementDimensions.bottom : lowestBottomInPx;
        mostLeftInPx = mostLeftInPx < elementDimensions.left ? elementDimensions.left : mostLeftInPx;
        mostRightInPx = mostRightInPx < elementDimensions.right ? elementDimensions.right : mostRightInPx;
-
-       // if (pos2 > 0) highestTopInPx = highestTopInPx > elementDimensions.top ? elementDimensions.top : highestTopInPx;
-       // if (pos2 <= 0) highestTopInPx = highestTopInPx < elementDimensions.top ? highestTopInPx : elementDimensions.top;
-       // if (pos2 <= 0) lowestBottomInPx = lowestBottomInPx < elementDimensions.bottom ? elementDimensions.bottom : lowestBottomInPx;
-       // if (pos2 > 0) lowestBottomInPx = lowestBottomInPx > elementDimensions.bottom ? elementDimensions.bottom : lowestBottomInPx;
-       //
-       // if (pos1 > 0) mostLeftInPx = mostLeftInPx > elementDimensions.left ? elementDimensions.left : mostLeftInPx;
-       // if (pos1 <= 0) mostLeftInPx = mostLeftInPx > elementDimensions.left ? mostLeftInPx : elementDimensions.left;
-       // if (pos1 > 0) mostRightInPx = mostRightInPx > elementDimensions.right ? mostRightInPx : elementDimensions.right;
-       // if (pos1 <= 0) mostRightInPx = mostRightInPx > elementDimensions.right ? elementDimensions.right : mostRightInPx;
-       // highestTopInPx = highestTopInPx > (Math.abs(parseFloat(eachElement.style.top)) / 100) * wrapperDimensions.height ? highestTopInPx : (Math.abs(parseFloat(eachElement.style.top)) / 100) * wrapperDimensions.height;
-       // lowestBottomInPx = lowestBottomInPx > ((parseFloat(eachElement.style.top) + parseFloat(eachElement.style.height)) / 100) * wrapperDimensions.height ? lowestBottomInPx : ((parseFloat(eachElement.style.top) + parseFloat(eachElement.style.height)) / 100) * wrapperDimensions.height;
-       // mostLeftInPx = mostLeftInPx < (parseFloat(eachElement.style.left) / 100) * wrapperDimensions.width ? mostLeftInPx : (parseFloat(eachElement.style.left) / 100) * wrapperDimensions.width;
-       // mostRightInPx = mostRightInPx > ((parseFloat(eachElement.style.left) + parseFloat(eachElement.style.width)) / 100) * wrapperDimensions.width ? mostRightInPx : ((parseFloat(eachElement.style.left) + parseFloat(eachElement.style.width)) / 100) * wrapperDimensions.width;
      })
      // console.log('in create_edit_document, dragChoice, setOtherBoundaries pos1, pos2, highestTopInPx, lowestBottomInPx, mostLeftInPx, mostRightInPx, backgroundDimensions ', pos1, pos2, highestTopInPx, lowestBottomInPx, mostLeftInPx, mostRightInPx, backgroundDimensions);
 
@@ -1356,12 +1289,9 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
      // console.log('in create_edit_document, dragChoice, setOtherBoundaries otherDimensionsObject ', otherDimensionsObject);
 
      return otherDimensionsObject;
-     // modifiedwrapperDiv.style.top = otherDimensionsObject.top;
-     // modifiedwrapperDiv.style.height = otherDimensionsObject.height;
    };
 
    const originalOtherDims = () => {
-     // let object = {};
      const array = [];
      _.each(otherChoicesArray, eachOther => {
        const eachDims = eachOther.getBoundingClientRect();
@@ -1380,7 +1310,6 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     function dragMouseDown(e) {
       e = e || window.event;
       e.preventDefault();
-      // console.log('in create_edit_document, dragChoice, dragMouseDown e, ', e);
       // get the mouse cursor position at startup:
       pos3 = e.clientX;
       pos4 = e.clientY;
@@ -1401,62 +1330,50 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       // set this round to use for next round in pos 1 and 2
       pos3 = e.clientX;
       pos4 = e.clientY;
-      // to deal with NaN do || 0
-      // pos2Cumul = pos2Cumul || 0;
-      pos1Cumul = pos1Cumul || 0;
 
-
-      newWrapperDivDimensions = modifiedwrapperDiv.getBoundingClientRect()
-      newInnerDivDimensions = innerDiv.getBoundingClientRect()
-      newChoiceButtonDimensions = modifiedChoiceButton.getBoundingClientRect()
-      // If there is vertical movement
+      // for some reason, using innerDiv does not work; use TAB_HEIGHT instead
+      // newInnerDivDimensions = innerDiv.getBoundingClientRect();
+      // Get object with element dimensions { top: xxpx, height: xxpx }
+      newWrapperDivDimensions = modifiedwrapperDiv.getBoundingClientRect();
+      newChoiceButtonDimensions = modifiedChoiceButton.getBoundingClientRect();
+      // Get change in top of original wrapper div and updated wrapper div
       const cumulDeltaTop = newWrapperDivDimensions.top - wrapperDivDimensions.top;
+      // If there is vertical movement
       if (pos2 !== 0) {
         offsetBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT) - newChoiceButtonDimensions.bottom;
         offsetTop = newChoiceButtonDimensions.top - newWrapperDivDimensions.top;
-        adjWrapperBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT);
-        adjWrapperHeight = (newWrapperDivDimensions.height - TAB_HEIGHT);
+        // If wrapper div is pushing against other choice elements
+        againstOtherTop = originalOtherDimensions.highestTopInPx - newWrapperDivDimensions.top <= 0;
         // if there is no more px between top of wrapperDiv and choiceButton
-        // againstTop = (newChoiceButtonDimensions.top - newWrapperDivDimensions.top) <= 0;
-        // againstTop = choiceButton.offsetTop <= 0 && !againstOtherTop;
-
-
         againstTop = offsetTop <= 1 && !againstOtherTop;
-        console.log('in create_edit_document, dragChoice, in if (pos2 !== 0) pos1, pos2, pos3, pos4, offsetTop, offsetBottom, againstOtherTop, againstOtherBottom ', pos1, pos2, pos3, pos4, offsetTop, offsetBottom, againstOtherTop, againstOtherBottom);
-        // if (againstTop) {
+        console.log('in create_edit_document, dragChoice, in if (pos2 !== 0) pos1, pos2, pos3, pos4, offsetTop, offsetBottom, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, (newWrapperDivDimensions.bottom - TAB_HEIGHT), originalOtherDimensions, originalOtherDimensions.lowestBottomInPx ', pos1, pos2, pos3, pos4, offsetTop, offsetBottom, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, (newWrapperDivDimensions.bottom - TAB_HEIGHT), originalOtherDimensions, originalOtherDimensions.lowestBottomInPx);
+        // Move choice element and wrapper up if no more room
+        // and not pushing up against other choices
         if (againstTop) {
           againstOtherBottom = false;
           againstBottom = false;
-        // if (choiceButton.offsetTop < 0) {
-          // Keep track of how much the wrapperDiv has been moved
-          // pos2Cumul += pos2;
           // Set height and top of wrapperDiv
           modifiedwrapperDiv.style.height = `${((newWrapperDivDimensions.height + pos2) / backgroundDimensions.height) * 100}%`;
           modifiedwrapperDiv.style.top = `${((((parseFloat(modifiedwrapperDiv.style.top) / 100) * backgroundDimensions.height) - pos2) / backgroundDimensions.height) * 100}%`;
-          // modifiedChoiceButton.style.top = '0.0%';
           modifiedChoiceButton.style.top = `${(((parseFloat(modifiedChoiceButton.style.top) / 100) * (newWrapperDivDimensions.height - TAB_HEIGHT)) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-          // modifiedChoiceButton.style.top = `${((((parseFloat(modifiedChoiceButton.style.top) / 100) * newWrapperDivDimensions.height)) / newWrapperDivDimensions.height) * 100}%`;
           modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           // Adjust height of other buttons since the wrapper div height will change
           // Set height and top of other elements within the wrapperDiv
-          const array = [];
+          // Use cumulDeltaTop to get difference in original and new wrapper top
+          // Use original height to get new % in new wrapper height
           _.each(Object.keys(otherChoicesObject), eachIndex => {
             otherChoicesObject[eachIndex].element.style.height = `${(otherChoicesObject[eachIndex].heightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
             otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx - cumulDeltaTop) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           });
-          againstOtherTop = originalOtherDimensions.highestTopInPx - newWrapperDivDimensions.top < 0;
-          // againstOtherBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT) - originalOtherDimensions.lowestBottomInPx < 0;
-          // console.log('in create_edit_document, dragChoice, elementDrag, againstTop, in each, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop ', newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop);
+          console.log('in create_edit_document, dragChoice, elementDrag, againstTOP, in each, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop ', newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop);
         }
 
         // if there is no more px between bottom of wrapperDiv and choiceButton
-        // againstBottom = offsetBottom <= 1 && !againstOtherBottom;
-        againstBottom = offsetBottom <= 1 && !againstOtherBottom;
-        // console.log('in create_edit_document, dragChoice, in if offsetBottom <= 0, pos1, pos2, pos3, pos4, offsetBottom, againstBottom, againstTop ', pos1, pos2, pos3, pos4, offsetBottom, againstBottom, againstTop);
+        againstOtherBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT) - originalOtherDimensions.lowestBottomInPx <= 0;
+        againstBottom = (offsetBottom <= 1) && !againstOtherBottom;
         if (againstBottom) {
           againstOtherTop = false;
           againstTop = false;
-          // pos2Cumul += pos2;
           // Set height and top of wrapperDiv
           modifiedwrapperDiv.style.height = `${((newWrapperDivDimensions.height - pos2) / backgroundDimensions.height) * 100}%`;
           // Set height and top of choiceButton
@@ -1466,33 +1383,25 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           // Adjust height of other buttons since the wrapper div height will change
           // Set height and top of other elements within the wrapperDiv
           _.each(Object.keys(otherChoicesObject), eachIndex => {
-            // console.log('in create_edit_document, dragChoice, elementDrag, if (pos2 !== 0) otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul);
             otherChoicesObject[eachIndex].element.style.height = `${(otherChoicesObject[eachIndex].heightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
             otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx - cumulDeltaTop) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-            // otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx - pos2) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           })
 
-          againstOtherBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT) - originalOtherDimensions.lowestBottomInPx < 0;
-          // againstOtherTop = originalOtherDimensions.highestTopInPx - newWrapperDivDimensions.top < 0;
-          console.log('in create_edit_document, dragChoice, elementDrag, againstBottom, pos1, pos2, pos3, pos4, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom ', pos1, pos2, pos3, pos4, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom);
+          console.log('in create_edit_document, dragChoice, elementDrag, againstBOTTOM, pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom ', pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom);
         } // end of if offsetBottom
-          // If the button is not touching either wrapperDiv boundary, change top
 
+        // If the button is not touching either wrapperDiv boundary, change top
+        // i.e. in middle of other choice divs
         if (!againstTop && !againstBottom) {
-          // pos2Cumul = 0;
-          console.log('in create_edit_document, dragChoice, elementDrag, NOT againstTop && againstBottom, pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom', pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom);
+          console.log('in create_edit_document, dragChoice, elementDrag, NOT againstTop && againstBottom, pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom', pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom);
           modifiedChoiceButton.style.top = `${((((parseFloat(modifiedChoiceButton.style.top) / 100) * (newWrapperDivDimensions.height - TAB_HEIGHT)) - pos2) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-          if (offsetTop <= 1) againstOtherTop = false;
-          if (offsetBottom <= 1) againstOtherBottom = false;
-          // againstOtherBottom = (newWrapperDivDimensions.bottom - TAB_HEIGHT) - originalOtherDimensions.lowestBottomInPx < 0;
-          // againstOtherTop = originalOtherDimensions.highestTopInPx - newWrapperDivDimensions.top < 0;
-          // _.each(Object.keys(otherChoicesObject), eachIndex => {
-          //   // console.log('in create_edit_document, dragChoice, elementDrag, if (pos2 !== 0) otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos2Cumul);
-          //   otherChoicesObject[eachIndex].element.style.height = `${(otherChoicesObject[eachIndex].heightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-          //   otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-          //   // otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx + pos2Cumul) / (newWrapperDivDimensions.height)) * 100}%`;
-          // })
+          // if choice element is pushing up against top or bottom of wrapper (excl tab height),
+          // KEY: Move the wrapper top so that againstOtherBottom and againstOtherTop become false
+          // to make againstTop and againstBottom true and move wrapper div top up and down
+          if (offsetTop <= 1 || offsetBottom <= 1) {
+            modifiedwrapperDiv.style.top = `${((((parseFloat(modifiedwrapperDiv.style.top) / 100) * backgroundDimensions.height) - pos2) / backgroundDimensions.height) * 100}%`;
+          }
         } // end of if !againstTop && !againstBottom
       } // end of if pos2 !== 0
 
@@ -1503,7 +1412,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         // if there is no more px between top of wrapperDiv and choiceButton
         if (choiceButton.offsetLeft < 0) {
           // Keep track of how much the wrapperDiv has been moved
-          pos1Cumul += pos1;
+          // pos1Cumul += pos1;
           // Set width and left of wrapperDiv
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width + pos1) / backgroundDimensions.width) * 100}%`;
           modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
@@ -1522,7 +1431,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         }
 
         if (offsetRight < 0) {
-          pos1Cumul += pos1;
+          // pos1Cumul += pos1;
           // Set width and left of wrapperDiv
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width - pos1) / backgroundDimensions.width) * 100}%`;
           // Set width and left of choiceBox left is kept at 0%
