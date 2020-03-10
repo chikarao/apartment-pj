@@ -1243,6 +1243,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     let offsetRight = 0;
     let offsetBottom = 0;
     let offsetTop = 1000;
+    let offsetLeft = 1000;
 
     let againstTop = false;
     let againstBottom = false;
@@ -1365,7 +1366,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
             otherChoicesObject[eachIndex].element.style.height = `${(otherChoicesObject[eachIndex].heightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
             otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx - cumulDeltaTop) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           });
-          console.log('in create_edit_document, dragChoice, elementDrag, againstTOP, in each, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop ', newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop);
+          // console.log('in create_edit_document, dragChoice, elementDrag, againstTOP, in each, newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop ', newWrapperDivDimensions.top, originalOtherDimensions.highestTopInPx, againstOtherTop);
         }
 
         // if there is no more px between bottom of wrapperDiv and choiceButton
@@ -1387,13 +1388,13 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
             otherChoicesObject[eachIndex].element.style.top = `${((otherChoicesObject[eachIndex].originalTopInPx - cumulDeltaTop) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           })
 
-          console.log('in create_edit_document, dragChoice, elementDrag, againstBOTTOM, pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom ', pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom);
+          // console.log('in create_edit_document, dragChoice, elementDrag, againstBOTTOM, pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom ', pos1, pos2, pos3, pos4, offsetBottom, originalOtherDimensions.lowestBottomInPx, newWrapperDivDimensions.bottom - TAB_HEIGHT, againstOtherBottom, againstBottom);
         } // end of if offsetBottom
 
         // If the button is not touching either wrapperDiv boundary, change top
         // i.e. in middle of other choice divs
         if (!againstTop && !againstBottom) {
-          console.log('in create_edit_document, dragChoice, elementDrag, NOT againstTop && againstBottom, pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom', pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom);
+          // console.log('in create_edit_document, dragChoice, elementDrag, NOT againstTop && againstBottom, pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom', pos1, pos2, pos3, pos4, offsetBottom, offsetTop, againstTop, againstBottom, againstOtherTop, againstOtherBottom);
           modifiedChoiceButton.style.top = `${((((parseFloat(modifiedChoiceButton.style.top) / 100) * (newWrapperDivDimensions.height - TAB_HEIGHT)) - pos2) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           // if choice element is pushing up against top or bottom of wrapper (excl tab height),
@@ -1407,31 +1408,39 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
 
       // If there is horizontal movement
       if (pos1 !== 0) {
+        // Get difference between choice element and wrapper div right and left
         offsetRight = newWrapperDivDimensions.right - newChoiceButtonDimensions.right;
-        // console.log('in create_edit_document, dragChoice, before if pos1 !== 0 elem pos1, pos2, pos3, pos4, pos1Cumul, pos1 !== 0, choiceButton.offsetLeft, offsetRight ', pos1, pos2, pos3, pos4, pos1Cumul, pos1 !== 0, choiceButton.offsetLeft, offsetRight);
-        // if there is no more px between top of wrapperDiv and choiceButton
-        if (choiceButton.offsetLeft < 0) {
+        offsetLeft = newChoiceButtonDimensions.left - newWrapperDivDimensions.left;
+        // Get difference between other choices and
+        againstOtherRight = newWrapperDivDimensions.right - originalOtherDimensions.mostRightInPx <= 0;
+        againstOtherLeft = originalOtherDimensions.mostLeftInPx - newWrapperDivDimensions.left <= 0;
+        // if there is no more px between top of wrapperDiv and choiceButton;
+        // AND wrapper div is not pressing up against other choices
+        // move right and left
+        againstRight = offsetRight <= 1 && !againstOtherRight;
+        againstLeft = offsetLeft <= 1 && !againstOtherLeft;
+        // Get difference between original wrapper div dimensions and new dimensions
+        const cumulDeltaLeft = newWrapperDivDimensions.left - wrapperDivDimensions.left;
+        // Move wrapper and choice element left when pressed up against wrapper
+        if (againstLeft) {
+          console.log('in create_edit_document, dragChoice, elementDrag pos1 if against LEFT offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions);
           // Keep track of how much the wrapperDiv has been moved
-          // pos1Cumul += pos1;
           // Set width and left of wrapperDiv
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width + pos1) / backgroundDimensions.width) * 100}%`;
           modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
-          // Set width and left of choiceBox left is kept at 0%
-          // modifiedChoiceButton.style.left = '0%';
-          modifiedChoiceButton.style.top = `${(((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) / newWrapperDivDimensions.width) * 100}%`;
-
+          // Set width and left of choiceBox left and keep pressing up
+          modifiedChoiceButton.style.left = `${(((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) / newWrapperDivDimensions.width) * 100}%`;
           modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
           // Set left and width of other elements within the wrapper
           _.each(Object.keys(otherChoicesObject), eachIndex => {
-            const cumulDeltaLeft = newWrapperDivDimensions.left - wrapperDivDimensions.left;
-            // console.log('in create_edit_document, dragChoice, if pos1 !== 0 elementDrag, otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul);
             otherChoicesObject[eachIndex].element.style.width = `${(otherChoicesObject[eachIndex].widthInPx / (newWrapperDivDimensions.width)) * 100}%`;
             otherChoicesObject[eachIndex].element.style.left = `${((otherChoicesObject[eachIndex].originalLeftInPx - cumulDeltaLeft) / (newWrapperDivDimensions.width)) * 100}%`;
           })
         }
-
-        if (offsetRight < 0) {
-          // pos1Cumul += pos1;
+        // Move wrapper left and choice left and set width
+        // when pressed up against right wall of wrapper div  
+        if (againstRight) {
+          console.log('in create_edit_document, dragChoice, elementDrag pos1 if against RIGHT offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions);
           // Set width and left of wrapperDiv
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width - pos1) / backgroundDimensions.width) * 100}%`;
           // Set width and left of choiceBox left is kept at 0%
@@ -1439,14 +1448,17 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
           // Set left and width of other elements within the wrapper
           _.each(Object.keys(otherChoicesObject), eachIndex => {
-            // console.log('in create_edit_document, dragChoice, if pos1 !== 0 elementDrag, otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul ', otherChoicesObject[eachIndex], otherChoicesObject[eachIndex].element.style, wrapperDivSizeAdjustmentH, newWrapperDivDimensions, pos1Cumul);
             otherChoicesObject[eachIndex].element.style.width = `${(otherChoicesObject[eachIndex].widthInPx / (newWrapperDivDimensions.width)) * 100}%`;
-            otherChoicesObject[eachIndex].element.style.left = `${((otherChoicesObject[eachIndex].originalLeftInPx - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
+            otherChoicesObject[eachIndex].element.style.left = `${((otherChoicesObject[eachIndex].originalLeftInPx - cumulDeltaLeft) / (newWrapperDivDimensions.width)) * 100}%`;
           })
         }
         // if not hitting either wrapperDiv boundary, adjust left of choiceButton
-        if (offsetRight >= 0 && modifiedChoiceButton.offsetLeft >= 0) {
+        if (!againstRight && !againstLeft) {
+          console.log('in create_edit_document, dragChoice, elementDrag pos1 if NOT against right or left offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions);
           modifiedChoiceButton.style.left = `${((((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
+          if (offsetLeft <= 1 || offsetRight <= 1) {
+            modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
+          }
         }
 
         // Make tab move with expansion/contraction of wrapperDiv width
