@@ -371,7 +371,7 @@ export default function (state = {
       // Get mapped array of action payload;
       // before: [{element}, {element}], after: { id: {element}, id: {element}}
       const templateElementsByPage = { ...state.templateElementsByPage };
-      let element;
+      // let element;
       const actionPayloadMapped = _.mapKeys(action.payload, 'id')
       // get shallow copy of template elements
       const newUpdateObject = _.merge({}, state.templateElements);
@@ -397,7 +397,6 @@ export default function (state = {
         // ie cannot be ...state.templateElements
         newUpdateObject[eachElementId] = newObj;
         templateElementsByPage[newObj.page][newObj.id] = newObj;
-
       }); // end of each Object.keys actionPayloadMapped
 
       console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY action.payload, newUpdateObject: ', action.payload, newUpdateObject);

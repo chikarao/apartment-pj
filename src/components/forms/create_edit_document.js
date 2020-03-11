@@ -1203,7 +1203,7 @@ renderEachDocumentField(page) {
     }
   }
 
-dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions, tab) {
+dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions, tab, templateElements, callback) {
     // pos1 and 2 are for getting delta of pointer position;
     // pos3 and 4 are for getting updated mouse position
     let pos1 = 0;
@@ -1477,7 +1477,47 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
-      console.log('in create_edit_document, dragChoice, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
+      console.log('in create_edit_document, dragChoice, closeDragElement, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
+
+      const iteratedElements = [...otherChoicesArray, choiceButton];
+      const newDocumentFieldChoices = {};
+      const oldDocumentFieldChoices = {};
+      let elementId = null;
+
+      _.each(iteratedElements, eachElement => {
+        const elementDimensions = eachElement.getBoundingClientRect();
+        elementId = eachElement.getAttribute('name').split(',')[0];
+        const elementIndex = eachElement.getAttribute('name').split(',')[1];
+        const parentElement = templateElements[elementId];
+        const choiceElement = parentElement.document_field_choices[elementIndex];
+        console.log('in create_edit_document, dragChoice, closeDragElement, eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions);
+        const top = `${(elementDimensions.top / backgroundDimensions.height) * 100}%`
+        const left = `${(elementDimensions.left / backgroundDimensions.width) * 100}%`
+        const width = `${(elementDimensions.width / backgroundDimensions.width) * 100}%`
+        const height = `${(elementDimensions.height / backgroundDimensions.height) * 100}%`
+        // updatedElementObject = {
+        //    // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
+        //    id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
+        //    width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
+        //    height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
+        //    o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
+        //    o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
+        //    action: 'update',
+        //  };
+        newDocumentFieldChoices[elementIndex] = { ...choiceElement, top, left, width, height }
+        oldDocumentFieldChoices[elementIndex] = choiceElement;
+        console.log('in create_edit_document, dragChoice, closeDragElement, newDocumentFieldChoices, oldDocumentFieldChoices: ', newDocumentFieldChoices, oldDocumentFieldChoices);
+      });
+
+      const updatedElementObject = {
+        id: elementId,
+        document_field_choices: newDocumentFieldChoices,
+        o_document_field_choices: oldDocumentFieldChoices,
+        action: 'update'
+      }
+      console.log('in create_edit_document, dragChoice, closeDragElement, updatedElementObject: ', updatedElementObject);
+
+      // callback([updatedElementObject]);
   }
 }
 
@@ -1608,8 +1648,13 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       }
     });
 
+    const callback = (updatedElementsArray) => {
+      this.props.updateDocumentElementLocally(updatedElementsArray);
+      this.setTemplateHistoryArray(updatedElementsArray, 'update');
+    };
+
     console.log('in create_edit_document, handleButtonTemplateElementMove, choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray: ', choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray);
-    this.dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions, tab);
+    this.dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions, tab, this.props.templateElements, callback);
   }
 
   // For creating new input fields
