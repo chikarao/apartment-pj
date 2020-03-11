@@ -1683,8 +1683,8 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     let localTemplateElementsByPage = null;
 
     const renderTab = (eachElement, selected, tabLeftMarginPx) => {
-      const tabWidth = inputElement ? TAB_WIDTH : 55;
-      const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+    const tabWidth = inputElement ? TAB_WIDTH : 55;
+    const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
       return (
         <div
           id={`template-element-tab-${eachElement.id}`}
@@ -1729,27 +1729,31 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       let heightInPx = null;
       let topInPx = null;
       let leftInPx = null;
+      // let i = 0;
 
       let top = 0;
       console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
         _.each(document_field_choices, (eachChoice, i) => {
           // Convert NaN to zero
           top = (currentTop / box.height) || 0;
-
+          // NOTE: get px of dimensions from box top, left etc.
+          topInPx = ((parseFloat(eachChoice.top) / 100) * backgroundDim.height) - ((box.top) * backgroundDim.height);
+          leftInPx = (((parseFloat(eachChoice.left) / 100) * backgroundDim.width) - ((box.left) * backgroundDim.width));
           widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
           heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
-          topInPx = (parseFloat(eachChoice.top) / 100) * backgroundDim.height;
-          leftInPx = (parseFloat(eachChoice.left) / 100) * backgroundDim.width;
+          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew: ', eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew);
 
           choicesObject[i] = {};
           choicesObject[i].val = eachChoice.val;
 
-          choicesObject[i].width = isNew ? `${(parseFloat(eachChoice.width) / box.width) * 100}%` : `${(widthInPx / box.width) * 100}%`;
-          choicesObject[i].height = isNew ? `${(parseFloat(eachChoice.height) / box.height) * 100}%` : `${(heightInPx / box.height) * 100}%`;
-          choicesObject[i].left = isNew ? '0.0%' : `${(leftInPx / box.width) * 100}%`;
-
+          choicesObject[i].top = isNew ? `${top * 100}%` : `${(topInPx / ((box.height) * backgroundDim.height)) * 100}%`;
+          choicesObject[i].left = isNew ? '0.0%' : `${(leftInPx / ((box.width) * backgroundDim.width)) * 100}%`;
+          choicesObject[i].width = isNew ? `${(parseFloat(eachChoice.width) / box.width) * 100}%` : `${(widthInPx / (box.width * backgroundDim.width)) * 100}%`;
+          choicesObject[i].height = isNew ? `${(parseFloat(eachChoice.height) / box.height) * 100}%` : `${(heightInPx / (box.height * backgroundDim.height)) * 100}%`;
+          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, heightInPx, eachChoice.height, choicesObject[i].height, box.height, isNew: ', heightInPx, eachChoice.height, choicesObject[i].height, box.height, isNew);
+          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, topInPx, eachChoice.top, choicesObject[i].top, box.top: ', topInPx, eachChoice.top, choicesObject[i].top, box.top);
+          // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, topInPx, eachChoice.top, choicesObject[i].top, box.top: ', topInPx, eachChoice.top, choicesObject[i].top, box.top);
           // choicesObject[i].top = `${(currentTop / box.height) * 100}%`;
-          choicesObject[i].top = isNew ? `${top * 100}%` : `${(topInPx / box.height) * 100}%`;
 
           choicesObject[i].class_name = eachChoice.class_name;
           choicesObject[i].border_radius = eachChoice.border_radius;
@@ -1796,7 +1800,10 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           // Wait for the background to be rendered to get its dimensions
           if (editTemplate && background) {
             // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
-            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100
+            // let tabPercentOfContainerH = 0;
+            // if (newElement || inputElement) {
+            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100;
+            // }
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(modifiedElement.width) / 100)
             let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             if (eachElementWidthPx < TAB_WIDTH) {
@@ -1860,10 +1867,11 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
                 //   // rightInPx = ((parseFloat(eachChoice.left) / 100) + (parseFloat(eachChoice.width) / 100)) * backgroundDimensions.width;
                 //
                 // });
-                const adjustedHeightInPx = ((parseFloat(eachElement.height) / 100) * backgroundDimensions) - TAB_HEIGHT;
-                const adjustedHeightInPct = (adjustedHeightInPx / backgroundDimensions) * 100;
+                // const adjustedHeightInPx = ((parseFloat(eachElement.height) / 100) * backgroundDimensions.height) - TAB_HEIGHT;
+                const adjustedHeightInPx = ((parseFloat(eachElement.height) / 100) * backgroundDimensions.height);
+                const adjustedHeightInFracs = (adjustedHeightInPx / backgroundDimensions.height);
 
-                localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: parseFloat(eachElement.width), height: adjustedHeightInPct }, background.getBoundingClientRect(), null, true);
+                localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: (parseFloat(eachElement.width) / 100), height: adjustedHeightInFracs, top: (parseFloat(eachElement.top) / 100), left: (parseFloat(eachElement.left) / 100) }, background.getBoundingClientRect(), null, false);
                 console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage: ', eachElement, document_field_choices, localTemplateElementsByPage);
               } // end of if newElement
             } // end of if eachElement.document_field_choices
@@ -1950,7 +1958,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
                 </div>
               );
             } else { // else if inputElement
-              console.log('in create_edit_document, renderTemplateElements, else if inputElement: ', modifiedElement, page, this.props.templateElementsByPage);
+              console.log('in create_edit_document, renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage);
               return (
                 <div
                   key={modifiedElement.id}
@@ -1976,30 +1984,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
                         page,
                         required: modifiedElement.required,
                         nullRequiredField,
-                        formFields: !newElement
-                          ?
-                          // {}
-                          this.props.templateElementsByPage // doesn't have choices for input element
-                          :
-                          // create a templateElementsByPage with choices just for the input element
-                          localTemplateElementsByPage,
-                          // { [modifiedElement.page]: { [modifiedElement.id]:
-                          //   { choices: { 0: { val: 'inputFieldValue',
-                          //                     top: '50%',
-                          //                     left: '50%',
-                          //                     width: '50%',
-                          //                     height: '50%',
-                          //                     font_size: modifiedElement.font_size,
-                          //                     font_family: modifiedElement.font_family,
-                          //                     font_style: modifiedElement.font_style,
-                          //                     font_weight: modifiedElement.font_weight,
-                          //                     // change from input componnet use document-rectange
-                          //                     // class_name: 'document-rectangle',
-                          //                     class_name: modifiedElement.class_name,
-                          //                     // !!! height works only with px
-                          //                     input_type: modifiedElement.input_type,
-                          //                     element_id: modifiedElement.id
-                          //   } } } } },
+                        formFields: localTemplateElementsByPage,
                         charLimit: modifiedElement.charLimit,
                         otherChoiceValues,
                         documentKey: this.props.documentKey,
