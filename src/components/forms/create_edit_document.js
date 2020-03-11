@@ -1214,29 +1214,25 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     const modifiedChoiceButton = choiceButton;
     const modifiedwrapperDiv = wrapperDiv;
 
-    let highestTopInPx = 0;
-    let lowestBottomInPx = 0;
-    let mostLeftInPx = 0;
-    let mostRightInPx = 0;
       // console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     let newWrapperDivDimensions = null;
     let newChoiceButtonDimensions = null;
-
+    // Get original values of choice being moved
     const choiceButtonHeightInPx = choiceButtonDimensions.height;
     const choiceButtonWidthInPx = choiceButtonDimensions.width;
     const otherChoicesObject = {};
-
+    // Get dimensions of EACH OF other choices
     _.each(otherChoicesArray, (each, i) => {
       otherChoicesObject[i] = {};
       const eachDims = each.getBoundingClientRect();
       otherChoicesObject[i].widthInPx = (parseFloat(each.style.width) / 100) * wrapperDivDimensions.width;
       otherChoicesObject[i].heightInPx = eachDims.height;
       otherChoicesObject[i].originalTopInPx = eachDims.top - wrapperDivDimensions.top;
-      otherChoicesObject[i].originalTopDiffInPx = ((parseFloat(each.style.top) / 100) * wrapperDivDimensions.height) - wrapperDivDimensions.top;
-      otherChoicesObject[i].originalBottomInPx = ((parseFloat(each.style.top) + parseFloat(each.style.height)) / 100) * wrapperDivDimensions.height;
       otherChoicesObject[i].originalLeftInPx = (parseFloat(each.style.left) / 100) * wrapperDivDimensions.width;
-      otherChoicesObject[i].originalRightInPx = ((parseFloat(each.style.left) + parseFloat(each.style.width)) / 100) * wrapperDivDimensions.width;
       otherChoicesObject[i].element = each;
+      // otherChoicesObject[i].originalTopDiffInPx = ((parseFloat(each.style.top) / 100) * wrapperDivDimensions.height) - wrapperDivDimensions.top;
+      // otherChoicesObject[i].originalBottomInPx = ((parseFloat(each.style.top) + parseFloat(each.style.height)) / 100) * wrapperDivDimensions.height;
+      // otherChoicesObject[i].originalRightInPx = ((parseFloat(each.style.left) + parseFloat(each.style.width)) / 100) * wrapperDivDimensions.width;
     });
 
     // Create offsets or distance between element and wrapperDiv; There is no native function
@@ -1254,25 +1250,33 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     let againstOtherBottom = false;
     let againstOtherLeft = false;
     let againstOtherRight = false;
-    // *************************
+
     let otherDimensionsObject = {};
+    let highestTopInPx = 0;
+    let lowestBottomInPx = 0;
+    let mostLeftInPx = 0;
+    let mostRightInPx = 0;
 
     const setOtherBoundaries = (elementsArray, newWrapperDims) => {
+    // const setOtherBoundaries = (elementsArray) => {
      highestTopInPx = 10000; // set at really high value so first lower will be selected
      lowestBottomInPx = 0;
-     mostLeftInPx = 0;
+     mostLeftInPx = 10000;
      mostRightInPx = 0;
 
      _.each(elementsArray, elementDimensions => {
        // console.log('in create_edit_document, dragChoice, setOtherBoundaries elementDimensions ', elementDimensions);
        highestTopInPx = highestTopInPx > elementDimensions.top ? elementDimensions.top : highestTopInPx;
        lowestBottomInPx = lowestBottomInPx < elementDimensions.bottom ? elementDimensions.bottom : lowestBottomInPx;
-       mostLeftInPx = mostLeftInPx < elementDimensions.left ? elementDimensions.left : mostLeftInPx;
+       mostLeftInPx = mostLeftInPx > elementDimensions.left ? elementDimensions.left : mostLeftInPx;
        mostRightInPx = mostRightInPx < elementDimensions.right ? elementDimensions.right : mostRightInPx;
      })
-     // console.log('in create_edit_document, dragChoice, setOtherBoundaries pos1, pos2, highestTopInPx, lowestBottomInPx, mostLeftInPx, mostRightInPx, backgroundDimensions ', pos1, pos2, highestTopInPx, lowestBottomInPx, mostLeftInPx, mostRightInPx, backgroundDimensions);
 
      otherDimensionsObject = {
+       highestTopInPx,
+       lowestBottomInPx,
+       mostLeftInPx,
+       mostRightInPx,
        top: `${((highestTopInPx - newWrapperDims.top) / newWrapperDims.height) * 100}%`,
        left: `${((mostLeftInPx - newWrapperDims.left) / newWrapperDims.width) * 100}%`,
        width: `${((mostRightInPx - mostLeftInPx) / newWrapperDims.width) * 100}%`,
@@ -1282,12 +1286,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
        leftInPx: mostLeftInPx,
        widthInPx: mostRightInPx - mostLeftInPx,
        heightInPx: lowestBottomInPx - highestTopInPx,
-       highestTopInPx,
-       lowestBottomInPx,
-       mostLeftInPx,
-       mostRightInPx
      };
-     // console.log('in create_edit_document, dragChoice, setOtherBoundaries otherDimensionsObject ', otherDimensionsObject);
 
      return otherDimensionsObject;
    };
@@ -1298,12 +1297,12 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
        const eachDims = eachOther.getBoundingClientRect();
        array.push(eachDims);
      });
+     // const object = setOtherBoundaries(array);
      const object = setOtherBoundaries(array, wrapperDivDimensions);
      return object;
    };
-
+   // Get original dimensions of other choice elements AS A GROUP
    const originalOtherDimensions = originalOtherDims();
-
 
     // CAll main function
     dragMouseDown();
@@ -1414,6 +1413,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         // Get difference between other choices and
         againstOtherRight = newWrapperDivDimensions.right - originalOtherDimensions.mostRightInPx <= 0;
         againstOtherLeft = originalOtherDimensions.mostLeftInPx - newWrapperDivDimensions.left <= 0;
+        console.log('in create_edit_document, dragChoice, elementDrag pos1 if against LEFT offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions, originalOtherDimensions.mostLeftInPx, newWrapperDivDimensions.left, originalOtherDimensions.mostLeftInPx - newWrapperDivDimensions.left ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions, originalOtherDimensions.mostLeftInPx, newWrapperDivDimensions.left, originalOtherDimensions.mostLeftInPx - newWrapperDivDimensions.left);
         // if there is no more px between top of wrapperDiv and choiceButton;
         // AND wrapper div is not pressing up against other choices
         // move right and left
@@ -1438,13 +1438,15 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           })
         }
         // Move wrapper left and choice left and set width
-        // when pressed up against right wall of wrapper div  
+        // when pressed up against right wall of wrapper div
         if (againstRight) {
           console.log('in create_edit_document, dragChoice, elementDrag pos1 if against RIGHT offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions);
           // Set width and left of wrapperDiv
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width - pos1) / backgroundDimensions.width) * 100}%`;
           // Set width and left of choiceBox left is kept at 0%
+          // modifiedChoiceButton.style.left = `${(((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) / newWrapperDivDimensions.width) * 100}%`;
           modifiedChoiceButton.style.left = `${(1 - (newChoiceButtonDimensions.width / newWrapperDivDimensions.width)) * 100}%`;
+          // modifiedChoiceButton.style.left = `${(1 - (newChoiceButtonDimensions.width / newWrapperDivDimensions.width)) * 100}%`;
           modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
           // Set left and width of other elements within the wrapper
           _.each(Object.keys(otherChoicesObject), eachIndex => {
