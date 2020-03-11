@@ -922,8 +922,8 @@ renderEachDocumentField(page) {
             name: 'name',
             component: 'DocumentChoices',
             // component: 'input',
-            // width: '25%',
-            // height: '1.6%',
+            width: null,
+            height: null,
             // type: 'text', // or 'string' if an input component
             input_type: 'button', // or 'string' if an input component
             class_name: 'document-rectangle-template',
@@ -1478,46 +1478,62 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       document.onmouseup = null;
       document.onmousemove = null;
       console.log('in create_edit_document, dragChoice, closeDragElement, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
-
+      // Get all elements in array
       const iteratedElements = [...otherChoicesArray, choiceButton];
       const newDocumentFieldChoices = {};
       const oldDocumentFieldChoices = {};
       let elementId = null;
-
+      let elementIndex = null;
+      let parentElement = null;
+      let choiceElement = null;
+      let top = null;
+      let left = null;
+      let width = null;
+      let height = null;
+      // Iterate through each element;
       _.each(iteratedElements, eachElement => {
+        // Get dimensions in px for each element;
         const elementDimensions = eachElement.getBoundingClientRect();
+        // Get the id and index of each choice
         elementId = eachElement.getAttribute('name').split(',')[0];
-        const elementIndex = eachElement.getAttribute('name').split(',')[1];
-        const parentElement = templateElements[elementId];
-        const choiceElement = parentElement.document_field_choices[elementIndex];
-        console.log('in create_edit_document, dragChoice, closeDragElement, eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions);
-        const top = `${(elementDimensions.top / backgroundDimensions.height) * 100}%`
-        const left = `${(elementDimensions.left / backgroundDimensions.width) * 100}%`
-        const width = `${(elementDimensions.width / backgroundDimensions.width) * 100}%`
-        const height = `${(elementDimensions.height / backgroundDimensions.height) * 100}%`
-        // updatedElementObject = {
-        //    // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
-        //    id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
-        //    width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
-        //    height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
-        //    o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
-        //    o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
-        //    action: 'update',
-        //  };
+        elementIndex = eachElement.getAttribute('name').split(',')[1];
+        // Get the parent template element from this.props.templateElements
+        parentElement = templateElements[elementId];
+        // Get the document_field_choice for eachElement
+        choiceElement = parentElement.document_field_choices[elementIndex];
+        // console.log('in create_edit_document, dragChoice, closeDragElement, eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions);
+        // Get the values in percentages i.e. 5% NOT 0.05
+        top = `${((elementDimensions.top - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`
+        left = `${((elementDimensions.left - backgroundDimensions.left) / backgroundDimensions.width) * 100}%`
+        width = `${(elementDimensions.width / backgroundDimensions.width) * 100}%`
+        height = `${(elementDimensions.height / backgroundDimensions.height) * 100}%`
+        // Get the choice into an object mapped { 0: choice, 1: choice ...}
         newDocumentFieldChoices[elementIndex] = { ...choiceElement, top, left, width, height }
         oldDocumentFieldChoices[elementIndex] = choiceElement;
-        console.log('in create_edit_document, dragChoice, closeDragElement, newDocumentFieldChoices, oldDocumentFieldChoices: ', newDocumentFieldChoices, oldDocumentFieldChoices);
+        // console.log('in create_edit_document, dragChoice, closeDragElement, newDocumentFieldChoices, oldDocumentFieldChoices: ', newDocumentFieldChoices, oldDocumentFieldChoices);
       });
-
+      // Get an object to pass to action UPDATE_DOCUMENT_ELEMENT_LOCALLY.
+      // This will also be used for history with undo and redo
+      const lastWrapperDivDims = wrapperDiv.getBoundingClientRect();
       const updatedElementObject = {
         id: elementId,
+        top: `${((lastWrapperDivDims.top - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`,
+        left: `${((lastWrapperDivDims.left - backgroundDimensions.left) / backgroundDimensions.width) * 100}%`,
+        width: `${(lastWrapperDivDims.width / backgroundDimensions.width) * 100}%`,
+        height: `${(lastWrapperDivDims.height / backgroundDimensions.height) * 100}%`,
+
+        o_top: `${((wrapperDivDimensions.top - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`,
+        o_left: `${((wrapperDivDimensions.left - backgroundDimensions.left) / backgroundDimensions.width) * 100}%`,
+        o_width: `${(wrapperDivDimensions.width / backgroundDimensions.width) * 100}%`,
+        o_height: `${(wrapperDivDimensions.height / backgroundDimensions.height) * 100}%`,
+
         document_field_choices: newDocumentFieldChoices,
         o_document_field_choices: oldDocumentFieldChoices,
         action: 'update'
       }
       console.log('in create_edit_document, dragChoice, closeDragElement, updatedElementObject: ', updatedElementObject);
 
-      // callback([updatedElementObject]);
+      callback([updatedElementObject]);
   }
 }
 
@@ -1706,26 +1722,34 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       const { document_field_choices } = eachElement;
       const object = { [eachElement.page]: { [eachElement.id]: { choices: {} } } };
       const choicesObject = object[eachElement.page][eachElement.id].choices;
+
       let currentTop = '0%';
+
+      let widthInPx = null;
+      let heightInPx = null;
+      let topInPx = null;
+      let leftInPx = null;
+
       let top = 0;
       console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
-
-      // choicesObj[eachElement.page][eachElement.id] = { choices: {} };
-      // const choicesObject = choicesObject[eachElement.page][eachElement.id].choices;
-
         _.each(document_field_choices, (eachChoice, i) => {
           // Convert NaN to zero
           top = (currentTop / box.height) || 0;
 
+          widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
+          heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
+          topInPx = (parseFloat(eachChoice.top) / 100) * backgroundDim.height;
+          leftInPx = (parseFloat(eachChoice.left) / 100) * backgroundDim.width;
+
           choicesObject[i] = {};
           choicesObject[i].val = eachChoice.val;
 
-          choicesObject[i].width = `${(parseFloat(eachChoice.width) / box.width) * 100}%`;
-          choicesObject[i].height = `${(parseFloat(eachChoice.height) / box.height) * 100}%`;
-          choicesObject[i].left = isNew ? '0.0%' : '0.0%';
+          choicesObject[i].width = isNew ? `${(parseFloat(eachChoice.width) / box.width) * 100}%` : `${(widthInPx / box.width) * 100}%`;
+          choicesObject[i].height = isNew ? `${(parseFloat(eachChoice.height) / box.height) * 100}%` : `${(heightInPx / box.height) * 100}%`;
+          choicesObject[i].left = isNew ? '0.0%' : `${(leftInPx / box.width) * 100}%`;
 
           // choicesObject[i].top = `${(currentTop / box.height) * 100}%`;
-          choicesObject[i].top = `${top * 100}%`;
+          choicesObject[i].top = isNew ? `${top * 100}%` : `${(topInPx / box.height) * 100}%`;
 
           choicesObject[i].class_name = eachChoice.class_name;
           choicesObject[i].border_radius = eachChoice.border_radius;
@@ -1734,10 +1758,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           choicesObject[i].choice_index = parseInt(i, 10);
           choicesObject[i].element_id = eachElement.id;
           choicesObject[i].name = eachElement.name;
-          // if (i === 0) {
-            // choicesObject[i].top = '0.0%';
-          // } else {
-          // }
+
           currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
         });
 
@@ -1793,7 +1814,6 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
                 const marginBetween = 0.25;
                 _.each(Object.keys(document_field_choices), (eachKey, i) => {
                   const eachChoice = document_field_choices[eachKey];
-                  console.log('in create_edit_document, renderTemplateElements, eachElement, page, totalWidth, totalHeight, eachChoice: ', eachElement, page, totalWidth, totalHeight, eachChoice);
                   if (eachChoice.class_name === 'document-circle') {
                     totalWidth = parseFloat(eachChoice.width);
                     totalHeight = parseFloat(eachChoice.height);
@@ -1810,6 +1830,41 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
                 modifiedElement.width = `${totalWidth}%`;
                 modifiedElement.height = `${totalHeight}%`;
                 localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: totalWidth, height: totalHeight }, background.getBoundingClientRect(), marginBetween, true);
+              } else { // else for if newElement
+                // let totalHeight = 0;
+                // let totalWidth = 0;
+                const backgroundDimensions = background.getBoundingClientRect();
+                // let highestTopInPx = 10000; // set at really high value so first lower will be selected
+                // let lowestBottomInPx = 0;
+                // let mostLeftInPx = 10000;
+                // let mostRightInPx = 0;
+                // let topInPx;
+                // let bottomInPx;
+                // let leftInPx;
+                // let rightInPx;
+                //
+                // _.each(elementsArray, elementDimensions => {
+                //   // console.log('in create_edit_document, dragChoice, setOtherBoundaries elementDimensions ', elementDimensions);
+                //   highestTopInPx = highestTopInPx > elementDimensions.top ? elementDimensions.top : highestTopInPx;
+                //   lowestBottomInPx = lowestBottomInPx < elementDimensions.bottom ? elementDimensions.bottom : lowestBottomInPx;
+                //   mostLeftInPx = mostLeftInPx > elementDimensions.left ? elementDimensions.left : mostLeftInPx;
+                //   mostRightInPx = mostRightInPx < elementDimensions.right ? elementDimensions.right : mostRightInPx;
+                // })
+
+                // _.each(Object.keys(document_field_choices), (eachKey, i) => {
+                //   const eachChoice = document_field_choices[eachKey];
+                //   console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachChoice: ', eachChoice);
+                //   // topInPx = (parseFloat(eachChoice.top) / 100) * backgroundDimensions.height;
+                //   // bottomInPx = ((parseFloat(eachChoice.top) / 100) + (parseFloat(eachChoice.height) / 100)) * backgroundDimensions.height;
+                //   // leftInPx = (parseFloat(eachChoice.left) / 100) * backgroundDimensions.width;
+                //   // rightInPx = ((parseFloat(eachChoice.left) / 100) + (parseFloat(eachChoice.width) / 100)) * backgroundDimensions.width;
+                //
+                // });
+                const adjustedHeightInPx = ((parseFloat(eachElement.height) / 100) * backgroundDimensions) - TAB_HEIGHT;
+                const adjustedHeightInPct = (adjustedHeightInPx / backgroundDimensions) * 100;
+
+                localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: parseFloat(eachElement.width), height: adjustedHeightInPct }, background.getBoundingClientRect(), null, true);
+                console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage: ', eachElement, document_field_choices, localTemplateElementsByPage);
               } // end of if newElement
             } // end of if eachElement.document_field_choices
             // if ()
