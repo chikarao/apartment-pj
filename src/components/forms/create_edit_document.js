@@ -1217,9 +1217,17 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       // console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     let newWrapperDivDimensions = null;
     let newChoiceButtonDimensions = null;
+
+    const choiceId = choiceButton.getAttribute('name').split(',')[0];
+    const choiceIndex = parseInt(choiceButton.getAttribute('name').split(',')[1], 10);
+    const choiceInState = templateElements[choiceId].document_field_choices[choiceIndex];
+    console.log('in create_edit_document, test for choicebutton width and height dragChoice, main function, choiceButton, choiceId, choiceIndex, choiceInState ', choiceButton, choiceId,choiceIndex,  choiceInState);
     // Get original values of choice being moved
-    const choiceButtonHeightInPx = choiceButtonDimensions.height;
-    const choiceButtonWidthInPx = choiceButtonDimensions.width;
+    const choiceButtonHeightInPx = (parseFloat(choiceInState.height) / 100) * backgroundDimensions.height;
+    const choiceButtonWidthInPx = (parseFloat(choiceInState.width) / 100) * backgroundDimensions.width;
+    console.log('in create_edit_document, test for choicebutton width and height dragChoice, main function, choiceButtonHeightInPx, choiceButtonWidthInPx ', choiceButtonHeightInPx, choiceButtonWidthInPx);
+    // const choiceButtonHeightInPx = choiceButtonDimensions.height;
+    // const choiceButtonWidthInPx = choiceButtonDimensions.width;
     console.log('in create_edit_document, test for choicebutton width and height dragChoice, main function, choiceButtonDimensions, choiceButtonDimensions.height, choiceButtonDimensions.width, backgroundDimensions.width, backgroundDimensions.height, ', choiceButtonDimensions, choiceButtonDimensions.height, choiceButtonDimensions.width, backgroundDimensions.width, backgroundDimensions.height);
     console.log('in create_edit_document, test for choicebutton width and height dragChoice, main function, wrapperDivDimensions, backgroundDimensions, before ', wrapperDivDimensions, backgroundDimensions);
 
@@ -1253,8 +1261,10 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         otherChoicesObject[otherIndex].originalLeftInPx = (((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left) - wrapperDivDimensions.left;
 
       } else {
-        otherChoicesObject[otherIndex].widthInPx = eachOtherDims.width;
-        otherChoicesObject[otherIndex].heightInPx = eachOtherDims.height;
+        otherChoicesObject[otherIndex].widthInPx = (parseFloat(eachOtherInState.width) / 100) * backgroundDimensions.width;
+        otherChoicesObject[otherIndex].heightInPx = (parseFloat(eachOtherInState.height) / 100) * backgroundDimensions.height;
+        // otherChoicesObject[otherIndex].widthInPx = eachOtherDims.width;
+        // otherChoicesObject[otherIndex].heightInPx = eachOtherDims.height;
         otherChoicesObject[otherIndex].topInPx = eachOtherDims.top;
         otherChoicesObject[otherIndex].leftInPx = eachOtherDims.left;
         otherChoicesObject[otherIndex].originalTopInPx = eachOtherDims.top - wrapperDivDimensions.top;
@@ -1554,7 +1564,11 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
 
       console.log('in create_edit_document, test for choicebutton width and height dragChoice, main function, wrapperDivDimensions, backgroundDimensions, after ', wrapperDiv.getBoundingClientRect(), wrapperDiv.parentElement.getBoundingClientRect());
 
-      const choiceIndex = parseInt(choiceButton.getAttribute('name').split(',')[1], 10);
+      // const choiceIndex = parseInt(choiceButton.getAttribute('name').split(',')[1], 10);
+
+      const choiceTopAdjustment = 1;
+      const choiceLeftAdjustment = 1;
+
       // Iterate through each element;
       _.each(iteratedElements, eachElement => {
         // Get dimensions in px for each element;
@@ -1574,6 +1588,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         if (elementIndex === choiceIndex) {
           top = `${((elementDimensions.top - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`
           left = `${((elementDimensions.left - backgroundDimensions.left) / backgroundDimensions.width) * 100}%`
+          console.log('in create_edit_document, test for choicebutton width and height dragChoice, closeDragElement, test for movement elementDimensions.top, elementDimensions.left, choiceButtonDimensions.top, choiceButtonDimensions.left', elementDimensions.top, elementDimensions.left, choiceButtonDimensions.top, choiceButtonDimensions.left);
           console.log('in create_edit_document, dragChoice, closeDragElement, inside if elementIndex == choiceIndex, elementIndex, choiceIndex: ', elementIndex, choiceIndex);
           width = `${(choiceButtonWidthInPx / backgroundDimensions.width) * 100}%`;
           height = `${(choiceButtonHeightInPx / backgroundDimensions.height) * 100}%`;
@@ -1613,7 +1628,6 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
             height: otherChoicesObject[elementIndex].heightInPx
           };
         }
-        console.log('in create_edit_document, test for choicebutton width and height dragChoice, closeDragElement, elementIndex, top, left, width, height', elementIndex, top, left, width, height);
         // console.log('in create_edit_document, test for choicebutton width and height dragChoice, closeDragElement, elementIndex, top, left, width, height', elementIndex, top, left, width, height);
         // Get the choice into an object mapped { 0: choice, 1: choice ...}
         newDocumentFieldChoices[elementIndex] = { ...choiceElement, top, left, width, height, width_px: widthPx, height_px: heightPx, top_px: topPx, left_px: leftPx }
@@ -1626,6 +1640,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
       // This will also be used for history with undo and redo
       // const lastWrapperDivDims = wrapperDiv.getBoundingClientRect();
       const lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
+      console.log('in create_edit_document, test for choicebutton width and height dragChoice, closeDragElement, test for movement wrapperDivDimensions.left, lastWrapperDivDimsPre.left, wrapperDivDimensions.left - lastWrapperDivDimsPre.left', wrapperDivDimensions.left, lastWrapperDivDimsPre.left, wrapperDivDimensions.left - lastWrapperDivDimsPre.left, wrapperDivDimensions.top, lastWrapperDivDimsPre.top, wrapperDivDimensions.top - lastWrapperDivDimsPre.top);
       const lastWrapperDivDims = setBoundaries(array, lastWrapperDivDimsPre, 0);
       console.log('in create_edit_document, dragChoice, closeDragElement, lastWrapperDivDims.left, lastWrapperDivDims.width: ', lastWrapperDivDims.left, lastWrapperDivDims.width);
       const updatedElementObject = {
@@ -1762,7 +1777,7 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     // console.log('in create_edit_document, handleButtonTemplateElementMove, elementName, ', elementName);
     const elementId = elementName.split(',')[0];
     const choiceIndex = parseInt(elementName.split(',')[1], 10);
-    let choiceButtonDimensions = {}
+    // let choiceButtonDimensions = {}
 
     const choiceButton = document.getElementById(`template-element-button-${elementId},${choiceIndex}`);
     const choiceButtonInState = this.props.templateElements[elementId].document_field_choices[choiceIndex]
@@ -1773,11 +1788,13 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     // To keep width and height of button elements from changing, keep track of width_px and height_px
     // in this.props.templateElements and pass to dragChoice
     console.log('in create_edit_document, test for choicebutton width and height handleButtonTemplateElementMove, choiceIndex, choiceButtonInState, choiceButtonDims ', choiceIndex, choiceButtonInState, choiceButtonDims);
-    if (choiceButtonInState.width_px) {
-      choiceButtonDimensions = { id: elementId, width: choiceButtonInState.width_px, height: choiceButtonInState.height_px };
-    } else {
-      choiceButtonDimensions = choiceButtonDims;
-    }
+    // if (choiceButtonInState.width_px) {
+    // choiceButtonDimensions = choiceButtonDims;
+    const choiceButtonDimensions = choiceButton.getBoundingClientRect();
+      // choiceButtonDimensions = { id: elementId, width: choiceButtonInState.width_px, height: choiceButtonInState.height_px };
+    // } else {
+      // choiceButtonDimensions = choiceButtonDims;
+    // }
 
     const innerDivDimensions = innerDiv.getBoundingClientRect();
     const wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
