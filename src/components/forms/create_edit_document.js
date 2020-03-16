@@ -1284,18 +1284,18 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
     let againstOtherLeft = false;
     let againstOtherRight = false;
 
-    let dimensionsObject = {};
-    let highestTopInPx = 0;
-    let lowestBottomInPx = 0;
-    let mostLeftInPx = 0;
-    let mostRightInPx = 0;
+    // let highestTopInPx = 0;
+    // let lowestBottomInPx = 0;
+    // let mostLeftInPx = 0;
+    // let mostRightInPx = 0;
 
     const setBoundaries = (elementsArray, newWrapperDims, adjustmentPx) => {
+     let dimensionsObject = {};
     // const setBoundaries = (elementsArray) => {
-     highestTopInPx = 10000; // set at really high value so first lower will be selected
-     lowestBottomInPx = 0;
-     mostLeftInPx = 10000;
-     mostRightInPx = 0;
+     let highestTopInPx = 10000; // set at really high value so first lower will be selected
+     let lowestBottomInPx = 0;
+     let mostLeftInPx = 10000;
+     let mostRightInPx = 0;
 
      _.each(elementsArray, elementDimensions => {
        // console.log('in create_edit_document, dragChoice, setBoundaries elementDimensions ', elementDimensions);
@@ -1395,8 +1395,8 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           modifiedwrapperDiv.style.height = `${((newWrapperDivDimensions.height + pos2) / backgroundDimensions.height) * 100}%`;
           modifiedwrapperDiv.style.top = `${((((parseFloat(modifiedwrapperDiv.style.top) / 100) * backgroundDimensions.height) - pos2) / backgroundDimensions.height) * 100}%`;
           // Set top and height of choice button element
-          modifiedChoiceButton.style.top = `${(((parseFloat(modifiedChoiceButton.style.top) / 100) * (newWrapperDivDimensions.height - TAB_HEIGHT)) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
-          // modifiedChoiceButton.style.top = '0%';
+          // modifiedChoiceButton.style.top = `${(((parseFloat(modifiedChoiceButton.style.top) / 100) * (newWrapperDivDimensions.height - TAB_HEIGHT)) / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
+          modifiedChoiceButton.style.top = '0%';
           // modifiedChoiceButton.style.top = '0%';
           modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           // Adjust height of other buttons since the wrapper div height will change
@@ -1477,8 +1477,8 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           modifiedwrapperDiv.style.width = `${((newWrapperDivDimensions.width + pos1) / backgroundDimensions.width) * 100}%`;
           modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
           // Set width and left of choiceBox left and keep pressing up
-          modifiedChoiceButton.style.left = `${(((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) / newWrapperDivDimensions.width) * 100}%`;
-          // modifiedChoiceButton.style.left = '0%';
+          // modifiedChoiceButton.style.left = `${(((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) / newWrapperDivDimensions.width) * 100}%`;
+          modifiedChoiceButton.style.left = '0%';
           modifiedChoiceButton.style.width = `${(choiceButtonWidthInPx / (newWrapperDivDimensions.width)) * 100}%`;
           // Set left and width of other elements within the wrapper
           _.each(Object.keys(otherChoicesObject), eachIndex => {
@@ -1601,10 +1601,14 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           topPx = otherChoicesObject[elementIndex].originalTopInPx;
           leftPx = otherChoicesObject[elementIndex].originalLeftInPx;
           adjElementDimensions = {
-            left: elementDimensions.left,
-            top: elementDimensions.top,
-            right: elementDimensions.left + otherChoicesObject[elementIndex].widthInPx,
-            bottom: elementDimensions.top + otherChoicesObject[elementIndex].heightInPx,
+            // left: elementDimensions.left,
+            left: otherChoicesObject[elementIndex].leftInPx,
+            top: otherChoicesObject[elementIndex].topInPx,
+            // top: elementDimensions.top,
+            right: otherChoicesObject[elementIndex].leftInPx + otherChoicesObject[elementIndex].widthInPx,
+            bottom: otherChoicesObject[elementIndex].topInPx + otherChoicesObject[elementIndex].heightInPx,
+            // right: elementDimensions.left + otherChoicesObject[elementIndex].widthInPx,
+            // bottom: elementDimensions.top + otherChoicesObject[elementIndex].heightInPx,
             width: otherChoicesObject[elementIndex].widthInPx,
             height: otherChoicesObject[elementIndex].heightInPx
           };
@@ -1615,14 +1619,15 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
         newDocumentFieldChoices[elementIndex] = { ...choiceElement, top, left, width, height, width_px: widthPx, height_px: heightPx, top_px: topPx, left_px: leftPx }
         oldDocumentFieldChoices[elementIndex] = choiceElement;
         // console.log('in create_edit_document, dragChoice, closeDragElement, newDocumentFieldChoices, oldDocumentFieldChoices: ', newDocumentFieldChoices, oldDocumentFieldChoices);
-        testArray.push(elementDimensions)
+        // testArray.push(elementDimensions)
         array.push(adjElementDimensions);
       });
       // Get an object to pass to action UPDATE_DOCUMENT_ELEMENT_LOCALLY.
       // This will also be used for history with undo and redo
       // const lastWrapperDivDims = wrapperDiv.getBoundingClientRect();
       const lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
-      const lastWrapperDivDims = setBoundaries(array, lastWrapperDivDimsPre, 1);
+      const lastWrapperDivDims = setBoundaries(array, lastWrapperDivDimsPre, 0);
+      console.log('in create_edit_document, dragChoice, closeDragElement, lastWrapperDivDims.left, lastWrapperDivDims.width: ', lastWrapperDivDims.left, lastWrapperDivDims.width);
       const updatedElementObject = {
         id: elementId,
         top: `${((lastWrapperDivDims.topInPx - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`,
@@ -1866,8 +1871,10 @@ dragChoice(choiceButton, otherChoicesArray, wrapperDiv, choiceButtonDimensions, 
           // NOTE: get px of dimensions from box top, left etc.
           topInPx = ((parseFloat(eachChoice.top) / 100) * backgroundDim.height) - ((box.top) * backgroundDim.height);
           leftInPx = (((parseFloat(eachChoice.left) / 100) * backgroundDim.width) - ((box.left) * backgroundDim.width));
-          widthInPx = eachChoice.width_px;
-          heightInPx = eachChoice.height_px;
+          // widthInPx = eachChoice.width_px;
+          // heightInPx = eachChoice.height_px;
+          widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
+          heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
           // widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
           // heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
           console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew: ', eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew);
