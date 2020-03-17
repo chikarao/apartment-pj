@@ -284,7 +284,7 @@ class DocumentChoicesTemplate extends Component {
         <div
         key={choice.val}
         type={choice.input_type}
-        name={`${choice.element_id},${choice.choice_index}`}
+        value={`${choice.element_id},${choice.choice_index}`}
         id={`template-element-button-${elementIdAndIndex}`}
         onMouseDown={this.props.handleButtonTemplateElementMove()}
         onClick={this.props.handleButtonTemplateElementClick()}
