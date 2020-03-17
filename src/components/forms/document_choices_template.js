@@ -38,14 +38,17 @@ class DocumentChoicesTemplate extends Component {
     let elementChanged = false;
     let valueUpdated = false;
     let choiceSelectedUnselected = false;
+
     if (this.props.selectedChoiceIdArray) {
       choiceSelectedUnselected = this.props.selectedChoiceIdArray.length !== nextProps.selectedChoiceIdArray.length;
     }
 
     const editFieldOnChanged = nextProps.editFieldsOn !== this.props.editFieldsOn;
 
-    if (this.props.editTemplate) elementChanged = nextProps.eachElement !== this.props.eachElement
+    if (this.props.editTemplate) elementChanged = nextProps.eachElement !== this.props.eachElement;
+
     valueUpdated = nextProps.input.value != this.props.input.value;
+
     return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
   }
 
