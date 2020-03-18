@@ -2578,10 +2578,10 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
           let baseChoiceHeightPx = null;
           let attribute = null;
 
-          const alignObject = { vertical: { choiceAttr: 'top', backAttr: 'height', baseAttrPx: baseChoiceTopPx, changeAttrPx: changeInTopPx },
-                                horizontal: { choiceAttr: 'left', backAttr: 'width', baseAttrPx: baseChoiceLeftPx, changeAttrPx: changeInLeftPx },
-                                width: { choiceAttr: 'width', backAttr: 'width', baseAttrPx: baseChoiceWidthPx, changeAttrPx: changeInWidthPx },
-                                height: { choiceAttr: 'height', backAttr: 'height', baseAttrPx: baseChoiceHeightPx, changeAttrPx: changeInHeightPx },
+          const alignObject = { vertical: { choiceAttr: 'top', backAttr: 'height', baseAttrPx: null, changeAttrPx: null },
+                                horizontal: { choiceAttr: 'left', backAttr: 'width', baseAttrPx: null, changeAttrPx: null },
+                                width: { choiceAttr: 'width', backAttr: 'width', baseAttrPx: null, changeAttrPx: null },
+                                height: { choiceAttr: 'height', backAttr: 'height', baseAttrPx: null, changeAttrPx: null },
                               }
           _.each(this.state.selectedChoiceIdArray, eachChoiceId => {
             // if (eachChoiceId !== this.state.selectedChoiceIdArray[0]) {
@@ -2649,7 +2649,11 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
                           attribute.changeAttrPx = attribute.baseAttrPx - eachDims[attribute.choiceAttr];
                         }
                       }
-                      each.style[attribute.choiceAttr] = `${(((parseInt(each.style[attribute.choiceAttr], 10) / 100) * wrapperDivDimensions[attribute.backAttr]) + attribute.changeAttrPx) / wrapperDivDimensions[attribute.backAttr]}%`;
+                      if (attribute.choiceAttr === 'top' || attribute.choiceAttr === 'height') {
+                        each.style[attribute.choiceAttr] = `${((((parseInt(each.style[attribute.choiceAttr], 10) / 100) * (wrapperDivDimensions[attribute.backAttr] - TAB_HEIGHT)) + attribute.changeAttrPx) / (wrapperDivDimensions[attribute.backAttr] - TAB_HEIGHT)) * 100}%`;
+                      } else {
+                        each.style[attribute.choiceAttr] = `${((((parseInt(each.style[attribute.choiceAttr], 10) / 100) * wrapperDivDimensions[attribute.backAttr]) + attribute.changeAttrPx) / wrapperDivDimensions[attribute.backAttr]) * 100}%`;
+                      }
                       console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set elementVal, eachChoiceIndex, each, attribute.choiceAttr, attribute.backAttr, attribute.changeAttrPx, each.style[attribute.choiceAttr], wrapperDivDimensions[attribute.backAttr]: ', elementVal, eachChoiceIndex, each, attribute.choiceAttr, attribute.backAttr, attribute.changeAttrPx, each.style[attribute.choiceAttr], wrapperDivDimensions[attribute.backAttr]);
                     }); //  end of _.each(changeChoicesArray, each
                     console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set elementVal, eachChoiceIndex, baseChoice, eachBaseChoiceInState, attribute.baseAttrPx, attribute.changeAttrPx, otherChoicesObject, changeChoicesArray: ', elementVal, eachChoiceIndex, baseChoice, eachBaseChoiceInState, attribute.baseAttrPx, attribute.changeAttrPx, otherChoicesObject, changeChoicesArray);
@@ -2659,6 +2663,8 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
                     otherChoicesObject = {};
                     otherChoicesArray = [];
                     changeChoicesArray = [];
+                    attribute.changeAttrPx = 0;
+                    attribute.baseAttrPx = 0;
               } // end of if (alignControlArray.indexOf(eachElementId
           }); // end of each selectedChoiceIdArray
           //iamhere
