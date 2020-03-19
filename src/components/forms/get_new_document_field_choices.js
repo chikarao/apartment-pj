@@ -42,7 +42,8 @@ export default (props) => {
       parentElement = templateElements[elementId];
       // Get the document_field_choice for eachElement
       choiceElement = parentElement.document_field_choices[elementIndex];
-      // console.log('in create_edit_document, dragChoice, closeDragElement, eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, choiceButtonDimensions, wrapperDivDimensions, innerDiv, innerDivDimensions, backgroundDimensions);
+
+      console.log('in get_new_document_field_choices, eachElement, elementDimensions, otherChoicesObject, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, backgroundDimensions);
       // Get the values in percentages i.e. 5% NOT 0.05
       // Use original px values to avoid shrinking after each move
       if (elementIndex === choiceIndex) {

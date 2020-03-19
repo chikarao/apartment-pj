@@ -4,13 +4,14 @@ import _ from 'lodash';
 export default (props) => {
   const {
     wrapperDiv,
-    wrapperDivDimensions, 
+    wrapperDivDimensions,
     otherChoicesArray,
     templateElements,
     backgroundDimensions,
+    notDrag
   } = props;
 
-  const otherChoicesObject = {};
+  let otherChoicesObject = {};
 
   let otherIndex = null;
   let eachOtherDims = null;
@@ -42,6 +43,21 @@ export default (props) => {
     }
     otherChoicesObject[otherIndex].element = each;
   });
+
+  if (notDrag) {
+    otherChoicesObject = {};
+    _.each(otherChoicesArray, each => {
+      otherIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
+      otherChoicesObject[otherIndex] = {};
+      otherChoicesObject[otherIndex].widthInPx = ((parseFloat(each.style.width) / 100) * wrapperDivDimensions.width);
+      otherChoicesObject[otherIndex].heightInPx = (parseFloat(each.style.height) / 100) * wrapperDivDimensions.height;
+      otherChoicesObject[otherIndex].topInPx = (((parseFloat(each.style.top) / 100) * wrapperDivDimensions.height) + wrapperDivDimensions.top);
+      otherChoicesObject[otherIndex].leftInPx = (((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left);
+      otherChoicesObject[otherIndex].originalTopInPx = (((parseFloat(each.style.top) / 100) * wrapperDivDimensions.height) + wrapperDivDimensions.top);
+      otherChoicesObject[otherIndex].originalLeftInPx = (((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left);
+
+    }); // end of each otherChoicesArray
+  } // end of if notDrag
 
     return otherChoicesObject;
   };
