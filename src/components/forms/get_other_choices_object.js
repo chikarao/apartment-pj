@@ -56,26 +56,53 @@ export default (props) => {
   if (notDrag) {
     const baseChoiceIndex = parseInt(choiceButton.getAttribute('value').split(',')[1], 10);
     const baseChoiceInState = templateElements[elementId].document_field_choices[baseChoiceIndex];
+    const baseChoiceDims = choiceButton.getBoundingClientRect();
+    let topExistEach = false;
+    let topExistBase = baseChoiceInState.top;
+    let leftValue = null;
+    let topValue = null;
     // otherChoicesObject = {};
     _.each(otherChoicesArray, each => {
       otherIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
+      eachOtherDims = each.getBoundingClientRect();
 
       otherChoicesObject[otherIndex] = {};
       eachOtherInState = templateElements[elementId].document_field_choices[otherIndex];
+      topExistEach = eachOtherInState.top;
       // If choice is changed; incluced in the changeChoiceIndexArray
       if (changeChoiceIndexArray.indexOf(otherIndex) !== -1) {
-        console.log('in get_other_choices_object, if not drag otherChoicesArray, changeChoiceIndexArray, each: ', otherChoicesArray, changeChoiceIndexArray, each);
       // if the choice has been changed
         // otherChoicesObject[otherIndex].topInPx = (((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top);
         // otherChoicesObject[otherIndex].leftInPx = (((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left);
         // If align horizontal, take the left in state of the base choice, and if not take its own from state
         if (topLeft === 'left') {
-          otherChoicesObject[otherIndex].leftInPx = ((parseFloat(baseChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
-          otherChoicesObject[otherIndex].topInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
+          leftValue = topExistBase ?
+                      ((parseFloat(baseChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left
+                      :
+                      baseChoiceDims.left;
+          topValue = topExistEach ?
+                      ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top
+                      :
+                      eachOtherDims.top;
+
+         console.log('in get_other_choices_object, if not drag each, in topLeft === left leftValue, topValue, baseChoiceDims, eachOtherDims: ', each, leftValue, topValue, baseChoiceDims, eachOtherDims);
+          otherChoicesObject[otherIndex].leftInPx = leftValue;
+          // otherChoicesObject[otherIndex].leftInPx = ((parseFloat(baseChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
+          otherChoicesObject[otherIndex].topInPx = topValue;
+          // otherChoicesObject[otherIndex].topInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
         }
         if (topLeft !== 'left') {
-          otherChoicesObject[otherIndex].topInPx = ((parseFloat(baseChoiceInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
-          otherChoicesObject[otherIndex].leftInPx = ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
+          leftValue = topExistEach ?
+                      ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left
+                      :
+                      eachOtherDims.left;
+          topValue = topExistBase ?
+                    ((parseFloat(baseChoiceInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top
+                    :
+                    baseChoiceDims.top;
+          console.log('in get_other_choices_object, if not drag each, in topLeft !== left leftValue, topValue, baseChoiceDims, eachOtherDims: ', each, leftValue, topValue, baseChoiceDims, eachOtherDims);
+          otherChoicesObject[otherIndex].topInPx = topValue;
+          otherChoicesObject[otherIndex].leftInPx = leftValue;
         }
         // otherChoicesObject[otherIndex].originalTopInPx = (parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height;
         // otherChoicesObject[otherIndex].originalLeftInPx = (parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width;
@@ -87,11 +114,20 @@ export default (props) => {
         console.log('in get_other_choices_object, if not drag in else otherChoicesArray, changeChoiceIndexArray, each: ', otherChoicesArray, changeChoiceIndexArray, each);
         // otherChoicesObject[otherIndex].widthInPx = (parseFloat(eachOtherInState.width) / 100) * backgroundDimensions.width;
         // otherChoicesObject[otherIndex].heightInPx = (parseFloat(eachOtherInState.height) / 100) * backgroundDimensions.height;
-        otherChoicesObject[otherIndex].topInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
-        otherChoicesObject[otherIndex].leftInPx = ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
-        otherChoicesObject[otherIndex].originalTopInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) - wrapperDivDimensions.top;
-        otherChoicesObject[otherIndex].originalLeftInPx = ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) - wrapperDivDimensions.left;
+        if (topExistEach) {
+          otherChoicesObject[otherIndex].topInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
+          otherChoicesObject[otherIndex].leftInPx = ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
+          otherChoicesObject[otherIndex].originalTopInPx = ((parseFloat(eachOtherInState.top) / 100) * backgroundDimensions.height) - wrapperDivDimensions.top;
+          otherChoicesObject[otherIndex].originalLeftInPx = ((parseFloat(eachOtherInState.left) / 100) * backgroundDimensions.width) - wrapperDivDimensions.left;
+        } else {
+          otherChoicesObject[otherIndex].topInPx = eachOtherDims.top;
+          otherChoicesObject[otherIndex].leftInPx = eachOtherDims.left;
+          otherChoicesObject[otherIndex].originalTopInPx = eachOtherDims.top - wrapperDivDimensions.top;
+          otherChoicesObject[otherIndex].originalLeftInPx = eachOtherDims.left - wrapperDivDimensions.left;
+        }
       }
+      // Width and height are already defined at creation of choice
+      // ie not driven by user click at creation of choice
       otherChoicesObject[otherIndex].widthInPx = (parseFloat(eachOtherInState.width) / 100) * backgroundDimensions.width;
       otherChoicesObject[otherIndex].heightInPx = (parseFloat(eachOtherInState.height) / 100) * backgroundDimensions.height;
     }); // end of each otherChoicesArray
