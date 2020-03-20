@@ -43,7 +43,6 @@ export default (props) => {
       // Get the document_field_choice for eachElement
       choiceElement = parentElement.document_field_choices[elementIndex];
 
-      console.log('in get_new_document_field_choices, eachElement, elementDimensions, otherChoicesObject, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, backgroundDimensions);
       // Get the values in percentages i.e. 5% NOT 0.05
       // Use original px values to avoid shrinking after each move
       if (elementIndex === choiceIndex) {
@@ -64,6 +63,7 @@ export default (props) => {
           height: choiceButtonHeightInPx
         };
       } else {
+        console.log('in get_new_document_field_choices, eachElement, in else elementDimensions, otherChoicesObject, backgroundDimensions: ', eachElement, elementDimensions, otherChoicesObject, backgroundDimensions);
         top = `${((otherChoicesObject[elementIndex].topInPx - backgroundDimensions.top) / backgroundDimensions.height) * 100}%`
         left = `${((otherChoicesObject[elementIndex].leftInPx - backgroundDimensions.left) / backgroundDimensions.width) * 100}%`
         width = `${(otherChoicesObject[elementIndex].widthInPx / backgroundDimensions.width) * 100}%`;
@@ -73,6 +73,7 @@ export default (props) => {
         topPx = otherChoicesObject[elementIndex].originalTopInPx;
         leftPx = otherChoicesObject[elementIndex].originalLeftInPx;
         adjElementDimensions = {
+          elementIndex,
           left: otherChoicesObject[elementIndex].leftInPx,
           top: otherChoicesObject[elementIndex].topInPx,
           right: otherChoicesObject[elementIndex].leftInPx + otherChoicesObject[elementIndex].widthInPx,
@@ -84,7 +85,8 @@ export default (props) => {
       // Get the choice into an object mapped { 0: choice, 1: choice ...}
       newDocumentFieldChoices[elementIndex] = { ...choiceElement, top, left, width, height, width_px: widthPx, height_px: heightPx, top_px: topPx, left_px: leftPx }
       oldDocumentFieldChoices[elementIndex] = choiceElement;
-      array.push(adjElementDimensions);
+      // array.push(adjElementDimensions);
+      array[elementIndex] = adjElementDimensions;
     });
 
     return { array, newDocumentFieldChoices, oldDocumentFieldChoices };

@@ -372,7 +372,7 @@ export default function (state = {
       // before: [{element}, {element}], after: { id: {element}, id: {element}}
       const templateElementsByPage = { ...state.templateElementsByPage };
       // let element;
-      const actionPayloadMapped = _.mapKeys(action.payload, 'id')
+      const actionPayloadMapped = _.mapKeys(action.payload, 'id');
       // get shallow copy of template elements
       const newUpdateObject = _.merge({}, state.templateElements);
       // Iterate through each of the elements in action payload
@@ -392,6 +392,20 @@ export default function (state = {
             newObj[eachKey] = obj[eachKey];
           }
         });
+
+        if (actionPayloadMapped[eachElementId].document_field_choices) {
+          const newChoiceObject = {};
+          // let newO = {}
+          _.each(Object.keys(actionPayloadMapped[eachElementId].document_field_choices), eachIndex => {
+            // newChoiceObject[eachIndex] = { ...actionPayloadMapped[eachElementId].document_field_choices[eachIndex] };
+            newChoiceObject[eachIndex] = {};
+            _.each(Object.keys(actionPayloadMapped[eachElementId].document_field_choices[eachIndex]), key => {
+              console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY actionPayloadMapped[eachElementId], eachIndex, key: ', actionPayloadMapped[eachElementId], eachIndex, key);
+              newChoiceObject[eachIndex][key] = actionPayloadMapped[eachElementId].document_field_choices[eachIndex][key];
+            })
+          });
+          newObj.document_field_choices = newChoiceObject;
+        }
         // assign the new object to shallow copy of state.templateElements
         // Needs to be new object so redux will find a new updated state.
         // ie cannot be ...state.templateElements

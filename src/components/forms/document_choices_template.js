@@ -34,8 +34,10 @@ class DocumentChoicesTemplate extends Component {
     // if (nextProps.meta.initial != this.props.meta.initial) {
     //   this.props.editHistory({ action: 'dirtyFieldCount', count: 1 })
     // }
-    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
+    // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
+    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
     let elementChanged = false;
+    let choicesChanged = false;
     let valueUpdated = false;
     let choiceSelectedUnselected = false;
 
@@ -45,11 +47,19 @@ class DocumentChoicesTemplate extends Component {
 
     const editFieldOnChanged = nextProps.editFieldsOn !== this.props.editFieldsOn;
 
-    if (this.props.editTemplate) elementChanged = nextProps.eachElement !== this.props.eachElement;
+    if (this.props.editTemplate) {
+      elementChanged = nextProps.eachElement !== this.props.eachElement
+      if (nextProps.eachElement.document_field_choices) {
+        choicesChanged = nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices;
+        // choicesChanged = nextProps.formFields !== this.props.formFields;
+        console.log('DocumentChoicesTemplate, test for 1a-0 shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices', nextProps.eachElement, this.props.eachElement, nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices);
+        // console.log('DocumentChoicesTemplate, test for 1a-0 shouldComponentUpdate nextProps.formFields, if editTemplate this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
+      }
+    };
 
     valueUpdated = nextProps.input.value != this.props.input.value;
 
-    return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
+    return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected || choicesChanged;
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -107,6 +117,7 @@ class DocumentChoicesTemplate extends Component {
     }
 
     if (this.props.selectedChoiceIdArray.indexOf(`${choice.element_id}-${choice.choice_index}`) !== -1) {
+      console.log('DocumentChoicesTemplate, test for 1a-0 getStyleOfButton, in if selectedChoiceIdArray name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
       elementStyle = { borderColor: 'green', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
