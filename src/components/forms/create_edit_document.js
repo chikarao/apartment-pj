@@ -2505,8 +2505,8 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         let baseChoice = null;
         let baseElementId = null;
         let baseChoiceIndex = null;
-        let choiceButtonDimensions = null;
-        let choiceButton = null;
+        // let choiceButtonDimensions = null;
+        // let choiceButton = null;
         if (this.state.selectedTemplateElementIdArray.length > 0) {
           baseElement = this.props.templateElements[this.state.selectedTemplateElementIdArray[0]];
         } else {
@@ -2514,8 +2514,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
           baseChoiceIndex = parseInt(this.state.selectedChoiceIdArray[0].split('-')[1], 10);
           baseElement = this.props.templateElements[baseElementId];
           baseChoice = this.props.templateElements[baseElementId].document_field_choices[baseChoiceIndex];
-          choiceButton = document.getElementById(`template-element-button-${baseElementId},${baseChoiceIndex}`);
-          choiceButtonDimensions = choiceButton.getBoundingClientRect();
+          // choiceButton = document.getElementById(`template-element-button-${baseElementId},${baseChoiceIndex}`);
         }
         // const baseElement = this.getElement(this.props.templateElements, firstClickedId);
         if (baseElement && aligningElement) {
@@ -2543,20 +2542,21 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         } // end of if baseElement
 
         if (baseChoice) {
-          // const array = [];
           // choiceButton is the first choice to be selected
-          let alignControlArray = [];
+          const alignControlArray = [];
           let changeChoiceIndexArray = [];
+          // !!!! choiceButton is the one that was clicked first and thus other choices align to it
           const choiceButton = document.getElementById(`template-element-button-${baseElementId},${baseChoiceIndex}`);
+          const choiceButtonDimensions = choiceButton.getBoundingClientRect();
           const wrapperDiv = choiceButton.parentElement.parentElement.parentElement;
           const backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
           const wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
-          const wrapperDivDimensions1 = {
-            top: ((parseFloat(baseElement.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
-            left: ((parseFloat(baseElement.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
-            height: ((parseFloat(baseElement.height) / 100) * backgroundDimensions.height) + TAB_HEIGHT,
-            width: (parseFloat(baseElement.width) / 100) * backgroundDimensions.width,
-          }
+          // const wrapperDivDimensions1 = {
+          //   top: ((parseFloat(baseElement.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
+          //   left: ((parseFloat(baseElement.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
+          //   height: ((parseFloat(baseElement.height) / 100) * backgroundDimensions.height) + TAB_HEIGHT,
+          //   width: (parseFloat(baseElement.width) / 100) * backgroundDimensions.width,
+          // }
           const lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
           let eachChoiceIndex = null;
           let eachElementId = null;
@@ -2595,40 +2595,46 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
                                 width: { choiceAttr: 'width', backAttr: 'width', baseAttrPx: null, changeAttrPx: null },
                                 height: { choiceAttr: 'height', backAttr: 'height', baseAttrPx: null, changeAttrPx: null },
                               }
+          // Iterate through each of the choices selected;
+          // Note, choices may be in difference wrappers
           _.each(this.state.selectedChoiceIdArray, eachChoiceId => {
             // if (eachChoiceId !== this.state.selectedChoiceIdArray[0]) {
               eachElementId = eachChoiceId.split('-')[0];
-              // If element has not been aligned
+              console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice this.state.selectedChoiceIdArray, eachChoiceId, alignControlArray: ', this.state.selectedChoiceIdArray, eachChoiceId, alignControlArray);
+              // If element (wrapper and its choices) has not been aligned
               if (alignControlArray.indexOf(eachElementId) === -1) {
                 // push eachElementId avoid doing the same element multiple times
                 alignControlArray.push(eachElementId);
                 eachChoiceIndex = parseInt(eachChoiceId.split('-')[1], 10);
                 eachElementInState = this.props.templateElements[eachElementId];
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice eachElementId, this.props.templateElements: ', eachElementId, this.props.templateElements);
                 eachBaseChoiceInState = this.props.templateElements[eachElementId].document_field_choices[eachChoiceIndex];
                 eachBaseChoice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIndex}`);
                 eachBaseChoiceDimensions = eachBaseChoice.getBoundingClientRect();
                 eachWrapperDiv = eachBaseChoice.parentElement.parentElement.parentElement;
                 eachWrapperDivDimensions = eachWrapperDiv.getBoundingClientRect();
-                const eachWrapperDivDimensions1 = {
-                  top: ((parseFloat(eachElementInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
-                  left: ((parseFloat(eachElementInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
-                  height: ((parseFloat(eachElementInState.height) / 100) * backgroundDimensions.height) + TAB_HEIGHT,
-                  width: (parseFloat(eachElementInState.width) / 100) * backgroundDimensions.width,
-                }
+                console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice eachElementId, this.props.templateElements, eachElementInState, eachElementInState.document_field_choices: ', eachElementId, this.props.templateElements, eachElementInState, eachElementInState.document_field_choices);
+                // const eachWrapperDivDimensions1 = {
+                //   top: ((parseFloat(eachElementInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
+                //   left: ((parseFloat(eachElementInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
+                //   height: ((parseFloat(eachElementInState.height) / 100) * backgroundDimensions.height) + TAB_HEIGHT,
+                //   width: (parseFloat(eachElementInState.width) / 100) * backgroundDimensions.width,
+                // }
 
                 _.each(Object.keys(eachElementInState.document_field_choices), eachIdx => {
-                  console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set elementVal, eachIdx, eachChoiceIndex, baseChoiceIndex: ', elementVal, eachIdx, eachChoiceIndex, baseChoiceIndex);
+                  console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice attribute set eachElementInState, eachElementInState.document_field_choices, eachIdx: ', eachElementInState, eachElementInState.document_field_choices, eachIdx);
+                  // console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice attribute set elementVal, eachIdx, eachChoiceIndex, baseChoiceIndex, this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) !== -1: ', elementVal, eachIdx, eachChoiceIndex, baseChoiceIndex, this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) !== -1);
                   // If choice not selected or not base (first selected), push into array to get obejct
-                  if (this.state.selectedChoiceIdArray.indexOf(`${baseElementId}-${eachIdx}`) === -1 || `${baseElementId}-${eachIdx}` === `${baseElementId}-${baseChoiceIndex}`) {
+                  if (this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) === -1 || `${eachElementId}-${eachIdx}` === `${baseElementId}-${baseChoiceIndex}`) {
                     // if (this.state.selectedChoiceIdArray.indexOf(`${baseElementId}-${eachIdx}`) === -1 && parseInt(eachIdx, 10) !== baseChoiceIndex) {
                     otherChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
                     otherChoicesArray.push(otherChoice);
-                  } else if (`${baseElementId}-${eachIdx}` !== `${baseElementId}-${baseChoiceIndex}`) {
+                    console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice attribute set elementVal, eachElementId, eachIdx, otherChoicesArray: ', elementVal, eachElementId, eachIdx, otherChoicesArray);
+                  } else if (`${eachElementId}-${eachIdx}` !== `${baseElementId}-${baseChoiceIndex}` && this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) !== -1) {
                     // else if the only highlighted choice in element is the first base choice,
                     // push choice into array for change
                     changeChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
                     changeChoicesArray.push(changeChoice)
+                    console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice attribute set elementVal, eachElementId, eachIdx, changeChoicesArray: ', elementVal, eachElementId, eachIdx, changeChoicesArray);
                   }
                 }); // end of _.each(Object.keys(eachElementInState.document_field_choices
                   // get the px values of each other object
@@ -2638,6 +2644,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
                   // _.each(Object)
                   // if (alignWhat === 'vertical') {
                 // Iterate through choices that are to be chnaged per element set
+                attribute = alignObject[alignWhat];
                 _.each(changeChoicesArray, each => {
                   console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice test of each choice changeChoicesArray, each.style: ', changeChoicesArray, each.style);
                   const idx = parseInt(each.getAttribute('value').split(',')[1], 10);
@@ -2648,7 +2655,6 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
                   // baseAttrPx is top in px, left in px, width in px...
                   // choiceAttr is top, left, width, height
                   // backAttr is height, width of backgroundDimensions
-                  attribute = alignObject[alignWhat];
                   // if baseChoice already has a top value, get top from state,
                   // otherwise use getBoundingClientRect
                   // if (baseChoice.top) {
@@ -2688,19 +2694,20 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
 
                 // }
                 // chnnge document field choices based on base choice
-                otherChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDiv.getBoundingClientRect(), notDrag: true, tabHeight: TAB_HEIGHT, widthHeight: false, changeChoiceIndexArray, choiceButton, topLeft: attribute.choiceAttr });
+                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv: ', otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv);
+                otherChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, baseWrapperDiv: wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDiv.getBoundingClientRect(), notDrag: true, tabHeight: TAB_HEIGHT, widthHeight: false, changeChoiceIndexArray, choiceButton, topLeft: attribute.choiceAttr });
                 // otherChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), notDrag: true });
                 const documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject, backgroundDimensions, choiceButtonWidthInPx, choiceButtonHeightInPx });
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set otherChoicesObject: ', otherChoicesObject);
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set documentFieldObject: ', documentFieldObject);
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice test of each choice documentFieldObject, wrapperDivDimensions, eachWrapperDivDimensions, wrapperDivDimensions1, eachWrapperDivDimensions1, backgroundDimensions: ', documentFieldObject, wrapperDivDimensions, eachWrapperDivDimensions, wrapperDivDimensions1, eachWrapperDivDimensions1, backgroundDimensions);
-                const array = documentFieldObject.array;
+                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set otherChoicesObject: ', eachElementId, otherChoicesObject);
+                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set eachElementId, documentFieldObject: ', eachElementId, documentFieldObject);
+                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice test of each choice documentFieldObject, wrapperDivDimensions, eachWrapperDivDimensions, backgroundDimensions: ', documentFieldObject, wrapperDivDimensions, eachWrapperDivDimensions, backgroundDimensions);
+                const eachChoicePxDimensionsArray = documentFieldObject.array;
                 // // New and old records of choices to be set in app stata in templateElements
                 // // get new and old document field choices
                 const newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
                 const oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
                 // // get wrapper dimensions
-                const lastWrapperDivDims = setBoundaries({ elementsArray: array, newWrapperDims: lastWrapperDivDimsPre, adjustmentPx: 0 });
+                const lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: lastWrapperDivDimsPre, adjustmentPx: 0 });
                 const updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
                 console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set updatedElementObject: ', updatedElementObject);
                 arrayForAction.push(updatedElementObject)

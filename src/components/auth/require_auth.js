@@ -11,14 +11,12 @@ export default function (AuthRequiredComponent) {
     // static PropTypes = {
       //React.PropTypes deprecated https://github.com/facebook/prop-types#prop-types
       router: PropTypes.object
-      // router: PropTypes.object
     }
     // context is just like props but skips levels in app
     // forces you to not abuse context by defining context types
     // if we want access to context router, need to define type object
     //static contextTypes = { allows anywhere else in app access to
     // authentication.contextTypes; console log this.context logs router:
-    // static defines property on class authentication, not instance
     // static defines property on class authentication, not instance
     // UPDATED to componentDidMount from componentWillMount
     componentDidMount() {
