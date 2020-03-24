@@ -993,6 +993,7 @@ renderEachDocumentField(page) {
       this.setState({
         // Push id into array in string type so as to enable temporary id with '1a' char in it
         selectedTemplateElementIdArray: [...this.state.selectedTemplateElementIdArray, elementVal],
+        selectedChoiceIdArray: [], // deselect any choice buttons if element selected
         newFontObject: { ...this.state.newFontObject, override: false }
       }, () => {
         // Get the font attributes of selected elements to show on the control box font button
@@ -1039,17 +1040,14 @@ renderEachDocumentField(page) {
     let pos2 = 0;
     let pos3 = 0;
     let pos4 = 0;
-    // console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
-    let originalX = 0;
-    let originalY = 0;
-    let lastX = 0;
-    let lastY = 0;
+
     let initialMove = false;
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
+      console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
       // if inputElements exists then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
@@ -1090,9 +1088,6 @@ renderEachDocumentField(page) {
       // get the mouse cursor position at startup:
       pos3 = e.clientX;
       pos4 = e.clientY;
-
-      originalX = pos3;
-      originalY = pos4;
       // assign close and drag callbacks to native handlers
       document.onmouseup = closeDragElement;
       // call a function whenever the cursor moves:
@@ -1168,8 +1163,6 @@ renderEachDocumentField(page) {
       document.onmouseup = null;
       document.onmousemove = null;
 
-      lastX = pos3;
-      lastY = pos4;
       let elementId = null;
       let deltaX = 0;
       let deltaY = 0;
@@ -1178,9 +1171,17 @@ renderEachDocumentField(page) {
       let allChoicesObject = null;
       let wrapperDiv = null;
       let choiceElement = null;
+      let documentFieldObject = null;
+      let eachChoicePxDimensionsArray = null;
+      let newDocumentFieldChoices = null;
+      let oldDocumentFieldChoices = null;
+      let lastWrapperDivDimsPre = null;
+      let wrapperDivDimensions = null;
+      let lastWrapperDivDimsBefore = null;
+      let lastWrapperDivDims = null;
       // const arrayForAction =
 
-      console.log('in create_edit_document, dragElement, closeDragElement, in each originalX, originalY, pos3, pos4, deltaX, deltaY, originalValueObject, ', originalX, originalY, pos3, pos4, deltaX, deltaY, originalValueObject);
+      console.log('in create_edit_document, dragElement, closeDragElement, in each, pos3, pos4, deltaX, deltaY, originalValueObject, ',pos3, pos4, deltaX, deltaY, originalValueObject);
 
       // Object to be sent to reducer in array below
       let updatedElementObject = null;
@@ -1194,44 +1195,48 @@ renderEachDocumentField(page) {
         _.each(interatedElements, (eachElement, i) => {
           elementId = eachElement.id.split('-')[2];
           if (templateElements[elementId].document_field_choices) {
+            // get change in x and y from the actual DOM elements moved by drag
             if (i === 0) {
               deltaX = ((parseFloat(interatedElements[0].style.left) / 100) * backgroundDimensions.width) - ((parseFloat(originalValueObject[elementId].left) / 100) * backgroundDimensions.width);
               deltaY = ((parseFloat(interatedElements[0].style.top) / 100) * backgroundDimensions.height) - ((parseFloat(originalValueObject[elementId].top) / 100) * backgroundDimensions.height);
             }
-
+            // Get the element stored in app state this.props.templateElements
             elementInState = templateElements[elementId];
-
+            // Get each choice in the dragged element into an array
             _.each(Object.keys(elementInState.document_field_choices), eachChoiceIdx => {
               choiceElement = document.getElementById(`template-element-button-${elementId},${eachChoiceIdx}`);
               choiceElementsArray.push(choiceElement);
             })
-
+            // Get the wrapper div of the choice
             wrapperDiv = choiceElement.parentElement.parentElement.parentElement;
 
             console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, backgroundDimensions, deltaX, deltaY, ', eachElement, inputElements, originalValueObject, backgroundDimensions, deltaX, deltaY);
             allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
-            console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, choiceElementsArray, allChoicesObject, ', eachElement, choiceElementsArray, allChoicesObject);
-            const documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
-            const eachChoicePxDimensionsArray = documentFieldObject.array;
+            documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
+            eachChoicePxDimensionsArray = documentFieldObject.array;
+            console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, documentFieldObject, allChoicesObject ', eachElement, documentFieldObject, allChoicesObject);
             // // New and old records of choices to be set in app stata in templateElements
             // // get new and old document field choices
-            const newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-            const oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
+            newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
+            oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
             // // get wrapper dimensions
-            const lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
-            const lastWrapperDivDims = {
-              topInPx: lastWrapperDivDimsPre.top,
-              leftInPx: lastWrapperDivDimsPre.left,
-              widthInPx: lastWrapperDivDimsPre.width,
-              heightInPx: lastWrapperDivDimsPre.height - TAB_HEIGHT
-            };
-            const wrapperDivDimensions = {
+            lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
+
+            wrapperDivDimensions = {
               top: ((parseFloat(originalValueObject[elementId].top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
               left: ((parseFloat(originalValueObject[elementId].left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
               width: (parseFloat(originalValueObject[elementId].width) / 100) * backgroundDimensions.width,
               height: ((parseFloat(originalValueObject[elementId].height) / 100) * backgroundDimensions.height) - TAB_HEIGHT,
             }
-              // const lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: lastWrapperDivDimsPre, adjustmentPx: 0 });
+
+            lastWrapperDivDimsBefore = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: lastWrapperDivDimsPre, adjustmentPx: 0 });
+
+            lastWrapperDivDims = {
+                topInPx: lastWrapperDivDimsBefore.top,
+                leftInPx: lastWrapperDivDimsBefore.left,
+                widthInPx: lastWrapperDivDimsBefore.width,
+                heightInPx: lastWrapperDivDimsBefore.height + TAB_HEIGHT
+              };
             updatedElementObject = getUpdatedElementObject({ elementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
             console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject);
             array.push(updatedElementObject)
@@ -1246,8 +1251,7 @@ renderEachDocumentField(page) {
             //   o_top: originalValueObject[eachElement.id.split('-')[2]].top,
             //   action: 'update'
             // };
-
-          } else {
+          } else { // else of if (templateElements[elementId].document_field_choices
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
               id: elementId, // get the id part of template-element-[id]
@@ -1261,39 +1265,34 @@ renderEachDocumentField(page) {
           // place in array to be processed in action and reducer
           array.push(updatedElementObject);
         }); //  end of  _.each(interatedElements
-
-        // _.each(choiceElementArray, eachChoiceElement => {
-        //   const eachChoiceArray = [];
-        //   _.each(Object.keys(eachChoiceElement))
-        //   // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), notDrag: true });
-        //
-        //   allChoicesObject = {};
-        //   otherChoicesArray = [];
-        //   changeChoicesArray = [];
-        //   changeChoiceIndexArray = [];
-        // })
         // gotodragelement
-      } else {
+      } else { // else of if move
         // if not move (resize) send object to update
         // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
         // to adjust input element height and avoid wrapping div height at render
         // the actual size of the input element to be updated in app state
+        let inputElement = null;
+        let inputElementDimensions = null;
+
         _.each(interatedElements, eachElement => {
-          const inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
-          const inputElementDimensions = inputElement[0].getBoundingClientRect()
-          // oWidth and oHeight for original values for use in history
-          updatedElementObject = {
-            // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
-            id: eachElement.id.split('-')[2], // get the id part of template-element-[id]
-            width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
-            height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
-            o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
-            o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
-            action: 'update',
-          };
-          // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
-          // place in array to be processed in action and reducer
-          array.push(updatedElementObject);
+          elementId = eachElement.id.split('-')[2]
+          inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
+          inputElementDimensions = inputElement[0].getBoundingClientRect()
+          // if (!templateElements[elementId].document_field_choices) {
+            // oWidth and oHeight for original values for use in history
+            updatedElementObject = {
+              // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
+              id: elementId, // get the id part of template-element-[id]
+              width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
+              height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
+              o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
+              o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
+              action: 'update',
+            };
+            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
+            // place in array to be processed in action and reducer
+            array.push(updatedElementObject);
+          // }
         });
       } // end of else
       // console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
@@ -1302,7 +1301,8 @@ renderEachDocumentField(page) {
     }
   }
 
-dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, templateElements, callback) {
+dragChoice(props) {
+  const { choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, templateElements, actionCallback } = props;
   // ************************************
   // IMPORTANT: The basic idea of this function is to draw the wrapper
   // around the choice buttons which start with width and height % against the background;
@@ -1711,23 +1711,29 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         //   action: 'update'
         // };
         // Callback for updating state and writing history
-        callback([updatedElementObject]);
+        actionCallback([updatedElementObject]);
       }
     } // end of if choiceMoved
 }
 
   // Gets the actual elements (not just ids) of selected elements in handlers resize and mvoe
-  getSelectedActualElements(elementIdString, ids) {
+  getSelectedActualElements(elementIdString, ids, resize) {
     const array = [];
     _.each(ids, id => {
-      array.push(document.getElementById(`${elementIdString}${id}`));
+      if (resize) {
+        if (!this.props.templateElements[id].document_field_choices) {
+          array.push(document.getElementById(`${elementIdString}${id}`));
+        }
+      } else {
+        array.push(document.getElementById(`${elementIdString}${id}`));
+      }
     });
+    console.log('in create_edit_document, getSelectedActualElements, elementIdString, ids, resize, array, ', elementIdString, ids, resize, array);
     return array;
   }
 
   handleTemplateElementMoveClick(event) {
     // For dragging and moving template elements; Use with dragElement function
-    // let selectedElementsId = [];
     let selectedElements = [];
     const clickedElement = event.target;
     // elementVal is id or id of template element
@@ -1737,7 +1743,6 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     const backgroundDimensions = element.parentElement.getBoundingClientRect();
     // Get the dimensions of the parent element
     const parentRect = element.parentElement.getBoundingClientRect()
-    // console.log('in create_edit_document, handleTemplateElementMoveClick, parentRect ', parentRect);
     // define callback to be called in dragElement closeDragElement
     const actionCallback = (updatedElementsArray) => {
       console.log('in create_edit_document, handleTemplateElementMoveClick, updatedElementsArray, ', updatedElementsArray);
@@ -1745,7 +1750,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
     // Get array of elements selected or checked by user
-    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
+    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, false)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
     // last true is for move or not; in this case this is for move element
@@ -1753,6 +1758,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
   }
 
   handleTemplateElementChangeSizeClick(event) {
+    // gotoresize
     // For dragging and resizing template elements
     let selectedElements = [];
     let inputElements = [];
@@ -1765,33 +1771,28 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     // gets the wrapping div for the template element;
     // This is the base element for attribute changes
     const element = document.getElementById(`template-element-${elementVal}`);
-    // const inputElement = document.getElementById(`template-element-input-${elementVal}`);
     // Get the actual input elements so they can be resized directly
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       // If multiple elements selected, get array of multiple input elements
-      inputElements = this.getSelectedActualElements('template-element-input-', this.state.selectedTemplateElementIdArray)
-      // const tab = document.getElementById(`template-element-tab-${elementVal}`);
+      inputElements = this.getSelectedActualElements('template-element-input-', this.state.selectedTemplateElementIdArray, true)
       // Get array of tabs attached to elements so marginLeft can be set dynamically
-      tabs = this.getSelectedActualElements('template-element-tab-', this.state.selectedTemplateElementIdArray)
+      tabs = this.getSelectedActualElements('template-element-tab-', this.state.selectedTemplateElementIdArray, true)
     } else {
       // If no other elements are selected, just put the one element into an array
       inputElements = [document.getElementById(`template-element-input-${elementVal}`)];
       // Place the one tab into an array
       tabs = [document.getElementById(`template-element-tab-${elementVal}`)];
     }
-    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElements, elementVal, ', inputElements, elementVal);
-    // console.log('in create_edit_document, handleTemplateElementChangeSizeClick, inputElements, tabs, ', inputElements, tabs);
-    // gets the dimensions of the parent element (document background)
+    // Gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
-    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray)
-    // callback for the action to update element array, and to update history array and historyIndex
+    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, true)
+    // Callback for the action to update element array, and to update history array and historyIndex
     const actionCallback = (updatedElementsArray) => {
       this.props.updateDocumentElementLocally(updatedElementsArray);
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
     // Call drag element
-    this.dragElement({ element, tabs, inputElements, parentRect, actionCallback, move: false, elementType, selectedElements, backgroundDimensions: null });
-    // element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements
+    this.dragElement({ element, tabs, inputElements, parentRect, actionCallback, move: false, elementType, selectedElements, backgroundDimensions: null, templateElements: this.props.templateElements });
   }
 
   handleButtonTemplateElementClick(event) {
@@ -1801,15 +1802,18 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     const choiceIndex = elementVal.split(',')[1];
 
     if (this.state.selectedChoiceIdArray.indexOf(`${elementId}-${choiceIndex}`) === -1) {
-      this.setState({ selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`] }, () => {
-        console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
+      this.setState({
+        selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`],
+        selectedTemplateElementIdArray: []
+      }, () => {
+        // console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
       });
     } else {
       const newArray = [...this.state.selectedChoiceIdArray];
       const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
       newArray.splice(index, 1);
       this.setState({ selectedChoiceIdArray: newArray }, () => {
-        console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
+        // console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
       });
     }
   }
@@ -1818,12 +1822,10 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     const clickedElement = event.target;
     // const elementName = clickedElement.getAttribute('name')
     const elementVal = clickedElement.getAttribute('value')
-    // console.log('in create_edit_document, handleButtonTemplateElementMove, elementVal, ', elementVal);
     const choiceId = elementVal.split(',')[0];
     const choiceIndex = parseInt(elementVal.split(',')[1], 10);
     const choiceButton = document.getElementById(`template-element-button-${choiceId},${choiceIndex}`);
     const wrapperDiv = choiceButton.parentElement.parentElement.parentElement;
-    // const choiceButtonInState = this.props.templateElements[choiceId].document_field_choices[choiceIndex]
     const tab = document.getElementById(`template-element-tab-${choiceId}`)
     const choiceButtonDims = choiceButton.getBoundingClientRect();
     // To keep width and height of button elements from changing, keep track of width_px and height_px
@@ -1834,27 +1836,21 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     const documentFieldChoices = this.props.templateElements[choiceId].document_field_choices;
     const otherChoicesArray = [];
     let button = null;
+    // Get choices that have not been selected into an array
     _.times(Object.keys(documentFieldChoices).length, (i) => {
       if (i !== parseInt(choiceIndex, 10)) {
         button = document.getElementById(`template-element-button-${choiceId},${i}`);
         otherChoicesArray.push(button);
       }
     });
-
-    const callback = (updatedElementsArray) => {
+    // Callback to be called at the end of move
+    const actionCallback = (updatedElementsArray) => {
       this.props.updateDocumentElementLocally(updatedElementsArray);
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
-      // const newArray = [...this.state.selectedChoiceIdArray];
-      // const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
-      // newArray.splice(index, 1);
-      // this.setState({ selectedChoiceIdArray: newArray }, () => {
-      //   console.log('in create_edit_document, handleButtonTemplateElementMove, mouseUpFunc, in setState, this.state.selectedChoiceIdArray, ', this.state.selectedChoiceIdArray);
-      //   // window.removeEventListener('mouseup', mouseUpFunc);
-      // });
     };
 
     console.log('in create_edit_document, handleButtonTemplateElementMove, choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray: ', choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray);
-    this.dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, this.props.templateElements, callback);
+    this.dragChoice({ choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, templateElements: this.props.templateElements, actionCallback });
   }
 
   // For creating new input fields
@@ -1867,8 +1863,8 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     let localTemplateElementsByPage = null;
 
     const renderTab = (eachElement, selected, tabLeftMarginPx) => {
-    const tabWidth = inputElement ? TAB_WIDTH : 55;
-    const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+      const tabWidth = inputElement ? TAB_WIDTH : 55;
+      const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
       return (
         <div
           id={`template-element-tab-${eachElement.id}`}
@@ -1901,7 +1897,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         </div>
       );
     };
-
+    // Function to get object used in document_choices_template.js to render fields
     const getLocalTemplateElementsByPage = (eachElement, box, backgroundDim, marginBetween, isNew) => {
       const { document_field_choices } = eachElement;
       const object = { [eachElement.page]: { [eachElement.id]: { choices: {} } } };
@@ -1913,26 +1909,17 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
       let heightInPx = null;
       let topInPx = null;
       let leftInPx = null;
-      let elementRemoved = null;
       // let i = 0;
       let top = 0;
       console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
         _.each(document_field_choices, (eachChoice, i) => {
-          // elementRemoved = document.getElementById(`${eachElement.id},${i}`);
-          // if (elementRemoved) elementRemoved.remove();
           // Convert NaN to zero
           top = (currentTop / box.height) || 0;
           // NOTE: get px of dimensions from box top, left etc.
           topInPx = ((parseFloat(eachChoice.top) / 100) * backgroundDim.height) - ((box.top) * backgroundDim.height);
           leftInPx = (((parseFloat(eachChoice.left) / 100) * backgroundDim.width) - ((box.left) * backgroundDim.width));
-          // widthInPx = eachChoice.width_px;
-          // heightInPx = eachChoice.height_px;
           widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
           heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
-          // widthInPx = (parseFloat(eachChoice.width) / 100) * backgroundDim.width;
-          // heightInPx = (parseFloat(eachChoice.height) / 100) * backgroundDim.height;
-          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew: ', eachElement, eachChoice, topInPx, leftInPx, widthInPx, heightInPx, isNew);
-          console.log('in create_edit_document, renderTemplateElements, test for choicebutton width and height, getLocalTemplateElementsByPage, eachChoice, widthInPx, heightInPx, isNew: ', eachChoice, widthInPx, heightInPx, isNew);
 
           choicesObject[i] = {};
           choicesObject[i].val = eachChoice.val;
@@ -1941,11 +1928,6 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
           choicesObject[i].left = isNew ? '0.0%' : `${(leftInPx / ((box.width) * backgroundDim.width)) * 100}%`;
           choicesObject[i].width = isNew ? `${(parseFloat(eachChoice.width) / box.width) * 100}%` : `${(widthInPx / (box.width * backgroundDim.width)) * 100}%`;
           choicesObject[i].height = isNew ? `${(parseFloat(eachChoice.height) / box.height) * 100}%` : `${(heightInPx / (box.height * backgroundDim.height)) * 100}%`;
-          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, heightInPx, eachChoice.height, choicesObject[i].height, box.height, isNew: ', heightInPx, eachChoice.height, choicesObject[i].height, box.height, isNew);
-          console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, topInPx, eachChoice.top, choicesObject[i].top, box.top: ', topInPx, eachChoice.top, choicesObject[i].top, box.top);
-          // console.log('in create_edit_document, renderTemplateElements, test for choicebutton width and height, getLocalTemplateElementsByPage, : ', (parseFloat(choicesObject[i].width) / 100) * );
-          // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, topInPx, eachChoice.top, choicesObject[i].top, box.top: ', topInPx, eachChoice.top, choicesObject[i].top, box.top);
-          // choicesObject[i].top = `${(currentTop / box.height) * 100}%`;
 
           choicesObject[i].class_name = eachChoice.class_name;
           choicesObject[i].border_radius = eachChoice.border_radius;
@@ -1964,9 +1946,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
     // if (this.props.documentFields[page]) {
     // let count = 1;
     if (!documentEmpty) {
-      // const { templateElements } = this.props;
       // Map through each element
-      // return _.map(templateElements, eachElement => {
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -1991,11 +1971,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
           // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
           // Wait for the background to be rendered to get its dimensions
           if (editTemplate && background) {
-            // console.log('in create_edit_document, renderTemplateElements, in if editTemplate && background eachElement, selected, this.state.selectedTemplateElementIdArray: ', eachElement, selected, this.state.selectedTemplateElementIdArray);
-            // let tabPercentOfContainerH = 0;
-            // if (newElement || inputElement) {
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100;
-            // }
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(modifiedElement.width) / 100)
             let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             if (eachElementWidthPx < TAB_WIDTH) {
@@ -3120,6 +3096,7 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
             this.setState({
               allElementsChecked: true,
               selectedTemplateElementIdArray: checkAllArray,
+              selectedChoiceIdArray: [],
               newFontObject: { ...this.state.newFontObject, override: false },
               // selectedElementFontObject: fontObject.selectObject
             }, () => {
@@ -3140,7 +3117,8 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
             this.setState({
               selectedTemplateElementIdArray: [],
               allElementsChecked: false,
-              selectedElementFontObject: null
+              selectedElementFontObject: null,
+              selectedChoiceIdArray: []
             });
             break;
 
@@ -3516,9 +3494,17 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
   renderTemplateElementEditAction() {
     // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = Object.keys(this.props.templateElements).length
-    const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
+    const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0;
+    const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
+    // const choiceElementsIncluded = () => {
+    //   let count = 0;
+    //   _.each(this.state.selectedTemplateElementIdArray, eachId => {
+    //     if (this.props.templateElements[eachId].document_field_choices) count++;
+    //   });
+    //   return count > 0;
+    // };
     // NOTE: disableSave does not work after saving since initialValues have to be updated
     const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
     // const enableSave = !this.props.templateElements || _.isEmpty(this.state.modifiedPersistedElementsObject) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
@@ -3662,11 +3648,11 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={elementsChecked ? this.handleTrashClick : () => {}}
+          onClick={elementsChecked && !choicesChecked ? this.handleTrashClick : () => {}}
           name="Throw away field,top"
           value="trash"
         >
-          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked ? 'blue' : 'gray' }} name="Throw away field,top" className="far fa-trash-alt"></i>
+          <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} name="Throw away field,top" className="far fa-trash-alt"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -3677,12 +3663,12 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
             onMouseOver={this.handleMouseOverActionButtons}
             value="fontLarger"
             onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
-            style={{ color: elementsChecked ? 'blue' : 'gray' }}
+            style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
             name="Make font larger,bottom"
             className="fas fa-font"
           >
           </i>
-          <i name="Make font larger,bottom" style={{ color: elementsChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
+          <i name="Make font larger,bottom" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
@@ -3694,11 +3680,11 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
             onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
             value="fontSmaller"
             name="Make font smaller,bottom"
-            style={{ fontSize: '12px', padding: '3px', color: elementsChecked ? 'blue' : 'gray' }}
+            style={{ fontSize: '12px', padding: '3px', color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
             className="fas fa-font"
           >
           </i>
-          <i className="fas fa-sort-down" style={{ color: elementsChecked ? 'blue' : 'gray' }}></i>
+          <i className="fas fa-sort-down" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements-double"
@@ -3727,19 +3713,19 @@ dragChoice(choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, c
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+          onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
           name="Align field width,bottom"
           value="alignWidth"
         >
-          <i value="alignWidth" name="Align field width,bottom" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+          <i value="alignWidth" name="Align field width,bottom" style={{ color: multipleElementsChecked || multipleChoicesChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={multipleElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+          onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
           name="Align field height,bottom"
           value="alignHeight"
         >
-          <i value="alignHeight" name="Align field height,bottom" style={{ color: multipleElementsChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
+          <i value="alignHeight" name="Align field height,bottom" style={{ color: multipleElementsChecked || multipleChoicesChecked ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-v"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"

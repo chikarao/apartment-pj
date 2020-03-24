@@ -65,12 +65,13 @@ export default (props) => {
     const baseChoiceInState = templateElements[baseElementId].document_field_choices[baseChoiceIndex];
     const baseChoiceDims = choiceButton.getBoundingClientRect();
     const stateValExistBase = baseChoiceInState.top;
+    let stateValExistEach = false;
     // choicesObject = {};
     _.each(otherChoicesArray, each => {
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       eachChoiceDims = each.getBoundingClientRect();
 
-     choicesObject[choiceIndex] = {};
+      choicesObject[choiceIndex] = {};
       eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
       stateValExistEach = eachChoiceInState.top;
       // If choice is changed; incluced in the changeChoiceIndexArray
@@ -145,21 +146,25 @@ export default (props) => {
   if (elementDrag) {
     let stateValExistEach = false;
     _.each(otherChoicesArray, each => {
-      console.log('in get_other_choices_object, if not drag before return otherChoicesArray, each: ', otherChoicesArray, each);
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       choicesObject[choiceIndex] = {};
       eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
       eachChoiceDims = each.getBoundingClientRect();
       stateValExistEach = eachChoiceInState.top;
 
-      leftValue = stateValExistEach ?
-                  ((parseFloat(eachChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left + delta.left
-                  :
-                  eachChoiceDims.left;
-      topValue = stateValExistEach ?
-                  ((parseFloat(eachChoiceInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top + delta.top
-                  :
-                  eachChoiceDims.top;
+      // leftValue = stateValExistEach ?
+      //             ((parseFloat(eachChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left + delta.x
+      //             :
+      //             ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left
+      //             // eachChoiceDims.left;
+      // topValue = stateValExistEach ?
+      //             ((parseFloat(eachChoiceInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top + delta.y
+      //             :
+      //             ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top
+                  // eachChoiceDims.top;
+      leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;
+      topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top;
+      console.log('in get_other_choices_object, if not drag before return otherChoicesArray, each, eachChoiceInState, stateValExistEach, leftValue, topValue, delta.left, delta.top: ', otherChoicesArray, each, eachChoiceInState, stateValExistEach, leftValue, topValue, delta.left, delta.top);
 
       choicesObject[choiceIndex].topInPx = topValue;
       choicesObject[choiceIndex].leftInPx = leftValue;
@@ -167,6 +172,6 @@ export default (props) => {
       choicesObject[choiceIndex].heightInPx = (parseFloat(eachChoiceInState.height) / 100) * backgroundDimensions.height;
     }) // end of _.each(otherChoicesArray
   }
-  console.log('in get_other_choices_object, if not drag before return elementId, choicesObject, wrapperDiv, baseWrapperDiv: ', elementId, choicesObject, wrapperDiv, baseWrapperDiv);
+  console.log('in get_other_choices_object, if not drag before return elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions: ', elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions);
     return choicesObject;
   };
