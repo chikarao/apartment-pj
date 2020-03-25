@@ -24,6 +24,8 @@ import setBoundaries from './set_choice_wrapper_boundaries';
 import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
+
+import getUpdatedElementObjectSummary from './get_updated_element_object_summary'
 // import UploadForProfile from '../images/upload_for_profile';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
@@ -1043,6 +1045,8 @@ renderEachDocumentField(page) {
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
 
+    // const wrapperDivDimensions = parentRect;
+
     let initialMove = false;
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
@@ -1055,7 +1059,7 @@ renderEachDocumentField(page) {
           top: inputElementDimensions.top,
           left: inputElementDimensions.left,
           width: inputElementDimensions.width,
-          height: inputElementDimensions.height,
+          height: inputElementDimensions.height
         };
       });
     } else if (selectedElements.length > 0) {
@@ -1163,25 +1167,26 @@ renderEachDocumentField(page) {
       document.onmouseup = null;
       document.onmousemove = null;
 
-      let elementId = null;
+      let eachElementId = null;
       let deltaX = 0;
       let deltaY = 0;
-      const choiceElementsArray = [];
-      let elementInState = null;
-      let allChoicesObject = null;
-      let wrapperDiv = null;
       let choiceElement = null;
-      let documentFieldObject = null;
-      let eachChoicePxDimensionsArray = null;
-      let newDocumentFieldChoices = null;
-      let oldDocumentFieldChoices = null;
-      let lastWrapperDivDimsPre = null;
+      let wrapperDiv = null;
       let wrapperDivDimensions = null;
-      let lastWrapperDivDimsInPx = null;
-      let lastWrapperDivDims = null;
+      // const choiceElementsArray = [];
+      // let elementInState = null;
+      // let allChoicesObject = null;
+      // let documentFieldObject = null;
+      // let eachChoicePxDimensionsArray = null;
+      // let newDocumentFieldChoices = null;
+      // let oldDocumentFieldChoices = null;
+      // let lastWrapperDivDimsPre = null;
+      // let wrapperDivDimensions = null;
+      // let lastWrapperDivDimsInPx = null;
+      // let lastWrapperDivDims = null;
       // const arrayForAction =
 
-      console.log('in create_edit_document, dragElement, closeDragElement, in each, pos3, pos4, deltaX, deltaY, originalValueObject, ',pos3, pos4, deltaX, deltaY, originalValueObject);
+      console.log('in create_edit_document, dragElement, closeDragElement, in each, pos3, pos4, deltaX, deltaY, originalValueObject, ', pos3, pos4, deltaX, deltaY, originalValueObject);
 
       // Object to be sent to reducer in array below
       let updatedElementObject = null;
@@ -1193,54 +1198,64 @@ renderEachDocumentField(page) {
         // id is the index 2 (third element) in split array
         // the wrapper div top and left are same as input element top and left
         _.each(interatedElements, (eachElement, i) => {
-          elementId = eachElement.id.split('-')[2];
-          if (templateElements[elementId].document_field_choices) {
+          eachElementId = eachElement.id.split('-')[2];
+          if (templateElements[eachElementId].document_field_choices) {
             // get change in x and y from the actual DOM elements moved by drag
             if (i === 0) {
-              deltaX = ((parseFloat(interatedElements[0].style.left) / 100) * backgroundDimensions.width) - ((parseFloat(originalValueObject[elementId].left) / 100) * backgroundDimensions.width);
-              deltaY = ((parseFloat(interatedElements[0].style.top) / 100) * backgroundDimensions.height) - ((parseFloat(originalValueObject[elementId].top) / 100) * backgroundDimensions.height);
+              deltaX = ((parseFloat(interatedElements[0].style.left) / 100) * backgroundDimensions.width) - ((parseFloat(originalValueObject[eachElementId].left) / 100) * backgroundDimensions.width);
+              deltaY = ((parseFloat(interatedElements[0].style.top) / 100) * backgroundDimensions.height) - ((parseFloat(originalValueObject[eachElementId].top) / 100) * backgroundDimensions.height);
             }
             // Get the element stored in app state this.props.templateElements
-            elementInState = templateElements[elementId];
-            // Get each choice in the dragged element into an array
-            _.each(Object.keys(elementInState.document_field_choices), eachChoiceIdx => {
-              choiceElement = document.getElementById(`template-element-button-${elementId},${eachChoiceIdx}`);
-              choiceElementsArray.push(choiceElement);
-            })
+            // elementInState = templateElements[eachElementId];
+            // // Get each choice in the dragged element into an array
+            // _.each(Object.keys(elementInState.document_field_choices), eachChoiceIdx => {
+            //   choiceElement = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
+            //   choiceElementsArray.push(choiceElement);
+            // })
             // Get the wrapper div of the choice
+            choiceElement = document.getElementById(`template-element-button-${eachElementId},${0}`);
             wrapperDiv = choiceElement.parentElement.parentElement.parentElement;
-            // Get an object with element id and corresponding top, left, width and height in px
-            allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
-            // Get object with new and old document_field_choices and
-            // Object with top, left, width and height in px for setBoundaries function
-            documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
-            eachChoicePxDimensionsArray = documentFieldObject.array;
-            console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, documentFieldObject, allChoicesObject ', eachElement, documentFieldObject, allChoicesObject);
-            // // New and old records of choices to be set in app stata in templateElements
-            // // get new and old document field choices
-            newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-            oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-            // // get wrapper dimensions
-            // lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
-            // Get the old wrapper dimensions
+            // wrapperDivDimensions is the original wrapper dimensions, not after drag
             wrapperDivDimensions = {
-              top: ((parseFloat(originalValueObject[elementId].top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
-              left: ((parseFloat(originalValueObject[elementId].left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
-              width: (parseFloat(originalValueObject[elementId].width) / 100) * backgroundDimensions.width,
-              height: ((parseFloat(originalValueObject[elementId].height) / 100) * backgroundDimensions.height) - TAB_HEIGHT,
+              top: ((parseFloat(originalValueObject[eachElementId].top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
+              left: ((parseFloat(originalValueObject[eachElementId].left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
+              width: ((parseFloat(originalValueObject[eachElementId].width) / 100) * backgroundDimensions.width),
+              height: ((parseFloat(originalValueObject[eachElementId].height) / 100) * backgroundDimensions.height)
             }
-            // Get the new wrapper dimensions based on actual choice in DOM
-            lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-            lastWrapperDivDims = {
-                topInPx: lastWrapperDivDimsInPx.topInPx,
-                leftInPx: lastWrapperDivDimsInPx.leftInPx,
-                widthInPx: lastWrapperDivDimsInPx.widthInPx,
-                heightInPx: lastWrapperDivDimsInPx.heightInPx
-              };
+            updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, originalWrapperDivDimensions: wrapperDivDimensions, eachElementId, templateElements, elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
+            console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
+            // // Get an object with element id and corresponding top, left, width and height in px
+            // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
+            // // Get object with new and old document_field_choices and
+            // // Object with top, left, width and height in px for setBoundaries function
+            // documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
+            // eachChoicePxDimensionsArray = documentFieldObject.array;
+            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, documentFieldObject, allChoicesObject ', eachElement, documentFieldObject, allChoicesObject);
+            // // // New and old records of choices to be set in app stata in templateElements
+            // // // get new and old document field choices
+            // newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
+            // oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
+            // // // get wrapper dimensions
+            // // lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
+            // // Get the old wrapper dimensions
+            // wrapperDivDimensions = {
+            //   top: ((parseFloat(originalValueObject[eachElementId].top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
+            //   left: ((parseFloat(originalValueObject[eachElementId].left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
+            //   width: (parseFloat(originalValueObject[eachElementId].width) / 100) * backgroundDimensions.width,
+            //   height: ((parseFloat(originalValueObject[eachElementId].height) / 100) * backgroundDimensions.height) - TAB_HEIGHT,
+            // }
+            // // Get the new wrapper dimensions based on actual choice in DOM
+            // lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
+            // lastWrapperDivDims = {
+            //     topInPx: lastWrapperDivDimsInPx.topInPx,
+            //     leftInPx: lastWrapperDivDimsInPx.leftInPx,
+            //     widthInPx: lastWrapperDivDimsInPx.widthInPx,
+            //     heightInPx: lastWrapperDivDimsInPx.heightInPx
+            //   };
 
-            updatedElementObject = getUpdatedElementObject({ elementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-            console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
-            array.push(updatedElementObject)
+            // updatedElementObject = getUpdatedElementObject({ eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
+            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
+            // array.push(updatedElementObject)
 
             // choiceElementArray.push(eachElement);
             // updatedElementObject = {
@@ -1255,16 +1270,16 @@ renderEachDocumentField(page) {
           } else { // else of if (templateElements[elementId].document_field_choices
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
-              id: elementId, // get the id part of template-element-[id]
+              id: eachElementId, // get the id part of template-element-[id]
               left: eachElement.style.left,
               top: eachElement.style.top,
               o_left: originalValueObject[eachElement.id.split('-')[2]].left,
               o_top: originalValueObject[eachElement.id.split('-')[2]].top,
               action: 'update'
             };
-          }
+          }  // end of if (templateElements[elementId].document_field_choices
+            array.push(updatedElementObject);
           // place in array to be processed in action and reducer
-          array.push(updatedElementObject);
         }); //  end of  _.each(interatedElements
         // gotodragelement
       } else { // else of if move
@@ -1276,14 +1291,14 @@ renderEachDocumentField(page) {
         let inputElementDimensions = null;
 
         _.each(interatedElements, eachElement => {
-          elementId = eachElement.id.split('-')[2]
+          eachElementId = eachElement.id.split('-')[2]
           inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
           inputElementDimensions = inputElement[0].getBoundingClientRect()
           // if (!templateElements[elementId].document_field_choices) {
             // oWidth and oHeight for original values for use in history
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
-              id: elementId, // get the id part of template-element-[id]
+              id: eachElementId, // get the id part of template-element-[id]
               width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
               height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
               o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
@@ -1298,6 +1313,7 @@ renderEachDocumentField(page) {
       } // end of else
       // console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
       // Callback defined in resize and move handlers
+      console.log('in create_edit_document, dragElement, closeDragElement, before callback, array, ', array);
       actionCallback(array);
     }
   }
@@ -2479,37 +2495,39 @@ dragChoice(props) {
                 // Get the wrapper div and move it to the base top or left (Don't align width or height)
                 // All document_field_choices move along with it. Then save in app state
                 wrapperDiv = document.getElementById(`template-element-${eachElementId}`);
-                backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
+                // backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
                 wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
                 if (alignWhat === 'vertical') wrapperDiv.style.top = baseElement.top;
                 if (alignWhat === 'horizontal') wrapperDiv.style.left = baseElement.left;
 
-                _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
-                  choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
-                  choiceElementsArray.push(choice)
-                });
-                console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal choiceElementsArray: ', elementVal, choiceElementsArray);
-                allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT });
-                // Get object with new and old document_field_choices and
-                // Object with top, left, width and height in px for setBoundaries function
-                documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
-                eachChoicePxDimensionsArray = documentFieldObject.array;
-                // New and old records of choices to be set in app stata in templateElements
-                // get new and old document field choices
-                newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-                oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-                // get wrapper dimensions
-                // Get the new wrapper dimensions based on actual choice in DOM
-                lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-                lastWrapperDivDims = {
-                    topInPx: lastWrapperDivDimsInPx.topInPx,
-                    leftInPx: lastWrapperDivDimsInPx.leftInPx,
-                    widthInPx: lastWrapperDivDimsInPx.widthInPx,
-                    heightInPx: lastWrapperDivDimsInPx.heightInPx
-                  };
+                updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT })
 
-                updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-                console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
+                // _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
+                //   choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
+                //   choiceElementsArray.push(choice)
+                // });
+                // console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal choiceElementsArray: ', elementVal, choiceElementsArray);
+                // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT });
+                // // Get object with new and old document_field_choices and
+                // // Object with top, left, width and height in px for setBoundaries function
+                // documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
+                // eachChoicePxDimensionsArray = documentFieldObject.array;
+                // // New and old records of choices to be set in app stata in templateElements
+                // // get new and old document field choices
+                // newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
+                // oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
+                // // get wrapper dimensions
+                // // Get the new wrapper dimensions based on actual choice in DOM
+                // lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
+                // lastWrapperDivDims = {
+                //     topInPx: lastWrapperDivDimsInPx.topInPx,
+                //     leftInPx: lastWrapperDivDimsInPx.leftInPx,
+                //     widthInPx: lastWrapperDivDimsInPx.widthInPx,
+                //     heightInPx: lastWrapperDivDimsInPx.heightInPx
+                //   };
+
+                // updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
+                // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
                 array.push(updatedElementObject)
               } // end of if (!eachElement.document_field_choices
             } // end of if (eachElement && eachElement.id !== baseElement.id)
@@ -2630,21 +2648,22 @@ dragChoice(props) {
       // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       const array = [];
       const originalValueObject = {};
-      const moveIncrement = 10.1;
+      const moveIncrement = 1.0;
 
       let wrapperDiv = null;
       let backgroundDimensions = null;
       let wrapperDivDimensions = null;
-      let choice = null;
-      let choiceElementsArray = [];
-      let allChoicesObject = null;
-      let updatedElementObject = null;
-      let lastWrapperDivDims = null;
-      let lastWrapperDivDimsInPx = null;
-      let oldDocumentFieldChoices = null;
-      let newDocumentFieldChoices = null;
-      let eachChoicePxDimensionsArray = null;
-      let documentFieldObject = null;
+      // let wrapperDivDimensions = null;
+      // let choice = null;
+      // let choiceElementsArray = [];
+      // let allChoicesObject = null;
+      // let updatedElementObject = null;
+      // let lastWrapperDivDims = null;
+      // let lastWrapperDivDimsInPx = null;
+      // let oldDocumentFieldChoices = null;
+      // let newDocumentFieldChoices = null;
+      // let eachChoicePxDimensionsArray = null;
+      // let documentFieldObject = null;
 
 
       _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
@@ -2660,53 +2679,53 @@ dragChoice(props) {
           console.log('in create_edit_document, handleTemplateElementActionClick, moveElements() eachElement, direction: ', eachElement, direction);
 
           if (!eachElement.document_field_choices) {
-            // If the element has no document_field_choices
-            if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) - moveIncrement}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
-            if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${parseFloat(eachElement.left) + moveIncrement}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
-            if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) + moveIncrement}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
-            if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${parseFloat(eachElement.top) - moveIncrement}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
+            // If the element has no document_field_choices, push object in array for the action and reducer
+            if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
+            if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) + moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
+            if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) + moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
+            if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) - moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
           } else { // else of if (!eachElement.document_field_choices)
+            // Move the wrapper div and the choices will follow then get the new state values
             wrapperDiv = document.getElementById(`template-element-${eachElementId}`);
-            backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
             wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
+            backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
+            // wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
             if (direction === 'moveLeft') wrapperDiv.style.left = `${((((parseFloat(wrapperDiv.style.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`;
             if (direction === 'moveRight') wrapperDiv.style.left = `${((((parseFloat(wrapperDiv.style.left) / 100) * backgroundDimensions.width) + moveIncrement) / backgroundDimensions.width) * 100}%`;
             if (direction === 'moveDown') wrapperDiv.style.top = `${((((parseFloat(wrapperDiv.style.top) / 100) * backgroundDimensions.height) + moveIncrement) / backgroundDimensions.height) * 100}%`;
             if (direction === 'moveUp') wrapperDiv.style.top = `${((((parseFloat(wrapperDiv.style.top) / 100) * backgroundDimensions.height) - moveIncrement) / backgroundDimensions.height) * 100}%`;
             // if (direction === 'moveLeft') wrapperDiv.style.left = `${((((parseFloat(wrapperDiv.style.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`;
-            _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
-              choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
-              // if (direction === 'moveLeft') choice.style.left = `${((((parseFloat(choice.style.left) / 100) * wrapperDivDimensions.width) - moveIncrement) / wrapperDivDimensions.width) * 100}%`;
-              // if (direction === 'moveRight') choice.style.left = `${((((parseFloat(choice.style.left) / 100) * wrapperDivDimensions.width) + moveIncrement) / wrapperDivDimensions.width) * 100}%`;
-              // if (direction === 'moveDown') choice.style.top = `${((((parseFloat(choice.style.left) / 100) * wrapperDivDimensions.height) + moveIncrement) / wrapperDivDimensions.height) * 100}%`;
-              // if (direction === 'moveUp') choice.style.top = `${((((parseFloat(choice.style.left) / 100) * wrapperDivDimensions.height) - moveIncrement) / wrapperDivDimensions.height) * 100}%`;
-              choiceElementsArray.push(choice)
-            });
-            allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT });
-            console.log('in create_edit_document, handleTemplateElementActionClick, moveElements() elementVal choiceElementsArray, wrapperDiv.style.left: ', elementVal, choiceElementsArray, wrapperDiv.style.left);
-            // Get object with new and old document_field_choices and
-            // Object with top, left, width and height in px for setBoundaries function
-            documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
-            eachChoicePxDimensionsArray = documentFieldObject.array;
-            // New and old records of choices to be set in app stata in templateElements
-            // get new and old document field choices
-            newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-            oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-            // get wrapper dimensions
-            // Get the new wrapper dimensions based on actual choice in DOM
-            lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-            lastWrapperDivDims = {
-                topInPx: lastWrapperDivDimsInPx.topInPx,
-                leftInPx: lastWrapperDivDimsInPx.leftInPx,
-                widthInPx: lastWrapperDivDimsInPx.widthInPx,
-                heightInPx: lastWrapperDivDimsInPx.heightInPx
-              };
+            const updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, eachElementId, wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT })
 
-            updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-            console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
+            // _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
+            //   choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
+            //   choiceElementsArray.push(choice)
+            // });
+            // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT });
+            // console.log('in create_edit_document, handleTemplateElementActionClick, moveElements() elementVal choiceElementsArray, wrapperDiv.style.left: ', elementVal, choiceElementsArray, wrapperDiv.style.left);
+            // // Get object with new and old document_field_choices and
+            // // Object with top, left, width and height in px for setBoundaries function
+            // documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
+            // eachChoicePxDimensionsArray = documentFieldObject.array;
+            // // New and old records of choices to be set in app stata in templateElements
+            // // get new and old document field choices
+            // newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
+            // oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
+            // // get wrapper dimensions
+            // // Get the new wrapper dimensions based on actual choice in DOM
+            // lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
+            // lastWrapperDivDims = {
+            //     topInPx: lastWrapperDivDimsInPx.topInPx,
+            //     leftInPx: lastWrapperDivDimsInPx.leftInPx,
+            //     widthInPx: lastWrapperDivDimsInPx.widthInPx,
+            //     heightInPx: lastWrapperDivDimsInPx.heightInPx
+            //   };
+
+            // updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
+            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
             array.push(updatedElementObject)
 
-            choiceElementsArray = [];
+            // choiceElementsArray = [];
           } // end of else if eachElement.document_field_choices
         } // end of if (eachElement)
       }); // end of each
@@ -2819,18 +2838,21 @@ dragChoice(props) {
 
       const getOriginalAttributes = (lastActionArr) => {
         const array = [];
+        let withoutO = '';
         _.each(lastActionArr, eachObject => {
           // const eachModified = this.getNewElementObject(each);
           const object = {};
           _.each(Object.keys(eachObject), eachKey => {
+            console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachKey, eachKey[0] === o, eachKey[1] === _  : ', eachKey, eachKey[0] === 'o', eachKey[1] === '_');
             // if ((eachKey[0] === 'o' && eachKey[1] === eachKey[1].toUpperCase())) {
             if ((eachKey[0] === 'o' && eachKey[1] === '_')) {
               // substring is (inclusive, exclusive)
-              const withoutO = eachKey.substring(2, eachKey.length);
+              withoutO = eachKey.substring(2, eachKey.length);
               // const newKey = withoutO[0].toLowerCase() + withoutO.substring(1);
               // console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, getOriginalAttributes typeof eachKey, eachKey, newKey: ', typeof eachKey, eachKey, newKey);
               // object[newKey] = eachObject[eachKey];
               object[withoutO] = eachObject[eachKey];
+              console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
             }
 
             if (eachKey === 'id') {
@@ -2839,6 +2861,7 @@ dragChoice(props) {
           });
           array.push(object);
         });
+        console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create lastActionArr, array: ', lastActionArr, array);
         return array;
       };
       // if the last action taken was to craete an element,
@@ -2868,6 +2891,7 @@ dragChoice(props) {
         // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
         if (doWhatNow === 'undo') {
+          // gotoundo
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
