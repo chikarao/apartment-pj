@@ -17,7 +17,9 @@ export default (props) => {
     changeChoiceIndexArray,
     choiceButton,
     elementDrag,
-    delta
+    delta,
+    // for choice move
+    choiceMove
   } = props;
 
   const choicesObject = {};
@@ -127,13 +129,15 @@ export default (props) => {
     }); // end of each otherChoicesArray
   } // end of if notDrag
 
-  if (elementDrag) {
+  if (elementDrag || choiceMove) {
+    // For case of getting array of choices that have been moved and getting
+    // the PX values of each in object 
     let stateValExistEach = false;
     _.each(otherChoicesArray, each => {
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       choicesObject[choiceIndex] = {};
       eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
-      eachChoiceDims = each.getBoundingClientRect();
+      // eachChoiceDims = each.getBoundingClientRect();
       stateValExistEach = eachChoiceInState.top;
 
       leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;

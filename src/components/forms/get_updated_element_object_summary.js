@@ -8,7 +8,6 @@ import getOtherChoicesObject from './get_other_choices_object';
 
 export default (props) => {
   // Function takes eachElementId and outputs a new object to send to reducer
-  // const setBoundaries = (elementsArray, props.newWrapperDims, props.adjustmentPx) => {
   const {
     eachElementId,
     // eachElement, // from state, not DOM
@@ -21,6 +20,7 @@ export default (props) => {
     tabHeight,
     elementDrag,
     delta,
+    notDrag
     // newDocumentFieldChoices,
     // oldDocumentFieldChoices
   } = props;
@@ -44,6 +44,7 @@ export default (props) => {
   const eachElement = templateElements[eachElementId];
   const wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
   const backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
+
 
   _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
     choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
