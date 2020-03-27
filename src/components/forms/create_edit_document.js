@@ -84,6 +84,7 @@ class CreateEditDocument extends Component {
       modifiedPersistedElementsObject: {},
       originalPersistedTemplateElements: {},
       selectedChoiceIdArray: [],
+      renderChoiceEditButtonDivs: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -2728,9 +2729,6 @@ dragChoice(props) {
               eachWrapperDivDimensions = eachWrapperDiv.getBoundingClientRect();
             } // end of if (alignControlArray.indexOf(eachElementId) === -1) {
               // Attribute is like moveObject[moveLeft] = { choicAttr: top...}
-              // const attribute = moveObject[direction];
-
-              // changeChoiceIndexObject[eachElementId] = { indexes: [] };
             _.each(Object.keys(eachElementInState.document_field_choices), eachIdx => {
               // If choice not selected or not base (first selected), push into array to get obejct
               // If the element and choice index are not in the selectedChoiceIdArray, push into other choice array
@@ -2739,32 +2737,22 @@ dragChoice(props) {
                 otherChoicesArray.push(otherChoice);
               } else if (this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) !== -1) {
                 // else if the element and choice are included in selectedChoiceIdArray
-                // push choice into array for change
+                // get choice from DOM push choice into array for change
                 changeChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
-                // if (direction === 'moveLeft') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) - moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
-                // if (direction === 'moveRight') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) + moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
-                // if (direction === 'moveDown') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) + moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
-                // if (direction === 'moveUp') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) - moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
-
-                console.log('in create_edit_document, moveElement, in each eachIdx, direction, moveIncrement, changeChoice, eachWrapperDiv, eachWrapperDivDimensions, backgroundDimensions', direction, moveIncrement, changeChoice.style.left, eachWrapperDiv, eachWrapperDivDimensions, backgroundDimensions);
                 changeChoicesArray.push(changeChoice)
                 changeChoiceIndexArray.push(parseInt(eachIdx, 10));
-                // changeChoiceIndexObject[eachElementId].indexes.push(parseInt(eachIdx, 10));
-                // changeChoiceIndexObject[eachElementId].wrapperDims = eachWrapperDivDimensions;
               }
             }); // end of _.each(Object.keys(eachElementInState.document_field_choices
               direction === 'moveLeft' || direction === 'moveUp' ? moveIncrement = -moveIncrement : null;
-              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement changeChoiceIndexArray, changeChoicesArray, otherChoicesArray: ', changeChoiceIndexArray, changeChoicesArray, otherChoicesArray);
+              // Get object with PX values of each choice
               allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight: TAB_HEIGHT, widthHeight: false, moveIncrement, direction, changeChoiceIndexArray });
-
-              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement direction, moveIncrement, allChoicesObject, wrapperDivDimensions: ', direction, moveIncrement, allChoicesObject, eachWrapperDivDimensions);
               documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
               eachChoicePxDimensionsArray = documentFieldObject.array;
-              // // // New and old records of choices to be set in app stata in templateElements
-              // // // get new and old document field choices
+              // New and old records of choices to be set in app stata in templateElements
+              // get new and old document field choices
               newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
               oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-              // // // get wrapper dimensions
+              // get wrapper dimensions
               lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
               updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
               console.log('in create_edit_document, handleTemplateElementActionClick, moveElement updatedElementObject: ', updatedElementObject);
@@ -2773,6 +2761,7 @@ dragChoice(props) {
               changeChoiceIndexArray = [];
               changeChoicesArray = [];
               otherChoicesArray = [];
+              // Change moveIncrement back to positive if negative
               moveIncrement = moveIncrement > 0 ? moveIncrement : -moveIncrement;
           }); // end of _.each(this.state.selectedChoiceIdArray
         }
@@ -3445,6 +3434,174 @@ dragChoice(props) {
     this.setFontControlBoxValues();
   }
 
+  renderChoiceOrElementDivs(props) {
+    const { templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject } = props;
+    const elementDivArray = [
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        // onMouseOver={this.handleMouseOverActionButtons}
+        name="Make font larger,bottom"
+      >
+        <i
+          onMouseOver={this.handleMouseOverActionButtons}
+          value="fontLarger"
+          onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
+          name="Make font larger,bottom"
+          className="fas fa-font"
+        >
+        </i>
+        <i name="Make font larger,bottom" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
+      </div>,
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        // onMouseOver={this.handleMouseOverActionButtons}
+        name="Make font smaller,bottom"
+      >
+        <i
+          onMouseOver={this.handleMouseOverActionButtons}
+          onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
+          value="fontSmaller"
+          name="Make font smaller,bottom"
+          style={{ fontSize: '12px', padding: '3px', color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
+          className="fas fa-font"
+        >
+        </i>
+        <i className="fas fa-sort-down" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}></i>
+      </div>,
+      <div
+        className="create-edit-document-template-edit-action-box-elements-double"
+        value="fontStyle"
+        // onMouseOver={this.handleMouseOverActionButtons}
+        // onClick={() => this.setState({ showFontControlBox: !this.state.showFontControlBox })}
+        onClick={this.handleShowFontControlBox}
+      >
+        <span
+          style={{
+            width: 'auto',
+            // fontSize: onlyFontAttributeObject.fontSize && parseFloat(onlyFontAttributeObject.fontSize) < 20 ? onlyFontAttributeObject.fontSize : '12px',
+            fontSize: '11.5px',
+            fontFamily: onlyFontAttributeObject.font_family ? onlyFontAttributeObject.font_family : this.state.newFontObject.font_family,
+            fontStyle: onlyFontAttributeObject.font_style ? onlyFontAttributeObject.font_style : this.state.newFontObject.font_style,
+            fontWeight: onlyFontAttributeObject.font_weight ? onlyFontAttributeObject.font_weight : this.state.newFontObject.font_weight,
+            color: elementsChecked ? 'blue' : 'gray',
+            padding: '10px 0 0 0',
+            overFlow: 'hidden'
+          }}
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Change font family and style,bottom"
+        >
+          {onlyFontAttributeObject.font_family ? `${(onlyFontAttributeObject.font_family).charAt(0).toUpperCase() + onlyFontAttributeObject.font_family.slice(1)}` : 'Font'}
+        </span>
+      </div>
+    ];
+
+    const choiceDivArray = [
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        name="Expand horizontally,bottom"
+        value="expandHorizontal"
+      >
+        <i
+          name="Expand horizontally,bottom"
+          value="expandHorizontal"
+          style={{ color: choicesChecked ? 'blue' : 'gray',  width: '14px' }}
+          onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseOver={this.handleMouseOverActionButtons}
+          className="fas fa-angle-left"
+        >
+        </i>
+        <i
+          name="Expand horizontally,bottom"
+          value="expandHorizontal"
+          style={{ color: choicesChecked ? 'blue' : 'gray',  width: '14px' }}
+          onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          className="fas fa-angle-right"
+        >
+        </i>
+      </div>,
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        name="Contract horizontally,bottom"
+        value="constractHorizontal"
+      >
+        <i
+          name="Contract horizontally,bottom"
+          value="contractHorizontal"
+          style={{ color: choicesChecked ? 'blue' : 'gray', width: '14px' }}
+          onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseOver={this.handleMouseOverActionButtons}
+          className="fas fa-angle-right"
+        >
+        </i>
+        <i
+          name="Contract horizontally,bottom"
+          value="contractHorizontal"
+          style={{ color: choicesChecked ? 'blue' : 'gray', width: '14px' }}
+          onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          className="fas fa-angle-left"
+        >
+        </i>
+      </div>,
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        name="Expand vertically,bottom"
+        value="expandVertical"
+        style={{ padding: '2px' }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <i
+            name="Expand vertically,bottom"
+            value="expandVertical"
+            style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
+            onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseOver={this.handleMouseOverActionButtons}
+            className="fas fa-angle-up"
+            >
+          </i>
+          <i
+            name="Expand vertically,bottom"
+            value="expandVertical"
+            style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
+            onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseOver={this.handleMouseOverActionButtons}
+            className="fas fa-angle-down"
+            >
+          </i>
+        </div>
+      </div>,
+      <div
+        className="create-edit-document-template-edit-action-box-elements"
+        name="Contract vertically,bottom"
+        value="contractVertical"
+        style={{ padding: '2px'}}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <i
+            name="Contract vertically,bottom"
+            value="expandVertical"
+            style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
+            onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseOver={this.handleMouseOverActionButtons}
+            className="fas fa-angle-down"
+            >
+          </i>
+          <i
+            name="Contract vertically,bottom"
+            value="contractVertical"
+            style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
+            onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseOver={this.handleMouseOverActionButtons}
+            className="fas fa-angle-up"
+          >
+          </i>
+        </div>
+      </div>
+    ];
+
+    return this.state.selectedChoiceIdArray.length > 0 ? choiceDivArray : elementDivArray
+  }
+
   renderTemplateElementEditAction() {
     // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = Object.keys(this.props.templateElements).length
@@ -3452,34 +3609,17 @@ dragChoice(props) {
     const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
-    // const choiceElementsIncluded = () => {
-    //   let count = 0;
-    //   _.each(this.state.selectedTemplateElementIdArray, eachId => {
-    //     if (this.props.templateElements[eachId].document_field_choices) count++;
-    //   });
-    //   return count > 0;
-    // };
     // NOTE: disableSave does not work after saving since initialValues have to be updated
     const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
-    // const enableSave = !this.props.templateElements || _.isEmpty(this.state.modifiedPersistedElementsObject) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
-    // disableSave = !this.props.formIsDirty;
     const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
     const enableRedo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1) && !this.state.createNewTemplateElementOn;
-    // const saveButtonActive = this.state.templateEditHistoryArray.length > 0;
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
-    // let onlyFontAttributeObject = this.state.newFontObject;
-    // if (this.state.newFontObject.override) onlyFontAttributeObject = this.state.newFontObject;
 
-
-    // const createNewTemplateElementOn = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
-    // console.log('in create_edit_document, renderTemplateElementEditAction, after each, (this.props.templateElements), this.state.allElementsChecked : ', this.props.templateElements, this.state.allElementsChecked);
     console.log('in create_edit_document, renderTemplateElementEditAction, this.props.formIsDirty : ', this.props.formIsDirty);
-    // console.log('in create_edit_document, renderTemplateElementEditAction, this.state.selectedElementFontObject : ', this.state.selectedElementFontObject);
-        // console.log('in create_edit_document, renderTemplateElementEditAction, after each, disableCheckAll : ', disableCheckAll);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -3608,63 +3748,8 @@ dragChoice(props) {
         >
           <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} name="Throw away field,top" className="far fa-trash-alt"></i>
         </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          // onMouseOver={this.handleMouseOverActionButtons}
-          name="Make font larger,bottom"
-        >
-          <i
-            onMouseOver={this.handleMouseOverActionButtons}
-            value="fontLarger"
-            onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
-            style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
-            name="Make font larger,bottom"
-            className="fas fa-font"
-          >
-          </i>
-          <i name="Make font larger,bottom" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          // onMouseOver={this.handleMouseOverActionButtons}
-          name="Make font smaller,bottom"
-        >
-          <i
-            onMouseOver={this.handleMouseOverActionButtons}
-            onClick={templateElementsLength > 0 && this.state.selectedTemplateElementIdArray.length > 0 ? this.handleTemplateElementActionClick : () => {}}
-            value="fontSmaller"
-            name="Make font smaller,bottom"
-            style={{ fontSize: '12px', padding: '3px', color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}
-            className="fas fa-font"
-          >
-          </i>
-          <i className="fas fa-sort-down" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}></i>
-        </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements-double"
-          value="fontStyle"
-          // onMouseOver={this.handleMouseOverActionButtons}
-          // onClick={() => this.setState({ showFontControlBox: !this.state.showFontControlBox })}
-          onClick={this.handleShowFontControlBox}
-        >
-          <span
-            style={{
-              width: 'auto',
-              // fontSize: onlyFontAttributeObject.fontSize && parseFloat(onlyFontAttributeObject.fontSize) < 20 ? onlyFontAttributeObject.fontSize : '12px',
-              fontSize: '11.5px',
-              fontFamily: onlyFontAttributeObject.font_family ? onlyFontAttributeObject.font_family : this.state.newFontObject.font_family,
-              fontStyle: onlyFontAttributeObject.font_style ? onlyFontAttributeObject.font_style : this.state.newFontObject.font_style,
-              fontWeight: onlyFontAttributeObject.font_weight ? onlyFontAttributeObject.font_weight : this.state.newFontObject.font_weight,
-              color: elementsChecked ? 'blue' : 'gray',
-              padding: '10px 0 0 0',
-              overFlow: 'hidden'
-            }}
-            onMouseOver={this.handleMouseOverActionButtons}
-            name="Change font family and style,bottom"
-          >
-            {onlyFontAttributeObject.font_family ? `${(onlyFontAttributeObject.font_family).charAt(0).toUpperCase() + onlyFontAttributeObject.font_family.slice(1)}` : 'Font'}
-          </span>
-        </div>
+        {this.renderChoiceOrElementDivs({ templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject })}
+
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
@@ -3701,15 +3786,15 @@ dragChoice(props) {
           name="Redo changes,bottom"
           value="redo"
         >
-        <i
-          name="Redo changes,bottom,bottom"
-          value="redo"
-          style={{ color: enableRedo ? 'blue' : 'gray' }}
-          onClick={enableRedo ? this.handleTemplateElementActionClick : () => {}}
-          onMouseOver={this.handleMouseOverActionButtons}
-          className="fas fa-redo"
-        >
-        </i>
+          <i
+            name="Redo changes,bottom,bottom"
+            value="redo"
+            style={{ color: enableRedo ? 'blue' : 'gray' }}
+            onClick={enableRedo ? this.handleTemplateElementActionClick : () => {}}
+            onMouseOver={this.handleMouseOverActionButtons}
+            className="fas fa-redo"
+          >
+          </i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
