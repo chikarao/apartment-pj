@@ -185,7 +185,7 @@ export default (props) => {
       // wrapperDims = changeChoiceIndexObject[eachElementId].wrapperDims;
       leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left + moveLeftIncrementVal;
       topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top + moveTopIncrementVal;
-      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue);
+      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveLeftIncrementVal: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveLeftIncrementVal);
 
       choicesObject[choiceIndex].topInPx = topValue;
       choicesObject[choiceIndex].leftInPx = leftValue;

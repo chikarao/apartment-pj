@@ -25,7 +25,8 @@ import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
-import getUpdatedElementObjectSummary from './get_updated_element_object_summary'
+import getUpdatedElementObjectSummary from './get_updated_element_object_summary';
+import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
 // import UploadForProfile from '../images/upload_for_profile';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
@@ -1741,6 +1742,7 @@ dragChoice(props) {
           style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
         >
           <i
+            key={1}
             value={eachElement.id}
             className="fas fa-check-circle"
             style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
@@ -1748,6 +1750,7 @@ dragChoice(props) {
           >
           </i>
           <i
+            key={2}
             value={eachElement.id}
             className="fas fa-truck-moving"
             style={{ lineHeight: '1.5', color: 'gray' }}
@@ -1757,6 +1760,7 @@ dragChoice(props) {
           {inputElement
             ?
             <i
+              key={3}
               type={eachElement.input_type}
               value={eachElement.id}
               className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
@@ -2627,10 +2631,15 @@ dragChoice(props) {
       } // end of if state selectedTemplateElementIdArray > 0
     };
 
+    const expandContractElements = (expandContract) => {
+      if (this.state.selectedTemplateElementIdArray.length > 0) {
+      } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
+    }
+
     const moveElements = (direction) => {
       //gotomoveelements
       // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
-      const array = [];
+      let array = [];
       const originalValueObject = {};
       let moveIncrement = 10.0;
 
@@ -2688,84 +2697,9 @@ dragChoice(props) {
         } // End of if (this.state.selectedTemplateElementIdArray.length > 0
 
         if (this.state.selectedChoiceIdArray.length > 0) {
-          let choiceElementsArray = [];
-          let changeChoicesArray = [];
-          let changeChoiceIndexArray = [];
-          let changeChoiceIndexObject = {};
-          let otherChoicesArray = [];
-          const alignControlArray = [];
-          let eachElementId = null;
-          let eachChoiceIndex = null;
-          let eachElementInState = null;
-          let eachBaseChoice = null;
-          let eachWrapperDiv = null;
-          let eachWrapperDivDimensions = null;
-          let otherChoice = null;
-          let changeChoice = null;
-          let allChoicesObject = null;
-          let documentFieldObject = null;
-          let eachChoicePxDimensionsArray = null;
-          let newDocumentFieldChoices = null;
-          let oldDocumentFieldChoices = null;
-          let lastWrapperDivDims = null;
-          let updatedElementObject = null;
-
-          backgroundDimensions = document.getElementById(`template-element-${this.state.selectedChoiceIdArray[0].split('-')[0]}`).parentElement.getBoundingClientRect();
-
-          _.each(this.state.selectedChoiceIdArray, eachChoiceId => {
-            // Go through each choice Id and get an array of choices to be changed
-            // Get new document_field_choices
-            eachElementId = eachChoiceId.split('-')[0];
-            if (alignControlArray.indexOf(eachElementId) === -1) {
-              // push eachElementId avoid doing the same element multiple times
-              alignControlArray.push(eachElementId);
-              console.log('in create_edit_document, moveElement, _.each(this.state.se, direction, this.state.selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray', direction, this.state.selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray);
-              eachChoiceIndex = parseInt(eachChoiceId.split('-')[1], 10);
-              eachElementInState = this.props.templateElements[eachElementId];
-              // eachBaseChoiceInState = this.props.templateElements[eachElementId].document_field_choices[eachChoiceIndex];
-              eachBaseChoice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIndex}`);
-              // eachBaseChoiceDimensions = eachBaseChoice.getBoundingClientRect();
-              eachWrapperDiv = eachBaseChoice.parentElement.parentElement.parentElement;
-              eachWrapperDivDimensions = eachWrapperDiv.getBoundingClientRect();
-            } // end of if (alignControlArray.indexOf(eachElementId) === -1) {
-              // Attribute is like moveObject[moveLeft] = { choicAttr: top...}
-            _.each(Object.keys(eachElementInState.document_field_choices), eachIdx => {
-              // If choice not selected or not base (first selected), push into array to get obejct
-              // If the element and choice index are not in the selectedChoiceIdArray, push into other choice array
-              if (this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) === -1) {
-                otherChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
-                otherChoicesArray.push(otherChoice);
-              } else if (this.state.selectedChoiceIdArray.indexOf(`${eachElementId}-${eachIdx}`) !== -1) {
-                // else if the element and choice are included in selectedChoiceIdArray
-                // get choice from DOM push choice into array for change
-                changeChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
-                changeChoicesArray.push(changeChoice)
-                changeChoiceIndexArray.push(parseInt(eachIdx, 10));
-              }
-            }); // end of _.each(Object.keys(eachElementInState.document_field_choices
-              direction === 'moveLeft' || direction === 'moveUp' ? moveIncrement = -moveIncrement : null;
-              // Get object with PX values of each choice
-              allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight: TAB_HEIGHT, widthHeight: false, moveIncrement, direction, changeChoiceIndexArray });
-              documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
-              eachChoicePxDimensionsArray = documentFieldObject.array;
-              // New and old records of choices to be set in app stata in templateElements
-              // get new and old document field choices
-              newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-              oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-              // get wrapper dimensions
-              lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-              updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement updatedElementObject: ', updatedElementObject);
-              array.push(updatedElementObject)
-
-              changeChoiceIndexArray = [];
-              changeChoicesArray = [];
-              otherChoicesArray = [];
-              // Change moveIncrement back to positive if negative
-              moveIncrement = moveIncrement > 0 ? moveIncrement : -moveIncrement;
-          }); // end of _.each(this.state.selectedChoiceIdArray
+          array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray: this.state.selectedChoiceIdArray, moveIncrement, direction, tabHeight: TAB_HEIGHT, templateElements: this.props.templateElements });
+          console.log('in create_edit_document, dragElement, closeDragElement, in if selectedChoiceIdArray array ', array);
         }
-
 
         this.setTemplateHistoryArray(array, 'update');
         this.props.updateDocumentElementLocally(array);
@@ -3079,6 +3013,22 @@ dragChoice(props) {
 
         case 'moveUp':
           moveElements(elementVal);
+          break;
+
+        case 'expandVertical':
+          expandContractElements(elementVal);
+          break;
+
+        case 'contractVertical':
+          expandContractElements(elementVal);
+          break;
+
+        case 'expandHorizontal':
+          expandContractElements(elementVal);
+          break;
+
+        case 'contractHorizontal':
+          expandContractElements(elementVal);
           break;
 
         case 'undo':
@@ -3434,10 +3384,11 @@ dragChoice(props) {
     this.setFontControlBoxValues();
   }
 
-  renderChoiceOrElementDivs(props) {
+  renderChoiceOrElementButtons(props) {
     const { templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject } = props;
     const elementDivArray = [
       <div
+        key={1}
         className="create-edit-document-template-edit-action-box-elements"
         // onMouseOver={this.handleMouseOverActionButtons}
         name="Make font larger,bottom"
@@ -3454,6 +3405,7 @@ dragChoice(props) {
         <i name="Make font larger,bottom" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} className="fas fa-sort-up"></i>
       </div>,
       <div
+        key={2}
         className="create-edit-document-template-edit-action-box-elements"
         // onMouseOver={this.handleMouseOverActionButtons}
         name="Make font smaller,bottom"
@@ -3470,6 +3422,7 @@ dragChoice(props) {
         <i className="fas fa-sort-down" style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }}></i>
       </div>,
       <div
+        key={3}
         className="create-edit-document-template-edit-action-box-elements-double"
         value="fontStyle"
         // onMouseOver={this.handleMouseOverActionButtons}
@@ -3498,6 +3451,7 @@ dragChoice(props) {
 
     const choiceDivArray = [
       <div
+        key={1}
         className="create-edit-document-template-edit-action-box-elements"
         name="Expand horizontally,bottom"
         value="expandHorizontal"
@@ -3521,6 +3475,7 @@ dragChoice(props) {
         </i>
       </div>,
       <div
+        key={2}
         className="create-edit-document-template-edit-action-box-elements"
         name="Contract horizontally,bottom"
         value="constractHorizontal"
@@ -3544,6 +3499,7 @@ dragChoice(props) {
         </i>
       </div>,
       <div
+        key={3}
         className="create-edit-document-template-edit-action-box-elements"
         name="Expand vertically,bottom"
         value="expandVertical"
@@ -3571,6 +3527,7 @@ dragChoice(props) {
         </div>
       </div>,
       <div
+        key={4}
         className="create-edit-document-template-edit-action-box-elements"
         name="Contract vertically,bottom"
         value="contractVertical"
@@ -3748,7 +3705,7 @@ dragChoice(props) {
         >
           <i onMouseOver={this.handleMouseOverActionButtons} style={{ color: elementsChecked && !choicesChecked ? 'blue' : 'gray' }} name="Throw away field,top" className="far fa-trash-alt"></i>
         </div>
-        {this.renderChoiceOrElementDivs({ templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject })}
+        {this.renderChoiceOrElementButtons({ templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject })}
 
         <div
           className="create-edit-document-template-edit-action-box-elements"

@@ -35,11 +35,11 @@ class DocumentChoicesTemplate extends Component {
     //   this.props.editHistory({ action: 'dirtyFieldCount', count: 1 })
     // }
     // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
-    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
     let elementChanged = false;
     let choicesChanged = false;
     let valueUpdated = false;
     let choiceSelectedUnselected = false;
+    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
 
     if (this.props.selectedChoiceIdArray) {
       choiceSelectedUnselected = this.props.selectedChoiceIdArray.length !== nextProps.selectedChoiceIdArray.length;
@@ -49,6 +49,7 @@ class DocumentChoicesTemplate extends Component {
 
     if (this.props.editTemplate) {
       elementChanged = nextProps.eachElement !== this.props.eachElement
+      console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged', elementChanged);
       // if (nextProps.eachElement.document_field_choices) {
         // choicesChanged = nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices;
         // choicesChanged = nextProps.formFields !== this.props.formFields;
@@ -293,14 +294,14 @@ class DocumentChoicesTemplate extends Component {
     if (this.props.editFieldsOn) {
       return (
         <div
-        key={choice.val}
-        type={choice.input_type}
-        value={`${choice.element_id},${choice.choice_index}`}
-        id={`template-element-button-${elementIdAndIndex}`}
-        onMouseDown={this.props.handleButtonTemplateElementMove()}
-        onClick={this.props.handleButtonTemplateElementClick()}
-        className={choice.class_name}
-        style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
+          key={choice.val}
+          type={choice.input_type}
+          value={`${choice.element_id},${choice.choice_index}`}
+          id={`template-element-button-${elementIdAndIndex}`}
+          onMouseDown={this.props.handleButtonTemplateElementMove()}
+          onClick={this.props.handleButtonTemplateElementClick()}
+          className={choice.class_name}
+          style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >
         {(choice.enclosed_text) && (value == choice.val) ? choice.enclosed_text : ''}
         </div>
