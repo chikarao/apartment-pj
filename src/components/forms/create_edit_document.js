@@ -2631,7 +2631,7 @@ dragChoice(props) {
       // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       const array = [];
       const originalValueObject = {};
-      const moveIncrement = 10.0;
+      let moveIncrement = 10.0;
 
       let wrapperDiv = null;
       let backgroundDimensions = null;
@@ -2690,6 +2690,7 @@ dragChoice(props) {
           let choiceElementsArray = [];
           let changeChoicesArray = [];
           let changeChoiceIndexArray = [];
+          let changeChoiceIndexObject = {};
           let otherChoicesArray = [];
           const alignControlArray = [];
           let eachElementId = null;
@@ -2711,14 +2712,13 @@ dragChoice(props) {
           backgroundDimensions = document.getElementById(`template-element-${this.state.selectedChoiceIdArray[0].split('-')[0]}`).parentElement.getBoundingClientRect();
 
           _.each(this.state.selectedChoiceIdArray, eachChoiceId => {
-            console.log('in create_edit_document, moveElement, _.each(this.state.se, direction', direction);
             // Go through each choice Id and get an array of choices to be changed
             // Get new document_field_choices
+            eachElementId = eachChoiceId.split('-')[0];
             if (alignControlArray.indexOf(eachElementId) === -1) {
-              eachElementId = eachChoiceId.split('-')[0];
-
               // push eachElementId avoid doing the same element multiple times
               alignControlArray.push(eachElementId);
+              console.log('in create_edit_document, moveElement, _.each(this.state.se, direction, this.state.selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray', direction, this.state.selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray);
               eachChoiceIndex = parseInt(eachChoiceId.split('-')[1], 10);
               eachElementInState = this.props.templateElements[eachElementId];
               // eachBaseChoiceInState = this.props.templateElements[eachElementId].document_field_choices[eachChoiceIndex];
@@ -2730,6 +2730,7 @@ dragChoice(props) {
               // Attribute is like moveObject[moveLeft] = { choicAttr: top...}
               // const attribute = moveObject[direction];
 
+              // changeChoiceIndexObject[eachElementId] = { indexes: [] };
             _.each(Object.keys(eachElementInState.document_field_choices), eachIdx => {
               // If choice not selected or not base (first selected), push into array to get obejct
               // If the element and choice index are not in the selectedChoiceIdArray, push into other choice array
@@ -2740,36 +2741,40 @@ dragChoice(props) {
                 // else if the element and choice are included in selectedChoiceIdArray
                 // push choice into array for change
                 changeChoice = document.getElementById(`template-element-button-${eachElementId},${eachIdx}`);
-                if (direction === 'moveLeft') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) - moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
-                if (direction === 'moveRight') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) + moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
-                if (direction === 'moveDown') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) + moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
-                if (direction === 'moveUp') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) - moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
+                // if (direction === 'moveLeft') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) - moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
+                // if (direction === 'moveRight') changeChoice.style.left = `${((((parseFloat(changeChoice.style.left) / 100) * eachWrapperDivDimensions.width) + moveIncrement) / eachWrapperDivDimensions.width) * 100}%`;
+                // if (direction === 'moveDown') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) + moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
+                // if (direction === 'moveUp') changeChoice.style.top = `${((((parseFloat(changeChoice.style.top) / 100) * eachWrapperDivDimensions.height) - moveIncrement) / eachWrapperDivDimensions.height) * 100}%`;
 
-                console.log('in create_edit_document, moveElement, in each eachIdx, direction, moveIncrement, changeChoice, eachWrapperDiv, backgroundDimensions', direction, moveIncrement, changeChoice.style.left, eachWrapperDiv, backgroundDimensions);
+                console.log('in create_edit_document, moveElement, in each eachIdx, direction, moveIncrement, changeChoice, eachWrapperDiv, eachWrapperDivDimensions, backgroundDimensions', direction, moveIncrement, changeChoice.style.left, eachWrapperDiv, eachWrapperDivDimensions, backgroundDimensions);
                 changeChoicesArray.push(changeChoice)
                 changeChoiceIndexArray.push(parseInt(eachIdx, 10));
+                // changeChoiceIndexObject[eachElementId].indexes.push(parseInt(eachIdx, 10));
+                // changeChoiceIndexObject[eachElementId].wrapperDims = eachWrapperDivDimensions;
               }
             }); // end of _.each(Object.keys(eachElementInState.document_field_choices
+              direction === 'moveLeft' || direction === 'moveUp' ? moveIncrement = -moveIncrement : null;
+              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement changeChoiceIndexArray, changeChoicesArray, otherChoicesArray: ', changeChoiceIndexArray, changeChoicesArray, otherChoicesArray);
+              allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight: TAB_HEIGHT, widthHeight: false, moveIncrement, direction, changeChoiceIndexArray });
 
-            allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight: TAB_HEIGHT, widthHeight: false, changeChoiceIndexArray });
+              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement direction, moveIncrement, allChoicesObject, wrapperDivDimensions: ', direction, moveIncrement, allChoicesObject, eachWrapperDivDimensions);
+              documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
+              eachChoicePxDimensionsArray = documentFieldObject.array;
+              // // // New and old records of choices to be set in app stata in templateElements
+              // // // get new and old document field choices
+              newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
+              oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
+              // // // get wrapper dimensions
+              lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
+              updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
+              console.log('in create_edit_document, handleTemplateElementActionClick, moveElement updatedElementObject: ', updatedElementObject);
+              array.push(updatedElementObject)
 
-            documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
-            eachChoicePxDimensionsArray = documentFieldObject.array;
-            // // // New and old records of choices to be set in app stata in templateElements
-            // // // get new and old document field choices
-            newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-            oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-            // // // get wrapper dimensions
-            lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-            updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-            console.log('in create_edit_document, handleTemplateElementActionClick, moveElement updatedElementObject: ', updatedElementObject);
-            array.push(updatedElementObject)
-
-
-            changeChoiceIndexArray = [];
-            changeChoicesArray = [];
-            otherChoicesArray = [];
-          });
+              changeChoiceIndexArray = [];
+              changeChoicesArray = [];
+              otherChoicesArray = [];
+              moveIncrement = moveIncrement > 0 ? moveIncrement : -moveIncrement;
+          }); // end of _.each(this.state.selectedChoiceIdArray
         }
 
 

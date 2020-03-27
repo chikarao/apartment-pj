@@ -1,6 +1,9 @@
 // import React from 'react';
 import _ from 'lodash';
 
+// NOTE: This function was originally designed to get PX coordinate values of
+// objects that were not moved (other objects) in the choiceDrag function,
+// It is used in other functions to get PX values of all choices
 export default (props) => {
   const {
     wrapperDiv,
@@ -19,7 +22,9 @@ export default (props) => {
     elementDrag,
     delta,
     // for choice move
-    choiceMove
+    choiceMove,
+    direction,
+    moveIncrement
   } = props;
 
   const choicesObject = {};
@@ -31,6 +36,7 @@ export default (props) => {
   let eachChoiceInState = null;
   const elementId = wrapperDiv.getAttribute('id').split('-')[2];
 
+  // For dragging choice and getting dimensions of other choices
   if (!notDrag && !elementDrag) {
     // Get dimensions in PX of EACH OF other choices
     _.each(otherChoicesArray, each => {
@@ -60,7 +66,7 @@ export default (props) => {
     });
   } // end of if !notDrag
 
-  // if not dragging and aligning
+  // if not dragging and aligning, meaning dragChoice
   if (notDrag) {
     const baseElementId = baseWrapperDiv.getAttribute('id').split('-')[2];
     const baseChoiceIndex = parseInt(choiceButton.getAttribute('value').split(',')[1], 10);
@@ -129,20 +135,57 @@ export default (props) => {
     }); // end of each otherChoicesArray
   } // end of if notDrag
 
-  if (elementDrag || choiceMove) {
+  // For dragging eleeent and updating choices
+  if (elementDrag) {
     // For case of getting array of choices that have been moved and getting
-    // the PX values of each in object 
+    // the PX values of each in object
     let stateValExistEach = false;
+    // let wrapperDivDims = null;
     _.each(otherChoicesArray, each => {
+      eachElementId = each.getAttribute('value').split(',')[0];
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       choicesObject[choiceIndex] = {};
       eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
       // eachChoiceDims = each.getBoundingClientRect();
-      stateValExistEach = eachChoiceInState.top;
-
+      // stateValExistEach = eachChoiceInState.top;
       leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;
       topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top;
-      console.log('in get_other_choices_object, if not drag before return otherChoicesArray, each, eachChoiceInState, stateValExistEach, leftValue, topValue: ', otherChoicesArray, each, eachChoiceInState, stateValExistEach, leftValue, topValue);
+      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue);
+
+      choicesObject[choiceIndex].topInPx = topValue;
+      choicesObject[choiceIndex].leftInPx = leftValue;
+      choicesObject[choiceIndex].widthInPx = (parseFloat(eachChoiceInState.width) / 100) * backgroundDimensions.width;
+      choicesObject[choiceIndex].heightInPx = (parseFloat(eachChoiceInState.height) / 100) * backgroundDimensions.height;
+    }) // end of _.each(otherChoicesArray
+  }
+
+  let eachElementId = null; // for use with choiceMove
+
+  if (choiceMove) {
+    // For case of getting array of choices that have been moved and getting
+    // the PX values of each in object
+    // let wrapperDims = null;
+    // let wrapperDivDims = null;
+
+    _.each(otherChoicesArray, each => {
+      let moveLeftIncrementVal = 0;
+      let moveTopIncrementVal = 0;
+      // eachElementId = each.getAttribute('value').split(',')[0];
+      choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
+      choicesObject[choiceIndex] = {};
+      eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
+      // eachChoiceDims = each.getBoundingClientRect();
+      // stateValExistEach = eachChoiceInState.top;
+
+      if (changeChoiceIndexArray.indexOf(choiceIndex) !== -1) {
+        if (direction === 'moveLeft' || direction === 'moveRight') moveLeftIncrementVal = moveIncrement;
+        if (direction === 'moveUp' || direction === 'moveDown') moveTopIncrementVal = moveIncrement;
+      }
+
+      // wrapperDims = changeChoiceIndexObject[eachElementId].wrapperDims;
+      leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left + moveLeftIncrementVal;
+      topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top + moveTopIncrementVal;
+      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue);
 
       choicesObject[choiceIndex].topInPx = topValue;
       choicesObject[choiceIndex].leftInPx = leftValue;
@@ -152,4 +195,4 @@ export default (props) => {
   }
   console.log('in get_other_choices_object, if not drag before return elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions: ', elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions);
     return choicesObject;
-  };
+  }; // End of export default (props) => {
