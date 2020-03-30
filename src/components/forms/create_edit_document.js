@@ -2551,9 +2551,11 @@ dragChoice(props) {
 
           const alignObject = { vertical: { choiceAttr: 'top', backAttr: 'height' },
                                 horizontal: { choiceAttr: 'left', backAttr: 'width' },
-                                width: { choiceAttr: 'width', backAttr: 'width' },
-                                height: { choiceAttr: 'height', backAttr: 'height' },
-                              }
+                                alignWidth: { choiceAttr: 'width', backAttr: 'width' },
+                                alignHeight: { choiceAttr: 'height', backAttr: 'height' },
+                              };
+
+          const widthHeight = alignWhat === 'alignWidth' || alignWhat === 'alignHeight';
           // Iterate through each of the choices selected;
           // Note, choices may be in difference wrappers,
           // and may not be any particular in order in selectedChoiceIdArray
@@ -2590,7 +2592,7 @@ dragChoice(props) {
                 attribute = alignObject[alignWhat];
                 console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv: ', otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv);
                 // change and align document field choices based on base choice
-                allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, baseWrapperDiv: wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDiv.getBoundingClientRect(), notDrag: true, tabHeight: TAB_HEIGHT, widthHeight: false, changeChoiceIndexArray, choiceButton, topLeft: attribute.choiceAttr });
+                allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, baseWrapperDiv: wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDiv.getBoundingClientRect(), notDrag: true, tabHeight: TAB_HEIGHT, widthHeight, changeChoiceIndexArray, choiceButton, attribute: attribute.choiceAttr });
 
                 documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: this.props.templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
                 eachChoicePxDimensionsArray = documentFieldObject.array;
@@ -2638,7 +2640,7 @@ dragChoice(props) {
       // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       let array = [];
       const originalValueObject = {};
-      let moveIncrement = 10.0;
+      const moveIncrement = 1;
 
       let wrapperDiv = null;
       let backgroundDimensions = null;
