@@ -25,7 +25,7 @@ import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
-import getUpdatedElementObjectSummary from './get_updated_element_object_summary';
+import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_move_wrapper';
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
 // import UploadForProfile from '../images/upload_for_profile';
 
@@ -1225,7 +1225,7 @@ renderEachDocumentField(page) {
               width: ((parseFloat(originalValueObject[eachElementId].width) / 100) * backgroundDimensions.width),
               height: ((parseFloat(originalValueObject[eachElementId].height) / 100) * backgroundDimensions.height)
             }
-            updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, originalWrapperDivDimensions: wrapperDivDimensions, eachElementId, templateElements, elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
+            updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, originalWrapperDivDimensions: wrapperDivDimensions, eachElementId, templateElements, elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
             console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
             // // Get an object with element id and corresponding top, left, width and height in px
             // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
@@ -2440,9 +2440,9 @@ dragChoice(props) {
     // console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
-    const getChangeChoiceIdArray = () => {
-
-    }
+    // const getChangeChoiceIdArray = () => {
+    //
+    // }
 
     const align = (alignWhat) => {
       //gotoalign
@@ -2476,19 +2476,8 @@ dragChoice(props) {
           const originalValueObject = {};
           let wrapperDiv = null;
           let eachElement = null;
-          // const choiceElementsArray = [];
           let wrapperDivDimensions = null;
-          // let allChoicesObject = null;
-          // let choice = null;
           let updatedElementObject = null;
-          // let lastWrapperDivDims = null;
-          // let lastWrapperDivDimsInPx = null;
-          // let newDocumentFieldChoices = null;
-          // let oldDocumentFieldChoices = null;
-          // let eachChoicePxDimensionsArray = null;
-          // let documentFieldObject = null;
-          // let backgroundDimensions = null;
-
 
           _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
             eachElement = this.props.templateElements[eachElementId];
@@ -2510,11 +2499,11 @@ dragChoice(props) {
                 wrapperDiv = document.getElementById(`template-element-${eachElementId}`);
                 // backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();
                 wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
-                // Move the wrapperDiv then get new coordinates of child choices in getUpdatedElementObjectSummary
+                // Move the wrapperDiv then get new coordinates of child choices in getUpdatedElementObjectMoveWrapper
                 if (alignWhat === 'vertical') wrapperDiv.style.top = baseElement.top;
                 if (alignWhat === 'horizontal') wrapperDiv.style.left = baseElement.left;
 
-                updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT });
+                updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT });
                 // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
                 array.push(updatedElementObject)
               } // end of if (!eachElement.document_field_choices
@@ -2632,9 +2621,17 @@ dragChoice(props) {
     };
 
     const expandContractElements = (expandContract) => {
-      if (this.state.selectedTemplateElementIdArray.length > 0) {
+      let array = [];
+      if (this.state.selectedChoiceIdArray.length > 0) {
+        const expandContractIncrement = 1;
+        console.log('in create_edit_document, handleTemplateElementActionClick, expandContractElements expandContract : ', expandContract);
+        array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray: this.state.selectedChoiceIdArray, expandContractIncrement, expandContract, tabHeight: TAB_HEIGHT, templateElements: this.props.templateElements });
+
       } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
+      this.setTemplateHistoryArray(array, 'update');
+      this.props.updateDocumentElementLocally(array);
     }
+    //gotoexpand
 
     const moveElements = (direction) => {
       //gotomoveelements
@@ -2686,8 +2683,9 @@ dragChoice(props) {
                 if (direction === 'moveRight') wrapperDiv.style.left = `${((((parseFloat(wrapperDiv.style.left) / 100) * backgroundDimensions.width) + moveIncrement) / backgroundDimensions.width) * 100}%`;
                 if (direction === 'moveDown') wrapperDiv.style.top = `${((((parseFloat(wrapperDiv.style.top) / 100) * backgroundDimensions.height) + moveIncrement) / backgroundDimensions.height) * 100}%`;
                 if (direction === 'moveUp') wrapperDiv.style.top = `${((((parseFloat(wrapperDiv.style.top) / 100) * backgroundDimensions.height) - moveIncrement) / backgroundDimensions.height) * 100}%`;
-                // if (direction === 'moveLeft') wrapperDiv.style.left = `${((((parseFloat(wrapperDiv.style.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`;
-                const updatedElementObject = getUpdatedElementObjectSummary({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT })
+                // getUpdatedElementObjectMoveWrapper for moving wrapper div and
+                // having choices move along with it
+                const updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT })
 
                 // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
                 array.push(updatedElementObject);
@@ -2697,6 +2695,8 @@ dragChoice(props) {
         } // End of if (this.state.selectedTemplateElementIdArray.length > 0
 
         if (this.state.selectedChoiceIdArray.length > 0) {
+          // updateDocumentElementLocally for when moving choices themselves
+          // and not moving wrapperDiv
           array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray: this.state.selectedChoiceIdArray, moveIncrement, direction, tabHeight: TAB_HEIGHT, templateElements: this.props.templateElements });
           console.log('in create_edit_document, dragElement, closeDragElement, in if selectedChoiceIdArray array ', array);
         }
@@ -3386,7 +3386,7 @@ dragChoice(props) {
 
   renderChoiceOrElementButtons(props) {
     const { templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject } = props;
-    const elementDivArray = [
+    const elementDivActionButtonArray = [
       <div
         key={1}
         className="create-edit-document-template-edit-action-box-elements"
@@ -3449,7 +3449,7 @@ dragChoice(props) {
       </div>
     ];
 
-    const choiceDivArray = [
+    const choiceDivActionButtonArray = [
       <div
         key={1}
         className="create-edit-document-template-edit-action-box-elements"
@@ -3556,7 +3556,7 @@ dragChoice(props) {
       </div>
     ];
 
-    return this.state.selectedChoiceIdArray.length > 0 ? choiceDivArray : elementDivArray
+    return this.state.selectedChoiceIdArray.length > 0 ? choiceDivActionButtonArray : elementDivActionButtonArray
   }
 
   renderTemplateElementEditAction() {

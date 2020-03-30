@@ -24,7 +24,12 @@ export default (props) => {
     // for choice move
     choiceMove,
     direction,
-    moveIncrement
+    moveIncrement,
+    // for choice expand/contract
+    choiceExpandContract,
+    expandContractIncrement,
+    // ie expandHorizontal, contractVertical etc
+    expandContract
   } = props;
 
   const choicesObject = {};
@@ -135,11 +140,12 @@ export default (props) => {
     }); // end of each otherChoicesArray
   } // end of if notDrag
 
+  let eachElementId = null; // for use with choiceMove
   // For dragging eleeent and updating choices
   if (elementDrag) {
     // For case of getting array of choices that have been moved and getting
     // the PX values of each in object
-    let stateValExistEach = false;
+    // let stateValExistEach = false;
     // let wrapperDivDims = null;
     _.each(otherChoicesArray, each => {
       eachElementId = each.getAttribute('value').split(',')[0];
@@ -159,14 +165,10 @@ export default (props) => {
     }) // end of _.each(otherChoicesArray
   }
 
-  let eachElementId = null; // for use with choiceMove
 
   if (choiceMove) {
     // For case of getting array of choices that have been moved and getting
     // the PX values of each in object
-    // let wrapperDims = null;
-    // let wrapperDivDims = null;
-
     _.each(otherChoicesArray, each => {
       let moveLeftIncrementVal = 0;
       let moveTopIncrementVal = 0;
@@ -191,6 +193,44 @@ export default (props) => {
       choicesObject[choiceIndex].leftInPx = leftValue;
       choicesObject[choiceIndex].widthInPx = (parseFloat(eachChoiceInState.width) / 100) * backgroundDimensions.width;
       choicesObject[choiceIndex].heightInPx = (parseFloat(eachChoiceInState.height) / 100) * backgroundDimensions.height;
+    }) // end of _.each(otherChoicesArray
+  }
+
+  if (choiceExpandContract) {
+    // For case of getting array of choices that have been moved and getting
+    // the PX values of each in object
+    console.log('in get_other_choices_object, if choiceExpandContract otherChoicesArray: ', otherChoicesArray);
+    // let eachChoiceDims = null;
+    _.each(otherChoicesArray, each => {
+      let widthIncrementVal = 0;
+      let heightIncrementVal = 0;
+      // eachElementId = each.getAttribute('value').split(',')[0];
+      choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
+      choicesObject[choiceIndex] = {};
+      eachChoiceInState = templateElements[elementId].document_field_choices[choiceIndex];
+      // eachChoiceDims = each.getBoundingClientRect();
+      // stateValExistEach = eachChoiceInState.top;
+
+      if (changeChoiceIndexArray.indexOf(choiceIndex) !== -1) {
+        if (expandContract === 'expandHorizontal' || expandContract === 'contractHorizontal') widthIncrementVal = expandContractIncrement;
+        if (expandContract === 'expandVertical' || expandContract === 'contractVertical') heightIncrementVal = expandContractIncrement;
+      }
+      // If there is no eachChoiceInState.top then get dimensions from getBoundingClientRect
+      // wrapperDims = changeChoiceIndexObject[eachElementId].wrapperDims;
+      if (eachChoiceInState.top) {
+        topValue = ((parseFloat(eachChoiceInState.top) / 100) * backgroundDimensions.height) + backgroundDimensions.top;
+        leftValue = ((parseFloat(eachChoiceInState.left) / 100) * backgroundDimensions.width) + backgroundDimensions.left;
+      } else {
+        eachChoiceDims = each.getBoundingClientRect();
+        topValue = eachChoiceDims.top;
+        leftValue = eachChoiceDims.left;
+      }
+      console.log('in get_other_choices_object, if choiceExpandContract eachChoiceInState, each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, widthIncrementVal: ', eachChoiceInState, each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, widthIncrementVal);
+
+      choicesObject[choiceIndex].topInPx = topValue;
+      choicesObject[choiceIndex].leftInPx = leftValue;
+      choicesObject[choiceIndex].widthInPx = ((parseFloat(eachChoiceInState.width) / 100) * backgroundDimensions.width) + widthIncrementVal;
+      choicesObject[choiceIndex].heightInPx = ((parseFloat(eachChoiceInState.height) / 100) * backgroundDimensions.height) + heightIncrementVal;
     }) // end of _.each(otherChoicesArray
   }
   console.log('in get_other_choices_object, if not drag before return elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions: ', elementId, choicesObject, wrapperDiv, baseWrapperDiv, delta, backgroundDimensions);

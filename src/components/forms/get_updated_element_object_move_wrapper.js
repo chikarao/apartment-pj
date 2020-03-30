@@ -6,8 +6,10 @@ import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
+// NOTE: This function is designed to set state values of choices and wrapper
+// in app state state when choices are aligned WITH a base choice
+// Function takes eachElementId and outputs a new object to send to reducer
 export default (props) => {
-  // Function takes eachElementId and outputs a new object to send to reducer
   const {
     eachElementId,
     // eachElement, // from state, not DOM

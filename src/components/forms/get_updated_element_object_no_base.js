@@ -6,37 +6,25 @@ import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
-// NOTE: This function was originally designed to get PX coordinate values of
-// objects that were not moved (other objects) in the choiceDrag function,
-// It is used in other functions to get PX values of all choices
+// NOTE: This function is designed to set state values of choices and wrapper
+// in app state state when choices are moved without a base choice such as in align choice
+// The function iterates through selectedChoiceIdArray and a moveIncrement or expandInrement and
+// output a new object for use in the action and document reducer
 export default (props) => {
   const {
-    // wrapperDiv,
-    // wrapperDivDimensions,
-    // otherChoicesArray,
     templateElements,
-    // backgroundDimensions,
-    // // below for align only not drag
-    // baseWrapperDiv,
-    // notDrag,
-    // tabHeight,
-    // widthHeight,
-    // topLeft,
-    // changeChoiceIndexArray,
-    // choiceButton,
-    // elementDrag,
-    // delta,
-    // // for choice move
-    // choiceMove,
-    // direction,
     direction,
     moveIncrement,
     selectedChoiceIdArray,
-    tabHeight
+    tabHeight,
+    // Below for expand contract
+    expandContract,
+    expandContractIncrement
   } = props;
 
   const array = [];
   let moveIncrementLocal = moveIncrement;
+  let expandContractIncrementLocal = expandContractIncrement;
 
   // let choiceElementsArray = [];
   let changeChoicesArray = [];
@@ -94,10 +82,17 @@ export default (props) => {
       }
     }); // end of _.each(Object.keys(eachElementInState.document_field_choices
       direction === 'moveLeft' || direction === 'moveUp' ? moveIncrementLocal = -moveIncrementLocal : null;
-      // Get object with PX values of each choice
-      allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight, widthHeight: false, moveIncrement: moveIncrementLocal, direction, changeChoiceIndexArray });
-      console.log('in create_edit_document, getUpdatedElementObjectNoBase, moveElement allChoicesObject: ', allChoicesObject);
-      documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements: templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
+      expandContract === 'contractHorizontal' || expandContract === 'contractVertical' ? expandContractIncrementLocal = -expandContractIncrementLocal : null;
+      // !!!! Get object with PX values of each choice
+      // while changing coordinates of selected choices
+      if (moveIncrement) {
+        allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceMove: true, tabHeight, widthHeight: false, moveIncrement: moveIncrementLocal, direction, changeChoiceIndexArray });
+      }
+
+      if (expandContractIncrement) {
+        allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceExpandContract: true, tabHeight, widthHeight: false, expandContractIncrement: expandContractIncrementLocal, expandContract, changeChoiceIndexArray });
+      }
+      documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
       eachChoicePxDimensionsArray = documentFieldObject.array;
       // New and old records of choices to be set in app stata in templateElements
       // get new and old document field choices
@@ -106,7 +101,9 @@ export default (props) => {
       // get wrapper dimensions
       lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
       updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight })
+      // push into array to be sent to action and reducer
       array.push(updatedElementObject)
+      console.log('in create_edit_document, getUpdatedElementObjectNoBase, moveElement allChoicesObject, array: ', allChoicesObject, array);
 
       changeChoiceIndexArray = [];
       changeChoicesArray = [];
@@ -114,5 +111,6 @@ export default (props) => {
       // Change moveIncrementLocal back to positive if negative
       moveIncrementLocal = moveIncrementLocal > 0 ? moveIncrementLocal : -moveIncrementLocal;
   }); // end of _.each(this.state.selectedChoiceIdArray
+    // array to be sent to action and reducer
     return array;
   }; // End of export default (props) => {
