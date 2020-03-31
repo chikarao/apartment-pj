@@ -1599,13 +1599,18 @@ longActionPress(props) {
   let wrapperDivDimensions = null;
   let eachModifiedChoice = null;
   let count = 0;
-  let horizontalLimit = null;
-  let verticalLimit = null;
-  let choiceDimensions = null;
-  let withinLimitHorizontal = true;
-  let withinLimitVertical = true;
-
-  const backgroundDimensions = choicesArray[0].parentElement.getBoundingClientRect();
+  // let horizontalLimit = null;
+  // let verticalLimit = null;
+  // let choiceDimensions = null;
+  // let withinLimitHorizontal = true;
+  // let withinLimitVertical = true;
+  let currentWidthInPx = 0;
+  let currentHeightInPx = 0;
+  // let currentTopInPx = 0;
+  // let currentLeftInPx = 0;
+  // background is before the choice wrapper, the inner Divwrapper, outer DivWrapper (4 levels up)
+  const backgroundDimensions = choicesArray[0].parentElement.parentElement.parentElement.parentElement.getBoundingClientRect();
+  let eachChoice = null;
 
   // CAll main function
   dragMouseDown();
@@ -1614,6 +1619,7 @@ longActionPress(props) {
     // assign close and drag callbacks to native handlers
     document.onmouseup = closeLongActionPress;
     // SetInterval to call elementChange every x milliseconds
+    // timer is an integer ID for use in clearing interval
     timer = setInterval(elementChange, 100);
   }
 
@@ -1625,33 +1631,54 @@ longActionPress(props) {
 
     // if (count > 10) increment *= 1.075;
 
-    _.each(choicesArray, eachChoice => {
+    _.each(Object.keys(choicesOriginalObject), eachKey => {
+      eachChoice = choicesOriginalObject[eachKey].choice;
+
       eachModifiedChoice = eachChoice;
       wrapperDiv = eachChoice.parentElement.parentElement.parentElement;
       wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
-      if (action === 'expandHorizontal') eachModifiedChoice.style.width = `${((((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width) + increment) / wrapperDivDimensions.width) * 100}%`
-      if (action === 'contractHorizontal') eachModifiedChoice.style.width = `${((((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width) - increment) / wrapperDivDimensions.width) * 100}%`
-      if (action === 'expandVertical') eachModifiedChoice.style.height = `${((((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) + increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
-      if (action === 'contractVertical') eachModifiedChoice.style.height = `${((((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) - increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
+      // currentTopInPx = ((parseFloat(eachChoice.style.top) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) + wrapperDivDimensions.top;
+      // currentLeftInPx = ((parseFloat(eachChoice.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;
+      currentWidthInPx = ((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width);
+      currentHeightInPx = ((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT));
+      // withinLimitVertical = (currentTopInPx + currentHeightInPx + increment) < backgroundDimensions.bottom;
+      // withinLimitHorizontal = (currentLeftInPx + currentWidthInPx + increment) < backgroundDimensions.right;
+      // if (!withinLimitHorizontal && (increment > (backgroundDimensions.right - (currentLeftInPx + currentWidthInPx)))) {
+      //   increment = backgroundDimensions.right - (currentLeftInPx + currentWidthInPx);
+      //   withinLimitHorizontal = true;
+      // }
+      // if (!withinLimitVertical && increment > (backgroundDimensions.right - (currentLeftInPx + currentWidthInPx))) increment = backgroundDimensions.right - (currentLeftInPx + currentWidthInPx);
+      if (action === 'expandHorizontal') eachModifiedChoice.style.width = `${((currentWidthInPx + increment) / wrapperDivDimensions.width) * 100}%`
+      if (action === 'contractHorizontal') eachModifiedChoice.style.width = `${((currentWidthInPx - increment) / wrapperDivDimensions.width) * 100}%`
+      if (action === 'expandVertical') eachModifiedChoice.style.height = `${((currentHeightInPx + increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
+      if (action === 'contractVertical') eachModifiedChoice.style.height = `${((currentHeightInPx - increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
       // eachChoice.style.width = `150%`
-      console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions', action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions);
+      // console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions', action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions);
+      console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, currentLeftInPx, currentWidthInPx, increment, backgroundDimensions.right, withinLimitHorizontal, backgroundDimensions', action, eachChoice, currentLeftInPx, currentWidthInPx, increment, backgroundDimensions.right, withinLimitHorizontal, backgroundDimensions);
     })
   }
 
   function closeLongActionPress() {
-    // stop moving when mouse button is released:
+    // stop changing choice elements when button is released:
     document.onmouseup = null;
     // document.onmousemove = null;
+    // Sends timer ID (integer) to clearInterval
     clearInterval(timer);
-
+    // getUpdatedElementObjectNoBase gets new wrapper div attributes,
+    // and new choice element attributes to send to action creator and reducer
     const array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray, choicesArray, tabHeight: TAB_HEIGHT, templateElements, longActionPress: true, action });
     console.log('in create_edit_document, longActionPress, closeLongActionPress, choicesArray, array, totalIncremented ', choicesArray, array, totalIncremented);
     // choicesArray[0].style.width = '100%'
+    // IMPORTANT: Somehow, each choice in the DOM needs to be reset to
+    // its original % style.width and height, or when rerender from values
+    // in app state, the same DOM choice width and height values become
+    // inaccurate and become much larger. Resetting back after changing works.
     _.each(Object.keys(choicesOriginalObject), eachKey => {
       choicesOriginalObject[eachKey].choice.style.width = choicesOriginalObject[eachKey].width;
       choicesOriginalObject[eachKey].choice.style.height = choicesOriginalObject[eachKey].height;
     });
     // } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
+    // Call action creator and setTemplateHistoryArray in callback
     actionCallback(array);
   }
 }
