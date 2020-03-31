@@ -19,7 +19,10 @@ export default (props) => {
     tabHeight,
     // Below for expand contract
     expandContract,
-    expandContractIncrement
+    expandContractIncrement,
+    // Below for longActionPress expandContract
+    longActionPress,
+    action
   } = props;
 
   const array = [];
@@ -92,6 +95,11 @@ export default (props) => {
       if (expandContractIncrement) {
         allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, choiceExpandContract: true, tabHeight, widthHeight: false, expandContractIncrement: expandContractIncrementLocal, expandContract, changeChoiceIndexArray });
       }
+
+      if (longActionPress) {
+        allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, tabHeight, longActionPress, action, changeChoiceIndexArray });
+      }
+
       documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: otherChoicesArray.concat(changeChoicesArray), otherChoicesObject: allChoicesObject, backgroundDimensions });
       eachChoicePxDimensionsArray = documentFieldObject.array;
       // New and old records of choices to be set in app stata in templateElements

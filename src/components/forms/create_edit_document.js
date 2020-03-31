@@ -109,6 +109,7 @@ class CreateEditDocument extends Component {
     this.handleUserInput = this.handleUserInput.bind(this);
     this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
     this.handleButtonTemplateElementClick = this.handleButtonTemplateElementClick.bind(this);
+    this.handleTemplateChoiceActionMouseDown = this.handleTemplateChoiceActionMouseDown.bind(this);
     // this.dragChoice = this.dragChoice.bind(this);
   }
 
@@ -1358,7 +1359,7 @@ dragChoice(props) {
     // other choice buttons (buttons not being moved)
     // const otherChoicesObject = {};
     // gotodragchoice
-    const otherChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray, templateElements, backgroundDimensions, wrapperDivDimensions });
+    const otherChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray, templateElements, backgroundDimensions, wrapperDivDimensions, dragChoice: true });
 
     // Create offsets or distance between element and wrapperDiv; There is no native function
     let offsetRight = 0;
@@ -1586,6 +1587,75 @@ dragChoice(props) {
     } // end of if choiceMoved
 }
 
+longActionPress(props) {
+  //gotolongaction
+  const { action, choicesArray, templateElements, choicesOriginalObject, selectedChoiceIdArray, actionCallback } = props;
+
+  console.log('in create_edit_document, longActionPress action, choicesArray, templateElements, ', action, choicesArray, templateElements);
+  let timer = null;
+  let increment = 1;
+  let totalIncremented = 0;
+  let wrapperDiv = null;
+  let wrapperDivDimensions = null;
+  let eachModifiedChoice = null;
+  let count = 0;
+  let horizontalLimit = null;
+  let verticalLimit = null;
+  let choiceDimensions = null;
+  let withinLimitHorizontal = true;
+  let withinLimitVertical = true;
+
+  const backgroundDimensions = choicesArray[0].parentElement.getBoundingClientRect();
+
+  // CAll main function
+  dragMouseDown();
+
+  function dragMouseDown() {
+    // assign close and drag callbacks to native handlers
+    document.onmouseup = closeLongActionPress;
+    // SetInterval to call elementChange every x milliseconds
+    timer = setInterval(elementChange, 100);
+  }
+
+  function elementChange() {
+    count++;
+    if (count > 5 && (action === 'expandHorizontal' || action === 'contractHorizontal')) increment *= 1.05;
+    if (count > 10 && (action === 'expandHorizontal' || action === 'contractHorizontal')) increment *= 1.075;
+    totalIncremented += increment;
+
+    // if (count > 10) increment *= 1.075;
+
+    _.each(choicesArray, eachChoice => {
+      eachModifiedChoice = eachChoice;
+      wrapperDiv = eachChoice.parentElement.parentElement.parentElement;
+      wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
+      if (action === 'expandHorizontal') eachModifiedChoice.style.width = `${((((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width) + increment) / wrapperDivDimensions.width) * 100}%`
+      if (action === 'contractHorizontal') eachModifiedChoice.style.width = `${((((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width) - increment) / wrapperDivDimensions.width) * 100}%`
+      if (action === 'expandVertical') eachModifiedChoice.style.height = `${((((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) + increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
+      if (action === 'contractVertical') eachModifiedChoice.style.height = `${((((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) - increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
+      // eachChoice.style.width = `150%`
+      console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions', action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions);
+    })
+  }
+
+  function closeLongActionPress() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    // document.onmousemove = null;
+    clearInterval(timer);
+
+    const array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray, choicesArray, tabHeight: TAB_HEIGHT, templateElements, longActionPress: true, action });
+    console.log('in create_edit_document, longActionPress, closeLongActionPress, choicesArray, array, totalIncremented ', choicesArray, array, totalIncremented);
+    // choicesArray[0].style.width = '100%'
+    _.each(Object.keys(choicesOriginalObject), eachKey => {
+      choicesOriginalObject[eachKey].choice.style.width = choicesOriginalObject[eachKey].width;
+      choicesOriginalObject[eachKey].choice.style.height = choicesOriginalObject[eachKey].height;
+    });
+    // } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
+    actionCallback(array);
+  }
+}
+
   // Gets the actual elements (not just ids) of selected elements in handlers resize and mvoe
   getSelectedActualElements(elementIdString, ids, resize) {
     const array = [];
@@ -1614,15 +1684,14 @@ dragChoice(props) {
     // Get the dimensions of the parent element
     const parentRect = element.parentElement.getBoundingClientRect()
     // define callback to be called in dragElement closeDragElement
-    const actionCallback = (updatedElementsArray) => {
-      console.log('in create_edit_document, handleTemplateElementMoveClick, updatedElementsArray, ', updatedElementsArray);
-      this.props.updateDocumentElementLocally(updatedElementsArray);
-      this.setTemplateHistoryArray(updatedElementsArray, 'update');
-    };
     // Get array of elements selected or checked by user
     selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, false)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
+    const actionCallback = (updatedElementsArray) => {
+      this.props.updateDocumentElementLocally(updatedElementsArray);
+      this.setTemplateHistoryArray(updatedElementsArray, 'update');
+    };
     // last true is for move or not; in this case this is for move element
     this.dragElement({ element, tabs: null, inputElements: null, parentRect, actionCallback, move: true, elementType: null, selectedElements, backgroundDimensions, templateElements: this.props.templateElements });
   }
@@ -1721,6 +1790,33 @@ dragChoice(props) {
 
     console.log('in create_edit_document, handleButtonTemplateElementMove, choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray: ', choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray);
     this.dragChoice({ choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, templateElements: this.props.templateElements, actionCallback });
+  }
+
+  handleTemplateChoiceActionMouseDown(event) {
+    //gotomousedown
+    const clickedElement = event.target;
+    // elementVal is expandHorizontal, contractHorizontal etc
+    const elementVal = clickedElement.getAttribute('value')
+    let button = null;
+    let eachElementId = null;
+    let eachChoiceId = null;
+    const choicesArray = [];
+    const choicesOriginalObject = {}
+    _.each(this.state.selectedChoiceIdArray, each => {
+      eachElementId = each.split('-')[0];
+      eachChoiceId = each.split('-')[1];
+      button = document.getElementById(`template-element-button-${eachElementId},${eachChoiceId}`);
+      console.log('in create_edit_document, handleTemplateChoiceActionMouseDown, button: ', button);
+      choicesArray.push(button);
+      choicesOriginalObject[each] = { eachElementId, eachChoiceId, choice: button, choiceDimensions: button.getBoundingClientRect(), width: button.style.width, height: button.style.height };
+    });
+    const actionCallback = (updatedElementsArray) => {
+      console.log('in create_edit_document, handleTemplateChoiceActionMouseDown, updatedElementsArray, ', updatedElementsArray);
+      this.props.updateDocumentElementLocally(updatedElementsArray);
+      this.setTemplateHistoryArray(updatedElementsArray, 'update');
+    };
+
+    this.longActionPress({ action: elementVal, choicesArray, templateElements: this.props.templateElements, choicesOriginalObject, selectedChoiceIdArray: this.state.selectedChoiceIdArray, actionCallback });
   }
 
   // For creating new input fields
@@ -3463,6 +3559,7 @@ dragChoice(props) {
           value="expandHorizontal"
           style={{ color: choicesChecked ? 'blue' : 'gray',  width: '14px' }}
           onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
           onMouseOver={this.handleMouseOverActionButtons}
           className="fas fa-angle-left"
         >
@@ -3472,6 +3569,7 @@ dragChoice(props) {
           value="expandHorizontal"
           style={{ color: choicesChecked ? 'blue' : 'gray',  width: '14px' }}
           onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
           className="fas fa-angle-right"
         >
         </i>
@@ -3487,6 +3585,7 @@ dragChoice(props) {
           value="contractHorizontal"
           style={{ color: choicesChecked ? 'blue' : 'gray', width: '14px' }}
           onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
           onMouseOver={this.handleMouseOverActionButtons}
           className="fas fa-angle-right"
         >
@@ -3496,6 +3595,7 @@ dragChoice(props) {
           value="contractHorizontal"
           style={{ color: choicesChecked ? 'blue' : 'gray', width: '14px' }}
           onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+          onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
           className="fas fa-angle-left"
         >
         </i>
@@ -3513,6 +3613,7 @@ dragChoice(props) {
             value="expandVertical"
             style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
             onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
             onMouseOver={this.handleMouseOverActionButtons}
             className="fas fa-angle-up"
             >
@@ -3522,6 +3623,7 @@ dragChoice(props) {
             value="expandVertical"
             style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
             onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
             onMouseOver={this.handleMouseOverActionButtons}
             className="fas fa-angle-down"
             >
@@ -3538,9 +3640,10 @@ dragChoice(props) {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <i
             name="Contract vertically,bottom"
-            value="expandVertical"
+            value="contractVertical"
             style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
             onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
             onMouseOver={this.handleMouseOverActionButtons}
             className="fas fa-angle-down"
             >
@@ -3550,6 +3653,7 @@ dragChoice(props) {
             value="contractVertical"
             style={{ color: choicesChecked ? 'blue' : 'gray', height: '12px' }}
             onClick={choicesChecked ? this.handleTemplateElementActionClick : () => {}}
+            onMouseDown={choicesChecked ? this.handleTemplateChoiceActionMouseDown : () => {}}
             onMouseOver={this.handleMouseOverActionButtons}
             className="fas fa-angle-up"
           >
