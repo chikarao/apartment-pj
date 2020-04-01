@@ -190,7 +190,6 @@ class CreateEditDocument extends Component {
       if (this.props.agreement.document_fields.length > 0) {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
-
     }
 
     // window.addEventListener('onblur', this.handleUserInput);
@@ -490,7 +489,7 @@ class CreateEditDocument extends Component {
       booking_id: this.props.booking.id,
       document_name: this.props.agreement.document_name,
       document_field: documentFieldArray,
-        deleted_document_field_id_array: deletedDocumentFieldIdArray,
+      deleted_document_field_id_array: deletedDocumentFieldIdArray,
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
@@ -513,14 +512,24 @@ class CreateEditDocument extends Component {
 
       if (documentField) {
         const value = data[documentField.name];
+        let array = null;
         documentField.value = value;
+        if (documentField.document_field_choices) {
+          array = [];
+          _.each(Object.keys(documentField.document_field_choices), each => {
+            console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
+            array.push(documentField.document_field_choices[each]);
+          });
+          // documentField.document_field_choices = null;
+        }
+        documentField.document_field_choices_attributes = array;
         documentFieldArray.push(documentField);
       }
     });
 
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
     this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
-    this.props.showLoading()
+    this.props.showLoading();
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -2016,6 +2025,7 @@ longActionPress(props) {
             } // end of if eachElement.document_field_choices
             // if ()
             if (inputElement) {
+              if (!newElement) console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
               return (
                 <div
                   key={modifiedElement.id}
@@ -4193,7 +4203,7 @@ function mapStateToProps(state) {
     const documentTranslations = state.documents.documentTranslations[documentKey];
     // initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
-    const agreements = state.bookingData.fetchBookingData.agreements
+    const agreements = state.bookingData.fetchBookingData.agreements;
     // initialValues = state.documents.initialValuesObject;
     initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty

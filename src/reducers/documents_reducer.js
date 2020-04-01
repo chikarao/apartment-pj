@@ -82,7 +82,6 @@ export default function (state = {
         if (i <= templateEditHistory.historyIndex) {
           // Iterate through each array of objects; object looks like  { id: 1, width: 10, o_width: 9, action: 'update' }
           _.each(eachEditArray, eachEditObject => {
-            console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, eachEditObject, eachEditObject.action, eachEditObject.action === delete: ', element, eachEditObject, eachEditObject.action, eachEditObject.action === 'delete');
             // if object id is equal to id of element in backend, do
             if (eachEditObject.id === element.id.toString()) {
               // if object action is delete, assign delete to returnstring to be returned
@@ -107,6 +106,18 @@ export default function (state = {
       modifiedElement = eachElement;
       // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
+      if (modifiedElement.document_field_choices && modifiedElement.document_field_choices.length === 0) delete modifiedElement.document_field_choices
+      if (modifiedElement.document_field_choices) {
+        const obj = {};
+        _.each(modifiedElement.document_field_choices, (each, i) => {
+          obj[i] = each;
+        });
+        modifiedElement = { ...modifiedElement, document_field_choices: obj };
+        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement inside if: ', modifiedElement);
+      }
+      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement: ', modifiedElement);
+
+      object[modifiedElement.id.toString()] = modifiedElement;
       // Assign create so redo and undo of create works in undoRedoAction
       if (actionCreate) modifiedElement.action = 'create';
       // If there is history for this agreement template elements, update elements along with map keys
@@ -127,7 +138,9 @@ export default function (state = {
         }
       } else { // else for if templateEditHistory
         // if no templateEditHistory, just put into the mapped object
-        object[modifiedElement.id.toString()] = modifiedElement;
+        // if returned
+        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in if (modifiedElement.document_field_choices modifiedElement: ', modifiedElement);
+
         if (pageObject[modifiedElement.page]) {
           // if (!pageObject[modifiedElement.page][modifiedElement.id]) {
             pageObject[modifiedElement.page][modifiedElement.id] = modifiedElement;
@@ -136,7 +149,7 @@ export default function (state = {
             pageObject[modifiedElement.page] = {};
             pageObject[modifiedElement.page][modifiedElement.id] = modifiedElement;
           }
-      }
+      } // end of else if templateEditHistory
     }); // end of each
 
     return { object, pageObject };
@@ -315,7 +328,8 @@ export default function (state = {
       // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
-      const mapKeysObject = getMappedObjectWithStringIds(action.payload.agreement.document_fields, true);
+      const mapKeysObject = getMappedObjectWithStringIds(action.payload.document_fields, true);
+      console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
 
       return { ...state, templateElements: mapKeysObject.object, templateElementsByPage: mapKeysObject.pageObject };
     }
