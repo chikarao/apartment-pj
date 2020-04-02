@@ -7,7 +7,6 @@ import {
   getFormMeta
 } from 'redux-form';
 // gettting proptypes warning with isDirty
-// import { isDirty } from 'redux-form/immutable'
 import { connect } from 'react-redux';
 // import { Image, Transformation, CloudinaryContext } from 'cloudinary-react';
 // import cloudinary from 'cloudinary-core';
@@ -15,26 +14,22 @@ import * as actions from '../../actions';
 // import DocumentForm from '../constants/document_form';
 // NOTE: Documents imports constants/fixed_term_rental_contract etc.
 import Documents from '../constants/documents';
+import AppLanguages from '../constants/app_languages';
 
 import DocumentChoices from './document_choices';
 import DocumentChoicesTemplate from './document_choices_template';
-import AppLanguages from '../constants/app_languages';
 import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
+// Functions for choices
 import setBoundaries from './set_choice_wrapper_boundaries';
 import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
-
 import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_move_wrapper';
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
-// import UploadForProfile from '../images/upload_for_profile';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
 // flatOwner is the title holder of the flat on documents
 //  and its input is taken on craeteFlat, editFlat and flatLanuages
-// const tabWidth = 70;
-// const tabHeight = 23;
-// const tabRearSpace = 5;
 
 const TAB_WIDTH = 70;
 const TAB_HEIGHT = 23;
@@ -43,11 +38,8 @@ const TAB_REAR_SPACE = 5;
 // Cannot have a finite MAX_HISTORY_ARRAY_LENGTH; Array length is zeroed out at every save
 const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
-// explanationTimerArray for keeping timer ids so they can be cleared
+// explanationTimerArray for keeping timer ids so they can be cleared (for edit action buttons)
 let explanationTimerArray = [];
-let choiceTimerArray = [];
-let mouseUp = false;
-// let explanationTimer = 0;
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -80,8 +72,7 @@ class CreateEditDocument extends Component {
         override: false
       },
       selectedElementFontObject: null,
-      // modifiedPersistedElementsArray is for elements that have been persisted in backend DB
-      // modifiedPersistedElementsArray: [],
+      // modifiedPersistedElementsObject is for elements that have been persisted in backend DB
       modifiedPersistedElementsObject: {},
       originalPersistedTemplateElements: {},
       selectedChoiceIdArray: [],
@@ -89,7 +80,6 @@ class CreateEditDocument extends Component {
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    // this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleFormCloseDeleteClick = this.handleFormCloseDeleteClick.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
@@ -113,30 +103,31 @@ class CreateEditDocument extends Component {
     // this.dragChoice = this.dragChoice.bind(this);
   }
 
-  // initialValues section implement after redux form v7.4.2 updgrade
+  // InitialValues section implement after redux form v7.4.2 updgrade
   // started to force mapStateToProps to be called for EACH Field element;
   // so to avoid Documents[documentKey].method to be called in each msp call
   //(over 100! for important ponts form) use componentDidUpdate;
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
+
+  // IMPORTANT: This component enables user to keep history of edit changes of template elements
+  // If template element is created, updated or deleted, setTemplateHistoryArray function
+  // keeps the history in an array of objects set in localStorage as 'documentHistory'
+  // The main purpose of the history feature is to enable user to recover his/her work
+  // If the page is refreshed for any reason. The history is combined with backend persisted
+  // elements in createDocumentElementLocally action.
+  // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
-    // document.getElementById('document-background').addEventListener('click', this.getMousePosition);
-    // If change name 'documentHistory', comment out this localStorageHistory section
-    // before running the code or will raise error of undefined newFontObject and other state objects
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
-      console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
+      // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
       let destringifiedHistory = {};
       // if localStorageHistory exists, set state to previous values
-      // if localStorageHistory does not exist, all state values are set in constructor
+      // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
       // and next time user refreshes or mounts component on the same machine, it will be there
       if (localStorageHistory) {
         destringifiedHistory = JSON.parse(localStorageHistory);
         if (destringifiedHistory[this.props.agreement.id].elements) {
-          // _.each(Object.keys(destringifiedHistory[this.props.agreement.id].elements), eachElementKey => {
-          //   highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
-          //   this.props.createDocumentElementLocally(destringifiedHistory[this.props.agreement.id].elements[eachElementKey]);
-          // }) // end of each elements
           console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
           // Set state with || in case localStorageHistory exists but history and other objects do not exist
           this.setState({
@@ -148,7 +139,6 @@ class CreateEditDocument extends Component {
             originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
           }, () => {
             this.setState({
-              // historyIndex: this.state.templateEditHistoryArray.length - 1
               historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
             }, () => {
               console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
@@ -168,10 +158,10 @@ class CreateEditDocument extends Component {
 
     let templateEditHistory = null;
     if (this.props.showTemplate) {
-      // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
       // templateEditHistory can be null in later code;
       // all local state values set in constructor already
-      // templateEditHistory = getLocalHistory();
+      // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
+      templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       if (templateEditHistory && templateEditHistory.elements) {
@@ -185,14 +175,11 @@ class CreateEditDocument extends Component {
       }
 
       console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
-      // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => getLocalHistory());
       // If there are elements persisted in backend DB, populate this.props.templateElements
       if (this.props.agreement.document_fields.length > 0) {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     }
-
-    // window.addEventListener('onblur', this.handleUserInput);
 
     console.log('in create_edit_document, componentDidMount, this.props.agreement', this.props.agreement);
     if (this.props.bookingData) {
@@ -212,17 +199,14 @@ class CreateEditDocument extends Component {
       } = this.props;
       const documentFields = Documents[documentKey].form
       let initialValuesObject = {};
-      // const documentKey = state.documents.createDocumentKey;
       // if showing a saved document (props set in booking_confirmation.js)
       const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
       let mainInsertFieldsObject = {};
-      // mainInsertFieldsObject = this.getMainInsertFieldObject(mainDocumentInsert);
       // if mainInsertFieldsObject is empty; ie user has not created a main agreement and insert fields
       _.isEmpty(mainInsertFieldsObject) ? (mainInsertFieldsObject = DefaultMainInsertFieldsObject) : mainInsertFieldsObject;
       // console.log('in create_edit_document, componentDidMount, mainInsertFieldsObject, mainDocumentInsert', mainInsertFieldsObject, mainDocumentInsert);
       if (this.props.showSavedDocument) {
         // get values of each agreement document field
-        // const agreement = this.getAgreement(this.props.agreementId)
         // need to have this to populate document inserts
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
@@ -235,19 +219,15 @@ class CreateEditDocument extends Component {
             agreementMappedByName: returnedObject.agreementMappedByName,
             agreementMappedById: returnedObject.agreementMappedById,
             allFields: {},
-            // mainInsertFieldsObject: returnedObject.mainInsertFieldsObject
             mainInsertFieldsObject
           };
           const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
           if (countMainDocumentInserts > 0) {
             this.setState({ useMainDocumentInsert: true }, () => {
-              // console.log('in create_edit_document, componentDidMount, this.state.useMainDocumentInsert', this.state.useMainDocumentInsert);
             });
           }
         } else { // else for if showOwnUploadedDocument
-          // console.log('in create_edit_document, componentDidMount, before setStatethis.state.showDocumentPdf', this.state.showDocumentPdf);
           this.setState({ showDocumentPdf: true }, () => {
-            // console.log('in create_edit_document, componentDidMount, this.state.showDocumentPdf', this.state.showDocumentPdf);
           });
         }
       } else { // if this.props.showSavedDocument
@@ -257,22 +237,12 @@ class CreateEditDocument extends Component {
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
-  // Do not need componentDidUpdate for setLocalStorageHistory since done in setTemplateHistoryArray
-  // componentDidUpdate(prevProps) {
-  //   console.log('in create_edit_document, componentDidUpdate, outside if prevProps.templateElements !== this.props.templateElements', prevProps.templateElements !== this.props.templateElements);
-  //   if (!_.isEmpty(prevProps.templateElements) && Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length) {
-  //     console.log('in create_edit_document, componentDidUpdate, inside if prevProps.templateElements !== this.props.templateElements', prevProps.templateElements !== this.props.templateElements);
-  //     // this.setLocalStorageHistory('componentDidUpdate');
-  //   }
-  // }
-
 
   componentWillUnmount() {
     // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
     this.setLocalStorageHistory('componentWillUnmount');
-    // window.removeEventListener('onBlur', this.handleUserInput);
 
     console.log('in create_edit_document, componentWillUnmount ');
   }
@@ -4185,13 +4155,6 @@ function mapStateToProps(state) {
   // const initialValuesObjectEmpty = _.isEmpty(state.documents.initialValuesObject);
   if (state.bookingData.fetchBookingData) {
     let initialValues = {};
-    // let fontAttributeObject = {};
-    // const elementsEmpty = _.isEmpty(state.documents.templateElements)
-    // console.log('in create_edit_document, mapStateToProps, elementsEmpty: ', elementsEmpty);
-    // if (!elementsEmpty) {
-    //   fontAttributeObject = getElementFontAttributes(state.documents.templateElements);
-    //   console.log('in create_edit_document, mapStateToProps, in if !elementsEmpty: ', elementsEmpty);
-    // }
     // bookingData.flat gives access to flat.building.inspections
     // // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
     // // setCreateDocumentKey action fired and app state set
@@ -4201,7 +4164,7 @@ function mapStateToProps(state) {
     const documentFields = Documents[documentKey].form;
     // const documentTranslations = Documents[documentKey].translation;
     const documentTranslations = state.documents.documentTranslations[documentKey];
-    // initialValues populates forms with data in backend database
+    // !!!!!!!!IMPORTANT! initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     const agreements = state.bookingData.fetchBookingData.agreements;
     // initialValues = state.documents.initialValuesObject;

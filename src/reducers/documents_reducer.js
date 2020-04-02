@@ -26,55 +26,24 @@ export default function (state = {
   templateElements: {}
 }, action) {
   // console.log('in documents reducer, action.payload: ', action.payload);
-  const fontObject = { fontFamily: {}, fontSize: {}, fontStyle: {}, fontWeight: {} };
 
-  // function getElementFontAttributes(elements) {
-  //   // Get a map of the attributes font family, size style and weight used
-  //   // in the document
-  //   console.log('in create_edit_document, getElementFontAttributes, elements: ', elements);
-  //   // Go through each element and each of the keys in fontObject
-  //   _.each(Object.keys(elements), eachElementKey => {
-  //     // If the element is a text or string element place in object with an array with element ids
-  //     if (elements[eachElementKey].type === 'text' || elements[eachElementKey].type === 'string') {
-  //       console.log('in create_edit_document, getElementFontAttributes, eachElementKey: ', eachElementKey);
-  //       _.each(Object.keys(fontObject), eachKey => {
-  //         if (!fontObject[eachKey][elements[eachElementKey][eachKey]]) {
-  //           fontObject[eachKey][elements[eachElementKey][eachKey]] = [elements[eachElementKey].id];
-  //         } else {
-  //           fontObject[eachKey][elements[eachElementKey][eachKey]].push(elements[eachElementKey].id);
-  //         }
-  //       });
-  //     }
-  //   });
-  //   // Looks like { fontFamily: { arial: [1, 2, 3] }, fontSize: { 12px: [1, 2, 3] }... }
-  //   return fontObject;
-  // }
-  //
-  // function getOnlyFontAttributes(object) {
-  //   // Get the font attribute that is the only attribute for document
-  //   const returnObject = {};
-  //   _.each(Object.keys(fontObject), eachKey => {
-  //     if (Object.keys(object[eachKey]).length === 1) {
-  //       returnObject[eachKey] = Object.keys(object[eachKey])[0];
-  //     } else {
-  //       returnObject[eachKey] = null;
-  //     }
-  //   });
-  //   return returnObject;
-  // }
-
+  // NOTE: getMappedObjectWithStringIds creates template elements object mapped with id { id: templateElement }
+  // and a page object { page: { templateElement } } readable by renderTemplateElements in create_edit_document.js
   function getMappedObjectWithStringIds(elementsArray, templateEditHistory, actionCreate) {
     // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, elementsArray, templateEditHistory, actionCreate: ', elementsArray, templateEditHistory, actionCreate);
     // time complexity about same as calling _.mapKeys but with extra functionality
     const object = {};
     let modifiedElement = {};
-    let pageObject = {};
+    const pageObject = {};
 
+    // IMPORTANT: updateElements Updates elements persisted in backend but edited
+    // in frontend without saving (ie page accidentally refreshed)
     function updateElements(element) {
       let modifiedElem = {};
       let returnString = '';
       console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, templateEditHistory: ', element, templateEditHistory);
-       // each with i history array, iterate through each history array of arrays of objects;
+       // each with i history array, iterate through each history array of arrays of objects
+       // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
       _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
         // Do until this.state.historyIndex is greater than or equal to i;
@@ -106,15 +75,7 @@ export default function (state = {
       modifiedElement = eachElement;
       // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
-      if (modifiedElement.document_field_choices && modifiedElement.document_field_choices.length === 0) delete modifiedElement.document_field_choices
-      if (modifiedElement.document_field_choices) {
-        const obj = {};
-        _.each(modifiedElement.document_field_choices, (each, i) => {
-          obj[i] = each;
-        });
-        modifiedElement = { ...modifiedElement, document_field_choices: obj };
-        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement inside if: ', modifiedElement);
-      }
+
       console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement: ', modifiedElement);
 
       object[modifiedElement.id.toString()] = modifiedElement;
@@ -207,7 +168,6 @@ export default function (state = {
               // change from input componnet use document-rectange
               // class_name: 'document-rectangle',
               class_name: element.class_name,
-              // !!! height works only with px
               input_type: element.input_type,
               element_id: element.id
             } // end of params
@@ -290,9 +250,6 @@ export default function (state = {
     return returnObject;
   } // end of function
 
-  // let fontAttributeObject = null;
-  // let onlyFontAttributeObject = null;
-
   switch (action.type) {
     // Populate template elememts to get document_fields from agreement and combine with
     // local template elements retrieved from localStorage
@@ -316,17 +273,13 @@ export default function (state = {
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
-        // templateDocumentChoicesObject
       };
     }
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS: {
       console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);
-      // const newObject = {}
-      // const mergedObject = _.merge(newObject, state.templateElements, { [action.payload.id]: action.payload });
-      // fontAttributeObject = getElementFontAttributes(action.payload.agreement.document_fields);
-      // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
-      // Rather than calling _.mapKeys, do the same thing
+      // Rather than calling _.mapKeys, do the same thing while
+      // creating page object in one iteration to templateElements
       // and turn ids into strings and assign action: create
       const mapKeysObject = getMappedObjectWithStringIds(action.payload.document_fields, true);
       console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
@@ -342,9 +295,6 @@ export default function (state = {
       const createdObject = { [action.payload.id]: action.payload };
       const templateElementsByPage = addToTemplateElementsByPage(action.payload);
       const mergedObject = _.merge(newObject, state.templateElements, createdObject);
-      // fontAttributeObject = getElementFontAttributes(mergedObject);
-      // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
-      // const templateDocumentChoicesObject = getDocumentChoicesObject(createdObject, 'create');
 
       return { ...state,
         templateElements: mergedObject,
