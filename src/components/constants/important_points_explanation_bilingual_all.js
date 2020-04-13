@@ -16,8 +16,8 @@ import Building from './building.js';
 // otherwise, first click on false will not work since there is no value in document choices
 // can make params.val boolean a string but need to make consistent for all
 
-const ImportantPointsExplanationBilingual = {
-  1: {
+const ImportantPointsExplanationBilingualAll = {
+  // 1: {
     document_name: {
       name: 'document_name',
       // className: 'form-control-document',
@@ -384,9 +384,9 @@ const ImportantPointsExplanationBilingual = {
       className: 'form-control-document',
       component: 'DocumentChoices'
     },
-
-  },
-  2: {
+  //
+  // },
+  // 2: {
     // not using building owner; corresponds to flat owner_name
     flat_owner_name: {
       name: 'flat_owner_name',
@@ -998,9 +998,9 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 100,
     },
-
-  },
-  3: {
+  //
+  // },
+  // 3: {
     kitchen: {
       name: 'kitchen',
       input_type: 'string',
@@ -1621,10 +1621,8 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 100,
     },
-
-
-  },
-  4: {
+  // },
+  // 4: {
     earthquake_study_performed: {
       name: 'earthquake_study_performed',
       input_type: 'boolean',
@@ -1831,8 +1829,8 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 600,
     },
-  },
-  5: {
+  // },
+  // 5: {
     warranties: {
       name: 'warranties',
       input_type: 'text',
@@ -2017,8 +2015,8 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 100,
     },
-  },
-  6: {
+  // },
+  // 6: {
     limitations_use: {
       name: 'limitations_use',
       input_type: 'text',
@@ -2198,9 +2196,9 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 50,
     },
-
-  },
-  7: {
+  //
+  // },
+  // 7: {
     bond_deposit_office: {
       name: 'bond_deposit_office',
       input_type: 'string',
@@ -2370,8 +2368,8 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 50,
     },
-  },
-  8: {
+  // },
+  // 8: {
     date_prepared: {
       name: 'date_prepared',
       input_type: 'date',
@@ -2934,9 +2932,9 @@ const ImportantPointsExplanationBilingual = {
       wooden: true,
       // attributes; keep just in case
       // attributes: { names: ['bath_tub'], input_type: 'boolean' }
-    }
-  },
-  9: {
+    },
+  // },
+  // 9: {
     inspector_name: {
       name: 'inspector_name',
       input_type: 'string',
@@ -3137,9 +3135,9 @@ const ImportantPointsExplanationBilingual = {
       component: 'DocumentChoices',
       charLimit: 100,
     },
-
-  },
-  10: {
+  //
+  // },
+  // 10: {
     date_prepared_1: {
       name: 'date_prepared_1',
       input_type: 'date',
@@ -3624,10 +3622,9 @@ const ImportantPointsExplanationBilingual = {
       // attributes; keep just in case
       // attributes: { names: ['bath_tub'], input_type: 'boolean' }
     },
-
-
-  },
-  11: {
+  //
+  // },
+  // 11: {
     inspector_name_1: {
       name: 'inspector_name_1',
       input_type: 'string',
@@ -3835,7 +3832,7 @@ const ImportantPointsExplanationBilingual = {
       baseKey: 'architect_office_registration',
     },
 
-  },
+  // },
 };
 
-export default ImportantPointsExplanationBilingual;
+export default ImportantPointsExplanationBilingualAll;

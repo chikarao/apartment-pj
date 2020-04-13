@@ -1,11 +1,13 @@
 // For create_edit_document mapStateToProps
 import FixedTermRentalContract from './fixed_term_rental_contract.js';
 import FixedTermRentalContractBilingual from './fixed_term_rental_contract_bilingual.js';
+import FixedTermRentalContractBilingualByPage from './fixed_term_rental_contract_bilingual_by_page.js';
 // translations moved to backend
 // import FixedTermRentalContractBilingualTranslation from './fixed_term_rental_contract_bilingual_translation.js';
 // import ImportantPointsExplanationBilingualTranslation from './important_points_explanation_bilingual_translation.js';
 import ImportantPointsExplanation from './important_points_explanation.js';
 import ImportantPointsExplanationBilingual from './important_points_explanation_bilingual.js';
+import ImportantPointsExplanationBilingualByPage from './important_points_explanation_bilingual_by_page.js';
 import getInitialValuesObjectFixedTermContract from '../functions/get_initialvalues_object-fixed-term-contract.js';
 import getInitialValuesObjectImportantPointsExplanation from '../functions/get_initialvalues_object_important_points_explanation.js';
 import globalConstants from './global_constants.js'
@@ -41,7 +43,7 @@ const Documents =
       },
 
     fixed_term_rental_contract_bilingual: {
-      form: FixedTermRentalContractBilingual,
+      form: FixedTermRentalContractBilingualByPage,
       en: 'Fixed Term Rental Contract Bilingual',
       jp: '定期借家契約 バイリンガル',
       file: 'teishaku-saimuhosho-bilingual-v3-no-translation-11',
@@ -57,7 +59,7 @@ const Documents =
     },
 
     important_points_explanation_bilingual: {
-      form: ImportantPointsExplanationBilingual,
+      form: ImportantPointsExplanationBilingualByPage,
       en: 'Important Points Explanation Form Bilingual',
       jp: '重要事項説明書 バイリンガル',
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-30',

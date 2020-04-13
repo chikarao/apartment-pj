@@ -455,7 +455,7 @@ class DocumentChoicesTemplate extends Component {
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
       // if choice type is string, use input element above and button if not string
-      if ((choice.input_type == 'string' || choice.input_type == 'date') && !choice.selectChoices ) {
+      if ((choice.input_type == 'string' || choice.input_type == 'date') && !choice.selectChoices) {
         // define input element for user to input
         const inputElement = this.createInputElement({ choice, meta, value, onBlur, name, input: this.props.input })
         return inputElement;

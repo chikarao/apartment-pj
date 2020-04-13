@@ -26,6 +26,11 @@ import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_move_wrapper';
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
+// Just for test
+import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
+import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
+import FixedTermRentalContractBilingualByPage from '../constants/fixed_term_rental_contract_bilingual_by_page';
+import ImportantPointsExplanationBilingual from '../constants/important_points_explanation_bilingual';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
 // flatOwner is the title holder of the flat on documents
@@ -106,6 +111,7 @@ class CreateEditDocument extends Component {
   // InitialValues section implement after redux form v7.4.2 updgrade
   // started to force mapStateToProps to be called for EACH Field element;
   // so to avoid Documents[documentKey].method to be called in each msp call
+  // so to avoid Documents[documentKey].method to be called in each msp call
   //(over 100! for important ponts form) use componentDidUpdate;
   // Then to avoid .method to be called after each user input into input field,
   // use shouldComponentUpdate in document_choices; if return false, will not call cdu
@@ -118,6 +124,43 @@ class CreateEditDocument extends Component {
   // elements in createDocumentElementLocally action.
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
+    let testCount = 0;
+    const object = {};
+    const duplicateArray = [];
+    const duplicateObject = {};
+    // const translations = this.props.testDocumentTranslations.important_points_explanation_bilingual
+    const translations = this.props.testDocumentTranslations.fixed_term_rental_contract_bilingual
+    _.each(Object.keys(translations), eachPage => {
+      // _.each(Object.keys(FixedTermRentalContractBilingualAll), eachKey => {
+      _.each(Object.keys(translations[eachPage]), eachKey => {
+      if (!object[eachPage]) {
+        // object[eachPage] = { [eachKey]: ImportantPointsExplanationBilingual[eachPage][eachKey] };
+        object[eachPage] = { [eachKey]: `Base[:${eachKey}]` };
+      } else {
+        object[eachPage][eachKey] = `Base[:${eachKey}]`;
+        // object[eachPage][eachKey] = ImportantPointsExplanationBilingual[eachPage][eachKey];
+        if (!object[eachKey]) {
+            object[eachKey] = 1;
+            duplicateObject[eachKey] = [eachPage];
+          } else {
+              object[eachKey]++;
+              // duplicateArray.push(eachKey);
+
+              duplicateObject[eachKey].push(eachPage);
+            }
+      }
+        testCount++;
+      });
+    });
+
+    _.each(Object.keys(duplicateObject), each => {
+      if (duplicateObject[each].length < 2) {
+        delete duplicateObject[each];
+      }
+    })
+    console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
+    // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
+
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
       // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
@@ -198,6 +241,7 @@ class CreateEditDocument extends Component {
         staffTranslations
       } = this.props;
       const documentFields = Documents[documentKey].form
+      // const documentFields = this.props.fixedTermRentalContractBilingualAll;
       let initialValuesObject = {};
       // if showing a saved document (props set in booking_confirmation.js)
       const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
@@ -1194,8 +1238,8 @@ renderEachDocumentField(page) {
             //   choiceElement = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
             //   choiceElementsArray.push(choiceElement);
             // })
-            // Get the wrapper div of the choice
             choiceElement = document.getElementById(`template-element-button-${eachElementId},${0}`);
+            // Get the wrapper div of the choice
             wrapperDiv = choiceElement.parentElement.parentElement.parentElement;
             // wrapperDivDimensions is the original wrapper dimensions, not after drag
             // Original wrapperDivDimensions based on originalValueObject
@@ -1207,49 +1251,6 @@ renderEachDocumentField(page) {
             }
             updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, originalWrapperDivDimensions: wrapperDivDimensions, eachElementId, templateElements, elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
             console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
-            // // Get an object with element id and corresponding top, left, width and height in px
-            // allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions: wrapperDiv.getBoundingClientRect(), elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
-            // // Get object with new and old document_field_choices and
-            // // Object with top, left, width and height in px for setBoundaries function
-            // documentFieldObject = getNewDocumentFieldChoices({ choiceIndex: null, templateElements, iteratedElements: choiceElementsArray, otherChoicesObject: allChoicesObject, backgroundDimensions, choiceButtonWidthInPx: null, choiceButtonHeightInPx: null });
-            // eachChoicePxDimensionsArray = documentFieldObject.array;
-            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, documentFieldObject, allChoicesObject ', eachElement, documentFieldObject, allChoicesObject);
-            // // // New and old records of choices to be set in app stata in templateElements
-            // // // get new and old document field choices
-            // newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
-            // oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
-            // // // get wrapper dimensions
-            // // lastWrapperDivDimsPre = wrapperDiv.getBoundingClientRect();
-            // // Get the old wrapper dimensions
-            // wrapperDivDimensions = {
-            //   top: ((parseFloat(originalValueObject[eachElementId].top) / 100) * backgroundDimensions.height) + backgroundDimensions.top,
-            //   left: ((parseFloat(originalValueObject[eachElementId].left) / 100) * backgroundDimensions.width) + backgroundDimensions.left,
-            //   width: (parseFloat(originalValueObject[eachElementId].width) / 100) * backgroundDimensions.width,
-            //   height: ((parseFloat(originalValueObject[eachElementId].height) / 100) * backgroundDimensions.height) - TAB_HEIGHT,
-            // }
-            // // Get the new wrapper dimensions based on actual choice in DOM
-            // lastWrapperDivDimsInPx = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-            // lastWrapperDivDims = {
-            //     topInPx: lastWrapperDivDimsInPx.topInPx,
-            //     leftInPx: lastWrapperDivDimsInPx.leftInPx,
-            //     widthInPx: lastWrapperDivDimsInPx.widthInPx,
-            //     heightInPx: lastWrapperDivDimsInPx.heightInPx
-            //   };
-
-            // updatedElementObject = getUpdatedElementObject({ eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
-            // array.push(updatedElementObject)
-
-            // choiceElementArray.push(eachElement);
-            // updatedElementObject = {
-            //   // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
-            //   id: elementId, // get the id part of template-element-[id]
-            //   left: eachElement.style.left,
-            //   top: eachElement.style.top,
-            //   o_left: originalValueObject[eachElement.id.split('-')[2]].left,
-            //   o_top: originalValueObject[eachElement.id.split('-')[2]].top,
-            //   action: 'update'
-            // };
           } else { // else of if (templateElements[elementId].document_field_choices
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
@@ -1567,6 +1568,8 @@ dragChoice(props) {
 }
 
 longActionPress(props) {
+  // longActionPress enable user to press mouse down and increase/decrease width and height
+  // When user mouses up, the coordinates are set in app state
   //gotolongaction
   const { action, choicesArray, templateElements, choicesOriginalObject, selectedChoiceIdArray, actionCallback } = props;
 
@@ -1578,15 +1581,9 @@ longActionPress(props) {
   let wrapperDivDimensions = null;
   let eachModifiedChoice = null;
   let count = 0;
-  // let horizontalLimit = null;
-  // let verticalLimit = null;
-  // let choiceDimensions = null;
-  // let withinLimitHorizontal = true;
-  // let withinLimitVertical = true;
   let currentWidthInPx = 0;
   let currentHeightInPx = 0;
-  // let currentTopInPx = 0;
-  // let currentLeftInPx = 0;
+
   // background is before the choice wrapper, the inner Divwrapper, outer DivWrapper (4 levels up)
   const backgroundDimensions = choicesArray[0].parentElement.parentElement.parentElement.parentElement.getBoundingClientRect();
   let eachChoice = null;
@@ -1604,11 +1601,10 @@ longActionPress(props) {
 
   function elementChange() {
     count++;
+    // As user presses longer, the increments increase
     if (count > 5 && (action === 'expandHorizontal' || action === 'contractHorizontal')) increment *= 1.05;
     if (count > 10 && (action === 'expandHorizontal' || action === 'contractHorizontal')) increment *= 1.075;
     totalIncremented += increment;
-
-    // if (count > 10) increment *= 1.075;
 
     _.each(Object.keys(choicesOriginalObject), eachKey => {
       eachChoice = choicesOriginalObject[eachKey].choice;
@@ -1616,39 +1612,26 @@ longActionPress(props) {
       eachModifiedChoice = eachChoice;
       wrapperDiv = eachChoice.parentElement.parentElement.parentElement;
       wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
-      // currentTopInPx = ((parseFloat(eachChoice.style.top) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT)) + wrapperDivDimensions.top;
-      // currentLeftInPx = ((parseFloat(eachChoice.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;
       currentWidthInPx = ((parseFloat(eachChoice.style.width) / 100) * wrapperDivDimensions.width);
       currentHeightInPx = ((parseFloat(eachChoice.style.height) / 100) * (wrapperDivDimensions.height - TAB_HEIGHT));
-      // withinLimitVertical = (currentTopInPx + currentHeightInPx + increment) < backgroundDimensions.bottom;
-      // withinLimitHorizontal = (currentLeftInPx + currentWidthInPx + increment) < backgroundDimensions.right;
-      // if (!withinLimitHorizontal && (increment > (backgroundDimensions.right - (currentLeftInPx + currentWidthInPx)))) {
-      //   increment = backgroundDimensions.right - (currentLeftInPx + currentWidthInPx);
-      //   withinLimitHorizontal = true;
-      // }
-      // if (!withinLimitVertical && increment > (backgroundDimensions.right - (currentLeftInPx + currentWidthInPx))) increment = backgroundDimensions.right - (currentLeftInPx + currentWidthInPx);
+
       if (action === 'expandHorizontal') eachModifiedChoice.style.width = `${((currentWidthInPx + increment) / wrapperDivDimensions.width) * 100}%`
       if (action === 'contractHorizontal') eachModifiedChoice.style.width = `${((currentWidthInPx - increment) / wrapperDivDimensions.width) * 100}%`
       if (action === 'expandVertical') eachModifiedChoice.style.height = `${((currentHeightInPx + increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
       if (action === 'contractVertical') eachModifiedChoice.style.height = `${((currentHeightInPx - increment) / (wrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`
-      // eachChoice.style.width = `150%`
-      // console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions', action, eachChoice, eachChoice.style.height, increment, wrapperDivDimensions);
-      console.log('in create_edit_document, longActionPress, elementChange, action, eachChoice, currentLeftInPx, currentWidthInPx, increment, backgroundDimensions.right, withinLimitHorizontal, backgroundDimensions', action, eachChoice, currentLeftInPx, currentWidthInPx, increment, backgroundDimensions.right, withinLimitHorizontal, backgroundDimensions);
-    })
+    });
   }
 
   function closeLongActionPress() {
     // stop changing choice elements when button is released:
     document.onmouseup = null;
-    // document.onmousemove = null;
     // Sends timer ID (integer) to clearInterval
     clearInterval(timer);
     // getUpdatedElementObjectNoBase gets new wrapper div attributes,
     // and new choice element attributes to send to action creator and reducer
     const array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray, choicesArray, tabHeight: TAB_HEIGHT, templateElements, longActionPress: true, action });
     console.log('in create_edit_document, longActionPress, closeLongActionPress, choicesArray, array, totalIncremented ', choicesArray, array, totalIncremented);
-    // choicesArray[0].style.width = '100%'
-    // IMPORTANT: Somehow, each choice in the DOM needs to be reset to
+    // !!!!! IMPORTANT: Somehow, each choice in the DOM needs to be reset to
     // its original % style.width and height, or when rerender from values
     // in app state, the same DOM choice width and height values become
     // inaccurate and become much larger. Resetting back after changing works.
@@ -1656,7 +1639,6 @@ longActionPress(props) {
       choicesOriginalObject[eachKey].choice.style.width = choicesOriginalObject[eachKey].width;
       choicesOriginalObject[eachKey].choice.style.height = choicesOriginalObject[eachKey].height;
     });
-    // } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
     // Call action creator and setTemplateHistoryArray in callback
     actionCallback(array);
   }
@@ -2181,11 +2163,13 @@ longActionPress(props) {
     // only render document translations when !showDocumentPdf
     // if (!this.state.showDocumentPdf) {
     return _.map(this.props.documentTranslations[page], (documentTranslation, i) => {
-      // console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
-      let textToRender = documentTranslation.translations[this.props.documentLanguageCode]
+      console.log('in create_edit_document, renderEachDocumentTranslation, this.props.documentTranslations, documentTranslation, page: ', this.props.documentTranslations, documentTranslation, page);
+      if (documentTranslation.attributes) {
+        let textToRender = documentTranslation.translations[this.props.documentLanguageCode]
+        console.log('in create_edit_document, renderEachDocumentTranslation, documentTranslation.translations[en] : ', documentTranslation.translations['en']);
 
-      return (
-        <div
+        return (
+          <div
           key={i}
           className={documentTranslation.attributes.class_name}
           style={{
@@ -2199,10 +2183,11 @@ longActionPress(props) {
             width: documentTranslation.attributes.width,
             textAlign: documentTranslation.attributes.text_align,
           }}
-        >
+          >
           {textToRender}
-        </div>
-      );
+          </div>
+        );
+      }
     });
     // }
   }
@@ -4213,8 +4198,10 @@ function mapStateToProps(state) {
       // onlyFontAttributeObject: state.documents.onlyFontAttributeObject,
       templateDocumentChoicesObject: state.documents.templateDocumentChoicesObject,
       templateElementsByPage: state.documents.templateElementsByPage,
+      fixedTermRentalContractBilingualAll: state.bookingData.fixedTermRentalContractBilingualAll,
       // meta is for getting touched, active and visited for initialValue key
       // meta: getFormMeta('CreateEditDocument')(state)
+      testDocumentTranslations: state.documents.documentTranslations,
     };
   }
 

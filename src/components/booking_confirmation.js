@@ -458,14 +458,13 @@ class BookingConfirmation extends Component {
     const clickedElement = event.target;
     // elementVal is documentCode or document key in documents.js
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in booking confirmation, handleOwnDocumentShowClick, elementVal:', elementVal);
+    // value looks like 'own_uploaded_document,template'
     const elementValArray = elementVal.split(',')
     const documentCode = elementValArray[0];
     // boolean to test if doc is a template
     const template = elementValArray[1] === 'template';
     // elementName is agreement id
     const elementName = clickedElement.getAttribute('name');
-    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
     // first make false and nullout relavant state elements
     // Then set relevant state to show own document
     this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
@@ -1263,10 +1262,8 @@ handleDocumentCreateClick(event) {
   const clickedElement = event.target;
   // elementval is document key
   const elementVal = clickedElement.getAttribute('value');
-  // console.log('in booking confirmation, handleDocumentCreateClick, this.state:', this.state);
-  // console.log('in booking confirmation, handleDocumentCreateClick, elementVal:', elementVal);
-  // if document is has tranlation feature
-  //and the base language of the document is same as user chosen document language,
+  // if document has tranlation feature
+  // and the base language of the document is same as user chosen document language,
   // give alert to select another language
   if (Documents[elementVal].translation && Documents[elementVal].baseLanguage === this.props.documentLanguageCode) {
     const language = Languages[Documents[elementVal].baseLanguage].name;

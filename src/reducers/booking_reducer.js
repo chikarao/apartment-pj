@@ -46,7 +46,19 @@ export default function (state = {
 
     case FETCH_BOOKING:
       // console.log('in booking reducer, state: ', state);
-      return { ...state, fetchBookingData: action.payload.booking, user: action.payload.user, owner: action.payload.owner, flat: action.payload.flat, contracts: action.payload.contracts, assignments: action.payload.assignments, contractorTranslations: action.payload.contractorTranslations, staffTranslations: action.payload.staffTranslations, documentInsertsAll: action.payload.document_inserts_all };
+      return { ...state,
+        fetchBookingData: action.payload.booking,
+        user: action.payload.user,
+        owner: action.payload.owner,
+        flat: action.payload.flat,
+        contracts: action.payload.contracts,
+        assignments: action.payload.assignments,
+        contractorTranslations: action.payload.contractorTranslations,
+        staffTranslations: action.payload.staffTranslations,
+        documentInsertsAll: action.payload.document_inserts_all,
+        // fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
+        // importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all)
+      };
 
     case CREATE_AGREEMENT:
       // console.log('in booking reducer, state: ', state);

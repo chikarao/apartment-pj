@@ -10,6 +10,7 @@ import {
   EDIT_AGREEMENT_FIELDS,
   FETCH_DOCUMENT_TRANSLATION,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
+  FETCH_BOOKING
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -253,6 +254,15 @@ export default function (state = {
   switch (action.type) {
     // Populate template elememts to get document_fields from agreement and combine with
     // local template elements retrieved from localStorage
+    case FETCH_BOOKING: {
+      return { ...state,
+        fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
+        importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all),
+        templateMappingObjectFixed: JSON.parse(action.payload.template_mapping_object_fixed),
+        templateMappingObjectImportantPoints: JSON.parse(action.payload.template_mapping_object_important_points)
+      };
+    }
+
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements: ', action.payload, state.templateElements);
       const newObject = {};

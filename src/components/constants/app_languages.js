@@ -356,10 +356,16 @@ const appLanguages =
     messageOwner: { en: 'Send a Message', jp: 'メッセージしよう' },
     noNearbyPlaces: { en: 'No places selected. Go to Edit page and to choose places nearby your flat.', jp: 'プレースが選択されてません。編集ページで物件の近くのプレースを選択してください。' },
     signOutMessage: { en: 'You have been signed out. \n\n Please come back soon!', jp: 'ログアウトしました。\n\nまたのご使用をお待ち申し上げております。' },
-    // addDocumentInsertLanguage: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
-    // staffTitle: { en: 'Title', jp: 'タイトル' },
-    // fixedTermContract: { en: 'Fixed Term Rental Contract', jp: '定期借家契約' },
-    // importantPointsExplanation: { en: 'Important Points Explanation', jp: '重要事項説明書' },
+    // Template Elements
+    document: { en: 'Document', jp: 'ドキュメント' },
+    tenant: { en: 'Tenant', jp: 'テナント' },
+    broker: { en: 'Broker', jp: '仲介業者' },
+    building: { en: 'Building', jp: '建物' },
+    flat: { en: 'Listing', jp: '物件' },
+    landlord: { en: 'Landlord', jp: '家主' },
+    owner: { en: 'Owner', jp: '所有者' },
+    agreement: { en: 'Agreement', jp: '契約内容' },
+    inspection: { en: 'Inspection', jp: '点検' },
   };
 
 export default appLanguages;
