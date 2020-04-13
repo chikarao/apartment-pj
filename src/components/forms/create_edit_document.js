@@ -286,7 +286,7 @@ class CreateEditDocument extends Component {
     // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
-    this.setLocalStorageHistory('componentWillUnmount');
+    // this.setLocalStorageHistory('componentWillUnmount');
 
     console.log('in create_edit_document, componentWillUnmount ');
   }
@@ -2192,25 +2192,6 @@ longActionPress(props) {
     // }
   }
 
-  handleFieldChoiceClick(event) {
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value')
-    console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.props.document: ', elementVal, this.props.documents);
-  }
-
-  renderEachFieldChoice() {
-    // NOT yet build out
-    return (
-      <div
-        className="create-edit-document-template-each-choice"
-        value={'name'}
-        onClick={this.handleFieldChoiceClick}
-      >
-      Name
-      </div>
-    );
-  }
-
   handleCreateNewTemplateElement() {
     // Turn on and off createNewTemplateElementOn local state;
     // The actual creation is done in getMousePosition
@@ -2354,7 +2335,7 @@ longActionPress(props) {
     // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
     let destringifiedHistory = {};
     const localStorageHistory = localStorage.getItem('documentHistory');
-    console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere);
+    console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement);
     // Get latest localHistory object
     if (localStorageHistory) {
       // if historystring, unstringify it and add agreementId = historyArray
@@ -3157,10 +3138,66 @@ longActionPress(props) {
       }
   }
 
+  handleFieldChoiceClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.props.document: ', elementVal, this.props.documents);
+  }
+
+  renderEachFieldChoice() {
+    // NOT yet build out
+    return (
+      <div
+        className="create-edit-document-template-each-choice"
+        value={'name'}
+        onClick={this.handleFieldChoiceClick}
+      >
+      Name
+      </div>
+    );
+  }
+
+  renderFieldBoxControls() {
+    // <i className="fas fa-angle-double-left"></i>
+    // <i className="fas fa-angle-left"></i>
+    return (
+      <div className="create-edit-document-template-edit-field-box-controls">
+        <div className="create-edit-document-template-edit-field-box-controls-search">
+          <input
+            type="text"
+            className="create-edit-document-template-edit-field-box-search-input"
+          />
+        </div>
+        <div className="create-edit-document-template-edit-field-box-controls-navigate">
+          <div className="create-edit-document-template-edit-field-box-controls-navigate-each-icon">
+            <i className="fas fa-home"></i>
+          </div>
+          <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
+            Tenant
+          </div>
+          <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
+            Address address
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderTemplateEditFieldBox() {
     return (
       <div className="create-edit-document-template-edit-field-box">
-        {this.renderEachFieldChoice()}
+        {this.renderFieldBoxControls()}
+        <div className="create-edit-document-template-edit-field-box-choices">
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+          {this.renderEachFieldChoice()}
+        </div>
       </div>
     );
   }

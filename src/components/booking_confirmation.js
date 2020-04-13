@@ -1275,7 +1275,7 @@ handleDocumentCreateClick(event) {
     // if language selection is correct and
     // if showDocument is false, just create document key with the document code
     if (this.state.showOwnUploadedDocument && (elementVal !== globalConstants.ownUploadedDocumentKey)) {
-      this.setState({ showOwnUploadedDocument: false }, () => {
+      this.setState({ showOwnUploadedDocument: false, showTemplate: null }, () => {
         this.setConditionsForCreateDocuments(elementVal);
       });
     } else {
