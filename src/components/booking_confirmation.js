@@ -532,7 +532,13 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <div value="template" className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadTemplate[appLanguageCode]}</div>
+              <div
+                value="template"
+                className="btn booking-request-upload-document-link"
+                onClick={this.handleDocumentUploadClick}
+              >
+                {AppLanguages.uploadTemplate[appLanguageCode]}
+              </div>
             </div>
             <div className="booking-confirmation-document-box">
               {this.renderEachTemplateSaved()}

@@ -4869,23 +4869,33 @@ form {
   align-items: center;
 }
 
+.create-edit-document-template-edit-field-box-controls-navigate div:nth-child(2) {
+  width: 40%;
+}
+
+.create-edit-document-template-edit-field-box-controls-navigate div:nth-child(3) {
+  width: 47%;
+}
+
 .create-edit-document-template-edit-field-box-controls-navigate-each {
   /* width: 40%; */
   height: 90%;
   /* border: 1.0px solid #ccc; */
   padding: 5px;
-  font-size: 12px;
+  font-size: 11px;
   text-align: left;
-  display: table;
+  /* display: table; */
   padding: 5px 5px 5px 5px;
+  word-wrap: break-word;
+  /* overflow-x: auto; */
 }
 
 .create-edit-document-template-edit-field-box-controls-navigate-each-icon {
-  width: 15%;
+  width: 13%;
   height: 90%;
   /* border: 1.0px solid #ccc; */
   padding: 3px;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .create-edit-document-template-edit-field-box-controls-search {

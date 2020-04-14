@@ -8,6 +8,7 @@ import axios from 'axios';
 import * as actions from '../../actions';
 import languages from '../constants/languages';
 import DocumentInsert from '../constants/document_insert';
+import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
 import FormChoices from '../forms/form_choices';
 import RenderDropzoneInput from '../images/render_dropzone_input';
@@ -39,25 +40,8 @@ class DocumentInsertCreateModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    // const { code } = data;
-    // this.setState({ selectedLanguage: languages[code].name });
-    // const delta = {}
-    // _.each(Object.keys(data), each => {
-    //   // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
-    //   if (data[each] !== this.props.initialValues[each]) {
-    //     console.log('in edit flat, handleFormSubmit, each: ', each);
-    //     delta[each] = data[each]
-    //   }
-    // })
-    // const dataToBeSent = { documentInsert: data };
-    // const dataToBeSent = { documentInsert: data, id: this.props.documentInsertId };
-    // dataToBeSent.flat_id = this.props.flat.id;
-    // console.log('in DocumentInsertCreateModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     console.log('in DocumentInsertCreateModal, handleFormSubmit, data: ', data);
-    // this.props.showLoading();
-    // this.props.createDocumentInsert(dataToBeSent, () => {
-    //   this.handleFormSubmitCallback();
-    // });
+
     this.props.showLoading();
     this.handleCreateImages(data.files, data);
   }
@@ -129,18 +113,6 @@ class DocumentInsertCreateModal extends Component {
   });
 }
 
-  // createImageCallback(imagesArray, imageCount, flatId) {
-  //   console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
-  //   const count = imageCount + 1;
-  //   if (count <= (imagesArray.length - 1)) {
-  //     this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-  //   } else {
-  //     this.props.history.push(`/show/${flatId}`);
-  //     //switch on loading modal in action creator
-  //     this.props.showLoading();
-  //   }
-  // }
-
   handleFormSubmitCallback() {
     console.log('in DocumentInsertCreateModal, handleFormSubmitCallback: ');
     // this.props.selectedDocumentInsertId('');
@@ -165,25 +137,21 @@ class DocumentInsertCreateModal extends Component {
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
     console.log('in documentInsert_create_modal, handleClose, this.props.showDocumentInsertCreate: ', this.props.showDocumentInsertCreate);
+    this.props.showDocumentInsertCreateModal();
 
-    // if (this.props.showDocumentInsertCreate) {
-      this.props.showDocumentInsertCreateModal();
-      // this.props.selectedDocumentInsertId('');
-      // this.props.addNew ? this.props.addNewDocumentInsert() : '';
-      this.setState({ createDocumentInsertCompleted: false });
-    // }
+    this.setState({ createDocumentInsertCompleted: false });
   }
 
-  renderEachDocumentInsertField() {
+  renderEachDocumentInsertField(objects) {
     let fieldComponent = '';
-    return _.map(DocumentInsert, (formField, i) => {
+    return _.map(objects, (formField, i) => {
       // console.log('in documentInsert_create_modal, renderEachDocumentInsertField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
         fieldComponent = formField.component;
       }
-      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, fieldComponent: ', fieldComponent);
+      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, fieldComponent, objects: ', fieldComponent, objects);
 
       return (
         <fieldset key={i} className="form-group">
@@ -192,13 +160,43 @@ class DocumentInsertCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: DocumentInsert, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray } : {}}
+            props={fieldComponent == FormChoices ? { model: objects, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
           />
         </fieldset>
       );
     });
+  }
+
+  createTemplateObjects() {
+    const object = {
+      template_file_name: {
+        name: 'template_file_name',
+        component: 'FormChoices',
+        type: 'string',
+        en: 'Type of Document',
+        jp: '書類の種類',
+        language_independent: true,
+        limit_choices: true,
+      }
+    };
+
+    const obj = {};
+    _.each(Object.keys(Documents), (eachKey, i) => {
+      if (Documents[eachKey].templateCompatible) {
+        obj[i] = { value: eachKey,
+                   en: Documents[eachKey].en,
+                   jp: Documents[eachKey].jp,
+                   type: 'button',
+                   className: 'form-rectangle'
+                 };
+      }
+    });
+
+    object.template_file_name.choices = obj;
+    console.log('in documentInsert_create_modal, createTemplateObjects: ', object);
+    return object;
   }
 
   handleDeleteDocumentInsertClick(event) {
@@ -235,7 +233,8 @@ class DocumentInsertCreateModal extends Component {
               {this.renderAlert()}
 
               <form onSubmit={handleSubmit(this.handleFormSubmit)}>
-                {this.renderEachDocumentInsertField()}
+                {this.renderEachDocumentInsertField(DocumentInsert)}
+                {this.props.templateCreate ? this.renderEachDocumentInsertField(this.createTemplateObjects()) : ''}
 
                   <Field
                     name={FILE_FIELD_NAME}
@@ -346,50 +345,24 @@ function getLanguageArray(documentInserts, baseDocumentInsert) {
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in DocumentInsertCreateModal, mapStateToProps, state: ', state);
-  // get clicked calendar
-  // const calendarArray = [];
+
   if (state.bookingData.fetchBookingData) {
-    // let initialValues = {};
-    // initialValues.language_code = 'en';
-    // // console.log('in DocumentInsertCreateModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    // const { documentInserts } = state.auth.user;
-    // let documentInsert = {};
-    // let documentInsertLanguageArray = []
-    // // if user click is not to create a brand new documentInsert; ie add a language
-    // if (!state.modals.addNewDocumentInsert) {
-    //   documentInsert = getDocumentInsert(documentInserts, state.modals.selectedDocumentInsertId);
-    //   documentInsertLanguageArray = getLanguageArray(documentInserts, documentInsert);
-    //   initialValues = getInitialValues(documentInsert);
-    // }
     console.log('in DocumentInsertCreateModal, mapStateToProps, state #2: ', state);
-    // console.log('in DocumentInsertCreateModal, mapStateToProps, documentInsert: ', documentInsert);
-    // const existingLanguagesArray = getExistingLanguages(documentInserts);
-    // console.log('in DocumentInsertCreateModal, mapStateToProps, documentInsert: ', documentInsert);
-    // initialValues = documentInsert;
-    // // initialValues.documentInsert_date = dateString;
-    // console.log('in DocumentInsertCreateModal, mapStateToProps, initialValues: ', initialValues);
 
     return {
       auth: state.auth,
       successMessage: state.auth.success,
       errorMessage: state.auth.error,
-      // flat: state.selectedFlatFromParams.selectedFlatFromParams,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       appLanguageCode: state.languages.appLanguageCode,
       booking: state.bookingData.fetchBookingData,
       documentKey: state.documents.createDocumentKey,
       documentLanguageCode: state.languages.documentLanguageCode,
-      // documentInsertId: state.modals.selectedDocumentInsertId,
-      // documentInsert,
-      // addNew: state.modals.addNewDocumentInsert,
-      // documentInsertLanguageArray,
-      // set initialValues to be first calendar in array to match selectedDocumentInsertId
       // initialValues
-      // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
     };
-  } else {
-    return {};
   }
+  // else return empty object
+  return {};
 }
 
 

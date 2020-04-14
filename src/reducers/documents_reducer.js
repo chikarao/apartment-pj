@@ -258,8 +258,10 @@ export default function (state = {
       return { ...state,
         fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
         importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all),
-        templateMappingObjectFixed: JSON.parse(action.payload.template_mapping_object_fixed),
-        templateMappingObjectImportantPoints: JSON.parse(action.payload.template_mapping_object_important_points)
+        templateMappingObjects: {
+          fixed_term_rental_contract_bilingual: JSON.parse(action.payload.template_mapping_object_fixed),
+          important_points_explanation_bilingual: JSON.parse(action.payload.template_mapping_object_important_points)
+        }
       };
     }
 

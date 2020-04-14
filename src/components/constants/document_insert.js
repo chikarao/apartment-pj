@@ -1,30 +1,8 @@
 // import React from 'react';
 // object for input of inspections in edit flat, in building section
+import Documents from './documents';
 
 const DocumentInsert = {
-  // language_code: {
-  //   name: 'language_code',
-  //   en: 'Language',
-  //   jp: '言語',
-  //   component: 'FormChoices',
-  //   type: 'string',
-  //   choices: {
-  //     0: { value: 'en', en: '🇬🇧 English', jp: '🇬🇧 English', type: 'button', className: 'form-rectangle' },
-  //     1: { value: 'jp', en: '🇯🇵 Japanese', jp: '🇯🇵 日本語', type: 'button', className: 'form-rectangle' },
-  //     2: { value: 'po', en: '🇵🇹 Portuguese', jp: '🇵🇹 Português', type: 'button', className: 'form-rectangle' },
-  //     // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
-  //     // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-  //   },
-  //   // for rendering when fields are language indepedent.
-  //   // ie needs to inputted in new language in create contractor modal
-  //   language_independent: true,
-  //   // for rendering in forms only choices that do not exist
-  //   limit_choices: true,
-  //   // map to column in backend code
-  //   map_to_record: 'language_code'
-  //
-  // },
-
   insert_name: {
     name: 'insert_name',
     en: 'Document Name',
@@ -32,6 +10,28 @@ const DocumentInsert = {
     component: 'input',
     type: 'string',
     className: 'form-control'
+  },
+
+  language_code_1: {
+    name: 'language_code_1',
+    en: 'Base Language',
+    jp: 'ベースの言語',
+    component: 'FormChoices',
+    type: 'string',
+    choices: {
+      0: { value: 'en', en: '🇬🇧 English', jp: '🇬🇧 English', type: 'button', className: 'form-rectangle' },
+      1: { value: 'jp', en: '🇯🇵 Japanese', jp: '🇯🇵 日本語', type: 'button', className: 'form-rectangle' },
+      2: { value: 'po', en: '🇵🇹 Portuguese', jp: '🇵🇹 Português', type: 'button', className: 'form-rectangle' },
+      // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
+      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+    },
+    // for rendering when fields are language indepedent.
+    // ie needs to inputted in new language in create contractor modal
+    language_independent: true,
+    // for rendering in forms only choices that do not exist
+    limit_choices: true,
+    // map to column in backend code
+    map_to_record: 'language_code'
   },
 
   // main_agreement: {
@@ -46,16 +46,6 @@ const DocumentInsert = {
   //   }
   // },
 
-  // files: {
-  //   name: 'files',
-  //   en: '',
-  //   jp: '',
-  //   component: RenderDropzoneInput,
-  //   type: 'string',
-  //   className: 'form-control',
-  //   noColon: true
-  // },
-  //
   // contractor_type: {
   //   name: 'contractor_type',
   //   en: 'DocumentInsert Type',

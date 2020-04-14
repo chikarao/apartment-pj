@@ -53,9 +53,10 @@ const Documents =
       translation: true,
       baseLanguage: 'jp',
       // allowDocumentInserts for indicating user can upload document insert
-      allowDocumentInserts: true
-      // method: '',
-      // type: 'fixed_term_rental_contract'
+      allowDocumentInserts: true,
+      // Below for templates
+      templateCompatible: true,
+      documentProp: 'templateMappingObjects', // state.document.templateMappingObjects
     },
 
     important_points_explanation_bilingual: {
@@ -68,9 +69,10 @@ const Documents =
       // to indicate form is bilingual and needs translations from props
       translation: true,
       baseLanguage: 'jp',
-      allowDocumentInserts: false
-      // method: '',
-      // type: 'fixed_term_rental_contract'
+      allowDocumentInserts: false,
+      // Below for templates
+      templateCompatible: true,
+      documentProp: 'templateMappingObjects', // state.document.templateMappingObjects
     },
 
     // Key kept in global constants

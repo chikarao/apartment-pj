@@ -3173,10 +3173,10 @@ longActionPress(props) {
             <i className="fas fa-home"></i>
           </div>
           <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
-            Tenant
+            Management
           </div>
           <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
-            Address address
+            Parking Included
           </div>
         </div>
       </div>
