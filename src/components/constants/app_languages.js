@@ -314,6 +314,8 @@ const appLanguages =
     insertDocuments: { en: 'Insert Documents', jp: '書類を挿入' },
     uploadPdf: { en: 'Upload PDF', jp: 'PDFをアップロード' },
     createDocumentInsert: { en: 'Create Document Insert', jp: '挿入ドキュメントを作成' },
+    createTemplateDocument: { en: 'Create Template Document', jp: 'テンプレート・ドキュメントを作成' },
+    editTemplateDocument: { en: 'Edit Template Document', jp: 'テンプレート・ドキュメントを編集' },
     createInsertField: { en: 'Create Insert Field', jp: 'フィールドを作成' },
     editInsertField: { en: 'Edit Insert Field', jp: 'フィールドを編集' },
     editDocumentInsert: { en: 'Edit Document Insert', jp: '挿入ドキュメントを編集' },
@@ -366,6 +368,7 @@ const appLanguages =
     owner: { en: 'Owner', jp: '所有者' },
     agreement: { en: 'Agreement', jp: '契約内容' },
     inspection: { en: 'Inspection', jp: '点検' },
+    management: { en: 'Management', jp: '管理会社' },
   };
 
 export default appLanguages;

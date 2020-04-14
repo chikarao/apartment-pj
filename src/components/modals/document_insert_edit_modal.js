@@ -287,7 +287,7 @@ class DocumentInsertEditModal extends Component {
 
   renderEditDocumentInsertForm() {
 
-    const { handleSubmit } = this.props;
+    const { handleSubmit, appLanguageCode } = this.props;
     // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
 
     if (this.props.auth) {
@@ -302,7 +302,7 @@ class DocumentInsertEditModal extends Component {
           <section className="modal-main">
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">{AppLanguages.editDocumentInsert[this.props.appLanguageCode]}</h3>
+            <h3 className="auth-modal-title">{!this.props.showTemplate ? AppLanguages.editDocumentInsert[appLanguageCode] : AppLanguages.editTemplateDocument[appLanguageCode]}</h3>
             <div className="modal-edit-delete-edit-button-box">
               <button value={this.props.uploadOwnDocument ? this.props.agreementId : this.props.documentInsert.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
             </div>

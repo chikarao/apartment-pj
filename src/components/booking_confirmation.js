@@ -1327,6 +1327,7 @@ renderDocumentInsertEditForm() {
       agreementId={this.state.agreementId}
       documentInsertId={this.state.documentInsertId}
       uploadOwnDocument={this.state.uploadOwnDocument}
+      showTemplate={this.state.showTemplate}
     />
   );
 }

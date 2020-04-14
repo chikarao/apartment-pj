@@ -124,42 +124,42 @@ class CreateEditDocument extends Component {
   // elements in createDocumentElementLocally action.
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
-    let testCount = 0;
-    const object = {};
-    const duplicateArray = [];
-    const duplicateObject = {};
-    // const translations = this.props.testDocumentTranslations.important_points_explanation_bilingual
-    const translations = this.props.testDocumentTranslations.fixed_term_rental_contract_bilingual
-    _.each(Object.keys(translations), eachPage => {
-      // _.each(Object.keys(FixedTermRentalContractBilingualAll), eachKey => {
-      _.each(Object.keys(translations[eachPage]), eachKey => {
-      if (!object[eachPage]) {
-        // object[eachPage] = { [eachKey]: ImportantPointsExplanationBilingual[eachPage][eachKey] };
-        object[eachPage] = { [eachKey]: `Base[:${eachKey}]` };
-      } else {
-        object[eachPage][eachKey] = `Base[:${eachKey}]`;
-        // object[eachPage][eachKey] = ImportantPointsExplanationBilingual[eachPage][eachKey];
-        if (!object[eachKey]) {
-            object[eachKey] = 1;
-            duplicateObject[eachKey] = [eachPage];
-          } else {
-              object[eachKey]++;
-              // duplicateArray.push(eachKey);
-
-              duplicateObject[eachKey].push(eachPage);
-            }
-      }
-        testCount++;
-      });
-    });
-
-    _.each(Object.keys(duplicateObject), each => {
-      if (duplicateObject[each].length < 2) {
-        delete duplicateObject[each];
-      }
-    })
-    console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
-    // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
+    // let testCount = 0;
+    // const object = {};
+    // const duplicateArray = [];
+    // const duplicateObject = {};
+    // // const translations = this.props.testDocumentTranslations.important_points_explanation_bilingual
+    // const translations = this.props.testDocumentTranslations.fixed_term_rental_contract_bilingual
+    // _.each(Object.keys(translations), eachPage => {
+    //   // _.each(Object.keys(FixedTermRentalContractBilingualAll), eachKey => {
+    //   _.each(Object.keys(translations[eachPage]), eachKey => {
+    //   if (!object[eachPage]) {
+    //     // object[eachPage] = { [eachKey]: ImportantPointsExplanationBilingual[eachPage][eachKey] };
+    //     object[eachPage] = { [eachKey]: `Base[:${eachKey}]` };
+    //   } else {
+    //     object[eachPage][eachKey] = `Base[:${eachKey}]`;
+    //     // object[eachPage][eachKey] = ImportantPointsExplanationBilingual[eachPage][eachKey];
+    //     if (!object[eachKey]) {
+    //         object[eachKey] = 1;
+    //         duplicateObject[eachKey] = [eachPage];
+    //       } else {
+    //           object[eachKey]++;
+    //           // duplicateArray.push(eachKey);
+    //
+    //           duplicateObject[eachKey].push(eachPage);
+    //         }
+    //   }
+    //     testCount++;
+    //   });
+    // });
+    //
+    // _.each(Object.keys(duplicateObject), each => {
+    //   if (duplicateObject[each].length < 2) {
+    //     delete duplicateObject[each];
+    //   }
+    // })
+    // console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
+    // // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
 
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
@@ -805,7 +805,7 @@ class CreateEditDocument extends Component {
     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
     const languageCode = Documents[this.props.documentKey].baseLanguage;
     const languageCodeTranslation = this.props.documentLanguageCode;
-        return (
+      return (
         <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]} {modelChoice[languageCodeTranslation]}</option>
       );
     // }
@@ -3146,15 +3146,20 @@ longActionPress(props) {
 
   renderEachFieldChoice() {
     // NOT yet build out
-    return (
-      <div
-        className="create-edit-document-template-each-choice"
-        value={'name'}
-        onClick={this.handleFieldChoiceClick}
-      >
-      Name
-      </div>
-    );
+    const templateMappingObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
+    return _.map(Object.keys(templateMappingObject), eachKey => {
+      console.log('in create_edit_document, handleFieldChoiceClick, this.props.agreement, this.props.templateMappingObjects, templateMappingObject, eachKey: ', this.props.agreement, this.props.templateMappingObjects, templateMappingObject, eachKey);
+      console.log('in create_edit_document, handleFieldChoiceClick, AppLanguages[eachKey]: ', AppLanguages[eachKey]);
+      return (
+        <div
+          className="create-edit-document-template-each-choice"
+          value={eachKey}
+          onClick={this.handleFieldChoiceClick}
+        >
+        {AppLanguages[eachKey][this.props.appLanguageCode]}
+        </div>
+      );
+    });
   }
 
   renderFieldBoxControls() {
@@ -3164,7 +3169,9 @@ longActionPress(props) {
       <div className="create-edit-document-template-edit-field-box-controls">
         <div className="create-edit-document-template-edit-field-box-controls-search">
           <input
-            type="text"
+            type="search"
+            // id="attributeSearch"
+            name="q"
             className="create-edit-document-template-edit-field-box-search-input"
           />
         </div>
@@ -3188,14 +3195,6 @@ longActionPress(props) {
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
         <div className="create-edit-document-template-edit-field-box-choices">
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
-          {this.renderEachFieldChoice()}
           {this.renderEachFieldChoice()}
         </div>
       </div>
@@ -4238,7 +4237,8 @@ function mapStateToProps(state) {
       fixedTermRentalContractBilingualAll: state.bookingData.fixedTermRentalContractBilingualAll,
       // meta is for getting touched, active and visited for initialValue key
       // meta: getFormMeta('CreateEditDocument')(state)
-      testDocumentTranslations: state.documents.documentTranslations,
+      // testDocumentTranslations: state.documents.documentTranslations,
+      templateMappingObjects: state.documents.templateMappingObjects,
     };
   }
 

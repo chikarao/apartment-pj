@@ -170,6 +170,7 @@ class DocumentInsertCreateModal extends Component {
   }
 
   createTemplateObjects() {
+    // Create an object like in constants/document_insert.js
     const object = {
       template_file_name: {
         name: 'template_file_name',
@@ -182,6 +183,7 @@ class DocumentInsertCreateModal extends Component {
       }
     };
 
+    // get choices from constants/documents.js where templateCompatible is true
     const obj = {};
     _.each(Object.keys(Documents), (eachKey, i) => {
       if (Documents[eachKey].templateCompatible) {
@@ -195,7 +197,7 @@ class DocumentInsertCreateModal extends Component {
     });
 
     object.template_file_name.choices = obj;
-    console.log('in documentInsert_create_modal, createTemplateObjects: ', object);
+    // console.log('in documentInsert_create_modal, createTemplateObjects: ', object);
     return object;
   }
 
@@ -217,7 +219,7 @@ class DocumentInsertCreateModal extends Component {
     console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.showDocumentInsertCreate: ', this.props.showDocumentInsertCreate);
     // <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createDocumentInsert[this.props.appLanguageCode] : AppLanguages.addDocumentInsertLanguage[this.props.appLanguageCode]}</h3>
 
-    const { handleSubmit } = this.props;
+    const { handleSubmit, appLanguageCode } = this.props;
 
     if (this.props.auth) {
       console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.flat: ', this.props.flat);
@@ -228,7 +230,7 @@ class DocumentInsertCreateModal extends Component {
           <section className="modal-main">
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">{AppLanguages.createDocumentInsert[this.props.appLanguageCode]}</h3>
+            <h3 className="auth-modal-title">{!this.props.templateCreate ? AppLanguages.createDocumentInsert[appLanguageCode] : AppLanguages.createTemplateDocument[appLanguageCode]}</h3>
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
 
@@ -297,50 +299,50 @@ DocumentInsertCreateModal = reduxForm({
 //   return array;
 // }
 
-function getDocumentInsert(documentInserts, id) {
-  // placeholder for when add lanauge
-  let documentInsert = {};
-    _.each(documentInserts, eachDocumentInsert => {
-      console.log('in documentInsert_create_modal, getDocumentInsert, eachDocumentInsert: ', eachDocumentInsert);
-      if (eachDocumentInsert.id == id) {
-        documentInsert = eachDocumentInsert;
-        return;
-      }
-    });
-
-  return documentInsert;
-}
-
-function getInitialValues(documentInsert) {
-  const objectReturned = {};
-  _.each(Object.keys(DocumentInsert), eachAttribute => {
-    // if attribute is indepedent of language (just numbers or buttons)
-    if (DocumentInsert[eachAttribute].language_independent) {
-      // add to object to be assiged to initialValues
-      objectReturned[eachAttribute] = documentInsert[eachAttribute];
-    }
-  });
-  // add base_record_id that references the original documentInsert that was created
-  objectReturned.base_record_id = documentInsert.id;
-  return objectReturned;
-}
-
-function getLanguageArray(documentInserts, baseDocumentInsert) {
-  let array = [];
-  _.each(documentInserts, eachDocumentInsert => {
-    if (eachDocumentInsert.base_record_id == baseDocumentInsert.id) {
-      if (array.indexOf(eachDocumentInsert.language_code) === -1) {
-      // if (!array.includes(eachDocumentInsert.language_code)) {
-        array.push(eachDocumentInsert.language_code);
-      }
-      // if (!array.includes(baseDocumentInsert.language_code) === -1) {
-      if (array.indexOf(baseDocumentInsert.language_code) === -1) {
-        array.push(baseDocumentInsert.language_code);
-      }
-    }
-  });
-  return array;
-}
+// function getDocumentInsert(documentInserts, id) {
+//   // placeholder for when add lanauge
+//   let documentInsert = {};
+//     _.each(documentInserts, eachDocumentInsert => {
+//       console.log('in documentInsert_create_modal, getDocumentInsert, eachDocumentInsert: ', eachDocumentInsert);
+//       if (eachDocumentInsert.id == id) {
+//         documentInsert = eachDocumentInsert;
+//         return;
+//       }
+//     });
+//
+//   return documentInsert;
+// }
+//
+// function getInitialValues(documentInsert) {
+//   const objectReturned = {};
+//   _.each(Object.keys(DocumentInsert), eachAttribute => {
+//     // if attribute is indepedent of language (just numbers or buttons)
+//     if (DocumentInsert[eachAttribute].language_independent) {
+//       // add to object to be assiged to initialValues
+//       objectReturned[eachAttribute] = documentInsert[eachAttribute];
+//     }
+//   });
+//   // add base_record_id that references the original documentInsert that was created
+//   objectReturned.base_record_id = documentInsert.id;
+//   return objectReturned;
+// }
+//
+// function getLanguageArray(documentInserts, baseDocumentInsert) {
+//   let array = [];
+//   _.each(documentInserts, eachDocumentInsert => {
+//     if (eachDocumentInsert.base_record_id == baseDocumentInsert.id) {
+//       if (array.indexOf(eachDocumentInsert.language_code) === -1) {
+//       // if (!array.includes(eachDocumentInsert.language_code)) {
+//         array.push(eachDocumentInsert.language_code);
+//       }
+//       // if (!array.includes(baseDocumentInsert.language_code) === -1) {
+//       if (array.indexOf(baseDocumentInsert.language_code) === -1) {
+//         array.push(baseDocumentInsert.language_code);
+//       }
+//     }
+//   });
+//   return array;
+// }
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {

@@ -1,6 +1,6 @@
 // import React from 'react';
 // object for input of inspections in edit flat, in building section
-import Documents from './documents';
+// import Documents from './documents';
 
 const DocumentInsert = {
   insert_name: {

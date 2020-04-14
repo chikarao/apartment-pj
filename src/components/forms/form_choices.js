@@ -91,7 +91,7 @@ class FormChoices extends Component {
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(this.props.model[name].choices, (choice, i) => {
-      // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record);
+      console.log('FormChoices, renderEachChoice, choice: ', choice);
       // define button element for user to click to set value in submission
       const { formValues, insertFieldObject } = this.props;
       // get modelChoice to get field config from constants/...js
@@ -100,31 +100,23 @@ class FormChoices extends Component {
       let widthPx = null;
       let heightPx = null;
       // if redux form has values prop; formValues coming from mapStateToProps
-        if (formValues) {
-          // if this is coming from create
-          // console.log('FormChoices, renderEachChoice, formValues: ', formValues);
-          // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
-          // const formName = formValues.name
-         if (this.props.model[name].contingent_style) {
-           // console.log('FormChoices, renderEachChoice, this.props.record, this.props.model[name], this.props.model[name].map_to_record: ', this.props.record, this.props.model[name], this.props.record[this.props.model[name].map_to_record]);
-           const userChoiceInFormValues = formValues[this.props.model[name].contingent_style];
-           // console.log('FormChoices, renderEachChoice, userChoiceInFormValues, formValues: ', userChoiceInFormValues, formValues);
-           modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
-           // console.log('FormChoices, renderEachChoice, modelChoice, choice: ', modelChoice, choice);
-           // const documentForm = Documents[this.props.documentKey].form;
-           // console.log('FormChoices, renderEachChoice, documentForm, choice: ', documentForm, choice);
-           // get params from document form eg important_points_explanation to get input dimensions
-           const documentFormParams = this.getDocumentFormParams(modelChoice.inForm, userChoiceInFormValues)
-           console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
-           // get dimensions of A4 paper in px for ex important_points_explanation
-           const a4Width = globalConstants.a4Width;
-           const a4Height = globalConstants.a4Height;
-           // get the width and height in px
-           widthPx = a4Width * (parseFloat(documentFormParams.width) / 100);
-           heightPx = a4Height * (parseFloat(documentFormParams.height) / 100);
-           // console.log('FormChoices, renderEachChoice, parseFloat a4Width, documentFormParams.width, widthPx, a4Height, parseFloat documentFormParams.height, heightPx: ', a4Width, parseFloat(documentFormParams.width), widthPx, a4Height, parseFloat(documentFormParams.height), heightPx);
-         }
-        }
+      if (formValues) {
+        // if this is coming from create
+       if (this.props.model[name].contingent_style) {
+         const userChoiceInFormValues = formValues[this.props.model[name].contingent_style];
+         modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
+         // get params from document form eg important_points_explanation to get input dimensions
+         const documentFormParams = this.getDocumentFormParams(modelChoice.inForm, userChoiceInFormValues)
+         console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
+         // get dimensions of A4 paper in px for ex important_points_explanation
+         const a4Width = globalConstants.a4Width;
+         const a4Height = globalConstants.a4Height;
+         // get the width and height in px
+         widthPx = a4Width * (parseFloat(documentFormParams.width) / 100);
+         heightPx = a4Height * (parseFloat(documentFormParams.height) / 100);
+         // console.log('FormChoices, renderEachChoice, parseFloat a4Width, documentFormParams.width, widthPx, a4Height, parseFloat documentFormParams.height, heightPx: ', a4Width, parseFloat(documentFormParams.width), widthPx, a4Height, parseFloat(documentFormParams.height), heightPx);
+       }
+      }
 
       const buttonElement =
         <div
@@ -133,9 +125,6 @@ class FormChoices extends Component {
           onClick={() => {
             onChange(choice.value);
             this.emptyInput();
-            // if (choice.dependentKeys) {
-            //   this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value)
-            // }
           }}
           className={choice.className}
           style={value.toString() == choice.value && (value != null) ? { borderColor: 'black' } : { borderColor: 'lightgray' }}
@@ -152,7 +141,6 @@ class FormChoices extends Component {
           id="valueInput"
           value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           key={i}
-          // key={choice.value}
           onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
@@ -166,23 +154,19 @@ class FormChoices extends Component {
           id="valueInput"
           value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
           key={i}
-          // key={choice.value}
           onChange={this.handleInputChange}
           type={choice.type}
           className={choice.className}
           maxLength={modelChoice ? modelChoice.charLimit : 400}
-          // style={modelChoice ? { width: modelChoice.width, height: modelChoice.height, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
           style={widthPx && heightPx ? { width: `${widthPx}px`, height: `${heightPx}px`, textAlign: 'left' } : { width: '400px', borderColor: 'lightgray', textAlign: 'left' }}
           placeholder={choice[this.props.appLanguageCode] ? choice[this.props.appLanguageCode] : ''}
         />
       // if choice type is string, use input element above and button if not string
       // choice.type can be string (input) or button element
-      // if there is record and language_code in object; ie do not allow imput
+      // if there is record and language_code in object; ie do not allow input
       // make sure to read the respective objects in src/components/constants such as staff or contractor
       // !!!! logic for rendering languge_code buttons
       if (this.props.insertFieldObject) {
-        // console.log('FormChoices, renderEachChoice, this.props.insertFieldObject: ', this.props.insertFieldObject);
-        // console.log('FormChoices, renderEachChoice, this.props.formValues: ', this.props.formValues);
         // eg language_code field has contingent_render of name
         const contingentRenderColumn = this.props.model[name].contingent_render;
         // formValues is a ReduxForm prop and insertFieldObject is passed in props in Field
@@ -210,36 +194,28 @@ class FormChoices extends Component {
         } // end of if contingentRenderColumn
 
         if (!contingentRenderColumn) { // ie not language_code which depends on other fields eg name
-        //   const limitChoicesColumn = this.props.model[name].limit_choices
-        // limit choices is a boolean specified in constant/...
-        const limitChoicesColumn = this.props.model[name].limit_choices;
+          // limit choices is a boolean specified in constant/...
+          const limitChoicesColumn = this.props.model[name].limit_choices;
 
           if (limitChoicesColumn) {
             // which languages have been marked implemented in the constants/languages
             const implementedLanguages = Object.keys(Languages).filter(key => Languages[key].implemented)
             // _.each(this.props.model[name].choices, eachChoice => {
-              if (insertFieldObject[choice.value]) {
-                // test only if insertFieldObject has each model choice;
-                languageCodeArray = insertFieldObject[choice.value].map(insertField => insertField.language_code)
-                // languageCodeArray = insertFieldObject[eachChoice.value]
-                let count = 0;
-                _.each(implementedLanguages, eachImplementedLanguage => {
-                  // if (!languageCodeArray.includes(eachImplementedLanguage)) {
-                  if (languageCodeArray.indexOf(eachImplementedLanguage) === -1) {
-                    count++;
-                    // return choice.type == 'string' ? inputElement : buttonElement;
-                  }
-                }); // end of each languageCodeArray
-                const returnValue = choice.type == 'string' ? inputElement : buttonElement
-                return (count > 0) ? returnValue : '';
-              } else { // if insertFieldObject does not contain choice.value
-                return choice.type == 'string' ? inputElement : buttonElement;
-              }
+            if (insertFieldObject[choice.value]) {
+              // test only if insertFieldObject has each model choice;
+              languageCodeArray = insertFieldObject[choice.value].map(insertField => insertField.language_code)
+              let count = 0;
+              _.each(implementedLanguages, eachImplementedLanguage => {
+                if (languageCodeArray.indexOf(eachImplementedLanguage) === -1) {
+                  count++;
+                }
+              }); // end of each languageCodeArray
+              const returnValue = choice.type == 'string' ? inputElement : buttonElement
+              return (count > 0) ? returnValue : '';
+            } else { // if insertFieldObject does not contain choice.value
+              return choice.type == 'string' ? inputElement : buttonElement;
+            }
               // end of if insertFieldObject[eachChoice.value]
-            // }) // end of each model choice
-            // _.each(implementedLanguages, eachImplementedLanguage => {
-            //
-            // })
           } else { // if limitChoicesColumn
             // if neither limitChoicesColumn nor contingentRenderColumn there is insertFieldObject
             console.log('FormChoices, renderEachChoice, else in !contingentRenderColumn, not limitChoices choice: ', choice);
@@ -278,7 +254,6 @@ class FormChoices extends Component {
               // if not on create form, do nothing
               return;
             }
-            // return choice.type == 'string' ? inputElement : buttonElement;
             // if the choice value already exists
           } else {
             if (this.props.create) {
@@ -308,7 +283,7 @@ class FormChoices extends Component {
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { value, onChange, name }, contingentStyleClassName, contingentStyleClassNameChild } = this.props;
-    console.log('FormChoices, render, this.props.contingentStyleClassName: ', this.props.contingentStyleClassName);
+    console.log('FormChoices, render,　name: ',　name);
 
       return (
       <div className={contingentStyleClassName || 'container form-control-custom-container'} key={name}>
