@@ -82,6 +82,8 @@ class CreateEditDocument extends Component {
       originalPersistedTemplateElements: {},
       selectedChoiceIdArray: [],
       renderChoiceEditButtonDivs: false,
+      templateFieldChoiceArray: [],
+      templateFieldChoiceObject: null,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -3140,51 +3142,89 @@ longActionPress(props) {
 
   handleFieldChoiceClick(event) {
     const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value')
-    console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.props.document: ', elementVal, this.props.documents);
+    const elementVal = clickedElement.getAttribute('value');
+    let newArray = [];
+    if (this.state.templateFieldChoiceArray.length === 0) {
+      newArray = [elementVal];
+    } else {
+      newArray = [...this.state.templateFieldChoiceArray];
+      if (this.state.templateFieldChoiceArray.indexOf(elementVal) !== -1) {
+        const index = this.state.templateFieldChoiceArray.indexOf(elementVal);
+        newArray.splice((index + 1));
+      } else {
+        newArray.push(elementVal);
+      }
+    }
+    if (elementVal === null) newArray = [];
+    this.setState({ templateFieldChoiceArray: newArray }, () => {
+      console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray: ', elementVal, this.state.templateFieldChoiceArray);
+    });
+  }
+
+  getFieldChoiceObject() {
+    return {
+      test_key: { name: 'test_key', translations: { en: 'Test Choice', jp: 'テストチョイス' } },
+      test_key1: { name: 'test_key1', translations: { en: 'Test Choice1', jp: 'テストチョイス1' } }
+    };　
   }
 
   renderEachFieldChoice() {
-    // NOT yet build out
-    const templateMappingObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
+    const templateMappingObject = this.state.templateFieldChoiceArray.length === 0 ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.getFieldChoiceObject()
     return _.map(Object.keys(templateMappingObject), eachKey => {
       console.log('in create_edit_document, handleFieldChoiceClick, this.props.agreement, this.props.templateMappingObjects, templateMappingObject, eachKey: ', this.props.agreement, this.props.templateMappingObjects, templateMappingObject, eachKey);
       console.log('in create_edit_document, handleFieldChoiceClick, AppLanguages[eachKey]: ', AppLanguages[eachKey]);
+      const choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : templateMappingObject[eachKey].translations[this.props.appLanguageCode];
       return (
         <div
+          key={eachKey}
           className="create-edit-document-template-each-choice"
           value={eachKey}
           onClick={this.handleFieldChoiceClick}
         >
-        {AppLanguages[eachKey][this.props.appLanguageCode]}
+        {choiceText}
+        </div>
+      );
+    });
+  }
+
+  renderEachFieldControlButton() {
+    return _.map(this.state.templateFieldChoiceArray, eachKey => {
+      const choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
+      return (
+        <div
+          key={eachKey}
+          className="create-edit-document-template-edit-field-box-controls-navigate-each"
+          value={eachKey}
+          onClick={this.handleFieldChoiceClick}
+        >
+         {choiceText}
         </div>
       );
     });
   }
 
   renderFieldBoxControls() {
-    // <i className="fas fa-angle-double-left"></i>
-    // <i className="fas fa-angle-left"></i>
+    // templateFieldChoiceArray: [],
+    // templateFieldChoiceObject: ''
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
         <div className="create-edit-document-template-edit-field-box-controls-search">
           <input
             type="search"
             // id="attributeSearch"
-            name="q"
+            // name="q"
             className="create-edit-document-template-edit-field-box-search-input"
           />
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-navigate">
-          <div className="create-edit-document-template-edit-field-box-controls-navigate-each-icon">
+          <div
+            className="create-edit-document-template-edit-field-box-controls-navigate-each-icon"
+            value={null}
+            onClick={this.handleFieldChoiceClick}
+          >
             <i className="fas fa-home"></i>
           </div>
-          <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
-            Management
-          </div>
-          <div className="create-edit-document-template-edit-field-box-controls-navigate-each">
-            Parking Included
-          </div>
+          {this.renderEachFieldControlButton()}
         </div>
       </div>
     );
