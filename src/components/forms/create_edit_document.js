@@ -3169,7 +3169,11 @@ longActionPress(props) {
     _.each(this.state.templateFieldChoiceArray, each => {
       console.log('in create_edit_document, handleFieldChoiceClick, each, this.state.templateFieldChoiceArray, currentObject: ', each, this.state.templateFieldChoiceArray, currentObject);
       if (currentObject[each]) {
-        currentObject = currentObject[each];
+        if (currentObject[each].choices && Object.keys(currentObject[each]).length > 1) {
+          currentObject = currentObject[each].choices;
+        } else {
+          currentObject = currentObject[each];
+        }
       }
     });
 
@@ -3182,15 +3186,20 @@ longActionPress(props) {
     const templateMappingObject = this.state.templateFieldChoiceArray.length === 0 ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.getFieldChoiceObject();
     let inputElement = null;
     let translationSibling = null;
+    let choices = null;
+    let choicesYesOrNo = null;
+    let choicesObject = null;
+    let selectField = null;
 
     if (templateMappingObject) {
       return _.map(Object.keys(templateMappingObject), eachKey => {
-        console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey]: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey]);
         if (AppLanguages[eachKey]) choiceText = AppLanguages[eachKey][this.props.appLanguageCode];
-        if (templateMappingObject[eachKey].translation) choiceText = templateMappingObject[eachKey].translation[this.props.appLanguageCode];
+        if (templateMappingObject[eachKey] && templateMappingObject[eachKey].translation) choiceText = templateMappingObject[eachKey].translation[this.props.appLanguageCode];
         // choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : templateMappingObject[eachKey].translations[this.props.appLanguageCode];
         // If object is a group, list element with angle
-        if (!templateMappingObject[eachKey].component) {
+        if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
+        // if (templateMappingObject[eachKey] && !templateMappingObject[eachKey].component) {
+          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
               key={eachKey}
@@ -3199,21 +3208,66 @@ longActionPress(props) {
               onClick={this.handleFieldChoiceClick}
               // onClick={this.handleFieldChoiceClick}
             >
-              {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i class="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+              {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
             </div>
           );
-        } else {
-          inputElement = templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
-          translationSibling = templateMappingObject[eachKey].translation_sibling;
+        } else if (templateMappingObject[eachKey]) {
+          inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
+          choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
+          choicesObject = templateMappingObject[eachKey].params;
+          choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'Y';
+          translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
+          // {inputElement ? 'Input' : ''}&ensp;
+          // {translationSibling ? 'Translation' : ''}&ensp;
+          // {choices ? 'Choices' : ''}&ensp;
+          if (inputElement) {
+            return (
+              <div
+                key={eachKey}
+                className="create-edit-document-template-each-choice"
+                value={eachKey}
+                onClick={this.handleFieldChoiceClick}
+                // onClick={this.handleFieldChoiceClick}
+              >
+                <div
+                  className="create-edit-document-template-each-choice-label"
+                >{choiceText}</div>
+                <div
+                  className="create-edit-document-template-each-choice-action-box"
+                >
+                  <div>Add Input</div>
+                  <div
+                    style={!translationSibling ? { border: 'none' } : {}}
+                  >{translationSibling ? 'Add Translation' : ''}</div>
+                </div>
+              </div>
+            );
+          } // End of if inputElement
+
+          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+          if (choicesObject && !choicesYesOrNo) {
+            choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
+            return (
+              <div
+                key={eachKey}
+                className="create-edit-document-template-each-choice-group"
+                value={eachKey}
+                onClick={this.handleFieldChoiceClick}
+              >
+              {choiceText}
+              </div>
+            );
+          }
+
           return (
             <div
               key={eachKey}
-              className="create-edit-document-template-each-choice"
+              className="create-edit-document-template-each-choice-group"
               value={eachKey}
-              onClick={!templateMappingObject[eachKey].component ? this.handleFieldChoiceClick : () => {}}
+              onClick={this.handleFieldChoiceClick}
               // onClick={this.handleFieldChoiceClick}
             >
-              {choiceText}
+              {choiceText}&ensp;&ensp;<i className="fas fa-angle-right" style={{ color: 'blue' }}></i>
             </div>
           );
         }
