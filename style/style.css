@@ -4849,12 +4849,21 @@ form {
   overflow-y: scroll;
 }
 
-.create-edit-document-template-each-choice {
+.create-edit-document-template-each-choice-group {
   width: auto;
-  height: 40px;
+  height: 45px;
   color: black;
   text-align: left;
   padding: 10px 10px 0px 20px;
+  border-bottom: 1.0px solid #ccc;
+}
+
+.create-edit-document-template-each-choice {
+  width: auto;
+  height: 45px;
+  color: black;
+  text-align: left;
+  padding: 3px 10px 0px 20px;
   border-bottom: 1.0px solid #ccc;
 }
 
@@ -4914,7 +4923,7 @@ form {
   z-index: 2;
   top: 25%;
   left: 74%;
-  width: 200px;
+  width: 230px;
   height: 400px;
   border: 1.0px solid #ccc;
   border-radius: 4px;
