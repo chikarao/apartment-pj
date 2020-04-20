@@ -3184,13 +3184,13 @@ longActionPress(props) {
 
   renderEachFieldChoice() {
     function renderChoiceDivs(props) {
-      const { eachIndex, value, choiceText } = props;
+      const { eachIndex, valueString, choiceText } = props;
       console.log('in create_edit_document, renderChoiceDivs, choiceText: ', choiceText);
       return (
         <div
           key={eachIndex}
           className="create-edit-document-template-each-choice"
-          value={value}
+          // value={valueString}
           style={{ height: '80px' }}
           // onClick={this.handleFieldChoiceClick}
         >
@@ -3202,24 +3202,22 @@ longActionPress(props) {
           <div
             className="create-edit-document-template-each-choice-action-box"
           >
-            <div>Add Button</div>
-            <div>Add to Select</div>
+            <div value={'button,' + valueString}>Add Button</div>
+            <div value={'select,' + valueString}>Add to Select</div>
           </div>
         </div>
       );
     }
 
     let choiceText = null;
-    // const templateMappingObject = this.state.templateFieldChoiceArray.length === 0 ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.getFieldChoiceObject();
-    // const templateMappingObject = this.state.templateFieldChoiceArray.length === 0 ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
-    // const templateMappingObject = this.state.templateFieldChoiceObject;
     let inputElement = null;
     let translationSibling = null;
     let choices = null;
     let choicesYesOrNo = null;
     let choicesObject = null;
     let selectChoices = null;
+    let valueString = null;
 
     if (templateMappingObject) {
       return _.map(Object.keys(templateMappingObject), eachKey => {
@@ -3243,6 +3241,7 @@ longActionPress(props) {
             </div>
           );
         } else if (templateMappingObject[eachKey]) {
+          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           // Get the type of element to distinguish which to render
           inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
           choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
@@ -3251,13 +3250,12 @@ longActionPress(props) {
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
 
           if (inputElement) {
+            valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             return (
               <div
                 key={eachKey}
                 className="create-edit-document-template-each-choice"
-                value={eachKey}
                 onClick={this.handleFieldChoiceClick}
-                // onClick={this.handleFieldChoiceClick}
               >
                 <div
                   className="create-edit-document-template-each-choice-label"
@@ -3267,10 +3265,16 @@ longActionPress(props) {
                 <div
                   className="create-edit-document-template-each-choice-action-box"
                 >
-                  <div>Add Input</div>
                   <div
+                    value={valueString}
+                  >
+                    Add Input
+                  </div>
+                  <div
+                    value={valueString + ',' + 'translation_sibling'}
                     style={!translationSibling ? { border: 'none' } : {}}
-                  >{translationSibling ? 'Add Translation' : ''}</div>
+                  >
+                  {translationSibling ? 'Add Translation' : ''}</div>
                 </div>
               </div>
             );
@@ -3278,23 +3282,28 @@ longActionPress(props) {
 
           // Case of field being choices but not Yes or No choices
           if (choicesObject && !choicesYesOrNo) {
+            // receivs eachKey of 0, 1 of templateMappingObject is {0=>{}, 1=>{}}
             console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
             selectChoices = templateMappingObject[eachKey].selectChoices;
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             if (selectChoices) {
               return _.map(Object.keys(selectChoices), eachIndex => {
+                valueString = this.state.templateFieldChoiceArray.join(',') + ',choices,' + eachKey + ',selectChoices,' + eachIndex;
                 choiceText = selectChoices[eachIndex][this.props.appLanguageCode]
-                return renderChoiceDivs({ eachIndex, value: selectChoices[eachIndex].value, choiceText });
+                return renderChoiceDivs({ eachIndex, valueString, choiceText });
               });
             } else if (!templateMappingObject[eachKey].nonTemplate) {
+              valueString = this.state.templateFieldChoiceArray.join(',') + ',choices,' + eachKey;
               // Render choice divs that are not select
-              return renderChoiceDivs({ eachIndex: eachKey, value: eachKey, choiceText })
+              return renderChoiceDivs({ eachIndex: eachKey, valueString, choiceText })
             }
           }
 
           console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+          // For yes or now (true, false) fields such as amenities
           if (choices && choicesYesOrNo) {
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
+            valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             return (
               <div
                 key={eachKey}
@@ -3310,14 +3319,16 @@ longActionPress(props) {
                 <div
                   className="create-edit-document-template-each-choice-action-box"
                 >
-                  <div>Add Buttons</div>
-                  <div>Add to List</div>
+                  <div value={'button,' + valueString}>Add Buttons</div>
+                  {this.state.templateFieldChoiceArray.indexOf('amenities') !== -1 ? <div value={'list,' + valueString}>Add to List</div> : ''}
                 </div>
               </div>
             );
           }
 
           if (!templateMappingObject[eachKey].nonTemplate) {
+            // for keys such as dates with years, month and day behind it
+            // valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             return (
               <div
                 key={eachKey}
