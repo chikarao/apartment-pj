@@ -3276,7 +3276,6 @@ longActionPress(props) {
             );
           } // End of if inputElement
 
-          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           // Case of field being choices but not Yes or No choices
           if (choicesObject && !choicesYesOrNo) {
             console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
@@ -3288,36 +3287,36 @@ longActionPress(props) {
                 return renderChoiceDivs({ eachIndex, value: selectChoices[eachIndex].value, choiceText });
               });
             } else if (!templateMappingObject[eachKey].nonTemplate) {
-              return (
-                <div
-                  key={eachKey}
-                  className="create-edit-document-template-each-choice-group"
-                  value={eachKey}
-                  // onClick={this.handleFieldChoiceClick}
-                >
-                  <div
-                    className="create-edit-document-template-each-choice-label"
-                  >
-                    {choiceText}
-                  </div>
-                </div>
-              );
+              // Render choice divs that are not select
+              return renderChoiceDivs({ eachIndex: eachKey, value: eachKey, choiceText })
             }
           }
-          //
-          // if (choicesObject && choicesYesOrNo) {
-          //   choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
-          //   return (
-          //     <div
-          //       key={eachKey}
-          //       className="create-edit-document-template-each-choice-group"
-          //       value={eachKey}
-          //       // onClick={this.handleFieldChoiceClick}
-          //     >
-          //     {choiceText}
-          //     </div>
-          //   );
-          // }
+
+          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+          if (choices && choicesYesOrNo) {
+            choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
+            return (
+              <div
+                key={eachKey}
+                className="create-edit-document-template-each-choice"
+                value={eachKey}
+                // onClick={this.handleFieldChoiceClick}
+              >
+                <div
+                  className="create-edit-document-template-each-choice-label"
+                >
+                  {choiceText}
+                </div>
+                <div
+                  className="create-edit-document-template-each-choice-action-box"
+                >
+                  <div>Add Buttons</div>
+                  <div>Add to List</div>
+                </div>
+              </div>
+            );
+          }
+
           if (!templateMappingObject[eachKey].nonTemplate) {
             return (
               <div

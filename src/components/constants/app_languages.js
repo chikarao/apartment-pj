@@ -398,6 +398,7 @@ const appLanguages =
     contractPeriodFrom: { en: 'Contract Period From', jp: '契約開始日' },
     contractPeriodTo: { en: 'Contract Period To', jp: '契約終了日' },
     contractPeriodLength: { en: 'Contract Period Length', jp: '契約期間' },
+    construction: { en: 'Construction', jp: '構造' },
     // noticeFrom: { en: 'Notice From Date', jp: '通知期間の開始日' },
 
   };
