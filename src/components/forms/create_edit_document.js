@@ -107,6 +107,7 @@ class CreateEditDocument extends Component {
     this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
     this.handleButtonTemplateElementClick = this.handleButtonTemplateElementClick.bind(this);
     this.handleTemplateChoiceActionMouseDown = this.handleTemplateChoiceActionMouseDown.bind(this);
+    this.handleFieldChoiceActionClick = this.handleFieldChoiceActionClick.bind(this);
     // this.dragChoice = this.dragChoice.bind(this);
   }
 
@@ -3182,8 +3183,14 @@ longActionPress(props) {
     return currentObject;
   }
 
+  handleFieldChoiceActionClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleFieldChoiceActionClick, elementVal: ', elementVal);
+  }
+
   renderEachFieldChoice() {
-    function renderChoiceDivs(props) {
+    const renderChoiceDivs = (props) => {
       const { eachIndex, valueString, choiceText } = props;
       console.log('in create_edit_document, renderChoiceDivs, choiceText: ', choiceText);
       return (
@@ -3202,12 +3209,21 @@ longActionPress(props) {
           <div
             className="create-edit-document-template-each-choice-action-box"
           >
-            <div value={'button,' + valueString}>Add Button</div>
-            <div value={'select,' + valueString}>Add to Select</div>
+            <div value={'button,' + valueString}
+              onClick={this.handleFieldChoiceActionClick}
+            >
+              Add Button
+            </div>
+            <div
+              value={'select,' + valueString}
+              onClick={this.handleFieldChoiceActionClick}
+            >
+              Add to Select
+            </div>
           </div>
         </div>
       );
-    }
+    };
 
     let choiceText = null;
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
@@ -3255,7 +3271,6 @@ longActionPress(props) {
               <div
                 key={eachKey}
                 className="create-edit-document-template-each-choice"
-                onClick={this.handleFieldChoiceClick}
               >
                 <div
                   className="create-edit-document-template-each-choice-label"
@@ -3267,12 +3282,14 @@ longActionPress(props) {
                 >
                   <div
                     value={valueString}
+                    onClick={this.handleFieldChoiceActionClick}
                   >
                     Add Input
                   </div>
                   <div
                     value={valueString + ',' + 'translation_sibling'}
                     style={!translationSibling ? { border: 'none' } : {}}
+                    onClick={this.handleFieldChoiceActionClick}
                   >
                   {translationSibling ? 'Add Translation' : ''}</div>
                 </div>
@@ -3319,8 +3336,22 @@ longActionPress(props) {
                 <div
                   className="create-edit-document-template-each-choice-action-box"
                 >
-                  <div value={'button,' + valueString}>Add Buttons</div>
-                  {this.state.templateFieldChoiceArray.indexOf('amenities') !== -1 ? <div value={'list,' + valueString}>Add to List</div> : ''}
+                  <div
+                    value={'button,' + valueString}
+                    onClick={this.handleFieldChoiceActionClick}
+                  >
+                    Add Buttons
+                  </div>
+                  {this.state.templateFieldChoiceArray.indexOf('amenities') !== -1
+                    ?
+                    <div
+                      value={'list,' + valueString}
+                      onClick={this.handleFieldChoiceActionClick}
+                    >
+                      Add to List
+                    </div>
+                    :
+                  ''}
                 </div>
               </div>
             );
