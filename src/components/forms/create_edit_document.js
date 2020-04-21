@@ -3186,7 +3186,19 @@ longActionPress(props) {
   handleFieldChoiceActionClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleFieldChoiceActionClick, elementVal: ', elementVal);
+    const elementValArray = elementVal.split(',');
+    const elementType = elementValArray[0];
+    const objectPathArray = elementValArray.slice(1);
+    const indexOfChoices = objectPathArray.indexOf('choices');
+    let parentObject = null;
+
+    let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
+    let choice = null;
+    _.each(objectPathArray, (each, i) => {
+      if (i === (indexOfChoices - 1)) parentObject = currentObject[each];
+      currentObject = currentObject[each];
+    });
+    console.log('in create_edit_document, handleFieldChoiceActionClick, elementVal, elementValArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices: ', elementVal, elementValArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices);
   }
 
   renderEachFieldChoice() {
