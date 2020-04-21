@@ -381,7 +381,7 @@ const appLanguages =
     brokerStaff: { en: 'Broker Staff', jp: '仲介業者・担当者' },
     documentDate: { en: 'Document Date', jp: '書類制作日' },
     bond: { en: 'Bond', jp: '営業保証金' },
-    guaranty: { en: 'Guranty', jp: '弁済業務保証金' },
+    guaranty: { en: 'Guaranty', jp: '弁済業務保証金' },
     waterDate: { en: 'Water Availability Date', jp: '水道整備予定日' },
     electricityDate: { en: 'Electricity Availability Date', jp: '電気整備予定日' },
     gasDate: { en: 'Gas Availability Date', jp: 'ガス整備予定日' },
@@ -399,6 +399,10 @@ const appLanguages =
     contractPeriodTo: { en: 'Contract Period To', jp: '契約終了日' },
     contractPeriodLength: { en: 'Contract Period Length', jp: '契約期間' },
     construction: { en: 'Construction', jp: '構造' },
+    architect: { en: 'Architect', jp: '建築事務所' },
+    inspector: { en: 'Inspector', jp: '検査' },
+    inspectedParts: { en: 'Inspected Parts', jp: '検査した部分' },
+    otherPayments: { en: 'Non-rent Payments', jp: '家賃以外の支払い額' },
     // noticeFrom: { en: 'Notice From Date', jp: '通知期間の開始日' },
 
   };

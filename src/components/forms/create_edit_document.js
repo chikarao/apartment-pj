@@ -3267,13 +3267,25 @@ longActionPress(props) {
 
           if (inputElement) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+            // If there is a select field in choices object render select
+            selectChoices = templateMappingObject[eachKey].choices[0].selectChoices;
+            if (selectChoices) {
+              return _.map(Object.keys(selectChoices), eachIndex => {
+                valueString = this.state.templateFieldChoiceArray.join(',') + ',choices,' + eachKey + ',selectChoices,' + eachIndex;
+                choiceText = selectChoices[eachIndex][this.props.appLanguageCode]
+                return renderChoiceDivs({ eachIndex, valueString, choiceText });
+              });
+            }
+
             return (
               <div
                 key={eachKey}
                 className="create-edit-document-template-each-choice"
+                style={templateMappingObject[eachKey].extraHeightTemplate ? { height: '70px' } : {}}
               >
                 <div
                   className="create-edit-document-template-each-choice-label"
+                  style={templateMappingObject[eachKey].extraHeightTemplate ? { marginBottom: '10px' } : {}}
                 >
                   {choiceText}
                 </div>
@@ -3326,10 +3338,12 @@ longActionPress(props) {
                 key={eachKey}
                 className="create-edit-document-template-each-choice"
                 value={eachKey}
+                style={templateMappingObject[eachKey].extraHeightTemplate ? { height: '70px' } : {}}
                 // onClick={this.handleFieldChoiceClick}
               >
                 <div
                   className="create-edit-document-template-each-choice-label"
+                  style={templateMappingObject[eachKey].extraHeightTemplate ? { marginBottom: '10px' } : {}}
                 >
                   {choiceText}
                 </div>
@@ -3378,8 +3392,15 @@ longActionPress(props) {
   }
 
   renderEachFieldControlButton() {
+    let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name];
+    let choiceText = null;
     return _.map(this.state.templateFieldChoiceArray, eachKey => {
-      const choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
+      if (currentObject[eachKey].translation) {
+        choiceText = currentObject[eachKey].translation[this.props.appLanguageCode];
+      } else {
+        choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
+      }
+      currentObject = currentObject[eachKey];
       return (
         <div
           key={eachKey}
