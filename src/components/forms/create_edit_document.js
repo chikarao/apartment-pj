@@ -3192,12 +3192,16 @@ longActionPress(props) {
     let elementType = elementIdArray[0];
     const objectPathArray = elementIdArray.slice(1);
     const elementIdNoType = objectPathArray.join(',');
-    const indexOfChoices = objectPathArray.indexOf('choices');
-    let parentObject = null;
-    let modEach = null;
+    let takeOutIndex = -1;
+    // const indexOfChoices = objectPathArray.indexOf('choices');
+    // let parentObject = null;
+    // let modEach = null;
+    // let elementInDom = null;
+    // elementInDom = document.getElementById(elementId);
+    // elementInDom.style.backgroundColor = "lightgray";
 
     const newObject = { ...this.state.templateElementActionIdObject };
-    const newArray = [...this.state.templateElementActionIdObject.array]
+    // const newArray = [...this.state.templateElementActionIdObject.array]
     // let list = this.state.templateElementActionIdObject.list;
     // let button = this.state.templateElementActionIdObject.button;
     // let select = this.state.templateElementActionIdObject.select;
@@ -3207,16 +3211,23 @@ longActionPress(props) {
       if (this.state.templateElementActionIdObject.array.length > 0) {
         _.each(this.state.templateElementActionIdObject.array, (each, i) => {
           // Get a elementId without the type ie select, list, button
+          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject: ', elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject);
+          console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject: ', elementId, each, this.state.templateElementActionIdObject);
           eachNoType = each.split(',').slice(1).join(',');
+          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject, eachNoType: ', elementId, each, this.state.templateElementActionIdObject, eachNoType);
           elementType = each.split(',')[0];
-          console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject: ', elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject);
+          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject, elementType: ', elementId, each, this.state.templateElementActionIdObject, elementType);
           // If there is already the same element in the array, take it out
           if (eachNoType === elementIdNoType) {
-            newObject.array.splice(i, 1);
+            takeOutIndex = i;
             newObject[elementType]--;
+            // elementInDom = document.getElementById(elementId);
+            // elementInDom.style.backgroundColor = "white";
           }
         }); // end of each
         // Push into array after iteration
+        if (takeOutIndex !== -1) newObject.array.splice(takeOutIndex, 1);
+        // takeOutIndex = -1;
         elementType = elementId.split(',')[0];
         newObject[elementType]++;
         newObject.array.push(elementId);
@@ -3230,17 +3241,14 @@ longActionPress(props) {
       newObject.array.push(elementId);
       newObject[elementType]++;
     }
-
-    // if (elementType === 'select') select++;
-    // if (elementType === 'list') list++;
-    // if (elementType === 'button') button++;
+    console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState after each each elementId, this.state.templateElementActionIdObject : ', elementId, this.state.templateElementActionIdObject);
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
       if (elementType === 'input') {
         this.handleTemplateElementAddClick();
       }
-    })
+    });
   }
 
   handleTemplateElementAddClick() {
@@ -3274,6 +3282,7 @@ longActionPress(props) {
   }
 
   renderEachFieldChoice() {
+    const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
       const { eachIndex, valueString, choiceText } = props;
       console.log('in create_edit_document, renderChoiceDivs, choiceText, valueString: ', choiceText, valueString);
@@ -3295,15 +3304,17 @@ longActionPress(props) {
           >
             <div
               id={'button,' + valueString}
-              value={'button,' + valueString}
               onClick={this.handleFieldChoiceActionClick}
+              style={elementIdArray.indexOf('button,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+              // className="create-edit-document-template-each-choice-action-box-button"
             >
               Add Button
             </div>
             <div
               id={'select,' + valueString}
-              value={'select,' + valueString}
               onClick={this.handleFieldChoiceActionClick}
+              style={elementIdArray.indexOf('select,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+              // className="create-edit-document-template-each-choice-action-box-button"
             >
               Add to Select
             </div>
@@ -3381,14 +3392,12 @@ longActionPress(props) {
                 >
                   <div
                     id={valueString}
-                    value={valueString}
                     onClick={this.handleFieldChoiceActionClick}
                   >
                     Add Input
                   </div>
                   <div
                     id={valueString + ',translation_sibling'}
-                    value={valueString + ',translation_sibling'}
                     style={!translationSibling ? { border: 'none' } : {}}
                     onClick={this.handleFieldChoiceActionClick}
                   >
@@ -3442,8 +3451,8 @@ longActionPress(props) {
                 >
                   <div
                     id={'button,' + valueString}
-                    value={'button,' + valueString}
                     onClick={this.handleFieldChoiceActionClick}
+                    style={elementIdArray.indexOf('button,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
                   >
                     Add Buttons
                   </div>
@@ -3451,8 +3460,8 @@ longActionPress(props) {
                     ?
                     <div
                       id={'list,' + valueString}
-                      value={'list,' + valueString}
                       onClick={this.handleFieldChoiceActionClick}
+                      style={elementIdArray.indexOf('list,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
                     >
                       Add to List
                     </div>

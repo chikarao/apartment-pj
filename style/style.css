@@ -4899,28 +4899,34 @@ form {
   display: table;
 } */
 
+.create-edit-document-template-each-choice-action-box-button {
+  background-color: white;
+}
+
 .create-edit-document-template-each-choice-action-box div:first-child {
   /* width: 40%; */
   height: 100%;
-  border: 1.0px solid blue;
+  border: 1.5px solid blue;
   margin: 0 0 0 10px;
   padding: 2px 10px 2px 10px;
   border-radius: 5px;
   color: gray;
   display: table;
   font-size: 13px;
+  /* background-color: white; */
 }
 
 .create-edit-document-template-each-choice-action-box div:last-child {
   /* width: 55%; */
   height: 100%;
-  border: 1.0px solid green;
+  border: 1.5px solid green;
   padding: 2px 2px 2px 7px;
   border-radius: 5px;
   margin-left: 5px;
   color: gray;
   display: table;
   font-size: 13px;
+  /* background-color: white; */
 }
 
 /* .create-edit-document-template-edit-field-box-controls-Title {
