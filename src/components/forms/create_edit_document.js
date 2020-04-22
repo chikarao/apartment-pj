@@ -84,6 +84,7 @@ class CreateEditDocument extends Component {
       renderChoiceEditButtonDivs: false,
       templateFieldChoiceArray: [],
       templateFieldChoiceObject: null,
+      templateElementActionIdObject: { array: [], select: 0, list: 0, input: 0, button: 0 },
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -108,6 +109,7 @@ class CreateEditDocument extends Component {
     this.handleButtonTemplateElementClick = this.handleButtonTemplateElementClick.bind(this);
     this.handleTemplateChoiceActionMouseDown = this.handleTemplateChoiceActionMouseDown.bind(this);
     this.handleFieldChoiceActionClick = this.handleFieldChoiceActionClick.bind(this);
+    this.handleTemplateElementAddClick = this.handleTemplateElementAddClick.bind(this);
     // this.dragChoice = this.dragChoice.bind(this);
   }
 
@@ -3158,14 +3160,13 @@ longActionPress(props) {
     }
     if (elementVal === null) newArray = [];
     this.setState({ templateFieldChoiceArray: newArray }, () => {
-      console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray: ', elementVal, this.state.templateFieldChoiceArray);
-      this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() })
+      this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
+        console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject);
+      })
     });
   }
 
   getFieldChoiceObject() {
-    // const lastElementIndex = this.state.templateFieldChoiceArray.length - 1;
-    // const lastElementKey = this.state.templateFieldChoiceArray[lastElementIndex];
     let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name];
 
     _.each(this.state.templateFieldChoiceArray, each => {
@@ -3184,27 +3185,98 @@ longActionPress(props) {
   }
 
   handleFieldChoiceActionClick(event) {
+    // Get an array of unique elementIds when user clicks on action ie add button, add to select
     const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    const elementValArray = elementVal.split(',');
-    const elementType = elementValArray[0];
-    const objectPathArray = elementValArray.slice(1);
+    const elementId = clickedElement.getAttribute('id');
+    const elementIdArray = elementId.split(',');
+    let elementType = elementIdArray[0];
+    const objectPathArray = elementIdArray.slice(1);
+    const elementIdNoType = objectPathArray.join(',');
     const indexOfChoices = objectPathArray.indexOf('choices');
     let parentObject = null;
+    let modEach = null;
 
-    let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
-    let choice = null;
-    _.each(objectPathArray, (each, i) => {
-      if (i === (indexOfChoices - 1)) parentObject = currentObject[each];
-      currentObject = currentObject[each];
-    });
-    console.log('in create_edit_document, handleFieldChoiceActionClick, elementVal, elementValArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices: ', elementVal, elementValArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices);
+    const newObject = { ...this.state.templateElementActionIdObject };
+    const newArray = [...this.state.templateElementActionIdObject.array]
+    // let list = this.state.templateElementActionIdObject.list;
+    // let button = this.state.templateElementActionIdObject.button;
+    // let select = this.state.templateElementActionIdObject.select;
+    let eachNoType = '';
+    if (elementType !== 'input') {
+      // Iterate if there is something in templateElementActionIdObject
+      if (this.state.templateElementActionIdObject.array.length > 0) {
+        _.each(this.state.templateElementActionIdObject.array, (each, i) => {
+          // Get a elementId without the type ie select, list, button
+          eachNoType = each.split(',').slice(1).join(',');
+          elementType = each.split(',')[0];
+          console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject: ', elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject);
+          // If there is already the same element in the array, take it out
+          if (eachNoType === elementIdNoType) {
+            newObject.array.splice(i, 1);
+            newObject[elementType]--;
+          }
+        }); // end of each
+        // Push into array after iteration
+        elementType = elementId.split(',')[0];
+        newObject[elementType]++;
+        newObject.array.push(elementId);
+      } else { // of length > 0
+        // If there is nothing in the array, push into it
+        // elementType = elementId.split(',')[0];
+        newObject.array.push(elementId);
+        newObject[elementType]++;
+      }
+    } else { // else of if !input
+      newObject.array.push(elementId);
+      newObject[elementType]++;
+    }
+
+    // if (elementType === 'select') select++;
+    // if (elementType === 'list') list++;
+    // if (elementType === 'button') button++;
+
+    this.setState({ templateElementActionIdObject: newObject }, () => {
+      console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
+      if (elementType === 'input') {
+        this.handleTemplateElementAddClick();
+      }
+    })
+  }
+
+  handleTemplateElementAddClick() {
+    let elementIdArray = [];
+    let objectPathArray = [];
+    let elementType = '';
+    let indexOfChoices = objectPathArray.indexOf('choices');
+    let parentObject = null;
+    let modEach = null;
+    const numbers = ['0', '1', '2', '3', '4', '5', '6'];
+    console.log('in create_edit_document, handleTemplateElementAddClick, : ', );
+
+    if (this.state.templateElementActionIdObject.array.length > 0) {
+      _.each(this.state.templateElementActionIdObject.array, (each, i) => {
+        elementIdArray = each.split(',');
+        elementType = elementIdArray[0];
+        objectPathArray = elementIdArray.slice(1);
+        indexOfChoices = objectPathArray.indexOf('choices');
+        let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
+        // let choice = null;
+        _.each(objectPathArray, (eachKey, i) => {
+          modEach = eachKey;
+          if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
+          if (i === (indexOfChoices - 1)) parentObject = currentObject[modEach];
+          console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
+          currentObject = currentObject[modEach];
+        });
+        console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices: ', elementIdArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices);
+      });
+    }
   }
 
   renderEachFieldChoice() {
     const renderChoiceDivs = (props) => {
       const { eachIndex, valueString, choiceText } = props;
-      console.log('in create_edit_document, renderChoiceDivs, choiceText: ', choiceText);
+      console.log('in create_edit_document, renderChoiceDivs, choiceText, valueString: ', choiceText, valueString);
       return (
         <div
           key={eachIndex}
@@ -3221,12 +3293,15 @@ longActionPress(props) {
           <div
             className="create-edit-document-template-each-choice-action-box"
           >
-            <div value={'button,' + valueString}
+            <div
+              id={'button,' + valueString}
+              value={'button,' + valueString}
               onClick={this.handleFieldChoiceActionClick}
             >
               Add Button
             </div>
             <div
+              id={'select,' + valueString}
               value={'select,' + valueString}
               onClick={this.handleFieldChoiceActionClick}
             >
@@ -3263,7 +3338,6 @@ longActionPress(props) {
               className="create-edit-document-template-each-choice-group"
               value={eachKey}
               onClick={this.handleFieldChoiceClick}
-              // onClick={this.handleFieldChoiceClick}
             >
               {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
             </div>
@@ -3279,11 +3353,12 @@ longActionPress(props) {
 
           if (inputElement) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+            // if (translationSibling) valueString = valueString + ',' + 'translation_sibling';
             // If there is a select field in choices object render select
             selectChoices = templateMappingObject[eachKey].choices[0].selectChoices;
             if (selectChoices) {
               return _.map(Object.keys(selectChoices), eachIndex => {
-                valueString = this.state.templateFieldChoiceArray.join(',') + ',choices,' + eachKey + ',selectChoices,' + eachIndex;
+                valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey + ',choices,0' + ',selectChoices,' + eachIndex;
                 choiceText = selectChoices[eachIndex][this.props.appLanguageCode]
                 return renderChoiceDivs({ eachIndex, valueString, choiceText });
               });
@@ -3305,13 +3380,15 @@ longActionPress(props) {
                   className="create-edit-document-template-each-choice-action-box"
                 >
                   <div
+                    id={valueString}
                     value={valueString}
                     onClick={this.handleFieldChoiceActionClick}
                   >
                     Add Input
                   </div>
                   <div
-                    value={valueString + ',' + 'translation_sibling'}
+                    id={valueString + ',translation_sibling'}
+                    value={valueString + ',translation_sibling'}
                     style={!translationSibling ? { border: 'none' } : {}}
                     onClick={this.handleFieldChoiceActionClick}
                   >
@@ -3322,9 +3399,10 @@ longActionPress(props) {
           } // End of if inputElement
 
           // Case of field being choices but not Yes or No choices
+          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           if (choicesObject && !choicesYesOrNo) {
             // receivs eachKey of 0, 1 of templateMappingObject is {0=>{}, 1=>{}}
-            console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+            console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no eachKey, this.state.templateFieldChoiceArray, templateMappingObject: ', eachKey, this.state.templateFieldChoiceArray, templateMappingObject);
             selectChoices = templateMappingObject[eachKey].selectChoices;
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             if (selectChoices) {
@@ -3363,6 +3441,7 @@ longActionPress(props) {
                   className="create-edit-document-template-each-choice-action-box"
                 >
                   <div
+                    id={'button,' + valueString}
                     value={'button,' + valueString}
                     onClick={this.handleFieldChoiceActionClick}
                   >
@@ -3371,6 +3450,7 @@ longActionPress(props) {
                   {this.state.templateFieldChoiceArray.indexOf('amenities') !== -1
                     ?
                     <div
+                      id={'list,' + valueString}
                       value={'list,' + valueString}
                       onClick={this.handleFieldChoiceActionClick}
                     >
@@ -3427,16 +3507,10 @@ longActionPress(props) {
   }
 
   renderFieldBoxControls() {
-    // templateFieldChoiceArray: [],
-    // templateFieldChoiceObject: ''
-    // <div className="create-edit-document-template-edit-field-box-controls-search">
-    // <input
-    // type="search"
-    // // id="attributeSearch"
-    // // name="q"
-    // className="create-edit-document-template-edit-field-box-search-input"
-    // />
-    // </div>
+    const selectOk = this.state.templateElementActionIdObject.select > 1;
+    const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1) || this.state.templateElementActionIdObject.button > 1;
+    const listOk = this.state.templateElementActionIdObject.list > 0;
+    const enableAdd = selectOk || buttonOk || listOk;
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
         <div className="create-edit-document-template-edit-field-box-controls-navigate">
@@ -3450,7 +3524,13 @@ longActionPress(props) {
           {this.renderEachFieldControlButton()}
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-          <div className="create-edit-document-template-edit-field-box-controls-action-button">Add</div>
+          <div
+            className="create-edit-document-template-edit-field-box-controls-action-button"
+            onClick={enableAdd ? this.handleTemplateElementAddClick : () => {}}
+            style={enableAdd ? {} : { color: 'gray' }}
+          >
+            Add
+          </div>
         </div>
       </div>
     );
