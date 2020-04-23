@@ -928,7 +928,6 @@ renderEachDocumentField(page) {
     const elementVal = clickedElement.getAttribute('value');
     const background = document.getElementById('document-background')
     console.log('in create_edit_document, getMousePosition1, background, event.target', background, event.target);
-    // const documentContainerArray = document.getElementsByClassName('image-pdf-jpg-background');
     // const pageIndex = elementVal - 1;
     // get x and y positions in PX of cursor in browser view port (not page or parent)
     if (clickedElement.id === 'document-background') {
@@ -936,20 +935,16 @@ renderEachDocumentField(page) {
       const clientY = event.clientY;
       // get dimensions top, bottom, left and right of parent in view port (each template document page)
       const parentRect = event.target.getBoundingClientRect()
-      // console.log('in create_edit_document, getMousePosition1, clientX, clientY, parentRect', clientX, clientY, parentRect);
       // Get x and y PERCENTAGES (xx.xx%) inside the parent (template document pages)
       const x = ((clientX - parentRect.left) / (parentRect.right - parentRect.left)) * 100;
       const y = ((clientY - parentRect.top) / (parentRect.bottom - parentRect.top)) * 100
-      // console.log('in create_edit_document, getMousePosition1, x, y', x, y);
       // Set state with count of elements and new element in app state in state.templateElements
       // const templateElementCount = this.state.templateElementCount;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
         createNewTemplateElementOn: false,
-        // historyIndex: this.historyIndex + 1
       }, () => {
         const templateElementChoice = true;
-        // console.log('in create_edit_document, getMousePosition1, templateElementAttributes.x, templateElementAttributes.page, ', this.state.templateElementAttributes.x, this.state.templateElementAttributes.y, this.state.templateElementAttributes.page);
         let templateElementAttributes = {};
         if (templateElementChoice) {
           templateElementAttributes = {
@@ -1003,10 +998,7 @@ renderEachDocumentField(page) {
 
         this.props.createDocumentElementLocally(templateElementAttributes);
         // add action element action before putting in array before setState
-        // const elementCopy = this.getNewElementObject(templateElementAttributes)
-        // elementCopy.action = 'create'
-        this.setTemplateHistoryArray([templateElementAttributes], 'create')
-        // this.setState({ templateEditHistoryArray: [...this.state.templateEditHistoryArray, [templateElementAttributes]] })
+        this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
       });
@@ -1970,7 +1962,6 @@ longActionPress(props) {
                 localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: totalWidth, height: totalHeight }, background.getBoundingClientRect(), marginBetween, true);
 
               } else { // else for if newElement
-
                 const backgroundDimensions = background.getBoundingClientRect();
                 // Send wrapper div dimensions in fractions, .50 not 5%
                 const adjustedHeightInPx = ((parseFloat(eachElement.height) / 100) * backgroundDimensions.height);
@@ -3319,10 +3310,10 @@ longActionPress(props) {
     let objectPathArray = [];
     let elementType = '';
     let indexOfChoices = objectPathArray.indexOf('choices');
-    let parentObject = null;
+    let parent = null;
     let modEach = null;
     const numbers = ['0', '1', '2', '3', '4', '5', '6'];
-    console.log('in create_edit_document, handleTemplateElementAddClick, : ', );
+    const object = { parent: null, input: [], select: [], button: [], buttons: [], list: [] };
 
     if (this.state.templateElementActionIdObject.array.length > 0) {
       _.each(this.state.templateElementActionIdObject.array, (each, i) => {
@@ -3335,11 +3326,13 @@ longActionPress(props) {
         _.each(objectPathArray, (eachKey, i) => {
           modEach = eachKey;
           if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
-          if (i === (indexOfChoices - 1)) parentObject = currentObject[modEach];
+          if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
           console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
           currentObject = currentObject[modEach];
         });
-        console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices: ', elementIdArray, elementType, objectPathArray, currentObject, parentObject, indexOfChoices);
+        object.parent = parent;
+        object[elementType].push(currentObject);
+        console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, object: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, object);
       });
     }
     // Placeholder until create element completed.

@@ -444,13 +444,10 @@ class DocumentChoicesTemplate extends Component {
   renderEachChoice(choices) {
     const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
     console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props.', name, value, input, this.props)
-    // console.log('DocumentChoicesTemplate, renderEachChoice this.props.otherChoiceValues', this.props.otherChoiceValues)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
     return _.map(choices, choice => {
-        // console.log('DocumentChoicesTemplate, renderEachChoice this.props.required', this.props.required);
-      // console.log('DocumentChoicesTemplate, renderEachChoice name, choice.val, value, choice.val == value', name, choice.val, value, choice.val == value);
       // value is value passed from Field and needs to be specified for initialValues
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
@@ -473,6 +470,8 @@ class DocumentChoicesTemplate extends Component {
   }
 
   render() {
+    // IMPORTANT: In template elements, got rid of params in choices: { 0: { params: {}}};
+    // it is just choices: { attributes }
     // destructure local props set by redux forms Field compoenent
     const { input: { name } } = this.props;
     console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields);
