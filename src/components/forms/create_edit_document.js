@@ -3516,8 +3516,14 @@ longActionPress(props) {
   }
 
   renderFieldBoxControls() {
+    // 1) Enable add button if there are more than 1 select buttons selected
+    // 2) Enable if 1 or more button selected and more than 1 select selected
+    // OR if more than 1 button selected and more than 1 select OR 0 select selected
+    // 3) Enable if 1 or more list selected  
     const selectOk = this.state.templateElementActionIdObject.select > 1;
-    const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1) || this.state.templateElementActionIdObject.button > 1;
+    const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1)
+                      || (this.state.templateElementActionIdObject.button > 1
+                          && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
     const listOk = this.state.templateElementActionIdObject.list > 0;
     const enableAdd = selectOk || buttonOk || listOk;
     return (
