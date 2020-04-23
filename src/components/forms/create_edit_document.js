@@ -45,6 +45,7 @@ const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared (for edit action buttons)
 let explanationTimerArray = [];
+const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0 };
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -84,7 +85,7 @@ class CreateEditDocument extends Component {
       renderChoiceEditButtonDivs: false,
       templateFieldChoiceArray: [],
       templateFieldChoiceObject: null,
-      templateElementActionIdObject: { array: [], select: 0, list: 0, input: 0, button: 0 },
+      templateElementActionIdObject: INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -3144,24 +3145,41 @@ longActionPress(props) {
   }
 
   handleFieldChoiceClick(event) {
+    // IMPORTANT: Logic to update array that drives object selection for template element create
+    // Array is like [building, construction] which serve as the path for
+    // templateMappingObject which is like { building: { construction ...}, listing: {amenities...}}
+    // Each run updates array and gets templateFieldChoiceObject for rendering the current choices
+    // in renderEachFieldChoice method
+    // Also initializes templateElementActionIdObject if user navigates to new choice
+    // Gets value of clicked link
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     let newArray = [];
+    // Places value in array if empty
     if (this.state.templateFieldChoiceArray.length === 0) {
       newArray = [elementVal];
     } else {
       newArray = [...this.state.templateFieldChoiceArray];
-      if (this.state.templateFieldChoiceArray.indexOf(elementVal) !== -1) {
-        const index = this.state.templateFieldChoiceArray.indexOf(elementVal);
+      // If value is in array, take out everything after value index with splice method
+      // if value not included, push into array
+      const index = this.state.templateFieldChoiceArray.indexOf(elementVal);
+      if (index !== -1) {
         newArray.splice((index + 1));
       } else {
         newArray.push(elementVal);
       }
     }
+    // Null elementVal means home or root, so initialize array
     if (elementVal === null) newArray = [];
-    this.setState({ templateFieldChoiceArray: newArray }, () => {
+
+    this.setState({
+      templateFieldChoiceArray: newArray,
+      // Somehow, array needs to be assigned specifically like below or does not empty out
+      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
+    }, () => {
+      // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
-        console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject);
+        console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
       })
     });
   }
@@ -3179,13 +3197,31 @@ longActionPress(props) {
         }
       }
     });
-
     console.log('in create_edit_document, handleFieldChoiceClick, before return currentObject: ', currentObject);
     return currentObject;
   }
 
   handleFieldChoiceActionClick(event) {
     // Get an array of unique elementIds when user clicks on action ie add button, add to select
+    const getTakeOutIndex = (elementIdNoType) => {
+      let takeOutIndex = -1;
+      let eachNoType = null;
+      let elementType = null;
+      let elementTypeReturned = null;
+      _.each(this.state.templateElementActionIdObject.array, (each, i) => {
+        // Get a elementId without the type ie select, list, button
+        eachNoType = each.split(',').slice(1).join(',');
+        elementType = each.split(',')[0];
+        // If there is already the same element in the array, get index to take it out
+        if (eachNoType === elementIdNoType) {
+          takeOutIndex = i;
+          // newObject[elementType]--;
+          elementTypeReturned = elementType;
+        }
+      }); // end of each
+      return { takeOutIndex, elementTypeReturned };
+    };
+
     const clickedElement = event.target;
     const elementId = clickedElement.getAttribute('id');
     const elementIdArray = elementId.split(',');
@@ -3193,51 +3229,41 @@ longActionPress(props) {
     const objectPathArray = elementIdArray.slice(1);
     const elementIdNoType = objectPathArray.join(',');
     let takeOutIndex = -1;
-    // const indexOfChoices = objectPathArray.indexOf('choices');
-    // let parentObject = null;
-    // let modEach = null;
-    // let elementInDom = null;
-    // elementInDom = document.getElementById(elementId);
-    // elementInDom.style.backgroundColor = "lightgray";
+    let returnedObject = {};
 
     const newObject = { ...this.state.templateElementActionIdObject };
-    // const newArray = [...this.state.templateElementActionIdObject.array]
-    // let list = this.state.templateElementActionIdObject.list;
-    // let button = this.state.templateElementActionIdObject.button;
-    // let select = this.state.templateElementActionIdObject.select;
     let eachNoType = '';
-    if (elementType !== 'input') {
+
+    // input and buttons are created with one click; others are selected and added with add link
+    if ((elementType !== 'input') || (elementType !== 'buttons')) {
       // Iterate if there is something in templateElementActionIdObject
       if (this.state.templateElementActionIdObject.array.length > 0) {
-        _.each(this.state.templateElementActionIdObject.array, (each, i) => {
-          // Get a elementId without the type ie select, list, button
-          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject: ', elementId, each, elementType, newObject[elementType], this.state.templateElementActionIdObject);
-          console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject: ', elementId, each, this.state.templateElementActionIdObject);
-          eachNoType = each.split(',').slice(1).join(',');
-          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject, eachNoType: ', elementId, each, this.state.templateElementActionIdObject, eachNoType);
-          elementType = each.split(',')[0];
-          // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState in each elementId, each, this.state.templateElementActionIdObject, elementType: ', elementId, each, this.state.templateElementActionIdObject, elementType);
-          // If there is already the same element in the array, take it out
-          if (eachNoType === elementIdNoType) {
-            takeOutIndex = i;
-            newObject[elementType]--;
-            // elementInDom = document.getElementById(elementId);
-            // elementInDom.style.backgroundColor = "white";
-          }
-        }); // end of each
-        // Push into array after iteration
+        // Get index and type of id in array with same id and different type
+        returnedObject = getTakeOutIndex(elementIdNoType)
+        takeOutIndex = returnedObject.takeOutIndex;
+        // Take out id if included in array and increment down type
         if (takeOutIndex !== -1) newObject.array.splice(takeOutIndex, 1);
+        if (returnedObject.elementTypeReturned) newObject[returnedObject.elementTypeReturned]--;
         // takeOutIndex = -1;
+        // Get elementType of just-clicked element and increment it up
         elementType = elementId.split(',')[0];
         newObject[elementType]++;
+        // Push into array after iteration and taking out same id with different type
         newObject.array.push(elementId);
-      } else { // of length > 0
-        // If there is nothing in the array, push into it
-        // elementType = elementId.split(',')[0];
+      } else { // else of length > 0
+        // If nothing in array, push elementId
         newObject.array.push(elementId);
         newObject[elementType]++;
       }
-    } else { // else of if !input
+    } else { // else of if !input || !buttons
+      if (elementType === 'buttons') {
+        // Get index and elementType of same id with different type ie list 
+        returnedObject = getTakeOutIndex(elementIdNoType);
+        takeOutIndex = returnedObject.takeOutIndex;
+        // Take out id if included in array and increment down type
+        if (takeOutIndex !== -1) newObject.array.splice(takeOutIndex, 1);
+        if (returnedObject.elementTypeReturned) newObject[returnedObject.elementTypeReturned]--;
+      }
       newObject.array.push(elementId);
       newObject[elementType]++;
     }
@@ -3245,7 +3271,8 @@ longActionPress(props) {
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
-      if (elementType === 'input') {
+      // NOTE: buttons plural; If input or buttons, add element
+      if (elementType === 'input' || elementType === 'buttons') {
         this.handleTemplateElementAddClick();
       }
     });
@@ -3429,6 +3456,7 @@ longActionPress(props) {
 
           console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           // For yes or now (true, false) fields such as amenities
+          // IMPORTANT: Note that id has 'buttons' (plural)
           if (choices && choicesYesOrNo) {
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
@@ -3450,9 +3478,9 @@ longActionPress(props) {
                   className="create-edit-document-template-each-choice-action-box"
                 >
                   <div
-                    id={'button,' + valueString}
+                    id={'buttons,' + valueString}
                     onClick={this.handleFieldChoiceActionClick}
-                    style={elementIdArray.indexOf('button,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+                    style={elementIdArray.indexOf('buttons,' + valueString) !== -1 ? { backgroundColor: 'lightgray' } : {}}
                   >
                     Add Buttons
                   </div>
@@ -3519,7 +3547,7 @@ longActionPress(props) {
     // 1) Enable add button if there are more than 1 select buttons selected
     // 2) Enable if 1 or more button selected and more than 1 select selected
     // OR if more than 1 button selected and more than 1 select OR 0 select selected
-    // 3) Enable if 1 or more list selected  
+    // 3) Enable if 1 or more list selected
     const selectOk = this.state.templateElementActionIdObject.select > 1;
     const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1)
                       || (this.state.templateElementActionIdObject.button > 1
