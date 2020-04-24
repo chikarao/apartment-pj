@@ -1894,6 +1894,7 @@ longActionPress(props) {
           choicesObject[i].choice_index = parseInt(i, 10);
           choicesObject[i].element_id = eachElement.id;
           choicesObject[i].name = eachElement.name;
+          choicesObject[i].selectChoices = eachChoice.selectChoices;
 
           currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
         });
@@ -3339,7 +3340,6 @@ longActionPress(props) {
       });
     }
 
-    const templateElementChoice = true;
     let templateElementAttributes = {};
     let createdObject = null;
     // No parent in summaryObject indciates it is an input (no choices) or button (true or false)
@@ -3350,9 +3350,6 @@ longActionPress(props) {
         templateElementAttributes = {
           id: `${this.state.templateElementCount}a`,
           // left, top and page assigned in getMousePosition
-          // left: `${x}%`,
-          // top: `${y}%`,
-          // page: parseInt(elementVal, 10),
           name: createdObject.name,
           component: createdObject.component,
           width: createdObject.choices[0].params.width,
@@ -3366,8 +3363,8 @@ longActionPress(props) {
           font_family: this.state.newFontObject.font_family,
           font_size: this.state.newFontObject.font_size
         };
-      // } else if (summaryObject.buttons.length > 0) {
-      } else {
+      } else if (summaryObject.buttons.length > 0) {
+      // } else {
         createdObject = summaryObject.buttons[0];
         templateElementAttributes = {
           id: `${this.state.templateElementCount}a`,
@@ -3399,10 +3396,74 @@ longActionPress(props) {
             border: '1px solid black'
           };
         });
-        console.log('in create_edit_document, handleTemplateElementAddClick, createdObject, templateElementAttributes: ', createdObject, templateElementAttributes);
       }
     } else {
+      if (summaryObject.button.length > 0 || summaryObject.select.length > 0) {
+        console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
+        let count = 0;
+        createdObject = summaryObject.parent;
+        templateElementAttributes = {
+          id: `${this.state.templateElementCount}a`,
+          // left, top and page assigned in getMousePosition
+          name: createdObject.name,
+          component: createdObject.component,
+          // component: 'DocumentChoicesTemplate',
+          width: createdObject.choices[0].params.width,
+          // height: '1.6%',
+          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          // class_name: createdObject.choices[0].params.class_name,
+          class_name: 'document-rectangle-template',
+          border_color: 'lightgray',
+          document_field_choices: {}
+        };
 
+        if (summaryObject.button.length > 0) {
+          _.each(summaryObject.button, each => {
+            createdObject = each;
+            templateElementAttributes.document_field_choices[count] = {
+              val: createdObject.value || createdObject.val,
+              // val: createdObject.val,
+              top: null,
+              left: null,
+              width: createdObject.width,
+              // height: createdObject.choices[eachIndex].params.height,
+              height: createdObject.height,
+              // class_name: createdObject.choices[eachIndex].params.class_name,
+              class_name: 'document-rectangle-template-button',
+              input_type: createdObject.type,
+              // border_radius: '3px',
+              border: '1px solid black'
+            };
+            count++;
+          });
+        }
+
+        if (summaryObject.select.length > 0) {
+          templateElementAttributes.document_field_choices[count] = {
+            val: 'inputFieldValue',
+            top: null,
+            left: null,
+            width: summaryObject.select[0].width,
+            // height: createdObject.choices[eachIndex].params.height,
+            height: summaryObject.select[0].height,
+            // class_name: createdObject.choices[eachIndex].params.class_name,
+            class_name: 'document-rectangle-template-button',
+            input_type: createdObject.type,
+            // border_radius: '3px',
+            border: '1px solid black',
+            selectChoices: {}
+          };
+          let selectChoices = null;
+          _.each(summaryObject.select, (each, i) => {
+            // createdObject = each;
+            selectChoices = templateElementAttributes.document_field_choices[count].selectChoices;
+            selectChoices[i] = {};
+            _.each(Object.keys(each), eachKey => {
+              selectChoices[i][eachKey] = each[eachKey];
+            });
+          });
+        }
+      } // end of
     }
 
     // Placeholder until create element completed.

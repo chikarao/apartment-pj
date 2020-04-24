@@ -443,7 +443,7 @@ class DocumentChoicesTemplate extends Component {
 
   renderEachChoice(choices) {
     const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
-    console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props.', name, value, input, this.props)
+    console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props, choices.', name, value, input, this.props, choices)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
@@ -477,13 +477,14 @@ class DocumentChoicesTemplate extends Component {
     console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields);
     // if (this.props.editTemplate) {
     return (
-      <div key={name} style={
-        {
-          // wrapping div fits the outer div to house inputs and buttons
-          width: '100%',
-          height: '100%',
-          // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
-        }}
+      <div
+        key={name}
+        style={{
+            // wrapping div fits the outer div to house inputs and buttons
+            width: '100%',
+            height: '100%',
+            // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
+          }}
       >
         {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
       </div>
