@@ -5200,6 +5200,20 @@ form {
 
 }
 
+.document-circle-template {
+  /* need to keep height here since document rectangle has varying width */
+  /* height: 22px; */
+  height: 1.8%;
+  /* width: 22px; */
+  border-radius: 50%;
+  /* margin: 0 0 0 5px; */
+  /* border-color: red !important; */
+  border: 1.5px solid #ccc;
+  background-color: transparent;
+  position: absolute;
+
+}
+
 .document-rectangle {
   /* width varies */
   height: 17px;

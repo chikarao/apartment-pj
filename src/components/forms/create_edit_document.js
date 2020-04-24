@@ -996,14 +996,14 @@ renderEachDocumentField(page) {
             font_size: this.state.newFontObject.font_size
           };
         }
-
-        templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10) }
-
-        this.props.createDocumentElementLocally(templateElementAttributes);
+        // Assign templateElementAttributes from state and specify left, top, page
+        templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10) };
         // add action element action before putting in array before setState
+        this.props.createDocumentElementLocally(templateElementAttributes);
         this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
+        this.setState({ templateElementAttributes: null });
       });
     }
   }
@@ -1947,13 +1947,13 @@ longActionPress(props) {
                 const marginBetween = 0.25;
                 _.each(Object.keys(document_field_choices), (eachKey, i) => {
                   const eachChoice = document_field_choices[eachKey];
-                  if (eachChoice.class_name === 'document-circle') {
+                  if (eachChoice.class_name === 'document-circle-template') {
                     totalWidth = parseFloat(eachChoice.width);
                     totalHeight = parseFloat(eachChoice.height);
                     if (i === Object.keys(document_field_choices).length - 1) totalWidth += (i * marginBetween);
                   }
 
-                  if (eachChoice.class_name === 'document-rectangle-template-button') {
+                  if (eachChoice.class_name === 'document-rectangle-template-button' || eachChoice.class_name === 'document-circle-template') {
                     totalWidth = parseFloat(eachChoice.width)
                     totalHeight += parseFloat(eachChoice.height)
                     if (i === Object.keys(document_field_choices).length - 1) totalHeight += (i * marginBetween);
@@ -3344,27 +3344,62 @@ longActionPress(props) {
     let createdObject = null;
     // No parent in summaryObject indciates it is an input (no choices) or button (true or false)
     if (!summaryObject.parent) {
+      // input only has one in array
       if (summaryObject.input.length > 0) {
-          createdObject = summaryObject.input[0];
-          templateElementAttributes = {
-            id: `${this.state.templateElementCount}a`,
-            // left: `${x}%`,
-            // top: `${y}%`,
-            // page: parseInt(elementVal, 10),
-            name: createdObject.name,
-            component: createdObject.component,
-            // component: 'input',
-            width: createdObject.choices[0].params.width,
+        createdObject = summaryObject.input[0];
+        templateElementAttributes = {
+          id: `${this.state.templateElementCount}a`,
+          // left, top and page assigned in getMousePosition
+          // left: `${x}%`,
+          // top: `${y}%`,
+          // page: parseInt(elementVal, 10),
+          name: createdObject.name,
+          component: createdObject.component,
+          width: createdObject.choices[0].params.width,
+          height: '1.6%',
+          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          // class_name: createdObject.choices[0].params.class_name,
+          class_name: 'document-rectangle-template',
+          border_color: 'lightgray',
+          font_style: this.state.newFontObject.font_style,
+          font_weight: this.state.newFontObject.font_weight,
+          font_family: this.state.newFontObject.font_family,
+          font_size: this.state.newFontObject.font_size
+        };
+      // } else if (summaryObject.buttons.length > 0) {
+      } else {
+        createdObject = summaryObject.buttons[0];
+        templateElementAttributes = {
+          id: `${this.state.templateElementCount}a`,
+          // left, top and page assigned in getMousePosition
+          name: createdObject.name,
+          component: createdObject.component,
+          // component: 'DocumentChoicesTemplate',
+          width: createdObject.choices[0].params.width,
+          height: '1.6%',
+          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          // class_name: createdObject.choices[0].params.class_name,
+          class_name: 'document-rectangle-template',
+          border_color: 'lightgray',
+          document_field_choices: {}
+        };
+
+        _.each(Object.keys(createdObject.choices), eachIndex => {
+          templateElementAttributes.document_field_choices[eachIndex] = {
+            val: createdObject.choices[eachIndex].params.val,
+            top: null,
+            left: null,
+            width: createdObject.choices[eachIndex].params.width,
+            // height: createdObject.choices[eachIndex].params.height,
             height: '1.6%',
-            input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
-            // class_name: createdObject.choices[0].params.class_name,
-            class_name: 'document-rectangle-template',
-            border_color: 'lightgray',
-            font_style: this.state.newFontObject.font_style,
-            font_weight: this.state.newFontObject.font_weight,
-            font_family: this.state.newFontObject.font_family,
-            font_size: this.state.newFontObject.font_size
+            // class_name: createdObject.choices[eachIndex].params.class_name,
+            class_name: 'document-circle-template',
+            input_type: createdObject.choices[eachIndex].params.input_type,
+            border_radius: '50%',
+            border: '1px solid black'
           };
+        });
+        console.log('in create_edit_document, handleTemplateElementAddClick, createdObject, templateElementAttributes: ', createdObject, templateElementAttributes);
       }
     } else {
 
@@ -3374,6 +3409,9 @@ longActionPress(props) {
     this.setState({
       templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
       templateElementAttributes
+    }, () => {
+      console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
+
     });
   }
 
@@ -3433,7 +3471,7 @@ longActionPress(props) {
     const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
       const { eachIndex, valueString, choiceText } = props;
-      console.log('in create_edit_document, renderChoiceDivs, choiceText, valueString: ', choiceText, valueString);
+      // console.log('in create_edit_document, renderChoiceDivs, choiceText, valueString: ', choiceText, valueString);
       return (
         <div
           key={eachIndex}
@@ -3490,7 +3528,7 @@ longActionPress(props) {
         // If object is a group heading such as building or tenant, list element with angle
         // to indicate, there is something behind it
         if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
-          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
+          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
               key={eachKey}
@@ -3502,7 +3540,7 @@ longActionPress(props) {
             </div>
           );
         } else if (templateMappingObject[eachKey]) {
-          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
+          // console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           // Get the type of element to distinguish which to render
           inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
           choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
@@ -3556,10 +3594,10 @@ longActionPress(props) {
           } // End of if inputElement
 
           // Case of field being choices but not Yes or No choices
-          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           if (choicesObject && !choicesYesOrNo) {
             // receivs eachKey of 0, 1 of templateMappingObject is {0=>{}, 1=>{}}
-            console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no eachKey, this.state.templateFieldChoiceArray, templateMappingObject: ', eachKey, this.state.templateFieldChoiceArray, templateMappingObject);
+            // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no eachKey, this.state.templateFieldChoiceArray, templateMappingObject: ', eachKey, this.state.templateFieldChoiceArray, templateMappingObject);
             selectChoices = templateMappingObject[eachKey].selectChoices;
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             if (selectChoices) {
@@ -3575,7 +3613,7 @@ longActionPress(props) {
             }
           }
 
-          console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
+          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           // For yes or now (true, false) fields such as amenities
           // IMPORTANT: Note that id has 'buttons' (plural)
           if (choices && choicesYesOrNo) {
