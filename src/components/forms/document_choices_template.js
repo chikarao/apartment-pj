@@ -134,11 +134,13 @@ class DocumentChoicesTemplate extends Component {
     } else {
       elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     }
-
+    // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
-          width: '100%',
-          height: '100%',
+          width: choice.selectChoices ? choice.width : '100%',
+          height: choice.selectChoices ? choice.height : '100%',
+          top: choice.selectChoices ? choice.top : '',
+          left: choice.selectChoices ? choice.left : '',
           fontSize: choice.font_size,
           fontFamily: choice.font_family,
           fontStyle: choice.font_style,
@@ -391,6 +393,8 @@ class DocumentChoicesTemplate extends Component {
   }
 
   createSelectElement({ choice, meta, value, input }) {
+    const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
+
     console.log('DocumentChoicesTemplate, createSelectElement');
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
@@ -398,7 +402,9 @@ class DocumentChoicesTemplate extends Component {
           {...input}
           // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
           value={(this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value}
-          id="valueInput"
+          // id="valueInput"
+          id={`template-element-button-${elementIdAndIndex}`}
+
           maxLength={this.props.charLimit}
           key={choice.val}
           onChange={this.handleInputChange}
@@ -447,6 +453,7 @@ class DocumentChoicesTemplate extends Component {
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
+    let selectElement = null;
     return _.map(choices, choice => {
       // value is value passed from Field and needs to be specified for initialValues
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
@@ -460,7 +467,11 @@ class DocumentChoicesTemplate extends Component {
         const textareaElement = this.createTextareaElement({ choice, meta, value, input: this.props.input })
         return textareaElement;
       } else if (choice.selectChoices) {
-        const selectElement = this.createSelectElement({ choice, meta, value, input: this.props.input })
+        if (this.props.editFieldsOn) {
+          selectElement = this.createButtonElement({ choice, meta, value, input: this.props.input });
+        } else {
+          selectElement = this.createSelectElement({ choice, meta, value, input: this.props.input });
+        }
         return selectElement;
       } else {
         const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, input: this.props.input })

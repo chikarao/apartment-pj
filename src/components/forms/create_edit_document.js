@@ -221,7 +221,10 @@ class CreateEditDocument extends Component {
           highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
           this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
-        this.setState({ templateElementCount: highestElementId });
+        this.setState({ templateElementCount: highestElementId }, () => {
+          console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
+
+        });
       }
 
       console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
@@ -997,7 +1000,7 @@ renderEachDocumentField(page) {
           };
         }
         // Assign templateElementAttributes from state and specify left, top, page
-        templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10) };
+        templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.templateElementCount}a` };
         // add action element action before putting in array before setState
         this.props.createDocumentElementLocally(templateElementAttributes);
         this.setTemplateHistoryArray([templateElementAttributes], 'create');
@@ -1820,6 +1823,7 @@ longActionPress(props) {
     const renderTab = (eachElement, selected, tabLeftMarginPx) => {
       const tabWidth = inputElement ? TAB_WIDTH : 55;
       const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+      console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, selected, tabLeftMarginPx, tabWidth, modTabLeftMarginPx: ', eachElement, selected, tabLeftMarginPx, tabWidth, modTabLeftMarginPx);
       return (
         <div
           id={`template-element-tab-${eachElement.id}`}
@@ -1856,6 +1860,7 @@ longActionPress(props) {
       );
     };
     // Function to get object used in document_choices_template.js to render fields
+    // Looks like { 1: { 100: {element attr}, 101: { element attr } }}
     const getLocalTemplateElementsByPage = (eachElement, box, backgroundDim, marginBetween, isNew) => {
       const { document_field_choices } = eachElement;
       const object = { [eachElement.page]: { [eachElement.id]: { choices: {} } } };
@@ -1972,13 +1977,13 @@ longActionPress(props) {
                 const adjustedHeightInFracs = (adjustedHeightInPx / backgroundDimensions.height);
 
                 localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: (parseFloat(eachElement.width) / 100), height: adjustedHeightInFracs, top: (parseFloat(eachElement.top) / 100), left: (parseFloat(eachElement.left) / 100) }, background.getBoundingClientRect(), null, false);
-                console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage: ', eachElement, document_field_choices, localTemplateElementsByPage);
+                console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions: ', eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions);
                 // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement: ', eachElement, adjustedHeightInPx);
               } // end of if newElement
             } // end of if eachElement.document_field_choices
             // if ()
             if (inputElement) {
-              if (!newElement) console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
+              // if (!newElement) console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
               return (
                 <div
                   key={modifiedElement.id}
@@ -3348,7 +3353,8 @@ longActionPress(props) {
       if (summaryObject.input.length > 0) {
         createdObject = summaryObject.input[0];
         templateElementAttributes = {
-          id: `${this.state.templateElementCount}a`,
+          // id: `${this.state.templateElementCount}a`,
+          id: null,
           // left, top and page assigned in getMousePosition
           name: createdObject.name,
           component: createdObject.component,
@@ -3367,13 +3373,15 @@ longActionPress(props) {
       // } else {
         createdObject = summaryObject.buttons[0];
         templateElementAttributes = {
-          id: `${this.state.templateElementCount}a`,
+          // id: `${this.state.templateElementCount}a`,
+          id: null,
           // left, top and page assigned in getMousePosition
           name: createdObject.name,
           component: createdObject.component,
           // component: 'DocumentChoicesTemplate',
           width: createdObject.choices[0].params.width,
-          height: '1.6%',
+          height: null,
+          // height: '1.6%',
           input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
@@ -3403,13 +3411,14 @@ longActionPress(props) {
         let count = 0;
         createdObject = summaryObject.parent;
         templateElementAttributes = {
-          id: `${this.state.templateElementCount}a`,
+          // id: `${this.state.templateElementCount}a`,
+          id: null,
           // left, top and page assigned in getMousePosition
           name: createdObject.name,
           component: createdObject.component,
           // component: 'DocumentChoicesTemplate',
           width: createdObject.choices[0].params.width,
-          // height: '1.6%',
+          height: null,
           input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',

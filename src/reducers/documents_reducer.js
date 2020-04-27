@@ -42,7 +42,6 @@ export default function (state = {
     function updateElements(element) {
       let modifiedElem = {};
       let returnString = '';
-      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, templateEditHistory: ', element, templateEditHistory);
        // each with i history array, iterate through each history array of arrays of objects
        // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
@@ -68,6 +67,7 @@ export default function (state = {
         } // end of if
       }); // end of first each
       // return null, delete or ok; if ok, the element is placed in this.props.templateElements
+      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, returnString, templateEditHistory: ', element, returnString, templateEditHistory);
       return returnString || 'ok';
     }
     // Iterate through each element persisted as agreement.document_fields
@@ -87,6 +87,7 @@ export default function (state = {
         // update elements returns null, delete or ok; if ok,
         // put modifeid object in in mapped object
         if (updateElements(modifiedElement) === 'ok') {
+          console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray if templateEditHistory updateElements ok modifiedElement: ', modifiedElement);
           object[modifiedElement.id.toString()] = modifiedElement;
           // put into pageObject
           if (pageObject[modifiedElement.page]) {
