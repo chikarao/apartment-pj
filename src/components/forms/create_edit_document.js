@@ -3405,9 +3405,36 @@ longActionPress(props) {
           };
         });
       }
-    } else {
+
+      if (summaryObject.list.length > 0) {
+        createdObject = summaryObject.list[0];
+        let nameString = '';
+        let listParameters = `${createdObject.group},true,`;
+
+        _.each(summaryObject.list, each => {
+          nameString = `${each.name},`
+          listParameters = listParameters.concat(nameString);
+          console.log('in create_edit_document, handleTemplateElementAddClick, if !parent list in each summaryObject, each, listParameters: ', summaryObject, each, listParameters);
+        });
+
+        templateElementAttributes = {
+          // id: `${this.state.templateElementCount}a`,
+          id: null,
+          // left, top and page assigned in getMousePosition
+          name: `${createdObject.group}_list`,
+          component: createdObject.component,
+          // component: 'DocumentChoicesTemplate',
+          width: '25%',
+          height: '1.6%',
+          input_type: 'text', // or 'string' if an input component
+          // class_name: createdObject.choices[0].params.class_name,
+          class_name: 'document-rectangle-template',
+          border_color: 'lightgray',
+          list_parameters: listParameters
+        };
+      }
+    } else { // else of if (!summaryObject.parent)
       if (summaryObject.button.length > 0 || summaryObject.select.length > 0) {
-        console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
         let count = 0;
         createdObject = summaryObject.parent;
         templateElementAttributes = {
@@ -3462,6 +3489,7 @@ longActionPress(props) {
             border: '1px solid black',
             selectChoices: {}
           };
+
           let selectChoices = null;
           _.each(summaryObject.select, (each, i) => {
             // createdObject = each;
@@ -3472,7 +3500,9 @@ longActionPress(props) {
             });
           });
         }
-      } // end of
+      } // end of  if (summaryObject.button.length > 0
+
+      console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
     }
 
     // Placeholder until create element completed.
@@ -3480,7 +3510,7 @@ longActionPress(props) {
       templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
       templateElementAttributes
     }, () => {
-      console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
+      console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
 
     });
   }

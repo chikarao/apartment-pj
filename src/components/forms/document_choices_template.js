@@ -99,14 +99,14 @@ class DocumentChoicesTemplate extends Component {
   }
 
   getStyleOfButtonElement({ required, value, choice, inactive, name }) {
-    let elementStyle = {};
+    let elementStyle = { color: 'lightgray', textAlign: 'center', fontSize: '11px', padding: '1px' };
 
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
     console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
     if ((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) && !choice.enclosed_text) {
       elementStyle = { top: choice.top, left: choice.left, borderColor: 'black', width: choice.width, height: choice.height };
     } else {
-      elementStyle = { top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width, height: choice.height };
+      elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width, height: choice.height };
     }
 
     if (this.props.nullRequiredField && !value) {
@@ -137,10 +137,10 @@ class DocumentChoicesTemplate extends Component {
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
-          width: choice.selectChoices ? choice.width : '100%',
-          height: choice.selectChoices ? choice.height : '100%',
-          top: choice.selectChoices ? choice.top : '',
-          left: choice.selectChoices ? choice.left : '',
+          width: choice.selectChoices || choice.select_choices ? choice.width : '100%',
+          height: choice.selectChoices || choice.select_choices ? choice.height : '100%',
+          top: choice.selectChoices || choice.select_choices ? choice.top : '',
+          left: choice.selectChoices || choice.select_choices ? choice.left : '',
           fontSize: choice.font_size,
           fontFamily: choice.font_family,
           fontStyle: choice.font_style,
@@ -262,7 +262,6 @@ class DocumentChoicesTemplate extends Component {
       // } else {
         if (!fieldInactive) {
           if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
-            // this.setState({ enclosedText: '' });
             onChange('');
           } else {
             // check if click of button needs to change value of other keys
@@ -306,6 +305,9 @@ class DocumentChoicesTemplate extends Component {
           style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >
         {(choice.enclosed_text) && (value == choice.val) ? choice.enclosed_text : ''}
+        {choice.val === 'inputFieldValue' ? 'Select' : choice.val}
+        {choice.val.toString() === 'true' && choice.val === true ? 'T' : ''}
+        {choice.val.toString() === 'false' && choice.val === false ? 'F' : ''}
         </div>
       );
     }
@@ -377,7 +379,7 @@ class DocumentChoicesTemplate extends Component {
   renderSelectOptions(choice) {
     const emptyChoice = { value: '', en: '', jp: '' };
     // choice is mapped to a model in ../constant/
-    const selectChoices = choice.selectChoices;
+    const selectChoices = choice.selectChoices || choice.select_choices;
     // gets base language of document from ../constant/documents
     const documentBaseLanguage = Documents[this.props.documentKey].baseLanguage;
     // if choice in constants/... has attribute baseLanguageField: true,
@@ -459,14 +461,14 @@ class DocumentChoicesTemplate extends Component {
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
       // if choice type is string, use input element above and button if not string
-      if ((choice.input_type == 'string' || choice.input_type == 'date') && !choice.selectChoices) {
+      if ((choice.input_type == 'string' || choice.input_type == 'date') && (!choice.selectChoices && !choice.select_choices)) {
         // define input element for user to input
         const inputElement = this.createInputElement({ choice, meta, value, onBlur, name, input: this.props.input })
         return inputElement;
       } else if (choice.input_type == 'text')  {
         const textareaElement = this.createTextareaElement({ choice, meta, value, input: this.props.input })
         return textareaElement;
-      } else if (choice.selectChoices) {
+      } else if (choice.selectChoices || choice.select_choices) {
         if (this.props.editFieldsOn) {
           selectElement = this.createButtonElement({ choice, meta, value, input: this.props.input });
         } else {
