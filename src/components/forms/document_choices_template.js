@@ -63,12 +63,6 @@ class DocumentChoicesTemplate extends Component {
     return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log('DocumentChoicesTemplate, componentDidUpdate prevState.focusedInput', prevState.focusedInput);
-  //   console.log('DocumentChoicesTemplate, componentDidUpdate this.state.focusedInput', this.state.focusedInput);
-  //   console.log('DocumentChoicesTemplate, componentDidUpdate this.state.blurredInput', this.state.blurredInput);
-  //   console.log('DocumentChoicesTemplate, componentDidUpdate prevState.blurredInput', prevState.blurredInput);
-  // }
   // Take user input in input element
   handleInputChange(event) {
     // destructure local props from Field element of Redux Forms
@@ -137,18 +131,18 @@ class DocumentChoicesTemplate extends Component {
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
-          width: choice.selectChoices || choice.select_choices ? choice.width : '100%',
-          height: choice.selectChoices || choice.select_choices ? choice.height : '100%',
-          top: choice.selectChoices || choice.select_choices ? choice.top : '',
-          left: choice.selectChoices || choice.select_choices ? choice.left : '',
-          fontSize: choice.font_size,
-          fontFamily: choice.font_family,
-          fontStyle: choice.font_style,
-          fontWeight: choice.font_weight,
-          borderColor: choice.border_color,
-          margin: '0px !important',
-          flex: '1 1 auto'
-        };
+        width: choice.selectChoices || choice.select_choices ? choice.width : '100%',
+        height: choice.selectChoices || choice.select_choices ? choice.height : '100%',
+        top: choice.selectChoices || choice.select_choices ? choice.top : '',
+        left: choice.selectChoices || choice.select_choices ? choice.left : '',
+        fontSize: choice.font_size,
+        fontFamily: choice.font_family,
+        fontStyle: choice.font_style,
+        fontWeight: choice.font_weight,
+        borderColor: choice.border_color,
+        margin: '0px !important',
+        flex: '1 1 auto'
+      };
     }
 
     return elementStyle;
@@ -197,59 +191,6 @@ class DocumentChoicesTemplate extends Component {
     }
   }
 
-//   dragChoice() {
-//     // pos1 and 2 are for getting delta of pointer position;
-//     // pos3 and 4 are for getting updated mouse position
-//     let pos1 = 0;
-//     let pos2 = 0;
-//     let pos3 = 0;
-//     let pos4 = 0;
-//
-//     console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
-//
-//     // CAll main function
-//     dragMouseDown();
-//
-//     function dragMouseDown(e) {
-//       e = e || window.event;
-//       e.preventDefault();
-//       console.log('in create_edit_document, dragChoice, dragMouseDown e, ', e);
-//       // get the mouse cursor position at startup:
-//       pos3 = e.clientX;
-//       pos4 = e.clientY;
-//       // assign close and drag callbacks to native handlers
-//       document.onmouseup = closeDragElement;
-//       // call a function whenever the cursor moves:
-//       document.onmousemove = elementDrag;
-//     }
-//
-//     function elementDrag(e) {
-//       e = e || window.event;
-//       e.preventDefault();
-//       // calculate the new cursor position:
-//       // pos 1 and 2 are deltas from the last round pos 3 and 4
-//       pos1 = pos3 - e.clientX;
-//       pos2 = pos4 - e.clientY;
-//       // set this round to use for next round in pos 1 and 2
-//       pos3 = e.clientX;
-//       pos4 = e.clientY;
-//
-//       console.log('in create_edit_document, dragChoice, pos1, pos2, ', pos1, pos2);
-//     }
-//
-//     function closeDragElement() {
-//       // stop moving when mouse button is released:
-//       document.onmouseup = null;
-//       document.onmousemove = null;
-//       console.log('in create_edit_document, dragChoice, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
-//   }
-// }
-
-  // handleButtonTemplateElementMove(event) {
-  //   console.log('DocumentChoicesTemplate, handleButtonTemplateElementMove, event', event);
-  //   this.dragChoice();
-  // }
-
   createButtonElement({ choice, meta, onChange, value, name, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
     console.log('DocumentChoicesTemplate, createButtonElement, name, choice, value', name, choice, value);
@@ -260,34 +201,34 @@ class DocumentChoicesTemplate extends Component {
       //   console.log('DocumentChoicesTemplate, createButtonElement, handleClick, in editFieldsOn, this.props.handleButtonTemplateElementMove', this.props.editFieldsOn, this.props.handleButtonTemplateElementMove);
       //   this.handleButtonTemplateElementMove();
       // } else {
-        if (!fieldInactive) {
-          if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
-            onChange('');
-          } else {
-            // check if click of button needs to change value of other keys
-            if (choice.dependentKeys) {
-              onChange(choice.val);
-              if (choice.dependentKeys.value == 'self') {
-                // if value is 'self', change other field value to its own value
-                this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.val);
-              } else {
-                this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value);
-              }
-            } else if (this.props.formFields[this.props.page][this.props.elementId].degradationKey) {
-              // console.log('DocumentChoicesTemplate, createButtonElement degradationKey true')
-              this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
-              onChange(choice.val);
-              this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][this.props.elementId].wooden, meta, lastClickedValue: choice.val, name })
+      if (!fieldInactive) {
+        if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
+          onChange('');
+        } else {
+          // check if click of button needs to change value of other keys
+          if (choice.dependentKeys) {
+            onChange(choice.val);
+            if (choice.dependentKeys.value == 'self') {
+              // if value is 'self', change other field value to its own value
+              this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.val);
             } else {
-              // if no need to change other field values, just chnage own field value
-              this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
-              onChange(choice.val);
+              this.changeOtherFieldValues(choice.dependentKeys.fields, meta, choice.dependentKeys.value);
             }
-            // empty iput value of input field of same key
-            this.emptyInput();
-          } // end of first if value == choice.val
-        } // end of if !inactive
-      // }
+          } else if (this.props.formFields[this.props.page][this.props.elementId].degradationKey) {
+            // console.log('DocumentChoicesTemplate, createButtonElement degradationKey true')
+            this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
+            onChange(choice.val);
+            this.checkOverAllDegradation({ pageObject: this.props.formFields[this.props.page], wooden: this.props.formFields[this.props.page][this.props.elementId].wooden, meta, lastClickedValue: choice.val, name })
+          } else {
+            // if no need to change other field values, just chnage own field value
+            this.props.editHistory({ newEditHistoryItem: { before: { value, name }, after: { value: choice.val, name } }, action: 'add' })
+            onChange(choice.val);
+          }
+          // empty iput value of input field of same key
+          this.emptyInput();
+        } // end of first if value == choice.val
+      } // end of if !inactive
+    // }
     }
 
     // const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);

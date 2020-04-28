@@ -14,6 +14,8 @@ import {
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
+import getListValues from '../components/forms/get_list_values'
+
 export default function (state = {
   initialValuesObject: {},
   overlappedkeysMapped: {},
@@ -262,13 +264,17 @@ export default function (state = {
         templateMappingObjects: {
           fixed_term_rental_contract_bilingual: JSON.parse(action.payload.template_mapping_object_fixed),
           important_points_explanation_bilingual: JSON.parse(action.payload.template_mapping_object_important_points)
-        }
+        },
+        flat: action.payload.flat
       };
     }
 
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
-      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements: ', action.payload, state.templateElements);
+      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {};
+
+      // const listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects })
+
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
       const mergedObject = _.merge(newObject, state.templateElements, action.payload.array);
@@ -301,17 +307,23 @@ export default function (state = {
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements: ', action.payload, state.templateElements);
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {}
       // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       const createdObject = { [action.payload.id]: action.payload };
+      let initialValuesObject = { ...state.initialValuesObject }
+      if (action.payload.list_parameters) {
+        const listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects });
+        initialValuesObject = { ...initialValuesObject, [action.payload.name]: listValues }
+      }
       const templateElementsByPage = addToTemplateElementsByPage(action.payload);
       const mergedObject = _.merge(newObject, state.templateElements, createdObject);
 
       return { ...state,
         templateElements: mergedObject,
         templateElementsByPage,
+        initialValuesObject
         // templateDocumentChoicesObject
       };
     }

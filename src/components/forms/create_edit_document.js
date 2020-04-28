@@ -26,6 +26,7 @@ import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_move_wrapper';
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
+import getListValues from './get_list_values';
 // Just for test
 import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
 import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
@@ -223,7 +224,6 @@ class CreateEditDocument extends Component {
         }); // end of each elements
         this.setState({ templateElementCount: highestElementId }, () => {
           console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
-
         });
       }
 
@@ -3409,10 +3409,11 @@ longActionPress(props) {
       if (summaryObject.list.length > 0) {
         createdObject = summaryObject.list[0];
         let nameString = '';
-        let listParameters = `${createdObject.group},true,`;
+        let listParameters = `${this.props.agreement.template_file_name},${this.props.agreement.language_code_1},${createdObject.group},true,`;
 
-        _.each(summaryObject.list, each => {
-          nameString = `${each.name},`
+        _.each(summaryObject.list, (each, i) => {
+          nameString = `${each.name}`
+          if (i < summaryObject.list.length - 1) nameString = `${each.name},`
           listParameters = listParameters.concat(nameString);
           console.log('in create_edit_document, handleTemplateElementAddClick, if !parent list in each summaryObject, each, listParameters: ', summaryObject, each, listParameters);
         });
@@ -4836,8 +4837,8 @@ function mapStateToProps(state) {
     // !!!!!!!!IMPORTANT! initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     const agreements = state.bookingData.fetchBookingData.agreements;
-    // initialValues = state.documents.initialValuesObject;
-    initialValues = { name: 'Jackie' };
+    initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
+    // initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
