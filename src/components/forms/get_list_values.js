@@ -67,7 +67,8 @@ export default (props) => {
     if (eachListItem && listModel[eachListItem] === listBoolValue) {
       eachMappedObject = baseObject[eachListItem];
       str = `${eachMappedObject.translation[languageCode]}`
-      if (i === 0 || i < listArrayLength - 1) str = `${eachMappedObject.translation[languageCode]}, `
+      // Put a comma except for last
+      if ((listArrayLength > 1 && i === 0) || i < listArrayLength - 1) str = `${eachMappedObject.translation[languageCode]}, `
       string = string.concat(str)
     }
     console.log('in get_list_values, eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string : ', eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string);

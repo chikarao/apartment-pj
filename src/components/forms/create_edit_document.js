@@ -212,7 +212,7 @@ class CreateEditDocument extends Component {
       // templateEditHistory can be null in later code;
       // all local state values set in constructor already
       // !!!!! IMPORTATNT: When refreshing localStorageHistory, comment out below getLocalHistory
-      // templateEditHistory = getLocalHistory();
+      templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       if (templateEditHistory && templateEditHistory.elements) {
@@ -3425,8 +3425,8 @@ longActionPress(props) {
           // id: `${this.state.templateElementCount}a`,
           id: null,
           // left, top and page assigned in getMousePosition
-          // name: translation ? `${createdObject.group}_list_translation` : `${createdObject.group}_list`,
-          name: `${createdObject.group}_list`,
+          name: translation ? `${createdObject.group}_list_translation` : `${createdObject.group}_list`,
+          // name: `${createdObject.group}_list`,
           component: createdObject.component,
           agreement_id: this.props.agreement.id,
           // component: 'DocumentChoicesTemplate',
