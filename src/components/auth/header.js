@@ -29,21 +29,21 @@ let disconnectTimer = 0;
 class Header extends Component {
 // **********THIS PART IS EXPERIMENTAL CODE ***********
   constructor() {
-       super();
-       this.state = {
-            windowWidth: window.innerWidth,
-            mobileNavVisible: false,
-            show: false, // for auth modal
-            showNewMessageBadge: true,
-            webSocketConnected: false,
-       };
-       this.handleResize = this.handleResize.bind(this);
-       this.handleLanguageSelectChange = this.handleLanguageSelectChange.bind(this);
-       this.handleMailBoxClick = this.handleMailBoxClick.bind(this);
-       this.handleAuthLinkClick = this.handleAuthLinkClick.bind(this);
-       this.handleNavClick = this.handleNavClick.bind(this);
-       this.handleOnlineOfflineSelectChange = this.handleOnlineOfflineSelectChange.bind(this);
-   }
+     super();
+     this.state = {
+          windowWidth: window.innerWidth,
+          mobileNavVisible: false,
+          show: false, // for auth modal
+          showNewMessageBadge: true,
+          webSocketConnected: false,
+     };
+     this.handleResize = this.handleResize.bind(this);
+     this.handleLanguageSelectChange = this.handleLanguageSelectChange.bind(this);
+     this.handleMailBoxClick = this.handleMailBoxClick.bind(this);
+     this.handleAuthLinkClick = this.handleAuthLinkClick.bind(this);
+     this.handleNavClick = this.handleNavClick.bind(this);
+     this.handleOnlineOfflineSelectChange = this.handleOnlineOfflineSelectChange.bind(this);
+    }
 
   componentDidMount() {
       const currentLocation = this.props.location.pathname;

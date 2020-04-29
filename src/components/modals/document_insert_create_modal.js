@@ -99,7 +99,7 @@ class DocumentInsertCreateModal extends Component {
         dataToChange.document_name = dataToChange.insert_name;
         dataToBeSent = { agreement: dataToChange };
         // if this is to create an upload
-        if (this.props.templateCreate) dataToBeSent.agreement.language_code_1 = 'template';
+        if (this.props.templateCreate) dataToBeSent.agreement.document_type = 'template';
         dataToBeSent.agreement.booking_id = this.props.booking.id;
         dataToBeSent.agreement.document_publicid = imagesArray[0];
         dataToBeSent.agreement.document_pages = pages;

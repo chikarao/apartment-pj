@@ -80,30 +80,9 @@ class BookingConfirmation extends Component {
     this.props.fetchBooking(bookingId);
     this.props.fetchReviewForBookingByUser(bookingId);
     this.props.fetchDocumentTranslation('important_points_explanation');
-    // test for actioncable
-    // console.log('in booking confirmation, getting params, this.props.match.params.id: ', this.props.match.params.id);
-    // if (this.props.auth.id) {
-      // console.log('in booking confirmation, this.props.auth.id: ', this.props.auth.id);
-    // this.createSocket();
-    // }
-    // this.createSocket2();
+
     console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log('in booking confirmation, this.state, nextState: ', this.state, nextState);
-  //   if (this.state.typingTimer !== nextState.typingTimer) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // }
-   // componentDidUpdate() {
-   // }
-
-  // componentWillUnmount() {
-  //   console.log('in booking confirmation, componentWillUnmount');
-  // }
 
   renderImage(images) {
     const imagesEmpty = _.isEmpty(images);
@@ -409,9 +388,7 @@ class BookingConfirmation extends Component {
 
   handleDocumentLanguageSelect(event) {
     const clickedElement = event.target;
-    // const elementVal = clickedElement.getAttribute('value');
     console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
-    // this.props.setDocumentLanguageCode(elementVal);
     this.props.setDocumentLanguageCode(clickedElement.value);
   }
 

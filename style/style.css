@@ -4845,6 +4845,8 @@ form {
   width: 100%
   border: 1.0px solid #ccc;
   float: right;
+  display: flex;
+  flex-direction: row;
 }
 
 .create-edit-document-template-edit-field-box-controls-action-button {

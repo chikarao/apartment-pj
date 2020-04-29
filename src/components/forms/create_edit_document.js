@@ -46,7 +46,7 @@ const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared (for edit action buttons)
 let explanationTimerArray = [];
-const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0 };
+const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0, tranlation: false };
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -113,7 +113,7 @@ class CreateEditDocument extends Component {
     this.handleTemplateChoiceActionMouseDown = this.handleTemplateChoiceActionMouseDown.bind(this);
     this.handleFieldChoiceActionClick = this.handleFieldChoiceActionClick.bind(this);
     this.handleTemplateElementAddClick = this.handleTemplateElementAddClick.bind(this);
-    // this.dragChoice = this.dragChoice.bind(this);
+    this.handleFieldPreferencesClick = this.handleFieldPreferencesClick.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 updgrade
@@ -211,8 +211,8 @@ class CreateEditDocument extends Component {
     if (this.props.showTemplate) {
       // templateEditHistory can be null in later code;
       // all local state values set in constructor already
-      // !!!!! When refreshing localStorageHistory, comment out below getLocalHistory
-      templateEditHistory = getLocalHistory();
+      // !!!!! IMPORTATNT: When refreshing localStorageHistory, comment out below getLocalHistory
+      // templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       if (templateEditHistory && templateEditHistory.elements) {
@@ -3409,7 +3409,9 @@ longActionPress(props) {
       if (summaryObject.list.length > 0) {
         createdObject = summaryObject.list[0];
         let nameString = '';
-        let listParameters = `${this.props.agreement.template_file_name},${this.props.agreement.language_code_1},${createdObject.group},true,`;
+        const translation = this.state.templateElementActionIdObject.translation;
+        const languageCode = translation ? 'translation' : 'base';
+        let listParameters = `${this.props.agreement.template_file_name},${languageCode},${createdObject.group},true,`;
 
         _.each(summaryObject.list, (each, i) => {
           nameString = `${each.name}`
@@ -3419,11 +3421,14 @@ longActionPress(props) {
         });
 
         templateElementAttributes = {
+          // totoaddelement
           // id: `${this.state.templateElementCount}a`,
           id: null,
           // left, top and page assigned in getMousePosition
+          // name: translation ? `${createdObject.group}_list_translation` : `${createdObject.group}_list`,
           name: `${createdObject.group}_list`,
           component: createdObject.component,
+          agreement_id: this.props.agreement.id,
           // component: 'DocumentChoicesTemplate',
           width: '25%',
           height: '1.6%',
@@ -3457,17 +3462,18 @@ longActionPress(props) {
         if (summaryObject.button.length > 0) {
           _.each(summaryObject.button, each => {
             createdObject = each;
+            console.log('in create_edit_document, handleTemplateElementAddClick, if parent, summaryObject.button > 0, each, summaryObject, createdObject, templateElementAttributes: ', each, summaryObject, createdObject, templateElementAttributes);
             templateElementAttributes.document_field_choices[count] = {
-              val: createdObject.value || createdObject.val,
+              val: createdObject.value || createdObject.val || createdObject.params.val,
               // val: createdObject.val,
               top: null,
               left: null,
-              width: createdObject.width,
+              width: createdObject.width || createdObject.params.width,
               // height: createdObject.choices[eachIndex].params.height,
-              height: createdObject.height,
+              height: createdObject.height || createdObject.params.height || '1.6%',
               // class_name: createdObject.choices[eachIndex].params.class_name,
               class_name: 'document-rectangle-template-button',
-              input_type: createdObject.type,
+              input_type: createdObject.type || createdObject.params.input_type,
               // border_radius: '3px',
               border: '1px solid black'
             };
@@ -3480,9 +3486,9 @@ longActionPress(props) {
             val: 'inputFieldValue',
             top: null,
             left: null,
-            width: summaryObject.select[0].width,
+            width: summaryObject.select[0].width || summaryObject.select[0].params.width,
             // height: createdObject.choices[eachIndex].params.height,
-            height: summaryObject.select[0].height,
+            height: summaryObject.select[0].height || summaryObject.select[0].params.height || '1.6%',
             // class_name: createdObject.choices[eachIndex].params.class_name,
             class_name: 'document-rectangle-template-button',
             input_type: createdObject.type,
@@ -3803,6 +3809,16 @@ longActionPress(props) {
     });
   }
 
+  handleFieldPreferencesClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this: ', elementVal, this);
+    const newObject = { ...this.state.templateElementActionIdObject, [elementVal]: !this.state.templateElementActionIdObject[elementVal] };
+    this.setState({ templateElementActionIdObject: newObject }, () => {
+      console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this.state.templateElementActionIdObject: ', elementVal, this.state.templateElementActionIdObject);
+    });
+  }
+
   renderFieldBoxControls() {
     // 1) Enable add button if there are more than 1 select buttons selected
     // 2) Enable if 1 or more button selected and more than 1 select selected
@@ -3814,6 +3830,8 @@ longActionPress(props) {
                           && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
     const listOk = this.state.templateElementActionIdObject.list > 0;
     const enableAdd = selectOk || buttonOk || listOk;
+    const enableTranslation = this.state.templateElementActionIdObject.list > 0 && this.state.templateElementActionIdObject.translation;
+
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
         <div className="create-edit-document-template-edit-field-box-controls-navigate">
@@ -3827,6 +3845,19 @@ longActionPress(props) {
           {this.renderEachFieldControlButton()}
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
+          {this.state.templateElementActionIdObject.list > 0
+            ?
+            <div
+              className="create-edit-document-template-edit-field-box-controls-action-button"
+              onClick={this.handleFieldPreferencesClick}
+              value={'translation'}
+              style={enableTranslation ? { color: 'gray' } : { color: 'blue' }}
+            >
+              Translation
+            </div>
+            :
+            ''
+          }
           <div
             className="create-edit-document-template-edit-field-box-controls-action-button"
             onClick={enableAdd ? this.handleTemplateElementAddClick : () => {}}
@@ -4837,7 +4868,16 @@ function mapStateToProps(state) {
     // !!!!!!!!IMPORTANT! initialValues populates forms with data in backend database
     // parameters sent as props to functions/xxx.js methods
     const agreements = state.bookingData.fetchBookingData.agreements;
-    initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
+    // IMPORTANT: Somehow, list initial values in createDocumentElementLocally come up undefined
+    // so created state prop listInitialValuesObject which gets passed so merge with setInitialValuesObject here
+    const newObject = { name: 'Jackie' };
+    if (!_.isEmpty(state.documents.listInitialValuesObject)) {
+      initialValues = _.merge(newObject, state.documents.initialValuesObject, state.documents.listInitialValuesObject);
+    } else {
+      initialValues = newObject;
+    }
+    // initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
+    console.log('in create_edit_document, mapStateToProps, state, state.documents.initialValuesObject, initialValues: ', state, state.documents.initialValuesObject, initialValues);
     // initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
