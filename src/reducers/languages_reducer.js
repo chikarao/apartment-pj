@@ -29,6 +29,7 @@ export default function (state = {
       return { ...state, appLanguageCode: action.payload };
 
     case SET_DOCUMENT_LANGUAGE_CODE:
+    // Called first in index.js
     console.log('in language reducer, SET_DOCUMENT_LANGUAGE_CODE, action.payload: ', action.payload);
       return { ...state, documentLanguageCode: action.payload };
 

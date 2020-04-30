@@ -48,6 +48,7 @@ const Documents =
       jp: '定期借家契約 バイリンガル',
       file: 'teishaku-saimuhosho-bilingual-v3-no-translation-11',
       method: getInitialValuesObjectFixedTermContract,
+      propsAllKey: 'fixedTermRentalContractBilingualAll',
       // translation: FixedTermRentalContractBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
       translation: true,
@@ -65,6 +66,7 @@ const Documents =
       jp: '重要事項説明書 バイリンガル',
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-30',
       method: getInitialValuesObjectImportantPointsExplanation,
+      propsAllKey: 'importantPointsExplanationBilingualAll',
       // translation: ImportantPointsExplanationBilingualTranslation,
       // to indicate form is bilingual and needs translations from props
       translation: true,

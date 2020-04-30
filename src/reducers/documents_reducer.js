@@ -260,6 +260,7 @@ export default function (state = {
     // Populate template elememts to get document_fields from agreement and combine with
     // local template elements retrieved from localStorage
     case SET_DOCUMENT_LANGUAGE_CODE: {
+      // Called first in index.js
       return { ...state,
         documentLanguageCode: action.payload
       };

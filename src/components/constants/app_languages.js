@@ -403,6 +403,7 @@ const appLanguages =
     inspector: { en: 'Inspector', jp: '検査' },
     inspectedParts: { en: 'Inspected Parts', jp: '検査した部分' },
     otherPayments: { en: 'Non-rent Payments', jp: '家賃以外の支払い額' },
+    name: { en: 'Name', jp: '名前' },
     // noticeFrom: { en: 'Notice From Date', jp: '通知期間の開始日' },
 
   };

@@ -437,10 +437,12 @@ class DocumentChoicesTemplate extends Component {
             // wrapping div fits the outer div to house inputs and buttons
             width: '100%',
             height: '100%',
+            position: this.props.editFieldsOn ? 'relative' : ''
             // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
           }}
       >
         {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
+        {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray' }}>{this.props.label}</div> : ''}
       </div>
     );
     // }
