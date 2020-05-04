@@ -1950,7 +1950,7 @@ longActionPress(props) {
 
         const otherChoiceValues = [];
         // For populating array with values of other buttons;
-        // input and select val === 'inputFieldValue' 
+        // input and select val === 'inputFieldValue'
         if (fieldComponent === DocumentChoicesTemplate) {
           console.log('in create_edit_document, renderTemplateElements, in fieldComponent = DocumentChoices, modifiedElement: ', modifiedElement);
           _.each(modifiedElement.document_field_choices, eachChoice => {
@@ -3473,6 +3473,10 @@ longActionPress(props) {
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
+          font_style: this.state.newFontObject.font_style,
+          font_weight: this.state.newFontObject.font_weight,
+          font_family: this.state.newFontObject.font_family,
+          font_size: this.state.newFontObject.font_size,
           list_parameters: listParameters
         };
       }
@@ -3493,6 +3497,10 @@ longActionPress(props) {
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
+          font_style: this.state.newFontObject.font_style,
+          font_weight: this.state.newFontObject.font_weight,
+          font_family: this.state.newFontObject.font_family,
+          font_size: this.state.newFontObject.font_size,
           document_field_choices: {}
         };
 
@@ -3507,7 +3515,7 @@ longActionPress(props) {
               left: null,
               width: createdObject.width || createdObject.params.width,
               // height: createdObject.choices[eachIndex].params.height,
-              height: createdObject.height || createdObject.params.height || '1.6%',
+              height: createdObject.height || createdObject.params.height || '2.0%',
               // class_name: createdObject.choices[eachIndex].params.class_name,
               class_name: 'document-rectangle-template-button',
               input_type: createdObject.type || createdObject.params.input_type,
@@ -3525,7 +3533,7 @@ longActionPress(props) {
             left: null,
             width: summaryObject.select[0].width || summaryObject.select[0].params.width,
             // height: createdObject.choices[eachIndex].params.height,
-            height: summaryObject.select[0].height || summaryObject.select[0].params.height || '1.6%',
+            height: summaryObject.select[0].height || summaryObject.select[0].params.height || '2.0%',
             // class_name: createdObject.choices[eachIndex].params.class_name,
             class_name: 'document-rectangle-template-button',
             input_type: createdObject.type,
@@ -3561,7 +3569,6 @@ longActionPress(props) {
       templateElementAttributes
     }, () => {
       console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
-
     });
   }
 
@@ -4127,44 +4134,44 @@ longActionPress(props) {
   }
 
   getSelectedFontElementAttributes() {
+    // gothere
     // getCheckElementFontObject
     const object = { font_family: {}, font_size: {}, font_weight: {}, font_style: {} };
-    const selectObject = {};
     let eachElement = null;
+    const selectObject = {};
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       _.each(this.state.selectedTemplateElementIdArray, eachId => {
+        // Get element from id;
+        // Go through each attribute in object;
+        // Get an array of ids for each type of font_family, font_size etc.
         eachElement = this.props.templateElements[eachId];
-        console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
+        // console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
         _.each(Object.keys(object), eachKey => {
           if (!object[eachKey][eachElement[eachKey]]) {
             object[eachKey][eachElement[eachKey]] = [];
             object[eachKey][eachElement[eachKey]].push(eachElement.id);
-            console.log('in create_edit_document, getSelectedFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+            // console.log('in create_edit_document, getSelectedFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
           } else {
-            console.log('in create_edit_document, getSelectedFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
+            // console.log('in create_edit_document, getSelectedFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
             object[eachKey][eachElement[eachKey]].push(eachElement.id);
           }
         });
       });
 
       // let objectLength = 0;
-      let selectValue = [];
-
+      let selectValueArray = [];
+      // Go through each attribute in object created above
+      // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
+      // would be 2
       _.each(Object.keys(object), eachFontAttribute => {
-        // Get the number of fonts actually used in document fontFamily: { arial: [id], times: [id] }
-        // would be 2
-        // objectLength = Object.keys(object[eachFontAttribute]).length;
         // Get an array of actual fonts used in selected elements
-        selectValue = Object.keys(object[eachFontAttribute])
+        selectValueArray = Object.keys(object[eachFontAttribute]);
+        // If there is only one value or say one font style in selectValueArray array
         selectObject[eachFontAttribute] = null;
-        if (selectValue.length === 1) {
-          selectObject[eachFontAttribute] = selectValue[0];
+        if (selectValueArray.length === 1) {
+          selectObject[eachFontAttribute] = selectValueArray[0];
         }
-        // if (objectLength === 1 && eachFontAttribute === 'fontSize') fontSize.value = selectValue[0];
-        // if (objectLength === 1 && eachFontAttribute === 'fontWeight') fontFamily.value = selectValue[0];
-        // if (objectLength === 1 && eachFontAttribute === 'fontStyle') fontFamily.value = selectValue[0];
-      })
-      // this.setState({ selectedElementFontObject: })
+      });
     }
 
     console.log('in create_edit_document, getSelectedFontElementAttributes, object, selectObject: ', object, selectObject);

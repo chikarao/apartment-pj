@@ -333,9 +333,9 @@ class DocumentChoicesTemplate extends Component {
     let text = null;
     // return <option key={i} value={value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
     return _.map(selectChoices, (eachChoice, i) => {
-      console.log('DocumentChoicesTemplate, renderSelectOptions, eachChoice', eachChoice);
       value = eachChoice.value || eachChoice.val;
-      text = eachChoice.translation ? eachChoice.translation[documentBaseLanguage] : eachChoice[documentBaseLanguage];
+      text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
+      console.log('DocumentChoicesTemplate, renderSelectOptions, eachChoice, text, value, language', eachChoice, text, value, language);
       return <option key={i} value={value}>{text || value}</option>;
     });
   }
