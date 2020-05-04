@@ -43,14 +43,16 @@ export default function (state = {
 
     // IMPORTANT: updateElements Updates elements persisted in backend but edited
     // in frontend without saving (ie page accidentally refreshed)
+    // AND elements created but not yet saved to backend
     function updateElements(element) {
       let modifiedElem = {};
-      let returnString = '';
+      let deleted = false;
        // each with i history array, iterate through each history array of arrays of objects
        // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
       _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
-        // Do until this.state.historyIndex is greater than or equal to i;
+        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element templateEditHistory.historyIndex: ', element, templateEditHistory.historyIndex);
+        // Do until this.state.historyIndex is less than or equal to i;
         // So if user has undone or redone, stop there
         if (i <= templateEditHistory.historyIndex) {
           // Iterate through each array of objects; object looks like  { id: 1, width: 10, o_width: 9, action: 'update' }
@@ -58,8 +60,13 @@ export default function (state = {
             // if object id is equal to id of element in backend, do
             if (eachEditObject.id === element.id.toString()) {
               // if object action is delete, assign delete to returnstring to be returned
-              if (eachEditObject.action === 'delete') returnString = 'deleted';
+              if (eachEditObject.action === 'delete') { deleted = true; }
+              // To address new element id (ones with 'a' on it)
+              // appear again with action: create switch off deleted
+              if (deleted && eachEditObject.action === 'create') { deleted = false; }
+              console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === delete, templateEditHistory: ', element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === 'delete', templateEditHistory);
               // Iterate through each attribute in object ie { width, font_style ...}
+              // element object will be updated within this action scope
               _.each(Object.keys(eachEditObject), eachKey => {
                 if (element[eachKey] !== eachEditObject[eachKey] && eachKey !== 'action') {
                   modifiedElem = element;
@@ -71,8 +78,8 @@ export default function (state = {
         } // end of if
       }); // end of first each
       // return null, delete or ok; if ok, the element is placed in this.props.templateElements
-      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, returnString, templateEditHistory: ', element, returnString, templateEditHistory);
-      return returnString || 'ok';
+      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, deleted, templateEditHistory: ', element, deleted, templateEditHistory);
+      return deleted || 'ok';
     }
     // Iterate through each element persisted as agreement.document_fields
     _.each(elementsArray, eachElement => {
@@ -119,6 +126,7 @@ export default function (state = {
       } // end of else if templateEditHistory
     }); // end of each
 
+    console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, before return object, pageObject : ', object, pageObject);
     return { object, pageObject };
   }
 
@@ -330,9 +338,9 @@ export default function (state = {
         console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
         initialValuesObject = { [action.payload.name]: listValues }
       }
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state: ', action.payload, listValues, initialValuesObject, state);
       const templateElementsByPage = addToTemplateElementsByPage(action.payload);
       const mergedObject = _.merge(newObject, state.templateElements, createdObject);
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
       // const someOtherObject = { amenities_list: 'hello' };
       // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;
       // So, created listInitialValuesObject which gets passed fine, so merge them with initialValuesObject in mapStateToProps

@@ -113,7 +113,7 @@ class DocumentChoicesTemplate extends Component {
 
     if (this.props.selectedChoiceIdArray.indexOf(`${choice.element_id}-${choice.choice_index}`) !== -1) {
       console.log('DocumentChoicesTemplate, test for 1a-0 getStyleOfButton, in if selectedChoiceIdArray name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
-      elementStyle = { borderColor: 'green', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
+      elementStyle = { ...elementStyle, borderColor: 'green', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     return elementStyle;
@@ -327,18 +327,23 @@ class DocumentChoicesTemplate extends Component {
     // assign the document base language, otherwise, use documentLanguageCode
     const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;
     // console.log('DocumentChoicesTemplate, renderSelectOptions language', language);
+    // create an empty choice so that select field can be blank
     selectChoices[10] = emptyChoice;
+    let value = null;
+    let text = null;
+    // return <option key={i} value={value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
     return _.map(selectChoices, (eachChoice, i) => {
-      // if (eachChoice.value != 'Wooden') {
-      return <option key={i} value={eachChoice.value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
-      // }
+      console.log('DocumentChoicesTemplate, renderSelectOptions, eachChoice', eachChoice);
+      value = eachChoice.value || eachChoice.val;
+      text = eachChoice.translation ? eachChoice.translation[documentBaseLanguage] : eachChoice[documentBaseLanguage];
+      return <option key={i} value={value}>{text || value}</option>;
     });
   }
 
   createSelectElement({ choice, meta, value, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
 
-    console.log('DocumentChoicesTemplate, createSelectElement');
+    console.log('DocumentChoicesTemplate, createSelectElement, this.props.otherChoiceValues: ', this.props.otherChoiceValues);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <select
@@ -442,7 +447,7 @@ class DocumentChoicesTemplate extends Component {
           }}
       >
         {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
-        {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray' }}>{this.props.label}</div> : ''}
+        {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '200px', textAlign: 'left' }}>{this.props.label}</div> : ''}
       </div>
     );
     // }

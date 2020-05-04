@@ -1923,17 +1923,20 @@ longActionPress(props) {
 
         let label = null;
         let translationKey = null;
-        translationKey = this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name] ? this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name].translation_key : null;
-        if (translationKey) {
+        // Test if modifiedElement.name exists in all objects; list elements would not be in there
+        const elementObject = this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name] || null;
+        if (elementObject) {
+          translationKey = elementObject.translation_key;
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
           label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : null)
                   ||
                   (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : null);
-          // ||
+          const group = (AppLanguages[elementObject.group] ? AppLanguages[elementObject.group][this.props.appLanguageCode] : null);
+          const category = (AppLanguages[elementObject.category] ? AppLanguages[elementObject.category][this.props.appLanguageCode] : null);
+          label = group ? category + '/' + group + '/' + label : category + '/' + label;
           // modifiedElement.name;
           console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
-          console.log('in create_edit_document, renderTemplateElements, eachElement, just translationKey, label, this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name]: ', eachElement, translationKey, label, this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name]);
         } else {
           translationKey = modifiedElement.name.split('_')[0]
           label = AppLanguages[translationKey][this.props.appLanguageCode] || translationKey;
@@ -1943,7 +1946,20 @@ longActionPress(props) {
         const editTemplate = true;
         // const width = parseInt(eachElement.width, 10)
         const nullRequiredField = false;
+        // const otherChoiceValues = [];
+
         const otherChoiceValues = [];
+        // For populating array with values of other buttons;
+        // input and select val === 'inputFieldValue' 
+        if (fieldComponent === DocumentChoicesTemplate) {
+          console.log('in create_edit_document, renderTemplateElements, in fieldComponent = DocumentChoices, modifiedElement: ', modifiedElement);
+          _.each(modifiedElement.document_field_choices, eachChoice => {
+            // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
+            if ((eachChoice.val !== 'inputFieldValue') && (eachElement.input_type !== 'boolean')) {
+              otherChoiceValues.push(eachChoice.val.toLowerCase());
+            }
+          })
+        }
         // count++;
         // Wait until document-background class is rendered to enable some logic
         const background = document.getElementById('document-background');
@@ -3523,9 +3539,15 @@ longActionPress(props) {
             // createdObject = each;
             selectChoices = templateElementAttributes.document_field_choices[count].selectChoices;
             selectChoices[i] = {};
-            _.each(Object.keys(each), eachKey => {
-              selectChoices[i][eachKey] = each[eachKey];
-            });
+            if (each.params) {
+              selectChoices[i] = { ...each.translation, val: each.params.val };
+            } else {
+              // _.each(Object.keys(each), eachKey => {
+              //   console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, each, eachKey, each[eachKey]: ', summaryObject, each, eachKey, each[eachKey]);
+              //   selectChoices[i][eachKey] = each[eachKey];
+              // });
+              selectChoices[i] = each;
+            }
           });
         }
       } // end of  if (summaryObject.button.length > 0
