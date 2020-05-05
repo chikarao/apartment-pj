@@ -120,6 +120,7 @@ class DocumentChoicesTemplate extends Component {
   }
 
   getStyleOfInputElement(value, choice) {
+    const { eachElement } = this.props;
     let elementStyle = {};
     console.log('DocumentChoicesTemplate, getStyleOfInputElement, value, choice ', value, choice);
     if (this.props.nullRequiredField && !value) {
@@ -135,11 +136,11 @@ class DocumentChoicesTemplate extends Component {
         height: choice.selectChoices || choice.select_choices ? choice.height : '100%',
         top: choice.selectChoices || choice.select_choices ? choice.top : '',
         left: choice.selectChoices || choice.select_choices ? choice.left : '',
-        fontSize: choice.font_size,
-        fontFamily: choice.font_family,
-        fontStyle: choice.font_style,
-        fontWeight: choice.font_weight,
-        borderColor: choice.border_color,
+        fontSize: choice.selectChoices || choice.select_choices ? eachElement.font_size : choice.font_size,
+        fontFamily: choice.selectChoices || choice.select_choices ? eachElement.font_family : choice.font_family,
+        fontStyle: choice.selectChoices || choice.select_choices ? eachElement.font_style : choice.font_style,
+        fontWeight: choice.selectChoices || choice.select_choices ? eachElement.font_weight : choice.font_weight,
+        borderColor: choice.selectChoices || choice.select_choices ? eachElement.font_color : choice.border_color,
         margin: '0px !important',
         flex: '1 1 auto'
       };
@@ -360,7 +361,6 @@ class DocumentChoicesTemplate extends Component {
           onFocus={this.handleOnFocus}
           type={choice.input_type}
           className={choice.class_name}
-          // style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }}
           style={this.getStyleOfInputElement(value, choice)}
         >
         {this.renderSelectOptions(choice)}

@@ -947,57 +947,57 @@ renderEachDocumentField(page) {
         templateElementCount: this.state.templateElementCount + 1,
         createNewTemplateElementOn: false,
       }, () => {
-        const templateElementChoice = false;
+        // const templateElementChoice = false;
         let templateElementAttributes = {};
-        if (templateElementChoice) {
-          templateElementAttributes = {
-            id: `${this.state.templateElementCount}a`,
-            left: `${x}%`,
-            top: `${y}%`,
-            page: parseInt(elementVal, 10),
-            name: 'name',
-            component: 'DocumentChoices',
-            // component: 'input',
-            width: null,
-            height: null,
-            // type: 'text', // or 'string' if an input component
-            input_type: 'button', // or 'string' if an input component
-            class_name: 'document-rectangle-template',
-            border_color: 'lightgray',
-            // font_style: this.state.newFontObject.font_style,
-            // font_weight: this.state.newFontObject.font_weight,
-            // font_family: this.state.newFontObject.font_family,
-            // font_size: this.state.newFontObject.font_size,
-            document_field_choices: {
-              0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-              2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-            }
-          };
-          // in get_initialvalues_object_important_points_explanation.js
-          // 0: { params: { val: 'Public Water', top: '66.7%', left: '17.3%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-          // 1: { params: { val: 'Tank', top: '66.7%', left: '23.3%', width: '6.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-          // 2: { params: { val: 'Well', top: '66.7%', left: '30%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-        } else {
-          templateElementAttributes = {
-            id: `${this.state.templateElementCount}a`,
-            left: `${x}%`,
-            top: `${y}%`,
-            page: parseInt(elementVal, 10),
-            name: 'name',
-            component: 'DocumentChoices',
-            // component: 'input',
-            width: '25%',
-            height: '1.6%',
-            input_type: 'text', // or 'string' if an input component
-            class_name: 'document-rectangle-template',
-            border_color: 'lightgray',
-            font_style: this.state.newFontObject.font_style,
-            font_weight: this.state.newFontObject.font_weight,
-            font_family: this.state.newFontObject.font_family,
-            font_size: this.state.newFontObject.font_size
-          };
-        }
+        // if (templateElementChoice) {
+        //   templateElementAttributes = {
+        //     id: `${this.state.templateElementCount}a`,
+        //     left: `${x}%`,
+        //     top: `${y}%`,
+        //     page: parseInt(elementVal, 10),
+        //     name: 'name',
+        //     component: 'DocumentChoices',
+        //     // component: 'input',
+        //     width: null,
+        //     height: null,
+        //     // type: 'text', // or 'string' if an input component
+        //     input_type: 'button', // or 'string' if an input component
+        //     class_name: 'document-rectangle-template',
+        //     border_color: 'lightgray',
+        //     // font_style: this.state.newFontObject.font_style,
+        //     // font_weight: this.state.newFontObject.font_weight,
+        //     // font_family: this.state.newFontObject.font_family,
+        //     // font_size: this.state.newFontObject.font_size,
+        //     document_field_choices: {
+        //       0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+        //       1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+        //       2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
+        //     }
+        //   };
+        //   // in get_initialvalues_object_important_points_explanation.js
+        //   // 0: { params: { val: 'Public Water', top: '66.7%', left: '17.3%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+        //   // 1: { params: { val: 'Tank', top: '66.7%', left: '23.3%', width: '6.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+        //   // 2: { params: { val: 'Well', top: '66.7%', left: '30%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
+        // } else {
+        //   templateElementAttributes = {
+        //     id: `${this.state.templateElementCount}a`,
+        //     left: `${x}%`,
+        //     top: `${y}%`,
+        //     page: parseInt(elementVal, 10),
+        //     name: 'name',
+        //     component: 'DocumentChoices',
+        //     // component: 'input',
+        //     width: '25%',
+        //     height: '1.6%',
+        //     input_type: 'text', // or 'string' if an input component
+        //     class_name: 'document-rectangle-template',
+        //     border_color: 'lightgray',
+        //     font_style: this.state.newFontObject.font_style,
+        //     font_weight: this.state.newFontObject.font_weight,
+        //     font_family: this.state.newFontObject.font_family,
+        //     font_size: this.state.newFontObject.font_size
+        //   };
+        // }
         // Assign templateElementAttributes from state and specify left, top, page
         templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.templateElementCount}a` };
         // add action element action before putting in array before setState
