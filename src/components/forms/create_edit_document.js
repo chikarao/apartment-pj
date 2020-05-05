@@ -1028,7 +1028,7 @@ renderEachDocumentField(page) {
         newFontObject: { ...this.state.newFontObject, override: false }
       }, () => {
         // Get the font attributes of selected elements to show on the control box font button
-        this.getSelectedFontElementAttributes()
+        this.getSelectedFontElementAttributes();
         // if all elements checked, set to true
         this.setState({
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
@@ -1052,6 +1052,8 @@ renderEachDocumentField(page) {
           newFontObject: { ...this.state.newFontObject, override: true }
         }, () => {
           console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
+          // Get the font attributes of selected elements to show on the control box font button
+          this.getSelectedFontElementAttributes();
           // If there are no more checked elements, set selectedElementFontObject to null
           // That means newFontObject will kick in on the font button on the element edit control box
           if (this.state.selectedTemplateElementIdArray.length === 0) {
@@ -1268,7 +1270,6 @@ renderEachDocumentField(page) {
             array.push(updatedElementObject);
           // place in array to be processed in action and reducer
         }); //  end of  _.each(interatedElements
-        // gotodragelement
       } else { // else of if move
         // if not move (resize) send object to update
         // take out TAB_HEIGHT so that TAB_HEIGHT is not added again
@@ -1340,10 +1341,7 @@ dragChoice(props) {
     const choiceButtonWidthInPx = (parseFloat(choiceInState.width) / 100) * backgroundDimensions.width;
     // Define variables for getting values in object for
     // other choice buttons (buttons not being moved)
-    // const otherChoicesObject = {};
-    // gotodragchoice
     const otherChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray, templateElements, backgroundDimensions, wrapperDivDimensions, dragChoice: true });
-
     // Create offsets or distance between element and wrapperDiv; There is no native function
     let offsetRight = 0;
     let offsetBottom = 0;
@@ -1573,7 +1571,6 @@ dragChoice(props) {
 longActionPress(props) {
   // longActionPress enable user to press mouse down and increase/decrease width and height
   // When user mouses up, the coordinates are set in app state
-  //gotolongaction
   const { action, choicesArray, templateElements, choicesOriginalObject, selectedChoiceIdArray, actionCallback } = props;
 
   console.log('in create_edit_document, longActionPress action, choicesArray, templateElements, ', action, choicesArray, templateElements);
@@ -1688,7 +1685,6 @@ longActionPress(props) {
   }
 
   handleTemplateElementChangeSizeClick(event) {
-    // gotoresize
     // For dragging and resizing template elements
     let selectedElements = [];
     let inputElements = [];
@@ -1784,7 +1780,6 @@ longActionPress(props) {
   }
 
   handleTemplateChoiceActionMouseDown(event) {
-    //gotomousedown
     const clickedElement = event.target;
     // elementVal is expandHorizontal, contractHorizontal etc
     const elementVal = clickedElement.getAttribute('value')
@@ -2555,7 +2550,6 @@ longActionPress(props) {
     // }
 
     const align = (alignWhat) => {
-      //gotoalign
       // aligningElement for aligning wrappers
       const aligningElement = this.state.selectedTemplateElementIdArray.length > 0;
       // aligningChoice for aligning choice buttons
@@ -2743,10 +2737,8 @@ longActionPress(props) {
       this.setTemplateHistoryArray(array, 'update');
       this.props.updateDocumentElementLocally(array);
     }
-    //gotoexpand
 
     const moveElements = (direction) => {
-      //gotomoveelements
       // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       let array = [];
       const originalValueObject = {};
@@ -2975,7 +2967,6 @@ longActionPress(props) {
         // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
 
         if (doWhatNow === 'undo') {
-          // gotoundo
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
@@ -3702,7 +3693,7 @@ longActionPress(props) {
           inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
           choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
           choicesObject = templateMappingObject[eachKey].params;
-          choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'Y';
+          choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'y';
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
 
           if (inputElement) {
@@ -4134,10 +4125,19 @@ longActionPress(props) {
   }
 
   getSelectedFontElementAttributes() {
-    // gothere
+    // gotofont
     // getCheckElementFontObject
+    const findIfHasSelectChoice = (element) => {
+      let hasSelectChoice = false;
+      _.each(Object.keys(element.document_field_choices), eachIndex => {
+        if (element.document_field_choices[eachIndex].val === 'inputFieldValue') hasSelectChoice = true;
+      });
+      return hasSelectChoice;
+    }
+
     const object = { font_family: {}, font_size: {}, font_weight: {}, font_style: {} };
     let eachElement = null;
+    let elementWithInputOrSelect = false;
     const selectObject = {};
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       _.each(this.state.selectedTemplateElementIdArray, eachId => {
@@ -4146,17 +4146,21 @@ longActionPress(props) {
         // Get an array of ids for each type of font_family, font_size etc.
         eachElement = this.props.templateElements[eachId];
         // console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
-        _.each(Object.keys(object), eachKey => {
-          if (!object[eachKey][eachElement[eachKey]]) {
-            object[eachKey][eachElement[eachKey]] = [];
-            object[eachKey][eachElement[eachKey]].push(eachElement.id);
-            // console.log('in create_edit_document, getSelectedFontElementAttributes, !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
-          } else {
-            // console.log('in create_edit_document, getSelectedFontElementAttributes, else !object[eachKey], object[eachKey][eachElement[eachKey]]: ', object[eachKey], object[eachKey][eachElement[eachKey]]);
-            object[eachKey][eachElement[eachKey]].push(eachElement.id);
-          }
-        });
-      });
+        elementWithInputOrSelect = !eachElement.document_field_choices || (eachElement.document_field_choices && findIfHasSelectChoice(eachElement));
+        // If element is an input element or has a select choice
+        // populate object; eachKey is font_family, font_size etc
+        // Will look like fontFamily: { arial: [id], times: [id] }
+        if (elementWithInputOrSelect) {
+          _.each(Object.keys(object), eachKey => {
+            if (!object[eachKey][eachElement[eachKey]]) {
+              object[eachKey][eachElement[eachKey]] = [];
+              object[eachKey][eachElement[eachKey]].push(eachElement.id);
+            } else {
+              object[eachKey][eachElement[eachKey]].push(eachElement.id);
+            }
+          }); // end of each object keys
+        } // end of if elementWithInputOrSelect
+      }); // end of each state.selectedTemplateElementIdArray
 
       // let objectLength = 0;
       let selectValueArray = [];
