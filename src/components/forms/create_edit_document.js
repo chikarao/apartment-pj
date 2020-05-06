@@ -2060,7 +2060,7 @@ longActionPress(props) {
             } // end of if newElement
           } // end of if eachElement.document_field_choices
           // if ()
-          if (inputElement) {
+          if (inputElement && this.state.editFieldsOn) {
             // if (!newElement) console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
             return (
               <div
@@ -2147,8 +2147,8 @@ longActionPress(props) {
                 {renderTab(modifiedElement, selected, tabLeftMarginPx)}
               </div>
             );
-          } else { // else if inputElement
-            console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage);
+          } else if (this.state.editFieldsOn) { // else if inputElement
+            console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn);
             return (
               <div
                 key={modifiedElement.id}
@@ -2174,7 +2174,7 @@ longActionPress(props) {
                       eachElement: modifiedElement,
                       page,
                       newElement,
-                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props) },
+                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
                       required: modifiedElement.required,
                       nullRequiredField,
                       formFields: localTemplateElementsByPage,
@@ -2224,17 +2224,32 @@ longActionPress(props) {
             );
           }// end of if inputElement
 
-          if (noTabs) { // noTabs a placeholder for now
+          // if (noTabs) { // noTabs a placeholder for now
             return (
               <Field
-                key={modifiedElement.name}
+                key={modifiedElement.id}
                 name={modifiedElement.name}
                 // setting value here does not works unless its an <input or some native element
                 // value='Bobby'
                 component={fieldComponent}
                 // pass page to custom compoenent, if component is input then don't pass
-                props={fieldComponent == DocumentChoices ? {
-                  page
+                props={fieldComponent === DocumentChoicesTemplate ? {
+                  page,
+                  formFields: this.props.templateElementsByPage,
+                  otherChoiceValues,
+                  modifiedElement,
+                  editFieldsOn: this.state.editFieldsOn,
+                  eachElement: modifiedElement,
+                  required: modifiedElement.required,
+                  nullRequiredField,
+                  charLimit: modifiedElement.charLimit,
+                  elementName: modifiedElement.name,
+                  elementId: modifiedElement.id,
+                  handleButtonTemplateElementMove: () => {},
+                  handleButtonTemplateElementClick: () => {},
+                  selectedChoiceIdArray: this.state.selectedChoiceIdArray,
+                  documentKey: this.props.documentKey,
+                  editTemplate
                 } : {}}
                 // props={fieldComponent == DocumentChoices ? { page } : {}}
                 type={modifiedElement.input_type}
@@ -2245,7 +2260,7 @@ longActionPress(props) {
                 // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
               />
             );
-          } // end of if no tabs
+          // } // end of if no tabs
         } // end of if editTemplate && background
         // } // eachElement page === page
       });

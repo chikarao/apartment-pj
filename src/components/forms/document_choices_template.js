@@ -145,30 +145,36 @@ class DocumentChoicesTemplate extends Component {
   getStyleOfInputElement(value, choice) {
     const { eachElement } = this.props;
     let elementStyle = {};
-    console.log('DocumentChoicesTemplate, getStyleOfInputElement, value, choice ', value, choice);
     if (this.props.nullRequiredField && !value) {
       // elementStyle = { top: choice.top, left: choice.left, borderColor: 'blue', width: choice.width };
       elementStyle = { borderColor: 'blue', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     } else {
       elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     }
+    const height = !this.props.editFieldsOn ? choice.height : '100%'
+    const width = !this.props.editFieldsOn ? choice.width : '100%'
+    const top = !this.props.editFieldsOn ? choice.top : ''
+    const left = !this.props.editFieldsOn ? choice.left : ''
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
-        width: choice.selectChoices || choice.select_choices ? choice.width : '100%',
-        height: choice.selectChoices || choice.select_choices ? choice.height : '100%',
-        top: choice.selectChoices || choice.select_choices ? choice.top : '',
-        left: choice.selectChoices || choice.select_choices ? choice.left : '',
+        width: choice.selectChoices || choice.select_choices ? choice.width : width,
+        height: choice.selectChoices || choice.select_choices ? choice.height : height,
+        top: choice.selectChoices || choice.select_choices ? choice.top : top,
+        left: choice.selectChoices || choice.select_choices ? choice.left : left,
         fontSize: choice.selectChoices || choice.select_choices ? eachElement.font_size : choice.font_size,
         fontFamily: choice.selectChoices || choice.select_choices ? eachElement.font_family : choice.font_family,
         fontStyle: choice.selectChoices || choice.select_choices ? eachElement.font_style : choice.font_style,
         fontWeight: choice.selectChoices || choice.select_choices ? eachElement.font_weight : choice.font_weight,
         borderColor: choice.selectChoices || choice.select_choices ? eachElement.font_color : choice.border_color,
+        position: !this.props.editFieldsOn ? 'absolute' : '',
+
         margin: '0px !important',
         flex: '1 1 auto'
       };
     }
 
+    console.log('DocumentChoicesTemplate, getStyleOfInputElement, value, choice, elementStyle ', value, choice, elementStyle);
     return elementStyle;
   }
   // https://stackoverflow.com/questions/37189881/how-to-clear-some-fields-in-form-redux-form
@@ -429,7 +435,7 @@ class DocumentChoicesTemplate extends Component {
 
   renderEachChoice(choices) {
     const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
-    console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props, choices.', name, value, input, this.props, choices)
+    console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props, choices: ', name, value, input, this.props, choices)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
@@ -465,23 +471,42 @@ class DocumentChoicesTemplate extends Component {
     // it is just choices: { attributes }
     // destructure local props set by redux forms Field compoenent
     const { input: { name } } = this.props;
+    let choices = null;
+    let element = null;
     console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields);
+    // console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices: ', name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices);
     // if (this.props.editTemplate) {
+    if (this.props.editFieldsOn) {
+      choices = this.props.formFields[this.props.page][this.props.elementId].choices;
+    } else {
+      element = this.props.formFields[this.props.page][this.props.elementId];
+      choices = element.document_field_choices ? this.props.formFields[this.props.page][this.props.elementId].document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
+    }
+    // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
+    if (this.props.editFieldsOn) {
+      return (
+        <div
+          key={name}
+          style={{
+              // wrapping div fits the outer div to house inputs and buttons
+              width: '100%',
+              height: '100%',
+              position: this.props.editFieldsOn ? 'relative' : ''
+              // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
+            }}
+        >
+          {this.renderEachChoice(choices)}
+          {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '200px', textAlign: 'left' }}>{this.props.label}</div> : ''}
+        </div>
+      );
+    }
+
     return (
-      <div
-        key={name}
-        style={{
-            // wrapping div fits the outer div to house inputs and buttons
-            width: '100%',
-            height: '100%',
-            position: this.props.editFieldsOn ? 'relative' : ''
-            // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
-          }}
-      >
-        {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
-        {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '200px', textAlign: 'left' }}>{this.props.label}</div> : ''}
+      <div key={name}>
+        {this.renderEachChoice(choices)}
       </div>
     );
+
     // }
     // else return below
     // return (
