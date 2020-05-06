@@ -1970,7 +1970,7 @@ longActionPress(props) {
 
         let label = null;
         let translationKey = null;
-        // Test if modifiedElement.name exists in all objects; list elements would not be in there
+        // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
         const elementObject = this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name] || null;
         if (elementObject) {
           translationKey = elementObject.translation_key;
@@ -2233,7 +2233,9 @@ longActionPress(props) {
                 // value='Bobby'
                 component={fieldComponent}
                 // pass page to custom compoenent, if component is input then don't pass
-                props={fieldComponent == DocumentChoices ? { page } : {}}
+                props={fieldComponent == DocumentChoices ? {
+                  page
+                } : {}}
                 // props={fieldComponent == DocumentChoices ? { page } : {}}
                 type={modifiedElement.input_type}
                 className={modifiedElement.component == 'input' ? 'document-rectangle' : ''}
@@ -2329,13 +2331,13 @@ longActionPress(props) {
         // 2. temporary and persisted elements,
         // 3. Undo and Redo
         if (editObject.action === 'create') {
-          console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
           // Create undo can only happen to temporary elements with ids with 'a' ie '1a'
           if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
           if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) {
             returnObject[editObject.id] = { deleted: false, updated: 0 };
             returnEditObject[editObject.id] = editObject;
           }
+          console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
         }
 
         if (editObject.action === 'update') {
@@ -2377,7 +2379,10 @@ longActionPress(props) {
         if (editObject.action === 'create') {
           console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in else create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
           if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') returnObject[editObject.id] = { deleted: false, updated: 0 };
-          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) {
+            returnObject[editObject.id] = { deleted: false, updated: 0 };
+            returnEditObject[editObject.id] = editObject;
+          }
           // undo create for temporary elements not needed since object will have been created
           // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
           // if (redoOrUndo === 'undo' && editObject.id.indexOf('a') === -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
@@ -2428,6 +2433,7 @@ longActionPress(props) {
     // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
     let destringifiedHistory = {};
     const localStorageHistory = localStorage.getItem('documentHistory');
+    const returnEditObject = {};
     // Get latest localHistory object
     if (localStorageHistory) {
       // if historystring, unstringify it and add agreementId = historyArray
@@ -2436,7 +2442,7 @@ longActionPress(props) {
 
     // Get an object like lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
     // To be used
-    const modifiedObject = this.getModifiedObject(fromWhere);
+    const modifiedObject = this.getModifiedObject(fromWhere, returnEditObject);
 
     // Save new elements not persisted in backend DB
     // Go thorough each modifiedObject to become modifiedPersistedElementsObject
