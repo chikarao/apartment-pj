@@ -629,7 +629,8 @@ class CreateEditDocument extends Component {
               // if need to show full local language text on PDF, use documentLanguageCode from model choice
               if (choice.showLocalLanguage) {
                 // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
-                const selectChoice = this.getSelectChoice(choice.selectChoices, data[key]);
+                const selectChoices = choice.selectChoices || choice.select_choices;
+                const selectChoice = this.getSelectChoice(selectChoices, data[key]);
                 // assign display as an attribute in choice params
                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
                 // paramsObject.document_field.push(choice.params);
@@ -685,7 +686,8 @@ class CreateEditDocument extends Component {
               // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
               if (!paramsForSelectKeyExists) {
                 // get choice from constants/some_model
-                const selectChoice = this.getSelectChoice(choice.selectChoices, dataRefined);
+                const selectChoices = choice.selectChoices || choice.select_choices;
+                const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
                 // assign display as an attribute in choice params
                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
                 if (choice.combineLanguages) {
@@ -697,7 +699,8 @@ class CreateEditDocument extends Component {
               }
             } else {
               // if without multiple choices in form eg construction, choies come from constants/building
-              const selectChoice = this.getSelectChoice(choice.selectChoices, dataRefined);
+              const selectChoices = choice.selectChoices || choice.select_choices;
+              const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
               // assign display as an attribute in choice params
               choice.params.display_text = selectChoice[this.props.documentLanguageCode];
               if (choice.combineLanguages) {
@@ -1002,12 +1005,43 @@ renderEachDocumentField(page) {
         templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.templateElementCount}a` };
         // add action element action before putting in array before setState
         this.props.createDocumentElementLocally(templateElementAttributes);
-        this.setTemplateHistoryArray([templateElementAttributes], 'create');
+        // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
+        // If it has document_field_choices, history is set after coordinates for document_field_choices is set
+        // in dragElement closeDragElement function and subsequent callback.
+        if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
         this.setState({ templateElementAttributes: null });
       });
     }
+  }
+
+  getChoiceCoordinates(props) {
+    // After template element is created and rendered, getChoiceCoordinates is called
+    // in componentDidMount of document_choices_template.js
+    let selectedElements = [];
+    // id of template element newly created
+    const id = props.id;
+    // Flag to be passed to dragChoice
+    const fromDocumentChoices = props.fromDocumentChoices;
+    // Get the element being dragged directly
+    const element = document.getElementById(`template-element-${id}`);
+    const templateElement = this.props.templateElements[id];
+    const backgroundDimensions = element.parentElement.getBoundingClientRect();
+    // Get the dimensions of the parent element
+    const parentRect = element.parentElement.getBoundingClientRect()
+    // define callback to be called in dragElement closeDragElement
+    // Get array of elements selected or checked by user
+    // selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, false)
+    // call dragElement and pass in the dragged element, the parent dimensions,
+    // and the action to update the element in app state
+    // const action = fromDocumentChoices ? 'create' : 'update'
+    const actionCallback = (updatedElementsArray) => {
+      this.props.updateDocumentElementLocally(updatedElementsArray);
+      this.setTemplateHistoryArray(updatedElementsArray, 'create');
+    };
+    // last true is for move or not; in this case this is for move element
+    this.dragElement({ element, tabs: null, inputElements: null, parentRect, actionCallback, move: true, elementType: null, selectedElements: [], backgroundDimensions, templateElements: this.props.templateElements, fromDocumentChoices, templateElement });
   }
 
   handleTemplateElementCheckClick(event) {
@@ -1066,7 +1100,7 @@ renderEachDocumentField(page) {
   }
 
   dragElement(dragProps) {
-    const { element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements, backgroundDimensions, templateElements } = dragProps;
+    const { element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements, backgroundDimensions, templateElements, fromDocumentChoices, templateElement } = dragProps;
     // pos1 and 2 are for getting delta of pointer position;
     // pos3 and 4 are for getting updated mouse position
     let pos1 = 0;
@@ -1075,10 +1109,6 @@ renderEachDocumentField(page) {
     let pos4 = 0;
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
-
-    // const wrapperDivDimensions = parentRect;
-
-    let initialMove = false;
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
@@ -1124,9 +1154,13 @@ renderEachDocumentField(page) {
       pos3 = e.clientX;
       pos4 = e.clientY;
       // assign close and drag callbacks to native handlers
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
+      if (!fromDocumentChoices) {
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      } else {
+        closeDragElement();
+      }
     }
 
     function elementDrag(e) {
@@ -1255,6 +1289,22 @@ renderEachDocumentField(page) {
               height: ((parseFloat(originalValueObject[eachElementId].height) / 100) * backgroundDimensions.height)
             }
             updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, originalWrapperDivDimensions: wrapperDivDimensions, eachElementId, templateElements, elementDrag: true, tabHeight: TAB_HEIGHT, delta: { x: deltaX, y: deltaY } });
+            // If dragElement called from DocumentChoices, means just populating coordinates of document_field_choices
+            if (fromDocumentChoices) {
+              // Get values updatedElementObject values from this.props.templateElements,
+              // then fill in updatates, and take out old 'o_' attributes
+              updatedElementObject = { ...templateElement,
+                document_field_choices: updatedElementObject.document_field_choices,
+                width: updatedElementObject.width,
+                height: updatedElementObject.height,
+              };
+              updatedElementObject.action = 'create';
+              delete updatedElementObject.o_width;
+              delete updatedElementObject.o_height;
+              delete updatedElementObject.o_top;
+              delete updatedElementObject.o_left;
+              delete updatedElementObject.o_document_field_choices;
+            }
             console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
           } else { // else of if (templateElements[elementId].document_field_choices
             updatedElementObject = {
@@ -1537,13 +1587,13 @@ dragChoice(props) {
         }
       }
     }
-
+    // gotodrag
     function closeDragElement() {
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
       // console.log('in create_edit_document, dragChoice, closeDragElement, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
-      console.log('in create_edit_document, dragChoice, closeDragElement, otherChoicesObject: ', otherChoicesObject);
+      console.log('in create_edit_document, dragChoice, closeDragElement, choiceButton, otherChoicesObject: ', choiceButton, otherChoicesObject);
       // Get all elements in array
       if (choiceMoved) {
         const iteratedElements = [...otherChoicesArray, choiceButton];
@@ -1664,6 +1714,7 @@ longActionPress(props) {
     // For dragging and moving template elements; Use with dragElement function
     let selectedElements = [];
     const clickedElement = event.target;
+    const fromDocumentChoices = event.fromDocumentChoices;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value');
     // Get the element being dragged directly
@@ -1676,12 +1727,13 @@ longActionPress(props) {
     selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, false)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
+    // const action = fromDocumentChoices ? 'create' : 'update'
     const actionCallback = (updatedElementsArray) => {
       this.props.updateDocumentElementLocally(updatedElementsArray);
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
     // last true is for move or not; in this case this is for move element
-    this.dragElement({ element, tabs: null, inputElements: null, parentRect, actionCallback, move: true, elementType: null, selectedElements, backgroundDimensions, templateElements: this.props.templateElements });
+    this.dragElement({ element, tabs: null, inputElements: null, parentRect, actionCallback, move: true, elementType: null, selectedElements, backgroundDimensions, templateElements: this.props.templateElements, fromDocumentChoices });
   }
 
   handleTemplateElementChangeSizeClick(event) {
@@ -1893,7 +1945,7 @@ longActionPress(props) {
           choicesObject[i].choice_index = parseInt(i, 10);
           choicesObject[i].element_id = eachElement.id;
           choicesObject[i].name = eachElement.name;
-          choicesObject[i].selectChoices = eachChoice.selectChoices;
+          choicesObject[i].selectChoices = eachChoice.selectChoices || eachChoice.select_choices;
 
           currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
         });
@@ -2032,6 +2084,8 @@ longActionPress(props) {
                       page,
                       required: modifiedElement.required,
                       nullRequiredField,
+                      newElement,
+                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props) },
                       formFields: newElement
                         ?
                         this.props.templateElementsByPage // doesn't have choices for input element
@@ -2119,6 +2173,8 @@ longActionPress(props) {
                     {
                       eachElement: modifiedElement,
                       page,
+                      newElement,
+                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props) },
                       required: modifiedElement.required,
                       nullRequiredField,
                       formFields: localTemplateElementsByPage,
@@ -2259,13 +2315,13 @@ longActionPress(props) {
     return object;
   }
 
-  // For leeping track of modifications in elements both persisted
-  // and new template elements. Final object ooks like
+  // For keeping track of modifications in elements both persisted
+  // and new template elements. Final object looks like
   // { 1a: { deleted: false, updated: 1 }, 25: { deleted: true, updated: 3} }.
   // This will drive save button enabling and how element creation and updates will be done. So no need to iterate through all elements everytime save is run; AND centralizes persisted code for identifying elements to be created and updated, AS WELL AS updating persisted elements in action creator populate persisted template elements
   getModifiedObject(redoOrUndo) {
     const returnObject = { ...this.state.modifiedPersistedElementsObject };
-
+    const returnEditObject = {};
     const setEditObject = (editObject) => {
       console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
       if (returnObject[editObject.id]) {
@@ -2276,7 +2332,10 @@ longActionPress(props) {
           console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
           // Create undo can only happen to temporary elements with ids with 'a' ie '1a'
           if (redoOrUndo === 'undo' && editObject.id.indexOf('a') !== -1) delete returnObject[editObject.id];
-          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) returnObject[editObject.id] = { deleted: false, updated: 0 };
+          if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) {
+            returnObject[editObject.id] = { deleted: false, updated: 0 };
+            returnEditObject[editObject.id] = editObject;
+          }
         }
 
         if (editObject.action === 'update') {
@@ -2344,12 +2403,10 @@ longActionPress(props) {
     // Each array within the outermost array is i. No need to adjust for redo
     let index = this.state.historyIndex;
     if (redoOrUndo === 'undo') index = this.state.historyIndex + 1;
-    // if (redoOrUndo === 'redo') index = this.state.historyIndex - 1;
 
     if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
       _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
         if (i <= index) {
-        // if (i <= this.state.historyIndex) {
           _.each(eachEditArray, eachEditObject => {
             setEditObject(eachEditObject);
           });
@@ -2363,7 +2420,7 @@ longActionPress(props) {
       });
     }
 
-    return returnObject;
+    return { returnObject, returnEditObject };
   }
 
   setLocalStorageHistory(fromWhere) {
@@ -2371,7 +2428,6 @@ longActionPress(props) {
     // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
     let destringifiedHistory = {};
     const localStorageHistory = localStorage.getItem('documentHistory');
-    console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement);
     // Get latest localHistory object
     if (localStorageHistory) {
       // if historystring, unstringify it and add agreementId = historyArray
@@ -2389,16 +2445,17 @@ longActionPress(props) {
     const unsavedTemplateElements = {};
     // Run only if not called from handleTemplateSubmitCallback()
     if (fromWhere !== 'handleTemplateSubmitCallback') {
-      _.each(Object.keys(modifiedObject), eachElementKey => {
+      _.each(Object.keys(modifiedObject.returnObject), eachElementKey => {
         // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
         if (eachElementKey.indexOf('a') !== -1) {
-          unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey];
+          unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey] || modifiedObject.returnEditObject[eachElementKey];
+          console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey);
         }
       });
     }
 
     this.setState({
-      modifiedPersistedElementsObject: modifiedObject
+      modifiedPersistedElementsObject: modifiedObject.returnObject
     }, () => {
       destringifiedHistory[this.props.agreement.id] = {
         history: this.state.templateEditHistoryArray,
@@ -3536,7 +3593,7 @@ longActionPress(props) {
           let selectChoices = null;
           _.each(summaryObject.select, (each, i) => {
             // createdObject = each;
-            selectChoices = templateElementAttributes.document_field_choices[count].selectChoices;
+            selectChoices = templateElementAttributes.document_field_choices[count].selectChoices || templateElementAttributes.document_field_choices[count].select_choices;
             selectChoices[i] = {};
             if (each.params) {
               selectChoices[i] = { ...each.translation, val: each.params.val };
@@ -3700,7 +3757,7 @@ longActionPress(props) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             // if (translationSibling) valueString = valueString + ',' + 'translation_sibling';
             // If there is a select field in choices object render select
-            selectChoices = templateMappingObject[eachKey].choices[0].selectChoices;
+            selectChoices = templateMappingObject[eachKey].choices[0].selectChoices || templateMappingObject[eachKey].choices[0].select_choices;
             if (selectChoices) {
               return _.map(Object.keys(selectChoices), eachIndex => {
                 valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey + ',choices,0' + ',selectChoices,' + eachIndex;
@@ -3746,7 +3803,7 @@ longActionPress(props) {
           if (choicesObject && !choicesYesOrNo) {
             // receivs eachKey of 0, 1 of templateMappingObject is {0=>{}, 1=>{}}
             // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no eachKey, this.state.templateFieldChoiceArray, templateMappingObject: ', eachKey, this.state.templateFieldChoiceArray, templateMappingObject);
-            selectChoices = templateMappingObject[eachKey].selectChoices;
+            selectChoices = templateMappingObject[eachKey].selectChoices || templateMappingObject[eachKey].select_choices;
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             if (selectChoices) {
               return _.map(Object.keys(selectChoices), eachIndex => {

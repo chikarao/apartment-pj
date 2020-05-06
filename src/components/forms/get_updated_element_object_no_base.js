@@ -29,10 +29,8 @@ export default (props) => {
   let moveIncrementLocal = moveIncrement;
   let expandContractIncrementLocal = expandContractIncrement;
 
-  // let choiceElementsArray = [];
   let changeChoicesArray = [];
   let changeChoiceIndexArray = [];
-  // let changeChoiceIndexObject = {};
   let otherChoicesArray = [];
   const alignControlArray = [];
   let eachElementId = null;
@@ -63,9 +61,7 @@ export default (props) => {
       console.log('in create_edit_document, moveElement, _.each(this.state.se, direction, this.state.selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray', direction, selectedChoiceIdArray, eachChoiceId, eachElementId, alignControlArray);
       eachChoiceIndex = parseInt(eachChoiceId.split('-')[1], 10);
       eachElementInState = templateElements[eachElementId];
-      // eachBaseChoiceInState = templateElements[eachElementId].document_field_choices[eachChoiceIndex];
       eachBaseChoice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIndex}`);
-      // eachBaseChoiceDimensions = eachBaseChoice.getBoundingClientRect();
       eachWrapperDiv = eachBaseChoice.parentElement.parentElement.parentElement;
       eachWrapperDivDimensions = eachWrapperDiv.getBoundingClientRect();
     } // end of if (alignControlArray.indexOf(eachElementId) === -1) {

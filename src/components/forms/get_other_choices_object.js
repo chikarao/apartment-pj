@@ -192,6 +192,7 @@ export default (props) => {
     // let stateValExistEach = false;
     // let wrapperDivDims = null;
     _.each(otherChoicesArray, each => {
+      console.log('in get_other_choices_object, if not drag before return each.id, each, each.style.left, wrapperDivDimensions, leftValue, topValue: ', each, each.id, each.style.left, wrapperDivDimensions, leftValue, topValue);
       eachElementId = each.getAttribute('value').split(',')[0];
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       choicesObject[choiceIndex] = {};
@@ -200,7 +201,6 @@ export default (props) => {
       // stateValExistEach = eachChoiceInState.top;
       leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left;
       topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top;
-      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue);
 
       choicesObject[choiceIndex].topInPx = topValue;
       choicesObject[choiceIndex].leftInPx = leftValue;

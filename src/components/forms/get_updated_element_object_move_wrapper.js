@@ -6,43 +6,20 @@ import getUpdatedElementObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
-// NOTE: This function is designed to set state values of choices and wrapper
-// in app state state when choices are aligned WITH a base choice
 // Function takes eachElementId and outputs a new object to send to reducer
 export default (props) => {
   const {
     eachElementId,
-    // eachElement, // from state, not DOM
     wrapperDiv,
     templateElements,
-    // lastWrapperDivDims,
-    // backgroundDimensions,
-    // wrapperDivDimensions,
     originalWrapperDivDimensions,
     tabHeight,
     elementDrag,
-    delta,
-    notDrag
-    // newDocumentFieldChoices,
-    // oldDocumentFieldChoices
+    delta
   } = props;
 
-  // let eachElement = null;
-  // let backgroundDimensions = null;
-  // let wrapperDivDimensions = null;
   let choice = null;
   const choiceElementsArray = [];
-  // let allChoicesObject = null;
-  // let updatedElementObject = null;
-  // let lastWrapperDivDims = null;
-  // let lastWrapperDivDimsInPx = null;
-  // let oldDocumentFieldChoices = null;
-  // let newDocumentFieldChoices = null;
-  // let eachChoicePxDimensionsArray = null;
-  // let documentFieldObject = null;
-  // let updatedElementObject = {};
-  // let updatedElementObject = {};
-
   const eachElement = templateElements[eachElementId];
   const wrapperDivDimensions = wrapperDiv.getBoundingClientRect();
   const backgroundDimensions = wrapperDiv.parentElement.getBoundingClientRect();

@@ -26,6 +26,29 @@ class DocumentChoicesTemplate extends Component {
     // this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
   }
 
+  componentDidMount() {
+    // IMPORTANT: When template elements are created, the wrapper div top and left
+    // are given a value based on user mouse click coordinates;
+    // The document_field_choices are not given top and left;
+    // When the new elements are first rendered, renderTemplateElements in creat_edit_document.js
+    // calculates the wrapperdiv dimansions based on the user click coordinates and the sizes
+    // height and width of each of the document_field_choices.
+    // this componentDidMount takes the newElement marked newElement in this.props
+    // and uses the handler for elementDrag to get the coordinates of the document_field_choices
+    if (this.props.newElement) {
+      console.log('DocumentChoicesTemplate, componentDidMount this.props, this.props.formFields[this.props.page], this.props.newElement', this.props, this.props.formFields[this.props.page], this.props.newElement);
+      // create a dummy div to pass as target in object taken as 'event'to the handler
+      // const dummyDiv = document.createElement('div');
+      // Set attribute of value with element id so that the handler can read it
+      // dummyDiv.setAttribute('value', this.props.eachElement.id);
+      // Call the handler with event.target and a flat fromDocumentChoices true
+      // so that dragElement does not set onmousemove and onmouseup and leaves them null
+      // so taht dragElement can simply call closeDragElement() where the choice coordinate
+      // and wrapperDiv size calculation, as well as action creator is called
+      this.props.getChoiceCoordinates({ id: this.props.eachElement.id, fromDocumentChoices: true });
+    }
+  }
+
 
   shouldComponentUpdate(nextProps) {
     // checks to find out if each field value has changed, and if not will not call componentDidUpdate
@@ -239,6 +262,7 @@ class DocumentChoicesTemplate extends Component {
         <div
           key={choice.val}
           type={choice.input_type}
+          // value={`${choice.element_id},${choice.choice_index}`}
           value={`${choice.element_id},${choice.choice_index}`}
           id={`template-element-button-${elementIdAndIndex}`}
           onMouseDown={this.props.handleButtonTemplateElementMove()}
@@ -343,17 +367,25 @@ class DocumentChoicesTemplate extends Component {
 
   createSelectElement({ choice, meta, value, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
-
-    console.log('DocumentChoicesTemplate, createSelectElement, this.props.otherChoiceValues: ', this.props.otherChoiceValues);
+    let valueSwitch = null;
+    // Value prop changes when user selects editFieldsOn;
+    // Value props is used for drag elements
+    if (this.props.editFieldsOn) {
+      valueSwitch = elementIdAndIndex;
+    } else {
+      valueSwitch = (this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value;
+    }
+    console.log('DocumentChoicesTemplate, createSelectElement, choice, value, this.props.otherChoiceValues: ', choice, value, this.props.otherChoiceValues);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <select
           {...input}
           // value={this.props.otherChoiceValues.includes(value.toString().toLowerCase()) ? '' : value}
-          value={(this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value}
+          // value={(this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value}
+          value={valueSwitch}
           // id="valueInput"
           id={`template-element-button-${elementIdAndIndex}`}
-
+          // name={elementIdAndIndex}
           maxLength={this.props.charLimit}
           key={choice.val}
           onChange={this.handleInputChange}
