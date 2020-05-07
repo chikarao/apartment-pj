@@ -2251,7 +2251,8 @@ longActionPress(props) {
                   handleButtonTemplateElementClick: () => {},
                   selectedChoiceIdArray: this.state.selectedChoiceIdArray,
                   documentKey: this.props.documentKey,
-                  editTemplate
+                  editTemplate,
+                  agreement: this.props.agreement
                 } : {}}
                 // props={fieldComponent == DocumentChoices ? { page } : {}}
                 type={modifiedElement.input_type}

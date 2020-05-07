@@ -141,18 +141,19 @@ class DocumentChoicesTemplate extends Component {
     const width = !this.props.editFieldsOn ? choice.width : '100%'
     const top = !this.props.editFieldsOn ? choice.top : ''
     const left = !this.props.editFieldsOn ? choice.left : ''
+    const selectChoices = choice.selectChoices || choice.select_choices
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
-        width: choice.selectChoices || choice.select_choices ? choice.width : width,
-        height: choice.selectChoices || choice.select_choices ? choice.height : height,
-        top: choice.selectChoices || choice.select_choices ? choice.top : top,
-        left: choice.selectChoices || choice.select_choices ? choice.left : left,
-        fontSize: choice.selectChoices || choice.select_choices ? eachElement.font_size : choice.font_size,
-        fontFamily: choice.selectChoices || choice.select_choices ? eachElement.font_family : choice.font_family,
-        fontStyle: choice.selectChoices || choice.select_choices ? eachElement.font_style : choice.font_style,
-        fontWeight: choice.selectChoices || choice.select_choices ? eachElement.font_weight : choice.font_weight,
-        borderColor: choice.selectChoices || choice.select_choices ? eachElement.font_color : choice.border_color,
+        width: selectChoices ? choice.width : width,
+        height: selectChoices ? choice.height : height,
+        top: selectChoices ? choice.top : top,
+        left: selectChoices ? choice.left : left,
+        fontSize: selectChoices ? eachElement.font_size : choice.font_size,
+        fontFamily: selectChoices ? eachElement.font_family : choice.font_family,
+        fontStyle: selectChoices ? eachElement.font_style : choice.font_style,
+        fontWeight: selectChoices ? eachElement.font_weight : choice.font_weight,
+        borderColor: selectChoices ? eachElement.font_color : choice.border_color,
         position: !this.props.editFieldsOn ? 'absolute' : '',
 
         margin: '0px !important',
@@ -351,8 +352,8 @@ class DocumentChoicesTemplate extends Component {
     );
   }
 
-  renderSelectOptions(choice) {
-    const emptyChoice = { value: '', en: '', jp: '' };
+  renderSelectOptions(choice, name) {
+    const emptyChoice = { value: '', en: '', jp: '', po: '' };
     // choice is mapped to a model in ../constant/
     const selectChoices = choice.selectChoices || choice.select_choices;
     // gets base language of document from ../constant/documents
@@ -362,19 +363,50 @@ class DocumentChoicesTemplate extends Component {
     const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;
     // console.log('DocumentChoicesTemplate, renderSelectOptions language', language);
     // create an empty choice so that select field can be blank
+
+    const getTranslation = (choices, value) => {
+      let returnObject = null;
+      Object.keys(choices).some((eachChoice) => {
+        // eachChoice is 0, 1...
+        if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
+          if (choices[eachChoice].params.val === value) {
+            returnObject = choices[eachChoice].translation;
+            return returnObject;
+          } else if (choices[eachChoice].selectChoices) {
+            Object.keys(choices[eachChoice].selectChoices).some((each) => {
+              console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
+              if (choices[eachChoice].selectChoices[each].value === value) {
+                returnObject = choices[eachChoice].selectChoices[each];
+                return returnObject
+              } // end of if (choices[eachChoice].selectChoices[each].value...
+            }) // end of some selectChoices
+          } // end of else if (choices[eachChoice].selectChoices)...
+        }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
+      }); // end of Object keys eachChoice
+      return returnObject;
+    }; // end of getTranslation
+
+    let translationObject = null;
+    const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][name];
+
     selectChoices[10] = emptyChoice;
     let value = null;
     let text = null;
     // return <option key={i} value={value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
     return _.map(selectChoices, (eachChoice, i) => {
       value = eachChoice.value || eachChoice.val;
-      text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
-      console.log('DocumentChoicesTemplate, renderSelectOptions, eachChoice, text, value, language', eachChoice, text, value, language);
-      return <option key={i} value={value}>{text || value}</option>;
+      if (elementObject) {
+        translationObject = getTranslation(elementObject.choices, value);
+        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
+      }
+      // text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
+      text = translationObject ? translationObject[language] : value;
+      return <option key={i} value={value}>{text}</option>;
+      // return <option key={i} value={value}>{text || value}</option>;
     });
   }
 
-  createSelectElement({ choice, meta, value, input }) {
+  createSelectElement({ choice, meta, name, value, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
     let valueSwitch = null;
     // Value prop changes when user selects editFieldsOn;
@@ -404,7 +436,7 @@ class DocumentChoicesTemplate extends Component {
           className={choice.class_name}
           style={this.getStyleOfInputElement(value, choice)}
         >
-        {this.renderSelectOptions(choice)}
+        {this.renderSelectOptions(choice, name)}
         </select>
     );
   }
@@ -459,7 +491,7 @@ class DocumentChoicesTemplate extends Component {
         if (this.props.editFieldsOn) {
           selectElement = this.createButtonElement({ choice, meta, value, input: this.props.input });
         } else {
-          selectElement = this.createSelectElement({ choice, meta, value, input: this.props.input });
+          selectElement = this.createSelectElement({ choice, meta, value, name, input: this.props.input });
         }
         return selectElement;
       } else {
