@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 import Documents from '../constants/documents';
+import AppLanguages from '../constants/app_languages';
 
 // custom field component based on redux forms used for creating
 // input and button inputs for forms
@@ -31,19 +32,15 @@ class DocumentChoicesTemplate extends Component {
     // are given a value based on user mouse click coordinates;
     // The document_field_choices are not given top and left;
     // When the new elements are first rendered, renderTemplateElements in creat_edit_document.js
-    // calculates the wrapperdiv dimansions based on the user click coordinates and the sizes
+    // calculates the wrapperdiv dimensions based on the user click coordinates and the sizes
     // height and width of each of the document_field_choices.
     // this componentDidMount takes the newElement marked newElement in this.props
     // and uses the handler for elementDrag to get the coordinates of the document_field_choices
     if (this.props.newElement) {
       console.log('DocumentChoicesTemplate, componentDidMount this.props, this.props.formFields[this.props.page], this.props.newElement', this.props, this.props.formFields[this.props.page], this.props.newElement);
-      // create a dummy div to pass as target in object taken as 'event'to the handler
-      // const dummyDiv = document.createElement('div');
-      // Set attribute of value with element id so that the handler can read it
-      // dummyDiv.setAttribute('value', this.props.eachElement.id);
-      // Call the handler with event.target and a flat fromDocumentChoices true
+      // Call the getChoiceCoordinates with element id fromDocumentChoices flag true
       // so that dragElement does not set onmousemove and onmouseup and leaves them null
-      // so taht dragElement can simply call closeDragElement() where the choice coordinate
+      // and dragElement can simply call closeDragElement() where the choice coordinate
       // and wrapperDiv size calculation, as well as action creator is called
       this.props.getChoiceCoordinates({ id: this.props.eachElement.id, fromDocumentChoices: true });
     }
@@ -51,13 +48,8 @@ class DocumentChoicesTemplate extends Component {
 
 
   shouldComponentUpdate(nextProps) {
-    // checks to find out if each field value has changed, and if not will not call componentDidUpdate
-    // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value', nextProps.input.value, this.props.input.value, nextProps.input.value != this.props.input.value);
-    // console.log('DocumentChoicesTemplate, shouldComponentUpdate, nextProps, this.props', nextProps, this.props);
-    // if (nextProps.meta.initial != this.props.meta.initial) {
-    //   this.props.editHistory({ action: 'dirtyFieldCount', count: 1 })
-    // }
-    // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement === this.props.eachElement', nextProps.eachElement, this.props.eachElement, nextProps.eachElement !== this.props.eachElement);
+    // IMPORTANT: Checks to find out if each field value has changed, and if not will not call componentDidUpdate
+    // Look here if any changes in state are not reflected in choices rendered. They are probably not updated here.
     let elementChanged = false;
     let choicesChanged = false;
     let valueUpdated = false;
@@ -73,12 +65,6 @@ class DocumentChoicesTemplate extends Component {
     if (this.props.editTemplate) {
       elementChanged = nextProps.eachElement !== this.props.eachElement
       console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged', elementChanged);
-      // if (nextProps.eachElement.document_field_choices) {
-        // choicesChanged = nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices;
-        // choicesChanged = nextProps.formFields !== this.props.formFields;
-        // console.log('DocumentChoicesTemplate, test for 1a-0 shouldComponentUpdate nextProps.eachElement, this.props.eachElement, nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices', nextProps.eachElement, this.props.eachElement, nextProps.eachElement.document_field_choices !== this.props.eachElement.document_field_choices);
-        // console.log('DocumentChoicesTemplate, test for 1a-0 shouldComponentUpdate nextProps.formFields, if editTemplate this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
-      // }
     }
 
     valueUpdated = nextProps.input.value != this.props.input.value;
@@ -223,14 +209,10 @@ class DocumentChoicesTemplate extends Component {
 
   createButtonElement({ choice, meta, onChange, value, name, input }) {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
-    console.log('DocumentChoicesTemplate, createButtonElement, name, choice, value', name, choice, value);
 
     const handleClick = () => {
       console.log('DocumentChoicesTemplate, createButtonElement, handleClick, before if editFieldsOn', this.props.editFieldsOn);
-      // if (this.props.editFieldsOn) {
-      //   console.log('DocumentChoicesTemplate, createButtonElement, handleClick, in editFieldsOn, this.props.handleButtonTemplateElementMove', this.props.editFieldsOn, this.props.handleButtonTemplateElementMove);
-      //   this.handleButtonTemplateElementMove();
-      // } else {
+
       if (!fieldInactive) {
         if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
           onChange('');
@@ -258,12 +240,33 @@ class DocumentChoicesTemplate extends Component {
           this.emptyInput();
         } // end of first if value == choice.val
       } // end of if !inactive
-    // }
-    }
+    };
 
-    // const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][name].inactive);
     const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][this.props.elementId].inactive);
+
     if (this.props.editFieldsOn) {
+      // Takes choices i.e. name: { choices: { 0: {params...}, 1: {params..}}}
+      // If there is a return condition the 'some' function terminates the loop and returns
+      const getTranslation = (choices) => {
+        let returnObject = null;
+        Object.keys(choices).some((eachChoice) => {
+          if (choices[eachChoice].params.val === choice.val) {
+            returnObject = choices[eachChoice].translation;
+            return returnObject;
+          }
+        });
+        return returnObject;
+      };
+
+      let choiceTranslations = null;
+      // Get the object for the field name from the all object fixedTermRentalContractBilingualAll or ImportantPointsExplanationBilingualAll
+      const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][name];
+      // if the object exists, get the translation for the choice
+      if (elementObject) choiceTranslations = getTranslation(elementObject.choices);
+      // console.log('DocumentChoicesTemplate, createButtonElement, name, choice, value, elementObject, choiceTranslations', name, choice, value, elementObject, choiceTranslations);
+
+      // const buttonText = AppLanguages[choice.val] ? AppLanguages[choice.val][this.props.appLanguageCode] : choice.val;
+      const buttonText = choiceTranslations ? choiceTranslations[this.props.appLanguageCode] : choice.val;
       return (
         <div
           key={choice.val}
@@ -277,13 +280,13 @@ class DocumentChoicesTemplate extends Component {
           style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >
         {(choice.enclosed_text) && (value == choice.val) ? choice.enclosed_text : ''}
-        {choice.val === 'inputFieldValue' ? 'Select' : choice.val}
+        {choice.val === 'inputFieldValue' ? 'Select' : buttonText}
         {choice.val.toString() === 'true' && choice.val === true ? 'T' : ''}
         {choice.val.toString() === 'false' && choice.val === false ? 'F' : ''}
         </div>
       );
     }
-    // else editFieldsOn
+    // else editFieldsOn is false
     return (
       <div
         key={choice.val}
@@ -518,7 +521,7 @@ class DocumentChoicesTemplate extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log('in document_choices_template, mapStateToProps, state: ', state);
+  console.log('in document_choices_template, mapStateToProps, state: ', state);
   // console.log('in document_choices_template, mapStateToProps: ');
   return {
     allValues: state.form.CreateEditDocument.values,
@@ -526,6 +529,8 @@ function mapStateToProps(state) {
     documentLanguageCode: state.languages.documentLanguageCode,
     editHistoryProp: state.documents.editHistory,
     dirtyFields: state.documents.dirtyObject,
+    appLanguageCode: state.languages.appLanguageCode,
+    allDocumentObjects: state.documents.allDocumentObjects,
   };
 }
 

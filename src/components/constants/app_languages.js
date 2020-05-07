@@ -404,6 +404,9 @@ const appLanguages =
     inspectedParts: { en: 'Inspected Parts', jp: '検査した部分' },
     otherPayments: { en: 'Non-rent Payments', jp: '家賃以外の支払い額' },
     name: { en: 'Name', jp: '名前' },
+    // publicGas: { en: 'Public Gas', jp: 'ガス会社' },
+    // propaneGas: { en: 'Propane Gas', jp: 'プロパンガス' },
+    // none: { en: 'None', jp: 'なし' },
     // noticeFrom: { en: 'Notice From Date', jp: '通知期間の開始日' },
 
   };

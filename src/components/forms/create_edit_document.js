@@ -1972,7 +1972,7 @@ longActionPress(props) {
         let label = null;
         let translationKey = null;
         // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
-        const elementObject = this.props.propsDocuments[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name] || null;
+        const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
         if (elementObject) {
           translationKey = elementObject.translation_key;
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
@@ -2004,7 +2004,7 @@ longActionPress(props) {
           _.each(modifiedElement.document_field_choices, eachChoice => {
             // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
             if ((eachChoice.val !== 'inputFieldValue') && (eachElement.input_type !== 'boolean')) {
-              otherChoiceValues.push(eachChoice.val.toLowerCase());
+              otherChoiceValues.push(eachChoice.val.toString().toLowerCase());
             }
           })
         }
@@ -2192,7 +2192,8 @@ longActionPress(props) {
                       editFieldsOn: this.state.editFieldsOn,
                       selectedChoiceIdArray: this.state.selectedChoiceIdArray,
                       // label: modifiedElement.name,
-                      label
+                      label,
+                      agreement: this.props.agreement
                       // dragChoice: () => this.dragChoice()
                     }
                     :
@@ -5071,7 +5072,7 @@ function mapStateToProps(state) {
       // testDocumentTranslations: state.documents.documentTranslations,
       templateMappingObjects: state.documents.templateMappingObjects,
       documentTranslationsAll: state.documents.documentTranslations,
-      propsDocuments: state.documents,
+      allDocumentObjects: state.documents.allDocumentObjects,
     };
   }
 

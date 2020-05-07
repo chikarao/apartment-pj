@@ -275,8 +275,10 @@ export default function (state = {
     }
     case FETCH_BOOKING: {
       return { ...state,
-        fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
-        importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all),
+        allDocumentObjects: {
+          fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
+          importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all),
+        },
         templateMappingObjects: {
           fixed_term_rental_contract_bilingual: JSON.parse(action.payload.template_mapping_object_fixed),
           important_points_explanation_bilingual: JSON.parse(action.payload.template_mapping_object_important_points)
