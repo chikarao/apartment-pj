@@ -87,7 +87,8 @@ class CreateEditDocument extends Component {
       templateFieldChoiceArray: [],
       templateFieldChoiceObject: null,
       templateElementActionIdObject: INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT,
-      templateElementAttributes: null,
+      editFieldsOn: false,
+      editFieldsOnPrevious: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -948,7 +949,7 @@ renderEachDocumentField(page) {
       // const templateElementCount = this.state.templateElementCount;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
-        createNewTemplateElementOn: false,
+        // createNewTemplateElementOn: false,
       }, () => {
         // const templateElementChoice = false;
         let templateElementAttributes = {};
@@ -2308,9 +2309,11 @@ longActionPress(props) {
       // In callback to setState, if turning on addEventListener
       if (this.state.createNewTemplateElementOn) {
         document.addEventListener('click', this.getMousePosition);
+        this.setState({ editFieldsOn: true });
       } else {
         // In callback to setState, if turning off removeEventListener
         document.removeEventListener('click', this.getMousePosition);
+        if (!this.state.editFieldsOnPrevious) this.setState({ editFieldsOn: false });
       }
     });
     // turn off any explanations and timers when click
@@ -3118,8 +3121,15 @@ longActionPress(props) {
     console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementIdArray: ', clickedElement, elementVal, this.state.selectedTemplateElementIdArray);
       switch (elementVal) {
         case 'editFields':
-          this.setState({ editFieldsOn: !this.state.editFieldsOn }, () => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
+          this.setState({
+            // editFieldsOnPrevious for if user selects createNewTemplateElementOn when editFieldsOn
+            // User does not have to turn off or on editFieldsOn each time turns on/off createNewTemplateElementOn
+            editFieldsOn: !this.state.editFieldsOn,
+            editFieldsOnPrevious: !this.state.editFieldsOnPrevious
+          }, () => {
+            // If user turns off editFieldsOn, turn off createNewTemplateElementOn
+            if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
+            // console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
           })
           break;
 
