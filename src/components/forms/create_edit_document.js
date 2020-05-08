@@ -213,6 +213,7 @@ class CreateEditDocument extends Component {
       // templateEditHistory can be null in later code;
       // all local state values set in constructor already
       // !!!!! IMPORTATNT: When refreshing localStorageHistory, comment out below getLocalHistory
+      // gotohistory
       templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
@@ -3474,9 +3475,11 @@ longActionPress(props) {
           // left, top and page assigned in getMousePosition
           name: createdObject.name,
           component: createdObject.component,
-          width: createdObject.choices[0].params.width,
+          // width: createdObject.choices[0].params.width,
+          width: createdObject.choices[Object.keys(createdObject.choices)[0]].params.width,
           height: '1.6%',
-          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          // input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          input_type: createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type, // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
@@ -3495,10 +3498,12 @@ longActionPress(props) {
           name: createdObject.name,
           component: createdObject.component,
           // component: 'DocumentChoicesTemplate',
-          width: createdObject.choices[0].params.width,
+          // width: createdObject.choices[0].params.width,
+          width: createdObject.choices[Object.keys(createdObject.choices)[0]].params.width,
           height: null,
           // height: '1.6%',
-          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          // input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          input_type: createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type, // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
@@ -3572,9 +3577,11 @@ longActionPress(props) {
           name: createdObject.name,
           component: createdObject.component,
           // component: 'DocumentChoicesTemplate',
-          width: createdObject.choices[0].params.width,
+          // width: createdObject.choices[0].params.width,
+          width: createdObject.choices[Object.keys(createdObject.choices)[0]].params.width,
           height: null,
-          input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
+          input_type: createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type, // or 'string' if an input component
+          // input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
@@ -3756,6 +3763,7 @@ longActionPress(props) {
     let choicesObject = null;
     let selectChoices = null;
     let valueString = null;
+    let firstChoice = null;
 
     if (templateMappingObject) {
       return _.map(Object.keys(templateMappingObject), eachKey => {
@@ -3778,19 +3786,23 @@ longActionPress(props) {
             </div>
           );
         } else if (templateMappingObject[eachKey]) {
-          // console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
+          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
+          firstChoice = templateMappingObject[eachKey].choices ? templateMappingObject[eachKey].choices[Object.keys(templateMappingObject[eachKey].choices)[0]] : null;
           // Get the type of element to distinguish which to render
-          inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
+          inputElement = !templateMappingObject[eachKey].params && firstChoice.params.val === 'inputFieldValue';
+          // inputElement = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].params.val === 'inputFieldValue';
           choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
           choicesObject = templateMappingObject[eachKey].params;
-          choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'y';
+          choicesYesOrNo = !templateMappingObject[eachKey].params && firstChoice.valName === 'y';
+          // choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'y';
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
 
           if (inputElement) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             // if (translationSibling) valueString = valueString + ',' + 'translation_sibling';
             // If there is a select field in choices object render select
-            selectChoices = templateMappingObject[eachKey].choices[0].selectChoices || templateMappingObject[eachKey].choices[0].select_choices;
+            selectChoices = firstChoice.selectChoices || firstChoice.select_choices;
+            // selectChoices = templateMappingObject[eachKey].choices[0].selectChoices || templateMappingObject[eachKey].choices[0].select_choices;
             if (selectChoices) {
               return _.map(Object.keys(selectChoices), eachIndex => {
                 valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey + ',choices,0' + ',selectChoices,' + eachIndex;

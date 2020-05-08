@@ -56,13 +56,13 @@ export default (props) => {
   let eachMappedObject = null;
   // baseObject is like amenties: { ac: object, parcel_box: object }
   const baseObject = getBaseObject(modelName, templateMappingObjects[templateFileName]);
-  console.log('in get_list_values, listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject : ', listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject);
   let string = '';
   let str = '';
   const listArrayLength = listArray.length;
   // listModel is object like amenties = { ac: true, auto_lock: true, kitchen_stove: false, parcel_box: true }
   const listModel = listModelsObject[modelName];
   // Iterate through list  of eachListItem e.g. [ac, auto_lock, parce_box]
+  console.log('in get_list_values, listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject, listModel: ', listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject, listModel);
   _.each(listArray, (eachListItem, i) => {
     if (eachListItem && listModel[eachListItem] === listBoolValue) {
       eachMappedObject = baseObject[eachListItem];
@@ -71,7 +71,7 @@ export default (props) => {
       if ((listArrayLength > 1 && i === 0) || i < listArrayLength - 1) str = `${eachMappedObject.translation[languageCode]}, `
       string = string.concat(str)
     }
-    console.log('in get_list_values, eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string : ', eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string);
+    // console.log('in get_list_values, eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string : ', eachListItem, eachMappedObject, listModel, eachMappedObject.translation[languageCode], eachMappedObject.translation, languageCode, string);
   })
 
   return string;
