@@ -250,12 +250,15 @@ class DocumentChoicesTemplate extends Component {
       // If there is a return condition the 'some' function terminates the loop and returns
       const getTranslation = (choices) => {
         let returnObject = null;
-        Object.keys(choices).some((eachChoice) => {
-          if (choices[eachChoice].params.val === choice.val) {
-            returnObject = choices[eachChoice].translation;
-            return returnObject;
-          }
-        });
+        // Object.keys(choices).some((eachChoice) => {
+        //   if (choices[eachChoice].params.val === choice.val) {
+        //     returnObject = choices[eachChoice].translation;
+        //     return returnObject;
+        //   }
+        // });
+        if (choices[choice.val] && choices[choice.val].translation) returnObject = choices[choice.val].translation;
+        if (choices.inputFieldValue && choices.inputFieldValue.selectChoices) returnObject = choices.inputFieldValue.selectChoices[choice.val];
+        // console.log('DocumentChoicesTemplate, createButtonElement, getTranslation, choices, choice, returnObject, this.props.appLanguageCode: ', choices, choice, returnObject, this.props.appLanguageCode);
         return returnObject;
       };
 
@@ -267,7 +270,7 @@ class DocumentChoicesTemplate extends Component {
       // console.log('DocumentChoicesTemplate, createButtonElement, name, choice, value, elementObject, choiceTranslations', name, choice, value, elementObject, choiceTranslations);
 
       // const buttonText = AppLanguages[choice.val] ? AppLanguages[choice.val][this.props.appLanguageCode] : choice.val;
-      const buttonText = choiceTranslations ? choiceTranslations[this.props.appLanguageCode] : choice.val;
+      const buttonText = choiceTranslations && choiceTranslations[this.props.appLanguageCode].length < 12 && choice.val ? choiceTranslations[this.props.appLanguageCode] : choice.val;
       return (
         <div
           key={choice.val}
@@ -282,8 +285,8 @@ class DocumentChoicesTemplate extends Component {
         >
         {(choice.enclosed_text) && (value == choice.val) ? choice.enclosed_text : ''}
         {choice.val === 'inputFieldValue' ? 'Select' : buttonText}
-        {choice.val.toString() === 'true' && choice.val === true ? 'T' : ''}
-        {choice.val.toString() === 'false' && choice.val === false ? 'F' : ''}
+        {choice.val.toString() === 'true' && choice.val === true ? 'Y' : ''}
+        {choice.val.toString() === 'false' && choice.val === false ? 'N' : ''}
         </div>
       );
     }
@@ -364,25 +367,52 @@ class DocumentChoicesTemplate extends Component {
     // console.log('DocumentChoicesTemplate, renderSelectOptions language', language);
     // create an empty choice so that select field can be blank
 
+    // const getTranslation = (choices, value) => {
+    //   let returnObject = null;
+    //   Object.keys(choices).some((eachChoice) => {
+    //     // eachChoice is 0, 1...
+    //     if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
+    //       if (choices[eachChoice].params.val === value) {
+    //         returnObject = choices[eachChoice].translation;
+    //         return returnObject;
+    //       } else if (choices[eachChoice].selectChoices) {
+    //         Object.keys(choices[eachChoice].selectChoices).some((each) => {
+    //           console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
+    //           if (choices[eachChoice].selectChoices[each].value === value) {
+    //             returnObject = choices[eachChoice].selectChoices[each];
+    //             return returnObject
+    //           } // end of if (choices[eachChoice].selectChoices[each].value...
+    //         }) // end of some selectChoices
+    //       } // end of else if (choices[eachChoice].selectChoices)...
+    //     }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
+    //   }); // end of Object keys eachChoice
+    //   return returnObject;
+    // }; // end of getTranslation
     const getTranslation = (choices, value) => {
       let returnObject = null;
-      Object.keys(choices).some((eachChoice) => {
-        // eachChoice is 0, 1...
-        if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
-          if (choices[eachChoice].params.val === value) {
-            returnObject = choices[eachChoice].translation;
-            return returnObject;
-          } else if (choices[eachChoice].selectChoices) {
-            Object.keys(choices[eachChoice].selectChoices).some((each) => {
-              console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
-              if (choices[eachChoice].selectChoices[each].value === value) {
-                returnObject = choices[eachChoice].selectChoices[each];
-                return returnObject
-              } // end of if (choices[eachChoice].selectChoices[each].value...
-            }) // end of some selectChoices
-          } // end of else if (choices[eachChoice].selectChoices)...
-        }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
-      }); // end of Object keys eachChoice
+      console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value', name, choices, value);
+      if (choices[value]) returnObject = choices[value].translation;
+      if (choices.inputFieldValue && choices.inputFieldValue.selectChoices) {
+        returnObject = choices.inputFieldValue.selectChoices[value]
+      }
+
+      // Object.keys(choices).some((eachChoice) => {
+      //   // eachChoice is 0, 1...
+      //   if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
+      //     if (choices[eachChoice].params.val === value) {
+      //       returnObject = choices[eachChoice].translation;
+      //       return returnObject;
+      //     } else if (choices[eachChoice].selectChoices) {
+      //       Object.keys(choices[eachChoice].selectChoices).some((each) => {
+      //         console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
+      //         if (choices[eachChoice].selectChoices[each].value === value) {
+      //           returnObject = choices[eachChoice].selectChoices[each];
+      //           return returnObject
+      //         } // end of if (choices[eachChoice].selectChoices[each].value...
+      //       }) // end of some selectChoices
+      //     } // end of else if (choices[eachChoice].selectChoices)...
+      //   }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
+      // }); // end of Object keys eachChoice
       return returnObject;
     }; // end of getTranslation
 
@@ -531,7 +561,7 @@ class DocumentChoicesTemplate extends Component {
             }}
         >
           {this.renderEachChoice(choices)}
-          {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '200px', textAlign: 'left' }}>{this.props.label}</div> : ''}
+          {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '220px', textAlign: 'left' }}>{this.props.label}</div> : ''}
         </div>
       );
     }
