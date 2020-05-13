@@ -107,17 +107,17 @@ class DocumentChoicesTemplate extends Component {
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
     console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
     if ((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) && !choice.enclosed_text) {
-      elementStyle = { top: choice.top, left: choice.left, borderColor: 'black', width: choice.width, height: choice.height };
+      elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: this.props.editFieldsOn ? 'lightgray' : 'black', width: choice.width, height: choice.height };
     } else {
       elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width, height: choice.height };
     }
 
     if (this.props.nullRequiredField && !value) {
-      elementStyle = { borderColor: 'blue', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
+      elementStyle = { ...elementStyle, borderColor: 'blue', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     if (inactive) {
-      elementStyle = { borderColor: 'transparent', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
+      elementStyle = { ...elementStyle, borderColor: 'transparent', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
     if (this.props.selectedChoiceIdArray.indexOf(`${choice.element_id}-${choice.choice_index}`) !== -1) {
@@ -246,6 +246,7 @@ class DocumentChoicesTemplate extends Component {
     const fieldInactive = (choice.inactive || this.props.formFields[this.props.page][this.props.elementId].inactive);
 
     if (this.props.editFieldsOn) {
+    // if (this.props.handleButtonTemplateElementMove && this.props.handleButtonTemplateElementClick && this.props.editFieldsOn) {
       // Takes choices i.e. name: { choices: { 0: {params...}, 1: {params..}}}
       // If there is a return condition the 'some' function terminates the loop and returns
       const getTranslation = (choices) => {
@@ -538,7 +539,7 @@ class DocumentChoicesTemplate extends Component {
     const { input: { name } } = this.props;
     let choices = null;
     let element = null;
-    console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page]: ', name, this.props.elementName, this.props.formFields);
+    console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page], this.props: ', name, this.props.elementName, this.props.formFields, this.props);
     // console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices: ', name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices);
     // if (this.props.editTemplate) {
     if (this.props.editFieldsOn) {
@@ -571,14 +572,6 @@ class DocumentChoicesTemplate extends Component {
         {this.renderEachChoice(choices)}
       </div>
     );
-
-    // }
-    // else return below
-    // return (
-    //   <div key={name}>
-    //   {this.renderEachChoice(this.props.formFields[this.props.page][name].choices)}
-    //   </div>
-    // );
   }
 }
 

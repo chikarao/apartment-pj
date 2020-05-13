@@ -181,7 +181,7 @@ export default (props) => {
       // get building language for use translated field;
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = Documents base recordLanguage, documentLanguageCode: ', recordLanguage, documentLanguageCode);
-      // assign buildingLangugae value to translated field
+      // assign buildingLanguage value to translated field
       objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
       objectReturned[eachFieldKey] = baseRecord[eachPageObject[eachFieldKey].translation_column];
     } else if (baseRecord.language_code === documentLanguageCode) {
@@ -226,7 +226,7 @@ export default (props) => {
         allFields[eachField.name] = i;
       });
 
-      objectReturned.document_name = Documents[documentKey][documentLanguageCode]
+      objectReturned.document_name = Documents[documentKey][documentLanguageCode];
 
       _.each(Object.keys(flat), key => {
         // for each flat in boooking

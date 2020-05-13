@@ -28,10 +28,10 @@ import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_mov
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
 import getListValues from './get_list_values';
 // Just for test
-import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
-import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
-import FixedTermRentalContractBilingualByPage from '../constants/fixed_term_rental_contract_bilingual_by_page';
-import ImportantPointsExplanationBilingual from '../constants/important_points_explanation_bilingual';
+// import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
+// import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
+// import FixedTermRentalContractBilingualByPage from '../constants/fixed_term_rental_contract_bilingual_by_page';
+// import ImportantPointsExplanationBilingual from '../constants/important_points_explanation_bilingual';
 
 // NOTE: userOwner is currently assumed to be the user and is the landlord on documents;
 // flatOwner is the title holder of the flat on documents
@@ -66,6 +66,7 @@ class CreateEditDocument extends Component {
       allElementsChecked: false,
       templateEditHistoryArray: [],
       historyIndex: 0,
+      unsavedTemplateElements: {},
       undoingAndRedoing: false,
       showFontControlBox: false,
       // NOTE: newFontObject is for setting font attributes for new objects
@@ -117,9 +118,8 @@ class CreateEditDocument extends Component {
     this.handleFieldPreferencesClick = this.handleFieldPreferencesClick.bind(this);
   }
 
-  // InitialValues section implement after redux form v7.4.2 updgrade
+  // InitialValues section implement after redux form v7.4.2 upgrade
   // started to force mapStateToProps to be called for EACH Field element;
-  // so to avoid Documents[documentKey].method to be called in each msp call
   // so to avoid Documents[documentKey].method to be called in each msp call
   //(over 100! for important ponts form) use componentDidUpdate;
   // Then to avoid .method to be called after each user input into input field,
@@ -169,7 +169,16 @@ class CreateEditDocument extends Component {
     // })
     // console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
     // // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
+    const name = 'Jack';
+    const object = { name: 'ben', condition: name !== 'david', parameters: { name } };
+    const test = { test: (props) => {
+      console.log('create_edit_document, componentDidMount, props', props);
 
+      object.name = props.name;
+      return;
+    } };
+    if (object.condition) console.log('create_edit_document, componentDidMount, test.test(name), object', test.test(object.parameters), object);
+    // test.test(name);
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
       // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
@@ -289,6 +298,38 @@ class CreateEditDocument extends Component {
         // if not save document ie creating new document, call method to assign initialValues
         initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject });
       }
+      this.props.setInitialValuesObject(initialValuesObject);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.bookingData && Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length) {
+      // this.props.setInitialValuesObject(initialValuesObject);
+      const {
+        flat,
+        booking,
+        userOwner,
+        tenant,
+        appLanguageCode,
+        // documentFields,
+        documentLanguageCode,
+        assignments,
+        contracts,
+        documentKey,
+        contractorTranslations,
+        staffTranslations,
+        templateElements
+      } = this.props;
+      let mainInsertFieldsObject = null;
+      let templateElementsSub = {};
+      if (_.isEmpty(prevProps.templateElements)) {
+        templateElementsSub = templateElements
+      } else {
+        templateElementsSub = {};
+      }
+      const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSub, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject });
+      console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
@@ -493,6 +534,7 @@ class CreateEditDocument extends Component {
       modifiedPersistedElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
+      unsavedTemplateElements: {}
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
       this.props.showLoading();
@@ -508,7 +550,6 @@ class CreateEditDocument extends Component {
   handleTemplateFormSubmit({ data, submitAction }) {
     const documentFieldArray = [];
     const deletedDocumentFieldIdArray = [];
-    // const newDocumentFieldArray = [];
     const paramsObject = {
       flat_id: this.props.flat.id,
       booking_id: this.props.booking.id,
@@ -523,10 +564,8 @@ class CreateEditDocument extends Component {
 
     console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
 
-    // console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
     _.each(Object.keys(this.state.modifiedPersistedElementsObject), eachKey => {
       let documentField = null;
-      // console.log('in create_edit_document, handleTemplateFormSubmit, eachKey.indexOf(a): ', eachKey.indexOf('a'));
       console.log('in create_edit_document, handleTemplateFormSubmit, eachKey, this.state.modifiedPersistedElementsObject[eachKey]: ', eachKey, this.state.modifiedPersistedElementsObject[eachKey]);
       if (this.state.modifiedPersistedElementsObject[eachKey].deleted === true) {
         deletedDocumentFieldIdArray.push(eachKey);
@@ -541,8 +580,16 @@ class CreateEditDocument extends Component {
         documentField.value = value;
         if (documentField.document_field_choices) {
           array = [];
+          const selectArray = [];
           _.each(Object.keys(documentField.document_field_choices), each => {
             console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
+            if (documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices) {
+              const selectChoices = documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices
+              _.each(Object.keys(selectChoices), eachSelect => {
+                if (eachSelect < 10) selectArray.push(selectChoices[eachSelect])
+              });
+              documentField.document_field_choices[each].select_choices_attributes = selectArray;
+            }
             array.push(documentField.document_field_choices[each]);
           });
           // documentField.document_field_choices = null;
@@ -1933,6 +1980,8 @@ longActionPress(props) {
           // modifiedElement.name;
           console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {
+          // If no object existins in fixed and important_points, must be a list;
+          // Get first part of name to get translation from appLanguages
           translationKey = modifiedElement.name.split('_')[0]
           label = AppLanguages[translationKey][this.props.appLanguageCode] || translationKey;
           // label = modifiedElement.name;
@@ -2003,13 +2052,13 @@ longActionPress(props) {
               const adjustedHeightInFracs = (adjustedHeightInPx / backgroundDimensions.height);
 
               localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: (parseFloat(eachElement.width) / 100), height: adjustedHeightInFracs, top: (parseFloat(eachElement.top) / 100), left: (parseFloat(eachElement.left) / 100) }, background.getBoundingClientRect(), null, false);
-              console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions: ', eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions);
+              // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions: ', eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions);
               // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement: ', eachElement, adjustedHeightInPx);
             } // end of if newElement
           } // end of if eachElement.document_field_choices
           // if ()
           if (inputElement && this.state.editFieldsOn) {
-            // if (!newElement) console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
+            // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
             return (
               <div
                 key={modifiedElement.id}
@@ -2066,7 +2115,8 @@ longActionPress(props) {
                       elementId: modifiedElement.id,
                       editFieldsOn: this.state.editFieldsOn,
                       // label: modifiedElement.name,
-                      label
+                      label,
+                      agreement: this.props.agreement
                     }
                     :
                     {}}
@@ -2096,7 +2146,7 @@ longActionPress(props) {
               </div>
             );
           } else if (this.state.editFieldsOn) { // else if inputElement
-            console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn);
+            console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement);
             return (
               <div
                 key={modifiedElement.id}
@@ -2428,12 +2478,13 @@ longActionPress(props) {
     }
 
     this.setState({
-      modifiedPersistedElementsObject: modifiedObject.returnObject
+      modifiedPersistedElementsObject: modifiedObject.returnObject,
+      unsavedTemplateElements
     }, () => {
       destringifiedHistory[this.props.agreement.id] = {
         history: this.state.templateEditHistoryArray,
         // unsavedTemplateElements is not saved in state
-        elements: unsavedTemplateElements,
+        elements: this.state.unsavedTemplateElements,
         historyIndex: this.state.historyIndex,
         newFontObject: this.state.newFontObject,
         // modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
@@ -4972,12 +5023,13 @@ function mapStateToProps(state) {
     const agreements = state.bookingData.fetchBookingData.agreements;
     // IMPORTANT: Somehow, list initial values in createDocumentElementLocally come up undefined
     // so created state prop listInitialValuesObject which gets passed so merge with setInitialValuesObject here
-    const newObject = { name: 'Jackie' };
-    if (!_.isEmpty(state.documents.listInitialValuesObject)) {
-      initialValues = _.merge(newObject, state.documents.initialValuesObject, state.documents.listInitialValuesObject);
-    } else {
-      initialValues = newObject;
-    }
+    // const newObject = { name: 'Jackie' };
+    // if (!_.isEmpty(state.documents.listInitialValuesObject)) {
+    //   initialValues = _.merge(newObject, state.documents.initialValuesObject, state.documents.listInitialValuesObject);
+    // } else {
+    //   initialValues = newObject;
+    // }
+    initialValues = state.documents.initialValuesObject;
     // initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
     console.log('in create_edit_document, mapStateToProps, state, state.documents.initialValuesObject, initialValues, documentKey: ', state, state.documents.initialValuesObject, initialValues, documentKey);
     // initialValues = { name: 'Jackie' };

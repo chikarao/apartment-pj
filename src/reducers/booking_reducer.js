@@ -44,6 +44,11 @@ export default function (state = {
       // console.log('in booking reducer, state: ', state);
       return { ...state, bookingData: action.payload.booking };
 
+    case SAVE_TEMPLATE_DOCUMENT_FIELDS:
+      console.log('in booking reducer, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);
+      const fetchBookingData = { ...state.fetchBookingData, agreements: action.payload.agreements };
+      return { ...state, fetchBookingData };
+
     case FETCH_BOOKING:
       // console.log('in booking reducer, state: ', state);
       return { ...state,

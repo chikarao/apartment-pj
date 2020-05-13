@@ -10,8 +10,6 @@ import Documents from '../constants/documents';
 import getBookingDateObject from './get_booking_date_object';
 import getContractLength from './get_contract_length';
 
-
-// get_initialvalues_object_important_points_explanation.js
 export default (props) => {
   //function called in mapStateToProps of create_edit_document.js
   // destructure from props assigned in mapStateToProps

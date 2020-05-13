@@ -51,7 +51,7 @@ export default function (state = {
        // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
       _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
-        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element templateEditHistory.historyIndex: ', element, templateEditHistory.historyIndex);
+        // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element templateEditHistory.historyIndex: ', element, templateEditHistory.historyIndex);
         // Do until this.state.historyIndex is less than or equal to i;
         // So if user has undone or redone, stop there
         if (i <= templateEditHistory.historyIndex) {
@@ -64,7 +64,7 @@ export default function (state = {
               // To address new element id (ones with 'a' on it)
               // appear again with action: create switch off deleted
               if (deleted && eachEditObject.action === 'create') { deleted = false; }
-              console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === delete, templateEditHistory: ', element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === 'delete', templateEditHistory);
+              // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === delete, templateEditHistory: ', element, eachEditArray, eachEditObject, eachEditObject.action, eachEditObject.action === 'delete', templateEditHistory);
               // Iterate through each attribute in object ie { width, font_style ...}
               // element object will be updated within this action scope
               _.each(Object.keys(eachEditObject), eachKey => {
@@ -78,7 +78,7 @@ export default function (state = {
         } // end of if
       }); // end of first each
       // return null, delete or ok; if ok, the element is placed in this.props.templateElements
-      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, deleted, templateEditHistory: ', element, deleted, templateEditHistory);
+      // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, deleted, templateEditHistory: ', element, deleted, templateEditHistory);
       return deleted || 'ok';
     }
     // Iterate through each element persisted as agreement.document_fields
@@ -88,7 +88,7 @@ export default function (state = {
       // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
 
-      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement: ', modifiedElement);
+      // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement: ', modifiedElement);
 
       object[modifiedElement.id.toString()] = modifiedElement;
       // Assign create so redo and undo of create works in undoRedoAction
@@ -98,7 +98,7 @@ export default function (state = {
         // update elements returns null, delete or ok; if ok,
         // put modifeid object in in mapped object
         if (updateElements(modifiedElement) === 'ok') {
-          console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray if templateEditHistory updateElements ok modifiedElement: ', modifiedElement);
+          // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray if templateEditHistory updateElements ok modifiedElement: ', modifiedElement);
           object[modifiedElement.id.toString()] = modifiedElement;
           // put into pageObject
           if (pageObject[modifiedElement.page]) {
@@ -113,7 +113,7 @@ export default function (state = {
       } else { // else for if templateEditHistory
         // if no templateEditHistory, just put into the mapped object
         // if returned
-        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in if (modifiedElement.document_field_choices modifiedElement: ', modifiedElement);
+        // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in if (modifiedElement.document_field_choices modifiedElement: ', modifiedElement);
 
         if (pageObject[modifiedElement.page]) {
           // if (!pageObject[modifiedElement.page][modifiedElement.id]) {
@@ -307,7 +307,7 @@ export default function (state = {
       // const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject.object);
 
       // const templateDocumentChoicesObject = getDocumentChoicesObject(mergedObject, null);
-      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject: ', mergedObject, mapKeysObject);
+      // console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject: ', mergedObject, mapKeysObject);
 
       return { ...state,
         templateElements: mapKeysObject.object,
@@ -323,8 +323,13 @@ export default function (state = {
       // and turn ids into strings and assign action: create
       const mapKeysObject = getMappedObjectWithStringIds(action.payload.document_fields, true);
       console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
-
-      return { ...state, templateElements: mapKeysObject.object, templateElementsByPage: mapKeysObject.pageObject };
+      // const newAgreementArray = [...state.agreements];
+      // newAgreementArray.push(action.payload.agreement);
+      return { ...state,
+        templateElements: mapKeysObject.object,
+        templateElementsByPage: mapKeysObject.pageObject,
+        agreements: action.payload.agreements
+      };
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
@@ -337,12 +342,12 @@ export default function (state = {
       let listValues = '';
       if (action.payload.list_parameters) {
         listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects, agreements: state.agreements, documentLanguageCode: state.documentLanguageCode });
-        console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
+        // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
         initialValuesObject = { [action.payload.name]: listValues }
       }
       const templateElementsByPage = addToTemplateElementsByPage(action.payload);
       const mergedObject = _.merge(newObject, state.templateElements, createdObject);
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
+      // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
       // const someOtherObject = { amenities_list: 'hello' };
       // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;
       // So, created listInitialValuesObject which gets passed fine, so merge them with initialValuesObject in mapStateToProps
