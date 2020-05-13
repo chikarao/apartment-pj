@@ -183,6 +183,11 @@ export default (props) => {
     return flat.building[p.key];
     // return { ...objectReturned, [p.key]: flat.building[p.key] };
   };
+
+  const flatMethod = (p) => {
+    return flat[p.key];
+    // return { ...objectReturned, [p.key]: flat.building[p.key] };
+  };
     // object to return to create_edit_document.js
 
   const methodObject = {
@@ -193,12 +198,18 @@ export default (props) => {
     },
 
     flat: {
-      method: (p) => {
-        return { ...objectReturned, [p.key]: flat.building[p.key] };
-      },
+      method: flatMethod,
       parameters: {},
       condition: flat
-    }
+    },
+
+    amenities: {
+      method: (p) => {
+        return flat.amenity[p.key];
+      },
+      parameters: {},
+      condition: flat.amenity
+    },
   };
 
   let objectReturned = {};

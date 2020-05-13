@@ -320,17 +320,18 @@ class CreateEditDocument extends Component {
         staffTranslations,
         templateElements
       } = this.props;
-      let mainInsertFieldsObject = null;
-      let templateElementsSub = {};
+      const mainInsertFieldsObject = null;
+      let templateElementsSubset = {};
       if (_.isEmpty(prevProps.templateElements)) {
-        templateElementsSub = templateElements
+        templateElementsSubset = templateElements
       } else {
-        templateElementsSub = {};
+        templateElementsSubset = {};
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSub, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
+      // this.setState({ templateElementAttributes: null });
     }
   }
 
@@ -4148,11 +4149,11 @@ longActionPress(props) {
     const lapseTime = () => {
       if (subTimer > 0) {
         subTimer--;
-        console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
+        // console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
       } else {
         // when subtimer is 0, assign typing timer at 0
         subTimer = 0;
-        console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
+        // console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
         // this.setState({ actionExplanationObject: null });
         callback();
         clearInterval(timer);

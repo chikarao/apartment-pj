@@ -106,7 +106,7 @@ class DocumentChoicesTemplate extends Component {
 
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
     console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
-    if ((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) && !choice.enclosed_text) {
+    if (((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) || (typeof value === 'boolean' && value.toString().toLowerCase()[0] === choice.val.toString().toLowerCase())) && !choice.enclosed_text) {
       elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: this.props.editFieldsOn ? 'lightgray' : 'black', width: choice.width, height: choice.height };
     } else {
       elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: 'lightgray', width: choice.width, height: choice.height };
