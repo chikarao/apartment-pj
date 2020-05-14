@@ -15,7 +15,7 @@ import {
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
-import getListValues from '../components/forms/get_list_values'
+import getListValues from '../components/forms/get_list_values';
 
 export default function (state = {
   initialValuesObject: {},

@@ -7,9 +7,11 @@ import Documents from '../constants/documents';
 import getBookingDateObject from './get_booking_date_object';
 import getContractLength from './get_contract_length';
 
+import getListValues from '../forms/get_list_values';
+
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects } = props;
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
@@ -192,10 +194,10 @@ export default (props) => {
     // which will alway be there if this function is run
     return _.isEmpty(recordWithLanguage) || !recordWithLanguage ? baseRecord : recordWithLanguage;
   }
-  // recordWithLanguagesMethod for records such as building and flat
+  // recordWithLanguagesArrayMethod for records such as building and flat
   // (ie has array attached flat_languages, building_languages)
-  const recordWithLanguagesMethod = (p) => {
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesMethod, p: ', p);
+  const recordWithLanguagesArrayMethod = (p) => {
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p: ', p);
     // If the field neither a translation_object (with _translation on the key) nor
     // has a translation_field (eg building_languages), just get the value, else get language and values
     // if (!p.object.translation_field && !p.object.translation_object) return flat.building[p.key];
@@ -220,7 +222,7 @@ export default (props) => {
     const recordWithLanguage = getRecordForLanguage(p.baseRecord, p.baseRecordName, language);
     // If the key is address key (including address_translation), create address and return
     if (p.address) return createAddress(recordWithLanguage);
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesMethod, p, recordWithLanguage: ', p, recordWithLanguage);
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p, recordWithLanguage: ', p, recordWithLanguage);
     // return value of recordWithLanguage
     return recordWithLanguage[key];
   };
@@ -233,19 +235,19 @@ export default (props) => {
 
   const methodObject = {
     building: {
-      method: recordWithLanguagesMethod,
+      method: recordWithLanguagesArrayMethod,
       parameters: { baseRecord: flat.building, baseRecordName: 'building' },
       condition: flat.building
     },
 
     flat: {
-      method: recordWithLanguagesMethod,
+      method: recordWithLanguagesArrayMethod,
       parameters: { baseRecord: flat, baseRecordName: 'flat' },
       condition: flat
     },
 
     address: {
-      method: recordWithLanguagesMethod,
+      method: recordWithLanguagesArrayMethod,
       parameters: { baseRecord: flat, baseRecordName: 'flat', address: true },
       condition: flat
     },
@@ -257,6 +259,13 @@ export default (props) => {
       parameters: {},
       condition: flat.amenity
     },
+
+    list: {
+      method: getListValues,
+      parameters: { flat, templateMappingObjects, agreements: [agreement] },
+      condition: flat.amenity
+    },
+
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code: ', flat, agreement, documentLanguageCode, agreement.language_code);
   const baseLanguageCode = agreement.language_code || 'jp';
@@ -268,6 +277,7 @@ export default (props) => {
   let allObjectEach = null;
   let keyExistsInMethodObject = false;
   let conditionTrue = false;
+
 
   if (template) {
     // let objectReturnedSub = {}
@@ -282,6 +292,14 @@ export default (props) => {
 
       if (keyExistsInMethodObject && conditionTrue) {
         objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialValuesMethodKey].method({ ...methodObject[allObjectEach.initialValuesMethodKey].parameters, key: eachField.name, object: allObjectEach }) };
+      }
+      // Code for list elements eg amenities_list amenties_list_translation
+      conditionTrue = !allObjectEach
+                      && eachField.list_parameters;
+      if (conditionTrue) {
+        const splitListParameters = eachField.list_parameters.split(',')
+        const baseOrTranslation = splitListParameters[1];
+        objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
       console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
     });

@@ -319,7 +319,8 @@ class CreateEditDocument extends Component {
         contractorTranslations,
         staffTranslations,
         templateElements,
-        agreement
+        agreement,
+        templateMappingObjects
       } = this.props;
       const mainInsertFieldsObject = null;
       let templateElementsSubset = {};
@@ -329,7 +330,7 @@ class CreateEditDocument extends Component {
         templateElementsSubset = {};
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
       // this.setState({ templateElementAttributes: null });
@@ -1956,7 +1957,7 @@ longActionPress(props) {
       // Map through each element
       let label = null;
       let translationKey = null;
-      let translationOrNot = '';
+      let translationText = '';
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -1972,7 +1973,7 @@ longActionPress(props) {
         const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
         if (elementObject) {
           translationKey = elementObject.translation_key;
-          translationOrNot = elementObject.translation_object ? 'Translation' : '';
+          translationText = elementObject.translation_object ? 'Translation' : '';
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
           label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : null)
@@ -1980,14 +1981,18 @@ longActionPress(props) {
                   (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : null);
           const group = (AppLanguages[elementObject.group] ? AppLanguages[elementObject.group][this.props.appLanguageCode] : null);
           const category = (AppLanguages[elementObject.category] ? AppLanguages[elementObject.category][this.props.appLanguageCode] : null);
-          label = group ? category + '/' + group + '/' + label + ' ' + translationOrNot : category + '/' + label + ' ' + translationOrNot;
+          label = group ? category + '/' + group + '/' + label + ' ' + translationText : category + '/' + label + ' ' + translationText;
           // modifiedElement.name;
           console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {
           // If no object existins in fixed and important_points, must be a list;
-          // Get first part of name to get translation from appLanguages
-          translationKey = modifiedElement.name.split('_')[0]
-          label = AppLanguages[translationKey][this.props.appLanguageCode] || translationKey;
+          // Get first part of name to get translation from appLanguages; last part to get
+          const splitKey = modifiedElement.name.split('_')
+          translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : ''
+          splitKey.splice(splitKey.length - 1, 1)[0]
+          console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
+          const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
+          label = keyText + ' ' + translationText;
           // label = modifiedElement.name;
         }
       // if (eachElement.page === page) {
