@@ -3,7 +3,8 @@ import _ from 'lodash';
 export default (props) => {
   const { listElement, flat, templateMappingObjects, agreements, documentLanguageCode } = props;
   // documentLanguageCode is the current translated language; the base language is in agreement.language_code
-  const listModelsObject = { amenities: flat.amenity };
+  // listModelsObject category is the first tier key in templateMappingObject
+  const listModelsObject = { amenities: { record: flat.amenity, category: 'flat' } };
   // list_parameters assignment just for now; Take out later when passing real list element
   // listElement.list_parameters = 'fixed_term_rental_contract_bilingual,en,amenities,true,ac,auto_lock,bath_tub,cable_tv'
   const agreement = agreements.filter(agr => agr.id === listElement.agreement_id)[0];
@@ -24,18 +25,6 @@ export default (props) => {
             getBase(currentObj[eachKey]);
           }
       });
-    // const getBase = (currentObj) => {
-    //   _.each(Object.keys(currentObj), eachKey => {
-    //     count++;
-    //     console.log('in get_list_values, getBaseObject, getBase, currentObj, eachKey, currentObj[eachKey], count: ', currentObj, eachKey, currentObj[eachKey], count);
-    //     if (!currentObj[eachKey].component) {
-    //       getBase(currentObj[eachKey]);
-    //     }
-    //     if (eachKey === modelName) {
-    //       returnObject = currentObj[eachKey];
-    //       return;
-    //     }
-    //   });
       return returnObject;
     };
     return getBase(object);
@@ -55,12 +44,12 @@ export default (props) => {
   const listArray = splitListParameters.slice(4);
   let eachMappedObject = null;
   // baseObject is like amenties: { ac: object, parcel_box: object }
-  const baseObject = getBaseObject(modelName, templateMappingObjects[templateFileName]);
+  const baseObject = getBaseObject(modelName, templateMappingObjects[templateFileName][listModelsObject[modelName].category]);
   let string = '';
   let str = '';
   const listArrayLength = listArray.length;
   // listModel is object like amenties = { ac: true, auto_lock: true, kitchen_stove: false, parcel_box: true }
-  const listModel = listModelsObject[modelName];
+  const listModel = listModelsObject[modelName].record;
   // Iterate through list  of eachListItem e.g. [ac, auto_lock, parce_box]
   console.log('in get_list_values, listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject, listModel: ', listElement, flat, splitListParameters, templateFileName, agreement, baseOrTranslation, languageCode, modelName, listBoolValue, listArray, templateMappingObjects, baseObject, listModel);
   _.each(listArray, (eachListItem, i) => {

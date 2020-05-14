@@ -131,13 +131,21 @@ export default (props) => {
 
   function getLanguage(languages, languageCode) {
     let objectReturned = {};
-    _.each(languages, eachLanguage => {
-      console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
-      if (eachLanguage.language_code === languageCode) {
-        objectReturned = eachLanguage;
-        return;
+    languages.some((eachLanguage) => {
+        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+        if (eachLanguage.language_code === languageCode) {
+          objectReturned = eachLanguage;
+          return objectReturned;
+        }
       }
-    });
+    );
+    // _.each(languages, eachLanguage => {
+    //   console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+    //   if (eachLanguage.language_code === languageCode) {
+    //     objectReturned = eachLanguage;
+    //     return;
+    //   }
+    // });
     console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
     return objectReturned;
   }
@@ -281,9 +289,10 @@ export default (props) => {
 
   if (template) {
     // let objectReturnedSub = {}
+    // Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
+      // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
-      // eachField = documentFields[eachFieldKey];
       keyExistsInMethodObject = allObjectEach
                                 && methodObject[allObjectEach.initialValuesMethodKey];
       conditionTrue = allObjectEach
@@ -294,11 +303,13 @@ export default (props) => {
         objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialValuesMethodKey].method({ ...methodObject[allObjectEach.initialValuesMethodKey].parameters, key: eachField.name, object: allObjectEach }) };
       }
       // Code for list elements eg amenities_list amenties_list_translation
+      // list elements do not have an all object and has list parameters in eachField,
+      // eg. list_parameters: fixed_term_rental_contract_bilingual,translation,amenities,true,bath_tub,shower,ac,auto_lock
       conditionTrue = !allObjectEach
-                      && eachField.list_parameters;
+                      && eachField.list_parameters
+                      && methodObject.list
+                      && methodObject.list.condition;
       if (conditionTrue) {
-        const splitListParameters = eachField.list_parameters.split(',')
-        const baseOrTranslation = splitListParameters[1];
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
       console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);

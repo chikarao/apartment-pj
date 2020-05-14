@@ -46,7 +46,7 @@ const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 // let explanationTimer = 3;
 // explanationTimerArray for keeping timer ids so they can be cleared (for edit action buttons)
 let explanationTimerArray = [];
-const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0, tranlation: false };
+const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0, translation: false };
 
 class CreateEditDocument extends Component {
   constructor(props) {
@@ -325,15 +325,18 @@ class CreateEditDocument extends Component {
       const mainInsertFieldsObject = null;
       let templateElementsSubset = {};
       if (_.isEmpty(prevProps.templateElements)) {
-        templateElementsSubset = templateElements
+        templateElementsSubset = templateElements;
       } else {
-        templateElementsSubset = {};
+        // Find any new elements in templateElements that are not in prevProps
+        // and put them in templateElementsSubset
+        _.each(Object.keys(templateElements), eachId => {
+          if (Object.keys(prevProps.templateElements).indexOf(eachId) === -1) templateElementsSubset[eachId] = templateElements[eachId];
+        });
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
       const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
-      // this.setState({ templateElementAttributes: null });
     }
   }
 
@@ -3378,7 +3381,7 @@ longActionPress(props) {
       }
 
       return modNewObject;
-    }
+    };
 
     const clickedElement = event.target;
     const elementId = clickedElement.getAttribute('id');
@@ -3431,7 +3434,7 @@ longActionPress(props) {
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
       // NOTE: buttons plural; If input or buttons, add element
-      if (elementType === 'input' || elementType === 'buttons') {
+      if (elementType === 'input' || elementType === 'buttons' || elementType === 'select') {
         this.handleTemplateElementAddClick();
       }
     });
@@ -3909,7 +3912,15 @@ longActionPress(props) {
                       Add to List
                     </div>
                     :
-                  ''}
+                    <div
+                      id={'select,' + valueString}
+                      onClick={this.handleFieldChoiceActionClick}
+                      style={elementIdArray.indexOf('select,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+                      // className="create-edit-document-template-each-choice-action-box-button"
+                    >
+                      Add Select
+                    </div>
+                }
                 </div>
               </div>
             );
