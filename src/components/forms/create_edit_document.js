@@ -318,7 +318,8 @@ class CreateEditDocument extends Component {
         documentKey,
         contractorTranslations,
         staffTranslations,
-        templateElements
+        templateElements,
+        agreement
       } = this.props;
       const mainInsertFieldsObject = null;
       let templateElementsSubset = {};
@@ -328,7 +329,7 @@ class CreateEditDocument extends Component {
         templateElementsSubset = {};
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
       // this.setState({ templateElementAttributes: null });
@@ -1953,6 +1954,9 @@ longActionPress(props) {
     // let count = 1;
     if (!documentEmpty) {
       // Map through each element
+      let label = null;
+      let translationKey = null;
+      let translationOrNot = '';
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -1964,12 +1968,11 @@ longActionPress(props) {
           fieldComponent = eachElement.component;
         }
 
-        let label = null;
-        let translationKey = null;
         // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
         const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
         if (elementObject) {
           translationKey = elementObject.translation_key;
+          translationOrNot = elementObject.translation_object ? 'Translation' : '';
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
           label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : null)
@@ -1977,7 +1980,7 @@ longActionPress(props) {
                   (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : null);
           const group = (AppLanguages[elementObject.group] ? AppLanguages[elementObject.group][this.props.appLanguageCode] : null);
           const category = (AppLanguages[elementObject.category] ? AppLanguages[elementObject.category][this.props.appLanguageCode] : null);
-          label = group ? category + '/' + group + '/' + label : category + '/' + label;
+          label = group ? category + '/' + group + '/' + label + ' ' + translationOrNot : category + '/' + label + ' ' + translationOrNot;
           // modifiedElement.name;
           console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {

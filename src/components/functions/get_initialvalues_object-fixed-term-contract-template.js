@@ -76,27 +76,29 @@ export default (props) => {
     // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
   }
 
-  function createAddress(flat) {
+  function createAddress(record) {
     let addressFieldArray = [];
-    console.log('in get_initialvalues_object-fixed-term-contract, createAddress, flat: ', flat);
-    // if (flat.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
+    let withComma = false;
+    console.log('in get_initialvalues_object-fixed-term-contract, createAddress, record: ', record);
+    // if (record.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
     // change order of address depending on country
-    if (flat.country && flat.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
+    if (record.country && record.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
       addressFieldArray = ['zip', 'state', 'city', 'address2', 'address1'];
     } else {
       addressFieldArray = ['address1', 'address2', 'city', 'state', 'zip'];
+      withComma = true;
     }
     // const address = '';
     const addressArray = [];
     _.each(addressFieldArray, each => {
       // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, address: ', address);
-      // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, each, type of flat[each]: ', each, typeof flat[each]);
-      if ((typeof flat[each]) == 'string') {
-        // const addressString = address.concat(toString(flat[each]));
-        addressArray.push(flat[each])
+      // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, each, type of record[each]: ', each, typeof record[each]);
+      if ((typeof record[each]) == 'string') {
+        // const addressString = address.concat(toString(record[each]));
+        addressArray.push(record[each])
       }
     });
-    const address = addressArray.join(', ')
+    const address = withComma ? addressArray.join(', ') : addressArray.join(' ')
     // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, address: ', address);
     return address;
   }
@@ -150,7 +152,6 @@ export default (props) => {
     } else if (baseRecord.language_code === documentLanguageCode) {
       // if building language code is different from base language for document
       // give translated field the baseRecord value
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, baseRecord[eachPageObject[eachFieldKey].translation_column]);
       objectReturned[eachPageObject[eachFieldKey].translation_field] = baseRecord[eachPageObject[eachFieldKey].translation_column];
       const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode recordLanguage, Documents[documentKey].baseLanguage: ', recordLanguage, Documents[documentKey].baseLanguage);
@@ -179,9 +180,49 @@ export default (props) => {
     }
   }
 
-  const buildingMethod = (p) => {
-    return flat.building[p.key];
-    // return { ...objectReturned, [p.key]: flat.building[p.key] };
+  function getRecordForLanguage(baseRecord, baseRecordName, language) {
+    console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
+    // get language
+    let recordWithLanguage = null;
+    if (baseRecord.language_code === language) return baseRecord;
+    // If the required record with language code is not base, get the one from languages array
+    // (eg building_languages array or flat_languages array )
+    recordWithLanguage = getLanguage(baseRecord[`${baseRecordName}_languages`], language);
+    // If no language is found, just return the base record
+    // which will alway be there if this function is run
+    return _.isEmpty(recordWithLanguage) || !recordWithLanguage ? baseRecord : recordWithLanguage;
+  }
+  // recordWithLanguagesMethod for records such as building and flat
+  // (ie has array attached flat_languages, building_languages)
+  const recordWithLanguagesMethod = (p) => {
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesMethod, p: ', p);
+    // If the field neither a translation_object (with _translation on the key) nor
+    // has a translation_field (eg building_languages), just get the value, else get language and values
+    // if (!p.object.translation_field && !p.object.translation_object) return flat.building[p.key];
+    if (!p.object.translation_field && !p.object.translation_object) return p.baseRecord[p.key];
+
+    let language = null;
+    let key = null;
+    // If the object has translation_field (i.e. is not a tranlation field itself)
+    // Assign baseLanguageCode to language to be sent to getRecordForLanguage
+    // assign key to key for the record to be returned
+    if (p.object.translation_field) {
+      language = baseLanguageCode;
+      key = p.key;
+    }
+    // If the object is a tranlation field, get the key without _translation
+    if (p.object.translation_object) {
+      language = translationLanguageCode;
+      key = p.key.split('_');
+      key.splice(key.length - 1, 1).join();
+    }
+    // Get record, either the base flat.building record or one of the building_language record
+    const recordWithLanguage = getRecordForLanguage(p.baseRecord, p.baseRecordName, language);
+    // If the key is address key (including address_translation), create address and return
+    if (p.address) return createAddress(recordWithLanguage);
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesMethod, p, recordWithLanguage: ', p, recordWithLanguage);
+    // return value of recordWithLanguage
+    return recordWithLanguage[key];
   };
 
   const flatMethod = (p) => {
@@ -192,14 +233,20 @@ export default (props) => {
 
   const methodObject = {
     building: {
-      method: buildingMethod,
-      parameters: {},
+      method: recordWithLanguagesMethod,
+      parameters: { baseRecord: flat.building, baseRecordName: 'building' },
       condition: flat.building
     },
 
     flat: {
-      method: flatMethod,
-      parameters: {},
+      method: recordWithLanguagesMethod,
+      parameters: { baseRecord: flat, baseRecordName: 'flat' },
+      condition: flat
+    },
+
+    address: {
+      method: recordWithLanguagesMethod,
+      parameters: { baseRecord: flat, baseRecordName: 'flat', address: true },
       condition: flat
     },
 
@@ -211,14 +258,16 @@ export default (props) => {
       condition: flat.amenity
     },
   };
-
+  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code: ', flat, agreement, documentLanguageCode, agreement.language_code);
+  const baseLanguageCode = agreement.language_code || 'jp';
+  const translationLanguageCode = documentLanguageCode || 'en';
   let objectReturned = {};
   // object to be used in handleFormSubmit
   const allFields = {};
   // let eachField = null;
   let allObjectEach = null;
   let keyExistsInMethodObject = false;
-  let eachConditionTrue = false;
+  let conditionTrue = false;
 
   if (template) {
     // let objectReturnedSub = {}
@@ -227,12 +276,12 @@ export default (props) => {
       // eachField = documentFields[eachFieldKey];
       keyExistsInMethodObject = allObjectEach
                                 && methodObject[allObjectEach.initialValuesMethodKey];
-      eachConditionTrue = allObjectEach
-                          && methodObject[allObjectEach.initialValuesMethodKey]
-                          && methodObject[allObjectEach.initialValuesMethodKey].condition;
+      conditionTrue = allObjectEach
+                      && methodObject[allObjectEach.initialValuesMethodKey]
+                      && methodObject[allObjectEach.initialValuesMethodKey].condition;
 
-      if (keyExistsInMethodObject && eachConditionTrue) {
-        objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialValuesMethodKey].method({ ...methodObject.parameters, key: eachField.name }) };
+      if (keyExistsInMethodObject && conditionTrue) {
+        objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialValuesMethodKey].method({ ...methodObject[allObjectEach.initialValuesMethodKey].parameters, key: eachField.name, object: allObjectEach }) };
       }
       console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
     });
