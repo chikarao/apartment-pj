@@ -35,6 +35,7 @@ export default (props) => {
   const splitListParameters = listElement.list_parameters.split(',')
   const templateFileName = splitListParameters[0];
   const baseOrTranslation = splitListParameters[1];
+  // console.log('in get_list_values, listElement, flat, splitListParameters, agreements, agreement: ', listElement, flat, splitListParameters, agreements, agreement);
   const languageCode = baseOrTranslation === 'base' ? agreement.language_code : documentLanguageCode;
   // const languageCode = 'en'
   // const languageCode = 'en';

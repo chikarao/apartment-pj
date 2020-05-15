@@ -334,7 +334,8 @@ class CreateEditDocument extends Component {
         });
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
+      // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
@@ -3387,10 +3388,16 @@ longActionPress(props) {
     const elementId = clickedElement.getAttribute('id');
     const elementIdArray = elementId.split(',');
     let elementType = elementIdArray[0];
+    const allObjectKey = elementIdArray[2];
     const objectPathArray = elementIdArray.slice(1);
     const elementIdNoType = objectPathArray.join(',');
     let takeOutIndex = -1;
     let returnedObject = {};
+
+    const allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey]
+    // console.log('in create_edit_document, handleFieldChoiceActionClick, before if clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement: ', clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement);
+    console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
+
 
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
@@ -3434,7 +3441,8 @@ longActionPress(props) {
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
       // NOTE: buttons plural; If input or buttons, add element
-      if (elementType === 'input' || elementType === 'buttons' || elementType === 'select') {
+      // if (elementType === 'input' || elementType === 'buttons' || (elementType === 'select')) {
+      if (elementType === 'input' || elementType === 'buttons') {
         this.handleTemplateElementAddClick();
       }
     });
@@ -3783,6 +3791,9 @@ longActionPress(props) {
         // If object is a group heading such as building or tenant, list element with angle
         // to indicate, there is something behind it
         if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
+          // To deal with translations of objects with one choice inputFieldValue and a selectChoices associated with it
+          if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
+          console.log('in create_edit_document, handleFieldChoiceClick, in first if eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]: ', eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]);
           // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
@@ -3795,7 +3806,6 @@ longActionPress(props) {
             </div>
           );
         } else if (templateMappingObject[eachKey]) {
-          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           firstChoice = templateMappingObject[eachKey].choices ? templateMappingObject[eachKey].choices[Object.keys(templateMappingObject[eachKey].choices)[0]] : null;
           // Get the type of element to distinguish which to render
           inputElement = !templateMappingObject[eachKey].params && firstChoice.params.val === 'inputFieldValue';
@@ -3805,6 +3815,7 @@ longActionPress(props) {
           choicesYesOrNo = !templateMappingObject[eachKey].params && firstChoice.valName === 'y';
           // choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'y';
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
+          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject, inputElement, choices, choicesObject, choicesYesOrNo: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject, inputElement, choices, choicesObject, choicesYesOrNo);
 
           if (inputElement) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;

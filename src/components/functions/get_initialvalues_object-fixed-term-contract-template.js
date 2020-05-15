@@ -150,45 +150,46 @@ export default (props) => {
     return objectReturned;
   }
 
-  function setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned }) {
-    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
-    if (baseRecord.language_code === Documents[documentKey].baseLanguage) {
-      // get building language for use translated field;
-      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = Documents base recordLanguage, documentLanguageCode: ', recordLanguage, documentLanguageCode);
-      // assign buildingLanguage value to translated field
-      objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-      objectReturned[eachFieldKey] = baseRecord[eachPageObject[eachFieldKey].translation_column];
-    } else if (baseRecord.language_code === documentLanguageCode) {
-      // if building language code is different from base language for document
-      // give translated field the baseRecord value
-      objectReturned[eachPageObject[eachFieldKey].translation_field] = baseRecord[eachPageObject[eachFieldKey].translation_column];
-      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode recordLanguage, Documents[documentKey].baseLanguage: ', recordLanguage, Documents[documentKey].baseLanguage);
-      if (!_.isEmpty(recordLanguage)) {
-        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]);
-        objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-      }
-    } else {
-      // baseRecord languge is neither the document's baselanguage nor the
-      // documentLanguageCode selected by the user, so need to look in translations
-      // e.g. flat and flat_languages
-      const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
-      const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
-      // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage else recordLanguage, recordLanguage1: ', recordLanguage, recordLanguage1);
-      // if document is a translated/biligual document assign both
-      if (Documents[documentKey].translation) {
-        objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-        objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
-      } else {
-        // if not a translated document, assign one that corresponds to the selected document language code
-        if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
-        if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
-        // if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachFieldKey] = recordLanguage[eachFieldKey];
-        // if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachFieldKey] = recordLanguage1[eachFieldKey];
-      }
-    }
-  }
+  // function setLanguage({ baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned }) {
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned: ', baseRecord, eachPageObject, eachFieldKey, eachRecordKey, objectReturned);
+  //   if (baseRecord.language_code === Documents[documentKey].baseLanguage) {
+  //     // get building language for use translated field;
+  //     const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
+  //     // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = Documents base recordLanguage, documentLanguageCode: ', recordLanguage, documentLanguageCode);
+  //     // assign buildingLanguage value to translated field
+  //     objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+  //     objectReturned[eachFieldKey] = baseRecord[eachPageObject[eachFieldKey].translation_column];
+  //   } else if (baseRecord.language_code === documentLanguageCode) {
+  //     // if building language code is different from base language for document
+  //     // give translated field the baseRecord value
+  //     objectReturned[eachPageObject[eachFieldKey].translation_field] = baseRecord[eachPageObject[eachFieldKey].translation_column];
+  //     const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
+  //     // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode recordLanguage, Documents[documentKey].baseLanguage: ', recordLanguage, Documents[documentKey].baseLanguage);
+  //     if (!_.isEmpty(recordLanguage)) {
+  //       // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage if baseRecord = documentLanguageCode eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]: ', eachFieldKey, eachPageObject[eachFieldKey].translation_column, recordLanguage, recordLanguage[eachPageObject[eachFieldKey].translation_column]);
+  //       objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+  //     }
+  //   } else {
+  //     // baseRecord languge is neither the document's baselanguage nor the
+  //     // documentLanguageCode selected by the user, so need to look in translations
+  //     // e.g. flat and flat_languages
+  //     const recordLanguage = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], Documents[documentKey].baseLanguage);
+  //     const recordLanguage1 = getLanguage(baseRecord[eachPageObject[eachFieldKey].translation_record], documentLanguageCode);
+  //     // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, setLanguage else recordLanguage, recordLanguage1: ', recordLanguage, recordLanguage1);
+  //     // if document is a translated/biligual document assign both
+  //     if (Documents[documentKey].translation) {
+  //       objectReturned[eachFieldKey] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+  //       objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+  //     } else {
+  //       // if not a translated document, assign one that corresponds to the selected document language code
+  //       if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage[eachPageObject[eachFieldKey].translation_column];
+  //       if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachPageObject[eachFieldKey].translation_field] = recordLanguage1[eachPageObject[eachFieldKey].translation_column];
+  //       // if (documentLanguageCode === recordLanguage.language_code) objectReturned[eachFieldKey] = recordLanguage[eachFieldKey];
+  //       // if (documentLanguageCode === recordLanguage1.language_code) objectReturned[eachFieldKey] = recordLanguage1[eachFieldKey];
+  //     }
+  //   }
+  // }
+
 
   function getRecordForLanguage(baseRecord, baseRecordName, language) {
     console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
@@ -202,6 +203,11 @@ export default (props) => {
     // which will alway be there if this function is run
     return _.isEmpty(recordWithLanguage) || !recordWithLanguage ? baseRecord : recordWithLanguage;
   }
+  // getSingleObjectValue receives one object and returns the value to the key received
+  const getSingleObjectValue = (p) => {
+    if (p.hideKey === p.key) return p.record[p.key] + '***';
+    return p.record[p.key];
+  };
   // recordWithLanguagesArrayMethod for records such as building and flat
   // (ie has array attached flat_languages, building_languages)
   const recordWithLanguagesArrayMethod = (p) => {
@@ -209,11 +215,12 @@ export default (props) => {
     // If the field neither a translation_object (with _translation on the key) nor
     // has a translation_field (eg building_languages), just get the value, else get language and values
     // if (!p.object.translation_field && !p.object.translation_object) return flat.building[p.key];
-    if (!p.object.translation_field && !p.object.translation_object) return p.baseRecord[p.key];
-
-    let language = null;
+    if (!p.object.translation_field && !p.object.translation_object && !p.object.actual_record_key) return p.baseRecord[p.key];
+    // Assign baseLanguageCode as the initial language since if no language available,
+    // getRecordForLanguage will return the baseRecord (e.g. flat)
+    let language = baseLanguageCode;
     let key = null;
-    // If the object has translation_field (i.e. is not a tranlation field itself)
+        // If the object has translation_field (i.e. is not a tranlation field itself)
     // Assign baseLanguageCode to language to be sent to getRecordForLanguage
     // assign key to key for the record to be returned
     if (p.object.translation_field) {
@@ -226,20 +233,35 @@ export default (props) => {
       key = p.key.split('_');
       key.splice(key.length - 1, 1).join();
     }
+    // For fields and object names different from record models (e.g. flat)
+    if (p.object.actual_record_key) {
+      key = p.object.actual_record_key;
+    }
     // Get record, either the base flat.building record or one of the building_language record
-    const recordWithLanguage = getRecordForLanguage(p.baseRecord, p.baseRecordName, language);
+    // If p.object is language_independent: true then return base record since others will not have the k:v
+    const recordWithLanguage = !p.object.language_independent
+                                ?
+                                getRecordForLanguage(p.baseRecord, p.baseRecordName, language)
+                                :
+                                p.baseRecord;
     // If the key is address key (including address_translation), create address and return
     if (p.address) return createAddress(recordWithLanguage);
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p, recordWithLanguage: ', p, recordWithLanguage);
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p, p.baseRecord, recordWithLanguage: ', p, p.baseRecord, recordWithLanguage);
     // return value of recordWithLanguage
     return recordWithLanguage[key];
   };
 
-  const flatMethod = (p) => {
-    return flat[p.key];
+  const bookingMethod = (p) => {
+    if (p.key === 'deposit_amount') return parseInt((p.record.final_rent * p.record.final_deposit), 10);
+    if (p.key === 'final_deposit') return p.record.final_deposit * 1;
+    if (p.key === 'final_rent') return parseInt((p.record.final_rent * 1), 10);
+    return p.record[p.key];
     // return { ...objectReturned, [p.key]: flat.building[p.key] };
   };
-    // object to return to create_edit_document.js
+
+  const flatMethod = (p) => {
+    return flat[p.key];
+  };
 
   const methodObject = {
     building: {
@@ -274,6 +296,17 @@ export default (props) => {
       condition: flat.amenity
     },
 
+    bankAccount: {
+      method: getSingleObjectValue,
+      parameters: { record: flat.bank_account, hideKey: 'account_number', hideText: '***' },
+      condition: flat && flat.bank_account
+    },
+
+    booking: {
+      method: bookingMethod,
+      parameters: { record: booking },
+      condition: booking
+    },
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code: ', flat, agreement, documentLanguageCode, agreement.language_code);
   const baseLanguageCode = agreement.language_code || 'jp';
@@ -285,7 +318,7 @@ export default (props) => {
   let allObjectEach = null;
   let keyExistsInMethodObject = false;
   let conditionTrue = false;
-
+  let count = 0;
 
   if (template) {
     // let objectReturnedSub = {}
@@ -294,32 +327,38 @@ export default (props) => {
       // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
       keyExistsInMethodObject = allObjectEach
-                                && methodObject[allObjectEach.initialValuesMethodKey];
+                                && methodObject[allObjectEach.initialvalues_method_key];
       conditionTrue = allObjectEach
-                      && methodObject[allObjectEach.initialValuesMethodKey]
-                      && methodObject[allObjectEach.initialValuesMethodKey].condition;
+                      && methodObject[allObjectEach.initialvalues_method_key]
+                      && methodObject[allObjectEach.initialvalues_method_key].condition;
 
+      // The below sends key and object as default
+      // and the rest of the parameters are derieed from methodObject
       if (keyExistsInMethodObject && conditionTrue) {
-        objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialValuesMethodKey].method({ ...methodObject[allObjectEach.initialValuesMethodKey].parameters, key: eachField.name, object: allObjectEach }) };
+        count++;
+        objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({ ...methodObject[allObjectEach.initialvalues_method_key].parameters, key: eachField.name, object: allObjectEach }) };
       }
       // Code for list elements eg amenities_list amenties_list_translation
       // list elements do not have an all object and has list parameters in eachField,
       // eg. list_parameters: fixed_term_rental_contract_bilingual,translation,amenities,true,bath_tub,shower,ac,auto_lock
-      conditionTrue = !allObjectEach
+      conditionTrue = allObjectEach
+      // conditionTrue = !allObjectEach
                       && eachField.list_parameters
                       && methodObject.list
                       && methodObject.list.condition;
       if (conditionTrue) {
+        count++;
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count: ', eachField, eachField.name, count);
     });
   } else {
 
   }
   // !!!!!!!!!end of documentForm eachField
 
-  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned: ', objectReturned);
+  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count: ', objectReturned, count);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };
 // }

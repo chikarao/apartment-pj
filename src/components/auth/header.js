@@ -220,8 +220,8 @@ class Header extends Component {
    getIndexOption(option, tagValue, language) {
      const optionTags = document.getElementsByClassName(option)
      const optionIndexArray = [];
-     console.log('in header, getIndexOption, optionTags : ', optionTags);
-     console.log('in header, getIndexOption, tagValue : ', tagValue);
+     // console.log('in header, getIndexOption, optionTags : ', optionTags);
+     // console.log('in header, getIndexOption, tagValue : ', tagValue);
      _.each(optionTags, (tag, i) => {
        // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
        if (language && tag.value == tagValue) {

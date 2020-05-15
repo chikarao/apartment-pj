@@ -338,13 +338,13 @@ export default function (state = {
       // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       const createdObject = { [action.payload.id]: action.payload };
-      let initialValuesObject = { ...state.initialValuesObject };
-      let listValues = '';
-      if (action.payload.list_parameters) {
-        listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects, agreements: state.agreements, documentLanguageCode: state.documentLanguageCode });
-        // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
-        initialValuesObject = { [action.payload.name]: listValues }
-      }
+      // let initialValuesObject = { ...state.initialValuesObject };
+      // let listValues = '';
+      // if (action.payload.list_parameters) {
+      //   listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects, agreements: state.agreements, documentLanguageCode: state.documentLanguageCode });
+      //   // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
+      //   initialValuesObject = { [action.payload.name]: listValues }
+      // }
       const templateElementsByPage = addToTemplateElementsByPage(action.payload);
       const mergedObject = _.merge(newObject, state.templateElements, createdObject);
       // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
@@ -355,7 +355,7 @@ export default function (state = {
         templateElements: mergedObject,
         templateElementsByPage,
         // initialValuesObject,
-        listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
+        // listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
         // templateDocumentChoicesObject
       };
     }
