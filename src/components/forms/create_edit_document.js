@@ -3393,11 +3393,8 @@ longActionPress(props) {
     const elementIdNoType = objectPathArray.join(',');
     let takeOutIndex = -1;
     let returnedObject = {};
-
-    const allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey]
-    // console.log('in create_edit_document, handleFieldChoiceActionClick, before if clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement: ', clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement);
-    console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
-
+    let allObjectEach = null;
+    let trueOrFalseSelect = false;
 
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
@@ -3440,9 +3437,15 @@ longActionPress(props) {
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
+      if (elementType === 'select') {
+        allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey];
+        trueOrFalseSelect = allObjectEach.choices[0].valName = 'y';
+      }
+      // console.log('in create_edit_document, handleFieldChoiceActionClick, before if clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement: ', clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement);
+      console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
       // NOTE: buttons plural; If input or buttons, add element
       // if (elementType === 'input' || elementType === 'buttons' || (elementType === 'select')) {
-      if (elementType === 'input' || elementType === 'buttons') {
+      if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
         this.handleTemplateElementAddClick();
       }
     });
@@ -3542,9 +3545,51 @@ longActionPress(props) {
             border: '1px solid black'
           };
         });
-      }
+      } else if (summaryObject.select.length > 0) {
+        createdObject = summaryObject.select[0];
+        templateElementAttributes = {
+          id: null,
+          // left, top and page assigned in getMousePosition
+          name: createdObject.name,
+          component: createdObject.component,
+          agreement_id: this.props.agreement.id,
+          width: '10%',
+          height: '1.6%',
+          input_type: createdObject.input_type, // or 'string' if an input component
+          // class_name: createdObject.choices[0].params.class_name,
+          class_name: 'document-rectangle-template',
+          border_color: 'lightgray',
+          font_style: this.state.newFontObject.font_style,
+          font_weight: this.state.newFontObject.font_weight,
+          font_family: this.state.newFontObject.font_family,
+          font_size: this.state.newFontObject.font_size,
+          document_field_choices: {
+            0: {
+              val: 'inputFieldValue',
+              top: null,
+              left: null,
+              // width: summaryObject.select[0].width || summaryObject.select[0].params.width,
+              // width: summaryObject.select[0].width || summaryObject.select[0].params.width,
+              width: summaryObject.select[0].width || summaryObject.select[0].choices[0].params.width,
+              // height: createdObject.choices[eachIndex].params.height,
+              height: summaryObject.select[0].height || summaryObject.select[0].choices[0].params.height || '2.0%',
+              // height: summaryObject.select[0].height || summaryObject.select[0].params.height || '2.0%',
+              // class_name: createdObject.choices[eachIndex].params.class_name,
+              class_name: 'document-rectangle-template-button',
+              input_type: createdObject.type,
+              // border_radius: '3px',
+              border: '1px solid black',
+              selectChoices: {
+                0: { value: true },
+                1: { value: false }
+              }
+            }
+          }
+        };
 
-      if (summaryObject.list.length > 0) {
+        console.log('in create_edit_document, handleTemplateElementAddClick, summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
+        // return;
+      } else if (summaryObject.list.length > 0) {
         createdObject = summaryObject.list[0];
         let nameString = '';
         // If user has selected translation
