@@ -82,8 +82,15 @@ class DocumentChoicesTemplate extends Component {
     const { input: { value, onChange, name }, meta, input } = this.props;
     // console.log('DocumentChoicesTemplate, handleInputChange event.target.value', event.target.value);
     // !!!!No need to use input element value props; update value directly with onChange in handleInputChange in RFv7.4.2
-    onChange(event.target.value);
-    console.log('DocumentChoicesTemplate, handleInputChange input, meta, meta.dirty, value, event.target.value, this.props.dirtyFields', input,meta,  meta.dirty, value, event.target.value, this.props.dirtyFields);
+    // Use changeValue variable to deal with boolean select choice values
+    // since event.target.value is a string
+    let changeValue = null;
+    event.target.value === 'true' ? changeValue = true : changeValue = event.target.value;
+    event.target.value === 'false' ? changeValue = false : changeValue;
+    // onChange(event.target.value);
+    onChange(changeValue);
+    // console.log('DocumentChoicesTemplate, handleInputChange input, meta, meta.dirty, value, event.target.value, this.props.dirtyFields', input,meta,  meta.dirty, value, event.target.value, this.props.dirtyFields);
+    console.log('DocumentChoicesTemplate, handleInputChange value, event.target.value, changeValue', value, event.target.value, changeValue);
     // check if name is false in dirtyFields in state; if so flip
     // if (this.props.dirtyFields[name] != meta.dirty) {
     //   this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty })
@@ -365,30 +372,7 @@ class DocumentChoicesTemplate extends Component {
     // if choice in constants/... has attribute baseLanguageField: true,
     // assign the document base language, otherwise, use documentLanguageCode
     const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;
-    // console.log('DocumentChoicesTemplate, renderSelectOptions language', language);
-    // create an empty choice so that select field can be blank
 
-    // const getTranslation = (choices, value) => {
-    //   let returnObject = null;
-    //   Object.keys(choices).some((eachChoice) => {
-    //     // eachChoice is 0, 1...
-    //     if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
-    //       if (choices[eachChoice].params.val === value) {
-    //         returnObject = choices[eachChoice].translation;
-    //         return returnObject;
-    //       } else if (choices[eachChoice].selectChoices) {
-    //         Object.keys(choices[eachChoice].selectChoices).some((each) => {
-    //           console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
-    //           if (choices[eachChoice].selectChoices[each].value === value) {
-    //             returnObject = choices[eachChoice].selectChoices[each];
-    //             return returnObject
-    //           } // end of if (choices[eachChoice].selectChoices[each].value...
-    //         }) // end of some selectChoices
-    //       } // end of else if (choices[eachChoice].selectChoices)...
-    //     }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
-    //   }); // end of Object keys eachChoice
-    //   return returnObject;
-    // }; // end of getTranslation
     const getTranslation = (choices, value) => {
       let returnObject = null;
       console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value', name, choices, value);
@@ -397,23 +381,6 @@ class DocumentChoicesTemplate extends Component {
         returnObject = choices.inputFieldValue.selectChoices[value]
       }
 
-      // Object.keys(choices).some((eachChoice) => {
-      //   // eachChoice is 0, 1...
-      //   if (!choices[eachChoice].nonTemplate && ((choices[eachChoice].params.val === value) || choices[eachChoice].selectChoices)) {
-      //     if (choices[eachChoice].params.val === value) {
-      //       returnObject = choices[eachChoice].translation;
-      //       return returnObject;
-      //     } else if (choices[eachChoice].selectChoices) {
-      //       Object.keys(choices[eachChoice].selectChoices).some((each) => {
-      //         console.log('DocumentChoicesTemplate, renderSelectOptions, getTranslation, name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each: ', name, choice, choices, value, eachChoice, choices[eachChoice], choices[eachChoice].selectChoices, each);
-      //         if (choices[eachChoice].selectChoices[each].value === value) {
-      //           returnObject = choices[eachChoice].selectChoices[each];
-      //           return returnObject
-      //         } // end of if (choices[eachChoice].selectChoices[each].value...
-      //       }) // end of some selectChoices
-      //     } // end of else if (choices[eachChoice].selectChoices)...
-      //   }// end of if (!choices[eachChoice].choices.nonTemplate &&...)
-      // }); // end of Object keys eachChoice
       return returnObject;
     }; // end of getTranslation
 
@@ -425,13 +392,17 @@ class DocumentChoicesTemplate extends Component {
     let text = null;
     // return <option key={i} value={value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
     return _.map(selectChoices, (eachChoice, i) => {
-      value = eachChoice.value || eachChoice.val;
+      // Test whether value is false to deal with true or false values e.g. parking_included
+      value = eachChoice.value === false ? eachChoice.value : (eachChoice.value || eachChoice.val);
       if (elementObject) {
         translationObject = getTranslation(elementObject.choices, value);
-        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
+        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
+        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
+        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]', name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]);
       }
       // text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
       text = translationObject ? translationObject[language] : value;
+      // text = typeof text === 'boolean' ? object[text] : text;
       return <option key={i} value={value}>{text}</option>;
       // return <option key={i} value={value}>{text || value}</option>;
     });
