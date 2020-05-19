@@ -268,12 +268,20 @@ export default (props) => {
       });
       return object;
     };
-
-    const facilityObject = createFacilityObject();
+    // Get an object with each baseKey; If there is a baseKey, get just the key needed;
+    // e.g. if parking_space (car) is baseKey, you need only data for the car_parking facility;
+    // If getting the total, need object with all keys.
+    const facilityObject = p.object.base_key ? { [p.object.base_key]: [] } : createFacilityObject();
     _.each(p.record.facility_bookings, eachFacilityBooking => {
-      // if (p.object.base_key === eachFacilityBooking.facility.facility_type) {
+      // Push into array just the type of facility needed;
+      // If counting the total, push all types in each array
+      if (p.object.base_key) {
+        if (p.object.base_key === eachFacilityBooking.facility.facility_type) {
+          facilityObject[eachFacilityBooking.facility.facility_type].push(eachFacilityBooking.facility);
+        }
+      } else {
         facilityObject[eachFacilityBooking.facility.facility_type].push(eachFacilityBooking.facility);
-      // }
+      }
     });
 
     let facilityUsageFeeSum = 0;
@@ -284,9 +292,8 @@ export default (props) => {
     _.each(Object.keys(facilityObject), eachFacilityType => {
       // Get the choice for type key e.g. car_parking from facility_type object
       // in facility of documentConstants
-      eachChoice = documentConstants.facility.facility_type.choices[eachFacilityType];
       _.each(facilityObject[eachFacilityType], (each, i) => {
-          console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod in each each, p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each: ', p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each);
+          // console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod in each each, p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each: ', p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each);
         facilityUsageFeeSum += each.price_per_month;
         if (eachFacilityType === p.object.base_key && (i === facilityObject[eachFacilityType].length - 1)) facilityIdNumbers += each.facility_number;
         // if (eachFacilityType === p.object.base_key && i === facilityObject[eachFacilityType].length - 1) facilityIdNumbers.concat(each.facility_number);
@@ -296,9 +303,12 @@ export default (props) => {
         // facilitySpaces++
       });
     });
-    console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod, p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces: ', p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces);
-    // return flat[p.key];
+    eachChoice = documentConstants.facility.facility_type.choices[p.object.base_key];
+    // console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod, p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces: ', p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces);
+    // Match return condition of each choice to the key given to the method
     if (p.key === 'facilities_usage_fee') return facilityUsageFeeSum;
+    if (p.key === eachChoice.documentFormMap1) return facilitySpaces;
+    if (p.key === eachChoice.documentFormMap2) return facilityIdNumbers;
   };
 
   // const flatMethod = (p) => {
