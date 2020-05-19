@@ -370,7 +370,6 @@ class DocumentChoicesTemplate extends Component {
     // gets base language of document from ../constant/documents
     // const documentBaseLanguage = Documents[this.props.documentKey].baseLanguage;
     const documentBaseLanguage = this.props.agreement.language_code;
-    // if choice in constants/... has attribute baseLanguageField: true,
     // assign the document base language, otherwise, use documentLanguageCode
     const language = !choice.translation ? documentBaseLanguage : this.props.documentLanguageCode;
     // const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;

@@ -15,8 +15,6 @@ import {
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
-import getListValues from '../components/forms/get_list_values';
-
 export default function (state = {
   initialValuesObject: {},
   overlappedkeysMapped: {},
@@ -284,7 +282,8 @@ export default function (state = {
           important_points_explanation_bilingual: JSON.parse(action.payload.template_mapping_object_important_points)
         },
         flat: action.payload.flat,
-        agreements: action.payload.agreements
+        agreements: action.payload.agreements,
+        documentConstants: JSON.parse(action.payload.document_constants),
       };
     }
 

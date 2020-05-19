@@ -58,7 +58,6 @@ class FacilityCreateModal extends Component {
       );
     }
   }
-
   // turn off showFacilityCreateModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {

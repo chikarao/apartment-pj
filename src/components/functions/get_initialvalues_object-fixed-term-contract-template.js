@@ -11,7 +11,7 @@ import getListValues from '../forms/get_list_values';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants } = props;
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
@@ -259,9 +259,51 @@ export default (props) => {
     // return { ...objectReturned, [p.key]: flat.building[p.key] };
   };
 
-  const flatMethod = (p) => {
-    return flat[p.key];
+  const facilityMethod = (p) => {
+    const createFacilityObject = () => {
+      const object = {};
+      // const object = { [p.object.base_key]: [] };
+      _.each(Object.keys(documentConstants.facility.facility_type.choices), each => {
+        object[each] = [];
+      });
+      return object;
+    };
+
+    const facilityObject = createFacilityObject();
+    _.each(p.record.facility_bookings, eachFacilityBooking => {
+      // if (p.object.base_key === eachFacilityBooking.facility.facility_type) {
+        facilityObject[eachFacilityBooking.facility.facility_type].push(eachFacilityBooking.facility);
+      // }
+    });
+
+    let facilityUsageFeeSum = 0;
+    let facilityIdNumbers = '';
+    let facilitySpaces = 0;
+
+    let eachChoice = null;
+    _.each(Object.keys(facilityObject), eachFacilityType => {
+      // Get the choice for type key e.g. car_parking from facility_type object
+      // in facility of documentConstants
+      eachChoice = documentConstants.facility.facility_type.choices[eachFacilityType];
+      _.each(facilityObject[eachFacilityType], (each, i) => {
+          console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod in each each, p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each: ', p, facilityObject, eachFacilityType, facilityObject[eachFacilityType], each);
+        facilityUsageFeeSum += each.price_per_month;
+        if (eachFacilityType === p.object.base_key && (i === facilityObject[eachFacilityType].length - 1)) facilityIdNumbers += each.facility_number;
+        // if (eachFacilityType === p.object.base_key && i === facilityObject[eachFacilityType].length - 1) facilityIdNumbers.concat(each.facility_number);
+        if (eachFacilityType === p.object.base_key && (i < facilityObject[eachFacilityType].length - 1)) facilityIdNumbers = facilityIdNumbers + each.facility_number + ', ';
+        // if (eachFacilityType === p.object.base_key && i < facilityObject[eachFacilityType].length - 1) facilityIdNumbers.concat(`${each.facility_number},`);
+        if (eachFacilityType === p.object.base_key) facilitySpaces++;
+        // facilitySpaces++
+      });
+    });
+    console.log('in get_initialvalues_object-fixed-term-contract, facilityMethod, p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces: ', p, p.object.name, facilityObject, eachChoice, facilityIdNumbers, facilitySpaces);
+    // return flat[p.key];
+    if (p.key === 'facilities_usage_fee') return facilityUsageFeeSum;
   };
+
+  // const flatMethod = (p) => {
+  //   return flat[p.key];
+  // };
 
   const methodObject = {
     building: {
@@ -307,8 +349,14 @@ export default (props) => {
       parameters: { record: booking },
       condition: booking
     },
+
+    facility: {
+      method: facilityMethod,
+      parameters: { record: booking },
+      condition: booking.facility_bookings.length > 0
+    },
   };
-  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code: ', flat, agreement, documentLanguageCode, agreement.language_code);
+  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants);
   const baseLanguageCode = agreement.language_code || 'jp';
   const translationLanguageCode = documentLanguageCode || 'en';
   let objectReturned = {};

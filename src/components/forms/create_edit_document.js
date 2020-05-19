@@ -320,7 +320,8 @@ class CreateEditDocument extends Component {
         staffTranslations,
         templateElements,
         agreement,
-        templateMappingObjects
+        templateMappingObjects,
+        documentConstants
       } = this.props;
       const mainInsertFieldsObject = null;
       let templateElementsSubset = {};
@@ -335,7 +336,7 @@ class CreateEditDocument extends Component {
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }
@@ -4056,10 +4057,14 @@ longActionPress(props) {
   }
 
   renderFieldBoxControls() {
-    // 1) Enable add button if there are more than 1 select buttons selected
+    // 1) Enable "add" button if there are more than 1 select buttons selected
+    // (or if a one-click select is selected)
     // 2) Enable if 1 or more button selected and more than 1 select selected
     // OR if more than 1 button selected and more than 1 select OR 0 select selected
     // 3) Enable if 1 or more list selected
+    // disable "add" if there is a value for tempalteElementAttributes
+    // disableTranslation if there is alread a templateElementAttributes
+    // or if there are list or selected AND translation is true for templateElementActionIdObject
     const selectOk = this.state.templateElementActionIdObject.select > 1;
     const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1)
                       ||
@@ -4068,7 +4073,7 @@ longActionPress(props) {
     const listOk = this.state.templateElementActionIdObject.list > 0;
     const enableAdd = (selectOk || buttonOk || listOk) && !this.state.templateElementAttributes;
     const disableTranslation = ((this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0) && this.state.templateElementActionIdObject.translation) || this.state.templateElementAttributes;
-    console.log('in create_edit_document, renderFieldBoxControls, this.state.actionExplanation, selectOk, enableAdd, disableTranslation: ', selectOk, enableAdd, disableTranslation);
+    // console.log('in create_edit_document, renderFieldBoxControls, this.state.actionExplanation, selectOk, enableAdd, disableTranslation: ', selectOk, enableAdd, disableTranslation);
 
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
@@ -5182,6 +5187,7 @@ function mapStateToProps(state) {
       templateMappingObjects: state.documents.templateMappingObjects,
       documentTranslationsAll: state.documents.documentTranslations,
       allDocumentObjects: state.documents.allDocumentObjects,
+      documentConstants: state.documents.documentConstants,
     };
   }
 
