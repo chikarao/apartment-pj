@@ -1017,7 +1017,10 @@ renderEachDocumentField(page) {
         if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
-        this.setState({ templateElementAttributes: null });
+        this.setState({
+          templateElementAttributes: null,
+          templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
+         });
       });
     }
   }
@@ -1861,6 +1864,7 @@ longActionPress(props) {
 
   // For creating new input fields
   renderTemplateElements(page) {
+    const { documentLanguageCode } = this.props;
     const documentEmpty = _.isEmpty(this.props.documents);
     let fieldComponent = '';
     let noTabs = false;
@@ -2095,7 +2099,8 @@ longActionPress(props) {
                       required: modifiedElement.required,
                       nullRequiredField,
                       newElement,
-                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props) },
+                      documentLanguageCode,
+                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
                       formFields: newElement
                         ?
                         this.props.templateElementsByPage // doesn't have choices for input element
@@ -2188,6 +2193,7 @@ longActionPress(props) {
                       getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
                       required: modifiedElement.required,
                       nullRequiredField,
+                      documentLanguageCode,
                       formFields: localTemplateElementsByPage,
                       charLimit: modifiedElement.charLimit,
                       otherChoiceValues,
@@ -2250,6 +2256,7 @@ longActionPress(props) {
                   formFields: this.props.templateElementsByPage,
                   otherChoiceValues,
                   modifiedElement,
+                  documentLanguageCode,
                   editFieldsOn: this.state.editFieldsOn,
                   eachElement: modifiedElement,
                   required: modifiedElement.required,
@@ -3302,7 +3309,8 @@ longActionPress(props) {
     this.setState({
       templateFieldChoiceArray: newArray,
       // Somehow, array needs to be assigned specifically like below or does not empty out
-      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
+      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
+      templateElementAttributes: null
     }, () => {
       // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
@@ -3355,11 +3363,13 @@ longActionPress(props) {
       let takeOutIndexArray = [];
       // let eachNoType = null;
       let elementType = null;
+      let increment = null;
       // let elementTypeReturned = null;
       _.each(this.state.templateElementActionIdObject.array, (each, i) => {
         // Get a elementId without the type ie select, list, button
         // eachNoType = each.split(',').slice(1).join(',');
         elementType = each.split(',')[0];
+        increment = each.split(',')[3];
         if (baseType !== elementType) {
           takeOutIndex = modNewObject.array.indexOf(each);
           takeOutIndexArray.push(takeOutIndex)
@@ -3376,7 +3386,8 @@ longActionPress(props) {
         _.times(takoutIndexArrayLength, i => {
           elementType = modNewObject.array[takeOutIndexArray[lastIndex]].split(',')[0];
           modNewObject.array.splice(takeOutIndexArray[lastIndex], 1);
-          modNewObject[elementType]--;
+          increment ? modNewObject[elementType] - increment : modNewObject[elementType]--;
+          // modNewObject[elementType]--;
           lastIndex--;
         });
       }
@@ -3387,14 +3398,15 @@ longActionPress(props) {
     const clickedElement = event.target;
     const elementId = clickedElement.getAttribute('id');
     const elementIdArray = elementId.split(',');
+    // elementType (button, input, select, list)
     let elementType = elementIdArray[0];
-    const allObjectKey = elementIdArray[2];
+    // Select for true or false are given increments of 2
+    // for templateElementActionIdObject select count so 'add' button gets enabled
+    const increment = parseInt(elementIdArray[3], 10);
     const objectPathArray = elementIdArray.slice(1);
     const elementIdNoType = objectPathArray.join(',');
     let takeOutIndex = -1;
     let returnedObject = {};
-    let allObjectEach = null;
-    let trueOrFalseSelect = false;
 
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
@@ -3409,15 +3421,18 @@ longActionPress(props) {
         if (returnedObject.elementTypeReturned) newObject[returnedObject.elementTypeReturned]--;
         // Get elementType of current element clicked and increment it up
         elementType = elementId.split(',')[0];
-        newObject[elementType]++;
+        // If increment has value, increment up the value otherwise increment just 1
+        increment ? newObject[elementType] = newObject[elementType] + increment : newObject[elementType]++;
         // Push into array after iteration and taking out same id with different type
         newObject.array.push(elementId);
-        console.log('in create_edit_document, handleFieldChoiceActionClick, inside > 0 if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+        // console.log('in create_edit_document, handleFieldChoiceActionClick, inside > 0 if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject, increment : ', elementId, elementType, newObject, this.state.templateElementActionIdObject, increment);
       } else { // else of length > 0
         // If nothing in array, push elementId
-        console.log('in create_edit_document, handleFieldChoiceActionClick, in else inside if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+        // console.log('in create_edit_document, handleFieldChoiceActionClick, in else inside if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
         newObject.array.push(elementId);
-        newObject[elementType]++;
+        // if there is an increment value (e.g. select)
+        increment ? newObject[elementType] = newObject[elementType] + increment : newObject[elementType]++;
+        // newObject[elementType]++;
       }
     } else { // else of if !input || !buttons
       if (elementType === 'buttons') {
@@ -3436,16 +3451,17 @@ longActionPress(props) {
     console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState after each each elementId, elementType, this.state.templateElementActionIdObject : ', elementId, elementType, this.state.templateElementActionIdObject);
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
-      console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.templateElementActionIdObject: ', elementId, this.state.templateElementActionIdObject);
-      if (elementType === 'select') {
-        allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey];
-        trueOrFalseSelect = allObjectEach.choices[0].valName = 'y';
-      }
+      console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, this.state.templateElementActionIdObject, increment: ', elementId, elementType, this.state.templateElementActionIdObject, increment);
+      // if (elementType === 'select') {
+      //   allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey];
+      //   trueOrFalseSelect = allObjectEach && (allObjectEach.choices[true].valName === 'y' || allObjectEach.choices[0].valName === 'y');
+      // }
       // console.log('in create_edit_document, handleFieldChoiceActionClick, before if clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement: ', clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement);
-      console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
+      // console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
       // NOTE: buttons plural; If input or buttons, add element
       // if (elementType === 'input' || elementType === 'buttons' || (elementType === 'select')) {
-      if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
+      if (elementType === 'input' || elementType === 'buttons') {
+      // if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
         this.handleTemplateElementAddClick();
       }
     });
@@ -3458,6 +3474,7 @@ longActionPress(props) {
     let indexOfChoices = objectPathArray.indexOf('choices');
     let parent = null;
     let modEach = null;
+    let elementIdLength = null;
     const numbers = ['0', '1', '2', '3', '4', '5', '6'];
     const summaryObject = { parent: null, input: [], select: [], button: [], buttons: [], list: [] };
 
@@ -3466,6 +3483,8 @@ longActionPress(props) {
         elementIdArray = each.split(',');
         elementType = elementIdArray[0];
         objectPathArray = elementIdArray.slice(1);
+        // Take out increment number 2 for select used in handleFieldChoiceActionClick
+        if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
         indexOfChoices = objectPathArray.indexOf('choices');
         let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
         // let choice = null;
@@ -3547,6 +3566,7 @@ longActionPress(props) {
         });
       } else if (summaryObject.select.length > 0) {
         createdObject = summaryObject.select[0];
+        const selectFirstChoice = createdObject.choices[true] || createdObject.choices[0]
         templateElementAttributes = {
           id: null,
           // left, top and page assigned in getMousePosition
@@ -3571,11 +3591,12 @@ longActionPress(props) {
               // width: summaryObject.select[0].width || summaryObject.select[0].choices[0].params.width,
               width: '12%',
               // height: createdObject.choices[eachIndex].params.height,
-              height: summaryObject.select[0].height || summaryObject.select[0].choices[0].params.height || '2.0%',
+              height: selectFirstChoice.params.height || '2.0%',
               // height: summaryObject.select[0].height || summaryObject.select[0].params.height || '2.0%',
               // class_name: createdObject.choices[eachIndex].params.class_name,
               class_name: 'document-rectangle-template-button',
               input_type: createdObject.type,
+              translation: this.state.templateElementActionIdObject.translation,
               // border_radius: '3px',
               border: '1px solid black',
               selectChoices: {
@@ -3686,6 +3707,7 @@ longActionPress(props) {
             // class_name: createdObject.choices[eachIndex].params.class_name,
             class_name: 'document-rectangle-template-button',
             input_type: createdObject.type,
+            translation: this.state.templateElementActionIdObject.translation,
             // border_radius: '3px',
             border: '1px solid black',
             selectChoices: {}
@@ -3708,13 +3730,12 @@ longActionPress(props) {
           });
         }
       } // end of  if (summaryObject.button.length > 0
-
       console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
     }
 
     // Placeholder until create element completed.
     this.setState({
-      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
+      // templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
       templateElementAttributes
     }, () => {
       console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
@@ -3968,7 +3989,7 @@ longActionPress(props) {
                     </div>
                     :
                     <div
-                      id={'select,' + valueString}
+                      id={'select,' + valueString + ',2'}
                       onClick={this.handleFieldChoiceActionClick}
                       style={elementIdArray.indexOf('select,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
                       // className="create-edit-document-template-each-choice-action-box-button"
@@ -4041,11 +4062,13 @@ longActionPress(props) {
     // 3) Enable if 1 or more list selected
     const selectOk = this.state.templateElementActionIdObject.select > 1;
     const buttonOk = (this.state.templateElementActionIdObject.button > 0 && this.state.templateElementActionIdObject.select > 1)
-                      || (this.state.templateElementActionIdObject.button > 1
-                          && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
+                      ||
+                      (this.state.templateElementActionIdObject.button > 1
+                        && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
     const listOk = this.state.templateElementActionIdObject.list > 0;
-    const enableAdd = selectOk || buttonOk || listOk;
-    const enableTranslation = this.state.templateElementActionIdObject.list > 0 && this.state.templateElementActionIdObject.translation;
+    const enableAdd = (selectOk || buttonOk || listOk) && !this.state.templateElementAttributes;
+    const disableTranslation = ((this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0) && this.state.templateElementActionIdObject.translation) || this.state.templateElementAttributes;
+    console.log('in create_edit_document, renderFieldBoxControls, this.state.actionExplanation, selectOk, enableAdd, disableTranslation: ', selectOk, enableAdd, disableTranslation);
 
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
@@ -4060,13 +4083,13 @@ longActionPress(props) {
           {this.renderEachFieldControlButton()}
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-          {this.state.templateElementActionIdObject.list > 0
+          {this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0
             ?
             <div
               className="create-edit-document-template-edit-field-box-controls-action-button"
               onClick={this.handleFieldPreferencesClick}
               value={'translation'}
-              style={enableTranslation ? { color: 'gray' } : { color: 'blue' }}
+              style={disableTranslation ? { color: 'gray' } : { color: 'blue' }}
             >
               Translation
             </div>
