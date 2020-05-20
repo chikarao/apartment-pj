@@ -318,7 +318,6 @@ export default (props) => {
     // If language is jp, order names last name first
     let fullName = profile.last_name ? profile.first_name.concat(` ${profile.last_name}`) : '';
     if (language === 'jp') fullName = profile.last_name ? profile.last_name.concat(` ${profile.first_name}`) : '';
-    // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p.key, p, record, language, profile, fullName: ', p.key, p, record, language, profile, fullName);
 
     // return userOwner[p.key];
     let fullAddress = profile.address1 + ', ' + profile.city + ', ' + profile.state + ', ' + profile.zip;
@@ -327,12 +326,28 @@ export default (props) => {
       fullAddress = fullAddress.concat(`${profile.zip}${profile.state}${profile.city}${profile.address1}`);
       objectReturned.owner_address = fullAddress;
     }
-    // return initialValues with conditions 
+    // return initialValues with conditions
     if (p.key === 'owner_name' || p.key === 'owner_name_translation' || p.key === 'tenant_name') return fullName;
     if (p.key === 'owner_phone' || p.key === 'tenant_phone') return profile.phone;
     if (p.key === 'owner_address' || p.key === 'owner_address_translation') return fullAddress;
     if (p.key === 'owner_company' || p.key === 'owner_company_translation') return profile.name;
     if (p.key === 'tenant_age' && profile.birthday) return calculateAge(profile.birthday);
+
+    return profile[p.key];
+  };
+
+  const tenantMethod = (p) => {
+    // return flat[p.key];
+    // Get the tenant from booking.tenants by index
+    // i.e. 'group' from documentConstants.tenants[each key]
+    // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p.key, p, documentConstants: ', p.key, p, documentConstants);
+    if (p.key !== 'co_tenants') {
+      const tenantRecord = p.record[documentConstants.tenants[p.key].group];
+      // then get the column from each booking.tenants[index]
+      return tenantRecord ? tenantRecord[documentConstants.tenants[p.key].tenantObjectMap] : null;
+    }
+    // Get if co_tenant the number of co-tenants i.e. booking.tenants.length
+    if (p.key === 'co_tenants') return p.record.length;
   };
   // const flatMethod = (p) => {
   //   return flat[p.key];
@@ -357,7 +372,7 @@ export default (props) => {
       condition: flat
     },
 
-    amenities: {
+    amenity: {
       method: (p) => {
         return flat.amenity[p.key];
       },
@@ -392,7 +407,13 @@ export default (props) => {
     profile: {
       method: profileMethod,
       parameters: {},
-      condition: userOwner.profiles.length > 0
+      condition: userOwner.profiles.length > 0 || tenant.profiles.length > 0
+    },
+
+    tenant: {
+      method: tenantMethod,
+      parameters: { record: booking.tenants },
+      condition: booking.tenants.length > 0
     },
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
