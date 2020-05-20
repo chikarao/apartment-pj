@@ -311,6 +311,29 @@ export default (props) => {
     if (p.key === eachChoice.documentFormMap2) return facilityIdNumbers;
   };
 
+  const profileMethod = (p) => {
+    const record = p.object.record === 'user_owner' ? userOwner : tenant;
+    const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
+    const profile = getProfile(record.profiles, language);
+    // If language is jp, order names last name first
+    let fullName = profile.last_name ? profile.first_name.concat(` ${profile.last_name}`) : '';
+    if (language === 'jp') fullName = profile.last_name ? profile.last_name.concat(` ${profile.first_name}`) : '';
+    // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p.key, p, record, language, profile, fullName: ', p.key, p, record, language, profile, fullName);
+
+    // return userOwner[p.key];
+    let fullAddress = profile.address1 + ', ' + profile.city + ', ' + profile.state + ', ' + profile.zip;
+    if (profile.country.toLowerCase() === ('japan' || '日本'　|| '日本国') && language === 'jp') {
+      fullAddress = ''
+      fullAddress = fullAddress.concat(`${profile.zip}${profile.state}${profile.city}${profile.address1}`);
+      objectReturned.owner_address = fullAddress;
+    }
+    // return initialValues with conditions 
+    if (p.key === 'owner_name' || p.key === 'owner_name_translation' || p.key === 'tenant_name') return fullName;
+    if (p.key === 'owner_phone' || p.key === 'tenant_phone') return profile.phone;
+    if (p.key === 'owner_address' || p.key === 'owner_address_translation') return fullAddress;
+    if (p.key === 'owner_company' || p.key === 'owner_company_translation') return profile.name;
+    if (p.key === 'tenant_age' && profile.birthday) return calculateAge(profile.birthday);
+  };
   // const flatMethod = (p) => {
   //   return flat[p.key];
   // };
@@ -365,8 +388,14 @@ export default (props) => {
       parameters: { record: booking },
       condition: booking.facility_bookings.length > 0
     },
+    // Note: owner the user for flat for booking; Not necessarily the legal owner of the flat
+    profile: {
+      method: profileMethod,
+      parameters: {},
+      condition: userOwner.profiles.length > 0
+    },
   };
-  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants);
+  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
   const baseLanguageCode = agreement.language_code || 'jp';
   const translationLanguageCode = documentLanguageCode || 'en';
   let objectReturned = {};
