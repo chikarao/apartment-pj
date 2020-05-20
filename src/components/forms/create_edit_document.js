@@ -27,6 +27,8 @@ import getOtherChoicesObject from './get_other_choices_object';
 import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_move_wrapper';
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
 import getListValues from './get_list_values';
+import getBookingDateObject from '../functions/get_booking_date_object';
+
 // Just for test
 // import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
 // import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
@@ -336,7 +338,8 @@ class CreateEditDocument extends Component {
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants });
+      const bookingDatesObject = getBookingDateObject(booking);
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants, bookingDatesObject });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
       this.props.setInitialValuesObject(initialValuesObject);
     }

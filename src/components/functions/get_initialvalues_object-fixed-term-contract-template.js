@@ -4,14 +4,14 @@ import RentPayment from '../constants/rent_payment';
 import Facility from '../constants/facility';
 import Tenants from '../constants/tenants';
 import Documents from '../constants/documents';
-import getBookingDateObject from './get_booking_date_object';
-import getContractLength from './get_contract_length';
+// import getBookingDateObject from './get_booking_date_object';
+// import getContractLength from './get_contract_length';
 
 import getListValues from '../forms/get_list_values';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants, bookingDatesObject } = props;
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
@@ -50,44 +50,44 @@ export default (props) => {
   }
 
 
-  function getContractEndNoticePeriodObject(booking) {
-    // const daysInMonth = {
-    //   0: 31,
-    //   1: 28,
-    //   2: 31,
-    //   4: 30,
-    //   5: 31,
-    //   6: 30,
-    //   7: 31,
-    //   8: 31,
-    //   9: 30,
-    //   10: 31,
-    //   11: 30,
-    //   12: 31
-    // };
-
-    // const leapYearDay = 29;
-    //
-    // const leapYears = [2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2104, 2108, 2112, 2116, 2120]
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, booking: ', booking);
-    const dateEndOneYear = new Date(booking.date_end);
-    const dateEndSixMonths = new Date(booking.date_end);
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
-    const oneYearBefore = new Date(dateEndOneYear.setFullYear(dateEndOneYear.getFullYear() - 1));
-    const sixMonthsBefore = new Date(dateEndSixMonths.setMonth(dateEndSixMonths.getMonth() - 6));
-    const oneYearBeforeDay = oneYearBefore.getDate() == (0 || 1) ? 30 : oneYearBefore.getDate() - 1;
-    const sixMonthsBeforeDay = sixMonthsBefore.getDate() == (0 || 1) ? 30 : sixMonthsBefore.getDate() - 1;
-    const oneYearBeforeMonth = oneYearBefore.getDate() == (0 || 1) ? oneYearBefore.getMonth() : oneYearBefore.getMonth() + 1;
-    const sixMonthsBeforeMonth = sixMonthsBefore.getDate() == (0 || 1) ? sixMonthsBefore.getMonth() : sixMonthsBefore.getMonth() + 1;
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
-
-    const noticeObject = { from: { year: oneYearBefore.getFullYear(), month: oneYearBeforeMonth, day: oneYearBeforeDay }, to: { year: sixMonthsBefore.getFullYear(), month: sixMonthsBeforeMonth, day: sixMonthsBeforeDay }}
-    return noticeObject;
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
-  }
-
+  // function getContractEndNoticePeriodObject(booking) {
+  //   // const daysInMonth = {
+  //   //   0: 31,
+  //   //   1: 28,
+  //   //   2: 31,
+  //   //   4: 30,
+  //   //   5: 31,
+  //   //   6: 30,
+  //   //   7: 31,
+  //   //   8: 31,
+  //   //   9: 30,
+  //   //   10: 31,
+  //   //   11: 30,
+  //   //   12: 31
+  //   // };
+  //
+  //   // const leapYearDay = 29;
+  //   //
+  //   // const leapYears = [2020, 2024, 2028, 2032, 2036, 2040, 2044, 2048, 2052, 2056, 2060, 2064, 2068, 2072, 2076, 2080, 2084, 2088, 2092, 2096, 2104, 2108, 2112, 2116, 2120]
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, booking: ', booking);
+  //   const dateEndOneYear = new Date(booking.date_end);
+  //   const dateEndSixMonths = new Date(booking.date_end);
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+  //   const oneYearBefore = new Date(dateEndOneYear.setFullYear(dateEndOneYear.getFullYear() - 1));
+  //   const sixMonthsBefore = new Date(dateEndSixMonths.setMonth(dateEndSixMonths.getMonth() - 6));
+  //   const oneYearBeforeDay = oneYearBefore.getDate() == (0 || 1) ? 30 : oneYearBefore.getDate() - 1;
+  //   const sixMonthsBeforeDay = sixMonthsBefore.getDate() == (0 || 1) ? 30 : sixMonthsBefore.getDate() - 1;
+  //   const oneYearBeforeMonth = oneYearBefore.getDate() == (0 || 1) ? oneYearBefore.getMonth() : oneYearBefore.getMonth() + 1;
+  //   const sixMonthsBeforeMonth = sixMonthsBefore.getDate() == (0 || 1) ? sixMonthsBefore.getMonth() : sixMonthsBefore.getMonth() + 1;
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
+  //
+  //   const noticeObject = { from: { year: oneYearBefore.getFullYear(), month: oneYearBeforeMonth, day: oneYearBeforeDay }, to: { year: sixMonthsBefore.getFullYear(), month: sixMonthsBeforeMonth, day: sixMonthsBeforeDay }}
+  //   return noticeObject;
+  //   // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, noticeObject: ', noticeObject);
+  // }
+  //
   function createAddress(record) {
     let addressFieldArray = [];
     let withComma = false;
@@ -264,8 +264,24 @@ export default (props) => {
     if (p.key === 'deposit_amount') return parseInt((p.record.final_rent * p.record.final_deposit), 10);
     if (p.key === 'final_deposit') return p.record.final_deposit * 1;
     if (p.key === 'final_rent') return parseInt((p.record.final_rent * 1), 10);
+    // console.log('in get_initialvalues_object-fixed-term-contract, bookingMethod, p, bookingDatesObject, bookingDatesObject.noticeObject: ', p, bookingDatesObject, bookingDatesObject.noticeObject);
+    // Catch all for getting values from booking or from bookingDatesObject (to_year, from_day etc)
+    if (bookingDatesObject[p.key]) return bookingDatesObject[p.key];
+    if (bookingDatesObject.noticeObject[p.key]) {
+      // console.log('in get_initialvalues_object-fixed-term-contract, bookingMethod, p.key, p, bookingDatesObject, bookingDatesObject.noticeObject[p.key]: ', p.key, p, bookingDatesObject, bookingDatesObject.noticeObject[p.key]);
+      return bookingDatesObject.noticeObject[p.key];
+    }
+
     return p.record[p.key];
-    // return { ...objectReturned, [p.key]: flat.building[p.key] };
+    // if (contractLengthObject.years >= 1) {
+    //   const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
+    //   objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
+    //   objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
+    //   objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
+    //   objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
+    //   objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
+    //   objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
+    // }
   };
 
   const facilityMethod = (p) => {
@@ -361,10 +377,10 @@ export default (props) => {
     if (p.key === 'co_tenants') return p.record.length;
   };
 
-  const managementMethod = (p) => {
+  const managementBrokerMethod = (p) => {
     // This method assumes management is same as broker;
     // In reality they usually are but sometimes not in retail;
-    // And there could be multiple brokers  
+    // And there could be multiple brokers
     // return flat[p.key];
     // Get contract from p.record booking.contracts array
     const contractArray = p.record.filter((cont) => cont.work_type === p.contractorType);
@@ -473,7 +489,7 @@ export default (props) => {
     // management is the broker managing the rental (booking.contracts...contractor);
     // Not the flat.user (the landlord)
     management: {
-      method: managementMethod,
+      method: managementBrokerMethod,
       parameters: { record: booking.contracts, contractorType: 'rental_broker', workSubType: 'broker' },
       condition: booking.contracts.length > 0
     },
