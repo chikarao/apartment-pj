@@ -15,27 +15,38 @@ export default (props) => {
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
-    let returnedProfile = {};
+    let returnedProfile = null;
     _.each(personProfiles, eachProfile => {
-      if (eachProfile.language_code == language) {
+      if (eachProfile.language_code === language) {
         returnedProfile = eachProfile;
         return;
       }
     });
-    return returnedProfile;
+    return returnedProfile || personProfiles[0];
   }
 
-  function getManagement(contractorArray, language, contractorType) {
-    let returnedProfile = {};
-    _.each(contractorArray, eachContractor => {
-      _.each(eachContractor, each => {
-        if ((each.language_code == language) && (each.contractor_type == contractorType)) {
-          returnedProfile = each;
-          return;
-        }
+  function getManagement(contractorArray, language) {
+    let returnedProfile = null;
+    // _.each(contractorArray, eachContractor => {
+      // _.each(contractorArray, each => {
+      //   if (each.language_code === language) {
+      //     console.log('in get_initialvalues_object-fixed-term-contract, getManagement, contractorArray, language: ', contractorArray, language);
+      //   // if ((each.language_code === language) && (each.contractor_type === contractorType)) {
+      //     returnedProfile = each;
+      //     return;
+      //   }
+      // });
+      contractorArray.some((each) => {
+        // console.log('in get_initialvalues_object-fixed-term-contract, getManagement, contractorArray, language: ', contractorArray, language);
+        if (each.language_code === language) {
+          // if ((each.language_code === language) && (each.contractor_type === contractorType)) {
+            returnedProfile = each;
+            return returnedProfile;
+          }
+        return returnedProfile;
       });
-    });
-    return returnedProfile;
+    // });
+    return returnedProfile || contractorArray[0];
   }
 
 
@@ -68,7 +79,6 @@ export default (props) => {
     const sixMonthsBeforeDay = sixMonthsBefore.getDate() == (0 || 1) ? 30 : sixMonthsBefore.getDate() - 1;
     const oneYearBeforeMonth = oneYearBefore.getDate() == (0 || 1) ? oneYearBefore.getMonth() : oneYearBefore.getMonth() + 1;
     const sixMonthsBeforeMonth = sixMonthsBefore.getDate() == (0 || 1) ? sixMonthsBefore.getMonth() : sixMonthsBefore.getMonth() + 1;
-    // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, oneYearBefore: ', oneYearBefore.getFullYear(), oneYearBefore.getMonth() + 1, oneYearBefore.getDate() - 1);
     // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore.getFullYear(), sixMonthsBefore.getMonth(), sixMonthsBefore.getDate());
     // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, sixMonthsBefore: ', sixMonthsBefore);
     // console.log('in get_initialvalues_object-fixed-term-contract, getContractEndNoticePeriodObject, dateEnd: ', dateEnd);
@@ -108,8 +118,8 @@ export default (props) => {
   function getChoice(facility) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getChoice, facility: ', facility);
     const array = [];
-    _.each(Facility.facility_type.choices, eachChoice => {
-      if (eachChoice.value == facility.facility_type) {
+    _.each(documentConstants.facility.facility_type.choices, eachChoice => {
+      if (eachChoice.value === facility.facility_type) {
         array.push(eachChoice);
         return;
       }
@@ -246,7 +256,6 @@ export default (props) => {
                                 p.baseRecord;
     // If the key is address key (including address_translation), create address and return
     if (p.address) return createAddress(recordWithLanguage);
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p, p.baseRecord, recordWithLanguage: ', p, p.baseRecord, recordWithLanguage);
     // return value of recordWithLanguage
     return recordWithLanguage[key];
   };
@@ -312,8 +321,11 @@ export default (props) => {
   };
 
   const profileMethod = (p) => {
+    // Get userOwner or tenant record based on object.record
     const record = p.object.record === 'user_owner' ? userOwner : tenant;
+    // What language is the object for base or translation
     const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
+    // Get profile from array of profiles based on language
     const profile = getProfile(record.profiles, language);
     // If language is jp, order names last name first
     let fullName = profile.last_name ? profile.first_name.concat(` ${profile.last_name}`) : '';
@@ -337,7 +349,6 @@ export default (props) => {
   };
 
   const tenantMethod = (p) => {
-    // return flat[p.key];
     // Get the tenant from booking.tenants by index
     // i.e. 'group' from documentConstants.tenants[each key]
     // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p.key, p, documentConstants: ', p.key, p, documentConstants);
@@ -348,6 +359,49 @@ export default (props) => {
     }
     // Get if co_tenant the number of co-tenants i.e. booking.tenants.length
     if (p.key === 'co_tenants') return p.record.length;
+  };
+
+  const managementMethod = (p) => {
+    // This method assumes management is same as broker;
+    // In reality they usually are but sometimes not in retail;
+    // And there could be multiple brokers  
+    // return flat[p.key];
+    // Get contract from p.record booking.contracts array
+    const contractArray = p.record.filter((cont) => cont.work_type === p.contractorType);
+    const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
+    let contractorForLanguage = getManagement(contractArray[0].contractor_all_languages, language);
+    contractorForLanguage = contractorForLanguage || {};
+    // In case getManagement returns null;
+
+    let staffForLanguage = getManagement(contractArray[0].assignments[0].staff_all_languages, language);
+    staffForLanguage = staffForLanguage || {};
+    // In case getManagement returns null;
+
+    if (p.key === 'management_address'
+          || p.key === 'management_address_translation'
+          || p.key === 'broker_address_hq'
+          || p.key === 'broker_address_hq_translation'
+        ) return createAddress(contractorForLanguage);
+    if (p.key === 'management_company'
+          || p.key === 'management_company_translation'
+          || p.key === 'broker_company_name'
+          || p.key === 'broker_company_name_translation'
+        ) return contractorForLanguage.company_name;
+    if (p.key === 'management_name'
+          || p.key === 'management_name_translation'
+          || p.key === 'broker_representative_name'
+          || p.key === 'broker_representative_name_translation'
+        ) return language === 'jp' ? contractorForLanguage.last_name + ' ' + contractorForLanguage.first_name : contractorForLanguage.first_name + ' ' + contractorForLanguage.last_name;
+    if (p.key === 'management_phone') return contractArray[0].contractor.phone;
+    if (p.key === 'management_registration_number' || p.key === 'broker_registration_number') return contractArray[0].contractor.registration_number;
+    if (p.key === 'management_registration_number_front' || p.key === 'broker_registration_front_number') return contractArray[0].contractor.registration_number_front;
+    if (p.key === 'broker_registration_jurisdiction' || p.key === 'broker_registration_jurisdiction_translation') return contractorForLanguage.registration_jurisdiction;
+    if (p.key === 'broker_registration_grantor') return contractorForLanguage.registration_grantor;
+    if (p.key === 'broker_staff_name' || p.key === 'broker_staff_name_translation') return language === 'jp' ? staffForLanguage.last_name + ' ' + staffForLanguage.first_name : staffForLanguage.first_name + ' ' + staffForLanguage.last_name;;
+    if (p.key === 'broker_staff_registration') return contractArray[0].assignments[0].staff.registration;
+    if (p.key === 'broker_staff_registration_jurisdiction' || p.key === 'broker_staff_registration_jurisdiction_translation') return staffForLanguage.registration_jurisdiction;
+    // if (p.key === 'broker_registration_jurisdiction_translation') return contractArray[0].registration_number_front;
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, p, contract[0], contractorForLanguage, language: ', p.key, p, contractArray[0], contractorForLanguage, language);
   };
   // const flatMethod = (p) => {
   //   return flat[p.key];
@@ -404,6 +458,7 @@ export default (props) => {
       condition: booking.facility_bookings.length > 0
     },
     // Note: owner the user for flat for booking; Not necessarily the legal owner of the flat
+    // userOwner is flat.user; tenant is booking.user
     profile: {
       method: profileMethod,
       parameters: {},
@@ -414,6 +469,13 @@ export default (props) => {
       method: tenantMethod,
       parameters: { record: booking.tenants },
       condition: booking.tenants.length > 0
+    },
+    // management is the broker managing the rental (booking.contracts...contractor);
+    // Not the flat.user (the landlord)
+    management: {
+      method: managementMethod,
+      parameters: { record: booking.contracts, contractorType: 'rental_broker', workSubType: 'broker' },
+      condition: booking.contracts.length > 0
     },
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
