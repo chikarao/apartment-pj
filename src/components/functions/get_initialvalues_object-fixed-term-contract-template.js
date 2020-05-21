@@ -273,15 +273,6 @@ export default (props) => {
     }
 
     return p.record[p.key];
-    // if (contractLengthObject.years >= 1) {
-    //   const contractEndNoticePeriodObject = getContractEndNoticePeriodObject(booking);
-    //   objectReturned.notice_from_year = contractEndNoticePeriodObject.from.year;
-    //   objectReturned.notice_from_month = contractEndNoticePeriodObject.from.month;
-    //   objectReturned.notice_from_day = contractEndNoticePeriodObject.from.day;
-    //   objectReturned.notice_to_year = contractEndNoticePeriodObject.to.year;
-    //   objectReturned.notice_to_month = contractEndNoticePeriodObject.to.month;
-    //   objectReturned.notice_to_day = contractEndNoticePeriodObject.to.day;
-    // }
   };
 
   const facilityMethod = (p) => {
@@ -417,13 +408,34 @@ export default (props) => {
     if (p.key === 'broker_staff_registration') return contractArray[0].assignments[0].staff.registration;
     if (p.key === 'broker_staff_registration_jurisdiction' || p.key === 'broker_staff_registration_jurisdiction_translation') return staffForLanguage.registration_jurisdiction;
     // if (p.key === 'broker_registration_jurisdiction_translation') return contractArray[0].registration_number_front;
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, p, contract[0], contractorForLanguage, language: ', p.key, p, contractArray[0], contractorForLanguage, language);
+  };
+
+  const documentMethod = (p) => {
+    function getContractDate(key) {
+      const contractDate = new Date();
+      const contractYear = key === 'contract_year' ? contractDate.getFullYear() : null;
+      const contractMonth = key === 'contract_month' ? contractDate.getMonth() + 1 : null;
+      const contractDay = key === 'contract_day' ? contractDate.getDate() : null;
+      // console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, key, contractYear, contractMonth, contractDay: ', key, contractYear, contractMonth, contractDay);
+      return { contract_year: contractYear, contract_month: contractMonth, contract_day: contractDay}
+    }
+
+    if (p.key === 'contract_year') return getContractDate(p.key)[p.key];
+    if (p.key === 'contract_month') return getContractDate(p.key)[p.key];
+    if (p.key === 'contract_day') return getContractDate(p.key)[p.key];
+    return p.record[p.key];
   };
   // const flatMethod = (p) => {
   //   return flat[p.key];
   // };
 
   const methodObject = {
+    document: {
+      method: documentMethod,
+      parameters: { record: agreement },
+      condition: agreement
+    },
+
     building: {
       method: recordWithLanguagesArrayMethod,
       parameters: { baseRecord: flat.building, baseRecordName: 'building' },
@@ -505,11 +517,13 @@ export default (props) => {
   let keyExistsInMethodObject = false;
   let conditionTrue = false;
   let count = 0;
+  let countAll = 0;
 
   if (template) {
     // let objectReturnedSub = {}
     // Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
+      countAll++;
       // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
       keyExistsInMethodObject = allObjectEach
@@ -537,14 +551,14 @@ export default (props) => {
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count: ', eachField, eachField.name, count);
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
     });
   } else {
 
   }
   // !!!!!!!!!end of documentForm eachField
 
-  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count: ', objectReturned, count);
+  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template: ', objectReturned, count, countAll, template);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };
 // }

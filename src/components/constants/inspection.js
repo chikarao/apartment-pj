@@ -142,9 +142,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -156,9 +156,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -170,9 +170,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -184,9 +184,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -198,9 +198,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -213,9 +213,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -227,9 +227,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -241,9 +241,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -255,9 +255,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -269,9 +269,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -283,9 +283,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -296,9 +296,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -310,9 +310,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -324,9 +324,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -338,9 +338,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -352,9 +352,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -366,9 +366,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -380,9 +380,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -394,9 +394,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -408,9 +408,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -422,9 +422,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'No', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Could not be investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },

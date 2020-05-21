@@ -156,6 +156,7 @@ export const UPDATE_BUILDING_LANGUAGE = 'update_building_language';
 export const CREATE_BUILDING_LANGUAGE = 'create_building_language';
 export const DELETE_BUILDING_LANGUAGE = 'delete_building_language';
 export const SET_INITIAL_VALUES_OBJECT = 'set_initial_values_object';
+export const SET_TEMPLATE_ELEMENTS_OBJECT = 'set_template_elements_object';
 export const CREATE_AGREEMENT = 'create_agreement';
 export const EDIT_AGREEMENT = 'edit_agreement';
 export const EDIT_AGREEMENT_FIELDS = 'edit_agreement_fields';

@@ -11,7 +11,8 @@ import {
   FETCH_DOCUMENT_TRANSLATION,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
   FETCH_BOOKING,
-  SET_DOCUMENT_LANGUAGE_CODE
+  SET_DOCUMENT_LANGUAGE_CODE,
+  SET_TEMPLATE_ELEMENTS_OBJECT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -444,6 +445,10 @@ export default function (state = {
         // templateDocumentChoicesObject
       };
     }
+
+    case SET_TEMPLATE_ELEMENTS_OBJECT:
+      // console.log('in documents reducer, state: ', state);
+      return { ...state, templateElements: action.payload.templateElements, templateElementsByPage: action.payload.templateElementsByPage };
 
     case SET_CREATE_DOCUMENT_KEY:
       // console.log('in documents reducer, state: ', state);

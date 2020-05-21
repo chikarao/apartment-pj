@@ -190,7 +190,7 @@ class CreateEditDocument extends Component {
       // and next time user refreshes or mounts component on the same machine, it will be there
       if (localStorageHistory) {
         destringifiedHistory = JSON.parse(localStorageHistory);
-        if (destringifiedHistory[this.props.agreement.id].elements) {
+        if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
           console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
           // Set state with || in case localStorageHistory exists but history and other objects do not exist
           this.setState({
@@ -209,11 +209,13 @@ class CreateEditDocument extends Component {
           }); // end of first setState
         } // end of if destringifiedHistory elements
         // if there is localStorageHistory return an object for use in document reducer
-        return {
-          templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
-          historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex,
-          elements: destringifiedHistory[this.props.agreement.id].elements
-        };
+        if (destringifiedHistory[this.props.agreement.id]) {
+          return {
+            templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+            historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex,
+            elements: destringifiedHistory[this.props.agreement.id].elements
+          };
+        }
       } // end of if localStorageHistory
       // if there is no localStorageHistory return null
       return null;
@@ -335,14 +337,16 @@ class CreateEditDocument extends Component {
         _.each(Object.keys(templateElements), eachId => {
           if (Object.keys(prevProps.templateElements).indexOf(eachId) === -1) templateElementsSubset[eachId] = templateElements[eachId];
         });
+        if (_.isEmpty(templateElementsSubset)) templateElementsSubset = templateElements;
       }
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
+      // Get date object at the beginning to run once instead of running on each field
       const bookingDatesObject = getBookingDateObject(booking);
       const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants, bookingDatesObject });
-      console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject: ', prevProps.templateElements, this.props.templateElements, initialValuesObject);
+      console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
       this.props.setInitialValuesObject(initialValuesObject);
-    }
+    } // end of if bookingData
   }
 
   componentWillUnmount() {
@@ -1869,7 +1873,8 @@ longActionPress(props) {
   // For creating new input fields
   renderTemplateElements(page) {
     const { documentLanguageCode } = this.props;
-    const documentEmpty = _.isEmpty(this.props.documents);
+    // const documentEmpty = _.isEmpty(this.props.documents);
+    const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let fieldComponent = '';
     let noTabs = false;
     let newElement = false;
@@ -4848,6 +4853,16 @@ longActionPress(props) {
     );
   }
 
+  renderDocumentName(page) {
+    return (
+      <div
+        className="create-edit-document-document-name-and-pages"
+      >
+        {`< ${this.props.agreement.document_name}   `} (page: {` ${page} of ${this.props.agreement.document_pages}) >`}
+      </div>
+    );
+  }
+
   renderDocument() {
     // render each document page as a background image;
     // render each document field and translation field on top of the image
@@ -4909,6 +4924,7 @@ longActionPress(props) {
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
               {this.props.showTemplate ? this.renderFontControlBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate ? this.renderDocumentName(page) : ''}
             </div>
           );
         });
@@ -4924,6 +4940,7 @@ longActionPress(props) {
       this.props.editHistory({ editHistoryItem: {}, action: 'clear' });
       this.props.setCreateDocumentKey('', () => {});
       this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+      if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} })
     }
     if (elementVal == 'delete') {
       if (window.confirm('Are you sure you want to delete this agreement?')) {

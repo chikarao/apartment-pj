@@ -12,8 +12,8 @@ const DocumentInsert = {
     className: 'form-control'
   },
 
-  language_code_1: {
-    name: 'language_code_1',
+  language_code: {
+    name: 'language_code',
     en: 'Base Language',
     jp: 'ベースの言語',
     component: 'FormChoices',

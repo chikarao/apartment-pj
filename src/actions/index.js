@@ -161,6 +161,7 @@ import {
   CREATE_BUILDING_LANGUAGE,
   DELETE_BUILDING_LANGUAGE,
   SET_INITIAL_VALUES_OBJECT,
+  SET_TEMPLATE_ELEMENTS_OBJECT,
   CREATE_AGREEMENT,
   EDIT_AGREEMENT,
   EDIT_AGREEMENT_FIELDS,
@@ -2862,6 +2863,16 @@ export function setInitialValuesObject(initialValuesObject) {
   return {
     type: SET_INITIAL_VALUES_OBJECT,
     payload: initialValuesObject
+   };
+}
+
+export function setTemplateElementsObject(templateElementsObject) {
+  console.log('in actions setTemplateElementsObject, templateElementsObject:', templateElementsObject);
+  //flip state boolean
+  // callback();
+  return {
+    type: SET_TEMPLATE_ELEMENTS_OBJECT,
+    payload: templateElementsObject
    };
 }
 

@@ -95,7 +95,6 @@ class DocumentInsertCreateModal extends Component {
         this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
       } else {
         const dataToChange = data;
-        console.log('in Upload, handleCreateImages, axios all, then, else pages: ', pages);
         dataToChange.document_name = dataToChange.insert_name;
         dataToBeSent = { agreement: dataToChange };
         // if this is to create an upload
@@ -105,8 +104,10 @@ class DocumentInsertCreateModal extends Component {
         dataToBeSent.agreement.document_pages = pages;
         dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
         // if (this.props.templateCreate) dataToBeSent.agreement.document_code = globalConstants.ownUploadedTemplateKey;
-        dataToBeSent.agreement.language_code = this.props.documentLanguageCode;
+        dataToBeSent.agreement.language_code_1 = this.props.documentLanguageCode;
+        // dataToBeSent.agreement.language_code = this.props.documentLanguageCode;
         dataToBeSent.document_field = [];
+        console.log('in Upload, handleCreateImages, axios all, then, else dataToBeSent, data: ', dataToBeSent, data);
         this.props.createAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
       }
     } // end of if imagesArray > 0
@@ -151,7 +152,7 @@ class DocumentInsertCreateModal extends Component {
       } else {
         fieldComponent = formField.component;
       }
-      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, fieldComponent, objects: ', fieldComponent, objects);
+      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, formField, fieldComponent, objects: ', formField, fieldComponent, objects);
 
       return (
         <fieldset key={i} className="form-group">
@@ -186,6 +187,7 @@ class DocumentInsertCreateModal extends Component {
     // get choices from constants/documents.js where templateCompatible is true
     const obj = {};
     _.each(Object.keys(Documents), (eachKey, i) => {
+      console.log('in documentInsert_create_modal, createTemplateObjects eachKey, Documents[eachKey]: ', eachKey, Documents[eachKey]);
       if (Documents[eachKey].templateCompatible) {
         obj[i] = { value: eachKey,
                    en: Documents[eachKey].en,
@@ -197,7 +199,7 @@ class DocumentInsertCreateModal extends Component {
     });
 
     object.template_file_name.choices = obj;
-    // console.log('in documentInsert_create_modal, createTemplateObjects: ', object);
+    console.log('in documentInsert_create_modal, createTemplateObjects: ', object);
     return object;
   }
 

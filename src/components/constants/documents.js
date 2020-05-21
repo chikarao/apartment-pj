@@ -69,6 +69,7 @@ const Documents =
       jp: '重要事項説明書 バイリンガル',
       file: 'juyoujikou-setsumei-bilingual-v3-no-translation-30',
       method: getInitialValuesObjectImportantPointsExplanation,
+      templateMethod: getInitialValuesObjectFixedTermContractTemplate,
       // templateMethod: getInitialValuesObjectImportantPointsExplanation,
       propsAllKey: 'importantPointsExplanationBilingualAll',
       // translation: ImportantPointsExplanationBilingualTranslation,

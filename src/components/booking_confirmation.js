@@ -368,9 +368,11 @@ class BookingConfirmation extends Component {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // if agreement has a template file name render
       if (eachAgreement.document_type !== 'template') {
+        console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement:', eachAgreement);
         return <div
           key={i}
-          value={`${eachAgreement.document_code},${'template'}`}
+          value={eachAgreement.document_code}
+          // value={`${eachAgreement.document_code},${'template'}`}
           name={eachAgreement.id}
           onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
           className="booking-confirmation-document-create-link"
@@ -442,24 +444,27 @@ class BookingConfirmation extends Component {
     const template = elementValArray[1] === 'template';
     // elementName is agreement id
     const elementName = clickedElement.getAttribute('name');
-    // first make false and nullout relavant state elements
-    // Then set relevant state to show own document
-    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-      this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-        this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
-        this.props.selectedAgreementId(elementName);
-        // this.setState({ showDocument: true });
+    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
+    // if the language_code of agreement is same as documentLanguageCode(translated language)
+
+    if (this.props.booking.agreements_mapped[parseInt(elementName, 10)].language_code === this.props.documentLanguageCode) {
+      window.alert('Please select a translated language that is not the base language of the template.')
+    } else {
+      // First make false and nullout relavant state elements, AND app state elements
+      // Then set relevant state to show own document
+      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+        // Empty out current templateElements if not empty
+        // Does not work: if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
+        this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
+        // .ownUploadedDocumentKey either 'own_uploaded_document' or 'own_uploaded_template',
+        this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+          // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
+          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
+          this.props.selectedAgreementId(elementName);
+        });
       });
-    });
+    }
   }
-  //
-  // handleOwnTemplateShowClick() {
-  //
-  // }
-  //
-  // handleOwnSavedTemplateShowClick() {
-  //
-  // }
 
   handleDocumentUploadClick(event) {
     const clickedElement = event.target;
@@ -471,11 +476,11 @@ class BookingConfirmation extends Component {
   // When user clicks on a template saved, sets various component and app states to
   // set
   renderEachTemplateSaved() {
-    // console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements:', this.props.booking.agreements);
 
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       if (eachAgreement.document_type === 'template') {
+        console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements, eachAgreement:', this.props.booking.agreements, eachAgreement);
         return <div
           key={i}
           value={`${eachAgreement.document_code},${'template'}`}
