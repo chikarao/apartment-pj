@@ -208,7 +208,7 @@ export default (props) => {
     function sameDay(day1, day2) {
       const d1 = new Date(day1);
       const d2 = new Date(day2);
-      console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, day1, day2: ', sortedInspections, day1, day2);
+      // console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, day1, day2: ', sortedInspections, day1, day2);
       return d1.getFullYear() === d2.getFullYear()
               && d1.getMonth() === d2.getMonth()
               && d1.getDate() === d2.getDate();
@@ -218,14 +218,14 @@ export default (props) => {
     _.each(sortedInspections, eachInspection => {
       if (sameDay(sortedInspections[0].inspection_date, eachInspection.inspection_date)) object[eachInspection.language_code] = eachInspection;
     });
-    console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, object: ', sortedInspections, object);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, object: ', sortedInspections, object);
 
     return object;
   }
 
 
   function getRecordForLanguage(baseRecord, baseRecordName, language) {
-    console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
     // get language
     let recordWithLanguage = null;
     if (baseRecord.language_code === language) return baseRecord;
@@ -244,7 +244,6 @@ export default (props) => {
   // recordWithLanguagesArrayMethod for records such as building and flat
   // (ie has array attached flat_languages, building_languages)
   const recordWithLanguagesArrayMethod = (p) => {
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p: ', p);
     // If the field neither a translation_object (with _translation on the key) nor
     // has a translation_field (eg building_languages), just get the value, else get language and values
     // if (!p.object.translation_field && !p.object.translation_object) return flat.building[p.key];
@@ -264,7 +263,9 @@ export default (props) => {
     if (p.object.translation_object) {
       language = translationLanguageCode;
       key = p.key.split('_');
-      key.splice(key.length - 1, 1).join();
+      // key.splice(key.length - 1, 1).join('_');
+      key.splice(-1, 1);
+      key = key.join('_');
     }
     // For fields and object names different from record models (e.g. flat)
     if (p.object.actual_record_key) {
@@ -277,8 +278,10 @@ export default (props) => {
                                 p.baseRecord
                                 :
                                 getRecordForLanguage(p.baseRecord, p.baseRecordName, language);
+
+    // console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, key, p.object, p.baseRecord, recordWithLanguage, createAddress(recordWithLanguage): ', p.key, key, p.object, p.baseRecord, recordWithLanguage, createAddress(recordWithLanguage));
     // If the key is address key (including address_translation), create address and return
-    if (p.address || p.key === 'address' || key === 'address') return createAddress(recordWithLanguage);
+    if (p.address || p.key === 'address' || key[0] === 'address') return createAddress(recordWithLanguage);
     // if (p.key === 'construction_translation') return recordWithLanguage.construction;
     // return value of recordWithLanguage
     return recordWithLanguage[key];
@@ -446,7 +449,6 @@ export default (props) => {
       const contractYear = key === 'contract_year' ? contractDate.getFullYear() : null;
       const contractMonth = key === 'contract_month' ? contractDate.getMonth() + 1 : null;
       const contractDay = key === 'contract_day' ? contractDate.getDate() : null;
-      // console.log('in get_initialvalues_object-fixed-term-contract, documentMethod, key, contractYear, contractMonth, contractDay: ', key, contractYear, contractMonth, contractDay);
       return { contract_year: contractYear, contract_month: contractMonth, contract_day: contractDay}
     }
 
@@ -457,9 +459,48 @@ export default (props) => {
   };
 
   const inspectionMethod = (p) => {
+    function getIfDegradationExists(inspection) {
+      // if Any of inspection.degrations is true return true
+      let returnValue = false;
+      // .some function returns immediately when there is a positive match for yes
+      Object.keys(inspection.degradations).some((eachPartKey) => {
+        if (inspection.degradations[eachPartKey] === 'yes') {
+          returnValue = true;
+          return returnValue;
+        }
+      });
+      return returnValue;
+    }
     // Get inspections the latest and the same date
-    const inpectionsOnSameDateArray = getLatestSameDate(p.record)
-    return p.record[p.key];
+    const latestLanguageMappedInspections = getLatestSameDate(p.record);
+    // if translation object, then get the inspection for that languge or the english one
+    let inspectionForLanguage = p.object.translation_object
+                                ?
+                                latestLanguageMappedInspections[translationLanguageCode] || latestLanguageMappedInspections.en
+                                :
+                                latestLanguageMappedInspections[baseLanguageCode];
+
+    if (!inspectionForLanguage) inspectionForLanguage = latestLanguageMappedInspections[Object.keys(latestLanguageMappedInspections)[0]]
+
+
+    let key = p.key;
+    // If the object is a translation object take off _translation for key
+    if (p.object.translation_object) {
+      key = p.key.split('_');
+      // key.splice(key.length - 1, 1).join('_');
+      key.splice(-1, 1);
+      key = key.join('_');
+    }
+    // If the p.key is different from object.name, use actual_record_key
+    if (p.object.actual_record_key) {
+      key = p.object.actual_record_key;
+    }
+    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage);
+    // If this method runs, that means there was an inspection on record
+    if (p.key === 'building_inspection_conducted') return true;
+    if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfDegradationExists(inspectionForLanguage);
+
+    return inspectionForLanguage[key];
   };
   // const flatMethod = (p) => {
   //   return p.record[p.key];
