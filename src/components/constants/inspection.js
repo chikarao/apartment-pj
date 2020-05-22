@@ -1,5 +1,11 @@
 // import React from 'react';
 // object for input of inspections in edit flat, in building section
+const inspectionChoices = {
+ 0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
+ 1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
+ 2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
+ // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+};
 
 const Inspection = {
   inspection_language: {
@@ -141,12 +147,7 @@ const Inspection = {
     jp: '基礎',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   floor_assembly: {
@@ -155,12 +156,7 @@ const Inspection = {
     jp: '土台及び床組',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   floor: {
@@ -169,12 +165,7 @@ const Inspection = {
     jp: '床',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   pillars: {
@@ -183,12 +174,7 @@ const Inspection = {
     jp: '柱及び梁',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   exterior_walls: {
@@ -197,12 +183,7 @@ const Inspection = {
     jp: '外壁及び軒裏',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
 
@@ -212,12 +193,7 @@ const Inspection = {
     jp: 'バルコニー',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   halls: {
@@ -226,12 +202,7 @@ const Inspection = {
     jp: '廊下',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   interior_walls: {
@@ -240,12 +211,7 @@ const Inspection = {
     jp: '内壁',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   ceilings: {
@@ -254,12 +220,7 @@ const Inspection = {
     jp: '天井',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   roof_truss: {
@@ -268,12 +229,7 @@ const Inspection = {
     jp: '小屋組',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   termite_damage: {
@@ -282,12 +238,7 @@ const Inspection = {
     jp: '蟻害',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
   corrosion: {
     name: 'corrosion',
@@ -295,12 +246,7 @@ const Inspection = {
     jp: '腐朽・腐食',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   reinforcement: {
@@ -309,12 +255,7 @@ const Inspection = {
     jp: '配筋調査',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   concrete_compression: {
@@ -323,12 +264,7 @@ const Inspection = {
     jp: 'コンクリート圧縮強度',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
   // "inspection_date", "inspection_summary", "inspector_name", "inspector_trainer", "inspector_certificate_number", "architect_qualification_type", "architect_type", "architect_registration_number", "architect_registration_type", "architect_office_name", "architect_office_registration", "foundation", "floor_assembly", "floor", "pillars", "exterior_walls", "balcony", "interior_walls", "ceilings", "roof_truss", "termite_damage", "corrosion", "reinforcement", "concrete_compression", "exterior_walls_rain", "eaves_rain", "balcony_rain", "interior_walls_rain", "ceilings_rain", "roof_truss_rain", "roof",
   exterior_walls_rain: {
@@ -337,12 +273,7 @@ const Inspection = {
     jp: '外壁 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   eaves_rain: {
@@ -351,12 +282,7 @@ const Inspection = {
     jp: '軒裏 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   balcony_rain: {
@@ -365,12 +291,7 @@ const Inspection = {
     jp: 'バルコニー 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   interior_walls_rain: {
@@ -379,12 +300,7 @@ const Inspection = {
     jp: '内壁 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   ceilings_rain: {
@@ -393,12 +309,7 @@ const Inspection = {
     jp: '天井 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   roof_truss_rain: {
@@ -407,12 +318,7 @@ const Inspection = {
     jp: '小屋組 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   roof: {
@@ -421,12 +327,7 @@ const Inspection = {
     jp: '屋根 雨水の浸入を防止',
     component: 'FormChoices',
     type: 'string',
-    choices: {
-      0: { value: 'yes', en: 'Yes', jp: '有', type: 'button', className: 'form-rectangle' },
-      1: { value: 'no', en: 'No', jp: '無', type: 'button', className: 'form-rectangle' },
-      2: { value: 'could_not_be_investigated', en: 'Could not be investigated', jp: '調査できなかった', type: 'button', className: 'form-rectangle' },
-      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
-    }
+    choices: inspectionChoices
   },
 
   // asbestos_record: {

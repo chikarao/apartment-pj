@@ -110,10 +110,10 @@ class Header extends Component {
      }
 
      if (this.props.userStatus && prevProps.userStatus !== this.props.userStatus) {
-       console.log('in header, componentDidUpdate, in if this.props.userStatus: ');
        const onlineSelect = document.getElementById('header-online-selection-box-select');
        const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
        if (onlineSelect) {
+         console.log('in header, componentDidUpdate, in if this.props.userStatus, onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex: ', onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex);
          onlineSelect.selectedIndex = optionOnlineIndex;
        }
      }
@@ -392,7 +392,6 @@ class Header extends Component {
       });
 
       let newMessages = false;
-      // console.log('in header, newMessagesOrNot, conversations: ', conversations);
       _.each(conversations, conversation => {
         // const ownFlatConversation = flatIdArray.includes(conversation.flat_id);
         const ownFlatConversation = flatIdArray.indexOf(conversation.flat_id) !== -1;
@@ -434,9 +433,15 @@ class Header extends Component {
 
   renderAppLanguageSelect() {
     // <option className="header-language-option"></option>
+    console.log('in header, renderAppLanguageSelect: ');
     return (
       <div>
-        <select id="header-language-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleLanguageSelectChange}>
+        <select
+          id="header-language-selection-box-select"
+          className="nav-item header-language-selection-box-select"
+          onChange={this.handleLanguageSelectChange}
+          // value={this.props.appLanguageCode}
+        >
           <option className="header-language-option" value="jp">{languages['jp'].flag} {languages['jp'].name}</option>
           <option className="header-language-option" value="en">{languages['en'].flag} {languages['en'].name}</option>
         </select>
@@ -447,9 +452,15 @@ class Header extends Component {
   renderOnlineOfflineSelect() {
     // <option className="header-language-option"></option>
     // <div style={{ height: '10px', width: '10px', backgroundColor: '#39ff14', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
+    console.log('in header, renderOnlineOfflineSelect, this.props.userStatus: ', this.props.userStatus);
     return (
       <div>
-        <select id="header-online-selection-box-select" className="nav-item header-language-selection-box-select" onChange={this.handleOnlineOfflineSelectChange}>
+        <select
+          id="header-online-selection-box-select"
+          className="nav-item header-language-selection-box-select"
+          onChange={this.handleOnlineOfflineSelectChange}
+          // value={this.props.userStatus.online}
+        >
           <option className="header-online-option" value="1">
             ✳️  Online
           </option>

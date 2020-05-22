@@ -200,6 +200,29 @@ export default (props) => {
   //   }
   // }
 
+  function getLatestSameDate(inspectionsArray) {
+    const sortedInspections = inspectionsArray.sort((a, b) => {
+        return a.inspection_date - b.inspection_date;
+      });
+
+    function sameDay(day1, day2) {
+      const d1 = new Date(day1);
+      const d2 = new Date(day2);
+      console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, day1, day2: ', sortedInspections, day1, day2);
+      return d1.getFullYear() === d2.getFullYear()
+              && d1.getMonth() === d2.getMonth()
+              && d1.getDate() === d2.getDate();
+      }
+
+    const object = [];
+    _.each(sortedInspections, eachInspection => {
+      if (sameDay(sortedInspections[0].inspection_date, eachInspection.inspection_date)) object[eachInspection.language_code] = eachInspection;
+    });
+    console.log('in get_initialvalues_object-fixed-term-contract, getLatestSameDate, sortedInspections, object: ', sortedInspections, object);
+
+    return object;
+  }
+
 
   function getRecordForLanguage(baseRecord, baseRecordName, language) {
     console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
@@ -249,13 +272,14 @@ export default (props) => {
     }
     // Get record, either the base flat.building record or one of the building_language record
     // If p.object is language_independent: true then return base record since others will not have the k:v
-    const recordWithLanguage = !p.object.language_independent
+    const recordWithLanguage = p.object.language_independent
                                 ?
-                                getRecordForLanguage(p.baseRecord, p.baseRecordName, language)
+                                p.baseRecord
                                 :
-                                p.baseRecord;
+                                getRecordForLanguage(p.baseRecord, p.baseRecordName, language);
     // If the key is address key (including address_translation), create address and return
-    if (p.address) return createAddress(recordWithLanguage);
+    if (p.address || p.key === 'address' || key === 'address') return createAddress(recordWithLanguage);
+    // if (p.key === 'construction_translation') return recordWithLanguage.construction;
     // return value of recordWithLanguage
     return recordWithLanguage[key];
   };
@@ -402,11 +426,17 @@ export default (props) => {
     if (p.key === 'management_phone') return contractArray[0].contractor.phone;
     if (p.key === 'management_registration_number' || p.key === 'broker_registration_number') return contractArray[0].contractor.registration_number;
     if (p.key === 'management_registration_number_front' || p.key === 'broker_registration_front_number') return contractArray[0].contractor.registration_number_front;
+
     if (p.key === 'broker_registration_jurisdiction' || p.key === 'broker_registration_jurisdiction_translation') return contractorForLanguage.registration_jurisdiction;
     if (p.key === 'broker_registration_grantor') return contractorForLanguage.registration_grantor;
+
     if (p.key === 'broker_staff_name' || p.key === 'broker_staff_name_translation') return language === 'jp' ? staffForLanguage.last_name + ' ' + staffForLanguage.first_name : staffForLanguage.first_name + ' ' + staffForLanguage.last_name;;
     if (p.key === 'broker_staff_registration') return contractArray[0].assignments[0].staff.registration;
     if (p.key === 'broker_staff_registration_jurisdiction' || p.key === 'broker_staff_registration_jurisdiction_translation') return staffForLanguage.registration_jurisdiction;
+    if (p.key === 'broker_staff_address' || p.key === 'broker_staff_address_translation') return createAddress(staffForLanguage);
+    if (p.key === 'broker_staff_phone') return staffForLanguage.phone;
+
+    if (p.key === 'contract_work_sub_type') return contractArray[0].work_sub_type;
     // if (p.key === 'broker_registration_jurisdiction_translation') return contractArray[0].registration_number_front;
   };
 
@@ -416,7 +446,7 @@ export default (props) => {
       const contractYear = key === 'contract_year' ? contractDate.getFullYear() : null;
       const contractMonth = key === 'contract_month' ? contractDate.getMonth() + 1 : null;
       const contractDay = key === 'contract_day' ? contractDate.getDate() : null;
-      // console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, key, contractYear, contractMonth, contractDay: ', key, contractYear, contractMonth, contractDay);
+      // console.log('in get_initialvalues_object-fixed-term-contract, documentMethod, key, contractYear, contractMonth, contractDay: ', key, contractYear, contractMonth, contractDay);
       return { contract_year: contractYear, contract_month: contractMonth, contract_day: contractDay}
     }
 
@@ -425,8 +455,14 @@ export default (props) => {
     if (p.key === 'contract_day') return getContractDate(p.key)[p.key];
     return p.record[p.key];
   };
+
+  const inspectionMethod = (p) => {
+    // Get inspections the latest and the same date
+    const inpectionsOnSameDateArray = getLatestSameDate(p.record)
+    return p.record[p.key];
+  };
   // const flatMethod = (p) => {
-  //   return flat[p.key];
+  //   return p.record[p.key];
   // };
 
   const methodObject = {
@@ -504,6 +540,12 @@ export default (props) => {
       method: managementBrokerMethod,
       parameters: { record: booking.contracts, contractorType: 'rental_broker', workSubType: 'broker' },
       condition: booking.contracts.length > 0
+    },
+
+    inspection: {
+      method: inspectionMethod,
+      parameters: { record: flat.building.inspections },
+      condition: flat.building.inspections.length > 0
     },
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
