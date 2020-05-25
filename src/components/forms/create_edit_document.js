@@ -3803,6 +3803,10 @@ longActionPress(props) {
   //   };
   // }
 
+  handleListClick() {
+    console.log('in create_edit_document, handleListClick: ');
+  }
+
   renderEachFieldChoice() {
     const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
@@ -3867,7 +3871,6 @@ longActionPress(props) {
         if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
           // To deal with translations of objects with one choice inputFieldValue and a selectChoices associated with it
           if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
-          console.log('in create_edit_document, handleFieldChoiceClick, in first if eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]: ', eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]);
           // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
@@ -4014,13 +4017,15 @@ longActionPress(props) {
           if (!templateMappingObject[eachKey].nonTemplate) {
             // for keys such as dates with years, month and day behind it
             // valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+            console.log('in create_edit_document, handleFieldChoiceClick, in if (!templateMappingObject[eachKey].nonTemplate eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]: ', eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]);
+            // {templateMappingObject[eachKey].button_on_field_choice_nav ? <div onClick={this.handleListClick.bind(this)}>Add to List</div> : null}
+            // style={templateMappingObject[eachKey].button_on_field_choice_nav ? { display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} : {}}
             return (
               <div
                 key={eachKey}
                 className="create-edit-document-template-each-choice-group"
                 value={eachKey}
                 onClick={this.handleFieldChoiceClick}
-                // onClick={this.handleFieldChoiceClick}
               >
                 {choiceText}&ensp;&ensp;<i className="fas fa-angle-right" style={{ color: 'blue' }}></i>
               </div>

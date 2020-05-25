@@ -459,18 +459,6 @@ export default (props) => {
   };
 
   const inspectionMethod = (p) => {
-    function getIfDegradationExists(inspection) {
-      // if Any of inspection.degrations is true return true
-      let returnValue = false;
-      // .some function returns immediately when there is a positive match for yes
-      Object.keys(inspection.degradations).some((eachPartKey) => {
-        if (inspection.degradations[eachPartKey] === 'yes') {
-          returnValue = true;
-          return returnValue;
-        }
-      });
-      return returnValue;
-    }
     // Get inspections the latest and the same date
     const latestLanguageMappedInspections = getLatestSameDate(p.record);
     // if translation object, then get the inspection for that languge or the english one
@@ -495,16 +483,40 @@ export default (props) => {
     if (p.object.actual_record_key) {
       key = p.object.actual_record_key;
     }
-    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage);
+
+    if (p.object.group === 'inspectedParts') inspectedPartsObject.inspectedParts[p.key] = inspectionForLanguage[p.key]
+    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, inspectedPartsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, inspectedPartsObject);
     // If this method runs, that means there was an inspection on record
     if (p.key === 'building_inspection_conducted') return true;
-    if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfDegradationExists(inspectionForLanguage);
+    if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') inspectedPartsObject.summaryKeys.push(p.key);
+    // Assign an inspection to
+    // if (!inspectedPartsObject.inspection) inspectedPartsObject.inspection = inspectionForLanguage;
+    // if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfDegradationExists(inspectionForLanguage);
 
     return inspectionForLanguage[key];
+  };
+
+  function getIfDegradationExists(degradationObject) {
+    // if Any of inspection.degrations is true return true
+    let returnValue = false;
+    // .some function returns immediately when there is a positive match for yes
+    Object.keys(degradationObject).some((eachPartKey) => {
+      if (degradationObject[eachPartKey] === 'yes') {
+        returnValue = true;
+        return returnValue;
+      }
+    });
+    return returnValue;
+  }
+
+  const runLastMethod = (p) => {
+    return getIfDegradationExists(inspectedPartsObject.inspectedParts)
+    // return p.record[p.key];
   };
   // const flatMethod = (p) => {
   //   return p.record[p.key];
   // };
+  const inspectedPartsObject = { summaryKeys: [], inspectedParts: {} };
 
   const methodObject = {
     document: {
@@ -588,6 +600,12 @@ export default (props) => {
       parameters: { record: flat.building.inspections },
       condition: flat.building.inspections.length > 0
     },
+
+    runLastInspection: {
+      method: runLastMethod,
+      parameters: { category: 'inspection' },
+      condition: Object.keys(inspectedPartsObject.inspectedParts).length > 0
+    }
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
   const baseLanguageCode = agreement.language_code || 'jp';
@@ -601,6 +619,7 @@ export default (props) => {
   let conditionTrue = false;
   let count = 0;
   let countAll = 0;
+  // Get the key and value of each inspection/inspectedPart that goes through
 
   if (template) {
     // let objectReturnedSub = {}
@@ -640,8 +659,14 @@ export default (props) => {
 
   }
   // !!!!!!!!!end of documentForm eachField
-
-  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template: ', objectReturned, count, countAll, template);
+  // Run last functions to get values for keys that require populating objects and arrays
+  // based on run of function
+  if (methodObject.runLastInspection.condition) {
+    _.each(inspectedPartsObject.summaryKeys, eachFieldName => {
+      objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName }) };
+    })
+  }
+  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };
 // }

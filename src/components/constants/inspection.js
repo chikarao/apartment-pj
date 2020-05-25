@@ -75,9 +75,9 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Class 1', en: 'Class 1', jp: '一級', type: 'button', className: 'form-rectangle' },
-      1: { value: 'Class 2', en: 'Class 2', jp: '二級', type: 'button', className: 'form-rectangle' },
-      2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
+      0: { value: 'class1', en: 'Class 1', jp: '一級', type: 'button', className: 'form-rectangle' },
+      1: { value: 'class2', en: 'Class 2', jp: '二級', type: 'button', className: 'form-rectangle' },
+      2: { value: 'woodenStructure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
   },
@@ -89,8 +89,8 @@ const Inspection = {
     component: 'FormChoices',
     type: 'string',
     choices: {
-      0: { value: 'Minister Registration', en: 'Minister\'s Registration', jp: '大臣登録', type: 'button', className: 'form-rectangle' },
-      1: { value: 'Governor Registration', en: 'Governor\'s Registration', jp: '知事登録', type: 'button', className: 'form-rectangle' },
+      0: { value: 'ministerRegistration', en: 'Minister\'s Registration', jp: '大臣登録', type: 'button', className: 'form-rectangle' },
+      1: { value: 'governorRegistration', en: 'Governor\'s Registration', jp: '知事登録', type: 'button', className: 'form-rectangle' },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     }
