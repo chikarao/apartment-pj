@@ -491,17 +491,17 @@ export default (props) => {
     if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') inspectedPartsObject.summaryKeys.push(p.key);
     // Assign an inspection to
     // if (!inspectedPartsObject.inspection) inspectedPartsObject.inspection = inspectionForLanguage;
-    // if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfDegradationExists(inspectionForLanguage);
+    // if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfAnyMatch(inspectionForLanguage);
 
     return inspectionForLanguage[key];
   };
 
-  function getIfDegradationExists(degradationObject) {
+  function getIfAnyMatch(degradationObject, testValue) {
     // if Any of inspection.degrations is true return true
     let returnValue = false;
     // .some function returns immediately when there is a positive match for yes
     Object.keys(degradationObject).some((eachPartKey) => {
-      if (degradationObject[eachPartKey] === 'yes') {
+      if (degradationObject[eachPartKey] === testValue) {
         returnValue = true;
         return returnValue;
       }
@@ -510,7 +510,8 @@ export default (props) => {
   }
 
   const runLastMethod = (p) => {
-    return getIfDegradationExists(inspectedPartsObject.inspectedParts)
+    // console.log('in get_initialvalues_object-fixed-term-contract, runLastMethod, p, p.key: ', p, p.key);
+    if (p.category === 'inspection') return getIfAnyMatch(inspectedPartsObject.inspectedParts, 'yes');
     // return p.record[p.key];
   };
   // const flatMethod = (p) => {
@@ -553,8 +554,8 @@ export default (props) => {
 
     list: {
       method: getListValues,
-      parameters: { flat, templateMappingObjects, agreements: [agreement] },
-      condition: flat.amenity
+      parameters: { flat, templateMappingObjects, agreements: [agreement], inspections: getLatestSameDate(flat.building.inspections) },
+      condition: flat.amenity || flat.building.inspections.length > 0
     },
 
     bankAccount: {
@@ -603,8 +604,9 @@ export default (props) => {
 
     runLastInspection: {
       method: runLastMethod,
-      parameters: { category: 'inspection' },
-      condition: Object.keys(inspectedPartsObject.inspectedParts).length > 0
+      parameters: {},
+      condition: flat.building.inspections.length > 0
+      // condition: Object.keys(inspectedPartsObject.inspectedParts).length > 0 && inspectedPartsObject.summaryKeys.length > 0
     }
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
@@ -656,16 +658,18 @@ export default (props) => {
       console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
     });
   } else {
-
+    // placeholder; No need to test for template?
   }
   // !!!!!!!!!end of documentForm eachField
   // Run last functions to get values for keys that require populating objects and arrays
-  // based on run of function
-  if (methodObject.runLastInspection.condition) {
+  // based on run of function; For inspection, need to get all degradations added to document
+  // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before runLastInspection, methodObject.runLastInspection.condition, inspectedPartsObject ', methodObject.runLastInspection.condition, inspectedPartsObject);
+  if (methodObject.runLastInspection.condition && inspectedPartsObject.summaryKeys.length > 0) {
     _.each(inspectedPartsObject.summaryKeys, eachFieldName => {
-      objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName }) };
+      objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName, category: 'inspection' }) };
     })
   }
+
   console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };

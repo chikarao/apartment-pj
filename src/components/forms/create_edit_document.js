@@ -4018,8 +4018,34 @@ longActionPress(props) {
             // for keys such as dates with years, month and day behind it
             // valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
             console.log('in create_edit_document, handleFieldChoiceClick, in if (!templateMappingObject[eachKey].nonTemplate eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]: ', eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]);
-            // {templateMappingObject[eachKey].button_on_field_choice_nav ? <div onClick={this.handleListClick.bind(this)}>Add to List</div> : null}
-            // style={templateMappingObject[eachKey].button_on_field_choice_nav ? { display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} : {}}
+            // To place a button for creating a list along with a nav div (click through)
+            if (templateMappingObject[eachKey].button_on_field_choice_nav) {
+              valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+              return (
+                <div
+                  className="create-edit-document-template-each-choice-action-box-nav"
+                >
+                  <div
+                    key={eachKey}
+                    className="create-edit-document-template-each-choice-group"
+                    value={eachKey}
+                    onClick={this.handleFieldChoiceClick}
+                    style={{ borderBottom: 'none' }}
+                  >
+                    {choiceText}&ensp;&ensp;<i className="fas fa-angle-right" style={{ color: 'blue' }}></i>
+                  </div>
+                  <div
+                    id={'list,' + valueString}
+                    onClick={this.handleFieldChoiceActionClick}
+                    style={elementIdArray.indexOf('list,' + valueString) !== -1 ? { backgroundColor: 'lightgray' } : {}}
+                    // className="create-edit-document-template-each-choice-group"
+                  >
+                    Add to List
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div
                 key={eachKey}

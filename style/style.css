@@ -4943,6 +4943,17 @@ form {
   /* background-color: white; */
 }
 
+.create-edit-document-template-each-choice-action-box-nav div:last-child {
+  height: 100%;
+  border: 1.5px solid green;
+  padding: 2px 2px 2px 7px;
+  border-radius: 5px;
+  margin-left: 60%;
+  color: gray;
+  display: table;
+  font-size: 13px;
+}
+
 /* .create-edit-document-template-edit-field-box-controls-Title {
 
 } */
