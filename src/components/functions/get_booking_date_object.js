@@ -51,8 +51,10 @@ export default (booking) => {
   const from_year = bookingStartArray[0];
   const from_month = bookingStartArray[1];
   const from_day = bookingStartArray[2];
+
+  const date_prepared = new Date();
   // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, bookingEndArray: ', bookingEndArray);
-  const object = { to_year, to_month, to_day, from_year, from_month, from_day, contract_length_months: months, contract_length_years: years, noticeObject }
+  const object = { to_year, to_month, to_day, from_year, from_month, from_day, contract_length_months: months, contract_length_years: years, noticeObject, date_prepared }
   // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, object: ', object);
   return object;
 }

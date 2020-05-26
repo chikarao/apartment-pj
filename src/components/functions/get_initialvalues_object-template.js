@@ -385,7 +385,6 @@ export default (props) => {
   const tenantMethod = (p) => {
     // Get the tenant from booking.tenants by index
     // i.e. 'group' from documentConstants.tenants[each key]
-    // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p.key, p, documentConstants: ', p.key, p, documentConstants);
     if (p.key !== 'co_tenants') {
       const tenantRecord = p.record[documentConstants.tenants[p.key].group];
       // then get the column from each booking.tenants[index]
@@ -449,12 +448,22 @@ export default (props) => {
       const contractYear = key === 'contract_year' ? contractDate.getFullYear() : null;
       const contractMonth = key === 'contract_month' ? contractDate.getMonth() + 1 : null;
       const contractDay = key === 'contract_day' ? contractDate.getDate() : null;
-      return { contract_year: contractYear, contract_month: contractMonth, contract_day: contractDay}
+
+      let dateString = '';
+      if (key === 'date_prepared') {
+        // to get months with 0 in front of single digit months, add a 0 to all,
+        // and get the last 2 to get two digit months like 12 or 06.
+        // Must be in '2020-05-25' format for redux form to read it
+        const monthWithZero = '0' + (contractDate.getMonth() + 1).toString();
+        dateString = contractDate.getFullYear().toString() + '-' + monthWithZero.substring(monthWithZero.length - 2) + '-' + contractDate.getDate().toString();
+      }
+      return { contract_year: contractYear, contract_month: contractMonth, contract_day: contractDay, date_prepared: dateString }
     }
 
     if (p.key === 'contract_year') return getContractDate(p.key)[p.key];
     if (p.key === 'contract_month') return getContractDate(p.key)[p.key];
     if (p.key === 'contract_day') return getContractDate(p.key)[p.key];
+    if (p.key === 'date_prepared') return getContractDate(p.key)[p.key];
     return p.record[p.key];
   };
 
@@ -484,13 +493,13 @@ export default (props) => {
       key = p.object.actual_record_key;
     }
 
-    if (p.object.group === 'inspectedParts') inspectedPartsObject.inspectedParts[p.key] = inspectionForLanguage[p.key]
-    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, inspectedPartsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, inspectedPartsObject);
+    if (p.object.group === 'degradations') degradationsObject.degradations[p.key] = inspectionForLanguage[p.key]
+    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject);
     // If this method runs, that means there was an inspection on record
     if (p.key === 'building_inspection_conducted') return true;
-    if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') inspectedPartsObject.summaryKeys.push(p.key);
+    if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') degradationsObject.summaryKeys.push(p.key);
     // Assign an inspection to
-    // if (!inspectedPartsObject.inspection) inspectedPartsObject.inspection = inspectionForLanguage;
+    // if (!degradationsObject.inspection) degradationsObject.inspection = inspectionForLanguage;
     // if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfAnyMatch(inspectionForLanguage);
 
     return inspectionForLanguage[key];
@@ -511,13 +520,13 @@ export default (props) => {
 
   const runLastMethod = (p) => {
     // console.log('in get_initialvalues_object-fixed-term-contract, runLastMethod, p, p.key: ', p, p.key);
-    if (p.category === 'inspection') return getIfAnyMatch(inspectedPartsObject.inspectedParts, 'yes');
+    if (p.category === 'inspection') return getIfAnyMatch(degradationsObject.degradations, 'yes');
     // return p.record[p.key];
   };
   // const flatMethod = (p) => {
   //   return p.record[p.key];
   // };
-  const inspectedPartsObject = { summaryKeys: [], inspectedParts: {} };
+  const degradationsObject = { summaryKeys: [], degradations: {} };
 
   const methodObject = {
     document: {
@@ -606,7 +615,7 @@ export default (props) => {
       method: runLastMethod,
       parameters: {},
       condition: flat.building.inspections.length > 0
-      // condition: Object.keys(inspectedPartsObject.inspectedParts).length > 0 && inspectedPartsObject.summaryKeys.length > 0
+      // condition: Object.keys(degradationsObject.degradations).length > 0 && degradationsObject.summaryKeys.length > 0
     }
   };
   console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
@@ -663,9 +672,9 @@ export default (props) => {
   // !!!!!!!!!end of documentForm eachField
   // Run last functions to get values for keys that require populating objects and arrays
   // based on run of function; For inspection, need to get all degradations added to document
-  // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before runLastInspection, methodObject.runLastInspection.condition, inspectedPartsObject ', methodObject.runLastInspection.condition, inspectedPartsObject);
-  if (methodObject.runLastInspection.condition && inspectedPartsObject.summaryKeys.length > 0) {
-    _.each(inspectedPartsObject.summaryKeys, eachFieldName => {
+  // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before runLastInspection, methodObject.runLastInspection.condition, degradationsObject ', methodObject.runLastInspection.condition, degradationsObject);
+  if (methodObject.runLastInspection.condition && degradationsObject.summaryKeys.length > 0) {
+    _.each(degradationsObject.summaryKeys, eachFieldName => {
       objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName, category: 'inspection' }) };
     })
   }

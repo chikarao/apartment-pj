@@ -5,8 +5,8 @@ export default (props) => {
   // documentLanguageCode is the current translated language; the base language is in agreement.language_code
   // listModelsObject category is the first tier key in templateMappingObject
   const listModelsObject = {
-                              amenities: { record: flat.amenity, category: 'flat', testValue: true },
-                              inspectedparts: { record: inspections[Object.keys(inspections)[0]], category: 'inspection', testValue: 'yes' }
+                              amenities: { record: flat.amenity, positiveTestValue: true },
+                              degradations: { record: inspections[Object.keys(inspections)[0]], positiveTestValue: 'yes', modelName: 'degradations' }
                             };
   // list_parameters assignment just for now; Take out later when passing real list element
   // listElement.list_parameters = 'fixed_term_rental_contract_bilingual,en,amenities,true,ac,auto_lock,bath_tub,cable_tv'
@@ -20,7 +20,7 @@ export default (props) => {
       Object.keys(currentObj).some(eachKey => {
         count++;
           // console.log('in get_list_values, getBaseObject, getBase, currentObj, eachKey, currentObj[eachKey], count: ', currentObj, eachKey, currentObj[eachKey], count);
-          if (eachKey.toLowerCase() === modelName) {
+          if (eachKey === modelName) {
             returnObject = currentObj[eachKey];
             return returnObject;
           }
@@ -39,20 +39,19 @@ export default (props) => {
   const splitListParameters = listElement.list_parameters.split(',')
   const templateFileName = splitListParameters[0];
   const baseOrTranslation = splitListParameters[1];
-  // console.log('in get_list_values, listElement, flat, splitListParameters, agreements, agreement: ', listElement, flat, splitListParameters, agreements, agreement);
   const languageCode = baseOrTranslation === 'base' ? agreement.language_code : documentLanguageCode;
-  // const languageCode = 'en'
-  // const languageCode = 'en';
-  // modelName such as amenities
-  const modelName = splitListParameters[2];
-  let listBoolValue = splitListParameters[3] === 'true';
-  console.log('in get_list_values, just listElement, modelName: ', listElement, modelName);
-  // patch for yes/no in inspectedparts
-  listBoolValue = modelName === 'inspectedparts' && listBoolValue === true ? 'yes' : listBoolValue;
-  const listArray = splitListParameters.slice(4);
+  // modelName such as amenities, degradations
+  const modelName = splitListParameters[3];
+  // Category is first tier key in templateMappingObject
+  const category = splitListParameters[2];
+  let listBoolValue = splitListParameters[4] === 'true';
+  console.log('in get_list_values, just listElement, modelName, modelName, category, templateMappingObjects[templateFileName][listModelsObject[modelName][category]], templateMappingObjects[templateFileName]: ', listElement, modelName, modelName, category, templateMappingObjects[templateFileName][listModelsObject[modelName][category]], templateMappingObjects[templateFileName]);
+  // if listParameters has test value of true, get positive test value for the nodel from listModelsObject
+  listBoolValue = modelName === listModelsObject[modelName].modelName && listBoolValue === true ? listModelsObject[modelName].positiveTestValue : listBoolValue;
+  const listArray = splitListParameters.slice(5);
   let eachMappedObject = null;
   // baseObject is like amenties: { ac: object, parcel_box: object }
-  const baseObject = getBaseObject(modelName, templateMappingObjects[templateFileName][listModelsObject[modelName].category]);
+  const baseObject = getBaseObject(modelName, templateMappingObjects[templateFileName][category]);
   let string = '';
   let str = '';
   const listArrayLength = listArray.length;

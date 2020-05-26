@@ -1993,23 +1993,24 @@ longActionPress(props) {
           translationText = elementObject.translation_object ? 'Translation' : '';
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
-          label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : null)
+          label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
                   ||
-                  (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : null);
-          const group = (AppLanguages[elementObject.group] ? AppLanguages[elementObject.group][this.props.appLanguageCode] : null);
-          const category = (AppLanguages[elementObject.category] ? AppLanguages[elementObject.category][this.props.appLanguageCode] : null);
-          label = group ? category + '/' + group + '/' + label + ' ' + translationText : category + '/' + label + ' ' + translationText;
+                  (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : '');
+          const category = (AppLanguages[elementObject.category] ? `${AppLanguages[elementObject.category][this.props.appLanguageCode]}/` : '');
+          const group = (AppLanguages[elementObject.group] ? `${AppLanguages[elementObject.group][this.props.appLanguageCode]}/` : '');
+          label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
           // modifiedElement.name;
-          console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
+          console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {
           // If no object existins in fixed and important_points, must be a list;
           // Get first part of name to get translation from appLanguages; last part to get
-          const splitKey = modifiedElement.name.split('_')
+          const splitKey = modifiedElement.name.split('_');
+          const category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : ''; 
           translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : ''
           splitKey.splice(splitKey.length - 1, 1)[0]
           console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
           const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
-          label = keyText + ' ' + translationText;
+          label = category + keyText + ' ' + translationText;
           // label = modifiedElement.name;
         }
       // if (eachElement.page === page) {
@@ -3625,7 +3626,7 @@ longActionPress(props) {
         const translation = this.state.templateElementActionIdObject.translation;
         const languageCode = translation ? 'translation' : 'base';
         // listParameters for populating initialvalues in document reducer
-        let listParameters = `${this.props.agreement.template_file_name},${languageCode},${createdObject.group},true,`;
+        let listParameters = `${this.props.agreement.template_file_name},${languageCode},${createdObject.category},${createdObject.group},true,`;
 
         _.each(summaryObject.list, (each, i) => {
           nameString = `${each.name}`
@@ -3639,7 +3640,7 @@ longActionPress(props) {
           // id: `${this.state.templateElementCount}a`,
           id: null,
           // left, top and page assigned in getMousePosition
-          name: translation ? `${createdObject.group}_list_translation` : `${createdObject.group}_list`,
+          name: translation ? `${createdObject.group.toLowerCase()}_list_translation` : `${createdObject.group.toLowerCase()}_list`,
           // name: `${createdObject.group}_list`,
           component: createdObject.component,
           agreement_id: this.props.agreement.id,
