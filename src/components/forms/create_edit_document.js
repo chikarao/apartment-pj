@@ -1876,7 +1876,7 @@ longActionPress(props) {
     // const documentEmpty = _.isEmpty(this.props.documents);
     const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let fieldComponent = '';
-    let noTabs = false;
+    // let noTabs = false;
     let newElement = false;
     let inputElement = true;
     let localTemplateElementsByPage = null;
@@ -1975,6 +1975,8 @@ longActionPress(props) {
       let label = null;
       let translationKey = null;
       let translationText = '';
+      let splitKey = null;
+      let category = null;
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -2004,8 +2006,8 @@ longActionPress(props) {
         } else {
           // If no object existins in fixed and important_points, must be a list;
           // Get first part of name to get translation from appLanguages; last part to get
-          const splitKey = modifiedElement.name.split('_');
-          const category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : ''; 
+          splitKey = modifiedElement.name.split('_');
+          category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : '';
           translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : ''
           splitKey.splice(splitKey.length - 1, 1)[0]
           console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);

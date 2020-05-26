@@ -285,6 +285,7 @@ export default function (state = {
         flat: action.payload.flat,
         agreements: action.payload.agreements,
         documentConstants: JSON.parse(action.payload.document_constants),
+        templateTranslationObject: JSON.parse(action.payload.template_translation_object)
       };
     }
 
