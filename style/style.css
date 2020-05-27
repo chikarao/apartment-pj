@@ -5022,15 +5022,14 @@ form {
   display: flex;
   flex-direction: column;
 }
-
 .create-edit-document-template-edit-action-box {
   position: fixed;
   z-index: 2;
   top: 15%;
   left: 34%;
-  /* width: auto; */
-  width: 402px;
-  /* height: 35px; */
+  /* width is create-edit-document-template-edit-action-box-elements width times n plus 2px */
+  width: 442px;
+  /* width is create-edit-document-template-edit-action-box-elements height times num of tiers plus */
   height: 70px;
   border: 1.0px solid #ccc;
   border-radius: 4px;
@@ -5062,12 +5061,13 @@ form {
   color: gray;
   overflow: hidden;
 }
-
-.create-edit-document-template-edit-action-box div:last-child, div:nth-child(10) {
+/* nth-child needs to be the number of buttons on top */
+.create-edit-document-template-edit-action-box div:last-child, div:nth-child(11) {
   border-right: none;
 }
 
-.create-edit-document-template-edit-action-box div:nth-child(n+11)  {
+/* nth-child needs to be the number of buttons on top plus 1 */
+.create-edit-document-template-edit-action-box div:nth-child(n+12)  {
   border-bottom: none;
 }
 
@@ -5082,7 +5082,7 @@ form {
   /* background-color: #ccc; */
   /* background-color: #ffffcc; */
   background-color: gray;
-  border: 1.0px solid #ccc;
+  /* border: 1.0px solid #ccc; */
   font-size: 12px;
   /* color: gray; */
   color: white;
