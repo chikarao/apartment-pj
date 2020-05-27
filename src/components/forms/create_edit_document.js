@@ -93,7 +93,7 @@ class CreateEditDocument extends Component {
       templateElementActionIdObject: INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT,
       editFieldsOn: false,
       editFieldsOnPrevious: false,
-      createNewTranslationFieldOn: false
+      translationModeOn: false
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -2334,27 +2334,17 @@ longActionPress(props) {
     // }
   }
 
-  handleCreateNewTemplateElement(event) {
+  handleCreateNewTemplateElement() {
     // Turn on and off createNewTemplateElementOn local state;
     // The actual creation is done in getMousePosition
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    const newField = elementVal === 'newField';
-    const newTranslation = elementVal === 'newTranslation';
-    console.log('in create_edit_document, handleCreateNewTemplateElement, newField, newTranslation : ', newField, newTranslation);
-
     this.setState({
-      createNewTemplateElementOn: newField ? !this.state.createNewTemplateElementOn : this.state.createNewTemplateElementOn,
-      createNewTranslationFieldOn: newTranslation ? !this.state.createNewTranslationFieldOn : this.state.createNewTranslationFieldOn
+      createNewTemplateElementOn: !this.state.createNewTemplateElementOn,
     }, () => {
       // In callback to setState, if turning on addEventListener
-      console.log('in create_edit_document, handleCreateNewTemplateElement, this.state.createNewTemplateElementOn, this.state.createNewTranslationFieldOn: ', this.state.createNewTemplateElementOn, this.state.createNewTranslationFieldOn);
-      if (this.state.createNewTemplateElementOn || this.state.createNewTranslationFieldOn) {
+      // console.log('in create_edit_document, handleCreateNewTemplateElement, this.state.createNewTemplateElementOn, this.state.translationModeOn: ', this.state.createNewTemplateElementOn, this.state.translationModeOn);
+      if (this.state.createNewTemplateElementOn) {
         document.addEventListener('click', this.getMousePosition);
-        this.setState({ editFieldsOn: true,
-                        createNewTemplateElementOn: newTranslation ? false : this.state.createNewTemplateElementOn,
-                        createNewTranslationFieldOn: newField ? false : this.state.createNewTranslationFieldOn
-                      });
+        this.setState({ editFieldsOn: true });
       } else {
         // In callback to setState, if turning off removeEventListener
         document.removeEventListener('click', this.getMousePosition);
@@ -3176,6 +3166,18 @@ longActionPress(props) {
             // If user turns off editFieldsOn, turn off createNewTemplateElementOn
             if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
             // console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
+          })
+          break;
+
+        case 'translation':
+          this.setState({
+            // editFieldsOnPrevious for if user selects createNewTemplateElementOn when editFieldsOn
+            // User does not have to turn off or on editFieldsOn each time turns on/off createNewTemplateElementOn
+            translationModeOn: !this.state.translationModeOn,
+          }, () => {
+            // If user turns off editFieldsOn, turn off createNewTemplateElementOn
+            // if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
+            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
           })
           break;
 
@@ -4693,7 +4695,7 @@ longActionPress(props) {
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
     // NOTE: disableSave does not work after saving since initialValues have to be updated
-    const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn || this.state.createNewTranslationFieldOn;
+    const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
     const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
@@ -4701,7 +4703,7 @@ longActionPress(props) {
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
-    const disableCreateTranslation = this.state.createNewTranslationFieldOn;
+    const disableTranslation = this.state.translationModeOn;
 
 
     console.log('in create_edit_document, renderTemplateElementEditAction, this.props.formIsDirty : ', this.props.formIsDirty);
@@ -4745,13 +4747,13 @@ longActionPress(props) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={this.handleCreateNewTemplateElement}
-          style={this.state.createNewTranslationFieldOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementIdArray.length > 0 ? 'gray' : 'blue' }}
+          onClick={this.handleTemplateElementActionClick}
+          style={{ color: disableTranslation ? 'gray' : 'blue', backgroundColor: disableTranslation ? 'lightgray' : '' }}
           onMouseOver={this.handleMouseOverActionButtons}
-          name="Create a new translation field,top"
-          value="newTranslation"
+          name="Work on translations,top"
+          value="translation"
         >
-          <i value="newTranslation" name="Create a new translation field,top" className="fas fa-language" style={{ fontSize: '20px'}}></i>
+          <i value="translation" name="Work on translations,top" className="fas fa-language" style={{ fontSize: '20px', padding: '3.5px 0 0 1px' }}></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
