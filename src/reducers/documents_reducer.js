@@ -16,6 +16,8 @@ import {
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
+import getTranslationObject from '../components/forms/get_translation_object';
+
 export default function (state = {
   initialValuesObject: {},
   overlappedkeysMapped: {},
@@ -28,7 +30,7 @@ export default function (state = {
   documentTranslations: {},
   templateElements: {},
   listInitialValuesObject: {}
-}, action) {
+}, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
 
   // NOTE: getMappedObjectWithStringIds creates template elements object mapped with id { id: templateElement }
@@ -489,8 +491,13 @@ export default function (state = {
     return { ...state, editHistoryArray: [] };
 
     case FETCH_DOCUMENT_TRANSLATION:
-    // console.log('in documents reducer, fetch document translation action.payload: ', action.payload);
-    return { ...state, documentTranslations: JSON.parse(action.payload) };
+    const parsedActionPayload = JSON.parse(action.payload);
+    const documentTranslationsTreated = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
+    console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, documentTranslationsAllTreated: ', action.payload, parsedActionPayload, documentTranslationsTreated);
+    return { ...state,
+      documentTranslations: parsedActionPayload,
+      documentTranslationsTreated
+    };
 
     default:
       return state;

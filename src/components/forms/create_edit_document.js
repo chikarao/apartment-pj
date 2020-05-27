@@ -28,7 +28,7 @@ import getUpdatedElementObjectMoveWrapper from './get_updated_element_object_mov
 import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base';
 // import getListValues from './get_list_values';
 import getBookingDateObject from '../functions/get_booking_date_object';
-import getCategorizedTranslation from './get_categorized_translations';
+import getTranslationObject from './get_translation_object';
 
 // Just for test
 // import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
@@ -1995,6 +1995,7 @@ longActionPress(props) {
         if (elementObject) {
           translationKey = elementObject.translation_key;
           translationText = elementObject.translation_object ? 'Translation' : '';
+          console.log('in create_edit_document, renderTemplateElements, eachElement, elementObject, this.props.documentTranslationsAll: ', eachElement, elementObject, this.props.documentTranslationsAll);
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
           label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
@@ -2004,7 +2005,7 @@ longActionPress(props) {
           const group = (AppLanguages[elementObject.group] ? `${AppLanguages[elementObject.group][this.props.appLanguageCode]}/` : '');
           label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
           // modifiedElement.name;
-          console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
+          // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {
           // If no object existins in fixed and important_points, must be a list;
           // Get first part of name to get translation from appLanguages; last part to get
@@ -3168,15 +3169,12 @@ longActionPress(props) {
             // console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
           })
           break;
-
+        //gotoswitchtranslation
         case 'translation':
           this.setState({
-            // editFieldsOnPrevious for if user selects createNewTemplateElementOn when editFieldsOn
-            // User does not have to turn off or on editFieldsOn each time turns on/off createNewTemplateElementOn
+            // translationModeOn to view and create only translation objects
             translationModeOn: !this.state.translationModeOn,
           }, () => {
-            // If user turns off editFieldsOn, turn off createNewTemplateElementOn
-            // if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
             console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
           })
           break;
@@ -3822,8 +3820,33 @@ longActionPress(props) {
   //   };
   // }
 
-  handleListClick() {
-    console.log('in create_edit_document, handleListClick: ');
+  // handleListClick() {
+  //   console.log('in create_edit_document, handleListClick: ');
+  // }
+
+  renderEachTranslationFieldChoice() {
+    const { documentTranslationsTreated } = this.props;
+    // const translationObject = getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' });
+    if (documentTranslationsTreated) {
+      let choiceText = '';
+      return _.map(Object.keys(documentTranslationsTreated), eachKey => {
+        // if the object of the eachKey has no translations, must be a category or group
+        if (!documentTranslationsTreated[eachKey].translations) {
+          choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
+          console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, documentTranslationsTreated[eachKey], choiceText: ', eachKey, documentTranslationsTreated[eachKey], choiceText);
+          return (
+            <div
+              key={eachKey}
+              className="create-edit-document-template-each-choice-group"
+              value={eachKey}
+              onClick={this.handleFieldChoiceClick}
+            >
+              {choiceText}&ensp;&ensp;{!documentTranslationsTreated[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+            </div>
+          );
+        }
+      });
+    }
   }
 
   renderEachFieldChoice() {
@@ -3868,8 +3891,9 @@ longActionPress(props) {
       );
     };
 
-    let choiceText = null;
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
+
+    let choiceText = null;
     let inputElement = null;
     let translationSibling = null;
     let choices = null;
@@ -4176,7 +4200,7 @@ longActionPress(props) {
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
         <div className="create-edit-document-template-edit-field-box-choices">
-          {this.renderEachFieldChoice()}
+          {this.state.translationModeOn ? this.renderEachTranslationFieldChoice() : this.renderEachFieldChoice()}
         </div>
       </div>
     );
@@ -4704,8 +4728,56 @@ longActionPress(props) {
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
     const disableTranslation = this.state.translationModeOn;
+    // const object = {
+    //   newField: {
+    //     wrapper: {
+    //       onClick: disableCreateNewElement ? this.handleCreateNewTemplateElement : () => {},
+    //       style: this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementIdArray.length > 0 ? 'gray' : 'blue' },
+    //       onMouseOver: this.handleMouseOverActionButtons,
+    //       name: 'Create a new field,top'
+    //     },
+    //     children: [
+    //       {
+    //         // value
+    //         tag: 'i',
+    //         name: 'Create a new field,top',
+    //         className: 'fas fa-plus-circle'
+    //       }
+    //     ]
+    //   }
+    // };
+    //
+    // const classNameForAll = 'create-edit-document-template-edit-action-box-elements';
+    //
+    // const createButtons = () => {
+    //   function renderChildren(children, value) {
+    //     return _.map(children, eachChild => {
+    //       if (eachChild.tag === 'i') {
+    //         return (
+    //           <i
+    //             name={eachChild.name}
+    //             className={eachChild.className}
+    //             value={value}
+    //           ></i>
+    //         );
+    //       }
+    //     });
+    //   }
+    //   return _.map(Object.keys(object), each => {
+    //     return (
+    //       <div
+    //         className={classNameForAll}
+    //         onClick={object[each].onClick}
+    //         style={object[each].style}
+    //         name={object[each].name}
+    //       >
+    //         {renderChildren(object[each].children, each)}
+    //       </div>
+    //     )
+    //   })
+    // };
 
-
+    // {createButtons()}
     console.log('in create_edit_document, renderTemplateElementEditAction, this.props.formIsDirty : ', this.props.formIsDirty);
     return (
       <div
@@ -5225,7 +5297,7 @@ function mapStateToProps(state) {
     // }
     initialValues = state.documents.initialValuesObject;
     // initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
-    console.log('in create_edit_document, mapStateToProps, state, state.documents.initialValuesObject, initialValues, documentKey: ', state, state.documents.initialValuesObject, initialValues, documentKey);
+    console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslations: ', state.documents.documentTranslations);
     // initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
     const formIsDirty = isDirty('CreateEditDocument')(state);
@@ -5255,6 +5327,7 @@ function mapStateToProps(state) {
       contracts: state.bookingData.contracts,
       contractorTranslations: state.bookingData.contractorTranslations,
       staffTranslations: state.bookingData.staffTranslations,
+      documentTranslationsTreated: state.documents.documentTranslationsTreated,
       // agreements: state.bookingData.agreements,
       // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
       // setCreateDocumentKey action fired and app state set
@@ -5277,7 +5350,7 @@ function mapStateToProps(state) {
       // meta: getFormMeta('CreateEditDocument')(state)
       // testDocumentTranslations: state.documents.documentTranslations,
       templateMappingObjects: state.documents.templateMappingObjects,
-      documentTranslationsAll: state.documents.documentTranslations,
+      // documentTranslationsAll: state.documents.documentTranslations,
       allDocumentObjects: state.documents.allDocumentObjects,
       documentConstants: state.documents.documentConstants,
     };
