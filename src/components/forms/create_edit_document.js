@@ -64,6 +64,7 @@ class CreateEditDocument extends Component {
       selectedTemplateElementIdArray: [],
       selectedTemplateElementObjectArray: [],
       templateElementCount: 0,
+      translationElementCount: 0,
       createNewTemplateElementOn: false,
       actionExplanationObject: null,
       allElementsChecked: false,
@@ -85,6 +86,7 @@ class CreateEditDocument extends Component {
       selectedElementFontObject: null,
       // modifiedPersistedElementsObject is for elements that have been persisted in backend DB
       modifiedPersistedElementsObject: {},
+      modifiedPersistedTranslationElementsObject: {},
       originalPersistedTemplateElements: {},
       selectedChoiceIdArray: [],
       renderChoiceEditButtonDivs: false,
@@ -93,7 +95,8 @@ class CreateEditDocument extends Component {
       templateElementActionIdObject: INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT,
       editFieldsOn: false,
       editFieldsOnPrevious: false,
-      translationModeOn: false
+      translationModeOn: false,
+      documentTranslationsTreated: null
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -234,12 +237,20 @@ class CreateEditDocument extends Component {
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       if (templateEditHistory && templateEditHistory.elements) {
         let highestElementId = 0;
+        let highestTranslationElementId = 0;
         _.each(Object.keys(templateEditHistory.elements), eachElementKey => {
           // get the highest id to avoid duplicate element id after templateElements repopulated
-          highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+          if (!templateEditHistory.elements[eachElementKey].translation_element) {
+            highestElementId = highestElementId > parseInt(eachElementKey, 10) ? highestElementId : parseInt(eachElementKey, 10)
+          } else {
+            highestTranslationElementId = highestTranslationElementId > parseInt(eachElementKey, 10) ? highestTranslationElementId : parseInt(eachElementKey, 10);
+          }
           this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
-        this.setState({ templateElementCount: highestElementId }, () => {
+        this.setState({
+          templateElementCount: highestElementId,
+          translationElementCount: highestTranslationElementId
+        }, () => {
           console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
         });
       }
@@ -549,6 +560,7 @@ class CreateEditDocument extends Component {
   handleTemplateSubmitCallback() {
     this.setState({
       modifiedPersistedElementsObject: {},
+      modifiedPersistedTranslationElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
       unsavedTemplateElements: {}
@@ -1018,12 +1030,18 @@ renderEachDocumentField(page) {
       }, () => {
         let templateElementAttributes = {};
         // Assign templateElementAttributes from state and specify left, top, page
-        templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.templateElementCount}a` };
-        // add action element action before putting in array before setState
-        this.props.createDocumentElementLocally(templateElementAttributes);
-        // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
-        // If it has document_field_choices, history is set after coordinates for document_field_choices is set
-        // in dragElement closeDragElement function and subsequent callback.
+          const id = !this.state.translationModeOn ? `${this.state.templateElementCount}a` : `${this.state.translationElementCount}b`
+          templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id };
+          // add action element action before putting in array before setState
+          this.props.createDocumentElementLocally(templateElementAttributes);
+          // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
+          // If it has document_field_choices, history is set after coordinates for document_field_choices is set
+          // in dragElement closeDragElement function and subsequent callback. getChoiceCoordinates is called in documentChoicesTemplate componentDidMount;
+          // If it is a newElement, it calls dragElement function and sets the coordinates of the documentFieldChoices
+        // } else {
+          // templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.translationElementCount}b` };
+          console.log('in create_edit_document, getMousePosition1, templateElementAttributes', templateElementAttributes);
+        // }
         if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
@@ -2376,7 +2394,12 @@ longActionPress(props) {
   // { 1a: { deleted: false, updated: 1 }, 25: { deleted: true, updated: 3} }.
   // This will drive save button enabling and how element creation and updates will be done. So no need to iterate through all elements everytime save is run; AND centralizes persisted code for identifying elements to be created and updated, AS WELL AS updating persisted elements in action creator populate persisted template elements
   getModifiedObject(redoOrUndo) {
-    const returnObject = { ...this.state.modifiedPersistedElementsObject };
+    const returnObject = !this.state.translationModeOn
+                          ?
+                          { ...this.state.modifiedPersistedElementsObject }
+                          :
+                          // { ...this.state.modifiedPersistedTranslationElementsObject };
+                           { '0b': { deleted: false, updated: 0 } }
     const returnEditObject = {};
     const setEditObject = (editObject) => {
       console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
@@ -2462,12 +2485,18 @@ longActionPress(props) {
     // Each array within the outermost array is i. No need to adjust for redo
     let index = this.state.historyIndex;
     if (redoOrUndo === 'undo') index = this.state.historyIndex + 1;
-
-    if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
+    // if (_.isEmpty(this.state.modifiedPersistedElementsObject)) {
+    if (_.isEmpty(returnObject)) {
+      // Go through each history array in templateEditHistoryArray
       _.each(this.state.templateEditHistoryArray, (eachEditArray, i) => {
         if (i <= index) {
           _.each(eachEditArray, eachEditObject => {
-            setEditObject(eachEditObject);
+            // if translationModeOn, run setEditObject only if translation_element true
+            if (this.state.translationModeOn) {
+              if (eachEditObject.translation_element) setEditObject(eachEditObject);
+            } else if (!eachEditObject.translation_element) {
+              setEditObject(eachEditObject);
+            }
           });
         }
       });
@@ -2475,7 +2504,13 @@ longActionPress(props) {
       // if modifiedPersistedElementsObject has at least one object in it,
       // adjust index to get the history array that is redone or undone
       _.each(this.state.templateEditHistoryArray[index], eachEditObject => {
-        setEditObject(eachEditObject);
+        // if translationModeOn, run setEditObject only if translation_element true
+        // setEditObject(eachEditObject);
+        if (this.state.translationModeOn) {
+          if (eachEditObject.translation_element) setEditObject(eachEditObject);
+        } else if (!eachEditObject.translation_element) {
+          setEditObject(eachEditObject);
+        }
       });
     }
 
@@ -2497,25 +2532,35 @@ longActionPress(props) {
     // Get an object like lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
     // To be used
     const modifiedObject = this.getModifiedObject(fromWhere, returnEditObject);
-
+    console.log('in create_edit_doc ument, setLocalStorageHistory, right after call of getModifiedObject modifiedObject: ', modifiedObject);
     // Save new elements not persisted in backend DB
     // Go thorough each modifiedObject to become modifiedPersistedElementsObject
     // lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
     // Get ids of elements in modified object and get element from this.props.templateElements
-    const unsavedTemplateElements = {};
-    // Run only if not called from handleTemplateSubmitCallback()
+    const unsavedTemplateElements = { ...this.state.unsavedTemplateElements };
+    // Run only if not called from handleTemplateSubmitCallback();
+    // since handleTemplateSubmitCallback function empties out all history-related state
     if (fromWhere !== 'handleTemplateSubmitCallback') {
       _.each(Object.keys(modifiedObject.returnObject), eachElementKey => {
-        // console.log('in create_edit_doc ument, setLocalStorageHistory, eachElementKey: ', eachElementKey);
+        console.log('in create_edit_doc ument, setLocalStorageHistory, fromWhere, eachElementKey: ', fromWhere, eachElementKey);
+        // if element is a template element with an 'a' put into unsavedTemplateElements from this.props.templateElements
         if (eachElementKey.indexOf('a') !== -1) {
           unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey] || modifiedObject.returnEditObject[eachElementKey];
-          console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey);
         }
+        // if element is translation with 'b' put into unsavedTemplateElements from this.props.templateTranslationElements
+        if (eachElementKey.indexOf('b') !== -1) {
+          unsavedTemplateElements[eachElementKey] = this.props.templateTranslationElements[eachElementKey] || modifiedObject.returnEditObject[eachElementKey];
+        }
+        console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, modifiedObject, this.props.templateElements, eachElementKey);
       });
     }
 
     this.setState({
-      modifiedPersistedElementsObject: modifiedObject.returnObject,
+      // if translation mode is on return the exising modifiedPersistedElementsObject
+      // and opposite for modifiedPersistedTranslationElementsObject
+      modifiedPersistedElementsObject: this.state.translationModeOn ? { ...this.state.modifiedPersistedElementsObject } : modifiedObject.returnObject,
+      modifiedPersistedTranslationElementsObject: this.state.translationModeOn ? modifiedObject.returnObject : { ...this.state.modifiedPersistedTranslationElementsObject },
+      // modifiedPersistedTranslationElementsObject: { '0a': { deleted: false, updated: 0 } },
       unsavedTemplateElements
     }, () => {
       destringifiedHistory[this.props.agreement.id] = {
@@ -2526,7 +2571,8 @@ longActionPress(props) {
         newFontObject: this.state.newFontObject,
         // modifiedPersistedElementsArray: this.state.modifiedPersistedElementsArray,
         // modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
-        modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject
+        modifiedPersistedElementsObject: this.state.modifiedPersistedElementsObject,
+        modifiedPersistedTranslationElementsObject: this.state.modifiedPersistedTranslationElementsObject
       }
       // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
       console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory, destringifiedHistory.modifiedPersistedElementsObject: ', destringifiedHistory, destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject);
@@ -3174,7 +3220,12 @@ longActionPress(props) {
           this.setState({
             // translationModeOn to view and create only translation objects
             translationModeOn: !this.state.translationModeOn,
+            templateFieldChoiceObject: null
           }, () => {
+            // Get the translation object to render in the choice box
+            this.setState({
+              documentTranslationsTreated: getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' })
+            });
             console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
           })
           break;
@@ -3346,8 +3397,10 @@ longActionPress(props) {
   }
 
   getFieldChoiceObject() {
-    let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name];
-
+    let currentObject = !this.state.translationModeOn
+                        ? this.props.templateMappingObjects[this.props.agreement.template_file_name]
+                        : this.state.documentTranslationsTreated;
+    // Use the templateFieldChoiceArray like ['flat', 'amenities'] to get to the currentObject
     _.each(this.state.templateFieldChoiceArray, each => {
       console.log('in create_edit_document, handleFieldChoiceClick, each, this.state.templateFieldChoiceArray, currentObject: ', each, this.state.templateFieldChoiceArray, currentObject);
       if (currentObject[each]) {
@@ -3512,7 +3565,11 @@ longActionPress(props) {
         // Take out increment number 2 for select used in handleFieldChoiceActionClick
         if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
         indexOfChoices = objectPathArray.indexOf('choices');
-        let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name]
+        let currentObject = !this.state.translationModeOn
+                            ?
+                            this.props.templateMappingObjects[this.props.agreement.template_file_name]
+                            :
+                            this.state.documentTranslationsTreated;
         // let choice = null;
         _.each(objectPathArray, (eachKey, i) => {
           modEach = eachKey;
@@ -3533,25 +3590,29 @@ longActionPress(props) {
     if (!summaryObject.parent) {
       // input only has one in array
       if (summaryObject.input.length > 0) {
+        // IMPORTANT: translation field uses input to crate the templateElementAttributes
+        const { translationModeOn } = this.state;
         createdObject = summaryObject.input[0];
         templateElementAttributes = {
           // id: `${this.state.templateElementCount}a`,
           id: null,
           // left, top and page assigned in getMousePosition
-          name: createdObject.name,
-          component: createdObject.component,
+          name: !translationModeOn ? createdObject.name : elementIdArray[elementIdArray.length - 1],
+          component: !translationModeOn ? createdObject.component : null,
           // width: createdObject.choices[0].params.width,
-          width: createdObject.choices[Object.keys(createdObject.choices)[0]].params.width,
+          width: !translationModeOn ? createdObject.choices[Object.keys(createdObject.choices)[0]].params.width : '10%',
           height: '1.6%',
           // input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
-          input_type: createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type, // or 'string' if an input component
+          input_type: !translationModeOn ? createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type : 'text', // or 'string' if an input component
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
           font_style: this.state.newFontObject.font_style,
           font_weight: this.state.newFontObject.font_weight,
           font_family: this.state.newFontObject.font_family,
-          font_size: this.state.newFontObject.font_size
+          font_size: this.state.newFontObject.font_size,
+          // !!!!!!!!!If this is a translation field, assign true
+          translation_element: this.state.translationModeOn
         };
       } else if (summaryObject.buttons.length > 0) {
       // } else {
@@ -3825,15 +3886,20 @@ longActionPress(props) {
   // }
 
   renderEachTranslationFieldChoice() {
-    const { documentTranslationsTreated } = this.props;
+    const { documentTranslationsTreated } = this.state;
+    // Get the translation object originally obtained when user clicks on the translation button
+    const translationMappingObject = this.state.templateFieldChoiceObject === null ? documentTranslationsTreated : this.state.templateFieldChoiceObject;
     // const translationObject = getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' });
-    if (documentTranslationsTreated) {
+    if (translationMappingObject) {
       let choiceText = '';
-      return _.map(Object.keys(documentTranslationsTreated), eachKey => {
+      let valueString = '';
+      const elementIdArray = this.state.templateElementActionIdObject.array;
+
+      return _.map(Object.keys(translationMappingObject), eachKey => {
         // if the object of the eachKey has no translations, must be a category or group
-        if (!documentTranslationsTreated[eachKey].translations) {
+        if (translationMappingObject[eachKey] && !translationMappingObject[eachKey].translations) {
           choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
-          console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, documentTranslationsTreated[eachKey], choiceText: ', eachKey, documentTranslationsTreated[eachKey], choiceText);
+          console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText: ', eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText);
           return (
             <div
               key={eachKey}
@@ -3841,7 +3907,38 @@ longActionPress(props) {
               value={eachKey}
               onClick={this.handleFieldChoiceClick}
             >
-              {choiceText}&ensp;&ensp;{!documentTranslationsTreated[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+              {choiceText}&ensp;&ensp;{!translationMappingObject[eachKey].translations ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+            </div>
+          );
+        } else {
+          choiceText = translationMappingObject[eachKey] ? translationMappingObject[eachKey].translations[this.props.agreement.language_code] : eachKey;
+          valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+
+          return (
+            <div
+              key={eachKey}
+              className="create-edit-document-template-each-choice"
+              // value={valueString}
+              style={{ height: '80px' }}
+              // onClick={this.handleFieldChoiceClick}
+            >
+              <div
+                className="create-edit-document-template-each-choice-label"
+              >
+                {choiceText}
+              </div>
+              <div
+                className="create-edit-document-template-each-choice-action-box"
+              >
+                <div
+                  id={'input,' + valueString}
+                  onClick={this.handleFieldChoiceActionClick}
+                  style={elementIdArray.indexOf('input,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+                  // className="create-edit-document-template-each-choice-action-box-button"
+                >
+                  Add Translation
+                </div>
+              </div>
             </div>
           );
         }
@@ -3913,7 +4010,9 @@ longActionPress(props) {
         // to indicate, there is something behind it
         if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
           // To deal with translations of objects with one choice inputFieldValue and a selectChoices associated with it
-          if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
+          if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) {
+            choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
+          }
           // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
@@ -4109,7 +4208,7 @@ longActionPress(props) {
     let currentObject = this.props.templateMappingObjects[this.props.agreement.template_file_name];
     let choiceText = null;
     return _.map(this.state.templateFieldChoiceArray, eachKey => {
-      if (currentObject[eachKey].translation) {
+      if (currentObject[eachKey] && currentObject[eachKey].translation) {
         choiceText = currentObject[eachKey].translation[this.props.appLanguageCode];
       } else {
         choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
@@ -5316,6 +5415,7 @@ function mapStateToProps(state) {
       // !!!!!!for initialValues to be used in componentDidMount
       documentFields,
       documentTranslations,
+      // documentTranslationsAll has both fixed and important points translation all objects
       documentTranslationsAll: state.documents.documentTranslations,
       flat: state.bookingData.flat,
       booking: state.bookingData.fetchBookingData,
@@ -5327,7 +5427,7 @@ function mapStateToProps(state) {
       contracts: state.bookingData.contracts,
       contractorTranslations: state.bookingData.contractorTranslations,
       staffTranslations: state.bookingData.staffTranslations,
-      documentTranslationsTreated: state.documents.documentTranslationsTreated,
+      // documentTranslationsTreated: state.documents.documentTranslationsTreated,
       // agreements: state.bookingData.agreements,
       // !!!!!!!!documentKey sent as app state props from booking_cofirmation.js after user click
       // setCreateDocumentKey action fired and app state set
@@ -5353,6 +5453,8 @@ function mapStateToProps(state) {
       // documentTranslationsAll: state.documents.documentTranslations,
       allDocumentObjects: state.documents.allDocumentObjects,
       documentConstants: state.documents.documentConstants,
+      templateTranslationElements: state.documents.templateTranslationElements,
+      templateTranslationElementsByPage: state.documents.templateTranslationElementsByPage,
     };
   }
 

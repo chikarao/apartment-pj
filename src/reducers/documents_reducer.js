@@ -29,6 +29,9 @@ export default function (state = {
   agreementMappedByName: {},
   documentTranslations: {},
   templateElements: {},
+  templateElementsByPage: {},
+  templateTranslationElements: {},
+  templateTranslationElementsByPage: {},
   listInitialValuesObject: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
@@ -132,7 +135,11 @@ export default function (state = {
   }
 
   function addToTemplateElementsByPage(newElement) {
-    const newObject = { ...state.templateElementsByPage };
+    const newObject = !newElement.translation_element
+                      ?
+                      { ...state.templateElementsByPage }
+                      :
+                      { ...state.templateTranslationElementsByPage };
     if (newObject[newElement.page]) {
       newObject[newElement.page][newElement.id] = newElement;
     } else {
@@ -337,30 +344,40 @@ export default function (state = {
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
-      const newObject = {}
-      // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
-      // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
-      const createdObject = { [action.payload.id]: action.payload };
-      // let initialValuesObject = { ...state.initialValuesObject };
-      // let listValues = '';
-      // if (action.payload.list_parameters) {
-      //   listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects, agreements: state.agreements, documentLanguageCode: state.documentLanguageCode });
-      //   // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
-      //   initialValuesObject = { [action.payload.name]: listValues }
-      // }
-      const templateElementsByPage = addToTemplateElementsByPage(action.payload);
-      const mergedObject = _.merge(newObject, state.templateElements, createdObject);
-      // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
-      // const someOtherObject = { amenities_list: 'hello' };
-      // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;
-      // So, created listInitialValuesObject which gets passed fine, so merge them with initialValuesObject in mapStateToProps
-      return { ...state,
-        templateElements: mergedObject,
-        templateElementsByPage,
-        // initialValuesObject,
-        // listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
-        // templateDocumentChoicesObject
-      };
+      // This action creates elements for template and templateTranslation
+        const newObject = {}
+        // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
+        // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
+        const createdObject = { [action.payload.id]: action.payload };
+        // let initialValuesObject = { ...state.initialValuesObject };
+        // let listValues = '';
+        // if (action.payload.list_parameters) {
+          //   listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects, agreements: state.agreements, documentLanguageCode: state.documentLanguageCode });
+          //   // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
+          //   initialValuesObject = { [action.payload.name]: listValues }
+          // }
+          const templateElementsByPage = addToTemplateElementsByPage(action.payload);
+          const originalElement = !action.payload.translation_element ? state.templateElements : state.templateTranslationElements;
+          const mergedObject = _.merge(newObject, originalElement, createdObject);
+          // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
+          // const someOtherObject = { amenities_list: 'hello' };
+          // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;
+          // So, created listInitialValuesObject which gets passed fine, so merge them with initialValuesObject in mapStateToProps
+        if (!action.payload.translation_element) {
+          return { ...state,
+            templateElements: mergedObject,
+            templateElementsByPage,
+            // initialValuesObject,
+            // listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
+            // templateDocumentChoicesObject
+          };
+        }
+        // If not template then return for templateTranslations
+        return { ...state, 
+          templateTranslationElements: mergedObject,
+          templateTranslationElementsByPage: templateElementsByPage,
+        };
+        // end of if (action.payload.type === 'template') {
     }
 
     case DELETE_DOCUMENT_ELEMENT_LOCALLY: {
@@ -492,11 +509,11 @@ export default function (state = {
 
     case FETCH_DOCUMENT_TRANSLATION:
     const parsedActionPayload = JSON.parse(action.payload);
-    const documentTranslationsTreated = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
-    console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, documentTranslationsAllTreated: ', action.payload, parsedActionPayload, documentTranslationsTreated);
+    // const documentTranslationsTreated = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
+    console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
     return { ...state,
       documentTranslations: parsedActionPayload,
-      documentTranslationsTreated
+      // documentTranslationsTreated
     };
 
     default:
