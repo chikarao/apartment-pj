@@ -87,7 +87,7 @@ class CreateEditDocument extends Component {
       // modifiedPersistedElementsObject is for elements that have been persisted in backend DB
       modifiedPersistedElementsObject: {},
       modifiedPersistedTranslationElementsObject: {},
-      originalPersistedTemplateElements: {},
+      // originalPersistedTemplateElements: {},
       selectedChoiceIdArray: [],
       renderChoiceEditButtonDivs: false,
       templateFieldChoiceArray: [],
@@ -204,7 +204,7 @@ class CreateEditDocument extends Component {
             // modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
             modifiedPersistedElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject || this.state.modifiedPersistedElementsObject,
             // templateElementCount: highestElementId,
-            originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
+            // originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
           }, () => {
             this.setState({
               historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
@@ -249,7 +249,8 @@ class CreateEditDocument extends Component {
         }); // end of each elements
         this.setState({
           templateElementCount: highestElementId,
-          translationElementCount: highestTranslationElementId
+          translationElementCount: highestTranslationElementId,
+          unsavedTemplateElements: templateEditHistory.elements
         }, () => {
           console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
         });
@@ -1026,6 +1027,7 @@ renderEachDocumentField(page) {
       // const templateElementCount = this.state.templateElementCount;
       this.setState({
         templateElementCount: this.state.templateElementCount + 1,
+        translationElementCount: this.state.translationElementCount + 1,
         // createNewTemplateElementOn: false,
       }, () => {
         let templateElementAttributes = {};
@@ -2394,12 +2396,13 @@ longActionPress(props) {
   // { 1a: { deleted: false, updated: 1 }, 25: { deleted: true, updated: 3} }.
   // This will drive save button enabling and how element creation and updates will be done. So no need to iterate through all elements everytime save is run; AND centralizes persisted code for identifying elements to be created and updated, AS WELL AS updating persisted elements in action creator populate persisted template elements
   getModifiedObject(redoOrUndo) {
+    // Set initial values of returnObject depending on translationModeOn 
     const returnObject = !this.state.translationModeOn
                           ?
                           { ...this.state.modifiedPersistedElementsObject }
                           :
-                          // { ...this.state.modifiedPersistedTranslationElementsObject };
-                           { '0b': { deleted: false, updated: 0 } }
+                          { ...this.state.modifiedPersistedTranslationElementsObject };
+                          // { '0b': { deleted: false, updated: 0 } }
     const returnEditObject = {};
     const setEditObject = (editObject) => {
       console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
