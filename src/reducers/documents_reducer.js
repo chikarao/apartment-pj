@@ -468,7 +468,12 @@ export default function (state = {
 
     case SET_TEMPLATE_ELEMENTS_OBJECT:
       // console.log('in documents reducer, state: ', state);
-      return { ...state, templateElements: action.payload.templateElements, templateElementsByPage: action.payload.templateElementsByPage };
+      return { ...state,
+        templateElements: action.payload.templateElements,
+        templateElementsByPage: action.payload.templateElementsByPage,
+        templateTranslationElements: action.payload.templateTranslationElements,
+        templateTranslationElementsByPage: action.payload.templateTranslationElementsByPage 
+      };
 
     case SET_CREATE_DOCUMENT_KEY:
       // console.log('in documents reducer, state: ', state);

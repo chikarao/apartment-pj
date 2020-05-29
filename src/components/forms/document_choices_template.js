@@ -136,19 +136,39 @@ class DocumentChoicesTemplate extends Component {
   }
 
   getStyleOfInputElement(value, choice) {
-    const { eachElement } = this.props;
+    const { eachElement, editFieldsOn, nullRequiredField, translationModeOn } = this.props;
     let elementStyle = {};
-    if (this.props.nullRequiredField && !value) {
+    if (nullRequiredField && !value) {
       // elementStyle = { top: choice.top, left: choice.left, borderColor: 'blue', width: choice.width };
       elementStyle = { borderColor: 'blue', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     } else {
       elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     }
-    const height = !this.props.editFieldsOn ? choice.height : '100%'
-    const width = !this.props.editFieldsOn ? choice.width : '100%'
-    const top = !this.props.editFieldsOn ? choice.top : ''
-    const left = !this.props.editFieldsOn ? choice.left : ''
-    const selectChoices = choice.selectChoices || choice.select_choices
+
+    // Set initially at values for elements going inside a wrapper div
+    // let height = '100%';
+    // let width = '100%';
+    // let top = '';
+    // let left = '';
+    let height = !this.props.editFieldsOn ? choice.height : '100%';
+    let width = !this.props.editFieldsOn ? choice.width : '100%';
+    let top = !this.props.editFieldsOn ? choice.top : '';
+    let left = !this.props.editFieldsOn ? choice.left : '';
+    let position = !this.props.editFieldsOn ? 'absolute' : '';
+    // If being rendered without a wrapper ie just an input, assign the choice values
+    console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
+    if (translationModeOn && !eachElement.translation_element) {
+      height = choice.height;
+      width = choice.width;
+      top = choice.top;
+      left = choice.left;
+      position = 'absolute';
+      // height = editFieldsOn ? height : choice.height;
+      // width = editFieldsOn ? width : choice.width;
+      // top = editFieldsOn ? top : choice.top;
+      // left = editFieldsOn ? left : choice.left;
+    }
+    const selectChoices = choice.selectChoices || choice.select_choices;
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
       elementStyle = {
@@ -161,14 +181,14 @@ class DocumentChoicesTemplate extends Component {
         fontStyle: selectChoices ? eachElement.font_style : choice.font_style,
         fontWeight: selectChoices ? eachElement.font_weight : choice.font_weight,
         borderColor: selectChoices ? eachElement.font_color : choice.border_color,
-        position: !this.props.editFieldsOn ? 'absolute' : '',
+        position,
 
         margin: '0px !important',
         flex: '1 1 auto'
       };
     }
 
-    console.log('DocumentChoicesTemplate, getStyleOfInputElement, value, choice, elementStyle ', value, choice, elementStyle);
+    console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
     return elementStyle;
   }
   // https://stackoverflow.com/questions/37189881/how-to-clear-some-fields-in-form-redux-form
@@ -511,17 +531,29 @@ class DocumentChoicesTemplate extends Component {
     const { input: { name } } = this.props;
     let choices = null;
     let element = null;
-    console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields[this.props.page], this.props: ', name, this.props.elementName, this.props.formFields, this.props);
     // console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices: ', name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices);
     // if (this.props.editTemplate) {
     if (this.props.editFieldsOn) {
       choices = this.props.formFields[this.props.page][this.props.elementId].choices;
+      if (this.props.translationModeOn && !this.props.eachElement.translation_element) {
+        // if (this.props.eachElement.translation_element)
+        element = this.props.formFields[this.props.page][this.props.elementId];
+        choices = element.document_field_choices ? this.props.formFields[this.props.page][this.props.elementId].document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
+      }
     } else {
       element = this.props.formFields[this.props.page][this.props.elementId];
-      choices = element.document_field_choices ? this.props.formFields[this.props.page][this.props.elementId].document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
+      choices = element.document_field_choices ? element.document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
     }
     // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
     if (this.props.editFieldsOn) {
+      if (this.props.translationModeOn && !this.props.eachElement.translation_element) {
+        console.log('in document_choices_template, render, name, this.props.eachElement, this.props.formFields[this.props.page], this.props, this.props.translationModeOn, this.props.editFieldsOn, choices: ', name, this.props.eachElement, this.props.formFields, this.props, this.props.translationModeOn, this.props.editFieldsOn, choices);
+        return (
+          <div key={name}>
+            {this.renderEachChoice(choices)}
+          </div>
+        );
+      }
       return (
         <div
           key={name}

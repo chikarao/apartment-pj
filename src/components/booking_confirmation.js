@@ -455,7 +455,12 @@ class BookingConfirmation extends Component {
       this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
         // Empty out current templateElements if not empty
         // Does not work: if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
-        this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
+        this.props.setTemplateElementsObject({
+          templateElements: {},
+          templateElementsByPage: {},
+          templateTranslationElements: {},
+          templateTranslationElementsByPage: {}
+        });
         // .ownUploadedDocumentKey either 'own_uploaded_document' or 'own_uploaded_template',
         this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
           // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument

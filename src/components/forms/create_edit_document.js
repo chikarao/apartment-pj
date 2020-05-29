@@ -1898,12 +1898,96 @@ longActionPress(props) {
     const documentEmpty = _.isEmpty(this.props.templateTranslationElementsByPage);
     // const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let translationText = '';
+
     if (!documentEmpty) {
+
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
         translationText = documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
         console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText: ', eachElement, this.props.documentTranslationsAllInOne, translationText);
-        return (
-          <div
+        if (this.state.translationModeOn && this.state.editFieldsOn) {
+          const background = document.getElementById('document-background');
+          if (background) {
+            const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
+            const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100;
+            const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
+            let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
+            if (eachElementWidthPx < TAB_WIDTH) tabLeftMarginPx = 0;
+            const label = 'Placeholder'
+            const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
+            return (
+              <div
+                key={eachElement.id}
+                id={`template-translation-element-${eachElement.id}`}
+                className="create-edit-document-template-element-container"
+                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: `${parseFloat(eachElement.height) + tabPercentOfContainerH}%` }}
+              >
+                <Field
+                  key={eachElement.name}
+                  name={eachElement.name}
+                  component={DocumentChoicesTemplate}
+                  type={eachElement.input_type}
+                  className={'document-rectangle-template'}
+                  props={{
+                      eachElement,
+                      page,
+                      // required: modifiedElement.required,
+                      // nullRequiredField,
+                      // newElement,
+                      documentLanguageCode,
+                      getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
+                      // create a templateElementsByPage with choices just for the input element
+                      formFields: { [eachElement.page]: { [eachElement.id]:
+                          { choices: { 0: { val: 'inputFieldValue',
+                                            top: eachElement.top,
+                                            left: eachElement.left,
+                                            width: eachElement.width,
+                                            height: eachElement.height,
+                                            font_size: eachElement.font_size,
+                                            font_family: eachElement.font_family,
+                                            font_style: eachElement.font_style,
+                                            font_weight: eachElement.font_weight,
+                                            // change from input componnet use document-rectange
+                                            // class_name: 'document-rectangle',
+                                            class_name: eachElement.class_name,
+                                            // !!! height works only with px
+                                            input_type: eachElement.input_type,
+                                            element_id: eachElement.id
+                          } } } } },
+                      charLimit: eachElement.charLimit,
+                      // otherChoiceValues,
+                      documentKey: this.props.documentKey,
+                      editTemplate: true,
+                      wrappingDivDocumentCreateH,
+                      modifiedElement: eachElement,
+                      elementName: eachElement.name,
+                      elementId: eachElement.id,
+                      editFieldsOn: this.state.editFieldsOn,
+                      translationModeOn: this.state.translationModeOn,
+                      // label: modifiedElement.name,
+                      label,
+                      agreement: this.props.agreement,
+                      selectedChoiceIdArray: []
+                    }}
+                  // props={{ model: }}
+                  style={{
+                      width: '100%',
+                      fontSize: eachElement.font_size,
+                      fontFamily: eachElement.font_family,
+                      fontStyle: eachElement.font_style,
+                      fontWeight: eachElement.font_weight,
+                      borderColor: eachElement.border_color,
+                      margin: '0px !important',
+                      flex: '1 1 auto'
+                    }}
+                />
+                {this.renderTab(eachElement, selected, tabLeftMarginPx, true)}
+              </div>
+            );
+          } // if background
+        } else {
+          // if not translationModeOn, must render a simple div
+          return (
+            <div
             // component: null
             id={eachElement.id}
             key={eachElement.id}
@@ -1920,12 +2004,52 @@ longActionPress(props) {
             // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
             // class_name="document-rectangle-template"
             className='document-translation'
-          >
+            >
             {translationText}
-          </div>
-        );
-      });
-    }
+            </div>
+          ); // End of return
+        } // End of if (translationModeOn)
+      }); // End of _.map
+    } // if (!documentEmpty) {
+  }
+
+  renderTab(eachElement, selected, tabLeftMarginPx, inputElement) {
+    const tabWidth = inputElement ? TAB_WIDTH : 55;
+    const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+    return (
+      <div
+        id={`template-element-tab-${eachElement.id}`}
+        className="create-edit-document-template-element-edit-tab"
+        style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
+      >
+        <i
+          key={1}
+          value={eachElement.id}
+          className="fas fa-check-circle"
+          style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+          onClick={this.handleTemplateElementCheckClick}
+        >
+        </i>
+        <i
+          key={2}
+          value={eachElement.id}
+          className="fas fa-truck-moving"
+          style={{ lineHeight: '1.5', color: 'gray' }}
+          onMouseDown={this.handleTemplateElementMoveClick}
+        >
+        </i>
+        {inputElement
+          ?
+          <i
+            key={3}
+            type={eachElement.input_type}
+            value={eachElement.id}
+            className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+            onMouseDown={this.handleTemplateElementChangeSizeClick}
+          >
+        </i> : null}
+      </div>
+    );
   }
 
   // For creating new input fields
@@ -1939,44 +2063,44 @@ longActionPress(props) {
     let inputElement = true;
     let localTemplateElementsByPage = null;
 
-    const renderTab = (eachElement, selected, tabLeftMarginPx, inputElement) => {
-      const tabWidth = inputElement ? TAB_WIDTH : 55;
-      const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
-      return (
-        <div
-          id={`template-element-tab-${eachElement.id}`}
-          className="create-edit-document-template-element-edit-tab"
-          style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
-        >
-          <i
-            key={1}
-            value={eachElement.id}
-            className="fas fa-check-circle"
-            style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
-            onClick={this.handleTemplateElementCheckClick}
-          >
-          </i>
-          <i
-            key={2}
-            value={eachElement.id}
-            className="fas fa-truck-moving"
-            style={{ lineHeight: '1.5', color: 'gray' }}
-            onMouseDown={this.handleTemplateElementMoveClick}
-          >
-          </i>
-          {inputElement
-            ?
-            <i
-              key={3}
-              type={eachElement.input_type}
-              value={eachElement.id}
-              className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
-              onMouseDown={this.handleTemplateElementChangeSizeClick}
-            >
-          </i> : null}
-        </div>
-      );
-    };
+    // const renderTab = (eachElement, selected, tabLeftMarginPx, inputElement) => {
+    //   const tabWidth = inputElement ? TAB_WIDTH : 55;
+    //   const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+    //   return (
+    //     <div
+    //       id={`template-element-tab-${eachElement.id}`}
+    //       className="create-edit-document-template-element-edit-tab"
+    //       style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
+    //     >
+    //       <i
+    //         key={1}
+    //         value={eachElement.id}
+    //         className="fas fa-check-circle"
+    //         style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+    //         onClick={this.handleTemplateElementCheckClick}
+    //       >
+    //       </i>
+    //       <i
+    //         key={2}
+    //         value={eachElement.id}
+    //         className="fas fa-truck-moving"
+    //         style={{ lineHeight: '1.5', color: 'gray' }}
+    //         onMouseDown={this.handleTemplateElementMoveClick}
+    //       >
+    //       </i>
+    //       {inputElement
+    //         ?
+    //         <i
+    //           key={3}
+    //           type={eachElement.input_type}
+    //           value={eachElement.id}
+    //           className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+    //           onMouseDown={this.handleTemplateElementChangeSizeClick}
+    //         >
+    //       </i> : null}
+    //     </div>
+    //   );
+    // };
     // Function to get object used in document_choices_template.js to render fields
     // Looks like { 1: { 100: {element attr}, 101: { element attr } }}
     const getLocalTemplateElementsByPage = (eachElement, box, backgroundDim, marginBetween, isNew) => {
@@ -2103,7 +2227,7 @@ longActionPress(props) {
           let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
           if (eachElementWidthPx < TAB_WIDTH) tabLeftMarginPx = 0;
 
-          let wrappingDivDocumentCreateH = parseFloat(modifiedElement.height) / (parseFloat(modifiedElement.height) + tabPercentOfContainerH);
+          const wrappingDivDocumentCreateH = parseFloat(modifiedElement.height) / (parseFloat(modifiedElement.height) + tabPercentOfContainerH);
 
           if (eachElement.document_field_choices) {
             const { document_field_choices } = eachElement;
@@ -2144,7 +2268,7 @@ longActionPress(props) {
             } // end of if newElement
           } // end of if eachElement.document_field_choices
           // if ()
-          if (inputElement && this.state.editFieldsOn) {
+          if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn) {
             // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
             return (
               <div
@@ -2230,10 +2354,10 @@ longActionPress(props) {
                     {}
                   }
                 />
-                {renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
+                {this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
               </div>
             );
-          } else if (this.state.editFieldsOn) { // else if inputElement
+          } else if (this.state.editFieldsOn && !this.state.translationModeOn) { // else if inputElement
             console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement);
             return (
               <div
@@ -2307,12 +2431,13 @@ longActionPress(props) {
                   }
                 />
                 </div>
-                {renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
+                {this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
               </div>
             );
           }// end of if inputElement
 
           // if (noTabs) { // noTabs a placeholder for now
+          console.log('in create_edit_document, before last return inputElement, this.props.editFieldsOn, this.state.translationModeOn: ', inputElement, this.props.editFieldsOn, this.state.translationModeOn);
             return (
               <Field
                 key={modifiedElement.id}
@@ -2328,6 +2453,7 @@ longActionPress(props) {
                   modifiedElement,
                   documentLanguageCode,
                   editFieldsOn: this.state.editFieldsOn,
+                  translationModeOn: this.state.translationModeOn,
                   eachElement: modifiedElement,
                   required: modifiedElement.required,
                   nullRequiredField,
