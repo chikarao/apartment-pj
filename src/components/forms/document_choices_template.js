@@ -54,7 +54,8 @@ class DocumentChoicesTemplate extends Component {
     let choicesChanged = false;
     let valueUpdated = false;
     let choiceSelectedUnselected = false;
-    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
+    let formFieldChanged = false;
+    // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
 
     if (this.props.selectedChoiceIdArray) {
       choiceSelectedUnselected = this.props.selectedChoiceIdArray.length !== nextProps.selectedChoiceIdArray.length;
@@ -64,10 +65,11 @@ class DocumentChoicesTemplate extends Component {
 
     if (this.props.editTemplate) {
       elementChanged = nextProps.eachElement !== this.props.eachElement
-      console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged', elementChanged);
     }
 
     valueUpdated = nextProps.input.value != this.props.input.value;
+    console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected', elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected);
+    console.log('DocumentChoicesTemplate, shouldComponentUpdate (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected)', (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected));
 
     return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
   }
@@ -144,7 +146,6 @@ class DocumentChoicesTemplate extends Component {
     } else {
       elementStyle = { borderColor: 'lightgray', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
     }
-
     // Set initially at values for elements going inside a wrapper div
     // let height = '100%';
     // let width = '100%';
@@ -182,7 +183,6 @@ class DocumentChoicesTemplate extends Component {
         fontWeight: selectChoices ? eachElement.font_weight : choice.font_weight,
         borderColor: selectChoices ? eachElement.font_color : choice.border_color,
         position,
-
         margin: '0px !important',
         flex: '1 1 auto'
       };
@@ -560,7 +560,8 @@ class DocumentChoicesTemplate extends Component {
           style={{
               // wrapping div fits the outer div to house inputs and buttons
               width: '100%',
-              height: '100%',
+              // height: '100%',
+              height: this.props.inputElement ? this.props.innerDivPercentageOfWrapper : '100%',
               position: this.props.editFieldsOn ? 'relative' : ''
               // height: `${this.props.wrappingDivDocumentCreateH * 100}%`
             }}
