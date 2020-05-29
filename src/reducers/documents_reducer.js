@@ -373,7 +373,7 @@ export default function (state = {
           };
         }
         // If not template then return for templateTranslations
-        return { ...state, 
+        return { ...state,
           templateTranslationElements: mergedObject,
           templateTranslationElementsByPage: templateElementsByPage,
         };
@@ -509,10 +509,11 @@ export default function (state = {
 
     case FETCH_DOCUMENT_TRANSLATION:
     const parsedActionPayload = JSON.parse(action.payload);
-    // const documentTranslationsTreated = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
+    const documentTranslations = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
     console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
     return { ...state,
       documentTranslations: parsedActionPayload,
+      documentTranslationsAllInOne: documentTranslations.allObject
       // documentTranslationsTreated
     };
 

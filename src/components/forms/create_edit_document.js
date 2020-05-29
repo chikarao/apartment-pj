@@ -96,7 +96,7 @@ class CreateEditDocument extends Component {
       editFieldsOn: false,
       editFieldsOnPrevious: false,
       translationModeOn: false,
-      documentTranslationsTreated: null
+      documentTranslationsTreated: {},
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -1893,6 +1893,41 @@ longActionPress(props) {
     this.longActionPress({ action: elementVal, choicesArray, templateElements: this.props.templateElements, choicesOriginalObject, selectedChoiceIdArray: this.state.selectedChoiceIdArray, actionCallback });
   }
 
+  renderTemplateTranslationElements(page) {
+    const { documentLanguageCode, appLanguageCode, agreement, documentTranslationsAllInOne } = this.props;
+    const documentEmpty = _.isEmpty(this.props.templateTranslationElementsByPage);
+    // const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
+    let translationText = '';
+    if (!documentEmpty) {
+      return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
+        translationText = documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
+        console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText: ', eachElement, this.props.documentTranslationsAllInOne, translationText);
+        return (
+          <div
+            // component: null
+            id={eachElement.id}
+            key={eachElement.id}
+            style={{
+              top: eachElement.top,
+              left: eachElement.left,
+              height: eachElement.height,
+              width: eachElement.width,
+              font_family: eachElement.font_family,
+              font_size: eachElement.font_size,
+              font_style: eachElement.font_style,
+              font_weight: eachElement.font_weight
+            }}
+            // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
+            // class_name="document-rectangle-template"
+            className='document-translation'
+          >
+            {translationText}
+          </div>
+        );
+      });
+    }
+  }
+
   // For creating new input fields
   renderTemplateElements(page) {
     const { documentLanguageCode } = this.props;
@@ -1904,10 +1939,9 @@ longActionPress(props) {
     let inputElement = true;
     let localTemplateElementsByPage = null;
 
-    const renderTab = (eachElement, selected, tabLeftMarginPx) => {
+    const renderTab = (eachElement, selected, tabLeftMarginPx, inputElement) => {
       const tabWidth = inputElement ? TAB_WIDTH : 55;
       const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
-      console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, selected, tabLeftMarginPx, tabWidth, modTabLeftMarginPx: ', eachElement, selected, tabLeftMarginPx, tabWidth, modTabLeftMarginPx);
       return (
         <div
           id={`template-element-tab-${eachElement.id}`}
@@ -2196,7 +2230,7 @@ longActionPress(props) {
                     {}
                   }
                 />
-                {renderTab(modifiedElement, selected, tabLeftMarginPx)}
+                {renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
               </div>
             );
           } else if (this.state.editFieldsOn) { // else if inputElement
@@ -2273,7 +2307,7 @@ longActionPress(props) {
                   }
                 />
                 </div>
-                {renderTab(modifiedElement, selected, tabLeftMarginPx)}
+                {renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
               </div>
             );
           }// end of if inputElement
@@ -3369,8 +3403,9 @@ longActionPress(props) {
             templateFieldChoiceObject: null
           }, () => {
             // Get the translation object to render in the choice box
+            const returnedObject = getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' })
             this.setState({
-              documentTranslationsTreated: getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' })
+              documentTranslationsTreated: returnedObject.treatedObject,
             });
             console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
           })
@@ -5312,6 +5347,7 @@ longActionPress(props) {
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
               {this.props.showTemplate ? this.renderFontControlBox() : ''}
               {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate ? this.renderDocumentName(page) : ''}
             </div>
           );
@@ -5601,6 +5637,7 @@ function mapStateToProps(state) {
       documentConstants: state.documents.documentConstants,
       templateTranslationElements: state.documents.templateTranslationElements,
       templateTranslationElementsByPage: state.documents.templateTranslationElementsByPage,
+      documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
     };
   }
 
