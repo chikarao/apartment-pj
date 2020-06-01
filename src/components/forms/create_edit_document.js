@@ -1136,7 +1136,7 @@ renderEachDocumentField(page) {
   }
 
   dragElement(dragProps) {
-    const { element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements, backgroundDimensions, templateElements, fromDocumentChoices, templateElement } = dragProps;
+    const { element, tabs, inputElements, parentRect, actionCallback, move, elementType, selectedElements, backgroundDimensions, templateElements, fromDocumentChoices, templateElement, translationModeOn } = dragProps;
     // pos1 and 2 are for getting delta of pointer position;
     // pos3 and 4 are for getting updated mouse position
     let pos1 = 0;
@@ -1145,6 +1145,7 @@ renderEachDocumentField(page) {
     let pos4 = 0;
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
+    let eachElementId = !translationModeOn ? element.id.split('-')[2] : element.id.split('-')[3]
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
@@ -1152,7 +1153,9 @@ renderEachDocumentField(page) {
       // if inputElements exists then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
-        originalValueObject[eachElement.id.split('-')[3]] = {
+        eachElementId = !translationModeOn ? eachElement.id.split('-')[3] : eachElement.id.split('-')[4]
+        // originalValueObject[eachElement.id.split('-')[3]] = {
+        originalValueObject[eachElementId] = {
           top: inputElementDimensions.top,
           left: inputElementDimensions.left,
           width: inputElementDimensions.width,
@@ -1163,7 +1166,9 @@ renderEachDocumentField(page) {
       // if inputElement is null and selectedElements is populated,
       // must be a multiple element move
       _.each(selectedElements, eachElement => {
-        originalValueObject[eachElement.id.split('-')[2]] = {
+        eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3]
+        // originalValueObject[eachElement.id.split('-')[2]] = {
+        originalValueObject[eachElementId] = {
           top: eachElement.style.top,
           left: eachElement.style.left,
           width: eachElement.style.width,
@@ -1172,13 +1177,14 @@ renderEachDocumentField(page) {
       });
     } else {
       // if even selectedElements is empty, must be a single eleemnt drag move
-      originalValueObject[element.id.split('-')[2]] = {
+      originalValueObject[eachElementId] = {
         top: element.style.top,
         left: element.style.left,
         width: element.style.width,
         height: element.style.height
       };
     }
+    console.log('in create_edit_document, dragElement, element, inputElements, selectedElements, originalValueObject, ', element, inputElements, selectedElements, originalValueObject);
 
     // CAll main function
     dragMouseDown();
@@ -1274,18 +1280,6 @@ renderEachDocumentField(page) {
       let choiceElement = null;
       let wrapperDiv = null;
       let wrapperDivDimensions = null;
-      // const choiceElementsArray = [];
-      // let elementInState = null;
-      // let allChoicesObject = null;
-      // let documentFieldObject = null;
-      // let eachChoicePxDimensionsArray = null;
-      // let newDocumentFieldChoices = null;
-      // let oldDocumentFieldChoices = null;
-      // let lastWrapperDivDimsPre = null;
-      // let wrapperDivDimensions = null;
-      // let lastWrapperDivDimsInPx = null;
-      // let lastWrapperDivDims = null;
-      // const arrayForAction =
 
       console.log('in create_edit_document, dragElement, closeDragElement, in each, pos3, pos4, deltaX, deltaY, originalValueObject, ', pos3, pos4, deltaX, deltaY, originalValueObject);
 
@@ -1299,7 +1293,8 @@ renderEachDocumentField(page) {
         // id is the index 2 (third element) in split array
         // the wrapper div top and left are same as input element top and left
         _.each(interatedElements, (eachElement, i) => {
-          eachElementId = eachElement.id.split('-')[2];
+          eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3];
+
           if (templateElements[eachElementId].document_field_choices) {
             // get change in x and y from the actual DOM elements moved by drag
             if (i === 0) {
@@ -1343,13 +1338,15 @@ renderEachDocumentField(page) {
             }
             console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
           } else { // else of if (templateElements[elementId].document_field_choices
+
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
               id: eachElementId, // get the id part of template-element-[id]
               left: eachElement.style.left,
               top: eachElement.style.top,
-              o_left: originalValueObject[eachElement.id.split('-')[2]].left,
-              o_top: originalValueObject[eachElement.id.split('-')[2]].top,
+              translation_element: templateElement.translation_element,
+              o_left: originalValueObject[eachElementId].left,
+              o_top: originalValueObject[eachElementId].top,
               action: 'update'
             };
           }  // end of if (templateElements[elementId].document_field_choices
@@ -1365,8 +1362,18 @@ renderEachDocumentField(page) {
         let inputElementDimensions = null;
 
         _.each(interatedElements, eachElement => {
-          eachElementId = eachElement.id.split('-')[2]
-          inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
+          // when translationModeOn, elementId is in index 3
+          eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3]
+          console.log('in create_edit_document, dragElement, closeDragElement, eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
+
+          !translationModeOn
+          ?
+          inputElement = inputElements.filter(each => eachElementId == each.id.split('-')[3])
+          // inputElement = inputElements.filter(each => eachElement.id.split('-')[2] == each.id.split('-')[3])
+          :
+          inputElement = inputElements.filter(each => eachElementId == each.id.split('-')[4]);
+          // inputElement = inputElements.filter(each => eachElement.id.split('-')[3] == each.id.split('-')[4]);
+
           inputElementDimensions = inputElement[0].getBoundingClientRect()
           // if (!templateElements[elementId].document_field_choices) {
             // oWidth and oHeight for original values for use in history
@@ -1375,8 +1382,9 @@ renderEachDocumentField(page) {
               id: eachElementId, // get the id part of template-element-[id]
               width: `${(inputElementDimensions.width / parentRect.width) * 100}%`,
               height: `${(inputElementDimensions.height / parentRect.height) * 100}%`,
-              o_width: `${(originalValueObject[eachElement.id.split('-')[2]].width / parentRect.width) * 100}%`,
-              o_height: `${(originalValueObject[eachElement.id.split('-')[2]].height / parentRect.height) * 100}%`,
+              translation_element: templateElement.translation_element,
+              o_width: `${(originalValueObject[eachElementId].width / parentRect.width) * 100}%`,
+              o_height: `${(originalValueObject[eachElementId].height / parentRect.height) * 100}%`,
               action: 'update',
             };
             // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
@@ -1733,9 +1741,11 @@ longActionPress(props) {
   // Gets the actual elements (not just ids) of selected elements in handlers resize and mvoe
   getSelectedActualElements(elementIdString, ids, resize) {
     const array = [];
+    const templateElements = !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
+
     _.each(ids, id => {
       if (resize) {
-        if (!this.props.templateElements[id].document_field_choices) {
+        if (!templateElements[id].document_field_choices) {
           array.push(document.getElementById(`${elementIdString}${id}`));
         }
       } else {
@@ -1754,13 +1764,15 @@ longActionPress(props) {
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value');
     // Get the element being dragged directly
-    const element = document.getElementById(`template-element-${elementVal}`);
+    // if translationModeOn not on, get template-element-id, otherwise, get template-translation-element
+    const idName = !this.state.translationModeOn ? 'template-element' : 'template-translation-element'
+    const element = document.getElementById(`${idName}-${elementVal}`);
     const backgroundDimensions = element.parentElement.getBoundingClientRect();
     // Get the dimensions of the parent element
     const parentRect = element.parentElement.getBoundingClientRect()
     // define callback to be called in dragElement closeDragElement
     // Get array of elements selected or checked by user
-    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, false)
+    selectedElements = this.getSelectedActualElements(`${idName}-`, this.state.selectedTemplateElementIdArray, false)
     // call dragElement and pass in the dragged element, the parent dimensions,
     // and the action to update the element in app state
     // const action = fromDocumentChoices ? 'create' : 'update'
@@ -1769,8 +1781,23 @@ longActionPress(props) {
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
     // last true is for move or not; in this case this is for move element
-    this.dragElement({ element, tabs: null, inputElements: null, parentRect, actionCallback, move: true, elementType: null, selectedElements, backgroundDimensions, templateElements: this.props.templateElements, fromDocumentChoices });
+    this.dragElement({
+      element,
+      tabs: null,
+      inputElements: null,
+      parentRect,
+      actionCallback,
+      move: true,
+      elementType: null,
+      selectedElements,
+      backgroundDimensions,
+      templateElements: !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements,
+      templateElement: !this.state.translationModeOn ? this.props.templateElements[elementVal] : this.props.templateTranslationElements[elementVal],
+      fromDocumentChoices,
+      translationModeOn: this.state.translationModeOn
+    });
   }
+  // gotomove
 
   handleTemplateElementChangeSizeClick(event) {
     // For dragging and resizing template elements
@@ -1784,29 +1811,43 @@ longActionPress(props) {
     const elementType = clickedElement.getAttribute('type')
     // gets the wrapping div for the template element;
     // This is the base element for attribute changes
-    const element = document.getElementById(`template-element-${elementVal}`);
+    const idName = !this.state.translationModeOn ? 'template-element' : 'template-translation-element'
+    const element = document.getElementById(`${idName}-${elementVal}`);
     // Get the actual input elements so they can be resized directly
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       // If multiple elements selected, get array of multiple input elements
-      inputElements = this.getSelectedActualElements('template-element-input-', this.state.selectedTemplateElementIdArray, true)
+      inputElements = this.getSelectedActualElements(`${idName}-input-`, this.state.selectedTemplateElementIdArray, true)
       // Get array of tabs attached to elements so marginLeft can be set dynamically
-      tabs = this.getSelectedActualElements('template-element-tab-', this.state.selectedTemplateElementIdArray, true)
+      tabs = this.getSelectedActualElements(`${idName}-tab-`, this.state.selectedTemplateElementIdArray, true)
     } else {
       // If no other elements are selected, just put the one element into an array
-      inputElements = [document.getElementById(`template-element-input-${elementVal}`)];
+      inputElements = [document.getElementById(`${idName}-input-${elementVal}`)];
       // Place the one tab into an array
-      tabs = [document.getElementById(`template-element-tab-${elementVal}`)];
+      tabs = [document.getElementById(`${idName}-tab-${elementVal}`)];
     }
     // Gets the dimensions of the parent element (document background)
     const parentRect = element.parentElement.getBoundingClientRect()
-    selectedElements = this.getSelectedActualElements('template-element-', this.state.selectedTemplateElementIdArray, true)
+    selectedElements = this.getSelectedActualElements(`${idName}-`, this.state.selectedTemplateElementIdArray, true)
     // Callback for the action to update element array, and to update history array and historyIndex
     const actionCallback = (updatedElementsArray) => {
       this.props.updateDocumentElementLocally(updatedElementsArray);
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
     // Call drag element
-    this.dragElement({ element, tabs, inputElements, parentRect, actionCallback, move: false, elementType, selectedElements, backgroundDimensions: null, templateElements: this.props.templateElements });
+    this.dragElement({
+      element,
+      tabs,
+      inputElements,
+      parentRect,
+      actionCallback,
+      move: false,
+      elementType,
+      selectedElements,
+      backgroundDimensions: null,
+      templateElements: !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements,
+      templateElement: !this.state.translationModeOn ? this.props.templateElements[elementVal] : this.props.templateTranslationElements[elementVal],
+      translationModeOn: this.state.translationModeOn
+    });
   }
 
   handleButtonTemplateElementClick(event) {
@@ -1896,9 +1937,10 @@ longActionPress(props) {
   renderTab(eachElement, selected, tabLeftMarginPx, inputElement) {
     const tabWidth = inputElement ? TAB_WIDTH : 55;
     const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
+    const className = !this.state.translationModeOn ? 'template-element' : 'template-translation-element'
     return (
       <div
-        id={`template-element-tab-${eachElement.id}`}
+        id={`${className}-tab-${eachElement.id}`}
         className="create-edit-document-template-element-edit-tab"
         style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
       >
@@ -3407,7 +3449,7 @@ longActionPress(props) {
               console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
             }
 
-            if (eachKey === 'id') {
+            if (eachKey === 'id' || eachKey === 'translation_element') {
               object[eachKey] = eachObject[eachKey];
             }
           });
@@ -3532,7 +3574,8 @@ longActionPress(props) {
           this.setState({
             // translationModeOn to view and create only translation objects
             translationModeOn: !this.state.translationModeOn,
-            templateFieldChoiceObject: null
+            templateFieldChoiceObject: null,
+            selectedTemplateElementIdArray: []
           }, () => {
             // Get the translation object to render in the choice box
             const returnedObject = getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' })
@@ -3561,7 +3604,9 @@ longActionPress(props) {
 
         case 'checkAll': {
           const checkAllArray = [...this.state.selectedTemplateElementIdArray];
-          _.each(this.props.templateElements, eachElement => {
+          // If translationModeOn, get templateTranslationElements, else get templateElements
+          const templateElements = !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
+          _.each(templateElements, eachElement => {
             // IE does not support includes
             if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id === -1)) {
               // Push id into array in string type so as to enable temporary id with '1a' char in it
@@ -4820,6 +4865,7 @@ longActionPress(props) {
     this.clearAllTimers(() => {});
   }
 
+  // gets the font attributes of checked elements
   getSelectedFontElementAttributes() {
     // gotofont
     // getCheckElementFontObject
@@ -4840,7 +4886,7 @@ longActionPress(props) {
         // Get element from id;
         // Go through each attribute in object;
         // Get an array of ids for each type of font_family, font_size etc.
-        eachElement = this.props.templateElements[eachId];
+        eachElement = !this.state.translationModeOn ? this.props.templateElements[eachId] : this.props.templateTranslationElements[eachId];
         // console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
         elementWithInputOrSelect = !eachElement.document_field_choices || (eachElement.document_field_choices && findIfHasSelectChoice(eachElement));
         // If element is an input element or has a select choice

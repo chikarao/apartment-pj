@@ -357,8 +357,7 @@ class DocumentChoicesTemplate extends Component {
 
   createInputElement({ choice, meta, value, input, name }) {
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
-    // console.log('DocumentChoicesTemplate, createInputElement, dirtyValue', dirtyValue);
-    // console.log('DocumentChoicesTemplate, createInputElement input, meta.dirty, value, this.props.dirtyFields', input, meta.dirty, value, this.props.dirtyFields);
+    const idName = !this.props.translationModeOn ? 'template-element' : 'template-translation-element'
     return (
       <input
         // No need to use input element value; update value directly with onChange in handleInputChange in RFv7.4.2
@@ -369,7 +368,7 @@ class DocumentChoicesTemplate extends Component {
         // override standard input props below
         onChange={this.handleInputChange}
         // id="valueInput"
-        id={this.props.editTemplate ? `template-element-input-${choice.element_id}` : 'valueTextarea'}
+        id={this.props.editTemplate ? `${idName}-input-${choice.element_id}` : 'valueTextarea'}
         maxLength={this.props.charLimit}
         // value with this.state.inputValue is no longer need in RF v7.4.2;
         key={choice.val}
@@ -467,10 +466,13 @@ class DocumentChoicesTemplate extends Component {
   createTextareaElement({ choice, value, input }) {
     console.log('DocumentChoicesTemplate, createTextareaElement choice, value, input', choice, value, input);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+    // Set idname for getElementById in element move and resize
+    const idName = !this.props.translationModeOn ? 'template-element' : 'template-translation-element'
+
     return (
         <textarea
           {...input}
-          id={this.props.editTemplate ? `template-element-input-${choice.element_id}` : 'valueTextarea'}
+          id={this.props.editTemplate ? `${idName}-input-${choice.element_id}` : 'valueTextarea'}
           // id={'valueTextarea'}
           name={choice.name}
           maxLength={this.props.charLimit}

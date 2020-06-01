@@ -411,15 +411,17 @@ export default function (state = {
       console.log('in documents reducer, UPDATE_DOCUMENT_ELEMENT_LOCALLY action.payload: ', action.payload);
       // Get mapped array of action payload;
       // before: [{element}, {element}], after: { id: {element}, id: {element}}
-      const templateElementsByPage = { ...state.templateElementsByPage };
+      const translationElements = action.payload[0].translation_element;
+      const templateElementsByPage = !translationElements ? { ...state.templateElementsByPage } : { ...state.templateTranslationElementsByPage };
       // let element;
       const actionPayloadMapped = _.mapKeys(action.payload, 'id');
       // get shallow copy of template elements
-      const newUpdateObject = _.merge({}, state.templateElements);
+      const templateElements = !translationElements ? state.templateElements : state.templateTranslationElements;
+      const newUpdateObject = _.merge({}, templateElements);
       // Iterate through each of the elements in action payload
       _.each(Object.keys(actionPayloadMapped), eachElementId => {
         // Get the element in app state with the sent id
-        const obj = state.templateElements[eachElementId];
+        const obj = templateElements[eachElementId];
 
         const newObj = {};
         // Iterate through each key in the element to be updated in app state
@@ -458,10 +460,17 @@ export default function (state = {
       // fontAttributeObject = getElementFontAttributes(newUpdateObject)
       // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
       // const templateDocumentChoicesObject = getDocumentChoicesObject(newUpdateObject, null);
+      if (!translationElements) {
+        return { ...state,
+          templateElements: newUpdateObject,
+          templateElementsByPage,
+          // templateDocumentChoicesObject
+        };
+      }
 
       return { ...state,
-        templateElements: newUpdateObject,
-        templateElementsByPage,
+        templateTranslationElements: newUpdateObject,
+        templateTranslationElementsByPage: templateElementsByPage,
         // templateDocumentChoicesObject
       };
     }
@@ -472,7 +481,7 @@ export default function (state = {
         templateElements: action.payload.templateElements,
         templateElementsByPage: action.payload.templateElementsByPage,
         templateTranslationElements: action.payload.templateTranslationElements,
-        templateTranslationElementsByPage: action.payload.templateTranslationElementsByPage 
+        templateTranslationElementsByPage: action.payload.templateTranslationElementsByPage
       };
 
     case SET_CREATE_DOCUMENT_KEY:
