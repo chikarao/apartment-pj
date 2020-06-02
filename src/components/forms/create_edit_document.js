@@ -2964,15 +2964,16 @@ longActionPress(props) {
     // const newArray = getNewExistingHistoryArray();
     const newArray = [...this.state.templateEditHistoryArray];
     // iterate through each selected element ids
-    // if there is no element in parameters, ie the action was based on selected elements
+    // if there is no element in parameters, ie the action was based on selected elements ie 'delete'
+    const templateElements = !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
     if (!elementArray) {
       console.log('in create_edit_document, setTemplateHistoryArray, if !elementArray: ', action, elementArray);
       _.each(this.state.selectedTemplateElementIdArray, eachSelectedId => {
         // if id is in mapped template elements object { id: {element} }
-        if (this.props.templateElements[eachSelectedId]) {
+        if (templateElements[eachSelectedId]) {
           // Get a new object to modify so all other objects in templateEditHistoryArray
           // do not get modified
-          const modifiedElement = this.getNewElementObject(this.props.templateElements[eachSelectedId]);
+          const modifiedElement = this.getNewElementObject(templateElements[eachSelectedId]);
           modifiedElement.action = action;
           array.push(modifiedElement);
         }
@@ -3000,7 +3001,7 @@ longActionPress(props) {
       // empty out selected elements array
       selectedTemplateElementIdArray: action === 'delete' ? [] : this.state.selectedTemplateElementIdArray,
       // if action IS delete, all elements are not checked anymore
-      allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
+      allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(templateElements).length,
       templateEditHistoryArray: [...newArray, array], // add new array of history
     }, () => {
       // console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
@@ -3019,7 +3020,7 @@ longActionPress(props) {
    if (this.state.selectedTemplateElementIdArray.length > 0) {
      // call setTemplateHistoryArray delete in callback to setState so modifiedPersistedElementsArray is in state
      // to be stringified in localStorage
-     this.props.deleteDocumentElementLocally(this.state.selectedTemplateElementIdArray, () => this.setTemplateHistoryArray(null, 'delete'));
+     this.props.deleteDocumentElementLocally({ selectedTemplateElementIdArray: this.state.selectedTemplateElementIdArray, translationModeOn: this.state.translationModeOn, callback: () => this.setTemplateHistoryArray(null, 'delete') });
    } // end of if selectedTemplateElementIdArray.length > 0
   }
 
@@ -3419,8 +3420,8 @@ longActionPress(props) {
       this.props.createDocumentElementLocally(elementObject);
     };
 
-    const deleteElement = (elementsIdArray) => {
-      this.props.deleteDocumentElementLocally(elementsIdArray, () => {});
+    const deleteElement = (elementsIdArray, translationModeOn) => {
+      this.props.deleteDocumentElementLocally({ selectedTemplateElementIdArray: elementsIdArray, translationModeOn, callback: () => {} });
     };
 
     const updateElement = (elementsArray) => {
@@ -3472,7 +3473,7 @@ longActionPress(props) {
       if (lastActionArray[0].action === 'create') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action create lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         if (doWhatNow === 'undo') {
-          deleteElement([lastActionArray[0].id])
+          deleteElement([lastActionArray[0].id], lastActionArray[0].translation_element)
           // Take the checked element ids out of selectedTemplateElementIdArray
           const newArray = [...this.state.selectedTemplateElementIdArray];
           // If element id is in selectedTemplateElementIdArray, take it out of the array
@@ -3527,7 +3528,8 @@ longActionPress(props) {
             }
           });
 
-          deleteElement(elementsIdArray);
+          const translationModeOn = newLastAction[0].translation_element;
+          deleteElement(elementsIdArray, translationModeOn);
           this.setState({
             selectedTemplateElementIdArray: newArray,
           });

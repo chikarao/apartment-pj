@@ -2128,10 +2128,10 @@ export function updateDocumentElementLocally(array) {
   return { type: UPDATE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
 }
 
-export function deleteDocumentElementLocally(array, callback) {
-  console.log('in actions index, deleteDocumentElementLocally array, callback:', array, callback);
-  callback();
-  return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: array };
+export function deleteDocumentElementLocally(props) {
+  console.log('in actions index, deleteDocumentElementLocally props:', props);
+  props.callback();
+  return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: props };
 }
 
 export function populateTemplateElementsLocally(array, callback, templateEditHistory) {
