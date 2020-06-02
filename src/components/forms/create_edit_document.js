@@ -2087,10 +2087,10 @@ longActionPress(props) {
               left: eachElement.left,
               height: eachElement.height,
               width: eachElement.width,
-              font_family: eachElement.font_family,
-              font_size: eachElement.font_size,
-              font_style: eachElement.font_style,
-              font_weight: eachElement.font_weight
+              fontFamily: eachElement.font_family,
+              fontSize: eachElement.font_size,
+              fontStyle: eachElement.font_style,
+              fontWeight: eachElement.font_weight
             }}
             // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
             // class_name="document-rectangle-template"
@@ -3573,7 +3573,8 @@ longActionPress(props) {
             // editFieldsOnPrevious for if user selects createNewTemplateElementOn when editFieldsOn
             // User does not have to turn off or on editFieldsOn each time turns on/off createNewTemplateElementOn
             editFieldsOn: !this.state.editFieldsOn,
-            editFieldsOnPrevious: !this.state.editFieldsOnPrevious
+            editFieldsOnPrevious: !this.state.editFieldsOnPrevious,
+            selectedTemplateElementIdArray: []
           }, () => {
             // If user turns off editFieldsOn, turn off createNewTemplateElementOn
             if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });

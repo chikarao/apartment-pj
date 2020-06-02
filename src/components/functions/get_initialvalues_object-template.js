@@ -494,7 +494,7 @@ export default (props) => {
     }
 
     if (p.object.group === 'degradations') degradationsObject.degradations[p.key] = inspectionForLanguage[p.key]
-    console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject);
+    // console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject);
     // If this method runs, that means there was an inspection on record
     if (p.key === 'building_inspection_conducted') return true;
     if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') degradationsObject.summaryKeys.push(p.key);
@@ -664,7 +664,7 @@ export default (props) => {
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
     });
   } else {
     // placeholder; No need to test for template?
@@ -678,12 +678,14 @@ export default (props) => {
       objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName, category: 'inspection' }) };
     })
   }
-
+  // Get initivalValues for templateTranslationElements;
+  // nameInInitialValues corresponds to name in Field in renderTemplateTranslationElements in createEditDocument
+  // name is like buildingName+translation with a '+' so that able to distinguish translation element value in submit form
+  // and will not clash with underscore or hyphen in templateElements
   if (!_.isEmpty(templateTranslationElements)) {
     let nameInInitialValues = null;
     _.each(Object.keys(templateTranslationElements), eachKey => {
       nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, templateTranslationElements, nameInInitialValues, documentTranslationsAllInOne, documentLanguageCode ', templateTranslationElements, nameInInitialValues, documentTranslationsAllInOne, documentLanguageCode);
       objectReturned = { ...objectReturned, [nameInInitialValues]: documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode] };
     })
   }

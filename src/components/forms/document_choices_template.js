@@ -485,9 +485,6 @@ class DocumentChoicesTemplate extends Component {
           onBlur={this.handleOnBlur}
           onFocus={this.handleOnFocus}
           className={choice.class_name}
-          // width={choice.width}
-          // height={choice.height}
-          // style={{ borderColor: 'lightgray', top: choice.top, left: choice.left, width: choice.width }}
           style={this.getStyleOfInputElement(value, choice)}
         />
     );
