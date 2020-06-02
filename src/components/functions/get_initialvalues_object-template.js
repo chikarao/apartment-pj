@@ -11,7 +11,7 @@ import getListValues from '../forms/get_list_values';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants, bookingDatesObject } = props;
+  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, templateTranslationElements, documentTranslationsAllInOne, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants, bookingDatesObject } = props;
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
@@ -676,6 +676,15 @@ export default (props) => {
   if (methodObject.runLastInspection.condition && degradationsObject.summaryKeys.length > 0) {
     _.each(degradationsObject.summaryKeys, eachFieldName => {
       objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName, category: 'inspection' }) };
+    })
+  }
+
+  if (!_.isEmpty(templateTranslationElements)) {
+    let nameInInitialValues = null;
+    _.each(Object.keys(templateTranslationElements), eachKey => {
+      nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, templateTranslationElements, nameInInitialValues, documentTranslationsAllInOne, documentLanguageCode ', templateTranslationElements, nameInInitialValues, documentTranslationsAllInOne, documentLanguageCode);
+      objectReturned = { ...objectReturned, [nameInInitialValues]: documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode] };
     })
   }
 

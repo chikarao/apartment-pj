@@ -358,7 +358,7 @@ class CreateEditDocument extends Component {
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       // Get date object at the beginning to run once instead of running on each field
       const bookingDatesObject = getBookingDateObject(booking);
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants, bookingDatesObject });
+      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, templateTranslationElements: this.props.templateTranslationElements, documentTranslationsAllInOne: this.props.documentTranslationsAllInOne, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants, bookingDatesObject });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
       this.props.setInitialValuesObject(initialValuesObject);
     } // end of if bookingData
@@ -2011,7 +2011,7 @@ longActionPress(props) {
               >
                 <Field
                   key={eachElement.name}
-                  name={eachElement.name}
+                  name={`${eachElement.name}+translation`}
                   component={DocumentChoicesTemplate}
                   type={eachElement.input_type}
                   className={'document-rectangle-template'}
@@ -5182,7 +5182,7 @@ longActionPress(props) {
 
   renderTemplateElementEditAction() {
     // Define all button conditions for enabling and disabling buttons
-    const templateElementsLength = Object.keys(this.props.templateElements).length
+    const templateElementsLength = !this.state.translationModeOn ? Object.keys(this.props.templateElements).length : Object.keys(this.props.templateTranslationElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0;
     const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
