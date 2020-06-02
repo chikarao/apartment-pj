@@ -1145,6 +1145,7 @@ renderEachDocumentField(page) {
     let pos4 = 0;
     // Get the original values of each element selected for use in history array
     const originalValueObject = {};
+    // ids looke like 'template-element-input-id' and 'template-translation-element-input-id'
     let eachElementId = !translationModeOn ? element.id.split('-')[2] : element.id.split('-')[3]
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
@@ -1153,6 +1154,7 @@ renderEachDocumentField(page) {
       // if inputElements exists then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
+        // ids looke like 'template-element-input-id' and 'template-translation-element-input-id'
         eachElementId = !translationModeOn ? eachElement.id.split('-')[3] : eachElement.id.split('-')[4]
         // originalValueObject[eachElement.id.split('-')[3]] = {
         originalValueObject[eachElementId] = {
@@ -1164,9 +1166,10 @@ renderEachDocumentField(page) {
       });
     } else if (selectedElements.length > 0) {
       // if inputElement is null and selectedElements is populated,
-      // must be a multiple element move
+      // must be a multiple element move vs resize
+      // ids looke like 'template-element-id' and 'template-translation-element-id'
       _.each(selectedElements, eachElement => {
-        eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3]
+        eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3];
         // originalValueObject[eachElement.id.split('-')[2]] = {
         originalValueObject[eachElementId] = {
           top: eachElement.style.top,
@@ -1176,7 +1179,9 @@ renderEachDocumentField(page) {
         };
       });
     } else {
-      // if even selectedElements is empty, must be a single eleemnt drag move
+      // if even selectedElements is empty, must be a single eleemnt drag move not resize
+      // ids looke like 'template-element-id' and 'template-translation-element-input-id'
+      // eachElementId assigned at top
       originalValueObject[eachElementId] = {
         top: element.style.top,
         left: element.style.left,
@@ -3082,8 +3087,9 @@ longActionPress(props) {
         let baseChoiceIndex = null;
         // let choiceButtonDimensions = null;
         // let choiceButton = null;
+        // If there are more than one elements (wrappers divs, not choices) chosen
         if (this.state.selectedTemplateElementIdArray.length > 0) {
-          baseElement = this.props.templateElements[this.state.selectedTemplateElementIdArray[0]];
+          baseElement = !this.state.translationModeOn ? this.props.templateElements[this.state.selectedTemplateElementIdArray[0]] : this.props.templateTranslationElements[this.state.selectedTemplateElementIdArray[0]];
         } else {
           // The first choice in selectedChoiceIdArray is the base upon which others move
           // choiceIds look like '1a-0'
@@ -3102,19 +3108,23 @@ longActionPress(props) {
           let updatedElementObject = null;
 
           _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-            eachElement = this.props.templateElements[eachElementId];
+            eachElement = !this.state.translationModeOn ? this.props.templateElements[eachElementId] : this.props.templateTranslationElements[eachElementId];
             if (eachElement && eachElement.id !== baseElement.id) {
+              // If the element is an input element
               if (!eachElement.document_field_choices) {
+                // Get original attributes for use in history in undo/redo
                 originalValueObject[eachElement.id] = {
                   top: eachElement.top,
                   left: eachElement.left,
                   width: eachElement.width,
                   height: eachElement.height
                 };
-                if (alignWhat === 'vertical') array.push({ id: eachElement.id, top: baseElement.top, o_top: originalValueObject[eachElement.id].top, action: 'update' });
-                if (alignWhat === 'horizontal') array.push({ id: eachElement.id, left: baseElement.left, o_left: originalValueObject[eachElement.id].left, action: 'update' });
-                if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, oWidth: originalValueObject[eachElement.id].width, action: 'update' });
-                if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height, oHeight: originalValueObject[eachElement.id].height, action: 'update' });
+                // Assign relevant attributes including translation element
+                // These objects wil be kept in history and templateElements
+                if (alignWhat === 'vertical') array.push({ id: eachElement.id, top: baseElement.top, o_top: originalValueObject[eachElement.id].top, translation_element: eachElement.translation_element, action: 'update' });
+                if (alignWhat === 'horizontal') array.push({ id: eachElement.id, left: baseElement.left, o_left: originalValueObject[eachElement.id].left, translation_element: eachElement.translation_element, action: 'update' });
+                if (alignWhat === 'alignWidth') array.push({ id: eachElement.id, width: baseElement.width, oWidth: originalValueObject[eachElement.id].width, translation_element: eachElement.translation_element, action: 'update' });
+                if (alignWhat === 'alignHeight') array.push({ id: eachElement.id, height: baseElement.height, oHeight: originalValueObject[eachElement.id].height, translation_element: eachElement.translation_element, action: 'update' });
               } else { // else of if (!eachElement.document_field_choices
                 // Get the wrapper div and move it to the base top or left (Don't align width or height)
                 // All document_field_choices move along with it. Then save in app state
@@ -3167,7 +3177,6 @@ longActionPress(props) {
           let oldDocumentFieldChoices = null;
           let lastWrapperDivDims = null;
           let updatedElementObject = null;
-
 
           let attribute = null;
 
@@ -3269,11 +3278,11 @@ longActionPress(props) {
       console.log('in create_edit_document, handleTemplateElementActionClick, moveElements() direction, backgroundDimensions: ', direction, backgroundDimensions);
       if (this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0) {
         if (this.state.selectedTemplateElementIdArray.length > 0) {
-
-          backgroundDimensions = document.getElementById(`template-element-${this.state.selectedTemplateElementIdArray[0]}`).parentElement.getBoundingClientRect();
+          const idName = !this.state.translationModeOn ? 'template-element' : 'template-translation-element';
+          backgroundDimensions = document.getElementById(`${idName}-${this.state.selectedTemplateElementIdArray[0]}`).parentElement.getBoundingClientRect();
 
           _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-            const eachElement = this.props.templateElements[eachElementId];
+            const eachElement = !this.state.translationModeOn ? this.props.templateElements[eachElementId] : this.props.templateTranslationElements[eachElementId];
                 // if (this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1) {
             if (eachElement) {
               originalValueObject[eachElement.id] = {
@@ -3285,10 +3294,10 @@ longActionPress(props) {
 
               if (!eachElement.document_field_choices) {
                 // If the element has no document_field_choices, push object in array for the action and reducer
-                if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
-                if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) + moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, action: 'update' });
-                if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) + moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
-                if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) - moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, action: 'update' });
+                if (direction === 'moveLeft') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) - moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, translation_element: eachElement.translation_element, action: 'update' });
+                if (direction === 'moveRight') array.push({ id: eachElement.id, left: `${((((parseFloat(eachElement.left) / 100) * backgroundDimensions.width) + moveIncrement) / backgroundDimensions.width) * 100}%`, o_left: originalValueObject[eachElement.id].left, translation_element: eachElement.translation_element, action: 'update' });
+                if (direction === 'moveDown') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) + moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, translation_element: eachElement.translation_element, action: 'update' });
+                if (direction === 'moveUp') array.push({ id: eachElement.id, top: `${((((parseFloat(eachElement.top) / 100) * backgroundDimensions.height) - moveIncrement) / backgroundDimensions.height) * 100}%`, o_top: originalValueObject[eachElement.id].top, translation_element: eachElement.translation_element, action: 'update' });
               } else { // else of if (!eachElement.document_field_choices)
                 // Move the wrapper div and the choices will follow then get the new state values
                 wrapperDiv = document.getElementById(`template-element-${eachElementId}`);
@@ -3335,7 +3344,7 @@ longActionPress(props) {
       // If elements have been selected, apply changes to selected elements
       if (this.state.selectedTemplateElementIdArray.length > 0) {
         _.each(this.state.selectedTemplateElementIdArray, eachElementId => {
-          const eachElement = this.props.templateElements[eachElementId];
+          const eachElement = !this.state.translationModeOn ? this.props.templateElements[eachElementId] : this.props.templateTranslationElements[eachElementId];
           if (eachElement) {
             originalValueObject[eachElement.id] = {
               fontFamily: eachElement.font_family,
@@ -3349,12 +3358,12 @@ longActionPress(props) {
           if (fontAttribute === 'fontWeight') elementValue = eachElement.font_weight === 'bold' ? 'normal' : elementValue;
           if (fontAttribute === 'fontStyle') elementValue = eachElement.font_style === 'italic' ? 'normal' : elementValue
 
-          if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, font_family: clickedElement.value, o_font_family: originalValueObject[eachElement.id].fontFamily, action: 'update' });
-          if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, font_size: clickedElement.value, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
-          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, font_weight: elementValue, o_font_weight: originalValueObject[eachElement.id].fontWeight, action: 'update' });
-          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, font_style: elementValue, o_font_style: originalValueObject[eachElement.id].fontStyle, action: 'update' });
-          if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) < 48 ? `${parseFloat(eachElement.font_size) + 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
-          if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) > 8 ? `${parseFloat(eachElement.font_size) - 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, action: 'update' });
+          if (fontAttribute === 'fontFamily') array.push({ id: eachElement.id, font_family: clickedElement.value, o_font_family: originalValueObject[eachElement.id].fontFamily, translation_element: eachElement.translation_element, action: 'update' });
+          if (fontAttribute === 'fontSize') array.push({ id: eachElement.id, font_size: clickedElement.value, o_font_size: originalValueObject[eachElement.id].fontSize, translation_element: eachElement.translation_element, action: 'update' });
+          if (fontAttribute === 'fontWeight') array.push({ id: eachElement.id, font_weight: elementValue, o_font_weight: originalValueObject[eachElement.id].fontWeight, translation_element: eachElement.translation_element, action: 'update' });
+          if (fontAttribute === 'fontStyle') array.push({ id: eachElement.id, font_style: elementValue, o_font_style: originalValueObject[eachElement.id].fontStyle, translation_element: eachElement.translation_element, action: 'update' });
+          if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) < 48 ? `${parseFloat(eachElement.font_size) + 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, translation_element: eachElement.translation_element, action: 'update' });
+          if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) > 8 ? `${parseFloat(eachElement.font_size) - 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, translation_element: eachElement.translation_element, action: 'update' });
         }); // end of each
         // If ALL elements are checked, update the newFontObject
         if (this.state.allElementsChecked) {

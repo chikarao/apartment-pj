@@ -384,26 +384,34 @@ export default function (state = {
       console.log('in documents reducer, state, DELETE_DOCUMENT_ELEMENT_LOCALLY, action.payload: ', action.payload);
       // Get shallow copy of template elements in new object
       // Needs to be new object so redux will find a new updated state.
-      const newDeleteObject = _.merge({}, state.templateElements);
-      const templateElementsByPage = { ...state.templateElementsByPage };
+      const templateElements = action.payload[0].translation_element ? state.templateElements : state.templateTranslationElements;
+      const templateElementsByPage = action.payload[0].translation_element ? { ...state.templateElementsByPage } : { ...state.templateTranslationElementsByPage };
+      const newDeleteObject = _.merge({}, templateElements);
+      // const templateElementsByPage = { ...templateElementsByPage };
       // iterate through each element id in action payload
       // and delete id: elementObj in state.templateElements (object)
       let element;
       _.each(action.payload, (eachElementId) => {
         // delete key in templateElements copy object
         delete newDeleteObject[eachElementId];
-        element = state.templateElements[eachElementId];
+        element = templateElements[eachElementId];
         delete templateElementsByPage[element.page][eachElementId];
       });
 
       // const templateDocumentChoicesObject = getDocumentChoicesObject(newDeleteObject, null);
       // fontAttributeObject = getElementFontAttributes(newDeleteObject);
       // onlyFontAttributeObject = getOnlyFontAttributes(fontAttributeObject);
+      if (action.payload[0].translation_element) {
+        return { ...state,
+          templateElements: newDeleteObject,
+          templateElementsByPage
+          // templateDocumentChoicesObject
+        };
+      }
 
       return { ...state,
-        templateElements: newDeleteObject,
-        templateElementsByPage
-        // templateDocumentChoicesObject
+        templateTranslationElements: newDeleteObject,
+        templateTranslationElementsByPage: templateElementsByPage
       };
     }
 
