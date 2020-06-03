@@ -346,9 +346,15 @@ export default function (state = {
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       // This action creates elements for template and templateTranslation
         const newObject = {}
+        let createdObject = {}
+        let templateElementsByPage = {}
         // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
         // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
-        const createdObject = { [action.payload.id]: action.payload };
+        // Keep out any object that have no id
+        if (action.payload.id) {
+          createdObject = { [action.payload.id]: action.payload };
+          templateElementsByPage = addToTemplateElementsByPage(action.payload);
+        }
         // let initialValuesObject = { ...state.initialValuesObject };
         // let listValues = '';
         // if (action.payload.list_parameters) {
@@ -356,9 +362,8 @@ export default function (state = {
           //   // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
           //   initialValuesObject = { [action.payload.name]: listValues }
           // }
-          const templateElementsByPage = addToTemplateElementsByPage(action.payload);
-          const originalElement = !action.payload.translation_element ? state.templateElements : state.templateTranslationElements;
-          const mergedObject = _.merge(newObject, originalElement, createdObject);
+          const originalObject = !action.payload.translation_element ? state.templateElements : state.templateTranslationElements;
+          const mergedObject = _.merge(newObject, originalObject, createdObject);
           // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
           // const someOtherObject = { amenities_list: 'hello' };
           // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;

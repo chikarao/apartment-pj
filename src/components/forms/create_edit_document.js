@@ -1088,7 +1088,6 @@ renderEachDocumentField(page) {
     console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
     // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
     // when element has not been checked
-    // if (!this.state.selectedTemplateElementIdArray.includes(elementVal)) {
     if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
       this.setState({
@@ -2888,8 +2887,14 @@ longActionPress(props) {
     // Get an object like lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
     // To be used
     getModifiedObject(fromWhere);
-    console.log('in create_edit_doc ument, setLocalStorageHistory, right after call of getModifiedObjec: ');
+    console.log('in create_edit_document, setLocalStorageHistory, right after call of getModifiedObjec: ');
     const unsavedTemplateElements = { ...this.state.unsavedTemplateElements };
+
+    const cleanUpObjects = (eachObject, eachElementKey) => {
+      const modifiedEachObject = eachObject;
+      modifiedEachObject[eachElementKey].deleted = true;
+      delete unsavedTemplateElements[eachElementKey];
+    };
     // Save new elements not persisted in backend DB (have 'a' or 'b' on ids)
     // Go thorough each of modifiedPersistedElementsObject and modifiedPersistedTranslationObject
     // lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
@@ -2898,18 +2903,23 @@ longActionPress(props) {
     // since handleTemplateSubmitCallback function empties out all history-related state
     if (fromWhere !== 'handleTemplateSubmitCallback') {
       _.each([modifiedPersistedObject, modifiedPersistedTranslationObject], eachObject => {
+        const modifiedEachObject = eachObject;
         // _.each(Object.key.returnObject), eachElementKey => {
         _.each(Object.keys(eachObject), eachElementKey => {
+
           console.log('in create_edit_doc ument, setLocalStorageHistory, fromWhere, eachElementKey: ', fromWhere, eachElementKey);
           // if element is a template element with an 'a' put into unsavedTemplateElements from this.props.templateElements
           if (eachElementKey.indexOf('a') !== -1) {
-            unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey] || eachObject[eachElementKey];
+            this.props.templateElements[eachElementKey] ? unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey] : cleanUpObjects(eachObject, eachElementKey);
           }
           // if element is translation with 'b' put into unsavedTemplateElements from this.props.templateTranslationElements
           if (eachElementKey.indexOf('b') !== -1) {
-            unsavedTemplateElements[eachElementKey] = this.props.templateTranslationElements[eachElementKey] || eachObject[eachElementKey];
+            this.props.templateTranslationElements[eachElementKey] ? unsavedTemplateElements[eachElementKey] = this.props.templateTranslationElements[eachElementKey] : cleanUpObjects(eachObject, eachElementKey);
           }
-          console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey);
+
+          if (eachElementKey === 'undefined' || eachElementKey === null) delete modifiedEachObject[eachElementKey]
+          // console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey);
+          console.log('in create_edit_document, setLocalStorageHistory, eachObject, eachElementKey, unsavedTemplateElements: ', eachObject, eachElementKey, unsavedTemplateElements);
         });
       });
     }
@@ -3341,6 +3351,7 @@ longActionPress(props) {
     const changeFont = (fontAttribute) => {
       const array = [];
       const originalValueObject = {};
+      // Object to deal with naming convention differences between js and rails
       const fontKeySwitch = { fontFamily: 'font_family', fontSize: 'font_size', fontWeight: 'font_weight', fontStyle: 'font_style' };
       // If elements have been selected, apply changes to selected elements
       if (this.state.selectedTemplateElementIdArray.length > 0) {
@@ -3366,7 +3377,8 @@ longActionPress(props) {
           if (fontAttribute === 'fontLarger') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) < 48 ? `${parseFloat(eachElement.font_size) + 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, translation_element: eachElement.translation_element, action: 'update' });
           if (fontAttribute === 'fontSmaller') array.push({ id: eachElement.id, font_size: parseFloat(eachElement.font_size) > 8 ? `${parseFloat(eachElement.font_size) - 0.5}px` : eachElement.font_size, o_font_size: originalValueObject[eachElement.id].fontSize, translation_element: eachElement.translation_element, action: 'update' });
         }); // end of each
-        // If ALL elements are checked, update the newFontObject
+        // If ALL elements are checked, update the newFontObject (font used for new elements creted)
+        // and selectedElementFontObject font attribute values common to all checked elements
         if (this.state.allElementsChecked) {
           this.setState({
             newFontObject: {
@@ -3384,7 +3396,7 @@ longActionPress(props) {
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
           });
-        } else { // if one or more but not all checked
+        } else { // if one or more but NOT ALL checked
           this.setState({
             selectedElementFontObject: {
               ...this.state.selectedElementFontObject,
@@ -3586,8 +3598,12 @@ longActionPress(props) {
           this.setState({
             // translationModeOn to view and create only translation objects
             translationModeOn: !this.state.translationModeOn,
+            // null out object for keeping which field user wants to create
             templateFieldChoiceObject: null,
-            selectedTemplateElementIdArray: []
+            // emplty out array keeping user's checked elements
+            selectedTemplateElementIdArray: [],
+            // null out object that identifies what font attributes checked elements have in commen
+            selectedElementFontObject: null
           }, () => {
             // Get the translation object to render in the choice box
             const returnedObject = getTranslationObject({ object1: this.props.documentTranslationsAll.fixed_term_rental_contract_bilingual_all, object2: this.props.documentTranslationsAll.important_points_explanation_bilingual_all, action: 'categorize' })
@@ -3597,7 +3613,7 @@ longActionPress(props) {
             console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
           })
           break;
-
+        // align method aligns elements and choices to a base element or choice
         case 'vertical':
           align(elementVal);
           break;
@@ -3657,6 +3673,7 @@ longActionPress(props) {
             });
             break;
 
+        // move methods move one or more elements or choices
         case 'moveLeft':
           moveElements(elementVal);
           break;
@@ -3672,7 +3689,7 @@ longActionPress(props) {
         case 'moveUp':
           moveElements(elementVal);
           break;
-
+        // Expland and contract methods alters one or more elements or choices
         case 'expandVertical':
           expandContractElements(elementVal);
           break;
@@ -3696,7 +3713,7 @@ longActionPress(props) {
         case 'redo':
           redoUndo(elementVal);
           break;
-
+        // Font elementVals sent from children of create-edit-document-font-control-box
         case 'fontFamily':
           changeFont(elementVal);
           break;
@@ -4887,12 +4904,13 @@ longActionPress(props) {
         if (element.document_field_choices[eachIndex].val === 'inputFieldValue') hasSelectChoice = true;
       });
       return hasSelectChoice;
-    }
+    };
 
     const object = { font_family: {}, font_size: {}, font_weight: {}, font_style: {} };
     let eachElement = null;
     let elementWithInputOrSelect = false;
     const selectObject = {};
+    // Go through each element checked
     if (this.state.selectedTemplateElementIdArray.length > 0) {
       _.each(this.state.selectedTemplateElementIdArray, eachId => {
         // Get element from id;
@@ -4901,7 +4919,7 @@ longActionPress(props) {
         eachElement = !this.state.translationModeOn ? this.props.templateElements[eachId] : this.props.templateTranslationElements[eachId];
         // console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
         elementWithInputOrSelect = !eachElement.document_field_choices || (eachElement.document_field_choices && findIfHasSelectChoice(eachElement));
-        // If element is an input element or has a select choice
+        // If element is an input element or has a select choice (only element that matter for fonts)
         // populate object; eachKey is font_family, font_size etc
         // Will look like fontFamily: { arial: [id], times: [id] }
         if (elementWithInputOrSelect) {
@@ -4923,15 +4941,18 @@ longActionPress(props) {
       // would be 2
       _.each(Object.keys(object), eachFontAttribute => {
         // Get an array of actual fonts used in selected elements
+        // selectValueArray Could look like [arial, times]
         selectValueArray = Object.keys(object[eachFontAttribute]);
-        // If there is only one value or say one font style in selectValueArray array
+        // create an object like { fontFamily: null } to be filled out later
         selectObject[eachFontAttribute] = null;
+        // If there is only one value or say one font style in selectValueArray array
         if (selectValueArray.length === 1) {
+          // selectObject will now look like { fontFamily: 'arial' } if there is only one
           selectObject[eachFontAttribute] = selectValueArray[0];
         }
       });
     }
-
+    // this.state.selectedElementFontObject looks like { fontFamily: 'arial' }
     console.log('in create_edit_document, getSelectedFontElementAttributes, object, selectObject: ', object, selectObject);
     this.setState({ selectedElementFontObject: _.isEmpty(selectObject) ? null : selectObject });
     return { object, selectObject };
@@ -5190,7 +5211,7 @@ longActionPress(props) {
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
     // NOTE: disableSave does not work after saving since initialValues have to be updated
     const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
-    const disableCheckAll = !this.props.templateElements || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
+    const disableCheckAll = !this.state.editFieldsOn || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
     const enableRedo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1) && !this.state.createNewTemplateElementOn;
