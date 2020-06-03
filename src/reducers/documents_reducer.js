@@ -301,12 +301,21 @@ export default function (state = {
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {};
-
+      const templateElementsArray = [];
+      const templateTranslationsElementsArray = [];
+      // divide action.payload array of elements into translations and not
+      _.each(action.payload.array, each => {
+        if (!each.translation_element) {
+          templateElementsArray.push(each);
+        } else {
+          templateTranslationsElementsArray.push(each)
+        }
+      })
       // const listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects })
 
       // Rather than calling _.mapKeys, do the same thing
       // and turn ids into strings and assign action: create
-      const mergedObject = _.merge(newObject, state.templateElements, action.payload.array);
+      const mergedObject = _.merge(newObject, state.templateElements, templateElementsArray);
       // gets object with string ids and a pageObject { 1: { id: element }}
       const mapKeysObject = getMappedObjectWithStringIds(mergedObject, action.payload.templateEditHistory, true);
       // const initialValuesObject = { ...state.initialValuesObject };
@@ -315,13 +324,15 @@ export default function (state = {
       // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       // const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject.object);
-
-      // const templateDocumentChoicesObject = getDocumentChoicesObject(mergedObject, null);
-      // console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject: ', mergedObject, mapKeysObject);
+      const mergedTranslationObject = _.merge(newObject, state.templateTranslationElements, templateTranslationsElementsArray);
+      // gets object with string ids and a pageObject { 1: { id: element }}
+      const mapKeysTranslationObject = getMappedObjectWithStringIds(mergedTranslationObject, action.payload.templateEditHistory, true);
 
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
+        templateTranslationElements: mergedTranslationObject.object || {},
+        templateTranslationElementsByPage: mergedTranslationObject.pageObject || {},
         // initialValuesObject
       };
     }

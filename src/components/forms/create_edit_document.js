@@ -593,46 +593,65 @@ class CreateEditDocument extends Component {
       // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
+    const object = {
+      templateElements: { modifiedObject: this.state.modifiedPersistedElementsObject },
+      templateTranslationElements: { modifiedObject: this.state.modifiedPersistedTranslationElementsObject }
+    }
+
     console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
-
-    _.each(Object.keys(this.state.modifiedPersistedElementsObject), eachKey => {
-      let documentField = null;
-      console.log('in create_edit_document, handleTemplateFormSubmit, eachKey, this.state.modifiedPersistedElementsObject[eachKey]: ', eachKey, this.state.modifiedPersistedElementsObject[eachKey]);
-      if (this.state.modifiedPersistedElementsObject[eachKey].deleted === true) {
-        deletedDocumentFieldIdArray.push(eachKey);
-      } else {
-        // if not deleted === true, its been modified or newly created
-        documentField = this.props.templateElements[eachKey];
-      }
-
-      if (documentField) {
-        const value = data[documentField.name];
-        let array = null;
-        documentField.value = value;
-        if (documentField.document_field_choices) {
-          array = [];
-          const selectArray = [];
-          _.each(Object.keys(documentField.document_field_choices), each => {
-            console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
-            if (documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices) {
-              const selectChoices = documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices
-              _.each(Object.keys(selectChoices), eachSelect => {
-                if (eachSelect < 10) selectArray.push(selectChoices[eachSelect])
-              });
-              documentField.document_field_choices[each].select_choices_attributes = selectArray;
-            }
-            array.push(documentField.document_field_choices[each]);
-          });
-          // documentField.document_field_choices = null;
+    _.each(Object.keys(object), eachElementTypeKey => {
+      _.each(Object.keys(object[eachElementTypeKey].modifiedObject), eachKey => {
+        let documentField = null;
+        console.log('in create_edit_document, handleTemplateFormSubmit, eachKey, object[eachElementTypeKey].modifiedObject[eachKey]: ', eachKey, object[eachElementTypeKey].modifiedObject[eachKey]);
+        // if elements have ids with 'a' or 'b' and are deleted in the modified object
+        if (object[eachElementTypeKey].modifiedObject[eachKey].deleted === true && eachKey.indexOf('a') === -1 && eachKey.indexOf('b') === -1) {
+          deletedDocumentFieldIdArray.push(parseInt(eachKey, 10));
+        } else {
+          // if not deleted === true, its been modified or newly created
+          // eachElementTypeKey is this.props[templateElements] or templateTranslationElements
+          documentField = this.props[eachElementTypeKey][eachKey];
         }
-        documentField.document_field_choices_attributes = array;
-        documentFieldArray.push(documentField);
-      }
-    });
+
+        if (documentField) {
+          // const value = data[documentField.name];
+          let array = null;
+          let arrayTranslation = null;
+
+          documentField.value = data[documentField.name];
+          if (documentField.document_field_choices) {
+            array = [];
+            const selectArray = [];
+            _.each(Object.keys(documentField.document_field_choices), each => {
+              console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
+              if (documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices) {
+                const selectChoices = documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices;
+                _.each(Object.keys(selectChoices), eachSelect => {
+                  if (eachSelect < 10) selectArray.push(selectChoices[eachSelect])
+                });
+                documentField.document_field_choices[each].select_choices_attributes = selectArray;
+              } // end of if (documentField.document_field_choices[each].
+              array.push(documentField.document_field_choices[each]);
+            }); // end of _.each(Object.keys(documentField.document_field_choices)
+            // documentField.document_field_choices = null;
+          } // end of if (documentField.document_field_choices)
+
+          if (documentField.document_field_translations) {
+            arrayTranslation = [];
+            _.each(Object.keys(documentField.document_field_translations), eachLanguageCodeKey => {
+              arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
+            });
+          }
+
+          documentField.document_field_choices_attributes = array;
+          documentField.document_field_translations_attributes = arrayTranslation;
+          documentFieldArray.push(documentField);
+        } // end of if (documentField) {
+      }); // end of _.each(Object.keys(object[eachElementTypeKey].modifiedObject
+    }); // end of _.each(Object.keys(object), eachElementTypeKey => {
 
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
-    this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
-    this.props.showLoading();
+    // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+    // this.props.showLoading();
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -3408,7 +3427,7 @@ longActionPress(props) {
             this.setFontControlBoxValues();
           });
         }
-      } else { // else of if selectedTemplateElementIdArray.length > 0
+      } else { // else of if selectedTemplateElementIdArray.length > 0 i.e. no elements checked
         if (fontAttribute === 'fontWeight') elementValue = this.state.newFontObject.fontWeight === 'bold' ? 'normal' : elementValue;
         if (fontAttribute === 'fontStyle') elementValue = this.state.newFontObject.fontStyle === 'italic' ? 'normal' : elementValue
         // if there are NO elements selected turn override true so that
@@ -4959,6 +4978,7 @@ longActionPress(props) {
   }
 
   setFontControlBoxValues() {
+    // if selectedElementFontObject is null (i.e. no elements checked), assigns the newFontObject
     const fontAttributeObject = this.state.selectedElementFontObject || this.state.newFontObject;
     // Gets the select field for fontFamily
     const fontFamily = document.getElementById('fontFamily');
@@ -4981,10 +5001,10 @@ longActionPress(props) {
       if (eachFontAttribute === 'font_weight') {
          if (fontAttributeObject[eachFontAttribute] === 'bold') {
            // fontWeight.style.border = '1px solid black'
-           fontWeight.style.fontWeight = 'bold'
+           fontWeight.style.fontWeight = 'bold';
          } else {
            // fontWeight.style.border = '1px solid #ccc'
-           fontWeight.style.fontWeight = 'normal'
+           fontWeight.style.fontWeight = 'normal';
          }
       }
 
