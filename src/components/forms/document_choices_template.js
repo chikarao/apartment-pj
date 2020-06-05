@@ -338,21 +338,69 @@ class DocumentChoicesTemplate extends Component {
     const blurredInput = event.target
     // console.log('DocumentChoicesTemplate, handleOnBlur, blurredInput', blurredInput);
     // console.log('DocumentChoicesTemplate, handleOnBlur, this.state.valueWhenInputFocused', this.state.valueWhenInputFocused);
-    if (blurredInput.value != this.state.valueWhenInputFocused) {
+    if (blurredInput.value !== this.state.valueWhenInputFocused) {
+      const { documentTranslationsAllInOne, initialValuesObject, elementName, documentLanguageCode, translationModeOn, eachElement } = this.props;
+      // Code pre-template implementation
       const newEditHistoryItem = { before: { value: this.state.valueWhenInputFocused, name: blurredInput.name }, after: { value: blurredInput.value, name: blurredInput.name } }
-      // this.setState(prevState => ({
-      //   editHistory: [...prevState.editHistory, editHistoryItem]
-      // })); // end of setState
       this.props.editHistory({ newEditHistoryItem, action: 'add' });
-    }
+      // Code pre-template implementation
+      // const splitValue = blurredInput.getAttribute('value').split('-');
+      // const translationElement = splitValue[1] === 'translation';
+      // const elementId = splitValue[splitValue.length - 1];
+      // const templateElement = this.props.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements
+      if (translationModeOn) {
+        const valueInAllInONe = documentTranslationsAllInOne[elementName].translations[documentLanguageCode]
+        const valueInInitialValues = initialValuesObject[`${elementName}+translation`]
+        console.log('DocumentChoicesTemplate, handleOnBlur, elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues', elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues);
+        // If after user exits out of the input field
+        // and the value does not equal the standard translation
+        // in the all in one object, assign a new document_field_translation
+        // or update the value of the existing language_code
+        let updateObject = null;
+        if (blurredInput.value !== valueInAllInONe) {
+          updateObject = { id: eachElement.id, translation_element: true, value: blurredInput.value, previous_value: this.state.valueWhenInputFocused };
+
+          if (eachElement.document_field_translations) {
+            updateObject.o_document_field_translations = eachElement.document_field_translations;
+            updateObject.document_field_translations =  { ...eachElement.document_field_translations, [documentLanguageCode]: { id: null, value: blurredInput.value, language_code: documentLanguageCode, deleted: false } };
+            // eachElement.document_field_translations[documentLanguageCode]
+                                                        // ?
+                                                        // { ...eachElement.document_field_translations, [documentLanguageCode], value: blurredInput.value, deleted: false }
+                                                        // :
+                                                        // { ...eachElement.document_field_translations, [documentLanguageCode]: { id: null, value: blurredInput.value, language_code: documentLanguageCode, deleted: false } };
+          } else { // else of if (eachElement.document_field_translations) {
+            // if the element does not have an exiting document_field_translation,
+            // assign null to the old document_field_translation
+            // and a new object for the language_code
+            updateObject.o_document_field_translations = null;
+            updateObject.addKey = 'document_field_translations';
+            updateObject.document_field_translations = { [documentLanguageCode]: { value: blurredInput.value, language_code: documentLanguageCode, deleted: false } };
+          }
+        } else { // else of if (translationModeOn && blurredInput.value !== valueInAllInONe) {
+          updateObject = { id: eachElement.id, translation_element: true, value: blurredInput.value, previous_value: this.state.valueWhenInputFocused };
+          if (eachElement.document_field_translations) {
+            updateObject.o_document_field_translations = eachElement.document_field_translations;
+            updateObject.document_field_translations = eachElement.document_field_translations[documentLanguageCode]
+                ?
+                { ...eachElement.document_field_translations, [documentLanguageCode]: { ...eachElement.document_field_translations[documentLanguageCode], value: blurredInput.value, language_code: documentLanguageCode, deleted: true } }
+                :
+                { ...eachElement.document_field_translations };
+          }
+        } // end of if (translationModeOn && blurredInput.value !== valueInAllInONe) {
+
+        console.log('DocumentChoicesTemplate, handleOnBlur, updateObject', updateObject);
+        this.props.updateDocumentElementLocally([updateObject]);
+        this.props.setTemplateHistoryArray([updateObject], 'update');
+      } // if (translationModeOn) {
+    } // end of if (blurredInput.value !== this.state.valueWhenInputFocused) {
   }
 
   handleOnFocus(event) {
-    const focusedInput = event.target
-    const valueWhenInputFocused = event.target.value
+    const focusedInput = event.target;
+    const valueWhenInputFocused = event.target.value;
     this.setState({ focusedInput, valueWhenInputFocused }, () => {
-      // console.log('DocumentChoicesTemplate, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
-    })
+    console.log('DocumentChoicesTemplate, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
+    });
   }
 
   createInputElement({ choice, meta, value, input, name }) {
@@ -590,6 +638,8 @@ function mapStateToProps(state) {
     dirtyFields: state.documents.dirtyObject,
     appLanguageCode: state.languages.appLanguageCode,
     allDocumentObjects: state.documents.allDocumentObjects,
+    documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
+    initialValuesObject: state.form.CreateEditDocument.initial,
   };
 }
 

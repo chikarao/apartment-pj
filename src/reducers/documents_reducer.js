@@ -459,6 +459,8 @@ export default function (state = {
             newObj[eachKey] = obj[eachKey];
           }
         });
+        // If there is an attribute that is not included in the original object, assign
+        if (actionPayloadMapped[eachElementId].addKey) newObj[actionPayloadMapped[eachElementId].addKey] = actionPayloadMapped[eachElementId][actionPayloadMapped[eachElementId].addKey]
 
         // if (actionPayloadMapped[eachElementId].document_field_choices) {
         //   const newChoiceObject = {};

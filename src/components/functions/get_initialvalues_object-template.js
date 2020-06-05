@@ -1,12 +1,11 @@
 import React from 'react';
 import _ from 'lodash';
-import RentPayment from '../constants/rent_payment';
-import Facility from '../constants/facility';
-import Tenants from '../constants/tenants';
-import Documents from '../constants/documents';
+// import RentPayment from '../constants/rent_payment';
+// import Facility from '../constants/facility';
+// import Tenants from '../constants/tenants';
+// import Documents from '../constants/documents';
 // import getBookingDateObject from './get_booking_date_object';
 // import getContractLength from './get_contract_length';
-
 import getListValues from '../forms/get_list_values';
 
 // fixed_term_rental_contract.js
@@ -48,8 +47,6 @@ export default (props) => {
     // });
     return returnedProfile || contractorArray[0];
   }
-
-
   // function getContractEndNoticePeriodObject(booking) {
   //   // const daysInMonth = {
   //   //   0: 31,
@@ -149,14 +146,7 @@ export default (props) => {
         }
       }
     );
-    // _.each(languages, eachLanguage => {
-    //   console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
-    //   if (eachLanguage.language_code === languageCode) {
-    //     objectReturned = eachLanguage;
-    //     return;
-    //   }
-    // });
-    console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
+    // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage objectReturned: ', objectReturned);
     return objectReturned;
   }
 
@@ -684,9 +674,19 @@ export default (props) => {
   // and will not clash with underscore or hyphen in templateElements
   if (!_.isEmpty(templateTranslationElements)) {
     let nameInInitialValues = null;
+    let hasOwnTranslation = false;
+    let translationText = '';
     _.each(Object.keys(templateTranslationElements), eachKey => {
-      nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`
-      objectReturned = { ...objectReturned, [nameInInitialValues]: documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode] };
+      nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`;
+      hasOwnTranslation = templateTranslationElements[eachKey].document_field_translations
+        && templateTranslationElements[eachKey].document_field_translations[documentLanguageCode];
+
+      translationText = hasOwnTranslation ?
+        templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value
+        :
+        documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode];
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
+      objectReturned = { ...objectReturned, [nameInInitialValues]: translationText };
     })
   }
 

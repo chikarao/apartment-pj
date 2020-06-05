@@ -4,7 +4,8 @@ import {
   reduxForm,
   Field,
   isDirty,
-  getFormMeta
+  getFormMeta,
+  change
 } from 'redux-form';
 // gettting proptypes warning with isDirty
 import { connect } from 'react-redux';
@@ -2004,9 +2005,8 @@ longActionPress(props) {
     let translationText = '';
 
     if (!documentEmpty) {
-
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
-        translationText = documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
+        translationText = this.props.valuesInForm[`${eachElement.name}+translation`] || documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
         if (this.state.translationModeOn && this.state.editFieldsOn) {
           const background = document.getElementById('document-background');
           if (background) {
@@ -2019,7 +2019,7 @@ longActionPress(props) {
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
-            console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper: ', eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper);
+            // console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper: ', eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper);
             return (
               <div
                 key={eachElement.id}
@@ -2069,7 +2069,7 @@ longActionPress(props) {
                       elementId: eachElement.id,
                       editFieldsOn: this.state.editFieldsOn,
                       translationModeOn: this.state.translationModeOn,
-                      // label: modifiedElement.name,
+                      setTemplateHistoryArray: (array) => { this.setTemplateHistoryArray(array, 'update'); },                      // label: modifiedElement.name,
                       label,
                       agreement: this.props.agreement,
                       selectedChoiceIdArray: [],
@@ -2366,6 +2366,7 @@ longActionPress(props) {
                       newElement,
                       documentLanguageCode,
                       getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
+                      setTemplateHistoryArray: (array) => { this.setTemplateHistoryArray(array, 'update'); },
                       formFields: newElement
                         ?
                         this.props.templateElementsByPage // doesn't have choices for input element
@@ -2456,6 +2457,7 @@ longActionPress(props) {
                       page,
                       newElement,
                       getChoiceCoordinates: (props) => { this.getChoiceCoordinates(props); },
+                      setTemplateHistoryArray: (array) => { this.setTemplateHistoryArray(array, 'update'); },
                       required: modifiedElement.required,
                       nullRequiredField,
                       documentLanguageCode,
@@ -3489,8 +3491,9 @@ longActionPress(props) {
               object[withoutO] = eachObject[eachKey];
               console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
             }
-
-            if (eachKey === 'id' || eachKey === 'translation_element') {
+            // Let id, translation_element (for separating templateElements and templateTranslationElements)
+            // and previous_value (for dealing with translation element history) in the returned object
+            if (eachKey === 'id' || eachKey === 'translation_element' || eachKey === 'previous_value' || eachKey === 'value') {
               object[eachKey] = eachObject[eachKey];
             }
           });
@@ -3529,11 +3532,27 @@ longActionPress(props) {
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
           updateElement(newLastAction);
+          // if there is previous_value in newLastAction,
+          // Change back value of field; Only one change in value is made per history array
+          if (newLastAction[0].previous_value) {
+            const templateElement = !newLastAction[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
+            const translationOrNot = !newLastAction[0].translation_element ? '' : '+translation';
+            // this.props.change is imported from redux-form
+            this.props.change(`${templateElement[newLastAction[0].id].name}${translationOrNot}`, newLastAction[0].previous_value)
+          }
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
+          // if there is previous_value in lastActionArray,
+          // Change back value of field; Only one change in value is made per history array
+          if (lastActionArray[0].previous_value) {
+            const templateElement = !lastActionArray[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
+            const translationOrNot = !lastActionArray[0].translation_element ? '' : '+translation';
+            // this.props.change is imported from redux-form
+            this.props.change(`${templateElement[lastActionArray[0].id].name}${translationOrNot}`, lastActionArray[0].value)
+          }
         }
       }
 
@@ -5869,6 +5888,7 @@ function mapStateToProps(state) {
       templateTranslationElements: state.documents.templateTranslationElements,
       templateTranslationElementsByPage: state.documents.templateTranslationElementsByPage,
       documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
+      valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     };
   }
 
