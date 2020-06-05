@@ -679,7 +679,8 @@ export default (props) => {
     _.each(Object.keys(templateTranslationElements), eachKey => {
       nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`;
       hasOwnTranslation = templateTranslationElements[eachKey].document_field_translations
-        && templateTranslationElements[eachKey].document_field_translations[documentLanguageCode];
+        && templateTranslationElements[eachKey].document_field_translations[documentLanguageCode]
+        && !templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].deleted;
 
       translationText = hasOwnTranslation ?
         templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value

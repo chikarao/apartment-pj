@@ -582,12 +582,15 @@ class CreateEditDocument extends Component {
   handleTemplateFormSubmit({ data, submitAction }) {
     const documentFieldArray = [];
     const deletedDocumentFieldIdArray = [];
+    // deletedDocumentFieldTranslationsArray array of objects
+    const deletedDocumentFieldTranslationsArray = [];
     const paramsObject = {
       flat_id: this.props.flat.id,
       booking_id: this.props.booking.id,
       document_name: this.props.agreement.document_name,
       document_field: documentFieldArray,
       deleted_document_field_id_array: deletedDocumentFieldIdArray,
+      deleted_document_field_translations_array: deletedDocumentFieldTranslationsArray,
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
@@ -596,14 +599,13 @@ class CreateEditDocument extends Component {
 
     const object = {
       templateElements: { modifiedObject: this.state.modifiedPersistedElementsObject },
-      templateTranslationElements: { modifiedObject: this.state.modifiedPersistedTranslationElementsObject }
+      templateTranslationElements: { modifiedObject: this.state.modifiedPersistedTranslationElementsObject, translations: true }
     }
 
     console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
     _.each(Object.keys(object), eachElementTypeKey => {
       _.each(Object.keys(object[eachElementTypeKey].modifiedObject), eachKey => {
         let documentField = null;
-        console.log('in create_edit_document, handleTemplateFormSubmit, eachKey, object[eachElementTypeKey].modifiedObject[eachKey]: ', eachKey, object[eachElementTypeKey].modifiedObject[eachKey]);
         // if elements have ids with 'a' or 'b' and are deleted in the modified object
         if (object[eachElementTypeKey].modifiedObject[eachKey].deleted === true && eachKey.indexOf('a') === -1 && eachKey.indexOf('b') === -1) {
           deletedDocumentFieldIdArray.push(parseInt(eachKey, 10));
@@ -611,7 +613,22 @@ class CreateEditDocument extends Component {
           // if not deleted === true, its been modified or newly created
           // eachElementTypeKey is this.props[templateElements] or templateTranslationElements
           documentField = this.props[eachElementTypeKey][eachKey];
-        }
+          console.log('in create_edit_document, handleTemplateFormSubmit, eachElementTypeKey, eachKey, object[eachElementTypeKey].modifiedObject[eachKey], documentField: ', eachElementTypeKey, eachKey, object[eachElementTypeKey].modifiedObject[eachKey], documentField);
+          // Keep track of which document_field_translations were deleted
+          // if the documentField is a translation element and not a new element with id 'b'
+          // and has document_field_translations
+          if (documentField
+            && object[eachElementTypeKey].translations
+            && documentField.translation_element
+            && documentField.document_field_translations
+            && (documentField.id.indexOf('b') === -1)) {
+            _.each(Object.keys(documentField.document_field_translations), languageCodeKey => {
+              if (documentField.document_field_translations[languageCodeKey].id && documentField.document_field_translations[languageCodeKey].deleted) {
+                deletedDocumentFieldTranslationsArray.push({ document_field_id: documentField.id, document_field_translation_id: documentField.document_field_translations[languageCodeKey].id })
+              }
+            });
+          } // end of if (object[eachElementTypeKey].translations
+        } // end of  if (object[eachElementTypeKey].modifiedObject[eachKey].deleted
 
         if (documentField) {
           // const value = data[documentField.name];
@@ -639,7 +656,11 @@ class CreateEditDocument extends Component {
           if (documentField.document_field_translations) {
             arrayTranslation = [];
             _.each(Object.keys(documentField.document_field_translations), eachLanguageCodeKey => {
-              arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
+              if (documentField.id.indexOf('b') !== -1) {
+                if (!documentField.document_field_translations[eachLanguageCodeKey].deleted) arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
+              } else {
+                arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
+              }
             });
           }
 
