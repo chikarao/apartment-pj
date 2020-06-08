@@ -301,6 +301,7 @@ export default function (state = {
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {};
+      const newTranslationObject = {};
       const templateElementsArray = [];
       const templateTranslationsElementsArray = [];
       // divide action.payload array of elements into translations and not
@@ -324,15 +325,16 @@ export default function (state = {
       // // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
       // // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
       // const mergedObject = _.merge(newObject, state.templateElements, mapKeysObject.object);
-      const mergedTranslationObject = _.merge(newObject, state.templateTranslationElements, templateTranslationsElementsArray);
+      const mergedTranslationObject = _.merge(newTranslationObject, state.templateTranslationElements, templateTranslationsElementsArray);
       // gets object with string ids and a pageObject { 1: { id: element }}
       const mapKeysTranslationObject = getMappedObjectWithStringIds(mergedTranslationObject, action.payload.templateEditHistory, true);
+      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject: ', mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject);
 
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
-        templateTranslationElements: mergedTranslationObject.object || {},
-        templateTranslationElementsByPage: mergedTranslationObject.pageObject || {},
+        templateTranslationElements: mapKeysTranslationObject.object || {},
+        templateTranslationElementsByPage: mapKeysTranslationObject.pageObject || {},
         // initialValuesObject
       };
     }
@@ -342,14 +344,26 @@ export default function (state = {
       // Rather than calling _.mapKeys, do the same thing while
       // creating page object in one iteration to templateElements
       // and turn ids into strings and assign action: create
-      const mapKeysObject = getMappedObjectWithStringIds(action.payload.document_fields, true);
+      const array = [];
+      const translationArray = [];
+      _.each(action.payload.document_fields, each => {
+        if (each.translation_element) {
+          translationArray.push(each);
+        } else {
+          array.push(each);
+        }
+      });
+      const mapKeysObject = getMappedObjectWithStringIds(array, true);
+      const mapKeysObjectTranslation = getMappedObjectWithStringIds(translationArray, true);
       console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
       // const newAgreementArray = [...state.agreements];
       // newAgreementArray.push(action.payload.agreement);
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
-        agreements: action.payload.agreements
+        agreements: action.payload.agreements,
+        templateTranslationElements: mapKeysObjectTranslation.object,
+        templateTranslationElementsByPage: mapKeysObjectTranslation.pageObject,
       };
     }
 

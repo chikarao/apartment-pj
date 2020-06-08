@@ -624,7 +624,8 @@ class CreateEditDocument extends Component {
             && (documentField.id.indexOf('b') === -1)) {
             _.each(Object.keys(documentField.document_field_translations), languageCodeKey => {
               if (documentField.document_field_translations[languageCodeKey].id && documentField.document_field_translations[languageCodeKey].deleted) {
-                deletedDocumentFieldTranslationsArray.push({ document_field_id: documentField.id, document_field_translation_id: documentField.document_field_translations[languageCodeKey].id })
+                // deletedDocumentFieldTranslationsArray.push({ document_field_id: documentField.id, document_field_translation_id: documentField.document_field_translations[languageCodeKey].id })
+                deletedDocumentFieldTranslationsArray.push(documentField.document_field_translations[languageCodeKey].id)
               }
             });
           } // end of if (object[eachElementTypeKey].translations
@@ -657,6 +658,7 @@ class CreateEditDocument extends Component {
             arrayTranslation = [];
             _.each(Object.keys(documentField.document_field_translations), eachLanguageCodeKey => {
               if (documentField.id.indexOf('b') !== -1) {
+                // if a new element with a 'b' in the id, and not deleted 
                 if (!documentField.document_field_translations[eachLanguageCodeKey].deleted) arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
               } else {
                 arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
@@ -672,8 +674,8 @@ class CreateEditDocument extends Component {
     }); // end of _.each(Object.keys(object), eachElementTypeKey => {
 
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
-    // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
-    // this.props.showLoading();
+    this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+    this.props.showLoading();
   }
 
   handleFormSubmit({ data, submitAction }) {
