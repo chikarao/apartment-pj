@@ -658,7 +658,7 @@ class CreateEditDocument extends Component {
             arrayTranslation = [];
             _.each(Object.keys(documentField.document_field_translations), eachLanguageCodeKey => {
               if (documentField.id.indexOf('b') !== -1) {
-                // if a new element with a 'b' in the id, and not deleted 
+                // if a new element with a 'b' in the id, and not deleted
                 if (!documentField.document_field_translations[eachLanguageCodeKey].deleted) arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
               } else {
                 arrayTranslation.push(documentField.document_field_translations[eachLanguageCodeKey]);
@@ -2048,7 +2048,7 @@ longActionPress(props) {
                 key={eachElement.id}
                 id={`template-translation-element-${eachElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: wrapperDivHeight }}
+                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: wrapperDivHeight, transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`, transformOrigin: eachElement.transform_origin }}
               >
                 <Field
                   key={eachElement.name}
@@ -2131,7 +2131,9 @@ longActionPress(props) {
               fontFamily: eachElement.font_family,
               fontSize: eachElement.font_size,
               fontStyle: eachElement.font_style,
-              fontWeight: eachElement.font_weight
+              fontWeight: eachElement.font_weight,
+              transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+              transformOrigin: eachElement.transform_origin
             }}
             // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
             // class_name="document-rectangle-template"
@@ -3120,7 +3122,7 @@ longActionPress(props) {
       elementValue = elementVal;
       elementVal = elementName;
     };
-    // console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
+    console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     // const getChangeChoiceIdArray = () => {
@@ -3472,6 +3474,24 @@ longActionPress(props) {
       }
     }; // end of changeFont
 
+    const changeDirection = () => {
+      if (this.state.selectedTemplateElementIdArray.length > 0) {
+        let eachElement = null;
+        let templateElements = this.props.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
+        const array = [];
+        let originalTransform = '';
+        _.each(this.state.selectedTemplateElementIdArray, eachId => {
+          eachElement = templateElements[eachId];
+          // transform is persisted as transform: '90'
+          originalTransform = eachElement.transform ? parseInt(eachElement.transform, 10) : null;
+          array.push({ id: eachId, transform: originalTransform ? `${originalTransform + 90}` : '90', o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
+        });
+        console.log('in create_edit_document, handleTemplateElementActionClick, changeDirection, array: ', array);
+        updateElement(array);
+        this.setTemplateHistoryArray(array, 'update');
+      }
+    } // end of changeDirection
+
     const createElement = (elementObject) => {
       this.props.createDocumentElementLocally(elementObject);
     };
@@ -3799,6 +3819,10 @@ longActionPress(props) {
           changeFont(elementVal);
           break;
 
+        case 'changeDirection':
+          changeDirection(elementVal);
+          break;
+
         default: return null;
       }
   }
@@ -4060,7 +4084,9 @@ longActionPress(props) {
           font_family: this.state.newFontObject.font_family,
           font_size: this.state.newFontObject.font_size,
           // !!!!!!!!!If this is a translation field, assign true
-          translation_element: this.state.translationModeOn
+          translation_element: this.state.translationModeOn,
+          transform_origin: 'top left',
+          transform: null
         };
       } else if (summaryObject.buttons.length > 0) {
       // } else {
@@ -4081,7 +4107,9 @@ longActionPress(props) {
           // class_name: createdObject.choices[0].params.class_name,
           class_name: 'document-rectangle-template',
           border_color: 'lightgray',
-          document_field_choices: {}
+          document_field_choices: {},
+          transform_origin: 'top left',
+          transform: null
         };
 
         _.each(Object.keys(createdObject.choices), eachIndex => {
@@ -4096,7 +4124,7 @@ longActionPress(props) {
             class_name: 'document-circle-template',
             input_type: createdObject.choices[eachIndex].params.input_type,
             border_radius: '50%',
-            border: '1px solid black'
+            border: '1px solid black',
           };
         });
       } else if (summaryObject.select.length > 0) {
@@ -4118,6 +4146,8 @@ longActionPress(props) {
           font_weight: this.state.newFontObject.font_weight,
           font_family: this.state.newFontObject.font_family,
           font_size: this.state.newFontObject.font_size,
+          transform_origin: 'top left',
+          transform: null,
           document_field_choices: {
             0: {
               val: 'inputFieldValue',
@@ -4180,7 +4210,9 @@ longActionPress(props) {
           font_weight: this.state.newFontObject.font_weight,
           font_family: this.state.newFontObject.font_family,
           font_size: this.state.newFontObject.font_size,
-          list_parameters: listParameters
+          list_parameters: listParameters,
+          transform_origin: 'top left',
+          transform: null
         };
       }
     } else { // else of if (!summaryObject.parent)
@@ -4206,7 +4238,9 @@ longActionPress(props) {
           font_weight: this.state.newFontObject.font_weight,
           font_family: this.state.newFontObject.font_family,
           font_size: this.state.newFontObject.font_size,
-          document_field_choices: {}
+          document_field_choices: {},
+          transform_origin: 'top left',
+          transform: null
         };
 
         if (summaryObject.button.length > 0) {
@@ -5268,6 +5302,7 @@ longActionPress(props) {
     // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = !this.state.translationModeOn ? Object.keys(this.props.templateElements).length : Object.keys(this.props.templateTranslationElements).length
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0;
+    const translationElementsChecked = this.state.selectedTemplateElementIdArray.length > 0 && this.state.translationModeOn;
     const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
@@ -5473,12 +5508,20 @@ longActionPress(props) {
         {this.renderChoiceOrElementButtons({ templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject })}
         <div
           className="create-edit-document-template-edit-action-box-elements"
-          onClick={() => {}}
-          name="This button empty,bottom"
-          value="emptyButton"
-          onMouseOver={this.handleMouseOverActionButtons}
+          // onClick={() => {}}
+          name="Change text direction,bottom"
+          value="changeDirection"
+          // onMouseOver={this.handleMouseOverActionButtons}
           // <i value="emptyButton" name="This button empty,bottom" style={{ color: 'gray'}} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+          onClick={translationElementsChecked ? this.handleTemplateElementActionClick : () => {}}
         >
+          <i
+            onMouseOver={this.handleMouseOverActionButtons}
+            value="changeDirection"
+            style={{ color: translationElementsChecked ? 'blue' : 'gray' }}
+            name="Change text direction,bottom"
+            className="far fa-compass"
+          ></i>
         </div>
 
         <div
