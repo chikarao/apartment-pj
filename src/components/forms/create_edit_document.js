@@ -1094,7 +1094,9 @@ renderEachDocumentField(page) {
         this.setState({
           templateElementAttributes: null,
           templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
-         });
+        }, () => {
+          document.getElementById('document-background').style.cursor = 'default';
+        });
       });
     }
   }
@@ -2625,10 +2627,16 @@ longActionPress(props) {
       if (this.state.createNewTemplateElementOn) {
         document.addEventListener('click', this.getMousePosition);
         this.setState({ editFieldsOn: true });
+        // If user has selected a new element to be created and templateElementAttributes is not null
+        // turn cursor to non-default
+        if (this.state.templateElementAttributes) document.getElementById('document-background').style.cursor = 'crosshair';
       } else {
         // In callback to setState, if turning off removeEventListener
         document.removeEventListener('click', this.getMousePosition);
         if (!this.state.editFieldsOnPrevious) this.setState({ editFieldsOn: false });
+        // if user turns off createNewTemplateElementOn and templateElementAttributes is not null;
+        // turn cursor back to default
+        if (this.state.templateElementAttributes) document.getElementById('document-background').style.cursor = 'default';
       }
     });
     // turn off any explanations and timers when click
@@ -3863,7 +3871,9 @@ longActionPress(props) {
     }, () => {
       // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
-        console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
+      document.getElementById('document-background').style.cursor = 'default';
+
+      console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
       })
     });
   }
@@ -4307,6 +4317,8 @@ longActionPress(props) {
       // templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
       templateElementAttributes
     }, () => {
+      // Change the mouse cursor if createNewTemplateElementOn
+      if (this.state.createNewTemplateElementOn) document.getElementById('document-background').style.cursor = 'crosshair';
       console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
     });
   }
@@ -5307,7 +5319,7 @@ longActionPress(props) {
     const multipleElementsChecked = this.state.selectedTemplateElementIdArray.length > 1;
     const multipleChoicesChecked = this.state.selectedChoiceIdArray.length > 1;
     // NOTE: disableSave does not work after saving since initialValues have to be updated
-    const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
+    const disableSave = !this.props.templateElements || (_.isEmpty(this.state.modifiedPersistedElementsObject) && _.isEmpty(this.state.modifiedPersistedTranslationElementsObject) && !this.props.formIsDirty) || this.state.selectedTemplateElementIdArray.length > 0 || this.state.createNewTemplateElementOn;
     const disableCheckAll = !this.state.editFieldsOn || (templateElementsLength < 1) || this.state.allElementsChecked || this.state.createNewTemplateElementOn;
     const disableCreateNewElement = this.state.createNewTemplateElementOn || this.state.selectedTemplateElementIdArray.length < 1;
     const enableUndo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex > -1) && !this.state.createNewTemplateElementOn;
