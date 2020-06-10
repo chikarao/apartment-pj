@@ -490,7 +490,7 @@ class BookingConfirmation extends Component {
           key={i}
           value={`${eachAgreement.document_code},${'template'}`}
           name={eachAgreement.id}
-          onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
+          onClick={eachAgreement.document_code === globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
           // onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnTemplateShowClick : this.handleOwnSavedTemplateShowClick}
           className="booking-confirmation-document-create-link"
         >
@@ -1163,7 +1163,7 @@ handleUploadPdfLink() {
   this.props.showDocumentInsertCreateModal();
 }
 
-renderInsertBox() {
+renderInsertBox(isTemplate) {
   // let pdfHasDocumentInsert = false;
   const maxNumDocuments = 0
   // if (this.props.documentInserts) {
@@ -1173,7 +1173,7 @@ renderInsertBox() {
   return (
     <div className="document-insert-box">
       <div className="document-insert-box-title">
-        {AppLanguages.insertOwnAgreement[this.props.appLanguageCode]}
+        {isTemplate ? AppLanguages.insertDocument[this.props.appLanguageCode] : AppLanguages.insertOwnAgreement[this.props.appLanguageCode]}
       </div>
       {pdfHasDocumentInsert ?
         ''
@@ -1203,11 +1203,14 @@ renderDocument() {
         // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
         // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
         // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
+        // If template, allow document inserts
+        if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
+
 
       return (
         <div className="booking-confirmation-render-document-box">
-          {showDocumentInsertBox ? this.renderInsertBox() : ''}
+          {showDocumentInsertBox ? this.renderInsertBox(agreementArray[0].document_type === 'template') : ''}
           <CreateEditDocument
             showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
             closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument, showSavedDocument: !this.state.showSavedDocument })}
