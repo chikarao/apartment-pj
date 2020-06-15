@@ -237,6 +237,8 @@ export default (props) => {
     // If the field neither a translation_object (with _translation on the key) nor
     // has a translation_field (eg building_languages), just get the value, else get language and values
     // if (!p.object.translation_field && !p.object.translation_object) return flat.building[p.key];
+    if (p.baseRecord[p.key] === true) return 't';
+    if (p.baseRecord[p.key] === false) return 'f';
     if (!p.object.translation_field && !p.object.translation_object && !p.object.actual_record_key) return p.baseRecord[p.key];
     // Assign baseLanguageCode as the initial language since if no language available,
     // getRecordForLanguage will return the baseRecord (e.g. flat)
@@ -274,6 +276,7 @@ export default (props) => {
     if (p.address || p.key === 'address' || key[0] === 'address') return createAddress(recordWithLanguage);
     // if (p.key === 'construction_translation') return recordWithLanguage.construction;
     // return value of recordWithLanguage
+    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, key, recordWithLanguage, recordWithLanguage[key]: ', p.key, key, recordWithLanguage, recordWithLanguage[key]);
     return recordWithLanguage[key];
   };
 
@@ -545,6 +548,8 @@ export default (props) => {
 
     amenity: {
       method: (p) => {
+        if (flat.amenity[p.key] === true) return 't';
+        if (flat.amenity[p.key] === false) return 'f';
         return flat.amenity[p.key];
       },
       parameters: {},

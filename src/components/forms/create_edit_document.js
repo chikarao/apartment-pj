@@ -179,15 +179,6 @@ class CreateEditDocument extends Component {
     // })
     // console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
     // // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
-    const name = 'Jack';
-    const object = { name: 'ben', condition: name !== 'david', parameters: { name } };
-    const test = { test: (props) => {
-      console.log('create_edit_document, componentDidMount, props', props);
-
-      object.name = props.name;
-      return;
-    } };
-    if (object.condition) console.log('create_edit_document, componentDidMount, test.test(name), object', test.test(object.parameters), object);
     // test.test(name);
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
@@ -313,7 +304,9 @@ class CreateEditDocument extends Component {
             });
           }
         } else { // else for if showOwnUploadedDocument
-          this.setState({ showDocumentPdf: true }, () => {
+          // this.setState({ showDocumentPdf: true }, () => {
+          // The initial showDocumentPdf value is false if showTemplate
+          this.setState({ showDocumentPdf: !this.props.showTemplate }, () => {
           });
         }
       } else { // if this.props.showSavedDocument
@@ -568,7 +561,8 @@ class CreateEditDocument extends Component {
       modifiedPersistedTranslationElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
-      unsavedTemplateElements: {}
+      unsavedTemplateElements: {},
+      showDocumentPdf: true
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
       this.props.showLoading();
@@ -638,7 +632,9 @@ class CreateEditDocument extends Component {
           let array = null;
           let arrayTranslation = null;
 
-          documentField.value = data[documentField.name];
+          if (documentField.translation_element) documentField.value = data[`${documentField.name}+translation`];
+          if (!documentField.translation_element) documentField.value = data[documentField.name];
+
           if (documentField.document_field_choices) {
             array = [];
             const selectArray = [];
@@ -677,13 +673,13 @@ class CreateEditDocument extends Component {
     // If creating pdf or updating
     if (submitAction === 'save_and_create' || submitAction === 'create') {
       paramsObject.save_and_create = true;
-      // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
-      // this.setState({ showDocumentPdf: true });
+      paramsObject.document_language_code = this.props.documentLanguageCode;
+      this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
     } else {
-      // this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+      this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
     }
-    console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject: ', paramsObject);
-    // this.props.showLoading();
+    console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject, data: ', paramsObject, data);
+    this.props.showLoading();
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -4178,7 +4174,8 @@ longActionPress(props) {
               // height: summaryObject.select[0].height || summaryObject.select[0].params.height || '2.0%',
               // class_name: createdObject.choices[eachIndex].params.class_name,
               class_name: 'document-rectangle-template-button',
-              input_type: createdObject.type,
+              // input_type: createdObject.type,
+              input_type: 'string', // cannot have button or will not render on pdf
               translation: this.state.templateElementActionIdObject.translation,
               // border_radius: '3px',
               border: '1px solid black',
@@ -4293,7 +4290,8 @@ longActionPress(props) {
             height: summaryObject.select[0].height || summaryObject.select[0].params.height || '2.0%',
             // class_name: createdObject.choices[eachIndex].params.class_name,
             class_name: 'document-rectangle-template-button',
-            input_type: createdObject.type,
+            // input_type: createdObject.type,
+            input_type: 'string', // Cannot have button or will not render on pdf
             translation: this.state.templateElementActionIdObject.translation,
             // border_radius: '3px',
             border: '1px solid black',
@@ -5644,10 +5642,10 @@ longActionPress(props) {
         // when showing PDF (view pdf or after creating and updating pdf)
         // show entire PDF; Use pages array to push all pages of PDF persisted in agreement
         let constantAssetsFolder = '';
+        const array = [];
         if (this.state.showDocumentPdf) {
-          const array = [];
           // use image in agreement kept in Cloudinary
-          image = this.props.agreement.document_publicid;
+          image = this.props.showTemplate ? this.props.agreement.document_pdf_publicid : this.props.agreement.document_publicid;
           // lodosh .times to get array [1, 2, 3 etc....]
           _.times(this.props.agreement.document_pages, i => {
             array.push(i + 1);
@@ -5656,18 +5654,26 @@ longActionPress(props) {
           pages = array;
           // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
         } else {
-          constantAssetsFolder = 'apartmentpj-constant-assets/'
-          // if showing document form, get array of pages from constants/documents
-          image = Documents[this.props.createDocumentKey].file;
-          // assign array to pages varaible for later iteration
-          pages = Object.keys(this.props.documentFields);
+          if (this.props.showTemplate) {
+            image = this.props.agreement.document_publicid;
+            _.times(this.props.agreement.document_pages, i => {
+              array.push(i + 1);
+            });
+            pages = array;
+          } else {
+            constantAssetsFolder = 'apartmentpj-constant-assets/'
+            // if showing document form, get array of pages from constants/documents
+            image = Documents[this.props.createDocumentKey].file;
+            // assign array to pages varaible for later iteration
+            pages = Object.keys(this.props.documentFields);
+          }
         }
 
         const bilingual = Documents[this.props.createDocumentKey].translation;
         // const page = 1;
 
         return _.map(pages, page => {
-          console.log('in create_edit_document, renderDocument, pages, image, page: ', pages, image, page);
+          console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf: ', pages, image, page, this.state.showDocumentPdf);
           return (
             <div
               key={page}
@@ -5678,12 +5684,12 @@ longActionPress(props) {
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
-              {this.props.showTemplate ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate ? this.renderTemplateElementEditAction() : ''}
+              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
-              {this.props.showTemplate ? this.renderFontControlBox() : ''}
-              {this.props.showTemplate ? this.renderTemplateElements(page) : ''}
-              {this.props.showTemplate ? this.renderTemplateTranslationElements(page) : ''}
+              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderFontControlBox() : ''}
+              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate ? this.renderDocumentName(page) : ''}
             </div>
           );
@@ -5744,7 +5750,7 @@ longActionPress(props) {
     const { handleSubmit, appLanguageCode } = this.props;
     const submitFunction = editTemplate ? 'handleTemplateFormSubmit' : 'handleFormSubmit';
 
-    if (this.props.showSavedDocument) {
+    if (this.props.showSavedDocument || (this.props.showTemplate)) {
       return <button
               onClick={
                 handleSubmit(data =>
@@ -5804,25 +5810,27 @@ longActionPress(props) {
 
             {agreementHasPdf && !this.state.showDocumentPdf ?
               <button
-                onClick={this.handleViewPDFClick}
+                onClick={this.handleViewPDFClickTemplate}
                 className="btn document-floating-button"
-                style={{ backgroundColor: 'blue' }}
+                style={{ backgroundColor: 'blue', color: 'white' }}
               >
                 {AppLanguages.viewPdf[appLanguageCode]}
               </button>
               :
-              ''
+              <button
+                onClick={this.handleViewPDFClickTemplate}
+                className="btn document-floating-button"
+                style={{ backgroundColor: 'blue', color: 'white' }}
+              >
+                {AppLanguages.edit[appLanguageCode]}
+              </button>
             }
 
-            {!agreementHasPdf ?
               <div className="update-create-pdf-button-box">
                 {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf, true)}
                 {this.props.showDocumentInsertBox ? <input type="checkbox" onChange={this.handleDocumentInsertCheckBox} checked={this.state.useMainDocumentInsert} /> : ''}
                 {this.props.showDocumentInsertBox ? <div style={{　fontSize: '10px'　}}>{AppLanguages.insertDocument[appLanguageCode]}</div> : ''}
               </div>
-              :
-              ''
-            }
 
             {agreementHasPdf ?
               <a

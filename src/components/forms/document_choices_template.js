@@ -443,12 +443,15 @@ class DocumentChoicesTemplate extends Component {
 
     const getTranslation = (choices, value) => {
       let returnObject = null;
-      console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value', name, choices, value);
-      if (choices[value]) returnObject = choices[value].translation;
+      let modifiedValue = value;
+      if (value === 't') modifiedValue = true;
+      if (value === 'f') modifiedValue = false;
+      if (choices[modifiedValue]) returnObject = choices[modifiedValue].translation;
       if (choices.inputFieldValue && choices.inputFieldValue.selectChoices) {
-        returnObject = choices.inputFieldValue.selectChoices[value]
+        returnObject = choices.inputFieldValue.selectChoices[modifiedValue]
       }
 
+      console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value, returnObject', name, choices, value, returnObject);
       return returnObject;
     }; // end of getTranslation
 
@@ -461,15 +464,19 @@ class DocumentChoicesTemplate extends Component {
     // return <option key={i} value={value}>{choice.showLocalLanguage ? eachChoice[language] : eachChoice.value}</option>;
     return _.map(selectChoices, (eachChoice, i) => {
       // Test whether value is false to deal with true or false values e.g. parking_included
-      value = eachChoice.value === false ? eachChoice.value : (eachChoice.value || eachChoice.val);
+      value = (eachChoice.value === false || eachChoice.value === 'f') ? eachChoice.value : (eachChoice.value || eachChoice.val);
+
       if (elementObject) {
         translationObject = getTranslation(elementObject.choices, value);
         // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
         // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
-        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]', name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]);
+        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]', name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]);
+        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, translationObject', name, eachChoice, text, value, translationObject);
       }
       // text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
       text = translationObject ? translationObject[language] : value;
+      // if (value === 't') value = true;
+      // if (value === 'f') value = false;
       // text = typeof text === 'boolean' ? object[text] : text;
       return <option key={i} value={value}>{text}</option>;
       // return <option key={i} value={value}>{text || value}</option>;
