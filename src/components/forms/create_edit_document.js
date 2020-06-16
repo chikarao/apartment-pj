@@ -681,7 +681,8 @@ class CreateEditDocument extends Component {
     }
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject, data: ', paramsObject, data);
     this.props.showLoading();
-    this.props.setProgressStatus({ progress_percentage: 0, message: 'Received request' });
+    // Do not call setProgressStatus here so that if action cable is disconnected, the progress bar will come up and not dismount 
+    // this.props.setProgressStatus({ progress_percentage: 0, message: 'Received request' });
   }
 
   handleFormSubmit({ data, submitAction }) {

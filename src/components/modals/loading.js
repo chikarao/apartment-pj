@@ -5,14 +5,16 @@ import _ from 'lodash';
 import * as actions from '../../actions';
 
 let showHideClassName;
+// Use global variable progressBarWidthPx to avoid setting state in componentDidUpdate
+let progressBarWidthPx = 0;
 
 class Loading extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      progressBarWidthPx: 0
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     progressBarWidthPx: 0
+  //   };
+  // }
 
   // componentDidMount() {
   // }
@@ -20,15 +22,16 @@ class Loading extends Component {
     if (!prevProps.progressStatus && this.props.progressStatus) {
       const bar = document.getElementById('progress-bar-bar');
       const bounds = bar.getBoundingClientRect()
+      progressBarWidthPx = bounds.width;
       // console.log('in loading modal, componentDidUpdate, bounds, this.props.progressStatus:', bounds, this.props.progressStatus);
-      this.setState({ progressBarWidthPx: bounds.width }, () => {
-        console.log('in loading modal, componentDidUpdate, this.state.progressBarWidthPx, this.props.progressStatus:', this.state.progressBarWidthPx, this.props.progressStatus);
-      });
+      // this.setState({ progressBarWidthPx: bounds.width }, () => {
+      //   console.log('in loading modal, componentDidUpdate, this.state.progressBarWidthPx, this.props.progressStatus:', this.state.progressBarWidthPx, this.props.progressStatus);
+      // });
     }
   }
 
   renderProgressEach() {
-    const { progressBarWidthPx } = this.state;
+    // const { progressBarWidthPx } = this.state;
     return (
       <div style={{ height: '100%', backgroundColor: 'blue', width: this.props.progressStatus.progress_percentage ? progressBarWidthPx * (this.props.progressStatus.progress_percentage / 100) : 0 }}>
       </div>
@@ -43,7 +46,7 @@ class Loading extends Component {
     //handleClose is a prop passed from header when SigninModal is called
     // <div className="loading-spinner">
     // </div>
-    console.log('in loading modal, renderLoading, this.state.progressBarWidthPx, this.props.progressStatus:', this.state.progressBarWidthPx, this.props.progressStatus);
+    console.log('in loading modal, renderLoading, progressBarWidthPx, this.props.progressStatus:', progressBarWidthPx, this.props.progressStatus);
     if (this.props.progressStatus) {
       return (
         <div className={showHideClassName}>
