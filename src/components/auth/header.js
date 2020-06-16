@@ -97,6 +97,10 @@ class Header extends Component {
    setOtherUserStatus = (userStatus) => {
      this.props.setOtherUserStatus(userStatus);
    }
+   // For progress bar
+   setProgressStatus = (status) => {
+     this.props.setProgressStatus(status);
+   }
    // **************** Need to have to pass to actionCableManager
 
    componentDidUpdate(prevProps) {
@@ -175,7 +179,7 @@ class Header extends Component {
          disconnectTime = 10;
        } // end of if currentUserIsOwner
      } else {
-       disconnectTime = 15;
+       disconnectTime = 60;
      } // end of if onShowPage
 
      if (connectionTimer === 0) {
@@ -205,6 +209,7 @@ class Header extends Component {
          webSocketConnected: this.state.webSocketConnected,
          setCableConnection: this.setCableConnection,
          receiveConversation: this.receiveConversation,
+         setProgressStatus: this.setProgressStatus,
          userId,
          makeConnection: true,
          disconnectTime,

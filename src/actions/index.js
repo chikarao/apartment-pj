@@ -194,7 +194,8 @@ import {
   SET_GET_ONLINE_OFFLINE,
   SET_USER_STATUS,
   SET_OTHER_USER_STATUS,
-  SAVE_TEMPLATE_DOCUMENT_FIELDS
+  SAVE_TEMPLATE_DOCUMENT_FIELDS,
+  SET_PROGRESS_STATUS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3313,6 +3314,18 @@ export function setOtherUserStatus(statusObject) {
     payload: statusObject
   };
 }
+
+export function setProgressStatus(statusObject) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, setProgressStatus, statusObject:', statusObject);
+  return {
+    // SET_USER_STATUS in conversation reducer
+    type: SET_PROGRESS_STATUS,
+    payload: statusObject
+  };
+}
+
+
 // Thunk example from docs
 // function makeASandwichWithSecretSauce(forPerson) {
 //   // We can invert control here by returning a function - the "thunk".

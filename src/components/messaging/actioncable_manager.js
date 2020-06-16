@@ -4,8 +4,6 @@
 
 import Cable from 'actioncable';
 
-
-
 export default function (props) {
   // This function makes the websocket connection, handles typing, timeout
 
@@ -20,12 +18,12 @@ export default function (props) {
   // disconnectTime is time required for connection to disconnect
   // const disconnectTime = 15;
 
-  function actioncable_manager(id) {
+  function actioncableManager(id) {
     cable = Cable.createConsumer('ws://localhost:3000/cable');
     // this.cable.connection.websocket.onclose = () => {
-    //   // console.log('actioncable_manager this.cable.connection.websocket.onclose callback');
+    //   // console.log('actioncableManager this.cable.connection.websocket.onclose callback');
     // };
-    // console.log('actioncable_manager id', id);
+    // console.log('actioncableManager id', id);
     const userId = localStorage.getItem('id') ? localStorage.getItem('id') : id;
     // chats creates a number of methods to call on chats, which is passed in
     // app state as propsChats. It can be called to disconnect anywhere in app
@@ -34,7 +32,7 @@ export default function (props) {
       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
     }, {
       connected: (message) => {
-          console.log('actioncable_manager in call back to connected message', message);
+          console.log('actioncableManager in call back to connected message', message);
           // Call authenticate chat which sends user token to back end to auth the user
           authenticateChat();
           // if socket is not connected set app and header component state to true and timedout to false
@@ -69,21 +67,21 @@ export default function (props) {
       },
 
       received: (data) => {
-        console.log('actioncable_manager in received before if data', data);
+        console.log('actioncableManager in received before if data', data);
         if (data.conversation) {
           // receiveds data from back end and if data.conversation,
           // calls redux action receiveConversation to update with new conversation and message
           // sending user can get the conversation through ajax but the receiver
           // cannot get message automatically unless connected to websocket and listening for messages
           const conversation = JSON.parse(data.conversation);
-          console.log('actioncable_manager in data.conversation, conversation', conversation);
+          console.log('actioncableManager in data.conversation, conversation', conversation);
           props.receiveConversation(conversation);
         } else if (data.notification) {
           // backend sends data.notification used for authenticating and
           // for typing. If sender types, the user on the receiving end
           // will receive a notification which then is used to update app state,
           // and shown on users messaging window to indicate the other is typing
-          console.log('actioncable_manager in received, data ', data);
+          console.log('actioncableManager in received, data ', data);
           if (data.notification === 'typing') {
             // if user types, disconnect for websockeet timer is reset
             resetDisconnectTimer({ time: props.disconnectTime, initial: false });
@@ -93,19 +91,19 @@ export default function (props) {
             // Messaging.js handle message change also limits firing of notifications to every x seconds
             // Note: the timer is not reset while in countdown -- only when at 0.
             if (typingTimer === 0) {
-              console.log('actioncable_manager in received, data.notification.typing ', data.notification);
+              console.log('actioncableManager in received, data.notification.typing ', data.notification);
               // function lapse time to count down timer then clear setInterval when at 0
               // NOTE: clearInterval MUST be called or will take up memory
               const lapseTime = () => {
                 if (subTimer > 0) {
                   subTimer--;
-                  console.log('actioncable_manager in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
+                  console.log('actioncableManager in received, data.notification.typing, in lapseTime, subTimer ', subTimer);
                 } else {
-                  console.log('actioncable_manager in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
+                  console.log('actioncableManager in received, data.notification.typing, in lapseTime, subTimer in else ', subTimer);
                   // when subtimer is 0, assign typing timer at 0
                   typingTimer = subTimer;
                   props.setTypingTimer({ typingTimer: subTimer });
-                  console.log('actioncable_manager in received, data.notification.typing, in lapseTime, typingTimer in else ', typingTimer);
+                  console.log('actioncableManager in received, data.notification.typing, in lapseTime, typingTimer in else ', typingTimer);
                   clearInterval(timer);
                 }
               };
@@ -116,12 +114,12 @@ export default function (props) {
               // call action to set timer in app state; aset at typing time
               // the typing component will test if timer is 0 or not
               props.setTypingTimer({ typingTimer: subTimer, messageSender: data.user_id });
-              console.log('actioncable_manager in received, data.notification.typing, typingTimer after setting at 5, messageSender ', typingTimer);
+              console.log('actioncableManager in received, data.notification.typing, typingTimer after setting at 5, messageSender ', typingTimer);
 
               const timer = setInterval(lapseTime, 1000);
             } // end of if typingTimer === 0
           } else if (data.notification === 'authenticated') { // if typing
-            console.log('actioncable_manager in received, data.notification data.user_status, data.other_user_status else ', data.notification, data.user_status, data.other_user_status);
+            console.log('actioncableManager in received, data.notification data.user_status, data.other_user_status else ', data.notification, data.user_status, data.other_user_status);
             // set disconnect time when user athenticates
             resetDisconnectTimer({ time: props.disconnectTime, initial: true });
             // set currentUser's userStatus in app state conversation reducer
@@ -129,8 +127,11 @@ export default function (props) {
             // set the owner's userStatus to be used in showFlat page in app state conversation reducer
             if (data.other_user_status && data.other_user_status.length > 0 && data.other_user_status[0] !== null) props.setOtherUserStatus(data.other_user_status);
           } else if (data.notification === 'others_user_status_change') {
-            console.log('actioncable_manager in received, else others_user_status_change data ', data);
+            console.log('actioncableManager in received, else others_user_status_change data ', data);
             props.setOtherUserStatus(data.user_status);
+          } else if (data.notification === 'progress') {
+            console.log('actioncableManager in received, else progress data ', data);
+            props.setProgressStatus(data);
           }
         }
       }, // end of received
@@ -140,7 +141,7 @@ export default function (props) {
       }, // end of create:
       // typing called on chats to send notification of user typing
       typing: function (addresseeId) {
-        console.log('actioncable_manager this', this);
+        console.log('actioncableManager this', this);
         // if on show page and user is not the owner of the flat send the expiration and the other user id (same as addresseeId)
         if (props.onShowPage && !props.currentUserIsOwner) {
           this.perform('typing', { user_id: userId, addressee_id: addresseeId, other_user_id: [props.flat.user_id], expiration: props.disconnectTime });
@@ -211,8 +212,8 @@ export default function (props) {
     //     //   return;
     //     // }
     //     // this.cable.connection.webSocket.send(message);
-    //   // if webSocket connection is disconneted, actioncable_manager reconnects
-    //   // this.actioncable_manager();
+    //   // if webSocket connection is disconneted, actioncableManager reconnects
+    //   // this.actioncableManager();
     // };// end of on message
   }
 
@@ -232,7 +233,7 @@ export default function (props) {
   }
 
 // calling main function
-actioncable_manager(props.userId);
+  actioncableManager(props.userId);
 // no need to return but keep
-if (props.makeConnection) return { cable, chats };
+  if (props.makeConnection) return { cable, chats };
 } // end of function

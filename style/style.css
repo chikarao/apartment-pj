@@ -4126,6 +4126,7 @@ form {
   /* https://github.com/mgcrea/angular-strap/issues/1234 */
   /* fixed blurriness */
 }
+
 .lightbox {
   position: fixed;
   top: 0;
@@ -4215,6 +4216,39 @@ form {
   /* display: flex;
   justify-content: center;
   align-content: center; */
+}
+
+.progress-bar-container {
+  width: 230px;
+  height: 70px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  padding: 20px 10px 5px 10px;
+}
+
+
+.progress-bar-bar {
+  width: 90%;
+  height: 25%;
+  border: 1px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 3px;
+  text-align: left;
+}
+
+.progress-bar-status {
+  font-size: 13px;
+  color: gray;
+  margin: 7px;
 }
 
 .modal-main {

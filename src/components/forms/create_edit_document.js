@@ -566,6 +566,7 @@ class CreateEditDocument extends Component {
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
       this.props.showLoading();
+      this.props.setProgressStatus(null);
     });
   }
   // What's saved in localStorageHistory
@@ -680,6 +681,7 @@ class CreateEditDocument extends Component {
     }
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject, data: ', paramsObject, data);
     this.props.showLoading();
+    this.props.setProgressStatus({ progress_percentage: 0, message: 'Received request' });
   }
 
   handleFormSubmit({ data, submitAction }) {
@@ -5838,7 +5840,7 @@ longActionPress(props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ backgroundColor: 'lightgray' }}
-                href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_publicid}.pdf`}
+                href={`http://res.cloudinary.com/chikarao/image/upload/${this.props.agreement.document_pdf_publicid}.pdf`}
               >
                {AppLanguages.download[appLanguageCode]}
               </a>

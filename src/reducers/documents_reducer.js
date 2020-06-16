@@ -12,7 +12,8 @@ import {
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
   FETCH_BOOKING,
   SET_DOCUMENT_LANGUAGE_CODE,
-  SET_TEMPLATE_ELEMENTS_OBJECT
+  SET_TEMPLATE_ELEMENTS_OBJECT,
+  SET_PROGRESS_STATUS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -32,7 +33,8 @@ export default function (state = {
   templateElementsByPage: {},
   templateTranslationElements: {},
   templateTranslationElementsByPage: {},
-  listInitialValuesObject: {}
+  listInitialValuesObject: {},
+  progressStatus: null
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
 
@@ -560,6 +562,10 @@ export default function (state = {
     case EDIT_AGREEMENT_FIELDS:
     // console.log('in documents reducer, state: ', state);
     return { ...state, editHistoryArray: [] };
+
+    case SET_PROGRESS_STATUS:
+    console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+    return { ...state, progressStatus: action.payload };
 
     case FETCH_DOCUMENT_TRANSLATION:
     const parsedActionPayload = JSON.parse(action.payload);
