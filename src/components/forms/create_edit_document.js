@@ -681,7 +681,7 @@ class CreateEditDocument extends Component {
     }
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject, data: ', paramsObject, data);
     this.props.showLoading();
-    // Do not call setProgressStatus here so that if action cable is disconnected, the progress bar will come up and not dismount 
+    // Do not call setProgressStatus here so that if action cable is disconnected, the progress bar will come up and not dismount
     // this.props.setProgressStatus({ progress_percentage: 0, message: 'Received request' });
   }
 
@@ -4179,6 +4179,7 @@ longActionPress(props) {
               class_name: 'document-rectangle-template-button',
               // input_type: createdObject.type,
               input_type: 'string', // cannot have button or will not render on pdf
+              font_size: '12px',
               translation: this.state.templateElementActionIdObject.translation,
               // border_radius: '3px',
               border: '1px solid black',
@@ -4274,6 +4275,7 @@ longActionPress(props) {
               // height: createdObject.choices[eachIndex].params.height,
               height: createdObject.height || createdObject.params.height || '2.0%',
               // class_name: createdObject.choices[eachIndex].params.class_name,
+              font_size: '12px',
               class_name: 'document-rectangle-template-button',
               input_type: createdObject.type || createdObject.params.input_type,
               // border_radius: '3px',
@@ -4295,6 +4297,7 @@ longActionPress(props) {
             class_name: 'document-rectangle-template-button',
             // input_type: createdObject.type,
             input_type: 'string', // Cannot have button or will not render on pdf
+            font_size: '12px',
             translation: this.state.templateElementActionIdObject.translation,
             // border_radius: '3px',
             border: '1px solid black',
