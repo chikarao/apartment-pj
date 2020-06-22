@@ -562,7 +562,8 @@ class CreateEditDocument extends Component {
       templateEditHistoryArray: [],
       historyIndex: 0,
       unsavedTemplateElements: {},
-      showDocumentPdf: true
+      showDocumentPdf: true,
+      useMainDocumentInsert: false
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
       this.props.showLoading();
@@ -591,6 +592,7 @@ class CreateEditDocument extends Component {
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
+      use_main_document_insert: this.state.useMainDocumentInsert
       // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
@@ -4843,7 +4845,6 @@ longActionPress(props) {
       this.setState({ showFontControlBox: false });
       const fontControlBox = document.getElementById('create-edit-document-font-control-box');
       fontControlBox.style.display = 'none';
-      // console.log('in create_edit_document, handleFontControlCloseClick, fontControlBox: ', fontControlBox);
       document.removeEventListener('click', this.handleFontControlCloseClick);
     }
     // remove event listener
@@ -4854,6 +4855,7 @@ longActionPress(props) {
     // Get the font button in array
     let fontButtonDimensions = {};
     const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
+    // console.log('in create_edit_document, renderFontControlBox, fontButtonArray: ', fontButtonArray);
     // Get the font button dimension so that a control box can be placed below it
     if (fontButtonArray.length > 0) fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
     // const controlBoxWidth = '165px';
@@ -5544,7 +5546,8 @@ longActionPress(props) {
             value="changeDirection"
             style={{ color: translationElementsChecked ? 'blue' : 'gray' }}
             name="Change text direction,bottom"
-            className="far fa-compass"
+            className="fas fa-ruler"
+            // className="far fa-compass"
           ></i>
         </div>
 
@@ -5690,13 +5693,13 @@ longActionPress(props) {
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
-              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateElementEditAction() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
-              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderFontControlBox() : ''}
-              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
-              {this.props.showTemplate & !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
-              {this.props.showTemplate ? this.renderDocumentName(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderFontControlBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
             </div>
           );
         });

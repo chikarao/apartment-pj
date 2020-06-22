@@ -474,14 +474,13 @@ class BookingConfirmation extends Component {
   handleDocumentUploadClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal == 'template' ? true : false }, () => {
+    this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
       this.props.showDocumentInsertCreateModal();
     });
   }
   // When user clicks on a template saved, sets various component and app states to
   // set
   renderEachTemplateSaved() {
-
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       if (eachAgreement.document_type === 'template') {
@@ -1149,7 +1148,7 @@ renderEachUploadedPdf() {
           <i className="far fa-file"></i>&nbsp;{eachInsert.insert_name}
           </div>
           &nbsp;&nbsp;&nbsp;
-          {eachInsert.main_agreement ? <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-create-field-button" onClick={this.handleInsertFieldAddClick}>{AppLanguages.insertField[this.props.appLanguageCode]}</div> : ''}
+          {eachInsert.main_agreement && !this.state.showTemplate ? <div value={eachInsert.id} name={eachInsert.agreement_id} className="document-insert-create-field-button" onClick={this.handleInsertFieldAddClick}>{AppLanguages.insertField[this.props.appLanguageCode]}</div> : ''}
         </div>
         <div className="document-insert-box-documents-each-box-fields">
           {this.renderEachInsertField(eachInsert)}
@@ -1160,7 +1159,11 @@ renderEachUploadedPdf() {
 }
 
 handleUploadPdfLink() {
-  this.props.showDocumentInsertCreateModal();
+  // Upload insert and upload template document share the same modal
+  // So set showTemplateCreate to false in case
+  this.setState({ showTemplateCreate: false, uploadOwnDocument: false }, () => {
+    this.props.showDocumentInsertCreateModal();
+  });
 }
 
 renderInsertBox(isTemplate) {
@@ -1299,10 +1302,12 @@ setConditionsForSavedDocuments(elementVal, elementName) {
 
 renderDocumentInsertCreateForm() {
   // console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
+  // console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.booking: ', this.props.booking);
   return (
     <DocumentInsertCreateModal
       show={this.props.showDocumentInsertCreate}
       agreementId={this.state.agreementId}
+      agreement={this.props.booking.agreements.filter((agr) => agr.id === this.state.agreementId)}
       uploadOwnDocument={this.state.uploadOwnDocument}
       templateCreate={this.state.showTemplateCreate}
     />
@@ -1310,7 +1315,6 @@ renderDocumentInsertCreateForm() {
 }
 
 renderDocumentInsertEditForm() {
-  // console.log('in booking confirmation, renderDocumentInsertEditForm: ');
   return (
     <DocumentInsertEditModal
       show={this.props.showDocumentInsertEdit}
@@ -1433,9 +1437,9 @@ function mapStateToProps(state) {
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };
-  } else {
-    return {};
   }
+
+  return {};
 }
 
 export default connect(mapStateToProps, actions)(BookingConfirmation);

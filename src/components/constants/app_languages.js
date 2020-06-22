@@ -410,7 +410,7 @@ const appLanguages =
     utilities: { en: 'Utilities', jp: 'ガス・電気・水道など' },
     legal: { en: 'Legal', jp: '法規制' },
     hazards: { en: 'Hazards Related', jp: '災害地域・アスベスト等' },
-    insertDocument: { en: 'Insert a Document', jp: 'ドキュメントを挿入' },
+    insertDocument: { en: 'Insert Document', jp: 'ドキュメントを挿入' },
     // publicGas: { en: 'Public Gas', jp: 'ガス会社' },
     // propaneGas: { en: 'Propane Gas', jp: 'プロパンガス' },
     // none: { en: 'None', jp: 'なし' },

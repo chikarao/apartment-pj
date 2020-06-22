@@ -164,15 +164,9 @@ class DocumentInsertEditModal extends Component {
 
   renderEachDocumentInsertField() {
     let fieldComponent = '';
-    return _.map(DocumentInsert, (formField, i) => {
-      console.log('in documentInsert_edit_modal, renderEachDocumentInsertField, formField: ', formField);
-      if (formField.component == 'FormChoices') {
-        fieldComponent = FormChoices;
-      } else {
-        fieldComponent = formField.component;
-      }
-      // console.log('in documentInsert_edit_modal, renderEachDocumentInsertField, fieldComponent: ', fieldComponent);
+    const insert = (!this.props.uploadOwnDocument && !this.props.templateCreate);
 
+    const renderField = (formField, i) => {
       return (
         <fieldset key={i} className="form-group">
           <label className="create-flat-form-label">{formField.en}:</label>
@@ -181,13 +175,27 @@ class DocumentInsertEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: DocumentInsert, record: this.props.documentInsert, create: false } : {}}
+            props={fieldComponent === FormChoices ? { model: DocumentInsert, record: this.props.documentInsert, create: false } : {}}
             type={formField.type}
-            className={formField.component == 'input' ? 'form-control' : ''}
+            style={formField.component === 'input' ? { width: formField.width } : {}}
+            className={formField.component === 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
           />
         </fieldset>
       );
+    }
+
+    return _.map(DocumentInsert, (formField, i) => {
+      console.log('in documentInsert_edit_modal, renderEachDocumentInsertField, formField: ', formField);
+      if (formField.component === 'FormChoices') {
+        fieldComponent = FormChoices;
+      } else {
+        fieldComponent = formField.component;
+      }
+      // console.log('in documentInsert_edit_modal, renderEachDocumentInsertField, fieldComponent: ', fieldComponent);
+      if (insert && (formField.insert || formField.all)) return renderField(formField, i);
+
+      if (!insert && (!formField.insert || formField.all)) return renderField(formField, i);
     });
   }
 

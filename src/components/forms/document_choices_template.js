@@ -37,7 +37,7 @@ class DocumentChoicesTemplate extends Component {
     // this componentDidMount takes the newElement marked newElement in this.props
     // and uses the handler for elementDrag to get the coordinates of the document_field_choices
     if (this.props.newElement) {
-      console.log('DocumentChoicesTemplate, componentDidMount this.props, this.props.formFields[this.props.page], this.props.newElement', this.props, this.props.formFields[this.props.page], this.props.newElement);
+      // console.log('DocumentChoicesTemplate, componentDidMount this.props, this.props.formFields[this.props.page], this.props.newElement', this.props, this.props.formFields[this.props.page], this.props.newElement);
       // Call the getChoiceCoordinates with element id fromDocumentChoices flag true
       // so that dragElement does not set onmousemove and onmouseup and leaves them null
       // and dragElement can simply call closeDragElement() where the choice coordinate
@@ -68,8 +68,8 @@ class DocumentChoicesTemplate extends Component {
     }
 
     valueUpdated = nextProps.input.value != this.props.input.value;
-    console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected', elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected);
-    console.log('DocumentChoicesTemplate, shouldComponentUpdate (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected)', (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected));
+    // console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected', elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected);
+    // console.log('DocumentChoicesTemplate, shouldComponentUpdate (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected)', (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected));
 
     return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
   }

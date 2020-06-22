@@ -4732,6 +4732,12 @@ form {
   font-size: 30px;
 }
 
+.document-insert-insert-page-container {
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+
 .document-insert-modal-image {
   width: 100px;
   height: 142px;

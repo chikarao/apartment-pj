@@ -6,7 +6,7 @@ import _ from 'lodash';
 import axios from 'axios';
 
 import * as actions from '../../actions';
-import languages from '../constants/languages';
+// import languages from '../constants/languages';
 import DocumentInsert from '../constants/document_insert';
 import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
@@ -145,15 +145,9 @@ class DocumentInsertCreateModal extends Component {
 
   renderEachDocumentInsertField(objects) {
     let fieldComponent = '';
-    return _.map(objects, (formField, i) => {
-      // console.log('in documentInsert_create_modal, renderEachDocumentInsertField, formField: ', formField);
-      if (formField.component == 'FormChoices') {
-        fieldComponent = FormChoices;
-      } else {
-        fieldComponent = formField.component;
-      }
-      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, formField, fieldComponent, objects: ', formField, fieldComponent, objects);
+    const insert = (!this.props.uploadOwnDocument && !this.props.templateCreate);
 
+    const renderField = (formField, i) => {
       return (
         <fieldset key={i} className="form-group">
           <label className="create-flat-form-label">{formField.en}{formField.noColon ? '' : ':'}</label>
@@ -161,12 +155,29 @@ class DocumentInsertCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent == FormChoices ? { model: objects, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray } : {}}
+            props={fieldComponent === FormChoices ? { model: objects, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray, agreement: this.props.agreement[0] } : {}}
             type={formField.type}
-            className={formField.component == 'input' ? 'form-control' : ''}
+            style={formField.component === 'input' ? { width: formField.width } : {}}
+            className={formField.component === 'input' ? 'form-control' : ''}
           />
         </fieldset>
       );
+    };
+
+    return _.map(objects, (formField, i) => {
+      // console.log('in documentInsert_create_modal, renderEachDocumentInsertField, formField: ', formField);
+      if (formField.component === 'FormChoices') {
+        fieldComponent = FormChoices;
+      } else if (formField.component === 'formInsert') {
+        fieldComponent = formInsert;
+      } else {
+        fieldComponent = formField.component;
+      }
+      console.log('in documentInsert_create_modal, renderEachDocumentInsertField, insert, formField, fieldComponent, objects: ', insert, formField, fieldComponent, objects);
+      if (insert && (formField.insert || formField.all)) return renderField(formField, i);
+
+      if (!insert && (!formField.insert || formField.all)) return renderField(formField, i);
+      // return renderField(formField, i);
     });
   }
 
@@ -218,7 +229,7 @@ class DocumentInsertCreateModal extends Component {
   }
 
   renderCreateDocumentInsertForm() {
-    console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.showDocumentInsertCreate: ', this.props.showDocumentInsertCreate);
+    // console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.agreement, this.props.agreementId: ', this.props.agreement, this.props.agreementId);
     // <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createDocumentInsert[this.props.appLanguageCode] : AppLanguages.addDocumentInsertLanguage[this.props.appLanguageCode]}</h3>
 
     const { handleSubmit, appLanguageCode } = this.props;
@@ -345,6 +356,21 @@ DocumentInsertCreateModal = reduxForm({
 //   });
 //   return array;
 // }
+
+const formInsert = (props) => {
+  console.log('in DocumentInsertCreateModal, formInsert, props: ', props);
+  return (
+    <div
+      className="container form-control-custom-container"
+    >
+      <div
+        className="row form-control-custom"
+      >
+        After page what
+      </div>
+    </div>
+  );
+};
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {

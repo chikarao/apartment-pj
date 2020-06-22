@@ -86,19 +86,49 @@ class FormChoices extends Component {
     return objectReturned;
   }
 
+  getCustomValue(pageLocation) {
+    // const { input: { onChange } } = this.props;
+
+    // const clickedElement = event.target;
+    // const elementVal = clickedElement.getAttribute('value');
+    const agreementPages = this.props.agreement.document_pages;
+    console.log('FormChoices, getCustomValue, pageLocation, agreementPages, this.props.agreement: ', pageLocation, agreementPages, this.props.agreement);
+    if (pageLocation === 'insertAtEnd') return agreementPages;
+    if (pageLocation === 'insertBeforeLastPage') return agreementPages - 1;
+    if (pageLocation === 'insertBeforeFirst') return 0;
+    return null;
+    // switch (pageLocation) {
+    //   case 'insertAtEnd':
+    //   console.log('FormChoices, getCustomValue, in insertAtEnd pageLocation: ', pageLocation);
+    //     // onChange(agreementPages);
+    //     return agreementPages;
+    //   case 'insertBeforeLastPage':
+    //   console.log('FormChoices, getCustomValue, in insertBeforeLastPage pageLocation: ', pageLocation);
+    //     return agreementPages - 1;
+    //     // onChange(agreementPages);
+    //   case 'insertBeforeFirst':
+    //   console.log('FormChoices, getCustomValue, in insertBeforeFirst pageLocation: ', pageLocation);
+    //     return 0;
+    //
+    //   default: return null;
+    // }
+  }
+
   renderEachChoice() {
     const { input: { value, onChange, name }, meta } = this.props;
     // Field has choices in each object (eg staff, contractor, facility etc); iterate through choices
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
+    let modelChoice = null;
+    let widthPx = null;
+    let heightPx = null;
+    // let customValue = null;
+    const { formValues, insertFieldObject } = this.props;
+
     return _.map(this.props.model[name].choices, (choice, i) => {
       console.log('FormChoices, renderEachChoice, choice: ', choice);
       // define button element for user to click to set value in submission
-      const { formValues, insertFieldObject } = this.props;
       // get modelChoice to get field config from constants/...js
       // Preset as null so that can test if true
-      let modelChoice = null;
-      let widthPx = null;
-      let heightPx = null;
       // if redux form has values prop; formValues coming from mapStateToProps
       if (formValues) {
         // if this is coming from create
@@ -107,7 +137,6 @@ class FormChoices extends Component {
          modelChoice = this.getModelChoice(this.props.model[this.props.model[name].contingent_style].choices, userChoiceInFormValues)
          // get params from document form eg important_points_explanation to get input dimensions
          const documentFormParams = this.getDocumentFormParams(modelChoice.inForm, userChoiceInFormValues)
-         console.log('FormChoices, renderEachChoice, documentFormParams, choice: ', documentFormParams, choice);
          // get dimensions of A4 paper in px for ex important_points_explanation
          const a4Width = globalConstants.a4Width;
          const a4Height = globalConstants.a4Height;
@@ -117,17 +146,32 @@ class FormChoices extends Component {
          // console.log('FormChoices, renderEachChoice, parseFloat a4Width, documentFormParams.width, widthPx, a4Height, parseFloat documentFormParams.height, heightPx: ', a4Width, parseFloat(documentFormParams.width), widthPx, a4Height, parseFloat(documentFormParams.height), heightPx);
        }
       }
+      // If choice is given width assign to modelChoice; For documentInsertCreateModal
+      if (choice.width) modelChoice = { width: choice.width }
+      // For documentInsertCreateModal
+      const customValue = choice.customOnchange ? this.getCustomValue(choice.value) : '';
+      console.log('FormChoices, renderEachChoice, customValue, choice, customValue.toString(), value.toString(): ', customValue, choice, customValue.toString(), value.toString());
 
       const buttonElement =
         <div
           key={choice.value}
           type={choice.type}
-          onClick={() => {
-            onChange(choice.value);
-            this.emptyInput();
-          }}
+          value={customValue}
+          onClick={choice.customOnchange
+            ?
+            () => {
+              console.log('FormChoices, renderEachChoice, before onChange, customValue, choice: ', customValue, choice);
+              onChange(customValue);
+              this.emptyInput();
+            }
+            :
+            () => {
+              onChange(choice.value);
+              this.emptyInput();
+            }
+        }
           className={choice.className}
-          style={value.toString() == choice.value && (value != null) ? { borderColor: 'black' } : { borderColor: 'lightgray' }}
+          style={(value.toString() == choice.value || (customValue !== '' && value.toString() === customValue.toString())) && (value != null) ? { borderColor: 'black' } : { borderColor: 'lightgray' }}
         >
         {choice[this.props.appLanguageCode]}
         </div>
@@ -171,12 +215,15 @@ class FormChoices extends Component {
         const contingentRenderColumn = this.props.model[name].contingent_render;
         // formValues is a ReduxForm prop and insertFieldObject is passed in props in Field
         let languageCodeArray = [];
+        // contingent_render is a key in constants/ objects to get fields in modals that adjust in size
+        // Based on the dimensions required on document inserts (not used in template world)
         if (contingentRenderColumn) {
           // if the field has contingent_render, ie buttons/input render depends on whether
           // value has been assigned to column
           // find out if contingent render value has value
           if (formValues) {
             // form value exists in state/prop
+            // insertFieldObject is for rendering fields in documentInserts (not used in template world)
             if (insertFieldObject[formValues[contingentRenderColumn]]) {
               languageCodeArray = insertFieldObject[formValues[contingentRenderColumn]].map(insertField => insertField.language_code)
               // get array of language codes for each insert field in obect
@@ -229,6 +276,8 @@ class FormChoices extends Component {
         } // end of if !contingentRenderColumn
         //
       } else { // !!!!!!! ELSE for if this.props.insertFieldObject
+        console.log('FormChoices, renderEachChoice, else ELSE for if this.props.insertFieldObject: ', choice);
+        // !!!!!this else half is used in template
         if (this.props.record && this.props.model[name].map_to_record) {
           // console.log('FormChoices, renderEachChoice, if else insertFieldObject this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create: ', this.props.record, this.props.model[name], this.props.model[name].map_to_record, this.props.record[this.props.model[name].map_to_record], this.props.create);
           // if the language code or map_to_record  does not equal the choice value
@@ -265,13 +314,14 @@ class FormChoices extends Component {
               return <div key={i}>{choice[this.props.appLanguageCode]}</div>
             }
           }
-        } else {
+        } else { // end of   if (this.props.record && this.props.model[name].map_to_record)
           // if there is no record (db record) or model map to, ie a regular field
           // return choice.type == 'string' ? inputElement : buttonElement;
           if (choice.type == 'text') {
             console.log('FormChoices, renderEachChoice, else no record or model map choice: ', choice);
             return textareaElement;
           } else {
+            console.log('FormChoices, renderEachChoice, else no record or model map choice not text: ', choice);
             return choice.type == 'string' ? inputElement : buttonElement;
           }
         }
@@ -283,7 +333,7 @@ class FormChoices extends Component {
   render() {
     // destructure local props set by redux forms Field compoenent
     const { input: { value, onChange, name }, contingentStyleClassName, contingentStyleClassNameChild } = this.props;
-    console.log('FormChoices, render,　name: ',　name);
+    // console.log('FormChoices, render,　name: ',　name);
 
       return (
       <div className={contingentStyleClassName || 'container form-control-custom-container'} key={name}>

@@ -9,7 +9,9 @@ const DocumentInsert = {
     jp: 'ドキュメント名',
     component: 'input',
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    // all models to render
+    all: true
   },
 
   language_code: {
@@ -31,9 +33,31 @@ const DocumentInsert = {
     // for rendering in forms only choices that do not exist
     limit_choices: true,
     // map to column in backend code
-    map_to_record: 'language_code'
+    map_to_record: 'language_code',
   },
 
+insert_after_page: {
+    name: 'insert_after_page',
+    en: 'Insert page',
+    jp: '挿入ページ',
+    // component: 'input',
+    // component: 'formInsert',
+    component: 'FormChoices',
+    type: 'string',
+    width: '50px',
+    className: 'form-control',
+    choices: {
+      inputFieldValue: { value: 'inputFieldValue', en: 'After page', jp: 'ページの後', type: 'string', className: 'form-control', width: '100px' },
+      insertAtEnd: { value: 'insertAtEnd', en: 'At the end', jp: '最後に', type: 'button', className: 'form-rectangle', customOnchange: true },
+      insertBeforeLastPage: { value: 'insertBeforeLastPage', en: 'Before last page', jp: '最後のぺージの前に', type: 'button', className: 'form-rectangle', customOnchange: true },
+      insertBeforeFirst: { value: 'insertBeforeFirst', en: 'At the beginning', jp: '最初に', type: 'button', className: 'form-rectangle', customOnchange: true },
+      // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
+      // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
+    },
+    // contingent_style: true,
+    // only insert models to render
+    insert: true
+  },
   // main_agreement: {
   //   name: 'main_agreement',
   //   en: 'Main Agreement?',
