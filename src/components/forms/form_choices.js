@@ -149,18 +149,20 @@ class FormChoices extends Component {
       // If choice is given width assign to modelChoice; For documentInsertCreateModal
       if (choice.width) modelChoice = { width: choice.width }
       // For documentInsertCreateModal
-      const customValue = choice.customOnchange ? this.getCustomValue(choice.value) : '';
-      console.log('FormChoices, renderEachChoice, customValue, choice, customValue.toString(), value.toString(): ', customValue, choice, customValue.toString(), value.toString());
+      // Get customValue if choice has key costomOnChange
+      // This will get a value for the button element based on a value returned by getCustomValue
+      const customValue = choice.customValue ? this.getCustomValue(choice.value) : choice.value;
+      // console.log('FormChoices, renderEachChoice, customValue, choice, customValue.toString(), value.toString(): ', customValue, choice, customValue.toString(), value.toString());
 
       const buttonElement =
         <div
           key={choice.value}
           type={choice.type}
           value={customValue}
-          onClick={choice.customOnchange
+          onClick={choice.customValue
             ?
             () => {
-              console.log('FormChoices, renderEachChoice, before onChange, customValue, choice: ', customValue, choice);
+              // console.log('FormChoices, renderEachChoice, before onChange, customValue, choice: ', customValue, choice);
               onChange(customValue);
               this.emptyInput();
             }
@@ -180,10 +182,15 @@ class FormChoices extends Component {
       // this.anyOfOtherValues checks if any of the other choice.val matches value,
       // if so do not use as value, use ''
       const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
+      const regularValue = this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue;
+      // customInputValue is used in key of choice of constants/document_inserts
+      // To get value of button input rendered in input element
+      const customInputValue = choice.customInputValue ? value : regularValue;
+
       const inputElement =
         <input
           id="valueInput"
-          value={this.anyOfOtherValues(name, dirtyValue) ? '' : dirtyValue}
+          value={customInputValue}
           key={i}
           onChange={this.handleInputChange}
           type={choice.type}

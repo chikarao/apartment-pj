@@ -47,10 +47,10 @@ insert_after_page: {
     width: '50px',
     className: 'form-control',
     choices: {
-      inputFieldValue: { value: 'inputFieldValue', en: 'After page', jp: 'ページの後', type: 'string', className: 'form-control', width: '100px' },
-      insertAtEnd: { value: 'insertAtEnd', en: 'At the end', jp: '最後に', type: 'button', className: 'form-rectangle', customOnchange: true },
-      insertBeforeLastPage: { value: 'insertBeforeLastPage', en: 'Before last page', jp: '最後のぺージの前に', type: 'button', className: 'form-rectangle', customOnchange: true },
-      insertBeforeFirst: { value: 'insertBeforeFirst', en: 'At the beginning', jp: '最初に', type: 'button', className: 'form-rectangle', customOnchange: true },
+      inputFieldValue: { value: 'inputFieldValue', en: 'After page', jp: 'ページの後', type: 'string', className: 'form-control', width: '100px', customInputValue: true },
+      insertAtEnd: { value: 'insertAtEnd', en: 'At the end', jp: '最後に', type: 'button', className: 'form-rectangle', customValue: true },
+      insertBeforeLastPage: { value: 'insertBeforeLastPage', en: 'Before last page', jp: '最後のぺージの前に', type: 'button', className: 'form-rectangle', customValue: true },
+      insertBeforeFirst: { value: 'insertBeforeFirst', en: 'At the beginning', jp: '最初に', type: 'button', className: 'form-rectangle', customValue: true },
       // 2: { value: 'Wooden Structure', en: 'Wooden Structure', jp: '木造', type: 'button', className: 'form-rectangle' },
       // 2: { value: '', type: 'string', component: 'input', className: 'form-rectangle form-input' }
     },
