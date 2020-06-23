@@ -1302,7 +1302,6 @@ setConditionsForSavedDocuments(elementVal, elementName) {
 
 renderDocumentInsertCreateForm() {
   // console.log('in booking confirmation, renderDocumentInsertCreateForm: ');
-  // console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.booking: ', this.props.booking);
   return (
     <DocumentInsertCreateModal
       show={this.props.showDocumentInsertCreate}
@@ -1315,11 +1314,13 @@ renderDocumentInsertCreateForm() {
 }
 
 renderDocumentInsertEditForm() {
+  console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.booking: ', this.props.booking);
   return (
     <DocumentInsertEditModal
       show={this.props.showDocumentInsertEdit}
       agreementId={this.state.agreementId}
       documentInsertId={this.state.documentInsertId}
+      agreement={this.props.booking.agreements.filter((agr) => agr.id === this.state.agreementId)}
       uploadOwnDocument={this.state.uploadOwnDocument}
       showTemplate={this.state.showTemplate}
     />

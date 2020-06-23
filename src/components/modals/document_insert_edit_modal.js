@@ -165,6 +165,7 @@ class DocumentInsertEditModal extends Component {
   renderEachDocumentInsertField() {
     let fieldComponent = '';
     const insert = (!this.props.uploadOwnDocument && !this.props.templateCreate);
+    console.log('in documentInsert_edit_modal, renderEachDocumentInsertField, this.props.agreement, this.props.documentInsert: ', this.props.agreement, this.props.documentInsert);
 
     const renderField = (formField, i) => {
       return (
@@ -175,7 +176,7 @@ class DocumentInsertEditModal extends Component {
             // component={fieldComponent}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent === FormChoices ? { model: DocumentInsert, record: this.props.documentInsert, create: false } : {}}
+            props={fieldComponent === FormChoices ? { model: DocumentInsert, record: this.props.documentInsert, create: false, agreement: this.props.agreement } : {}}
             type={formField.type}
             style={formField.component === 'input' ? { width: formField.width } : {}}
             className={formField.component === 'input' ? 'form-control' : ''}
@@ -294,11 +295,10 @@ class DocumentInsertEditModal extends Component {
   }
 
   renderEditDocumentInsertForm() {
-
     const { handleSubmit, appLanguageCode } = this.props;
     // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
 
-    if (this.props.auth) {
+    if (this.props.auth && this.props.documentInsert) {
       // console.log('in documentInsert_edit_modal, renderEditDocumentInsertForm, this.props.flat: ', this.props.flat);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // <div className="modal-edit-language-link-box">
@@ -373,32 +373,32 @@ DocumentInsertEditModal = reduxForm({
   enableReinitialize: true
 })(DocumentInsertEditModal);
 
-function getDocumentInsert(documentInserts, id) {
-  // placeholder for when add lanauge
-  let documentInsert = {};
-    _.each(documentInserts, eachDocumentInsert => {
-      console.log('in documentInsert_edit_modal, getDocumentInsert, eachDocumentInsert: ', eachDocumentInsert);
-      if (eachDocumentInsert.id == id) {
-        documentInsert = eachDocumentInsert;
-        return;
-      }
-    });
+// function getDocumentInsert(documentInserts, id) {
+//   // placeholder for when add lanauge
+//   let documentInsert = {};
+//     _.each(documentInserts, eachDocumentInsert => {
+//       console.log('in documentInsert_edit_modal, getDocumentInsert, eachDocumentInsert: ', eachDocumentInsert);
+//       if (eachDocumentInsert.id == id) {
+//         documentInsert = eachDocumentInsert;
+//         return;
+//       }
+//     });
+//
+//   return documentInsert;
+// }
 
-  return documentInsert;
-}
-
-function getAgreement(agreements, id) {
-  let agreement = {};
-    _.each(agreements, eachAgreement => {
-      console.log('in documentInsert_edit_modal, getDocumentInsert, eachAgreement: ', eachAgreement);
-      if (eachAgreement.id == id) {
-        agreement = eachAgreement;
-        return;
-      }
-    });
-
-  return agreement;
-}
+// function getAgreement(agreements, id) {
+//   let agreement = {};
+//     _.each(agreements, eachAgreement => {
+//       console.log('in documentInsert_edit_modal, getDocumentInsert, eachAgreement: ', eachAgreement);
+//       if (eachAgreement.id == id) {
+//         agreement = eachAgreement;
+//         return;
+//       }
+//     });
+//
+//   return agreement;
+// }
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
   console.log('in DocumentInsertEditModal, mapStateToProps, state: ', state);
@@ -407,19 +407,21 @@ function mapStateToProps(state) {
   if (state) {
     let initialValues = {};
     // console.log('in DocumentInsertEditModal, mapStateToProps, state.auth.user: ', state.auth.user);
-    const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
-    const documentInsert = getDocumentInsert(agreement.document_inserts, parseInt(state.modals.selectedDocumentInsertId, 10));
+    // const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
+    const agreement = state.bookingData.fetchBookingData.agreements.filter((agr) => agr.id === parseInt(state.modals.selectedAgreementId, 10));
+    // console.log('in DocumentInsertEditModal, mapStateToProps, state.bookingData.fetchBookingData.agreements, tate.modals.selectedAgreementId, agreement: ', state.bookingData.fetchBookingData.agreements, agreement);
+    // const documentInsert = getDocumentInsert(agreement.document_inserts, parseInt(state.modals.selectedDocumentInsertId, 10));
+    const documentInsert = agreement[0].document_inserts.filter((insert) => insert.id === parseInt(state.modals.selectedDocumentInsertId, 10));
     // const editDocumentInsert = getEditDocumentInsert(agreement.documentInserts, parseInt(state.modals.documentInsertToEditId, 10));
     // const date = new Date(documentInsert.documentInsert_date);
     // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
-    console.log('in DocumentInsertEditModal, mapStateToProps, documentInsert, agreement: ', documentInsert, agreement);
     // if (state.modals.documentInsertToEditId) {
     //   documentInsert = editDocumentInsert;
     // }
     if (_.isEmpty(documentInsert)) {
-      initialValues.insert_name = agreement.document_name;
+      initialValues.insert_name = agreement[0].document_name;
     } else {
-      initialValues = documentInsert;
+      initialValues = documentInsert[0];
     }
     // initialValues.documentInsert_date = dateString;
     // console.log('in DocumentInsertEditModal, mapStateToProps, initialValues: ', initialValues);
@@ -436,8 +438,8 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode,
       documentInsertId: state.modals.selectedDocumentInsertId,
       booking: state.bookingData.fetchBookingData,
-      documentInsert,
-      agreement,
+      documentInsert: documentInsert[0],
+      agreement: agreement[0],
       // editDocumentInsertId: state.modals.documentInsertToEditId,
       // editDocumentInsert,
       // language: state.languages.selectedLanguage,
@@ -446,9 +448,9 @@ function mapStateToProps(state) {
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       // initialValues
     };
-  } else {
-    return {};
   }
+
+  return {};
 }
 
 

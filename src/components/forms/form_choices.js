@@ -91,8 +91,8 @@ class FormChoices extends Component {
 
     // const clickedElement = event.target;
     // const elementVal = clickedElement.getAttribute('value');
+      console.log('FormChoices, getCustomValue, pageLocation, agreementPages, this.props.agreement: ', pageLocation, agreementPages, this.props.agreement);
     const agreementPages = this.props.agreement.document_pages;
-    console.log('FormChoices, getCustomValue, pageLocation, agreementPages, this.props.agreement: ', pageLocation, agreementPages, this.props.agreement);
     if (pageLocation === 'insertAtEnd') return agreementPages;
     if (pageLocation === 'insertBeforeLastPage') return agreementPages - 1;
     if (pageLocation === 'insertBeforeFirst') return 0;

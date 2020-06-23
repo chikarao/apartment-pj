@@ -5655,8 +5655,9 @@ longActionPress(props) {
         if (this.state.showDocumentPdf) {
           // use image in agreement kept in Cloudinary
           image = this.props.showTemplate ? this.props.agreement.document_pdf_publicid : this.props.agreement.document_publicid;
+          const documentPages = this.props.showTemplate ? this.props.agreement.document_pdf_pages : this.props.agreement.document_pages
           // lodosh .times to get array [1, 2, 3 etc....]
-          _.times(this.props.agreement.document_pages, i => {
+          _.times(documentPages, i => {
             array.push(i + 1);
           });
           // assign array to pages for later iteration
