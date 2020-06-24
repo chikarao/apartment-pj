@@ -1466,6 +1466,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   padding: 5px;
   text-align: center;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  border-radius: 5px;
 }
 
 .results-search-date-search-popup {

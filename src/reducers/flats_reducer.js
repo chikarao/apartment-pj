@@ -134,7 +134,7 @@ export default function (state = INITIAL_STATE, action) {
     //   return { ...state, editFlatData: action.payload };
     case SEARCH_FLAT_PARAMENTERS:
     // everytime object with k-v passed, add k-v or updates it
-      const searchFlatParameters = state.searchFlatParameters;
+      const searchFlatParameters = { ...state.searchFlatParameters };
       _.each(Object.keys(action.payload), (key) => {
         searchFlatParameters[key] = action.payload[key];
         // console.log('in flats reducer, SEARCH_FLAT_PARAMENTERS, key: ', key);

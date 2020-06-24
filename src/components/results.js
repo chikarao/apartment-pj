@@ -27,37 +27,6 @@ const MAX_NUM_PAGE_NUMBERS = 5;
 // ******Pagination
 
 const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
-const INITIAL_SEARCH_OBJECT = {
-  0: {
-    // size; Floor space
-    [searchCriteria[0].lowerState]: searchCriteria[0].startMin,
-    [searchCriteria[0].upperState]: searchCriteria[0].startBigMax,
-  },
-  1: {
-    // bedrooms
-    [searchCriteria[1].lowerState]: searchCriteria[1].startMin,
-    [searchCriteria[1].upperState]: searchCriteria[1].startBigMax,
-    [searchCriteria[1].exact]: searchCriteria[1].exactStart,
-  },
-  2: {
-    // station
-    [searchCriteria[2].lowerState]: searchCriteria[2].startMin,
-    [searchCriteria[2].upperState]: searchCriteria[2].startBigMax,
-  },
-  3: {
-    // price
-    [searchCriteria[3].lowerState]: searchCriteria[3].startMin,
-    [searchCriteria[3].upperState]: searchCriteria[3].startBigMax,
-  },
-  4: {
-    // start date
-    [searchCriteria[4].title]: searchCriteria[4].startBigMax,
-  },
-  5: {
-    // end date
-    [searchCriteria[4].title]: searchCriteria[5].startBigMax,
-  },
-};
 
 class Results extends Component {
   constructor() {
@@ -89,17 +58,37 @@ class Results extends Component {
     searchDisplayValueMax: '',
     searchDisplayValueExact: null,
     showCriterionBox: false,
-    floorSpaceMin: searchCriteria[0].startMin,
-    floorSpaceMax: searchCriteria[0].startBigMax,
-    bedroomsMin: searchCriteria[1].startMin,
-    bedroomsMax: searchCriteria[1].startBigMax,
-    bedroomsExact: null,
-    stationMin: searchCriteria[2].startMin,
-    stationMax: searchCriteria[2].startBigMax,
-    priceMin: searchCriteria[3].startMin,
-    priceMax: searchCriteria[3].startBigMax,
-    startDate: searchCriteria[4].startBigMax,
-    endDate: searchCriteria[5].startBigMax,
+    // size; Floor space
+    // Define starting min and max of search criteria;
+    // Need to have direct parent of this.state so easier to update
+    [searchCriteria[0].lowerState]: searchCriteria[0].startMin,
+    [searchCriteria[0].upperState]: searchCriteria[0].startBigMax,
+    // bedrooms
+    [searchCriteria[1].lowerState]: searchCriteria[1].startMin,
+    [searchCriteria[1].upperState]: searchCriteria[1].startBigMax,
+    [searchCriteria[1].exact]: searchCriteria[1].exactStart,
+    // station
+    [searchCriteria[2].lowerState]: searchCriteria[2].startMin,
+    [searchCriteria[2].upperState]: searchCriteria[2].startBigMax,
+    // price
+    [searchCriteria[3].lowerState]: searchCriteria[3].startMin,
+    [searchCriteria[3].upperState]: searchCriteria[3].startBigMax,
+    // start date
+    [searchCriteria[4].title]: searchCriteria[4].startBigMax,
+    // end date
+    [searchCriteria[4].title]: searchCriteria[5].startBigMax,
+    // Before:
+    // floorSpaceMin: searchCriteria[0].startMin,
+    // floorSpaceMax: searchCriteria[0].startBigMax,
+    // bedroomsMin: searchCriteria[1].startMin,
+    // bedroomsMax: searchCriteria[1].startBigMax,
+    // bedroomsExact: null,
+    // stationMin: searchCriteria[2].startMin,
+    // stationMax: searchCriteria[2].startBigMax,
+    // priceMin: searchCriteria[3].startMin,
+    // priceMax: searchCriteria[3].startBigMax,
+    // startDate: searchCriteria[4].startBigMax,
+    // endDate: searchCriteria[5].startBigMax,
     // searchObject: INITIAL_SEARCH_OBJECT,
     amenitySearchArray: [],
     incrementMin: false,
@@ -185,6 +174,9 @@ class Results extends Component {
       // initial call of fetchFlats to get initial set of flats, RIGHT NOW NOT BASED ON MAP mapBounds
       // fetchflats based on above bounds
       // search Attributes set in state and selected by user
+      // Define starting parameters for search;
+      // If any fore criteria, use search_criteria.js reference and
+      // iterate through each search_criteria key and set min, max, exact
       const searchAttributes = {
         price_max: this.state.priceMax,
         price_min: this.state.priceMin,
@@ -1113,13 +1105,9 @@ class Results extends Component {
       this.setState({ searchCriteriaInpuStarted: true })
     }
     // calls each increment function and sends parameters
-    if (this.state.criterionValue === 0) {
-      this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    } else if (this.state.criterionValue === 1) {
+    if (this.state.criterionValue === 1) {
       this.incrementCriterionWithExact({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    } else if (this.state.criterionValue === 2) {
-      this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    } else if (this.state.criterionValue === 3) {
+    } else {
       this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
     }
   }
@@ -1588,7 +1576,6 @@ class Results extends Component {
       // console.log('in show_flat, disabledDays, outside _.each, firstOfMonth, today: ', new Date(firstOfMonth - 1), today);
       const firstOfMonthRange = { after: new Date(firstOfMonth - 1), before: today }
       daysList.push(firstOfMonthRange);
-      // console.log('in show_flat, disabledDays, outside _.each, firstOfMonthRange: ', firstOfMonthRange);
     }
     // const firstofMonth = new Date.now()
     // daylist array gets fed inot react-date-picker as props
@@ -1608,6 +1595,7 @@ class Results extends Component {
   }
 
   renderSearchArea() {
+    // console.log('in results, renderSearchArea, this.props.searchFlatParams: ', this.props.searchFlatParams);
     // displays the search area tabs, sixe, bedrooms, station, price; Also the buttons and gets input
     // <div className="search-criteria-clear" onClick={this.handleSearchClearClick}>Clear</div>
     // props of
