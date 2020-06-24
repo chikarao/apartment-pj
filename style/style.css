@@ -1072,6 +1072,7 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
   height: 30px;
   margin: 0 15px 0 15px;
   padding: 5px;
+  color: gray;
 }
 
 .search-criteria-apply-highlight, .search-criteria-clear-all-highlight {

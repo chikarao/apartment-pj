@@ -27,6 +27,37 @@ const MAX_NUM_PAGE_NUMBERS = 5;
 // ******Pagination
 
 const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
+const INITIAL_SEARCH_OBJECT = {
+  0: {
+    // size; Floor space
+    [searchCriteria[0].lowerState]: searchCriteria[0].startMin,
+    [searchCriteria[0].upperState]: searchCriteria[0].startBigMax,
+  },
+  1: {
+    // bedrooms
+    [searchCriteria[1].lowerState]: searchCriteria[1].startMin,
+    [searchCriteria[1].upperState]: searchCriteria[1].startBigMax,
+    [searchCriteria[1].exact]: searchCriteria[1].exactStart,
+  },
+  2: {
+    // station
+    [searchCriteria[2].lowerState]: searchCriteria[2].startMin,
+    [searchCriteria[2].upperState]: searchCriteria[2].startBigMax,
+  },
+  3: {
+    // price
+    [searchCriteria[3].lowerState]: searchCriteria[3].startMin,
+    [searchCriteria[3].upperState]: searchCriteria[3].startBigMax,
+  },
+  4: {
+    // start date
+    [searchCriteria[4].title]: searchCriteria[4].startBigMax,
+  },
+  5: {
+    // end date
+    [searchCriteria[4].title]: searchCriteria[5].startBigMax,
+  },
+};
 
 class Results extends Component {
   constructor() {
@@ -69,6 +100,7 @@ class Results extends Component {
     priceMax: searchCriteria[3].startBigMax,
     startDate: searchCriteria[4].startBigMax,
     endDate: searchCriteria[5].startBigMax,
+    // searchObject: INITIAL_SEARCH_OBJECT,
     amenitySearchArray: [],
     incrementMin: false,
     incrementMax: true,
@@ -665,7 +697,7 @@ class Results extends Component {
   renderPagination() {
       // check if flats is empty of objects
       // const flatsEmpty = _.isEmpty(this.props.flats);
-      const flatsEmpty = _.isEmpty(this.props.justFlats);
+    const flatsEmpty = _.isEmpty(this.props.justFlats);
       // console.log('in results renderPagination, outside of if, flatsEmpty: ', flatsEmpty);
     if (!flatsEmpty) {
       // destructure initialized state variables
@@ -764,7 +796,6 @@ class Results extends Component {
         // const flats = this.props.flats;
         // console.log('in results renderFlats, slicedCards, slicedCards: ', slicedCards);
         // console.log('in results renderFlats, slicedCards, mappedSlicedCards: ', mappedSlicedCards);
-        // console.log('in results renderFlats, slicedCards, this.props.flats: ', this.props.flats);
 
         return _.map(flats, (flat) => {
             const reviewsArray = this.getReviewsForFlat(flat);
@@ -798,51 +829,99 @@ class Results extends Component {
         );
       }
   }
+  // gotoincrement
 
   // Each increment function for each tab, size, bedroom, station, price;
-  // could not refactor to one function since cannot use a variable to specify key of state object!!!!!
-  incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
-    // const { searchFlatParameters } = this.props.
-    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
+  incrementCriterion({ increment, elementName, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
+    const staticObj = searchCriteria[criterionValue];
+    // console.log('in results incrementCriterion, elementName, staticObj. criterionValue, increment, incrementMax: ', elementName, staticObj, criterionValue, increment, incrementMax);
+
     if (!incrementMax) {
       if (elementName === 'up') {
-        if (floorSpaceMin < floorSpaceMax - searchCriteria[criterionValue].increment) {
-          this.setState({ floorSpaceMin: floorSpaceMin + increment }, () => {
+        // if (floorSpaceMin < floorSpaceMax - searchCriteria[criterionValue].increment) {
+        if (this.state[staticObj.lowerState] < this.state[staticObj.upperState] - increment) {
+          this.setState({ [staticObj.lowerState]: this.state[staticObj.lowerState] + increment }, () => {
             // only need if display window is used, but now onhold
             // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
-            this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
+            this.props.searchFlatParameters({ [staticObj.minKey]: this.state[staticObj.lowerState] });
           });
         }
       } else {
-        if (floorSpaceMin > moreThanLimit) {
-          this.setState({ floorSpaceMin: floorSpaceMin - increment }, () => {
+        if (this.state[staticObj.lowerState] > moreThanLimit) {
+        // if (floorSpaceMin > moreThanLimit) {
+          this.setState({ [staticObj.lowerState]: this.state[staticObj.lowerState] - increment }, () => {
             // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
-            this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
+            this.props.searchFlatParameters({ [staticObj.minKey]: this.state[staticObj.lowerState] });
           });
         }
       }
     } else {
       if (elementName === 'up') {
-        if (floorSpaceMax < lessThanLimit) {
-          this.setState({ floorSpaceMax: floorSpaceMax + increment }, () => {
+        // if (floorSpaceMax < lessThanLimit) {
+        if (this.state[staticObj.upperState] < lessThanLimit) {
+          this.setState({ [staticObj.upperState]: this.state[staticObj.upperState] + increment }, () => {
+            // console.log('in results incrementCriterion, elementName, this.state[staticObj.upperState]: ', elementName, this.state[staticObj.upperState]);
+          // this.setState({ floorSpaceMax: floorSpaceMax + increment }, () => {
               // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
-              this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+              // this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+              this.props.searchFlatParameters({ [staticObj.maxKey]: this.state[staticObj.upperState] });
           });
         }
       } else {
-        if (floorSpaceMax - increment > floorSpaceMin) {
-          this.setState({ floorSpaceMax: floorSpaceMax - increment }, () => {
+        // if (floorSpaceMax - increment > floorSpaceMin) {
+        if (this.state[staticObj.upperState] - increment > this.state[staticObj.lowerState]) {
+          // this.setState({ floorSpaceMax: floorSpaceMax - increment }, () => {
+          this.setState({ [staticObj.upperState]: this.state[staticObj.upperState] - increment }, () => {
             // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
-            this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+            this.props.searchFlatParameters({ [staticObj.maxKey]: this.state[staticObj.upperState] });
           });
         }
       }
     }
   }
 
-  incrementSecondCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
-
-    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, bedroomsExact, stationMin, stationMax, priceMin, priceMax } = this.state;
+  // incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
+  //   // const { searchFlatParameters } = this.props.
+  //   const { floorSpaceMin, floorSpaceMax } = this.state;
+  //   if (!incrementMax) {
+  //     if (elementName === 'up') {
+  //       if (floorSpaceMin < floorSpaceMax - searchCriteria[criterionValue].increment) {
+  //         this.setState({ floorSpaceMin: floorSpaceMin + increment }, () => {
+  //           // only need if display window is used, but now onhold
+  //           // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+  //           this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
+  //         });
+  //       }
+  //     } else {
+  //       if (floorSpaceMin > moreThanLimit) {
+  //         this.setState({ floorSpaceMin: floorSpaceMin - increment }, () => {
+  //           // this.setState({ searchDisplayValueMin: this.state.floorSpaceMin });
+  //           this.props.searchFlatParameters({ size_min: this.state.floorSpaceMin });
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     if (elementName === 'up') {
+  //       if (floorSpaceMax < lessThanLimit) {
+  //         this.setState({ floorSpaceMax: floorSpaceMax + increment }, () => {
+  //             // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+  //             this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+  //         });
+  //       }
+  //     } else {
+  //       if (floorSpaceMax - increment > floorSpaceMin) {
+  //         this.setState({ floorSpaceMax: floorSpaceMax - increment }, () => {
+  //           // this.setState({ searchDisplayValueMax: this.state.floorSpaceMax });
+  //           this.props.searchFlatParameters({ size_max: this.state.floorSpaceMax });
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+  // NOTE: The 'exact' requirement makes bedroom difficult to refactor along with others,
+  // Refactor when there is another search category with exact criterion
+  incrementCriterionWithExact({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
+    const { bedroomsMin, bedroomsMax } = this.state;
     if (!incrementMax) { // if incrementMin selected
       // and user clicks up
       if (elementName === 'up') {
@@ -879,7 +958,7 @@ class Results extends Component {
         }
       }// end of second if
     } else { // increment max
-      // console.log('in results incrementSecondCriterion if bedroomsMin, bedroomsMax, bedroomsExact, elementName: ', bedroomsMin, bedroomsMax, bedroomsExact, elementName);
+      // console.log('in results incrementCriterionWithExact if bedroomsMin, bedroomsMax, bedroomsExact, elementName: ', bedroomsMin, bedroomsMax, bedroomsExact, elementName);
       if (elementName === 'up') {
         if (bedroomsMax < lessThanLimit) {
           this.setState({ bedroomsMax: bedroomsMax + increment }, () => {
@@ -915,81 +994,81 @@ class Results extends Component {
     } // end of first if incrementMax else
   }
 
-  incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
-
-    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
-    if (!incrementMax) {
-      if (elementName === 'up') {
-        if (stationMin < stationMax - searchCriteria[criterionValue].increment) {
-          this.setState({ stationMin: stationMin + increment }, () => {
-            // this.setState({ searchDisplayValueMin: this.state.stationMin });
-            this.props.searchFlatParameters({ station_min: this.state.stationMin });
-          });
-        }
-      } else {
-        if (stationMin > moreThanLimit) {
-          this.setState({ stationMin: stationMin - increment }, () => {
-            // this.setState({ searchDisplayValueMin: this.state.stationMin });
-            this.props.searchFlatParameters({ station_min: this.state.stationMin });
-          });
-        }
-      }
-    } else {
-      if (elementName === 'up') {
-        if (stationMax < lessThanLimit) {
-          this.setState({ stationMax: stationMax + increment }, () => {
-              // this.setState({ searchDisplayValueMax: this.state.stationMax });
-              this.props.searchFlatParameters({ station_max: this.state.stationMax });
-          });
-        }
-      } else {
-        if (stationMax - increment > stationMin) {
-          this.setState({ stationMax: stationMax - increment }, () => {
-            // this.setState({ searchDisplayValueMax: this.state.stationMax });
-            this.props.searchFlatParameters({ station_max: this.state.stationMax });
-          });
-        }
-      }
-    }
-  }
-
-  incrementFourthCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
-
-    const { floorSpaceMin, floorSpaceMax, bedroomsMin, bedroomsMax, stationMin, stationMax, priceMin, priceMax } = this.state;
-    if (!incrementMax) {
-      if (elementName === 'up') {
-        if (priceMin < priceMax - searchCriteria[criterionValue].increment) {
-          this.setState({ priceMin: priceMin + increment }, () => {
-            // this.setState({ searchDisplayValueMin: this.state.priceMin });
-            this.props.searchFlatParameters({ price_min: this.state.priceMin });
-          });
-        }
-      } else {
-        if (priceMin > moreThanLimit) {
-          this.setState({ priceMin: priceMin - increment }, () => {
-            // this.setState({ searchDisplayValueMin: this.state.priceMin });
-            this.props.searchFlatParameters({ price_min: this.state.priceMin });
-          });
-        }
-      }
-    } else {
-      if (elementName === 'up') {
-        if (priceMax < lessThanLimit) {
-          this.setState({ priceMax: priceMax + increment }, () => {
-              // this.setState({ searchDisplayValueMax: this.state.priceMax });
-              this.props.searchFlatParameters({ price_max: this.state.priceMax });
-          });
-        }
-      } else {
-        if (priceMax - increment > priceMin) {
-          this.setState({ priceMax: priceMax - increment }, () => {
-            // this.setState({ searchDisplayValueMax: this.state.priceMax });
-            this.props.searchFlatParameters({ price_max: this.state.priceMax });
-          });
-        }
-      }
-    }
-  }
+  // incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
+  //
+  //   const { stationMin, stationMax } = this.state;
+  //   if (!incrementMax) {
+  //     if (elementName === 'up') {
+  //       if (stationMin < stationMax - searchCriteria[criterionValue].increment) {
+  //         this.setState({ stationMin: stationMin + increment }, () => {
+  //           // this.setState({ searchDisplayValueMin: this.state.stationMin });
+  //           this.props.searchFlatParameters({ station_min: this.state.stationMin });
+  //         });
+  //       }
+  //     } else {
+  //       if (stationMin > moreThanLimit) {
+  //         this.setState({ stationMin: stationMin - increment }, () => {
+  //           // this.setState({ searchDisplayValueMin: this.state.stationMin });
+  //           this.props.searchFlatParameters({ station_min: this.state.stationMin });
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     if (elementName === 'up') {
+  //       if (stationMax < lessThanLimit) {
+  //         this.setState({ stationMax: stationMax + increment }, () => {
+  //             // this.setState({ searchDisplayValueMax: this.state.stationMax });
+  //             this.props.searchFlatParameters({ station_max: this.state.stationMax });
+  //         });
+  //       }
+  //     } else {
+  //       if (stationMax - increment > stationMin) {
+  //         this.setState({ stationMax: stationMax - increment }, () => {
+  //           // this.setState({ searchDisplayValueMax: this.state.stationMax });
+  //           this.props.searchFlatParameters({ station_max: this.state.stationMax });
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // incrementFourthCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax }) {
+  //
+  //   const { priceMin, priceMax } = this.state;
+  //   if (!incrementMax) {
+  //     if (elementName === 'up') {
+  //       if (priceMin < priceMax - searchCriteria[criterionValue].increment) {
+  //         this.setState({ priceMin: priceMin + increment }, () => {
+  //           // this.setState({ searchDisplayValueMin: this.state.priceMin });
+  //           this.props.searchFlatParameters({ price_min: this.state.priceMin });
+  //         });
+  //       }
+  //     } else {
+  //       if (priceMin > moreThanLimit) {
+  //         this.setState({ priceMin: priceMin - increment }, () => {
+  //           // this.setState({ searchDisplayValueMin: this.state.priceMin });
+  //           this.props.searchFlatParameters({ price_min: this.state.priceMin });
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     if (elementName === 'up') {
+  //       if (priceMax < lessThanLimit) {
+  //         this.setState({ priceMax: priceMax + increment }, () => {
+  //             // this.setState({ searchDisplayValueMax: this.state.priceMax });
+  //             this.props.searchFlatParameters({ price_max: this.state.priceMax });
+  //         });
+  //       }
+  //     } else {
+  //       if (priceMax - increment > priceMin) {
+  //         this.setState({ priceMax: priceMax - increment }, () => {
+  //           // this.setState({ searchDisplayValueMax: this.state.priceMax });
+  //           this.props.searchFlatParameters({ price_max: this.state.priceMax });
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
 
   incrementSearchSpaceInput(event) {
     // increments the ranges for each tab;
@@ -1034,14 +1113,14 @@ class Results extends Component {
       this.setState({ searchCriteriaInpuStarted: true })
     }
     // calls each increment function and sends parameters
-    if (this.state.criterionValue == 0) {
-      this.incrementFirstCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    } else if (this.state.criterionValue == 1) {
-      this.incrementSecondCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    } else if (this.state.criterionValue == 2) {
-      this.incrementThirdCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
-    }  else if (this.state.criterionValue == 3) {
-      this.incrementFourthCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
+    if (this.state.criterionValue === 0) {
+      this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
+    } else if (this.state.criterionValue === 1) {
+      this.incrementCriterionWithExact({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
+    } else if (this.state.criterionValue === 2) {
+      this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
+    } else if (this.state.criterionValue === 3) {
+      this.incrementCriterion({ increment, elementName, elementVal, moreThanLimit, lessThanLimit, criterionValue, incrementMax });
     }
   }
 
@@ -1164,15 +1243,15 @@ class Results extends Component {
     // value drives the switches;
     // unHighlightTab and setAttribute hightlights the clicked tabs and unHighlights other
     const clickedElement = event.target;
-    const elementName = clickedElement.getAttribute('name')
-    const elementVal = clickedElement.getAttribute('value')
+    const elementName = clickedElement.getAttribute('name');
+    const elementVal = clickedElement.getAttribute('value');
     // set state searchCriteriaInpuStarted to show max values and set max values to realistic
-    const elementValInt = parseInt(elementVal);
+    const elementValInt = parseInt(elementVal, 10);
 
     if (elementVal !== this.state.criterionValue) {
       this.unHighlightTab('results-search-box-sub-tab');
       this.setState({ criterionValue: elementValInt }, () => {
-        // console.log('in results handleSearchTabClick this.state.criterionValue: ', this.state.criterionValue);
+        console.log('in results handleSearchTabClick this.state.criterionValue: ', this.state.criterionValue);
         clickedElement.setAttribute('style', 'background-color: gray; color: white;');
         this.userInputStarted();
       });// end of first setState

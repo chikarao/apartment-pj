@@ -64,6 +64,7 @@ class DocumentInsertEditModal extends Component {
     const imagesArray = [];
     let uploaders = [];
     let pages = '';
+    let pageSize = '';
   // Push all the axios request promise into a single array
     if (files.length > 0) {
       uploaders = files.map((file) => {
@@ -80,6 +81,7 @@ class DocumentInsertEditModal extends Component {
           console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
           const filePublicId = response.data.data.response.public_id;
           pages = response.data.data.response.pages;
+          pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
           // You should store this URL for future references in your app
           imagesArray.push(filePublicId);
           // call create image action, send images Array with flat id
@@ -102,6 +104,7 @@ class DocumentInsertEditModal extends Component {
         // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
         dataToBeSent.document_insert.publicid = imagesArray[0];
         dataToBeSent.document_insert.pages = pages;
+        dataToBeSent.document_insert.page_size = pageSize;
         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
         this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
       } else {
@@ -109,6 +112,8 @@ class DocumentInsertEditModal extends Component {
         dataToChange.document_name = data.insert_name;
         dataToChange.booking_id = this.props.booking.id;
         dataToChange.document_publicid = imagesArray[0];
+        dataToChange.document_pages = pages;
+        dataToChange.document_page_size = pageSize;
         dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
         this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
       }
@@ -119,7 +124,7 @@ class DocumentInsertEditModal extends Component {
         this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
       } else {
         const dataToChange = data;
-        dataToChange.document_publicid = imagesArray[0];
+        // dataToChange.document_publicid = imagesArray[0];
         dataToChange.document_name = data.insert_name;
         dataToChange.booking_id = this.props.booking.id;
         dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };

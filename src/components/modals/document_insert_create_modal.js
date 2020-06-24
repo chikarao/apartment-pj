@@ -52,6 +52,7 @@ class DocumentInsertCreateModal extends Component {
     const imagesArray = [];
     let uploaders = [];
     let pages = null;
+    let pageSize = null;
   // Push all the axios request promise into a single array
     if (files.length > 0) {
       uploaders = files.map((file) => {
@@ -68,7 +69,8 @@ class DocumentInsertCreateModal extends Component {
           console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
           const filePublicId = response.data.data.response.public_id;
           pages = response.data.data.response.pages;
-          console.log('in Upload, handleDrop, uploaders, after response, pages ', pages);
+          pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
+          console.log('in Upload, handleDrop, uploaders, after response, pages, pageSize ', pages, pageSize);
           // You should store this URL for future references in your app
           imagesArray.push(filePublicId);
           // call create image action, send images Array with flat id
@@ -92,6 +94,8 @@ class DocumentInsertCreateModal extends Component {
         dataToBeSent = { document_insert: data };
         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
         dataToBeSent.document_insert.publicid = imagesArray[0];
+        dataToBeSent.document_insert.pages = pages;
+        dataToBeSent.document_insert.page_size = pageSize;
         this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
       } else {
         const dataToChange = data;
@@ -102,6 +106,7 @@ class DocumentInsertCreateModal extends Component {
         dataToBeSent.agreement.booking_id = this.props.booking.id;
         dataToBeSent.agreement.document_publicid = imagesArray[0];
         dataToBeSent.agreement.document_pages = pages;
+        dataToBeSent.agreement.document_page_size = pageSize;
         dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
         // if (this.props.templateCreate) dataToBeSent.agreement.document_code = globalConstants.ownUploadedTemplateKey;
         dataToBeSent.agreement.language_code_1 = this.props.documentLanguageCode;
