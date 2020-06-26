@@ -2150,7 +2150,9 @@ longActionPress(props) {
             // class_name="document-rectangle-template"
             className='document-translation'
             >
-            {translationText}
+              <textarea className='document-translation-inner-div'>
+                {translationText}
+              </textarea>
             </div>
           ); // End of return
         } // End of if (translationModeOn)
