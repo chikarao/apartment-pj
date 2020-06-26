@@ -365,8 +365,7 @@ class CreateEditDocument extends Component {
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
     // this.setLocalStorageHistory('componentWillUnmount');
-
-    console.log('in create_edit_document, componentWillUnmount ');
+    // console.log('in create_edit_document, componentWillUnmount ');
   }
 
   countMainDocumentInserts(agreement) {
@@ -2059,7 +2058,7 @@ longActionPress(props) {
                 key={eachElement.id}
                 id={`template-translation-element-${eachElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: wrapperDivHeight, transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`, transformOrigin: eachElement.transform_origin }}
+                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: wrapperDivHeight, transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`, transformOrigin: 'top left' }}
               >
                 <Field
                   key={eachElement.name}
@@ -2144,7 +2143,8 @@ longActionPress(props) {
               fontStyle: eachElement.font_style,
               fontWeight: eachElement.font_weight,
               transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
-              transformOrigin: eachElement.transform_origin
+              // transformOrigin: eachElement.transform_origin
+              transformOrigin: 'top left'
             }}
             // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
             // class_name="document-rectangle-template"
@@ -3497,11 +3497,14 @@ longActionPress(props) {
         let templateElements = this.props.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
         const array = [];
         let originalTransform = '';
+        let newTransform = '';
         _.each(this.state.selectedTemplateElementIdArray, eachId => {
           eachElement = templateElements[eachId];
           // transform is persisted as transform: '90'
-          originalTransform = eachElement.transform ? parseInt(eachElement.transform, 10) : null;
-          array.push({ id: eachId, transform: originalTransform ? `${originalTransform + 90}` : '90', o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
+          originalTransform = eachElement.transform ? parseInt(eachElement.transform, 10) : 0;
+          newTransform = originalTransform >= 270 ? 0 : originalTransform + 90;
+          // array.push({ id: eachId, transform: originalTransform ? `${originalTransform + 90}` : '90', o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
+          array.push({ id: eachId, transform: newTransform, o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
         });
         console.log('in create_edit_document, handleTemplateElementActionClick, changeDirection, array: ', array);
         updateElement(array);
@@ -4860,6 +4863,10 @@ longActionPress(props) {
     if (fontButtonArray.length > 0) fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
     // const controlBoxWidth = '165px';
     // add listner for clicks outside the control box opened
+    // <option value="arial">Arial</option>
+    // <option value="times new roman">Times New Roman</option>
+    // <option value="century gothic">Century Gothic</option>
+    // <option value="osaka">Osaka</option>
     return (
       <div
         className="create-edit-document-font-control-box"
@@ -4876,11 +4883,10 @@ longActionPress(props) {
         >
           <option value="MSゴシック">MSゴシック</option>
           <option value="ＭＳ Ｐ明朝">ＭＳ Ｐ明朝</option>
-          <option value="osaka">Osaka</option>
-          <option value="arial">Arial</option>
-          <option value="times new roman">Times New Roman</option>
+          <option value="symbol">Symbol</option>
+          <option value="courier">Courier</option>
+          <option value="times">Times</option>
           <option value="helvetica">Helvetica</option>
-          <option value="century gothic">Century Gothic</option>
         </select>
         <div style={{ margin: '5px', float: 'left' }}>Font Size</div>
 
