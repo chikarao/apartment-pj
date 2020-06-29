@@ -5169,6 +5169,10 @@ form {
   margin-left: -21px;
 }
 
+.create-edit-document-font-size-select, .create-edit-document-font-family-select {
+  border-radius: 5px;
+}
+
 .create-edit-document-font-style-button-box {
   display: flex;
   flex-direction: row;

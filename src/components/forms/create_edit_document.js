@@ -2131,27 +2131,29 @@ longActionPress(props) {
           return (
             <div
             // component: null
-            id={eachElement.id}
-            key={eachElement.id}
-            style={{
-              top: eachElement.top,
-              left: eachElement.left,
-              height: eachElement.height,
-              width: eachElement.width,
-              fontFamily: eachElement.font_family,
-              fontSize: eachElement.font_size,
-              fontStyle: eachElement.font_style,
-              fontWeight: eachElement.font_weight,
-              transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
-              // transformOrigin: eachElement.transform_origin
-              transformOrigin: 'top left'
-            }}
+              id={eachElement.id}
+              key={eachElement.id}
+              style={{
+                top: eachElement.top,
+                left: eachElement.left,
+                height: eachElement.height,
+                width: eachElement.width,
+                fontFamily: eachElement.font_family,
+                fontSize: eachElement.font_size,
+                fontStyle: eachElement.font_style,
+                fontWeight: eachElement.font_weight,
+                transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+                // transformOrigin: eachElement.transform_origin
+                transformOrigin: 'top left'
+              }}
             // top: 10.5%; left: 27.5%; font-size: 12px; font-weight: bold; width: 45%; text-align: center;
             // class_name="document-rectangle-template"
-            className='document-translation'
+              className='document-translation'
             >
-              <textarea className='document-translation-inner-textarea'>
-                {translationText}
+              <textarea
+                className='document-translation-inner-textarea'
+                defaultValue={translationText}
+              >
               </textarea>
             </div>
           ); // End of return
@@ -4856,6 +4858,8 @@ longActionPress(props) {
   }
 
   renderFontControlBox() {
+    const onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
+
     // For rendering box for setting font family, size, style and weight
     // Get the font button in array
     let fontButtonDimensions = {};
@@ -4880,7 +4884,7 @@ longActionPress(props) {
           className="create-edit-document-font-family-select"
           name="fontFamily"
           id="fontFamily"
-          style={{ width: '100%', backgroundColor: 'white' }}
+          style={{ width: '100%', backgroundColor: 'white', fontFamily: onlyFontAttributeObject.font_family }}
           onChange={this.handleTemplateElementActionClick}
         >
           <option value="MSゴシック">MSゴシック</option>
@@ -4924,7 +4928,7 @@ longActionPress(props) {
             id="fontWeight"
             value="bold"
             name="fontWeight"
-            style={{ fontWeight: 'bold' }}
+            style={{ fontFamily: onlyFontAttributeObject.font_family }}
             onClick={this.handleTemplateElementActionClick}
           >
             Bold
@@ -4934,7 +4938,7 @@ longActionPress(props) {
             id="fontStyle"
             value="italic"
             name="fontStyle"
-            style={{ fontStyle: 'italic' }}
+            style={{ fontFamily: onlyFontAttributeObject.font_family }}
             onClick={this.handleTemplateElementActionClick}
           >
             Italic
