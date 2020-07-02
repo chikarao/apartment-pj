@@ -145,7 +145,9 @@ class CreateFlat extends Component {
   //     }
   //   });
   // }
-
+  // NEED to figure out how to move this to backend;
+  // The problem is sending an array of multipart form data format to backend
+  // Axios handles the
   handleCreateImages(flatId, files) {
     console.log('in createflat, handleCreateImages, flat_id:', flatId);
     console.log('in createflat, handleCreateImages, files:', files);
@@ -274,9 +276,35 @@ class CreateFlat extends Component {
     });
   }
 
+
+  renderRequiredMessages() {
+    console.log('in createflat, renderRequiredMessages: ');
+    const renderEachMessage = () => {
+      return _.map(Object.keys(this.props.formObject.syncErrors), eachKey => {
+        return (
+          <li>{this.props.formObject.syncErrors[eachKey]}</li>
+        );
+      });
+    };
+
+    return (
+      <div
+        className="create-flat-required-message-box"
+      >
+        <ul>
+          {renderEachMessage()}
+        </ul>
+      </div>
+    );
+  }
+
   renderFields() {
     const { handleSubmit, appLanguageCode } = this.props;
-    console.log('in createflat, renderFields, this.props: ', this.props);
+    // console.log('in createflat, renderFields, this.props: ', this.props);
+    // this.props.formObject ? console.log('in createflat, renderFields, this.props.formObject: ', this.props.formObject) : '';
+    // console.log('in createflat, renderFields, this.props.formObject && this.props.formObject.simple && Object.keys(this.props.formObject.simple.syncErrors).length > 0 && this.state.confirmChecked: ', this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked);
+     // this.props.formObject ? console.log('in createflat, renderFields, this.props.formObject.simple: ', this.props.formObject) : '';
+    // console.log('in createflat, renderFields, Object.keys(this.props.formObject.simple.syncErrors ', Object.keys(this.props.formObject.simple.syncErrors));
     // console.log('in createflat, renderFields, Field: ', Field);
     // handle submit came from redux form; fields came from below
     // <form>
@@ -313,9 +341,42 @@ class CreateFlat extends Component {
           <label className="create-flat-form-label">{AppLanguages.country[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
           <Field name="country" component={InputField} type="string" className="form-control" />
         </fieldset>
+        <fieldset key={'price_per_month'} className="form-group">
+        <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="price_per_month" component={InputField} type="float" className="form-control" />
+        </fieldset>
+        <fieldset key={'size'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="size" component={InputField} type="integer" className="form-control" />
+        </fieldset>
+        <fieldset key={'rooms'} className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="rooms" component="select" type="float" className="form-control">
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4 or more</option>
+          </Field>
+        </fieldset>
+        <fieldset className="form-group">
+          <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+          <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
+            <option></option>
+            <option value="1">1 minute or less</option>
+            <option value="3">Under 3 minutes</option>
+            <option value="5">Under 5 minutes</option>
+            <option value="7">Under 7 minutes</option>
+            <option value="10">Under 10 minutes</option>
+            <option value="15">Under 15 minutes</option>
+            <option value="16">Under 15 minutes</option>
+          </Field>
+        </fieldset>
+
         <fieldset className="form-group">
           <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.requiredFields[appLanguageCode]}</div>
         </fieldset>
+
         <fieldset key={'description'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>
           <Field name="description" component="input" type="string" className="form-control" />
@@ -323,14 +384,6 @@ class CreateFlat extends Component {
         <fieldset key={'area'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.area[appLanguageCode]}:</label>
           <Field name="area" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset key={'price_per_month'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="price_per_month" component={InputField} type="float" className="form-control" />
-        </fieldset>
-        <fieldset key={'size'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="size" component={InputField} type="integer" className="form-control" />
         </fieldset>
         <fieldset key={'balcony_size'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.balconySize[appLanguageCode]}:</label>
@@ -376,16 +429,6 @@ class CreateFlat extends Component {
           <label className="create-flat-form-label">{AppLanguages.salesPoint[appLanguageCode]}:</label>
           <Field name="sales_point" component="input" type="string" className="form-control" />
         </fieldset>
-        <fieldset key={'rooms'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="rooms" component="select" type="float" className="form-control">
-            <option></option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4 or more</option>
-          </Field>
-        </fieldset>
         <fieldset key={'beds'} className="form-group">
           <label className="create-flat-form-label">{AppLanguages.beds[appLanguageCode]}:</label>
           <Field name="beds" component="select" type="integer" className="form-control">
@@ -429,19 +472,6 @@ class CreateFlat extends Component {
             <option value="2">2</option>
             <option value="2.5">2.5</option>
             <option value="3">3 or more</option>
-          </Field>
-        </fieldset>
-        <fieldset className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
-          <Field name="minutes_to_station" component={SelectField} type="integer" className="form-control">
-            <option></option>
-            <option value="1">1 minute or less</option>
-            <option value="3">Under 3 minutes</option>
-            <option value="5">Under 5 minutes</option>
-            <option value="7">Under 7 minutes</option>
-            <option value="10">Under 10 minutes</option>
-            <option value="15">Under 15 minutes</option>
-            <option value="16">Under 15 minutes</option>
           </Field>
         </fieldset>
         <fieldset key={'intro'} className="form-group">
@@ -505,12 +535,17 @@ class CreateFlat extends Component {
           />
         </fieldset>
         {this.renderAlert()}
-        <div className="confirm-change-and-button">
-          <label className="confirm-radio">
+        <div
+          className="confirm-change-and-button-container"
+        >
+          {this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked ? this.renderRequiredMessages() : ''}
+          <div className="confirm-change-and-button">
+            <label className="confirm-radio">
             <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck} /><i className="fa fa-check fa-lg"></i>{AppLanguages.confirmAbove[appLanguageCode]}
             <span className="checkmark"></span>
-          </label>
-          <button action="submit" id="submit-all" onSubmit={this.handleSubmit} className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+            </label>
+            <button action="submit" id="submit-all" onSubmit={this.handleSubmit} className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+          </div>
         </div>
       </form>
     );
@@ -633,7 +668,8 @@ function mapStateToProps(state) {
     errorMessage: state.auth.message,
     flat: state.flat,
     appLanguageCode: state.languages.appLanguageCode,
-    initialValues
+    initialValues,
+    formObject: state.form.simple
    };
 }
 
