@@ -199,6 +199,7 @@ class ShowFlat extends Component {
         const { description, area, beds, sales_point, price_per_month, images, king_or_queen_bed, intro } = this.props.flat;
         // const { flatLanguage } = this.props;
         // get language selected from this.props.flat sent from show flat
+        const areaText = area ? area.toUpperCase() : '';
         const flatLanguage = this.getFlatLanguage(this.props.flat, this.props.appLanguageCode);
         const flatStationsArray = this.getFlatStationPlaces(this.props.flat);
         console.log('in show_flat renderFlat, flatStationsArray: ', flatStationsArray);
@@ -215,7 +216,7 @@ class ShowFlat extends Component {
               </div>
 
               <div key={99} className="show-flat-area">
-                { flatLanguage ? flatLanguage.area.toUpperCase() : area.toUpperCase() }
+                { (flatLanguage && flatLanguage.area) ? flatLanguage.area.toUpperCase() : areaText }
               </div>
 
               <div key={100} className="show-flat-beds">

@@ -85,6 +85,7 @@ class Upload extends Component {
     // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
     // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
 
+    console.log('in Upload, handleDrop, formData.', formData);
     return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
     headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     // return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {

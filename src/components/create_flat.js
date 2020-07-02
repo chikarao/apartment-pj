@@ -63,11 +63,11 @@ class CreateFlat extends Component {
   }
 
   handleFormSubmit(data) {
+    console.log('in createflat, handleFormSubmit, data: ', data);
     if (this.state.confirmChecked) {
       //switch on loading modal in action creator
       this.props.showLoading();
       const { address1, city, state, zip, country } = data;
-      console.log('in createflat, handleFormSubmit, data: ', data);
       console.log('in createflat, handleFormSubmit, submit clicked');
       console.log('in createflat, handleFormSubmitr, this.props:', this.props);
       const addressHash = { address1, city, state, zip, country }
@@ -81,21 +81,34 @@ class CreateFlat extends Component {
       const dataSeparated = this.separateFlatAndAmenities(data);
       // for case when user does not select any images
       if (data.files) {
+        // data.files.map((file) => {
+        //   formData.append('file', file);
+        // });
+        const array = [];
+        _.each(data.files, file => {
+          const formData = new FormData();
+          formData.append('file', file);
+          array.push(formData)
+          console.log('in createflat, handleFormSubmit, file, array:', file, array);
+        })
+
+        // dataSeparated.files = array;
         dataSeparated.files = data.files;
+        console.log('in createflat, handleFormSubmit, dataSeparated:', dataSeparated);
       } else {
         const files = [];
         dataSeparated.files = files;
       }
 
       // console.log('in createflat, handleFormSubmit, separateFlatAndAmenities,:', this.separateFlatAndAmenities(data));
-      // console.log('in createflat, handleFormSubmit, dataSeparated,:', dataSeparated);
       //
       // console.log('in createflat, handleFormSubmit, dataWithBasic:', dataWithBasic);
       // console.log('in createflat, handleFormSubmit, addressString:', addressString);
       // console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
-
+      // this.props.createFlat(dataSeparated, () => {})
       // !!!! this one below is it!!!!
-      this.handleGeocode(addressString, dataSeparated, () => this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files)));
+      this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files));
+      // this.handleGeocode(addressString, dataSeparated, () => this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files)));
       // console.log('in createflat, handleFormSubmit, geocodedData:', geocodedData);
 
       // call action creator to createFlat and send in callback to create images, cloudinary and api with flat id
@@ -104,34 +117,34 @@ class CreateFlat extends Component {
     }
   }
 
-  handleGeocode(addressString, data, callback) {
-    const geocoder = new google.maps.Geocoder();
-    console.log('in createflat, handleFormSubmit, geocoder:', geocoder);
-
-    geocoder.geocode({ 'address': addressString }, function (results, status) {
-      if (status === 'OK') {
-        // console.log('in createflat, geocoder, status:', status);
-        // console.log('in createflat, geocoder, results:', results);
-        // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lat());
-        // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lng());
-        // resultsMap.setCenter(results[0].geometry.location);
-        // var marker = new google.maps.Marker({
-        //   map: resultsMap,
-        //   position: results[0].geometry.location
-        // });
-        const dataToPass = data;
-        dataToPass.flat.lat = results[0].geometry.location.lat();
-        dataToPass.flat.lng = results[0].geometry.location.lng();
-        console.log('in createflat, in geocoder, in status ok, data:', dataToPass);
-        // console.log('in createflat, in geocoder, in status ok, this.props:', this.props);
-        callback(dataToPass);
-        // return data;
-      } else {
-        // alert('Geocode was not successful for the following reason: ' + status);
-        console.log('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-  }
+  // handleGeocode(addressString, data, callback) {
+  //   const geocoder = new google.maps.Geocoder();
+  //   console.log('in createflat, handleFormSubmit, geocoder:', geocoder);
+  //
+  //   geocoder.geocode({ 'address': addressString }, function (results, status) {
+  //     if (status === 'OK') {
+  //       // console.log('in createflat, geocoder, status:', status);
+  //       // console.log('in createflat, geocoder, results:', results);
+  //       // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lat());
+  //       // console.log('in createflat, geocoder, results[0].geometry.location:', results[0].geometry.location.lng());
+  //       // resultsMap.setCenter(results[0].geometry.location);
+  //       // var marker = new google.maps.Marker({
+  //       //   map: resultsMap,
+  //       //   position: results[0].geometry.location
+  //       // });
+  //       const dataToPass = data;
+  //       dataToPass.flat.lat = results[0].geometry.location.lat();
+  //       dataToPass.flat.lng = results[0].geometry.location.lng();
+  //       console.log('in createflat, in geocoder, in status ok, data:', dataToPass);
+  //       // console.log('in createflat, in geocoder, in status ok, this.props:', this.props);
+  //       callback(dataToPass);
+  //       // return data;
+  //     } else {
+  //       // alert('Geocode was not successful for the following reason: ' + status);
+  //       console.log('Geocode was not successful for the following reason: ' + status);
+  //     }
+  //   });
+  // }
 
   handleCreateImages(flatId, files) {
     console.log('in createflat, handleCreateImages, flat_id:', flatId);
@@ -266,6 +279,8 @@ class CreateFlat extends Component {
     console.log('in createflat, renderFields, this.props: ', this.props);
     // console.log('in createflat, renderFields, Field: ', Field);
     // handle submit came from redux form; fields came from below
+    // <form>
+    // <button onClick={handleSubmit(() => this.handleFormSubmit)} className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
     return (
       <form onSubmit={handleSubmit(this.handleFormSubmit)}>
         <fieldset key={'language_code'} className="form-group">
@@ -495,7 +510,7 @@ class CreateFlat extends Component {
             <input type="checkbox" id="editFlatConfirmCheck" value={this.state.confirmChecked} onChange={this.handleConfirmCheck} /><i className="fa fa-check fa-lg"></i>{AppLanguages.confirmAbove[appLanguageCode]}
             <span className="checkmark"></span>
           </label>
-          <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+          <button action="submit" id="submit-all" onSubmit={this.handleSubmit} className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
         </div>
       </form>
     );
