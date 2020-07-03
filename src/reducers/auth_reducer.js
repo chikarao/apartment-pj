@@ -37,6 +37,7 @@ import {
   DELETE_STAFF,
   SET_GET_ONLINE_OFFLINE,
   SET_USER_STATUS,
+  GET_APP_BASE_OBJECTS
  } from '../actions/types';
 
 export default function (state = {
@@ -49,6 +50,7 @@ export default function (state = {
   existingUser: false,
   customer: {},
   bankAccounts: [],
+  appLanguages: {}
 }, action) {
   switch (action.type) {
     case AUTH_USER:
@@ -176,6 +178,9 @@ export default function (state = {
 
     case DELETE_STAFF:
       return { ...state, user: action.payload };
+
+    case GET_APP_BASE_OBJECTS:
+      return { ...state, appLanguages: JSON.parse(action.payload.app_languages) };
 
     default:
       return state;

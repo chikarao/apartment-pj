@@ -49,8 +49,10 @@ class Header extends Component {
       const currentLocation = this.props.location.pathname;
        // console.log('in header, componentDidMount, this.props.auth.authenticated: ', this.props.auth.authenticated);
        window.addEventListener('resize', this.handleResize);
+       this.props.getAppBaseObjects();
        if (this.props.auth.authenticated) {
          this.props.getCurrentUser();
+         // this.props.getAppLanguages()
          // don't need to do anymore since this screws up flats in results and other pages
          // this.props.fetchFlatsByUser(this.props.auth.id, (flatIdArray) => this.fetchFlatsByUserCallback(flatIdArray));
          this.props.fetchConversationsByUser(() => {});

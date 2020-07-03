@@ -195,7 +195,8 @@ import {
   SET_USER_STATUS,
   SET_OTHER_USER_STATUS,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
-  SET_PROGRESS_STATUS
+  SET_PROGRESS_STATUS,
+  GET_APP_BASE_OBJECTS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3289,6 +3290,22 @@ export function setGetOnlineOffline(onlineAttributes) {
       console.log('response to setGetOnlineOffline: ', response);
       dispatch({
         type: SET_GET_ONLINE_OFFLINE,
+        payload: response.data.data
+      });
+    });
+  };
+}
+
+export function getAppBaseObjects() {
+  console.log('index action getAppLanguages: ');
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/get_app_base_objects`, {}, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to getAppBaseObjects: ', response);
+      dispatch({
+        type: GET_APP_BASE_OBJECTS,
         payload: response.data.data
       });
     });
