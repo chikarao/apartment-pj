@@ -13,7 +13,6 @@ export default function (state = {
   appLanguageCode: 'en',
   documentLanguageCode: 'en',
   placeSearchLanguageCode: 'en' }, action) {
-  // console.log('in language reducer, action.payload: ', action.payload);
 
   switch (action.type) {
     case CREATE_FLAT_LANGUAGE:
@@ -26,6 +25,7 @@ export default function (state = {
       return { ...state, selectedLanguage: action.payload };
 
     case SET_APP_LANGUAGE_CODE:
+    console.log('in language reducer, SET_APP_LANGUAGE_CODE state, action.payload: ', state, action.payload);
       return { ...state, appLanguageCode: action.payload };
 
     case SET_DOCUMENT_LANGUAGE_CODE:

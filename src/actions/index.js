@@ -1069,13 +1069,17 @@ export function deleteBooking(id, callback) {
   //end of return function
 }
 
-export function createFlat(flatAttributes, callback) {
-  console.log('in actions index, createFlat, flatAttributes: ', flatAttributes);
+export function createFlat(flatFormData, callback) {
+// NOTE: Flat params are sent in formData (multippart/form data)
+// with flat params, amenity params and image files
+// Axios appears to convert the image uri to imdage data to be sent
+// Rails backend converts the multipart/form data in an actiondispatch object;
+  console.log('in actions index, createFlat, flatFormData: ', flatFormData);
   console.log('in actions index, createFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
 
-  // const { } = flatAttributes;
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/flats`, { flat: flatAttributes.flat, files: flatAttributes.files, amenity: flatAttributes.amenity }, {
+    // axios.post(`${ROOT_URL}/api/v1/flats`, { flat: flatFormData.flat, files: flatFormData.files, amenity: flatFormData.amenity }, {
+    axios.post(`${ROOT_URL}/api/v1/flats`, flatFormData, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
@@ -1085,7 +1089,12 @@ export function createFlat(flatAttributes, callback) {
         type: CREATE_FLAT
       });
       // sends back to createflat.js the flat_id and the images
-      callback(response.data.data.flat.id, flatAttributes.files);
+      callback(response.data.data.flat.id);
+    })
+    .catch(error => {
+      console.log('in action index, catch error to createFlat: ', error);
+      dispatch(authError(error.message));
+      this.showloading();
     });
   };
 }
@@ -1094,7 +1103,6 @@ export function createMessage(messageAttributes, callback) {
   console.log('in actions index, createMessage, messageAttributes: ', messageAttributes);
   console.log('in actions index, createMessage: localStorage.getItem, token; ', localStorage.getItem('token'));
 
-  // const { } = flatAttributes;
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/conversations/${messageAttributes.conversation_id}/messages`, { message: messageAttributes, booking_id: messageAttributes.booking_id }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }

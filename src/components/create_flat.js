@@ -81,38 +81,40 @@ class CreateFlat extends Component {
       //in case user does not check any boxes
       const dataSeparated = this.separateFlatAndAmenities(data);
       // for case when user does not select any images
+      const formData = new FormData();
+      delete dataSeparated.flat.appLanguages;
+
+      // IMPORTANT: Data in createFlat is send using FormData which is a multpart/form-data format
+      // that can be handled by axios and rails; FormData needs to be sent directly without
+      // any wrapper object in the api call body in axios or the files uris are not converted
+      // into file data; specifying keys as flat[key] enables strong params to pick permit the params 
+      _.each(Object.keys(dataSeparated.flat), eachKey => {
+        console.log('in createflat, handleFormSubmit, each flat eachKey:', eachKey);
+        // NOTE: IE does not support set; use append
+        // Reference: https://medium.com/@jugtuttle/formdata-and-strong-params-ruby-on-rails-react-c230d050e26e
+        formData.append(`flat[${eachKey}]`, dataSeparated.flat[eachKey]);
+      });
+
+      _.each(Object.keys(dataSeparated.amenity), eachKey => {
+        console.log('in createflat, handleFormSubmit, each amenity eachKey:', eachKey);
+        // NOTE: IE does not support set; use append
+        formData.append(`amenity[${eachKey}]`, dataSeparated.amenity[eachKey]);
+      });
+      // IMPORTANT:  If user has uploaded images, append images to formData
+      // the keys in formData later become keys in params;
+      // to distiuguish one file key from another, name them 'file-0' 'file-1' etc
+      // formData is a multipart/form data that Rails will wrap with an actiondispatch object
+
       if (data.files) {
-        // data.files.map((file) => {
-        //   formData.append('file', file);
-        // });
-        const array = [];
-        _.each(data.files, file => {
-          const formData = new FormData();
-          formData.append('file', file);
-          array.push(formData)
-          console.log('in createflat, handleFormSubmit, file, array:', file, array);
-        })
-
-        // dataSeparated.files = array;
-        dataSeparated.files = data.files;
-        console.log('in createflat, handleFormSubmit, dataSeparated:', dataSeparated);
-      } else {
-        const files = [];
-        dataSeparated.files = files;
+        _.each(data.files, (file, i) => {
+          formData.append(`file-${i}`, file);
+          console.log('in createflat, handleFormSubmit, file:', file);
+        });
       }
-
-      // console.log('in createflat, handleFormSubmit, separateFlatAndAmenities,:', this.separateFlatAndAmenities(data));
-      //
-      // console.log('in createflat, handleFormSubmit, dataWithBasic:', dataWithBasic);
-      // console.log('in createflat, handleFormSubmit, addressString:', addressString);
-      // console.log('in createflat, handleFormSubmit, Object.keys(addressHash).length - 1:', Object.keys(addressHash).length - 1);
-      // this.props.createFlat(dataSeparated, () => {})
-      // !!!! this one below is it!!!!
-      this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files));
+      // this.props.createFlat(dataSeparated, () => {});
+      this.props.createFlat(formData, (flatId) => this.createFlatCallback(flatId));
       // this.handleGeocode(addressString, dataSeparated, () => this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files)));
       // console.log('in createflat, handleFormSubmit, geocodedData:', geocodedData);
-
-      // call action creator to createFlat and send in callback to create images, cloudinary and api with flat id
     } else {
       window.alert('Please confirm input by checking the box then pressing submit')
     }
@@ -220,27 +222,23 @@ class CreateFlat extends Component {
   });
 }
 
-  createImageCallback(imagesArray, imageCount, flatId) {
+  createFlatCallback(flatId) {
     // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
-    const count = imageCount + 1;
-    if (count <= (imagesArray.length - 1)) {
-      this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-    } else {
-      this.props.history.push(`/show/${flatId}`);
-      //switch on loading modal in action creator
-      this.props.showLoading();
-    }
+    this.props.history.push(`/show/${flatId}`);
+    //switch on loading modal in action creator
+    this.props.showLoading();
   }
-
-  renderAlert() {
-    if (this.props.errorMessage) {
-      return (
-        <div className="alert alert-danger">
-        <strong>Ooops! </strong> {this.props.errorMessage}
-        </div>
-      );
-    }
-  }
+  // createImageCallback(imagesArray, imageCount, flatId) {
+  //   // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
+  //   const count = imageCount + 1;
+  //   if (count <= (imagesArray.length - 1)) {
+  //     this.props.createImage(imagesArray, count, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+  //   } else {
+  //     this.props.history.push(`/show/${flatId}`);
+  //     //switch on loading modal in action creator
+  //     this.props.showLoading();
+  //   }
+  // }
 
   handleConfirmCheck(event) {
   // Get the checkbox
@@ -275,6 +273,16 @@ class CreateFlat extends Component {
         );
       // }
     });
+  }
+
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="alert alert-danger">
+          <strong> &nbsp;</strong> {this.props.errorMessage}
+        </div>
+      );
+    }
   }
 
 
@@ -660,57 +668,57 @@ const InputField = ({
       );
 
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
-function validate(values) {
-  console.log('in signin modal, validate values: ', values);
-    const errors = {};
-    if (!values.language_code) {
-      errors.language_code = values.appLanguages.requiredLanguage[values.language_code_for_validate];
-        // errors.language_code = 'A language is required';
-    }
-
-    if (!values.address1) {
-      // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.language_code_for_validate: ', values, values.appLanguages.requiredAddress1, values.language_code_for_validate);
-      errors.address1 = values.appLanguages.requiredAddress1[values.language_code_for_validate];
-        // errors.address1 = 'A Street address is required';
-    }
-
-    if (!values.city) {
-      errors.city = values.appLanguages.requiredCity[values.language_code_for_validate];
-        // errors.city = 'A city, district or ward is required';
-    }
-
-    if (!values.state) {
-      errors.state = values.appLanguages.requiredState[values.language_code_for_validate];
-        // errors.state = 'A state or province is required';
-    }
-
-    if (!values.zip) {
-      errors.zip = values.appLanguages.requiredZip[values.language_code_for_validate];
-        // errors.zip = 'A zip or postal code is required';
-    }
-
-    if (!values.country) {
-      errors.country = values.appLanguages.requiredCountry[values.language_code_for_validate];
-        // errors.country = 'A country is required';
-    }
-    if (!values.price_per_month) {
-      errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.language_code_for_validate];
-        // errors.price_per_month = 'A price is required';
-    }
-
-    if (!values.size) {
-      errors.size = values.appLanguages.requiredFloorSpace[values.language_code_for_validate];
-        // errors.size = 'Floor space is required';
-    }
-
-    if (!values.rooms) {
-      errors.rooms = values.appLanguages.requiredRooms[values.language_code_for_validate];
-        // errors.rooms = 'Number of rooms is required';
-    }
-    if (!values.minutes_to_station) {
-      errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.language_code_for_validate];
-        // errors.minutes_to_station = 'Minutes to station is required';
-    }
+// function validate(values) {
+//   console.log('in signin modal, validate values: ', values);
+//     const errors = {};
+//     if (!values.language_code) {
+//       errors.language_code = values.appLanguages.requiredLanguage[values.language_code_for_validate];
+//         // errors.language_code = 'A language is required';
+//     }
+//
+//     if (!values.address1) {
+//       // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.language_code_for_validate: ', values, values.appLanguages.requiredAddress1, values.language_code_for_validate);
+//       errors.address1 = values.appLanguages.requiredAddress1[values.language_code_for_validate];
+//         // errors.address1 = 'A Street address is required';
+//     }
+//
+//     if (!values.city) {
+//       errors.city = values.appLanguages.requiredCity[values.language_code_for_validate];
+//         // errors.city = 'A city, district or ward is required';
+//     }
+//
+//     if (!values.state) {
+//       errors.state = values.appLanguages.requiredState[values.language_code_for_validate];
+//         // errors.state = 'A state or province is required';
+//     }
+//
+//     if (!values.zip) {
+//       errors.zip = values.appLanguages.requiredZip[values.language_code_for_validate];
+//         // errors.zip = 'A zip or postal code is required';
+//     }
+//
+//     if (!values.country) {
+//       errors.country = values.appLanguages.requiredCountry[values.language_code_for_validate];
+//         // errors.country = 'A country is required';
+//     }
+//     if (!values.price_per_month) {
+//       errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.language_code_for_validate];
+//         // errors.price_per_month = 'A price is required';
+//     }
+//
+//     if (!values.size) {
+//       errors.size = values.appLanguages.requiredFloorSpace[values.language_code_for_validate];
+//         // errors.size = 'Floor space is required';
+//     }
+//
+//     if (!values.rooms) {
+//       errors.rooms = values.appLanguages.requiredRooms[values.language_code_for_validate];
+//         // errors.rooms = 'Number of rooms is required';
+//     }
+//     if (!values.minutes_to_station) {
+//       errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.language_code_for_validate];
+//         // errors.minutes_to_station = 'Minutes to station is required';
+//     }
 
     // if (values.size !== parseInt(values.size, 10)) {
     //     errors.size = 'Floor space needs to be a number';
@@ -724,12 +732,12 @@ function validate(values) {
     //
     // }
     // console.log('in signin modal, validate errors: ', errors);
-    return errors;
-}
+//     return errors;
+// }
 
 CreateFlat = reduxForm({
-  form: 'simple',
-  validate
+  form: 'simple'
+  // validate
 })(CreateFlat);
 
 function mapStateToProps(state) {
@@ -747,7 +755,8 @@ function mapStateToProps(state) {
     appLanguageCode: state.languages.appLanguageCode,
     initialValues,
     formObject: state.form.simple,
-    appLanguages: state.auth.appLanguages
+    appLanguages: state.auth.appLanguages,
+    // errorMessage: state.auth.error
    };
 }
 
