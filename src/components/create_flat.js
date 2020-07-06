@@ -69,8 +69,8 @@ class CreateFlat extends Component {
       //switch on loading modal in action creator
       this.props.showLoading();
       const { address1, city, state, zip, country } = data;
-      console.log('in createflat, handleFormSubmit, submit clicked');
-      console.log('in createflat, handleFormSubmitr, this.props:', this.props);
+      // console.log('in createflat, handleFormSubmit, submit clicked');
+      // console.log('in createflat, handleFormSubmitr, this.props:', this.props);
       const addressHash = { address1, city, state, zip, country }
       // const addressHash = { address1: 'Shibuya', city: 'Shibuya', state: 'Tokyo', zip: '150-0002', country: 'Japan' }
       let addressString = '';
@@ -83,20 +83,19 @@ class CreateFlat extends Component {
       // for case when user does not select any images
       const formData = new FormData();
       delete dataSeparated.flat.appLanguages;
-
       // IMPORTANT: Data in createFlat is send using FormData which is a multpart/form-data format
       // that can be handled by axios and rails; FormData needs to be sent directly without
       // any wrapper object in the api call body in axios or the files uris are not converted
-      // into file data; specifying keys as flat[key] enables strong params to pick permit the params 
+      // into file data; specifying keys as flat[key] enables strong params to pick permit the params
       _.each(Object.keys(dataSeparated.flat), eachKey => {
-        console.log('in createflat, handleFormSubmit, each flat eachKey:', eachKey);
+        // console.log('in createflat, handleFormSubmit, each flat eachKey:', eachKey);
         // NOTE: IE does not support set; use append
         // Reference: https://medium.com/@jugtuttle/formdata-and-strong-params-ruby-on-rails-react-c230d050e26e
         formData.append(`flat[${eachKey}]`, dataSeparated.flat[eachKey]);
       });
 
       _.each(Object.keys(dataSeparated.amenity), eachKey => {
-        console.log('in createflat, handleFormSubmit, each amenity eachKey:', eachKey);
+        // console.log('in createflat, handleFormSubmit, each amenity eachKey:', eachKey);
         // NOTE: IE does not support set; use append
         formData.append(`amenity[${eachKey}]`, dataSeparated.amenity[eachKey]);
       });
@@ -104,15 +103,14 @@ class CreateFlat extends Component {
       // the keys in formData later become keys in params;
       // to distiuguish one file key from another, name them 'file-0' 'file-1' etc
       // formData is a multipart/form data that Rails will wrap with an actiondispatch object
-
       if (data.files) {
         _.each(data.files, (file, i) => {
           formData.append(`file-${i}`, file);
-          console.log('in createflat, handleFormSubmit, file:', file);
+          // console.log('in createflat, handleFormSubmit, file:', file);
         });
       }
-      // this.props.createFlat(dataSeparated, () => {});
       this.props.createFlat(formData, (flatId) => this.createFlatCallback(flatId));
+      // Original abomination (3 callbacks strung together)
       // this.handleGeocode(addressString, dataSeparated, () => this.props.createFlat(dataSeparated, (id, files) => this.handleCreateImages(id, files)));
       // console.log('in createflat, handleFormSubmit, geocodedData:', geocodedData);
     } else {
@@ -120,6 +118,12 @@ class CreateFlat extends Component {
     }
   }
 
+  createFlatCallback(flatId) {
+    // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
+    this.props.history.push(`/show/${flatId}`);
+    //switch on loading modal in action creator
+    this.props.showLoading();
+  }
   // handleGeocode(addressString, data, callback) {
   //   const geocoder = new google.maps.Geocoder();
   //   console.log('in createflat, handleFormSubmit, geocoder:', geocoder);
@@ -151,83 +155,77 @@ class CreateFlat extends Component {
   // NEED to figure out how to move this to backend;
   // The problem is sending an array of multipart form data format to backend
   // Axios handles the
-  handleCreateImages(flatId, files) {
-    console.log('in createflat, handleCreateImages, flat_id:', flatId);
-    console.log('in createflat, handleCreateImages, files:', files);
+//   handleCreateImages(flatId, files) {
+//     console.log('in createflat, handleCreateImages, flat_id:', flatId);
+//     console.log('in createflat, handleCreateImages, files:', files);
+//
+//     const imagesArray = [];
+//     let uploaders = [];
+//   // Push all the axios request promise into a single array
+//     if (files.length > 0) {
+//       uploaders = files.map((file) => {
+//         console.log('in Upload, handleDrop, uploaders, file: ', file);
+//         // Initial FormData
+//         const formData = new FormData();
+//         // const apiSecret = API_SECRET;
+//         // const timeStamp = (Date.now() / 1000) | 0;
+//         // const publicID = `flat_image-${timeStamp}-${index}`;
+//         // const eager = 'w_400,h_300,c_pad|w_260,h_200,c_crop';
+//         // const signaturePreSha1 =
+//         // `eager=${eager}&public_id=${publicID}&timestamp=${timeStamp}${apiSecret}`;
+//         // const signatureSha1 = sha1(signaturePreSha1);
+//         //
+//         // formData.append('timestamp', timeStamp);
+//         // formData.append('public_id', publicID);
+//         // formData.append('api_key', API_KEY);
+//         // formData.append('eager', eager);
+//         formData.append('file', file);
+//         formData.append('flatId', flatId);
+//         // formData.append('signature', signatureSha1);
+//
+//         // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+//
+//         // console.log('api_key: ', formData.get('api_key'));
+//         // console.log('in Upload, handleDrop, uploaders, timestamp: ', formData.get('timestamp'));
+//         // console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
+//         // // console.log('formData api_key: ', formData.get('api_key'));
+//         // console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
+//         // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
+//         // console.log('in create_flat, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
+//
+//         // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
+//         // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
+//         return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+//           headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//           // return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
+//           //   headers: { 'X-Requested-With': 'XMLHttpRequest' },
+//         }).then(response => {
+//           // const data = response.data;
+//           // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+//           const filePublicId = response.data.data.response.public_id;
+//           // You should store this URL for future references in your app
+//           imagesArray.push(filePublicId);
+//           // call create image action, send images Array with flat id
+//         });
+//         //end of then
+//       });
+//       //end of uploaders
+//     }
+//   // console.log('in Upload, handleDrop, uploaders: ', uploaders);
+//   // Once all the files are uploaded
+//   axios.all(uploaders).then(() => {
+//     // ... perform after upload is successful operation
+//     // console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+//     // if there are no images, call do not create images and just call createImageCallback
+//     if (imagesArray.length === 0) {
+//       this.createImageCallback(imagesArray, 0, flatId);
+//     } else {
+//       const imageCount = 0;
+//       this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+//     }
+//   });
+// }
 
-    const imagesArray = [];
-    let uploaders = [];
-  // Push all the axios request promise into a single array
-    if (files.length > 0) {
-      uploaders = files.map((file) => {
-        console.log('in Upload, handleDrop, uploaders, file: ', file);
-        // Initial FormData
-        const formData = new FormData();
-        // const apiSecret = API_SECRET;
-        // const timeStamp = (Date.now() / 1000) | 0;
-        // const publicID = `flat_image-${timeStamp}-${index}`;
-        // const eager = 'w_400,h_300,c_pad|w_260,h_200,c_crop';
-        // const signaturePreSha1 =
-        // `eager=${eager}&public_id=${publicID}&timestamp=${timeStamp}${apiSecret}`;
-        // const signatureSha1 = sha1(signaturePreSha1);
-        //
-        // formData.append('timestamp', timeStamp);
-        // formData.append('public_id', publicID);
-        // formData.append('api_key', API_KEY);
-        // formData.append('eager', eager);
-        formData.append('file', file);
-        formData.append('flatId', flatId);
-        // formData.append('signature', signatureSha1);
-
-        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-
-        // console.log('api_key: ', formData.get('api_key'));
-        // console.log('in Upload, handleDrop, uploaders, timestamp: ', formData.get('timestamp'));
-        // console.log('in Upload, handleDrop, uploaders, public id: ', formData.get('public_id'));
-        // // console.log('formData api_key: ', formData.get('api_key'));
-        // console.log('in Upload, handleDrop, uploaders, formData eager: ', formData.get('eager'));
-        // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
-        // console.log('in create_flat, handleDrop, uploaders, formData flatId: ', formData.get('flatId'));
-
-        // console.log('in Upload, handleDrop, uploaders, signature: ', formData.get('signature'));
-        // console.log('in Upload, handleDrop, uploaders, formatData: ', formData);
-        return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
-          headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-          // return axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, formData, {
-          //   headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        }).then(response => {
-          // const data = response.data;
-          // console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
-          const filePublicId = response.data.data.response.public_id;
-          // You should store this URL for future references in your app
-          imagesArray.push(filePublicId);
-          // call create image action, send images Array with flat id
-        });
-        //end of then
-      });
-      //end of uploaders
-    }
-  // console.log('in Upload, handleDrop, uploaders: ', uploaders);
-  // Once all the files are uploaded
-  axios.all(uploaders).then(() => {
-    // ... perform after upload is successful operation
-    // console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
-    // if there are no images, call do not create images and just call createImageCallback
-    if (imagesArray.length === 0) {
-      this.createImageCallback(imagesArray, 0, flatId);
-    } else {
-      const imageCount = 0;
-      this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-    }
-  });
-}
-
-  createFlatCallback(flatId) {
-    // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
-    this.props.history.push(`/show/${flatId}`);
-    //switch on loading modal in action creator
-    this.props.showLoading();
-  }
   // createImageCallback(imagesArray, imageCount, flatId) {
   //   // console.log('in show_flat createImageCallback, passed from callback: ', imagesArray, imageCount, flatId);
   //   const count = imageCount + 1;
@@ -284,7 +282,6 @@ class CreateFlat extends Component {
       );
     }
   }
-
 
   renderRequiredMessages() {
     console.log('in createflat, renderRequiredMessages: ');
@@ -668,83 +665,82 @@ const InputField = ({
       );
 
 // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
-// function validate(values) {
-//   console.log('in signin modal, validate values: ', values);
-//     const errors = {};
-//     if (!values.language_code) {
-//       errors.language_code = values.appLanguages.requiredLanguage[values.language_code_for_validate];
-//         // errors.language_code = 'A language is required';
-//     }
-//
-//     if (!values.address1) {
-//       // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.language_code_for_validate: ', values, values.appLanguages.requiredAddress1, values.language_code_for_validate);
-//       errors.address1 = values.appLanguages.requiredAddress1[values.language_code_for_validate];
-//         // errors.address1 = 'A Street address is required';
-//     }
-//
-//     if (!values.city) {
-//       errors.city = values.appLanguages.requiredCity[values.language_code_for_validate];
-//         // errors.city = 'A city, district or ward is required';
-//     }
-//
-//     if (!values.state) {
-//       errors.state = values.appLanguages.requiredState[values.language_code_for_validate];
-//         // errors.state = 'A state or province is required';
-//     }
-//
-//     if (!values.zip) {
-//       errors.zip = values.appLanguages.requiredZip[values.language_code_for_validate];
-//         // errors.zip = 'A zip or postal code is required';
-//     }
-//
-//     if (!values.country) {
-//       errors.country = values.appLanguages.requiredCountry[values.language_code_for_validate];
-//         // errors.country = 'A country is required';
-//     }
-//     if (!values.price_per_month) {
-//       errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.language_code_for_validate];
-//         // errors.price_per_month = 'A price is required';
-//     }
-//
-//     if (!values.size) {
-//       errors.size = values.appLanguages.requiredFloorSpace[values.language_code_for_validate];
-//         // errors.size = 'Floor space is required';
-//     }
-//
-//     if (!values.rooms) {
-//       errors.rooms = values.appLanguages.requiredRooms[values.language_code_for_validate];
-//         // errors.rooms = 'Number of rooms is required';
-//     }
-//     if (!values.minutes_to_station) {
-//       errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.language_code_for_validate];
-//         // errors.minutes_to_station = 'Minutes to station is required';
-//     }
+function validate(values) {
+  console.log('in signin modal, validate values: ', values);
+    const errors = {};
+    if (!values.language_code) {
+      errors.language_code = values.appLanguages.requiredLanguage[values.languageCodeForValidate];
+        // errors.language_code = 'A language is required';
+    }
+
+    if (!values.address1) {
+      // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.languageCodeForValidate: ', values, values.appLanguages.requiredAddress1, values.languageCodeForValidate);
+      errors.address1 = values.appLanguages.requiredAddress1[values.languageCodeForValidate];
+        // errors.address1 = 'A Street address is required';
+    }
+
+    if (!values.city) {
+      errors.city = values.appLanguages.requiredCity[values.languageCodeForValidate];
+        // errors.city = 'A city, district or ward is required';
+    }
+
+    if (!values.state) {
+      errors.state = values.appLanguages.requiredState[values.languageCodeForValidate];
+        // errors.state = 'A state or province is required';
+    }
+
+    if (!values.zip) {
+      errors.zip = values.appLanguages.requiredZip[values.languageCodeForValidate];
+        // errors.zip = 'A zip or postal code is required';
+    }
+
+    if (!values.country) {
+      errors.country = values.appLanguages.requiredCountry[values.languageCodeForValidate];
+        // errors.country = 'A country is required';
+    }
+    if (!values.price_per_month) {
+      errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.languageCodeForValidate];
+        // errors.price_per_month = 'A price is required';
+    }
+
+    if (!values.size) {
+      errors.size = values.appLanguages.requiredFloorSpace[values.languageCodeForValidate];
+        // errors.size = 'Floor space is required';
+    }
+
+    if (!values.rooms) {
+      errors.rooms = values.appLanguages.requiredRooms[values.languageCodeForValidate];
+        // errors.rooms = 'Number of rooms is required';
+    }
+    if (!values.minutes_to_station) {
+      errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.languageCodeForValidate];
+        // errors.minutes_to_station = 'Minutes to station is required';
+    }
 
     // if (values.size !== parseInt(values.size, 10)) {
     //     errors.size = 'Floor space needs to be a number';
     // }
-
-
+    //
     // if(!values.password){
     //     errors.password = 'Password is required'
     // } else if (values.password.length < 6) {
     //   errors.password = 'A password needs to be at least 6 characters'
     //
     // }
-    // console.log('in signin modal, validate errors: ', errors);
-//     return errors;
-// }
+    console.log('in signin modal, validate errors: ', errors);
+    return errors;
+}
 
 CreateFlat = reduxForm({
-  form: 'simple'
-  // validate
+  form: 'simple',
+  validate
 })(CreateFlat);
 
 function mapStateToProps(state) {
   console.log('in feature mapStateToProps: ', state);
   const initialValues = state.form.simple ? { ...state.form.simple.values } : {};
   // For passing appLanguages and appLanguageCode to validate function
-  initialValues.language_code_for_validate = state.languages.appLanguageCode;
+  initialValues.languageCodeForValidate = state.languages.appLanguageCode;
   // AppLanguages to be moved to backend
   initialValues.appLanguages = AppLanguages;
   initialValues.language_code = state.languages.appLanguageCode;

@@ -196,7 +196,8 @@ import {
   SET_OTHER_USER_STATUS,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
   SET_PROGRESS_STATUS,
-  GET_APP_BASE_OBJECTS
+  GET_APP_BASE_OBJECTS,
+  UPLOAD_AND_CREATE_IMAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -1263,6 +1264,32 @@ export function createImage(imagesArray, imageCount, flatId, callback) {
     });
   };
 }
+
+export function uploadAndCreateImage(formData, callback) {
+  console.log('in actions index, uploadAndCreateImage: formData: ', formData);
+
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/images/upload_for_flat`, formData, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to uploadAndCreateImage, response: ', response);
+      // console.log('response to createImage, response.data.data.image: ', response.data.data.image);
+
+      callback(response.data.data.flat.id);
+      dispatch({
+        type: UPLOAD_AND_CREATE_IMAGE,
+        payload: response.data.data.flat
+      });
+    })
+    .catch(error => {
+      console.log('in action index, catch error to uploadAndCreateImage: ', error);
+      dispatch(authError(error.message));
+      this.showloading();
+    });
+  };
+}
+
 export function deleteImage(id, imageCount, callback) {
   console.log('in actions index, createImage: id: ', id);
 

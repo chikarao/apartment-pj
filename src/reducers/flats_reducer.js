@@ -41,7 +41,8 @@ import {
   CREATE_BUILDING_LANGUAGE,
   DELETE_BUILDING_LANGUAGE,
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
-  SET_OWNER_USER_STATUS
+  SET_OWNER_USER_STATUS,
+  UPLOAD_AND_CREATE_IMAGE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -262,6 +263,9 @@ export default function (state = INITIAL_STATE, action) {
 
     case GET_GOOGLE_MAP_MAP_BOUNDS_KEYS:
       return { ...state, googleMapBoundsKeys: action.payload };
+
+    case UPLOAD_AND_CREATE_IMAGE:
+      return { ...state, selectedFlatFromParams: action.payload };
 
     default:
       return state;

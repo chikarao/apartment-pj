@@ -6,7 +6,8 @@ import _ from 'lodash';
 
 import * as actions from '../actions';
 
-import Upload from './images/upload';
+// import Upload from './images/upload';
+import UploadForFlat from './images/upload_for_flat';
 import Amenities from './constants/amenities';
 import GoogleMap from './maps/google_map';
 import MapInteraction from './maps/map_interaction';
@@ -1184,7 +1185,7 @@ class EditFlat extends Component {
           </div>
           <div>
             {this.props.flat.images.length < MAX_NUM_FILES ?
-              <Upload
+              <UploadForFlat
                 flatId={this.props.flat.id}
                 flat={this.props.flat}
               /> :

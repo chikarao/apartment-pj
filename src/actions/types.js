@@ -191,3 +191,4 @@ export const SET_OTHER_USER_STATUS = 'set_other_user_status';
 export const SAVE_TEMPLATE_DOCUMENT_FIELDS = 'save_template_document_fields';
 export const SET_PROGRESS_STATUS = 'set_progress_status';
 export const GET_APP_BASE_OBJECTS = 'get_app_base_objects';
+export const UPLOAD_AND_CREATE_IMAGE = 'upload_and_create_image';
