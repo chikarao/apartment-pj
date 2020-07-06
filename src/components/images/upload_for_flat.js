@@ -4,38 +4,27 @@ import _ from 'lodash';
 
 import cloudinary from 'cloudinary-core';
 import Dropzone from 'react-dropzone';
-import axios from 'axios';
-import sha1 from 'sha1';
+// import axios from 'axios';
+// import sha1 from 'sha1';
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 import globalConstants from '../constants/global_constants';
 
-
-const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
+// const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+// const cloudinaryCore = new cloudinary.Cloudinary({ cloud_name: CLOUD_NAME });
 // const API_KEY = process.env.CLOUDINARY_API_KEY;
 // const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
-const ROOT_URL = 'http://localhost:3000';
+// const ROOT_URL = 'http://localhost:3000';
 
 const MAX_NUM_FILES = globalConstants.maxNumImages;
 
 class UploadForFlat extends Component {
-  createImageCallback(flatId) {
-    // console.log('in UploadForFlat, createImageCallback, flatId: ', flatId);
-    // const currentCount = imageCount + 1;
-    // // export function createImage(imagesArray, imageCount, flatId, callback)
-    // if (currentCount <= (imagesArray.length - 1)) {
-    //   this.props.createImage(imagesArray, currentCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-    //
-    // } else {
-      this.props.history.push(`/editflat/${flatId}`);
-      // document.location.reload()
-      // console.log('in UploadForFlat, createImageCallback, create image completed, flatId.', flatId);
-      this.props.showLoading();
-    // }
+  createImageCallback() {
+    // this.props.history.push(`/editflat/${flatId}`);
+    this.props.showLoading();
   }
   // Use FormData (multipart/form-data) for image file upload;
   // Rails will wrap the multipart/form-data in activedispatch object
@@ -161,5 +150,5 @@ class UploadForFlat extends Component {
     }
 }
 // withRouter used for letting this component use router history; enables rerender witout reload
-// must more smooth renering
+// For smoother renering
 export default withRouter(connect(null, actions)(UploadForFlat));

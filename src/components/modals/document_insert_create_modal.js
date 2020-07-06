@@ -47,6 +47,38 @@ class DocumentInsertCreateModal extends Component {
   }
 
   handleCreateImages(files, data) {
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    if (!this.props.uploadOwnDocument) {
+      // dataToBeSent = { document_insert: data };
+      formData.append('document_insert[agreement_id]', this.props.agreementId);
+      _.each(Object.keys(data), each => {
+        formData.append(`document_insert[${each}]`, data[each]);
+      });
+      // dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+      // dataToBeSent.document_insert.publicid = imagesArray[0];
+      // dataToBeSent.document_insert.pages = pages;
+      // dataToBeSent.document_insert.page_size = pageSize;
+      this.props.createDocumentInsert(formData, () => this.handleFormSubmitCallback());
+    } else {
+      const dataToChange = data;
+      dataToChange.document_name = dataToChange.insert_name;
+      // dataToBeSent = { agreement: dataToChange };
+      // if this is to create an upload
+      if (this.props.templateCreate) formData.append('agreement[document_type]', 'template');
+      formData.append('agreement[document_name]', dataToChange.insert_name);
+      formData.append('agreement[booking_id]', this.props.booking.id);
+      formData.append('agreement[document_code]', globalConstants.ownUploadedDocumentKey);
+      formData.append('agreement[language_code_1]', this.props.documentLanguageCode);
+      formData.append('agreement[language_code]', data.language_code);
+      formData.append('agreement[template_file_name]', data.template_file_name);
+      formData.append('document_field[document_field]', []);
+      console.log('in Upload, handleCreateImages, axios all, then, else formData, data, files: ', formData, data, files);
+      this.props.createAgreement(formData, () => this.handleFormSubmitCallback());
+    }
+  }
+
+  handleCreateImages0(files, data) {
     console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
 
     const imagesArray = [];

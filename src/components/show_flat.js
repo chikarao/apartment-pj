@@ -396,6 +396,7 @@ class ShowFlat extends Component {
   }
 
   renderMap() {
+    // console.log('in show_flat, renderMap, flatArray: ', this.props.flat);
     if (this.props.flat) {
       //instantiates autocomplete as soon as flat is loaded in state then mapcenter can be set
       // this.handleSearchInput();
@@ -408,7 +409,7 @@ class ShowFlat extends Component {
       const flatArray = [this.props.flat];
       const flatArrayMapped = _.mapKeys(flatArray, 'id');
 
-      // console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      console.log('in show_flat, renderMap, flatArray: ', flatArray);
       // console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
 
       return (
@@ -752,7 +753,6 @@ class ShowFlat extends Component {
     // !!!!!map needs to be id=map for the interaction to work
     // if currentUserIsOwner NOT owner and there are no places assigned to flat, do not show mapInteraction
     const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
-    // {this.renderMap()}
     return (
       <div className="show-flat-body">
           {this.state.messagingOpen ? this.renderMessagingModal() : ''}
@@ -766,6 +766,7 @@ class ShowFlat extends Component {
         <div className="container">
           <div className="row">
             <div className={doNotShowContainer ? 'map-container' : 'map-container col-xs-12 col-sm-12 col-md-8'} id="map">
+            {this.renderMap()}
             </div>
             {doNotShowContainer
               ?

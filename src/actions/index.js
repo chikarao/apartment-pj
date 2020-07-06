@@ -300,29 +300,29 @@ console.log('in action, index, authFacebookUser, email and password: ', token);
         callback();
         // callback for this.props.history.push('/feature') from signin.js
       })
-        .catch((error) => {
-          // take out error if hard coding error messages
-          // if request is bad
-          // show error to user
-          console.log('action index, sign in, catch, error.response.data.messages:', error.response.data.messages);
-          dispatch(authError(error.response.data.messages));
-          // dispatch(authError('Bad login info...'));
-        });
+      .catch((error) => {
+        // take out error if hard coding error messages
+        // if request is bad
+        // show error to user
+        console.log('action index, sign in, catch, error.response.data.messages:', error.response.data.messages);
+        dispatch(authError(error.response.data.messages));
+        // dispatch(authError('Bad login info...'));
+      });
   };
 }
 
-export function updateUser(image, callback) {
-  console.log('in actions index, updateUser, reviewAttributes: ', image);
+export function updateUser(formData, callback) {
+  console.log('in actions index, updateUser, formData: ', formData);
   console.log('in actions index, updateUser: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = reviewAttributes;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/update_user`, { user: image }, {
+    axios.patch(`${ROOT_URL}/api/v1/update_user`, formData, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('response to updateUser, response: ', response);
-      console.log('response to updateUser, response.data.data: ', response.data.data.user);
+      // console.log('response to updateUser, response.data.data: ', response.data.data.user);
       localStorage.setItem('image', response.data.data.user.image);
       dispatch({
         type: UPDATE_USER,
@@ -330,6 +330,15 @@ export function updateUser(image, callback) {
       });
       // sends back to createreview.js the review_id and the images
       callback();
+    })
+    .catch((error) => {
+      // take out error if hard coding error messages
+      // if request is bad
+      // show error to user
+      console.log('action index, updateUser, catch, error.response.data.messages:', error.response.data.messages);
+      dispatch(authError(error.response.data.messages));
+      // dispatch(authError('Bad login info...'));
+      this.showLoading()
     });
   };
 }

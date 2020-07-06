@@ -16,6 +16,7 @@ import * as actions from '../../actions';
 // NOTE: Documents imports constants/fixed_term_rental_contract etc.
 import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
+import GlobalConstants from '../constants/global_constants';
 
 import DocumentChoices from './document_choices';
 import DocumentChoicesTemplate from './document_choices_template';
@@ -5683,7 +5684,8 @@ longActionPress(props) {
             });
             pages = array;
           } else {
-            constantAssetsFolder = 'apartmentpj-constant-assets/'
+            // constantAssetsFolder = 'apartmentpj-constant-assets/'
+            constantAssetsFolder = GlobalConstants.constantAssetsFolder
             // if showing document form, get array of pages from constants/documents
             image = Documents[this.props.createDocumentKey].file;
             // assign array to pages varaible for later iteration

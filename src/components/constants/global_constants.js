@@ -11,6 +11,8 @@ const globalConstants = {
     ownUploadedDocumentKey: 'own_uploaded_document',
     ownUploadedTemplateKey: 'own_uploaded_template',
     resizeBreakPoint: 800,
+    blankProfilePicture: 'blank_profile_picture_4',
+    constantAssetsFolder: 'apartmentpj-constant-assets/'
 };
 
 export default globalConstants;

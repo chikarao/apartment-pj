@@ -25,7 +25,8 @@ import CardTypes from './constants/card_types'
 
 import AppLanguages from './constants/app_languages';
 
-const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
+// const BLANK_PROFILE_PICTURE = 'blank_profile_picture_4';
+const BLANK_PROFILE_PICTURE = GlobalConstants.blankProfilePicture;
 const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
 const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
 // const RESIZE_BREAK_POINT = 800;
@@ -716,7 +717,9 @@ formatDate(date) {
   handleRemoveProfileImage() {
     // this.props.editProfile({ id: this.props.auth.userProfile.id, image: 'blank_profile_picture_1' }, () => this.handleRemoveProfileImageCallback());
     if (window.confirm('Are you sure you want to remove your profile picture?')) {
-      this.props.updateUser({ image: BLANK_PROFILE_PICTURE }, () => this.handleRemoveProfileImageCallback());
+      const formData = new FormData()
+      formData.append('user[image]', BLANK_PROFILE_PICTURE)
+      this.props.updateUser(formData, () => this.handleRemoveProfileImageCallback());
     }
   }
 
@@ -730,10 +733,11 @@ formatDate(date) {
 
   renderProfileImage() {
     // console.log('in header, renderProfileImage, this.props.auth.userProfile.image: ', this.props.auth.userProfile.image);
+    const imagePath = this.props.auth.image === GlobalConstants.blankProfilePicture ? `${GlobalConstants.constantAssetsFolder}${this.props.auth.image}` : this.props.auth.image;
     return (
       <div className="my-page-profile-image-box">
         <div className="my-page-profile-image-box-image">
-          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + this.props.auth.image + '.jpg'} alt={"No profile picture"} />
+          <img src={"http://res.cloudinary.com/chikarao/image/upload/w_100,h_100,c_fill,g_face/" + imagePath + '.jpg'} alt={"No profile picture"} />
         </div>
           <div className="my-page-change-profile-picture-link">
             <UploadForProfile
