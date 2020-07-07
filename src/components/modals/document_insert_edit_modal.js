@@ -17,6 +17,7 @@ let showHideClassName;
 const FILE_FIELD_NAME = 'files';
 const ROOT_URL = globalConstants.rootUrl;
 
+// Works for both agreement edit and documentInsert edit
 class DocumentInsertEditModal extends Component {
   constructor(props) {
     super(props);
@@ -441,7 +442,7 @@ function mapStateToProps(state) {
     const agreement = state.bookingData.fetchBookingData.agreements.filter((agr) => agr.id === parseInt(state.modals.selectedAgreementId, 10));
     // console.log('in DocumentInsertEditModal, mapStateToProps, state.bookingData.fetchBookingData.agreements, tate.modals.selectedAgreementId, agreement: ', state.bookingData.fetchBookingData.agreements, agreement);
     // const documentInsert = getDocumentInsert(agreement.document_inserts, parseInt(state.modals.selectedDocumentInsertId, 10));
-    const documentInsert = agreement[0].document_inserts.filter((insert) => insert.id === parseInt(state.modals.selectedDocumentInsertId, 10));
+    const documentInsert = agreement[0] ? agreement[0].document_inserts.filter((insert) => insert.id === parseInt(state.modals.selectedDocumentInsertId, 10)) : [];
     // const editDocumentInsert = getEditDocumentInsert(agreement.documentInserts, parseInt(state.modals.documentInsertToEditId, 10));
     // const date = new Date(documentInsert.documentInsert_date);
     // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
@@ -449,7 +450,7 @@ function mapStateToProps(state) {
     //   documentInsert = editDocumentInsert;
     // }
     if (_.isEmpty(documentInsert)) {
-      initialValues.insert_name = agreement[0].document_name;
+      initialValues.insert_name = agreement[0] ? agreement[0].document_name : '';
     } else {
       initialValues = documentInsert[0];
     }
@@ -468,8 +469,8 @@ function mapStateToProps(state) {
       appLanguageCode: state.languages.appLanguageCode,
       documentInsertId: state.modals.selectedDocumentInsertId,
       booking: state.bookingData.fetchBookingData,
-      documentInsert: documentInsert[0],
-      agreement: agreement[0],
+      documentInsert: documentInsert[0] ? documentInsert[0] : null,
+      agreement: agreement[0] ? agreement[0] : null,
       // editDocumentInsertId: state.modals.documentInsertToEditId,
       // editDocumentInsert,
       // language: state.languages.selectedLanguage,

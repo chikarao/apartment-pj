@@ -5815,7 +5815,7 @@ longActionPress(props) {
     if (this.props.showSavedDocument) {
     //   if (this.props.agreement) {
       showDocumentButtons = true;
-      if (this.props.agreement.document_pdf_publicid) agreementHasPdf = true;
+      if (this.props.agreement && this.props.agreement.document_pdf_publicid) agreementHasPdf = true;
     //   }
     // } else {
     //   showDocumentButtons = true;
