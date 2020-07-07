@@ -95,6 +95,7 @@ const flatFormObject = {
       { value: 16, textAppLanguagekey: 'over15minutes' },
     ]
   },
+
   requiredMessage: {
     component: null,
     appLanguageKey: 'requiredFields',
@@ -158,6 +159,201 @@ const flatFormObject = {
       { value: 'sharedNonFlushingToilet', textAppLanguagekey: null },
     ]
   },
+
+  guests: {
+    component: 'selectField',
+    appLanguageKey: 'guests',
+    labelSpanStyle: null,
+    type: 'integer',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: 1, textAppLanguagekey: '' },
+      { value: 2, textAppLanguagekey: '' },
+      { value: 3, textAppLanguagekey: '' },
+      { value: 4, textAppLanguagekey: '' },
+      { value: 5, textAppLanguagekey: '' },
+      { value: 6, textAppLanguagekey: '' },
+      { value: 7, textAppLanguagekey: '' },
+      { value: 8, textAppLanguagekey: '' },
+      { value: 9, textAppLanguagekey: '' },
+      { value: 10, textAppLanguagekey: '' },
+    ]
+  },
+
+  sales_point: {
+    component: 'inputField',
+    appLanguageKey: 'salesPoint',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+  },
+
+  beds: {
+    component: 'selectField',
+    appLanguageKey: 'beds',
+    labelSpanStyle: null,
+    type: 'integer',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: 1, textAppLanguagekey: '' },
+      { value: 2, textAppLanguagekey: '' },
+      { value: 3, textAppLanguagekey: '' },
+      { value: 4, textAppLanguagekey: '' },
+      { value: 5, textAppLanguagekey: '' },
+      { value: 6, textAppLanguagekey: 'orMore6' },
+    ]
+  },
+
+  king_or_queen_bed: {
+    component: 'selectField',
+    appLanguageKey: 'kingOrQueen',
+    labelSpanStyle: null,
+    type: 'integer',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: 1, textAppLanguagekey: '' },
+      { value: 2, textAppLanguagekey: '' },
+      { value: 3, textAppLanguagekey: '' },
+      { value: 4, textAppLanguagekey: '' },
+      { value: 5, textAppLanguagekey: '' },
+      { value: 6, textAppLanguagekey: 'orMore6' },
+    ]
+  },
+
+  flat_type: {
+    component: 'selectField',
+    appLanguageKey: 'flatType',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+    languageFromBackEnd: true,
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: 'flatInBuilding', textAppLanguagekey: null },
+      { value: 'singleFamily', textAppLanguagekey: null },
+      { value: 'townHouse', textAppLanguagekey: null },
+      { value: 'others', textAppLanguagekey: null },
+    ]
+  },
+
+  bath: {
+    component: 'selectField',
+    appLanguageKey: 'bath',
+    labelSpanStyle: null,
+    type: 'float',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: 1, textAppLanguagekey: '' },
+      { value: 1.5, textAppLanguagekey: '' },
+      { value: 2, textAppLanguagekey: '' },
+      { value: 2.5, textAppLanguagekey: '' },
+      { value: 3, textAppLanguagekey: '' },
+    ]
+  },
+
+  intro: {
+    component: 'inputField',
+    appLanguageKey: 'intro',
+    labelSpanStyle: null,
+    type: 'text',
+    className: 'form-control flat-intro-input',
+  },
+
+  owner_name: {
+    component: 'inputField',
+    appLanguageKey: 'ownerName',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+  },
+
+  ifOwnerDifferent: {
+    component: null,
+    appLanguageKey: 'ifOwnerDifferent',
+    labelSpanStyle: { color: 'red' },
+    type: null,
+    className: 'form-control',
+    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' }
+  },
+
+  owner_contact_name: {
+    component: 'inputField',
+    appLanguageKey: 'ownerContactName',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+  },
+
+  owner_address: {
+    component: 'inputField',
+    appLanguageKey: 'ownerAddress',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+  },
+
+  owner_phone: {
+    component: 'inputField',
+    appLanguageKey: 'ownerPhone',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
+  },
+
+  ownership_rights: {
+    component: 'inputField',
+    appLanguageKey: 'ownershipRights',
+    labelSpanStyle: null,
+    type: 'text',
+    className: 'form-control',
+  },
+
+  other_rights: {
+    component: 'inputField',
+    appLanguageKey: 'otherRights',
+    labelSpanStyle: null,
+    type: 'text',
+    className: 'form-control',
+  },
+
+  cancellation: {
+    component: 'selectField',
+    appLanguageKey: 'cancellation',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yesSeePolicies' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  smoking: {
+    component: 'selectField',
+    appLanguageKey: 'smoking',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
 };
 
 export default flatFormObject;
+
+// <fieldset key={'cancellation'} className="form-group">
+//   <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
+//   <Field name="cancellation" component="select" type="boolean" className="form-control">
+//     <option></option>
+//     <option value={true}>{AppLanguages.yesSeePolicies[appLanguageCode]}</option>
+//     <option value={false}>{AppLanguages.zip[appLanguageCode]}</option>
+//   </Field>
+// </fieldset>

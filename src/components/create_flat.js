@@ -414,7 +414,7 @@ class CreateFlat extends Component {
       return _.map(eachField.optionArray, eachOption => {
         console.log('in flatCreateEditMainFields, renderOptions , this.props.appLanguages, eachOption: ', this.props.appLanguages, eachOption);
         const optionText = this.props.appLanguages && eachField.languageFromBackEnd && eachOption.value ? this.props.appLanguages[eachOption.value][this.props.appLanguageCode] : eachOption.value
-        if (!eachOption.value) return <option key={111111}></option>;
+        if (eachOption.value === null) return <option key={111111}></option>;
         // If there is value but not textAppLanguagekey, use value for the option text
         if (eachOption.value && !eachOption.textAppLanguagekey) return <option key={eachOption.value} value={eachOption.value}>{optionText}</option>;
         return <option key={eachOption.value} value={eachOption.value}>{appLanguages ? appLanguages[eachOption.textAppLanguagekey][appLanguageCode] : ''}</option>;
@@ -428,7 +428,7 @@ class CreateFlat extends Component {
       if (!eachField.type) {
         return (
           <fieldset key={eachName} className="form-group">
-            <div style={eachField.style}><span style={eachField.labelSpanStyle}>*</span>{appLanguages.requiredFields[appLanguageCode]}</div>
+            <div style={eachField.style}><span style={eachField.labelSpanStyle}>*</span>{appLanguages[eachField.appLanguageKey][appLanguageCode]}</div>
           </fieldset>
         )
       }
@@ -475,119 +475,6 @@ class CreateFlat extends Component {
 
         {!_.isEmpty(this.props.appLanguages) && this.flatCreateEditMainFields({ appLanguages: AppLanguages, appLanguageCode })}
 
-
-        <fieldset key={'guests'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.guests[appLanguageCode]}:</label>
-          <Field name="guests" component="select" type="integer" className="form-control">
-            <option></option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-          </Field>
-        </fieldset>
-        <fieldset key={'sales_point'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.salesPoint[appLanguageCode]}:</label>
-          <Field name="sales_point" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset key={'beds'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.beds[appLanguageCode]}:</label>
-          <Field name="beds" component="select" type="integer" className="form-control">
-          <option></option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="4">5</option>
-          <option value="4">6 or more</option>
-          </Field>
-        </fieldset>
-        <fieldset className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.kingOrQueen[appLanguageCode]}:</label>
-          <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
-          <option></option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="4">5</option>
-          <option value="4">6 or more</option>
-          </Field>
-        </fieldset>
-        <fieldset key={'flat_type'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.flatType[appLanguageCode]}:</label>
-          <Field name="flat_type" component="select" type="string" className="form-control">
-            <option></option>
-            <option value="flat_in_building">Flat in building</option>
-            <option value="single_family">House</option>
-            <option value="town_house">Town House</option>
-            <option value="others">Others</option>
-          </Field>
-        </fieldset>
-        <fieldset key={'bath'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.bath[appLanguageCode]}:</label>
-          <Field name="bath" component="select" type="float" className="form-control">
-            <option></option>
-            <option value="1">1</option>
-            <option value="1.5">1.5</option>
-            <option value="2">2</option>
-            <option value="2.5">2.5</option>
-            <option value="3">3 or more</option>
-          </Field>
-        </fieldset>
-        <fieldset key={'intro'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
-          <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
-        </fieldset>
-        <fieldset key={'owner_name'} className="form-group">
-          <label className="create-flat-form-label">Owner Name:</label>
-          <Field name="owner_name" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset className="form-group">
-          <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
-        </fieldset>
-        <fieldset key={'owner_contact_name'} className="form-group">
-          <label className="create-flat-form-label">Owner Contact Name:</label>
-          <Field name="v" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset key={'owner_address'} className="form-group">
-          <label className="create-flat-form-label">Owner Address:</label>
-          <Field name="owner_address" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset key={'owner_phone'} className="form-group">
-          <label className="create-flat-form-label">Owner Phone:</label>
-          <Field name="owner_phone" component="input" type="string" className="form-control" />
-        </fieldset>
-        <fieldset key={'ownership_rights'} className="form-group">
-          <label className="create-flat-form-label">Ownership Rights:</label>
-          <Field name="ownership_rights" component="input" type="text" className="form-control" />
-        </fieldset>
-        <fieldset key={'other_rights'} className="form-group">
-          <label className="create-flat-form-label">Other Rights than Ownership:</label>
-          <Field name="other_rights" component="input" type="text" className="form-control" />
-        </fieldset>
-        <fieldset key={'cancellation'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
-          <Field name="cancellation" component="select" type="boolean" className="form-control">
-            <option></option>
-            <option value={true}>{AppLanguages.yesSeePolicies[appLanguageCode]}</option>
-            <option value={false}>{AppLanguages.zip[appLanguageCode]}</option>
-          </Field>
-        </fieldset>
-        <fieldset key={'smoking'} className="form-group">
-          <label className="create-flat-form-label">{AppLanguages.smoking[appLanguageCode]}:</label>
-          <Field name="smoking" component="select" type="boolean" className="form-control">
-            <option></option>
-            <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
-            <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
-          </Field>
-        </fieldset>
         <div className="container amenity-input-box">
           <div className="row amenity-row">
             {this.renderAmenityInput()}

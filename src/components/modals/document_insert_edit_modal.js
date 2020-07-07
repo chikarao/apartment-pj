@@ -248,8 +248,8 @@ class DocumentInsertEditModal extends Component {
   handleDeleteDocumentInsertCallback() {
     this.setState({ editDocumentInsertCompleted: true, deleteDocumentInsertCompleted: true }, () => {
       console.log('in documentInsert_edit_modal, handleDeleteDocumentInsertCallback, handleDeleteDocumentInsertCallback this.state.editDocumentInsertCompleted: ', this.state.editDocumentInsertCompleted);
-      // Close document prop passed in props in call in bookingConfirmation 
-      this.props.closeDocument();
+      // Close document prop passed in props in call in bookingConfirmation after deleting agreement 
+      if (this.props.uploadOwnDocument) this.props.closeDocument();
     });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
