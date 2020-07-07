@@ -1323,6 +1323,11 @@ renderDocumentInsertEditForm() {
       agreement={this.props.booking.agreements.filter((agr) => agr.id === this.state.agreementId)}
       uploadOwnDocument={this.state.uploadOwnDocument}
       showTemplate={this.state.showTemplate}
+      closeDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+        // this.setState({ showDocument: !this.state.showDocument }, () => {
+        //   // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+        // });
+      })}
     />
   );
 }

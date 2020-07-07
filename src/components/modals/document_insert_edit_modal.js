@@ -36,8 +36,6 @@ class DocumentInsertEditModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    // const { code } = data;
-    // this.setState({ selectedLanguage: languages[code].name });
     const delta = {}
     _.each(Object.keys(data), each => {
       // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
@@ -47,13 +45,9 @@ class DocumentInsertEditModal extends Component {
       }
     });
     delta.agreement_id = this.props.agreementId;
-    // const dataToBeSent = { document_insert: delta, id: this.props.documentInsertId };
-    // dataToBeSent.flat_id = this.props.flat.id;
-    // console.log('in DocumentInsertEditModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
+
     this.props.showLoading();
-    // this.props.editDocumentInsert(dataToBeSent, () => {
-    //   this.handleFormSubmitCallback();
-    // });
+
     const imageFiles = data.files ? data.files : [];
 
     this.handleCreateImages(imageFiles, delta);
@@ -67,22 +61,17 @@ class DocumentInsertEditModal extends Component {
     if (!this.props.uploadOwnDocument) {
       dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
       dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-      if (data.insert_name) formData.append('document_insert[insert_name]', data.insert_name)
+      if (data.insert_name) formData.append('document_insert[insert_name]', data.insert_name);
       // Test for null since value could zero
       if (data.insert_after_page !== null) formData.append('document_insert[insert_after_page]', data.insert_after_page)
       formData.append('id', this.props.documentInsertId);
       formData.append('document_insert[agreement_id]', this.props.agreementId);
       this.props.editDocumentInsert(formData, () => this.handleFormSubmitCallback());
     } else {
-      // const dataToChange = data;
-      // dataToChange.document_publicid = imagesArray[0];
-      // dataToChange.document_name = data.insert_name;
-      // dataToChange.booking_id = this.props.booking.id;
-      // dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
-      if (data.insert_name) formData.append('agreement[document_name]', data.insert_name)
-      if (data.language_code) formData.append('agreement[language_code]', data.language_code)
-      formData.append('id', this.props.agreementId)
-      formData.append('agreement[booking_id]', this.props.booking.id)
+      if (data.insert_name) formData.append('agreement[document_name]', data.insert_name);
+      if (data.language_code) formData.append('agreement[language_code]', data.language_code);
+      formData.append('id', this.props.agreementId);
+      formData.append('agreement[booking_id]', this.props.booking.id);
       // console.log('in edit_document_inset, handleCreateImages, this.props.agreementId: ', this.props.agreementId);
       this.props.editAgreement(formData, () => this.handleFormSubmitCallback());
     }
@@ -238,12 +227,12 @@ class DocumentInsertEditModal extends Component {
     // if (!this.props.documentInsert.base_record_id) {
     if (!this.props.uploadOwnDocument) {
       if (window.confirm('Are you sure you want to delete this documentInsert? Deleting this record will delete fields and PDF attached to it.')) {
-        this.props.showLoading()
+        this.props.showLoading();
         this.props.deleteDocumentInsert(elementVal, () => this.handleDeleteDocumentInsertCallback());
       }
     } else {
       if (window.confirm('Are you sure you want to delete this document?')) {
-        this.props.showLoading()
+        this.props.showLoading();
         // this.props.deleteOwnDocumentCompleted();
         this.props.deleteAgreement(elementVal, () => this.handleDeleteDocumentInsertCallback());
       }
@@ -259,6 +248,8 @@ class DocumentInsertEditModal extends Component {
   handleDeleteDocumentInsertCallback() {
     this.setState({ editDocumentInsertCompleted: true, deleteDocumentInsertCompleted: true }, () => {
       console.log('in documentInsert_edit_modal, handleDeleteDocumentInsertCallback, handleDeleteDocumentInsertCallback this.state.editDocumentInsertCompleted: ', this.state.editDocumentInsertCompleted);
+      // Close document prop passed in props in call in bookingConfirmation 
+      this.props.closeDocument();
     });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();

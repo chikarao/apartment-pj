@@ -5722,15 +5722,19 @@ longActionPress(props) {
     } // end of if this.props.agreement
   }
 
+  handleClose() {
+    this.props.showSavedDocument ? this.props.closeSavedDocument() : this.props.showDocument();
+    this.props.editHistory({ editHistoryItem: {}, action: 'clear' });
+    this.props.setCreateDocumentKey('', () => {});
+    this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+    if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} })
+  }
+
   handleFormCloseDeleteClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     if (elementVal == 'close') {
-      this.props.showSavedDocument ? this.props.closeSavedDocument() : this.props.showDocument();
-      this.props.editHistory({ editHistoryItem: {}, action: 'clear' });
-      this.props.setCreateDocumentKey('', () => {});
-      this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
-      if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} })
+      this.handleClose();
     }
     if (elementVal == 'delete') {
       if (window.confirm('Are you sure you want to delete this agreement?')) {
@@ -5808,17 +5812,9 @@ longActionPress(props) {
     let showDocumentButtons = false;
     console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
 
-    // if (this.props.formIsDirty && this.props.showSavedDocument) saveButtonActive = true;
-
-    // if (!this.props.showSavedDocument) saveButtonActive = true;
-
     if (this.props.showSavedDocument) {
-    //   if (this.props.agreement) {
       showDocumentButtons = true;
       if (this.props.agreement && this.props.agreement.document_pdf_publicid) agreementHasPdf = true;
-    //   }
-    // } else {
-    //   showDocumentButtons = true;
     }
 
     if (showDocumentButtons) {
