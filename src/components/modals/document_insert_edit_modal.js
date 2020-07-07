@@ -42,9 +42,9 @@ class DocumentInsertEditModal extends Component {
       // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
       if (data[each] !== this.props.initialValues[each]) {
         console.log('in edit flat, handleFormSubmit, each: ', each);
-        delta[each] = data[each]
+        delta[each] = data[each];
       }
-    })
+    });
     delta.agreement_id = this.props.agreementId;
     // const dataToBeSent = { document_insert: delta, id: this.props.documentInsertId };
     // dataToBeSent.flat_id = this.props.flat.id;
@@ -59,80 +59,109 @@ class DocumentInsertEditModal extends Component {
   }
 
   handleCreateImages(files, data) {
-    console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
-
-    const imagesArray = [];
-    let uploaders = [];
-    let pages = '';
-    let pageSize = '';
-  // Push all the axios request promise into a single array
-    if (files.length > 0) {
-      uploaders = files.map((file) => {
-        console.log('in Upload, handleDrop, uploaders, file: ', file);
-        // Initial FormData
-        const formData = new FormData();
-        formData.append('file', file);
-        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-        // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
-        return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
-          headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-        }).then(response => {
-          // const data = response.data;
-          console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
-          const filePublicId = response.data.data.response.public_id;
-          pages = response.data.data.response.pages;
-          pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
-          // You should store this URL for future references in your app
-          imagesArray.push(filePublicId);
-          // call create image action, send images Array with flat id
-        });
-        //end of then
-      });
-      //end of uploaders
-    }
-  console.log('in Upload, handleDrop, uploaders: ', uploaders);
-  // Once all the files are uploaded
-  axios.all(uploaders).then(() => {
-    // ... perform after upload is successful operation
-    console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
-    // if there are no images, call do not create images and just call createImageCallback
-    let dataToBeSent = {};
-    if (imagesArray.length > 0) {
-      if (!this.props.uploadOwnDocument) {
-        dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
-        // this.createImageCallback(imagesArray, 0, flatId);
-        // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-        dataToBeSent.document_insert.publicid = imagesArray[0];
-        dataToBeSent.document_insert.pages = pages;
-        dataToBeSent.document_insert.page_size = pageSize;
-        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-        this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
-      } else {
-        const dataToChange = data;
-        dataToChange.document_name = data.insert_name;
-        dataToChange.booking_id = this.props.booking.id;
-        dataToChange.document_publicid = imagesArray[0];
-        dataToChange.document_pages = pages;
-        dataToChange.document_page_size = pageSize;
-        dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
-        this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
-      }
+    console.log('in edit_document_inset, handleCreateImages, data: ', data);
+    const formData = new FormData();
+    if (files[0]) formData.append('file', files[0]);
+    let dataToBeSent = null;
+    if (!this.props.uploadOwnDocument) {
+      dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+      dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+      if (data.insert_name) formData.append('document_insert[insert_name]', data.insert_name)
+      // Test for null since value could zero
+      if (data.insert_after_page !== null) formData.append('document_insert[insert_after_page]', data.insert_after_page)
+      formData.append('id', this.props.documentInsertId);
+      formData.append('document_insert[agreement_id]', this.props.agreementId);
+      this.props.editDocumentInsert(formData, () => this.handleFormSubmitCallback());
     } else {
-      if (!this.props.uploadOwnDocument) {
-        dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
-        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-        this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
-      } else {
-        const dataToChange = data;
-        // dataToChange.document_publicid = imagesArray[0];
-        dataToChange.document_name = data.insert_name;
-        dataToChange.booking_id = this.props.booking.id;
-        dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
-        this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
-      }
+      // const dataToChange = data;
+      // dataToChange.document_publicid = imagesArray[0];
+      // dataToChange.document_name = data.insert_name;
+      // dataToChange.booking_id = this.props.booking.id;
+      // dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
+      if (data.insert_name) formData.append('agreement[document_name]', data.insert_name)
+      if (data.language_code) formData.append('agreement[language_code]', data.language_code)
+      formData.append('id', this.props.agreementId)
+      formData.append('agreement[booking_id]', this.props.booking.id)
+      // console.log('in edit_document_inset, handleCreateImages, this.props.agreementId: ', this.props.agreementId);
+      this.props.editAgreement(formData, () => this.handleFormSubmitCallback());
     }
-  });
-}
+  }
+
+//   handleCreateImages0(files, data) {
+//     console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
+//
+//     const imagesArray = [];
+//     let uploaders = [];
+//     let pages = '';
+//     let pageSize = '';
+//   // Push all the axios request promise into a single array
+//     if (files.length > 0) {
+//       uploaders = files.map((file) => {
+//         console.log('in Upload, handleDrop, uploaders, file: ', file);
+//         // Initial FormData
+//         const formData = new FormData();
+//         formData.append('file', file);
+//         // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+//         // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
+//         return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+//           headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//         }).then(response => {
+//           // const data = response.data;
+//           console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+//           const filePublicId = response.data.data.response.public_id;
+//           pages = response.data.data.response.pages;
+//           pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
+//           // You should store this URL for future references in your app
+//           imagesArray.push(filePublicId);
+//           // call create image action, send images Array with flat id
+//         });
+//         //end of then
+//       });
+//       //end of uploaders
+//     }
+//   console.log('in Upload, handleDrop, uploaders: ', uploaders);
+//   // Once all the files are uploaded
+//   axios.all(uploaders).then(() => {
+//     // ... perform after upload is successful operation
+//     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+//     // if there are no images, call do not create images and just call createImageCallback
+//     let dataToBeSent = {};
+//     if (imagesArray.length > 0) {
+//       if (!this.props.uploadOwnDocument) {
+//         dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+//         // this.createImageCallback(imagesArray, 0, flatId);
+//         // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+//         dataToBeSent.document_insert.publicid = imagesArray[0];
+//         dataToBeSent.document_insert.pages = pages;
+//         dataToBeSent.document_insert.page_size = pageSize;
+//         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+//         this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+//       } else {
+//         const dataToChange = data;
+//         dataToChange.document_name = data.insert_name;
+//         dataToChange.booking_id = this.props.booking.id;
+//         dataToChange.document_publicid = imagesArray[0];
+//         dataToChange.document_pages = pages;
+//         dataToChange.document_page_size = pageSize;
+//         dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
+//         this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+//       }
+//     } else {
+//       if (!this.props.uploadOwnDocument) {
+//         dataToBeSent = { document_insert: data, id: this.props.documentInsertId };
+//         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+//         this.props.editDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+//       } else {
+//         const dataToChange = data;
+//         // dataToChange.document_publicid = imagesArray[0];
+//         dataToChange.document_name = data.insert_name;
+//         dataToChange.booking_id = this.props.booking.id;
+//         dataToBeSent = { agreement: dataToChange, id: this.props.agreementId };
+//         this.props.editAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+//       }
+//     }
+//   });
+// }
 
   handleFormSubmitCallback() {
     console.log('in DocumentInsertEditModal, handleFormSubmitCallback: ');
@@ -157,14 +186,10 @@ class DocumentInsertEditModal extends Component {
   // turn off showDocumentInsertEditModal app state
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
-    console.log('in documentInsert_edit_modal, handleClose, this.props.showDocumentInsertEdit: ', this.props.showDocumentInsertEdit);
-
-    // if (this.props.showDocumentInsertEdit) {
+    // console.log('in documentInsert_edit_modal, handleClose, this.props.showDocumentInsertEdit: ', this.props.showDocumentInsertEdit);
       this.props.showDocumentInsertEditModal();
       this.props.selectedDocumentInsertId('');
-      // this.props.documentInsertToEditId('');
       this.setState({ editDocumentInsertCompleted: false });
-    // }
   }
 
   renderEachDocumentInsertField() {
@@ -280,7 +305,10 @@ class DocumentInsertEditModal extends Component {
 
   renderDocumentInsertImage() {
     // console.log('in documentInsert_edit_modal, renderDocumentInsertImage, this.props.documentInsert: ', this.props.documentInsert);
-    const image = this.props.documentInsert.publicid ? this.props.documentInsert.publicid : '';
+    // let image = null;
+    const image = this.props.uploadOwnDocument ? this.props.agreement.document_publicid : this.props.documentInsert.publicid
+    // image = this.props.documentInsert && this.props.documentInsert.publicid ? this.props.documentInsert.publicid : image;
+    // image = this.props.agreement && this.props.agreement.document_publicid ? this.props.agreement.document_publicid : image;
     // console.log('in documentInsert_edit_modal, renderDocumentInsertImage, image: ', image);
     if (image) {
       return (
@@ -299,17 +327,14 @@ class DocumentInsertEditModal extends Component {
     }
   }
 
-  renderEditDocumentInsertForm() {
+  renderEditDocumentForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     // <div className="edit-flat-delete-language-button modal-edit-delete-edit-button-box">
-
-    if (this.props.auth && this.props.documentInsert) {
-      // console.log('in documentInsert_edit_modal, renderEditDocumentInsertForm, this.props.flat: ', this.props.flat);
+    const documentAvailable = this.props.uploadOwnDocument ? this.props.agreement : this.props.documentInsert;
+    console.log('in documentInsert_edit_modal, renderEditDocumentForm, this.props.show, this.props.auth, this.props.documentInsert, this.props.agreement: ', this.props.show, this.props.auth, this.props.documentInsert, this.props.agreement);
+    // if (this.props.auth && (this.props.documentInsert || this.props.agreement)) {
+    if (this.props.auth && documentAvailable) {
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      // <div className="modal-edit-language-link-box">
-      // {this.renderEditLanguageLink()}
-      // </div>
-
       return (
         <div className={showHideClassName}>
           <section className="modal-main">
@@ -317,7 +342,7 @@ class DocumentInsertEditModal extends Component {
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{!this.props.showTemplate ? AppLanguages.editDocumentInsert[appLanguageCode] : AppLanguages.editTemplateDocument[appLanguageCode]}</h3>
             <div className="modal-edit-delete-edit-button-box">
-              <button value={this.props.uploadOwnDocument ? this.props.agreementId : this.props.documentInsert.id} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
+              <button value={this.props.uploadOwnDocument ? this.props.agreementId : this.props.documentInsertId} className="btn btn-danger btn-sm edit-language-delete-button" onClick={this.handleDeleteDocumentInsertClick}>{AppLanguages.delete[this.props.appLanguageCode]}</button>
             </div>
             <div className="edit-profile-scroll-div">
             {this.renderDocumentInsertImage()}
@@ -364,10 +389,10 @@ class DocumentInsertEditModal extends Component {
   }
   // render the form or a message based on whether edit language (including delete) has been completed
   render() {
-    console.log('in documentInsert_edit_modal, render this.state.editDocumentInsertCompleted: ', this.state.editDocumentInsertCompleted);
+    console.log('in documentInsert_edit_modal, render this.state.editDocumentInsertCompleted, this.props.agreementId: ', this.state.editDocumentInsertCompleted, this.props.agreementId);
     return (
       <div>
-        {this.state.editDocumentInsertCompleted ? this.renderPostEditDeleteMessage() : this.renderEditDocumentInsertForm()}
+        {this.state.editDocumentInsertCompleted ? this.renderPostEditDeleteMessage() : this.renderEditDocumentForm()}
       </div>
     );
   }

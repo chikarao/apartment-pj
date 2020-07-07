@@ -5843,8 +5843,8 @@ longActionPress(props) {
               :
               <button
                 onClick={this.handleViewPDFClickTemplate}
-                className="btn document-floating-button"
-                style={{ backgroundColor: 'blue', color: 'white' }}
+                className={"btn document-floating-button"}
+                style={agreementHasPdf ? { backgroundColor: 'blue', color: 'white' } : { display: 'none'}}
               >
                 {AppLanguages.edit[appLanguageCode]}
               </button>

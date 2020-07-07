@@ -78,78 +78,78 @@ class DocumentInsertCreateModal extends Component {
     }
   }
 
-  handleCreateImages0(files, data) {
-    console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
-
-    const imagesArray = [];
-    let uploaders = [];
-    let pages = null;
-    let pageSize = null;
-  // Push all the axios request promise into a single array
-    if (files.length > 0) {
-      uploaders = files.map((file) => {
-        console.log('in Upload, handleDrop, uploaders, file: ', file);
-        // Initial FormData
-        const formData = new FormData();
-        formData.append('file', file);
-        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-        // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
-        return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
-          headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
-        }).then(response => {
-          // const data = response.data;
-          console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
-          const filePublicId = response.data.data.response.public_id;
-          pages = response.data.data.response.pages;
-          pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
-          console.log('in Upload, handleDrop, uploaders, after response, pages, pageSize ', pages, pageSize);
-          // You should store this URL for future references in your app
-          imagesArray.push(filePublicId);
-          // call create image action, send images Array with flat id
-        });
-        //end of then
-      });
-      //end of uploaders
-    }
-  console.log('in Upload, handleDrop, uploaders: ', uploaders);
-  // Once all the files are uploaded
-  axios.all(uploaders).then(() => {
-    // ... perform after upload is successful operation
-    console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
-    // if there are no images, call do not create images and just call createImageCallback
-    if (imagesArray.length > 0) {
-      // this.createImageCallback(imagesArray, 0, flatId);
-      // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
-      let dataToBeSent = {};
-      // if this is an entire document and not an insert to another document
-      if (!this.props.uploadOwnDocument) {
-        dataToBeSent = { document_insert: data };
-        dataToBeSent.document_insert.agreement_id = this.props.agreementId;
-        dataToBeSent.document_insert.publicid = imagesArray[0];
-        dataToBeSent.document_insert.pages = pages;
-        dataToBeSent.document_insert.page_size = pageSize;
-        this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
-      } else {
-        const dataToChange = data;
-        dataToChange.document_name = dataToChange.insert_name;
-        dataToBeSent = { agreement: dataToChange };
-        // if this is to create an upload
-        if (this.props.templateCreate) dataToBeSent.agreement.document_type = 'template';
-        dataToBeSent.agreement.booking_id = this.props.booking.id;
-        dataToBeSent.agreement.document_publicid = imagesArray[0];
-        dataToBeSent.agreement.document_pages = pages;
-        dataToBeSent.agreement.document_page_size = pageSize;
-        dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
-        // if (this.props.templateCreate) dataToBeSent.agreement.document_code = globalConstants.ownUploadedTemplateKey;
-        dataToBeSent.agreement.language_code_1 = this.props.documentLanguageCode;
-        // dataToBeSent.agreement.language_code = this.props.documentLanguageCode;
-        dataToBeSent.document_field = [];
-        console.log('in Upload, handleCreateImages, axios all, then, else dataToBeSent, data: ', dataToBeSent, data);
-        this.props.createAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
-      }
-    } // end of if imagesArray > 0
-  });
-}
+//   handleCreateImages0(files, data) {
+//     console.log('in DocumentInsertCreateModal, handleCreateImages, files:', files);
+//
+//     const imagesArray = [];
+//     let uploaders = [];
+//     let pages = null;
+//     let pageSize = null;
+//   // Push all the axios request promise into a single array
+//     if (files.length > 0) {
+//       uploaders = files.map((file) => {
+//         console.log('in Upload, handleDrop, uploaders, file: ', file);
+//         // Initial FormData
+//         const formData = new FormData();
+//         formData.append('file', file);
+//         // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+//         // console.log('in create_flat, handleDrop, uploaders, formData file: ', formData.get('file'));
+//         return axios.post(`${ROOT_URL}/api/v1/images/upload`, formData, {
+//           headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+//         }).then(response => {
+//           // const data = response.data;
+//           console.log('in Upload, handleDrop, uploaders, .then, response.data.public_id ', response);
+//           const filePublicId = response.data.data.response.public_id;
+//           pages = response.data.data.response.pages;
+//           pageSize = `${response.data.data.response.width},${response.data.data.response.height}`;
+//           console.log('in Upload, handleDrop, uploaders, after response, pages, pageSize ', pages, pageSize);
+//           // You should store this URL for future references in your app
+//           imagesArray.push(filePublicId);
+//           // call create image action, send images Array with flat id
+//         });
+//         //end of then
+//       });
+//       //end of uploaders
+//     }
+//   console.log('in Upload, handleDrop, uploaders: ', uploaders);
+//   // Once all the files are uploaded
+//   axios.all(uploaders).then(() => {
+//     // ... perform after upload is successful operation
+//     console.log('in Upload, handleCreateImages, axios all, then, imagesArray: ', imagesArray);
+//     // if there are no images, call do not create images and just call createImageCallback
+//     if (imagesArray.length > 0) {
+//       // this.createImageCallback(imagesArray, 0, flatId);
+//       // this.props.createImage(imagesArray, imageCount, flatId, (array, countCb, id) => this.createImageCallback(array, countCb, id));
+//       let dataToBeSent = {};
+//       // if this is an entire document and not an insert to another document
+//       if (!this.props.uploadOwnDocument) {
+//         dataToBeSent = { document_insert: data };
+//         dataToBeSent.document_insert.agreement_id = this.props.agreementId;
+//         dataToBeSent.document_insert.publicid = imagesArray[0];
+//         dataToBeSent.document_insert.pages = pages;
+//         dataToBeSent.document_insert.page_size = pageSize;
+//         this.props.createDocumentInsert(dataToBeSent, () => this.handleFormSubmitCallback());
+//       } else {
+//         const dataToChange = data;
+//         dataToChange.document_name = dataToChange.insert_name;
+//         dataToBeSent = { agreement: dataToChange };
+//         // if this is to create an upload
+//         if (this.props.templateCreate) dataToBeSent.agreement.document_type = 'template';
+//         dataToBeSent.agreement.booking_id = this.props.booking.id;
+//         dataToBeSent.agreement.document_publicid = imagesArray[0];
+//         dataToBeSent.agreement.document_pages = pages;
+//         dataToBeSent.agreement.document_page_size = pageSize;
+//         dataToBeSent.agreement.document_code = globalConstants.ownUploadedDocumentKey;
+//         // if (this.props.templateCreate) dataToBeSent.agreement.document_code = globalConstants.ownUploadedTemplateKey;
+//         dataToBeSent.agreement.language_code_1 = this.props.documentLanguageCode;
+//         // dataToBeSent.agreement.language_code = this.props.documentLanguageCode;
+//         dataToBeSent.document_field = [];
+//         console.log('in Upload, handleCreateImages, axios all, then, else dataToBeSent, data: ', dataToBeSent, data);
+//         this.props.createAgreement(dataToBeSent, () => this.handleFormSubmitCallback());
+//       }
+//     } // end of if imagesArray > 0
+//   });
+// }
 
   handleFormSubmitCallback() {
     console.log('in DocumentInsertCreateModal, handleFormSubmitCallback: ');

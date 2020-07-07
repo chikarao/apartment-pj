@@ -638,15 +638,15 @@ function mapStateToProps(state) {
   console.log('in document_choices_template, mapStateToProps, state: ', state);
   // console.log('in document_choices_template, mapStateToProps: ');
   return {
-    allValues: state.form.CreateEditDocument.values,
-    registeredFields: state.form.CreateEditDocument.registeredFields,
+    allValues: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.values : {},
+    registeredFields: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.registeredFields : {},
     documentLanguageCode: state.languages.documentLanguageCode,
     editHistoryProp: state.documents.editHistory,
     dirtyFields: state.documents.dirtyObject,
     appLanguageCode: state.languages.appLanguageCode,
     allDocumentObjects: state.documents.allDocumentObjects,
     documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
-    initialValuesObject: state.form.CreateEditDocument.initial,
+    initialValuesObject: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.initial : {},
   };
 }
 

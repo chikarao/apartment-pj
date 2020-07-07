@@ -320,6 +320,7 @@ const appLanguages =
     createInsertField: { en: 'Create Insert Field', jp: 'フィールドを作成' },
     editInsertField: { en: 'Edit Insert Field', jp: 'フィールドを編集' },
     editDocumentInsert: { en: 'Edit Document Insert', jp: '挿入ドキュメントを編集' },
+    editAgreement: { en: 'Edit Agreement', jp: '書類を編集' },
     insertField: { en: 'insert field', jp: 'フィールドを追加' },
     insertOwnAgreement: { en: 'Insert Your Own Agreement', jp: '自分の契約書を挿入' },
     download: { en: 'Download', jp: 'ダウンロード' },

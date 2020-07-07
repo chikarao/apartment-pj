@@ -2944,13 +2944,13 @@ export function createAgreement(agreementAttributes, callback) {
   };
 }
 
-export function editAgreement(agreementAttributes, callback) {
-  console.log('in actions index, editAgreement, agreementAttributes: ', agreementAttributes);
+export function editAgreement(agreementFormData, callback) {
+  console.log('in actions index, editAgreement, agreementFormData: ', agreementFormData);
   console.log('in actions index, editAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
 
-  // const { } = agreementAttributes;
+  // const { } = agreementFormData;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/agreements/${agreementAttributes.id}`, agreementAttributes, {
+    axios.patch(`${ROOT_URL}/api/v1/agreements/${agreementFormData.get('id')}`, agreementFormData, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
@@ -3118,18 +3118,17 @@ export function createInsertField(insertFieldAttributes, callback) {
   };
 }
 
-export function editDocumentInsert(documentInsertAttributes, callback) {
-  console.log('in actions index, createDocumentInsert, documentInsertAttributes: ', documentInsertAttributes);
-  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
-  const id = documentInsertAttributes.id
-  // const { } = documentInsertAttributes;
+export function editDocumentInsert(documentInsertFormData, callback) {
+  const id = documentInsertFormData.get('id')
+  console.log('in actions index, editDocumentInsert, documentInsertFormData, id: ', documentInsertFormData, id);
+  // const { } = documentInsertFormData;
   return function (dispatch) {
-    axios.patch(`${ROOT_URL}/api/v1/document_inserts/${id}`, documentInsertAttributes, {
+    axios.patch(`${ROOT_URL}/api/v1/document_inserts/${id}`, documentInsertFormData, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('response to createDocumentInsert, response: ', response);
-      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      console.log('response to editDocumentInsert, response: ', response);
+      // console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: EDIT_DOCUMENT_INSERT,
         payload: response.data.data
