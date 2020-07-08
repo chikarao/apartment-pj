@@ -5,7 +5,8 @@ const flatFormObject = {
     appLanguageKey: 'streetAddress',
     labelSpanStyle: { color: 'red' },
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    editFlatUnchangeable: true
   },
 
   unit: {
@@ -14,7 +15,6 @@ const flatFormObject = {
     labelSpanStyle: null,
     type: 'string',
     className: 'form-control',
-
   },
 
   city: {
@@ -22,7 +22,8 @@ const flatFormObject = {
     appLanguageKey: 'city',
     labelSpanStyle: { color: 'red' },
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    editFlatUnchangeable: true
   },
 
   state: {
@@ -30,7 +31,8 @@ const flatFormObject = {
     appLanguageKey: 'state',
     labelSpanStyle: { color: 'red' },
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    editFlatUnchangeable: true
   },
 
   zip: {
@@ -38,7 +40,8 @@ const flatFormObject = {
     appLanguageKey: 'zip',
     labelSpanStyle: { color: 'red' },
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    editFlatUnchangeable: true
   },
 
   country: {
@@ -46,7 +49,8 @@ const flatFormObject = {
     appLanguageKey: 'country',
     labelSpanStyle: { color: 'red' },
     type: 'string',
-    className: 'form-control'
+    className: 'form-control',
+    editFlatUnchangeable: true
   },
 
   price_per_month: {
@@ -78,6 +82,7 @@ const flatFormObject = {
       { value: 4, textAppLanguagekey: 'orMore4' },
     ]
   },
+
   minutes_to_station: {
     component: 'selectField',
     appLanguageKey: 'minutesToNearest',
@@ -102,7 +107,50 @@ const flatFormObject = {
     labelSpanStyle: { color: 'red' },
     type: null,
     className: 'form-control',
-    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' }
+    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' },
+    create: true
+  },
+
+  requiredFieldsEdit: {
+    component: null,
+    appLanguageKey: 'requiredFieldsEdit',
+    labelSpanStyle: { color: 'red' },
+    type: null,
+    className: 'form-control',
+    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' },
+    edit: true
+  },
+
+  payment_due_date: {
+    component: 'inputField',
+    appLanguageKey: 'paymentDueDate',
+    labelSpanStyle: null,
+    type: 'integer',
+    className: 'form-control',
+  },
+
+  key_money: {
+    component: 'inputField',
+    appLanguageKey: 'keyMoney',
+    labelSpanStyle: null,
+    type: 'float',
+    className: 'form-control',
+  },
+
+  deposit: {
+    component: 'inputField',
+    appLanguageKey: 'deposit',
+    labelSpanStyle: null,
+    type: 'float',
+    className: 'form-control',
+  },
+
+  management_fees: {
+    component: 'inputField',
+    appLanguageKey: 'managementFees',
+    labelSpanStyle: null,
+    type: 'float',
+    className: 'form-control',
   },
 
   description: {
@@ -263,12 +311,83 @@ const flatFormObject = {
     className: 'form-control flat-intro-input',
   },
 
-  owner_name: {
-    component: 'inputField',
-    appLanguageKey: 'ownerName',
+
+  cancellation: {
+    component: 'selectField',
+    appLanguageKey: 'cancellation',
     labelSpanStyle: null,
-    type: 'string',
+    type: 'boolean',
     className: 'form-control',
+    optionArray: [
+      // { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yesSeePolicies' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  smoking: {
+    component: 'selectField',
+    appLanguageKey: 'smoking',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      // { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  parking_included: {
+    component: 'selectField',
+    appLanguageKey: 'parkingIncluded',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  bicycle_parking_included: {
+    component: 'selectField',
+    appLanguageKey: 'bicycleParkingIncluded',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  storage_included: {
+    component: 'selectField',
+    appLanguageKey: 'storageIncluded',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
+  },
+
+  dedicated_yard: {
+    component: 'selectField',
+    appLanguageKey: 'dedicatedYard',
+    labelSpanStyle: null,
+    type: 'boolean',
+    className: 'form-control',
+    optionArray: [
+      { value: null, textAppLanguagekey: '' },
+      { value: true, textAppLanguagekey: 'yes' },
+      { value: false, textAppLanguagekey: 'no' },
+    ]
   },
 
   ifOwnerDifferent: {
@@ -277,7 +396,17 @@ const flatFormObject = {
     labelSpanStyle: { color: 'red' },
     type: null,
     className: 'form-control',
-    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' }
+    style: { float: 'left', paddingLeft: '20px', fontStyle: 'italic' },
+    edit: true,
+    create: true
+  },
+
+  owner_name: {
+    component: 'inputField',
+    appLanguageKey: 'ownerName',
+    labelSpanStyle: null,
+    type: 'string',
+    className: 'form-control',
   },
 
   owner_contact_name: {
@@ -318,32 +447,6 @@ const flatFormObject = {
     labelSpanStyle: null,
     type: 'text',
     className: 'form-control',
-  },
-
-  cancellation: {
-    component: 'selectField',
-    appLanguageKey: 'cancellation',
-    labelSpanStyle: null,
-    type: 'boolean',
-    className: 'form-control',
-    optionArray: [
-      { value: null, textAppLanguagekey: '' },
-      { value: true, textAppLanguagekey: 'yesSeePolicies' },
-      { value: false, textAppLanguagekey: 'no' },
-    ]
-  },
-
-  smoking: {
-    component: 'selectField',
-    appLanguageKey: 'smoking',
-    labelSpanStyle: null,
-    type: 'boolean',
-    className: 'form-control',
-    optionArray: [
-      { value: null, textAppLanguagekey: '' },
-      { value: true, textAppLanguagekey: 'yes' },
-      { value: false, textAppLanguagekey: 'no' },
-    ]
   },
 };
 

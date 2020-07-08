@@ -440,6 +440,7 @@ const appLanguages =
     otherRights: { en: 'Other rights', jp: '所有権以外の権利' },
     noCancellation: { en: 'No cancellation', jp: '不可' },
     noSmoking: { en: 'No', jp: '禁煙' },
+    listingId: { en: 'Listing ID', jp: '物件ID' },
 
     // publicGas: { en: 'Public Gas', jp: 'ガス会社' },
     // propaneGas: { en: 'Propane Gas', jp: 'プロパンガス' },

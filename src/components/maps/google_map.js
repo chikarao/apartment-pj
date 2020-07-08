@@ -41,7 +41,6 @@ class GoogleMap extends Component {
     // NOTE: if googleMapBoundsKeys already exists when CDM is called, call render map;
     // Otherwise, check in componentDidUpdate if googleMapBoundsKeys goes from null to not null
     if (this.props.googleMapBoundsKeys) this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
-
   }
   //end of componentDidMount
 

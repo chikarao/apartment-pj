@@ -425,7 +425,7 @@ class CreateFlat extends Component {
 
       const eachField = flatFormObject[eachName]
       console.log('in flatCreateEditMainFields, before return , appLanguages, props: ', appLanguages, props);
-      if (!eachField.type) {
+      if (!eachField.type && eachField.create) {
         return (
           <fieldset key={eachName} className="form-group">
             <div style={eachField.style}><span style={eachField.labelSpanStyle}>*</span>{appLanguages[eachField.appLanguageKey][appLanguageCode]}</div>
@@ -438,7 +438,7 @@ class CreateFlat extends Component {
           <label className="create-flat-form-label">{appLanguages ? appLanguages[eachField.appLanguageKey][appLanguageCode] : ''}
           {eachField.labelSpanStyle ? <span style={{ color: 'red' }}>*</span> : ''}:
           </label>
-          <Field key={eachName} props={{ required: eachField.required }} name={eachName} component={componentMap[eachField.component]} type={eachField.type} className={eachField.className}>
+          <Field key={eachName} name={eachName} component={componentMap[eachField.component]} type={eachField.type} className={eachField.className}>
             {eachField.component === 'selectField' ? renderOptions(eachField) : ''}
           </Field>
         </fieldset>
@@ -449,17 +449,6 @@ class CreateFlat extends Component {
   renderFields() {
     const { handleSubmit, appLanguageCode } = this.props;
     // console.log('in createflat, renderFields, this.props: ', this.props);
-    // this.props.formObject ? console.log('in createflat, renderFields, this.props.formObject: ', this.props.formObject) : '';
-    // console.log('in createflat, renderFields, this.props.formObject && this.props.formObject.simple && Object.keys(this.props.formObject.simple.syncErrors).length > 0 && this.state.confirmChecked: ', this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked);
-     // this.props.formObject ? console.log('in createflat, renderFields, this.props.formObject.simple: ', this.props.formObject) : '';
-    // console.log('in createflat, renderFields, Object.keys(this.props.formObject.simple.syncErrors ', Object.keys(this.props.formObject.simple.syncErrors));
-    // console.log('in createflat, renderFields, Field: ', Field);
-    // handle submit came from redux form; fields came from below
-    // <form>
-    // <button onClick={handleSubmit(() => this.handleFormSubmit)} className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
-    // !!! IMPORTANT: Tried to render redux fields with reusable function with iterator but does not work;
-    // First click does not register, backspacing inputs does not work well etc...
-    // Having repeating tag code is no desirable but redux form works better thaat so it seems...
     // <fieldset key={'address1'} className="form-group">
     // <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
     // <Field name="address1" component={InputField} type="string" className="form-control" />
@@ -521,10 +510,11 @@ const InputField = ({
   input,
   type,
   placeholder,
+  className,
   meta: { touched, error, warning },
   }) => (
       <div>
-          <input {...input} type={type} placeholder={placeholder} className="form-control" />
+          <input {...input} type={type} placeholder={placeholder} className={className} />
           {touched && error &&
             <div className="error">
               <span style={{ color: 'red' }}>* </span>{error}
@@ -555,54 +545,56 @@ const InputField = ({
 function validate(values) {
   console.log('in signin modal, validate values: ', values);
     const errors = {};
-    if (!values.language_code) {
-      errors.language_code = values.appLanguages.requiredLanguage[values.languageCodeForValidate];
+    if (values.appLanguages) {
+      if (!values.language_code) {
+        errors.language_code = values.appLanguages.requiredLanguage[values.languageCodeForValidate];
         // errors.language_code = 'A language is required';
-    }
+      }
 
-    if (!values.address1) {
-      // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.languageCodeForValidate: ', values, values.appLanguages.requiredAddress1, values.languageCodeForValidate);
-      errors.address1 = values.appLanguages.requiredAddress1[values.languageCodeForValidate];
+      if (!values.address1) {
+        // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.languageCodeForValidate: ', values, values.appLanguages.requiredAddress1, values.languageCodeForValidate);
+        errors.address1 = values.appLanguages.requiredAddress1[values.languageCodeForValidate];
         // errors.address1 = 'A Street address is required';
-    }
+      }
 
-    if (!values.city) {
-      errors.city = values.appLanguages.requiredCity[values.languageCodeForValidate];
+      if (!values.city) {
+        errors.city = values.appLanguages.requiredCity[values.languageCodeForValidate];
         // errors.city = 'A city, district or ward is required';
-    }
+      }
 
-    if (!values.state) {
-      errors.state = values.appLanguages.requiredState[values.languageCodeForValidate];
+      if (!values.state) {
+        errors.state = values.appLanguages.requiredState[values.languageCodeForValidate];
         // errors.state = 'A state or province is required';
-    }
+      }
 
-    if (!values.zip) {
-      errors.zip = values.appLanguages.requiredZip[values.languageCodeForValidate];
+      if (!values.zip) {
+        errors.zip = values.appLanguages.requiredZip[values.languageCodeForValidate];
         // errors.zip = 'A zip or postal code is required';
-    }
+      }
 
-    if (!values.country) {
-      errors.country = values.appLanguages.requiredCountry[values.languageCodeForValidate];
+      if (!values.country) {
+        errors.country = values.appLanguages.requiredCountry[values.languageCodeForValidate];
         // errors.country = 'A country is required';
-    }
-    if (!values.price_per_month) {
-      errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.languageCodeForValidate];
+      }
+      if (!values.price_per_month) {
+        errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.languageCodeForValidate];
         // errors.price_per_month = 'A price is required';
-    }
+      }
 
-    if (!values.size) {
-      errors.size = values.appLanguages.requiredFloorSpace[values.languageCodeForValidate];
+      if (!values.size) {
+        errors.size = values.appLanguages.requiredFloorSpace[values.languageCodeForValidate];
         // errors.size = 'Floor space is required';
-    }
+      }
 
-    if (!values.rooms) {
-      errors.rooms = values.appLanguages.requiredRooms[values.languageCodeForValidate];
+      if (!values.rooms) {
+        errors.rooms = values.appLanguages.requiredRooms[values.languageCodeForValidate];
         // errors.rooms = 'Number of rooms is required';
-    }
-    if (!values.minutes_to_station) {
-      errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.languageCodeForValidate];
+      }
+      if (!values.minutes_to_station) {
+        errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.languageCodeForValidate];
         // errors.minutes_to_station = 'Minutes to station is required';
-    }
+      }
+    } // end of if values.appLanguages
 
     // if (values.size !== parseInt(values.size, 10)) {
     //     errors.size = 'Floor space needs to be a number';

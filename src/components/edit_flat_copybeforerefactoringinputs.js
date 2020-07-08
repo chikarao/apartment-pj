@@ -30,7 +30,6 @@ import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
 import Facility from './constants/facility';
-import flatFormObject from './forms/flat_form_object';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
@@ -76,7 +75,6 @@ class EditFlat extends Component {
     });
     this.props.getCurrentUser();
     this.props.fetchBankAccountsByUser();
-    this.props.getGoogleMapBoundsKeys();
     // this.props.fetchPlaces(this.props.match.params.id);
 
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
@@ -338,8 +336,8 @@ class EditFlat extends Component {
       const flatArray = [this.props.flat];
       const flatArrayMapped = _.mapKeys(flatArray, 'id');
 
-      console.log('in edit_flat, renderMap, flatArray, initialPosition: ', flatArray, initialPosition);
-      console.log('in edit_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
+      // console.log('in show_flat, renderMap, flatArray: ', flatArray);
+      // console.log('in show_flat, renderMap, flatArrayMapped: ', flatArrayMapped);
 
       return (
         <div>
@@ -835,41 +833,41 @@ class EditFlat extends Component {
     }
   }
 
-  // renderOwnerFields() {
-  //   // if (this.props.flat.owner_name != 'user') {
-  //     return (
-  //       <div>
-  //         <fieldset key={'owner_name'} className="form-group">
-  //           <label className="create-flat-form-label">Owner Name:</label>
-  //           <Field name="owner_name" component="input" type="string" className="form-control" />
-  //         </fieldset>
-  //         <fieldset className="form-group">
-  //           <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
-  //         </fieldset>
-  //         <fieldset key={'owner_contact_name'} className="form-group">
-  //           <label className="create-flat-form-label">Owner Contact Name:</label>
-  //           <Field name="owner_contact_name" component="input" type="string" className="form-control" />
-  //         </fieldset>
-  //         <fieldset key={'owner_address'} className="form-group">
-  //           <label className="create-flat-form-label">Owner Address:</label>
-  //           <Field name="owner_address" component="input" type="string" className="form-control" />
-  //         </fieldset>
-  //         <fieldset key={'owner_phone'} className="form-group">
-  //           <label className="create-flat-form-label">Owner Phone:</label>
-  //           <Field name="owner_phone" component="input" type="string" className="form-control" />
-  //         </fieldset>
-  //         <fieldset key={'ownership_rights'} className="form-group">
-  //           <label className="create-flat-form-label">Ownership Rights:</label>
-  //           <Field name="ownership_rights" component="input" type="text" className="form-control" />
-  //         </fieldset>
-  //         <fieldset key={'other_rights'} className="form-group">
-  //           <label className="create-flat-form-label">Other Rights than Ownership:</label>
-  //           <Field name="other_rights" component="input" type="text" className="form-control" />
-  //         </fieldset>
-  //       </div>
-  //     )
-  //   // }
-  // }
+  renderOwnerFields() {
+    // if (this.props.flat.owner_name != 'user') {
+      return (
+        <div>
+          <fieldset key={'owner_name'} className="form-group">
+            <label className="create-flat-form-label">Owner Name:</label>
+            <Field name="owner_name" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset className="form-group">
+            <div style={{ float: 'left', paddingLeft: '20px', fontStyle: 'italic' }}><span style={{ color: 'red' }}>*</span>{AppLanguages.ifOwnerDifferent[this.props.appLanguageCode]}</div>
+          </fieldset>
+          <fieldset key={'owner_contact_name'} className="form-group">
+            <label className="create-flat-form-label">Owner Contact Name:</label>
+            <Field name="owner_contact_name" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset key={'owner_address'} className="form-group">
+            <label className="create-flat-form-label">Owner Address:</label>
+            <Field name="owner_address" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset key={'owner_phone'} className="form-group">
+            <label className="create-flat-form-label">Owner Phone:</label>
+            <Field name="owner_phone" component="input" type="string" className="form-control" />
+          </fieldset>
+          <fieldset key={'ownership_rights'} className="form-group">
+            <label className="create-flat-form-label">Ownership Rights:</label>
+            <Field name="ownership_rights" component="input" type="text" className="form-control" />
+          </fieldset>
+          <fieldset key={'other_rights'} className="form-group">
+            <label className="create-flat-form-label">Other Rights than Ownership:</label>
+            <Field name="other_rights" component="input" type="text" className="form-control" />
+          </fieldset>
+        </div>
+      )
+    // }
+  }
 
   // renderUserIsOwnerPicker() {
   //   return (
@@ -882,86 +880,10 @@ class EditFlat extends Component {
   //   );
   // }
 
-  renderEachEditFlatMainFields(props) {
-    const { appLanguages, appLanguageCode } = props;
-
-    const componentMap = {
-      selectField: SelectField,
-      inputField: InputField,
-      input: 'input'
-    };
-
-    const renderOptions = (eachField) => {
-      return _.map(eachField.optionArray, eachOption => {
-        // console.log('in renderEachEditFlatMainFields, renderOptions , this.props.appLanguages, eachOption: ', this.props.appLanguages, eachOption);
-        const optionText = this.props.appLanguages && eachField.languageFromBackEnd && eachOption.value ? this.props.appLanguages[eachOption.value][this.props.appLanguageCode] : eachOption.value
-        // return empty option in case there is nothing chosen or assigned to field
-        if (eachOption.value === null) return <option key={111111}></option>;
-        // If there is value but not textAppLanguagekey, use value for the option text
-        if (eachOption.value && !eachOption.textAppLanguagekey) return <option key={eachOption.value} value={eachOption.value}>{optionText}</option>;
-        return <option key={eachOption.value} value={eachOption.value}>{appLanguages ? appLanguages[eachOption.textAppLanguagekey][appLanguageCode] : ''}</option>;
-      })
-    };
-
-    return _.map(Object.keys(flatFormObject), eachName => {
-      const eachField = flatFormObject[eachName];
-      // console.log('in renderEachEditFlatMainFields, in map eachName flatFormObject[eachName], componentMap[flatFormObject[eachName].component]: ', eachName, flatFormObject[eachName], componentMap[flatFormObject[eachName].component]);
-      // If undchangeable field
-      if (eachField.editFlatUnchangeable) {
-        return (
-          <fieldset key={eachName} className="form-group">
-            <label className="create-flat-form-label">{AppLanguages[eachField.appLanguageKey][appLanguageCode]}:</label>
-            <div className="edit-flat-address">{this.props.flat[eachName]}</div>
-          </fieldset>
-        );
-      } // end of if (eachField.editFlatUnchangeable)
-
-      if (!eachField.type && eachField.edit) {
-        return (
-          <fieldset key={eachName} className="form-group">
-            <div style={eachField.style}><span style={eachField.labelSpanStyle}>*</span>{appLanguages[eachField.appLanguageKey][appLanguageCode]}</div>
-          </fieldset>
-        )
-      } // end of if (!eachField.type)
-
-      if (!eachField.type && eachField.create) {
-        return;
-      } // end of if (!eachField.type)
-
-      return (
-        <fieldset key={eachName} className="form-group">
-          <label className="create-flat-form-label">{appLanguages ? appLanguages[eachField.appLanguageKey][appLanguageCode] : ''}
-          {eachField.labelSpanStyle ? <span style={{ color: 'red' }}>*</span> : ''}:
-          </label>
-          <Field key={eachName} name={eachName} component={componentMap[eachField.component]} type={eachField.type} className={eachField.className}>
-            {eachField.component === 'selectField' ? renderOptions(eachField) : ''}
-          </Field>
-        </fieldset>
-      );
-    });
-  }
-
-  renderRequiredMessages() {
-    console.log('in editflat, renderRequiredMessages: ');
-    const renderEachMessage = () => {
-      return _.map(Object.keys(this.props.formObject.syncErrors), eachKey => {
-        return (
-          <li key={eachKey}>{this.props.formObject.syncErrors[eachKey]}</li>
-        );
-      });
-    };
-
-    return (
-      <div
-        className="create-flat-required-message-box"
-      >
-        <ul>
-          {renderEachMessage()}
-        </ul>
-      </div>
-    );
-  }
-
+  // <fieldset className="form-group">
+  // <label className="create-flat-form-label">{AppLanguages.nearestStation[appLanguageCode]}:</label>
+  // <Field name="station" component="input" type="string" className="form-control" />
+  // </fieldset>
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -977,35 +899,259 @@ class EditFlat extends Component {
           <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
           <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.listingId[appLanguageCode]}: </label>
-              <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
-            </fieldset>
-            <fieldset className="form-group">
               <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}:</label>
               <div className="edit-flat-address">{Languages[this.props.flat.language_code].flag}{Languages[this.props.flat.language_code].name}</div>
             </fieldset>
-
-            {!_.isEmpty(this.props.appLanguages) && this.renderEachEditFlatMainFields({ appLanguages: AppLanguages, appLanguageCode })}
-
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.streetAddress[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.address1}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.city[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.city}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.state[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.state}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.zip[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.zip}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.country[appLanguageCode]}:</label>
+              <div className="edit-flat-address">{this.props.flat.country}</div>
+            </fieldset>
+            <fieldset>
+            <div className="edit-flat-form-message"><span style={{ color: 'red' }}>*</span> {AppLanguages.requiredFieldsEdit[appLanguageCode]}</div>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.unit[appLanguageCode]}:</label>
+              <Field name="unit" component="input" type="string" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.description[appLanguageCode]}:</label>
+              <Field name="description" component="input" type="string" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.area[appLanguageCode]}:</label>
+              <Field name="area" component="input" type="string" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.pricePerMonth[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+              <Field name="price_per_month" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.paymentDueDate[appLanguageCode]}:</label>
+              <Field name="payment_due_date" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.keyMoney[appLanguageCode]}:</label>
+              <Field name="key_money" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.deposit[appLanguageCode]}:</label>
+              <Field name="deposit" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.managementFees[appLanguageCode]}:</label>
+              <Field name="management_fees" component="input" type="float" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.floorSpace[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+              <Field name="size" component="input" type="integer" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.balconySize[appLanguageCode]}:</label>
+              <Field name="balcony_size" component="input" type="integer" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.layout[appLanguageCode]}:</label>
+              <Field name="layout" component="select" type="string" className="form-control">
+                <option></option>
+                <option value="LDK">LDK</option>
+                <option value="DK">DK</option>
+                <option value="L">K</option>
+                <option value="One Room">One Room</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.toilet[appLanguageCode]}:</label>
+              <Field name="toilet" component="select" type="string" className="form-control">
+                <option></option>
+                <option value="Dedicated Flushing Toilet">Dedicated Flushing Toilet</option>
+                <option value="Dedicated Non-flushing Toilet">Dedicated Non-flushing Toilet</option>
+                <option value="Shared Flushing Toilet">Shared Flushing Toilet</option>
+                <option value="Shared Non-flushing Toilet">Shared Non-flushing Toilet</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.guests[appLanguageCode]}:</label>
+              <Field name="guests" component="select" type="integer" className="form-control">
+                <option></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.salesPoint[appLanguageCode]}:</label>
+              <Field name="sales_point" component="input" type="string" className="form-control" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.rooms[appLanguageCode]}:</label>
+              <Field name="rooms" component="select" type="float" className="form-control">
+                <option></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 or more</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.beds[appLanguageCode]}:</label>
+              <Field name="beds" component="select" type="integer" className="form-control">
+              <option></option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6 or more</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.kingOrQueen[appLanguageCode]}:</label>
+              <Field name="king_or_queen_bed" component="select" type="integer" className="form-control">
+              <option></option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6 or more</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.flatType[appLanguageCode]}:</label>
+              <Field name="flat_type" component="select" type="string" className="form-control">
+                <option></option>
+                <option value="flat_in_building">Flat in building</option>
+                <option value="single_family">House</option>
+                <option value="town_house">Town House</option>
+                <option value="others">Others</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.bath[appLanguageCode]}:</label>
+              <Field name="bath" component="select" type="float" className="form-control">
+                <option></option>
+                <option value="1">1</option>
+                <option value="1.5">1.5</option>
+                <option value="2">2</option>
+                <option value="2.5">2.5</option>
+                <option value="3">3 or more</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.intro[appLanguageCode]}:</label>
+              <Field name="intro" component="textarea" type="text" className="form-control flat-intro-input" />
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.minutesToNearest[appLanguageCode]}<span style={{ color: 'red' }}>*</span>:</label>
+              <Field name="minutes_to_station" component="select" type="integer" className="form-control">
+                <option></option>
+                <option value="1">1 minute or less</option>
+                <option value="3">Under 3 minutes</option>
+                <option value="5">Under 5 minutes</option>
+                <option value="7">Under 7 minutes</option>
+                <option value="10">Under 10 minutes</option>
+                <option value="15">Under 15 minutes</option>
+                <option value="16">Over 15 minutes</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.cancellation[appLanguageCode]}:</label>
+              <Field name="cancellation" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yesSeePolicies[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.parkingIncluded[appLanguageCode]}:</label>
+              <Field name="parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.bicycleParkingIncluded[appLanguageCode]}:</label>
+              <Field name="bicycle_parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.motorcycleParkingIncluded[appLanguageCode]}:</label>
+              <Field name="motorcycle_parking_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.storageIncluded[appLanguageCode]}:</label>
+              <Field name="storage_included" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.dedicatedYard[appLanguageCode]}:</label>
+              <Field name="dedicated_yard" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">{AppLanguages.smoking[appLanguageCode]}:</label>
+              <Field name="smoking" component="select" type="boolean" className="form-control">
+                <option></option>
+                <option value={true}>{AppLanguages.yes[appLanguageCode]}</option>
+                <option value={false}>{AppLanguages.no[appLanguageCode]}</option>
+              </Field>
+            </fieldset>
+            <fieldset className="form-group">
+              <label className="create-flat-form-label">Listing ID: </label>
+              <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
+            </fieldset>
+            {this.renderOwnerFields()}
             <div className="container amenity-input-box">
               <div className="row amenity-row">
                 {this.renderAmenityInput()}
               </div>
             </div>
             {this.renderAlert()}
-
-            <div
-              className="confirm-change-and-button-container"
-            >
-            {this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked ? this.renderRequiredMessages() : ''}
-
-              <div className="confirm-change-and-button">
-                <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
-                  <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck} />
-                  <span className="checkmark"></span>
-                </label>
-                <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
-              </div>
+            <div className="confirm-change-and-button">
+              <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
+                <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck} />
+                <span className="checkmark"></span>
+              </label>
+              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
             </div>
           </form>
 
@@ -1283,79 +1429,9 @@ const InputField = ({
           }
         </div>
       );
-      // reference: https://stackoverflow.com/questions/47286305/the-redux-form-validation-is-not-working
-      function validate(values) {
-        console.log('in signin modal, validate values: ', values);
-          const errors = {};
-          if (values.appLanguages) {
-          // if (!_.isEmpty(values)) {
-            if (!values.language_code) {
-              errors.language_code = values.appLanguages.requiredLanguage[values.languageCodeForValidate];
-              // errors.language_code = 'A language is required';
-            }
-
-            if (!values.address1) {
-              // console.log('in signin modal, validate values, values.appLanguages.requiredAddress1, values.languageCodeForValidate: ', values, values.appLanguages.requiredAddress1, values.languageCodeForValidate);
-              errors.address1 = values.appLanguages.requiredAddress1[values.languageCodeForValidate];
-              // errors.address1 = 'A Street address is required';
-            }
-
-            if (!values.city) {
-              errors.city = values.appLanguages.requiredCity[values.languageCodeForValidate];
-              // errors.city = 'A city, district or ward is required';
-            }
-
-            if (!values.state) {
-              errors.state = values.appLanguages.requiredState[values.languageCodeForValidate];
-              // errors.state = 'A state or province is required';
-            }
-
-            if (!values.zip) {
-              errors.zip = values.appLanguages.requiredZip[values.languageCodeForValidate];
-              // errors.zip = 'A zip or postal code is required';
-            }
-
-            if (!values.country) {
-              errors.country = values.appLanguages.requiredCountry[values.languageCodeForValidate];
-              // errors.country = 'A country is required';
-            }
-            if (!values.price_per_month) {
-              errors.price_per_month = values.appLanguages.requiredPricePerMonth[values.languageCodeForValidate];
-              // errors.price_per_month = 'A price is required';
-            }
-
-            if (!values.size) {
-              errors.size = values.appLanguages.requiredFloorSpace[values.languageCodeForValidate];
-              // errors.size = 'Floor space is required';
-            }
-
-            if (!values.rooms) {
-              errors.rooms = values.appLanguages.requiredRooms[values.languageCodeForValidate];
-              // errors.rooms = 'Number of rooms is required';
-            }
-            if (!values.minutes_to_station) {
-              errors.minutes_to_station = values.appLanguages.requiredMinutesToStation[values.languageCodeForValidate];
-              // errors.minutes_to_station = 'Minutes to station is required';
-            }
-          }
-
-          // if (values.size !== parseInt(values.size, 10)) {
-          //     errors.size = 'Floor space needs to be a number';
-          // }
-          //
-          // if(!values.password){
-          //     errors.password = 'Password is required'
-          // } else if (values.password.length < 6) {
-          //   errors.password = 'A password needs to be at least 6 characters'
-          //
-          // }
-          console.log('in signin modal, validate errors: ', errors);
-          return errors;
-      }
 
 EditFlat = reduxForm({
-  form: 'EditFlat',
-  validate
+  form: 'EditFlat'
 })(EditFlat);
 // !!!!!!!!!! REQUIRES SPECIAL mapStateToProps TO ADDRESS AMENITIES!!!!!!!!!!
 // need initialValues object with flat attributes and amenty attributes on the same level
@@ -1398,16 +1474,8 @@ function mapStateToProps(state) {
   console.log('in edit_flat, mapStateToProps: ', state);
   const flat = state.selectedFlatFromParams.selectedFlatFromParams;
   let initialValues = {};
-  initialValues.languageCodeForValidate = state.languages.appLanguageCode;
-  // AppLanguages to be moved to backend
-  initialValues.appLanguages = AppLanguages;
-  initialValues.language_code = state.languages.appLanguageCode;
   if (flat) {
-    // const initialValues = state.form.simple ? { ...state.form.simple.values } : {};
-    const object = getInitialValueObject(flat);
-    // initialValues = { ...initialValues, object }
-    initialValues = _.merge({}, object, initialValues);
-    console.log('in edit_flat, mapStateToProps, initialValues: ', initialValues);
+    initialValues = getInitialValueObject(flat)
     // console.log('in edit_flat, mapStateToProps, getInitialValueObject(flat): ', getInitialValueObject(flat));
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
     // console.log('in edit_flat, mapStateToProps, flat: ', flat);
@@ -1437,8 +1505,6 @@ function mapStateToProps(state) {
       showBuildingLanguageEdit: state.modals.showBuildingLanguageEditModal,
       buildingId: state.modals.buildingId,
       buildingLanguageId: state.modals.buildingLanguageId,
-      appLanguages: state.auth.appLanguages,
-      formObject: state.form.EditFlat,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };
