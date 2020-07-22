@@ -30,11 +30,13 @@ import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
 import Facility from './constants/facility';
+import Ellipsis from './shared_misc/ellipsis';
 import flatFormObject from './forms/flat_form_object';
 
 let deleteImageArray = [];
 const AMENITIES = Amenities;
 const MAX_NUM_FILES = globalConstants.maxNumImages;
+const RESIZE_BREAK_POINT = globalConstants.resizeBreakPoint;
 // !!!! Took out DOM: { input ....} on React and react-dom 16.2 upgrade
 // const { DOM: { input, select, textarea } } = React;
 
@@ -44,7 +46,9 @@ class EditFlat extends Component {
     this.state = {
       // confirmChecked: false
       confirmChecked: false,
-      selectedLanguageCode: ''
+      selectedLanguageCode: '',
+      windowWidth: window.innerWidth,
+      lastPanel: ''
     };
 
     this.deleteCheckedImages = this.deleteCheckedImages.bind(this);
@@ -64,6 +68,7 @@ class EditFlat extends Component {
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleConfirmCheck = this.handleConfirmCheck.bind(this);
     this.handleBackToShowButton = this.handleBackToShowButton.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
 // reference for checkbox
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
@@ -77,6 +82,7 @@ class EditFlat extends Component {
     this.props.getCurrentUser();
     this.props.fetchBankAccountsByUser();
     this.props.getGoogleMapBoundsKeys();
+    window.addEventListener('resize', this.handleResize);
     // this.props.fetchPlaces(this.props.match.params.id);
 
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
@@ -84,6 +90,21 @@ class EditFlat extends Component {
       // console.log('in edit flat, componentDidMount, editFlatLoad called');
     //   this.props.editFlatLoad(this.props.flat);
     // }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('in edit flat, componentDidUpdate, prevState, this.state: ', prevState, this.state);
+
+  }
+
+  componentWillUnmount() {
+    // remove event listeners when closing page or unmounting
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('click', this.choiceEllipsisCloseClick);
+  }
+
+  handleResize() {
+    this.setState({ windowWidth: window.innerWidth });
   }
 
   selectedFlatFromParamsCallback() {
@@ -965,15 +986,43 @@ class EditFlat extends Component {
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
+
+    const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
+
     // const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
     // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
     // console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
 
+    // <h2 style={{ marginBottom: '30px' }}>{AppLanguages.editYourListing[appLanguageCode]}</h2>
     if (!flatEmpty) {
       // console.log('in edit flat, renderEditForm, this.props: ', this.props);
       return (
         <div>
-          <h2 style={{ marginBottom: '30px' }}>{AppLanguages.editYourListing[appLanguageCode]}</h2>
+          <div className="page-title">
+            <div className="page-title-box"></div>
+              <div className="page-title-box">
+                {AppLanguages.editYourListing[this.props.appLanguageCode]}
+              </div>
+              <div className="page-title-box page-title-box-right">
+              {showMobileView
+                ?
+                <Ellipsis
+                  choiceObject={{
+                    editBasicInfo: 'Basic Info & Amenities',
+                    editBuildingInfo: 'Building Info',
+                    editRentPayments: 'Rent Payments',
+                    editFacilitiesInfo: 'Facilities Info',
+                    editLanguages: 'Languages',
+                    editCalendars: 'Calendars',
+                    editImages: 'Images',
+                    editPlaces: 'Convenient Places' }}
+                  setLastPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
+                  lastPanel={this.state.lastPanel}
+                />
+                :
+                ''}
+              </div>
+          </div>
           <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
           <form onSubmit={handleSubmit(this.handleFormSubmit)}>
             <fieldset className="form-group">
@@ -1050,16 +1099,14 @@ class EditFlat extends Component {
           <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
           <div>
             <div className="container" id="map">
-            {this.renderMap()}
+              {this.renderMap()}
             </div>
-              <div className="col-xs-12 col-sm-12 col-md-4">
                 <MapInteraction
                   flat={this.props.flat ? this.props.flat : ''}
                   places={this.props.flat ? this.props.flat.places : ''}
                   currentUserIsOwner={this.props.currentUserIsOwner}
                   showFlat={false}
                 />
-              </div>
           </div>
 
           <div className="back-button">

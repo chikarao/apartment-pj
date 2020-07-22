@@ -32,14 +32,14 @@ export default function (props) {
       // channel: 'ChatChannel', room: `room${this.props.auth.id}`
     }, {
       connected: (message) => {
-          console.log('actioncableManager in call back to connected message', message);
-          // Call authenticate chat which sends user token to back end to auth the user
-          authenticateChat();
-          // if socket is not connected set app and header component state to true and timedout to false
-          if (!props.webSocketConnected) {
-            props.setComponentState({ webSocketConnected: true });
-            props.propsWebSocketConnected({ connected: true, timedOut: false });
-          }
+        console.log('actioncableManager in call back to connected message', message);
+        // Call authenticate chat which sends user token to back end to auth the user
+        authenticateChat();
+        // if socket is not connected set app and header component state to true and timedout to false
+        if (!props.webSocketConnected) {
+          props.setComponentState({ webSocketConnected: true });
+          props.propsWebSocketConnected({ connected: true, timedOut: false });
+        }
       }, // end of connected
 
       rejected: () => {

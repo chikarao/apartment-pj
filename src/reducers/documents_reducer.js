@@ -241,13 +241,13 @@ export default function (state = {
         // and change name like so { name: {}, name-1: {}, name-2: {}}
         // Use dash in stead of underscore so that names with underscore don't get cauth
         //(ie flat_id)
-        console.log('in documents reducer, getDocumentChoicesObject, element.name: ', element.name);
+        // console.log('in documents reducer, getDocumentChoicesObject, element.name: ', element.name);
         if (returnObject[page][element.name]) {
           count = 1;
           let splitEach = null;
           _.each(Object.keys(returnObject[page]), each => {
             splitEach = each.split('-');
-            console.log('in documents reducer, getDocumentChoicesObject, returnObject[page], each, splitEach: ', returnObject[page], each, splitEach);
+            // console.log('in documents reducer, getDocumentChoicesObject, returnObject[page], each, splitEach: ', returnObject[page], each, splitEach);
             if (splitEach[0] === element.name && splitEach.length > 1) {
               if (splitEach[1] >= count) count = parseInt(splitEach[1]) + 1;
             }
@@ -260,7 +260,7 @@ export default function (state = {
 
         returnObject[page][name] = object;
       } else { // else of if returnObject[page]
-        console.log('in documents reducer, getDocumentChoicesObject, element.name: ', element.name);
+        // console.log('in documents reducer, getDocumentChoicesObject, element.name: ', element.name);
         returnObject[page] = {};
 
         count = 0;
@@ -270,7 +270,7 @@ export default function (state = {
       object.elementName = name;
     }); // end of each
 
-    console.log('in documents reducer, getDocumentChoicesObject, returnObject: ', returnObject);
+    // console.log('in documents reducer, getDocumentChoicesObject, returnObject: ', returnObject);
     return returnObject;
   } // end of function
 
@@ -570,7 +570,7 @@ export default function (state = {
     case FETCH_DOCUMENT_TRANSLATION:
     const parsedActionPayload = JSON.parse(action.payload);
     const documentTranslations = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
-    console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
+    // console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
     return { ...state,
       documentTranslations: parsedActionPayload,
       documentTranslationsAllInOne: documentTranslations.allObject

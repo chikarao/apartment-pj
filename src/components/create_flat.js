@@ -433,6 +433,10 @@ class CreateFlat extends Component {
         )
       }
 
+      if (!eachField.type) {
+        return;
+      }
+
       return (
         <fieldset key={eachName} className="form-group">
           <label className="create-flat-form-label">{appLanguages ? appLanguages[eachField.appLanguageKey][appLanguageCode] : ''}

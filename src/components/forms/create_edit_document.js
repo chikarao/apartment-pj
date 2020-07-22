@@ -127,6 +127,7 @@ class CreateEditDocument extends Component {
     this.handleFieldPreferencesClick = this.handleFieldPreferencesClick.bind(this);
     this.handleEditClickTemplate = this.handleEditClickTemplate.bind(this);
     this.handleViewPDFClickTemplate = this.handleViewPDFClickTemplate.bind(this);
+    this.handleFieldChoiceMouseOver = this.handleFieldChoiceMouseOver.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -4462,6 +4463,13 @@ longActionPress(props) {
     }
   }
 
+  handleFieldChoiceMouseOver(event) {
+    const mousedOverElement = event.target;
+    const elementId = mousedOverElement.getAttribute('id');
+    console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
+
+  }
+
   renderEachFieldChoice() {
     const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
@@ -4584,6 +4592,7 @@ longActionPress(props) {
                   <div
                     id={valueString}
                     onClick={this.handleFieldChoiceActionClick}
+                    onMouseOver={this.handleFieldChoiceMouseOver}
                   >
                     Add Input
                   </div>
