@@ -794,6 +794,8 @@ class EditFlat extends Component {
             <button action="submit" id="submit-all" className="btn btn-primary btn-sm submit-button">Submit</button>
           </div>
         </form>
+        {this.props.flat.rent_payment_method === 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[this.props.appLanguageCode]}</h4> : ''}
+        {this.props.flat.rent_payment_method === 'bank_transfer' ? this.renderSelectBankAccount() : ''}
       </div>
     )
   }
@@ -997,8 +999,6 @@ class EditFlat extends Component {
   renderEditBasicInfo() {
     const { handleSubmit, appLanguageCode } = this.props;
     return (
-      <div>
-        <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
         <form onSubmit={handleSubmit(this.handleFormSubmit)}>
           <fieldset className="form-group">
             <label className="create-flat-form-label">{AppLanguages.listingId[appLanguageCode]}: </label>
@@ -1032,9 +1032,62 @@ class EditFlat extends Component {
             </div>
           </div>
         </form>
+    );
+  }
+
+  renderImagesAddDelete() {
+    return (
+      <div>
+        <div className="edit-flat-image-box">
+          <div id="carousel-show-edit-flat">
+            {this.renderImages(this.props.flat.images)}
+          </div>
+          <div className="delete-image-buttons">
+            {this.renderDeleteImageButtons()}
+          </div>
+        </div>
+        <div>
+          {this.props.flat.images.length < MAX_NUM_FILES ?
+            <UploadForFlat
+              flatId={this.props.flat.id}
+              flat={this.props.flat}
+            /> :
+            ''
+          }
+        </div>
       </div>
     );
   }
+
+  renderPlacesAddDelete() {
+    return (
+      <div>
+        <div>
+          <div className="container" id="map">
+            {this.renderMap()}
+          </div>
+          <MapInteraction
+            flat={this.props.flat ? this.props.flat : ''}
+            places={this.props.flat ? this.props.flat.places : ''}
+            currentUserIsOwner={this.props.currentUserIsOwner}
+            showFlat={false}
+          />
+        </div>
+
+        <div className="back-button">
+          <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton}>To Show Page</button>
+        </div>
+      </div>
+    );
+  }
+
+  // renderRentPaymentMethodAll() {
+  //   return (
+  //     <div>
+  //
+  //     </div>
+  //   );
+  // }
 
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
@@ -1069,60 +1122,10 @@ class EditFlat extends Component {
                 ''}
               </div>
           </div>
-          {this.renderEditBasicInfo()}
-          <h4>{AppLanguages.addEditBuilding[appLanguageCode]}</h4>
-              {this.renderBuildingAddEdit()}
 
-          <h4>{AppLanguages.rentPayment[appLanguageCode]}</h4>
-            {this.renderRentPaymentMethod()}
+          <h4>{AppLanguages[CATEGORY_OBJECT[this.state.lastPanel].heading][this.props.appLanguageCode]}</h4>
+          {this[CATEGORY_OBJECT[this.state.lastPanel].methodName]()}
 
-          {this.props.flat.rent_payment_method === 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4> : ''}
-          {this.props.flat.rent_payment_method === 'bank_transfer' ? this.renderSelectBankAccount() : ''}
-
-          <h4>{AppLanguages.addEditFacilties[appLanguageCode]}</h4>
-            {this.renderFacilitiesAddEdit()}
-
-          <h4>{AppLanguages.addEditLanguages[appLanguageCode]}</h4>
-            {this.renderLanguages()}
-
-          <h4>{AppLanguages.addEditCalendars[appLanguageCode]}</h4>
-            {this.renderIcalendarAddEdit()}
-
-          <h4>{AppLanguages.addDeletePhotos[appLanguageCode]}  <small>({this.props.flat.images.length} images, max: {MAX_NUM_FILES}{this.props.flat.images.length < MAX_NUM_FILES ? '' : ', Please delete images to add'})</small></h4>
-          <div className="edit-flat-image-box">
-            <div id="carousel-show-edit-flat">
-              {this.renderImages(this.props.flat.images)}
-            </div>
-            <div className="delete-image-buttons">
-              {this.renderDeleteImageButtons()}
-            </div>
-          </div>
-          <div>
-            {this.props.flat.images.length < MAX_NUM_FILES ?
-              <UploadForFlat
-                flatId={this.props.flat.id}
-                flat={this.props.flat}
-              /> :
-              ''
-            }
-          </div>
-
-          <h4>{AppLanguages.addDeleteConvenient[appLanguageCode]}</h4>
-          <div>
-            <div className="container" id="map">
-              {this.renderMap()}
-            </div>
-            <MapInteraction
-              flat={this.props.flat ? this.props.flat : ''}
-              places={this.props.flat ? this.props.flat.places : ''}
-              currentUserIsOwner={this.props.currentUserIsOwner}
-              showFlat={false}
-            />
-          </div>
-
-          <div className="back-button">
-            <button className="btn btn-primary btn-lg to-show-btn" onClick={this.handleBackToShowButton}>To Show Page</button>
-          </div>
         </div>
       );
     }
