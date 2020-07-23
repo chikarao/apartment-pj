@@ -8,14 +8,14 @@ import * as actions from '../../actions';
 import AppLanguages from '../constants/app_languages';
 // import MultiLineText from '../functions/multi_line_text';
 
-class Ellipsis extends Component {
+class CategoryBox extends Component {
   constructor(props) {
    super(props);
    this.state = {
      displayChoiceBox: false,
      choiceBoxTop: null,
      choiceBoxLeft: null,
-     lastPanel: 'showMyBookings',
+     // lastPanel: 'showMyBookings',
    };
    this.handleChoiceEllipsisClick = this.handleChoiceEllipsisClick.bind(this);
    this.handleChoiceEachClick = this.handleChoiceEachClick.bind(this);
@@ -74,9 +74,10 @@ class Ellipsis extends Component {
 
   renderEachChoice(choiceObject) {
     return _.map(Object.keys(choiceObject), (each, i) => {
+      // console.log('in CategoryBox, renderEachChoice, choiceObject, AppLanguages, each, choiceObject[each]: ', choiceObject, AppLanguages, each, choiceObject[each]);
       return (
         <div key={i} className="my-page-choice-box-each" style={this.props.lastPanel === each ? { fontWeight: 'bold' } : {}} value={each} onClick={this.handleChoiceEachClick}>
-        {choiceObject[each]}
+        {AppLanguages[each][this.props.appLanguageCode]}
         </div>
       );
     });
@@ -86,19 +87,13 @@ class Ellipsis extends Component {
   handleChoiceEachClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in mypage, handleChoiceEachClick, elementVal: ', elementVal);
-    // const object = { showMyLikes: true };
-    // object.showMyLikes = true;
-    // this.setState({ showMyLikes: true });
-    // this.setState({ [elementVal]: true });
-    if (this.state.lastPanel !== elementVal) {
-      // this.setState({ [elementVal]: true, lastPanel: elementVal, [this.state.lastPanel]: false }, () => {
-      //   // console.log('in mypage, handleChoiceEachClick, this.state: ', this.state);
-      // });
-      this.props.setLastPanelState({ [elementVal]: true, lastPanel: elementVal, [this.state.lastPanel]: false }, () => {
-        console.log('in ellipsis, handleChoiceEachClick, elementVal, this.props.setLastPanelState: ', elementVal, this.props.setLastPanelState);
 
-      })
+    if (this.state.lastPanel !== elementVal) {
+      // Call setState sent in CategoryBox call props
+      this.props.setLastPanelState({ [this.props.lastPanel]: false }, () => {
+        this.props.setCurrentPanelState({ [elementVal]: true, lastPanel: elementVal })
+        // console.log('in ellipsis, handleChoiceEachClick, elementVal, this.props.setLastPanelState: ', elementVal, this.props.setLastPanelState);
+      });
     }
   }
 
@@ -146,4 +141,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, actions)(Ellipsis));
+export default withRouter(connect(mapStateToProps, actions)(CategoryBox));

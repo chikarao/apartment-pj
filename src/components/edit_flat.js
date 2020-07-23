@@ -26,11 +26,11 @@ import InspectionEditModal from './modals/inspection_edit_modal';
 import BuildingLanguageEditModal from './modals/building_language_edit_modal';
 import BuildingLanguageCreateModal from './modals/building_language_create_modal';
 import AppLanguages from './constants/app_languages';
-import GmStyle from './maps/gm-style';
+// import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
 import Facility from './constants/facility';
-import Ellipsis from './shared_misc/ellipsis';
+import CategoryBox from './shared_misc/category_box';
 import flatFormObject from './forms/flat_form_object';
 
 let deleteImageArray = [];
@@ -40,6 +40,17 @@ const RESIZE_BREAK_POINT = globalConstants.resizeBreakPoint;
 // !!!! Took out DOM: { input ....} on React and react-dom 16.2 upgrade
 // const { DOM: { input, select, textarea } } = React;
 
+const CATEGORY_OBJECT = {
+  editBasicInfo: { methodName: 'renderEditBasicInfo', heading: 'editBasicInformation' },
+  editBuildingInfo: { methodName: 'renderBuildingAddEdit', heading: 'addEditBuilding' },
+  editRentPayments: { methodName: 'renderRentPaymentMethod', heading: 'rentPayment' },
+  editFacilitiesInfo: { methodName: 'renderFacilitiesAddEdit', heading: 'addEditFacilties' },
+  editLanguages: { methodName: 'renderLanguages', heading: 'addEditLanguages' },
+  editCalendars: { methodName: 'renderIcalendarAddEdit', heading: 'addEditCalendars' },
+  editPlaces: { methodName: 'renderPlacesAddDelete', heading: 'addDeleteConvenient' },
+  editImages: { methodName: 'renderImagesAddDelete', heading: 'addDeletePhotos' }
+};
+
 class EditFlat extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +59,7 @@ class EditFlat extends Component {
       confirmChecked: false,
       selectedLanguageCode: '',
       windowWidth: window.innerWidth,
-      lastPanel: ''
+      lastPanel: 'editBasicInfo'
     };
 
     this.deleteCheckedImages = this.deleteCheckedImages.bind(this);
@@ -983,6 +994,48 @@ class EditFlat extends Component {
     );
   }
 
+  renderEditBasicInfo() {
+    const { handleSubmit, appLanguageCode } = this.props;
+    return (
+      <div>
+        <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
+        <form onSubmit={handleSubmit(this.handleFormSubmit)}>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">{AppLanguages.listingId[appLanguageCode]}: </label>
+            <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
+          </fieldset>
+          <fieldset className="form-group">
+            <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}:</label>
+            <div className="edit-flat-address">{Languages[this.props.flat.language_code].flag}{Languages[this.props.flat.language_code].name}</div>
+          </fieldset>
+
+          {!_.isEmpty(this.props.appLanguages) && this.renderEachEditFlatMainFields({ appLanguages: AppLanguages, appLanguageCode })}
+
+          <div className="container amenity-input-box">
+            <div className="row amenity-row">
+              {this.renderAmenityInput()}
+            </div>
+          </div>
+          {this.renderAlert()}
+
+          <div
+            className="confirm-change-and-button-container"
+          >
+          {this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked ? this.renderRequiredMessages() : ''}
+
+            <div className="confirm-change-and-button">
+              <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
+                <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck} />
+                <span className="checkmark"></span>
+              </label>
+              <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   renderEditForm() {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
@@ -1006,67 +1059,25 @@ class EditFlat extends Component {
               <div className="page-title-box page-title-box-right">
               {showMobileView
                 ?
-                <Ellipsis
-                  choiceObject={{
-                    editBasicInfo: 'Basic Info & Amenities',
-                    editBuildingInfo: 'Building Info',
-                    editRentPayments: 'Rent Payments',
-                    editFacilitiesInfo: 'Facilities Info',
-                    editLanguages: 'Languages',
-                    editCalendars: 'Calendars',
-                    editImages: 'Images',
-                    editPlaces: 'Convenient Places' }}
+                <CategoryBox
+                  choiceObject={CATEGORY_OBJECT}
                   setLastPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
+                  setCurrentPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
                   lastPanel={this.state.lastPanel}
                 />
                 :
                 ''}
               </div>
           </div>
-          <h4>{AppLanguages.editBasicInformation[this.props.appLanguageCode]}</h4>
-          <form onSubmit={handleSubmit(this.handleFormSubmit)}>
-            <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.listingId[appLanguageCode]}: </label>
-              <span style={{ fontWeight: 'normal', float: 'left' }}>{this.props.flat.id}</span>
-            </fieldset>
-            <fieldset className="form-group">
-              <label className="create-flat-form-label">{AppLanguages.listingLanguage[appLanguageCode]}:</label>
-              <div className="edit-flat-address">{Languages[this.props.flat.language_code].flag}{Languages[this.props.flat.language_code].name}</div>
-            </fieldset>
-
-            {!_.isEmpty(this.props.appLanguages) && this.renderEachEditFlatMainFields({ appLanguages: AppLanguages, appLanguageCode })}
-
-            <div className="container amenity-input-box">
-              <div className="row amenity-row">
-                {this.renderAmenityInput()}
-              </div>
-            </div>
-            {this.renderAlert()}
-
-            <div
-              className="confirm-change-and-button-container"
-            >
-            {this.props.formObject && this.props.formObject.syncErrors && Object.keys(this.props.formObject.syncErrors).length > 0 && this.state.confirmChecked ? this.renderRequiredMessages() : ''}
-
-              <div className="confirm-change-and-button">
-                <label className="confirm-radio"><i className="fa fa-check fa-lg"></i> {AppLanguages.confirmAbove[appLanguageCode]}
-                  <input type="checkbox" id="editFlatConfirmCheck" checked={this.state.confirmChecked} onChange={this.handleConfirmCheck} />
-                  <span className="checkmark"></span>
-                </label>
-                <button action="submit" id="submit-all" className="btn btn-primary btn-lg submit-button">{AppLanguages.submit[appLanguageCode]}</button>
-              </div>
-            </div>
-          </form>
-
-
+          {this.renderEditBasicInfo()}
           <h4>{AppLanguages.addEditBuilding[appLanguageCode]}</h4>
               {this.renderBuildingAddEdit()}
 
           <h4>{AppLanguages.rentPayment[appLanguageCode]}</h4>
             {this.renderRentPaymentMethod()}
 
-          {this.props.flat.rent_payment_method == 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4> : ''}
-          {this.props.flat.rent_payment_method == 'bank_transfer' ? this.renderSelectBankAccount() : ''}
+          {this.props.flat.rent_payment_method === 'bank_transfer' ? <h4>{AppLanguages.selectBankAccount[appLanguageCode]}</h4> : ''}
+          {this.props.flat.rent_payment_method === 'bank_transfer' ? this.renderSelectBankAccount() : ''}
 
           <h4>{AppLanguages.addEditFacilties[appLanguageCode]}</h4>
             {this.renderFacilitiesAddEdit()}
@@ -1101,12 +1112,12 @@ class EditFlat extends Component {
             <div className="container" id="map">
               {this.renderMap()}
             </div>
-                <MapInteraction
-                  flat={this.props.flat ? this.props.flat : ''}
-                  places={this.props.flat ? this.props.flat.places : ''}
-                  currentUserIsOwner={this.props.currentUserIsOwner}
-                  showFlat={false}
-                />
+            <MapInteraction
+              flat={this.props.flat ? this.props.flat : ''}
+              places={this.props.flat ? this.props.flat.places : ''}
+              currentUserIsOwner={this.props.currentUserIsOwner}
+              showFlat={false}
+            />
           </div>
 
           <div className="back-button">
