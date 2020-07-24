@@ -20,7 +20,7 @@ import ProfileCreateModal from './modals/profile_create_modal';
 import Contractor from './constants/contractor';
 import Languages from './constants/languages';
 import GlobalConstants from './constants/global_constants';
-import CategoryBox from './shared_misc/category_box';
+import CategoryBox from './modals/category_box';
 
 import CardTypes from './constants/card_types'
 
@@ -1512,7 +1512,7 @@ formatDate(date) {
 
   renderAllPanels() {
     return _.map(Object.keys(CATEGORY_OBJECT), eachKey => {
-      return <div className="my-page-category-container col-xs-12 col-sm-3">{this[CATEGORY_OBJECT[eachKey].methodName]()}</div>;
+      return <div key={eachKey} className="my-page-category-container col-xs-12 col-sm-3">{this[CATEGORY_OBJECT[eachKey].methodName]()}</div>;
     })
   }
 
@@ -1539,6 +1539,7 @@ formatDate(date) {
               {showMobileView
                 ?
                 <CategoryBox
+                  showMobileView
                   choiceObject={CATEGORY_OBJECT}
                   setLastPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
                   setCurrentPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}

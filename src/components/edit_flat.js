@@ -30,7 +30,7 @@ import AppLanguages from './constants/app_languages';
 import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
 import Facility from './constants/facility';
-import CategoryBox from './shared_misc/category_box';
+import CategoryBox from './modals/category_box';
 import flatFormObject from './forms/flat_form_object';
 
 let deleteImageArray = [];
@@ -1093,7 +1093,8 @@ class EditFlat extends Component {
     const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
 
-    const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
+    // const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
+    const showMobileView = true;
 
     // const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
     // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
