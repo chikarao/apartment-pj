@@ -20,6 +20,7 @@ import ProfileCreateModal from './modals/profile_create_modal';
 import Contractor from './constants/contractor';
 import Languages from './constants/languages';
 import GlobalConstants from './constants/global_constants';
+import CategoryBox from './shared_misc/category_box';
 
 import CardTypes from './constants/card_types'
 
@@ -30,6 +31,17 @@ const BLANK_PROFILE_PICTURE = GlobalConstants.blankProfilePicture;
 const CLIENT_ID = process.env.STRIPE_DEVELOPMENT_CLIENT_ID;
 const RESIZE_BREAK_POINT = GlobalConstants.resizeBreakPoint;
 // const RESIZE_BREAK_POINT = 800;
+
+const CATEGORY_OBJECT = {
+  showMyLikes: { methodName: 'renderLikes', heading: '' },
+  showMyFlats: { methodName: 'renderFlats', heading: '' },
+  showMyBookings: { methodName: 'renderBookings', heading: '' },
+  showBookingsForMyFlats: { methodName: 'renderOwnFlatBookings', heading: '' },
+  showMyProfile: { methodName: 'renderProfile', heading: '' },
+  showContractors: { methodName: 'renderContractors', heading: '' },
+  showPaymentDetails: { methodName: 'renderPayments', heading: '' },
+  showBankAccounts: { methodName: 'renderBankAccounts', heading: '' },
+};
 
 class MyPage extends Component {
   constructor(props) {
@@ -51,14 +63,14 @@ class MyPage extends Component {
       displayChoiceBox: false,
       choiceBoxTop: null,
       choiceBoxLeft: null,
-      showMyLikes: false,
-      showMyFlats: false,
+      // showMyLikes: false,
+      // showMyFlats: false,
       showMyBookings: true,
-      showBookingsForMyFlats: false,
-      showMyProfile: false,
-      showPaymentDetails: false,
-      showBankAccounts: false,
-      showContractors: false,
+      // showBookingsForMyFlats: false,
+      // showMyProfile: false,
+      // showPaymentDetails: false,
+      // showBankAccounts: false,
+      // showContractors: false,
       showStaff: false,
       lastPanel: 'showMyBookings',
       // actionType: 'Add a Card'
@@ -85,8 +97,8 @@ class MyPage extends Component {
     this.handleAddContractorClick = this.handleAddContractorClick.bind(this);
     this.handleStaffEditDeleteClick = this.handleStaffEditDeleteClick.bind(this);
     this.handleAddStaffClick = this.handleAddStaffClick.bind(this);
-    this.handleChoiceEllipsisClick = this.handleChoiceEllipsisClick.bind(this);
-    this.handleChoiceEachClick = this.handleChoiceEachClick.bind(this);
+    // this.handleChoiceEllipsisClick = this.handleChoiceEllipsisClick.bind(this);
+    // this.handleChoiceEachClick = this.handleChoiceEachClick.bind(this);
   }
   componentDidMount() {
     this.props.fetchFlatsByUser(this.props.auth.id, () => {});
@@ -1402,100 +1414,106 @@ formatDate(date) {
     );
   }
 
-  handleChoiceEachClick(event) {
-    const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
-    // console.log('in mypage, handleChoiceEachClick, elementVal: ', elementVal);
-    // const object = { showMyLikes: true };
-    // object.showMyLikes = true;
-    // this.setState({ showMyLikes: true });
-    // this.setState({ [elementVal]: true });
-    if (this.state.lastPanel !== elementVal) {
-      this.setState({ [elementVal]: true, lastPanel: elementVal, [this.state.lastPanel]: false }, () => {
-        // console.log('in mypage, handleChoiceEachClick, this.state: ', this.state);
-      });
-    }
-  }
+  // handleChoiceEachClick(event) {
+  //   const clickedElement = event.target;
+  //   const elementVal = clickedElement.getAttribute('value');
+  //   // console.log('in mypage, handleChoiceEachClick, elementVal: ', elementVal);
+  //   // const object = { showMyLikes: true };
+  //   // object.showMyLikes = true;
+  //   // this.setState({ showMyLikes: true });
+  //   // this.setState({ [elementVal]: true });
+  //   if (this.state.lastPanel !== elementVal) {
+  //     this.setState({ [elementVal]: true, lastPanel: elementVal, [this.state.lastPanel]: false }, () => {
+  //       // console.log('in mypage, handleChoiceEachClick, this.state: ', this.state);
+  //     });
+  //   }
+  // }
+  //
+  // renderEachChoice(choiceObject) {
+  //   return _.map(Object.keys(choiceObject), (each, i) => {
+  //     return (
+  //       <div key={i} className="my-page-choice-box-each" style={this.state.lastPanel === each ? { fontWeight: 'bold' } : {}} value={each} onClick={this.handleChoiceEachClick}>
+  //         {choiceObject[each]}
+  //       </div>
+  //     );
+  //   });
+  // }
 
-  renderEachChoice(choiceObject) {
-    return _.map(Object.keys(choiceObject), (each, i) => {
-      return (
-        <div key={i} className="my-page-choice-box-each" style={this.state.lastPanel === each ? { fontWeight: 'bold' } : {}} value={each} onClick={this.handleChoiceEachClick}>
-          {choiceObject[each]}
-        </div>
-      );
-    });
-  }
-
-  renderChoiceBox() {
-    const choiceObject =
-    {
-      showMyLikes: 'My Likes',
-      showMyFlats: 'My Flats',
-      showMyBookings: 'My Bookings',
-      showBookingsForMyFlats: 'Bookings for My Flats',
-      showMyProfile: 'My Profile',
-      showContractors: 'Contractors',
-      showPaymentDetails: 'Payment Details',
-      showBankAccounts: 'My Bank Accounts',
-    };
-
-    return (
-      <div
-        className={this.state.displayChoiceBox ? 'my-page-choice-box display-block' : 'my-page-choice-box display-none'}
-        style={{ top: this.state.choiceBoxTop + 20, left: this.state.choiceBoxLeft }}
-      >
-        {this.renderEachChoice(choiceObject)}
-      </div>
-    );
-  }
+  // renderChoiceBox() {
+  //   const choiceObject =
+  //   {
+  //     showMyLikes: 'My Likes',
+  //     showMyFlats: 'My Flats',
+  //     showMyBookings: 'My Bookings',
+  //     showBookingsForMyFlats: 'Bookings for My Flats',
+  //     showMyProfile: 'My Profile',
+  //     showContractors: 'Contractors',
+  //     showPaymentDetails: 'Payment Details',
+  //     showBankAccounts: 'My Bank Accounts',
+  //   };
+  //
+  //   return (
+  //     <div
+  //       className={this.state.displayChoiceBox ? 'my-page-choice-box display-block' : 'my-page-choice-box display-none'}
+  //       style={{ top: this.state.choiceBoxTop + 20, left: this.state.choiceBoxLeft }}
+  //     >
+  //       {this.renderEachChoice(choiceObject)}
+  //     </div>
+  //   );
+  // }
   // open and close choice box with click of ellipsis
-  handleChoiceEllipsisClick() {
-    // get the choice box
-    const choiceIcon = document.getElementById('my-page-choice-ellipsis');
-    // get the coordinates of the choice box
-    const rectChoice = choiceIcon.getBoundingClientRect();
-    // set the top, left and show or hide choice box state variables
-    this.setState({ displayChoiceBox: !this.state.displayChoiceBox, choiceBoxTop: rectChoice.top, choiceBoxLeft: rectChoice.left - 245 }, () => {
-      // if click is to open the box, add addEventListener after some time to avoid
-      // event listener to detect the opening click which causes it not to open
-      if (this.state.displayChoiceBox) {
-        setTimeout(() => {
-          window.addEventListener('click', this.choiceEllipsisCloseClick);
-        }, 100);
-      } else {
-        // if ellipsis click is to close, remvoe addEventListener
-        window.removeEventListener('click', this.choiceEllipsisCloseClick);
-      }
-    });
-    // const body = document.getElementById('messaging-main-main-container');
-  }
+  // handleChoiceEllipsisClick() {
+  //   // get the choice box
+  //   const choiceIcon = document.getElementById('my-page-choice-ellipsis');
+  //   // get the coordinates of the choice box
+  //   const rectChoice = choiceIcon.getBoundingClientRect();
+  //   // set the top, left and show or hide choice box state variables
+  //   this.setState({ displayChoiceBox: !this.state.displayChoiceBox, choiceBoxTop: rectChoice.top, choiceBoxLeft: rectChoice.left - 245 }, () => {
+  //     // if click is to open the box, add addEventListener after some time to avoid
+  //     // event listener to detect the opening click which causes it not to open
+  //     if (this.state.displayChoiceBox) {
+  //       setTimeout(() => {
+  //         window.addEventListener('click', this.choiceEllipsisCloseClick);
+  //       }, 100);
+  //     } else {
+  //       // if ellipsis click is to close, remvoe addEventListener
+  //       window.removeEventListener('click', this.choiceEllipsisCloseClick);
+  //     }
+  //   });
+  //   // const body = document.getElementById('messaging-main-main-container');
+  // }
+  //
+  // choiceEllipsisCloseClick = (e) => {
+  //   // fucntion passed to addEventListener
+  //   const clickedElement = e.target;
+  //   // get class name of clicked element
+  //   const elementClassName = clickedElement.getAttribute('class');
+  //   // split the class name string if not null since elements can have more than one class name
+  //   const classArray = elementClassName ? elementClassName.split(' ') : null;
+  //   // define array of classnames that you do not want to close
+  //   const donotClosearray = ['my-page-choice-box', 'my-page-choice-box-each'];
+  //   // check if clicked element is included in the donotClosearray
+  //   let clickedInsideChoiceBox = false;
+  //   _.each(donotClosearray, each => {
+  //     // if (classArray && classArray.includes(each)) {
+  //     if (classArray && classArray.indexOf(each) !== -1) {
+  //       clickedInsideChoiceBox = true;
+  //     }
+  //   });
+  //   // if clicked element class not null and not clicked inside choice box
+  //   // set state to close box
+  //   if ((classArray && !clickedInsideChoiceBox) || !classArray) {
+  //     this.setState({ displayChoiceBox: false }, () => {
+  //     });
+  //     // remove eventListener when box closed
+  //     window.removeEventListener('click', this.choiceEllipsisCloseClick);
+  //   }
+  // }
 
-  choiceEllipsisCloseClick = (e) => {
-    // fucntion passed to addEventListener
-    const clickedElement = e.target;
-    // get class name of clicked element
-    const elementClassName = clickedElement.getAttribute('class');
-    // split the class name string if not null since elements can have more than one class name
-    const classArray = elementClassName ? elementClassName.split(' ') : null;
-    // define array of classnames that you do not want to close
-    const donotClosearray = ['my-page-choice-box', 'my-page-choice-box-each'];
-    // check if clicked element is included in the donotClosearray
-    let clickedInsideChoiceBox = false;
-    _.each(donotClosearray, each => {
-      // if (classArray && classArray.includes(each)) {
-      if (classArray && classArray.indexOf(each) !== -1) {
-        clickedInsideChoiceBox = true;
-      }
-    });
-    // if clicked element class not null and not clicked inside choice box
-    // set state to close box
-    if ((classArray && !clickedInsideChoiceBox) || !classArray) {
-      this.setState({ displayChoiceBox: false }, () => {
-      });
-      // remove eventListener when box closed
-      window.removeEventListener('click', this.choiceEllipsisCloseClick);
-    }
+  renderAllPanels() {
+    return _.map(Object.keys(CATEGORY_OBJECT), eachKey => {
+      return <div className="my-page-category-container col-xs-12 col-sm-3">{this[CATEGORY_OBJECT[eachKey].methodName]()}</div>;
+    })
   }
 
   render() {
@@ -1517,19 +1535,27 @@ formatDate(date) {
             <div className="page-title-box">
               {AppLanguages.myPage[this.props.appLanguageCode]}
             </div>
-            <div className="page-title-box page-title-box-right">{showMobileView ? <i id="my-page-choice-ellipsis" className="fa fa-ellipsis-v" onClick={this.handleChoiceEllipsisClick}></i> : ''}</div>
+            <div className="page-title-box page-title-box-right">
+              {showMobileView
+                ?
+                <CategoryBox
+                  choiceObject={CATEGORY_OBJECT}
+                  setLastPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
+                  setCurrentPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
+                  lastPanel={this.state.lastPanel}
+                />
+                :
+                ''}
+            </div>
         </div>
         <div className="container my-page-container">
-        {this.renderChoiceBox()}
           <div className="row my-page-row">
-            {!showMobileView || this.state.showMyLikes ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderLikes()}</div> : ''}
-            {!showMobileView || this.state.showMyBookings ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBookings()}</div> : ''}
-            {!showMobileView || this.state.showMyFlats ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderFlats()}</div> : ''}
-            {!showMobileView || this.state.showBookingsForMyFlats ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderOwnFlatBookings()}</div> : ''}
-            {!showMobileView || this.state.showMyProfile ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderProfile()}</div> : ''}
-            {!showMobileView || this.state.showPaymentDetails ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderPayments()}</div> : ''}
-            {!showMobileView || this.state.showBankAccounts ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderBankAccounts()}</div> : ''}
-            {!showMobileView || this.state.showContractors ? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderContractors()}</div> : ''}
+            {!showMobileView ?
+              this.renderAllPanels()
+              :
+              <div className="my-page-category-container col-xs-12 col-sm-3">{this[CATEGORY_OBJECT[this.state.lastPanel].methodName]()}</div>
+            }
+
             {this.state.selectedContractorId && (!showMobileView || (this.state.showStaffBox && this.state.showContractors))? <div className="my-page-category-container col-xs-12 col-sm-3">{this.renderStaffs()}</div> : ''}
         </div>
         </div>
