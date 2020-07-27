@@ -28,7 +28,7 @@ class CategoryBox extends Component {
   }
 
   handleChoiceEllipsisClick() {
-      console.log('in Ellipsis, handleChoiceEllipsisClick, called, ');
+      console.log('in CategoryBox, handleChoiceEllipsisClick, called, ');
     // get the choice box
     const choiceIcon = document.getElementById('choice-ellipsis');
     // get the coordinates of the choice box
@@ -62,6 +62,7 @@ class CategoryBox extends Component {
       //   showBankAccounts: 'My Bank Accounts',
       // };
 
+      // style={this.props.wsidePagePosition ? { top: this.state.choiceBoxTop + 20, left: this.state.choiceBoxLeft } : { top: this.props.widePagePosition.top, left: `${parseFloat(this.props.widePagePosition.width) / parseFloat(this.props.windowWidth)}px`}}
     return (
       <div
         className={this.state.displayChoiceBox ? 'my-page-choice-box display-block' : 'my-page-choice-box display-none'}
@@ -92,7 +93,7 @@ class CategoryBox extends Component {
       // Call setState sent in CategoryBox call props
       this.props.setLastPanelState({ [this.props.lastPanel]: false }, () => {
         this.props.setCurrentPanelState({ [elementVal]: true, lastPanel: elementVal })
-        // console.log('in ellipsis, handleChoiceEachClick, elementVal, this.props.setLastPanelState: ', elementVal, this.props.setLastPanelState);
+        // console.log('in CategoryBox, handleChoiceEachClick, elementVal, this.props.setLastPanelState: ', elementVal, this.props.setLastPanelState);
       });
     }
   }
@@ -125,16 +126,17 @@ class CategoryBox extends Component {
   }
 
   render() {
+    // {this.props.showMobileView ? <i id="choice-ellipsis" className="fa fa-ellipsis-v" onClick={this.handleChoiceEllipsisClick}></i> : ''}
     return (
       <div>
-        <i id="choice-ellipsis" className="fa fa-ellipsis-v" onClick={this.handleChoiceEllipsisClick}></i>
+        {<i id="choice-ellipsis" className="fa fa-ellipsis-v" onClick={this.handleChoiceEllipsisClick}></i>}
         {this.renderChoiceBox()}
       </div>
     );
   }
 }
 function mapStateToProps(state) {
-  console.log('in Ellipsis, mapStateToProps, state: ', state);
+  console.log('in CategoryBox, mapStateToProps, state: ', state);
   return {
     appLanguageCode: state.languages.appLanguageCode
     // yourFlat: state.conversation.yourFlat

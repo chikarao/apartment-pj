@@ -448,6 +448,8 @@ const appLanguages =
     editCalendars: { en: 'Calendars', jp: 'カレンダー' },
     editImages: { en: 'Images', jp: '画像' },
     editPlaces: { en: 'Convenient Places', jp: '周辺の便利な場所' },
+    editDocuments: { en: 'Documents', jp: 'ドキュメンツ' },
+    addEditDocuments: { en: 'Add or Edit Documents', jp: 'ドキュメントを追加・編集' },
     showMyLikes: { en: 'My Likes', jp: 'いいねした物件' },
     showMyFlats: { en: 'My Flats', jp: 'My物件' },
     showMyBookings: { en: 'My Bookings', jp: 'My予約' },

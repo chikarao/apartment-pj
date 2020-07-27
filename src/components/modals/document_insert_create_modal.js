@@ -192,7 +192,7 @@ class DocumentInsertCreateModal extends Component {
             name={formField.name}
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
-            props={fieldComponent === FormChoices ? { model: objects, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray, agreement: this.props.agreement[0] } : {}}
+            props={fieldComponent === FormChoices ? { model: objects, record: this.props.documentInsert, create: true, existingLanguageArray: this.props.documentInsertLanguageArray, agreement: this.props.agreement ? this.props.agreement[0] : {} } : {}}
             type={formField.type}
             style={formField.component === 'input' ? { width: formField.width } : {}}
             className={formField.component === 'input' ? 'form-control' : ''}
@@ -266,7 +266,7 @@ class DocumentInsertCreateModal extends Component {
   }
 
   renderCreateDocumentInsertForm() {
-    // console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, this.props.agreement, this.props.agreementId: ', this.props.agreement, this.props.agreementId);
+    console.log('in documentInsert_create_modal, renderCreateDocumentInsertForm, before if auth this.props.agreement, this.props.agreementId, this.props.auth: ', this.props.agreement, this.props.agreementId, this.props.auth);
     // <h3 className="auth-modal-title">{this.props.addNew ? AppLanguages.createDocumentInsert[this.props.appLanguageCode] : AppLanguages.addDocumentInsertLanguage[this.props.appLanguageCode]}</h3>
 
     const { handleSubmit, appLanguageCode } = this.props;
@@ -429,7 +429,15 @@ function mapStateToProps(state) {
     };
   }
   // else return empty object
-  return {};
+  return {
+    auth: state.auth,
+    successMessage: state.auth.success,
+    errorMessage: state.auth.error,
+    showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
+    appLanguageCode: state.languages.appLanguageCode,
+    documentKey: state.documents.createDocumentKey,
+    documentLanguageCode: state.languages.documentLanguageCode,
+  };
 }
 
 

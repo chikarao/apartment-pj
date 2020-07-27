@@ -525,6 +525,14 @@ class BookingConfirmation extends Component {
               >
                 {AppLanguages.uploadTemplate[appLanguageCode]}
               </div>
+              <select
+                type="string"
+                className="booking-request-box-document-language-select"
+                value={this.props.documentLanguageCode}
+                onChange={this.handleDocumentLanguageSelect}
+              >
+                {this.renderDocumentLanguageSelect()}
+              </select>
             </div>
             <div className="booking-confirmation-document-box">
               {this.renderEachTemplateSaved()}
@@ -539,14 +547,6 @@ class BookingConfirmation extends Component {
             </div>
             <br/>
             <div className="booking-confirmation-document-box">
-              <select
-                type="string"
-                className="booking-request-box-document-language-select"
-                value={this.props.documentLanguageCode}
-                onChange={this.handleDocumentLanguageSelect}
-              >
-               {this.renderDocumentLanguageSelect()}
-              </select>
             </div>
             <div className="booking-confirmation-document-box">
               {this.renderEachAgreementToCreate()}
@@ -1231,7 +1231,7 @@ renderDocument() {
             showSavedDocument={this.state.showSavedDocument}
             agreementId={this.state.agreementId}
             agreement={agreementArray[0]}
-            showDocumentInsertBox={showDocumentInsertBox}
+            showDocumentInsertBox
             showOwnUploadedDocument={this.state.showOwnUploadedDocument}
             showTemplate={this.state.showTemplate}
           />

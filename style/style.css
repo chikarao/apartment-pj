@@ -2732,8 +2732,6 @@ form {
  /* appearance: none; */
 }
 
-
-
 .amenity-radio {
   /* text-align: left; */
   font-size: 13px;
@@ -2868,6 +2866,15 @@ form {
 
 .edit-flat-building-add-link:hover {
   color: lightgray;
+}
+
+.edit-flat-document-box {
+  width: 400px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  margin-top: 40px;
 }
 
 .modal-scroll-div {
@@ -3131,6 +3138,7 @@ form {
 .booking-request-box-document-language-select {
   margin: 0 0 5px 6px;
   height: 26px;
+  border-radius: 4px;
 }
 
 .booking-confirmation-document-create-link {
@@ -3674,7 +3682,7 @@ form {
 
 .my-page-choice-box {
   width: 250px;
-  height: 420px;
+  height: 450px;
   z-index: 100;
   background-color: white;
   position: fixed;

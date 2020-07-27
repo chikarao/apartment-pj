@@ -25,6 +25,9 @@ import InspectionCreateModal from './modals/inspection_create_modal';
 import InspectionEditModal from './modals/inspection_edit_modal';
 import BuildingLanguageEditModal from './modals/building_language_edit_modal';
 import BuildingLanguageCreateModal from './modals/building_language_create_modal';
+import DocumentInsertCreateModal from './modals/document_insert_create_modal';
+import DocumentInsertEditModal from './modals/document_insert_edit_modal';
+
 import AppLanguages from './constants/app_languages';
 // import GmStyle from './maps/gm-style';
 import RentPayment from './constants/rent_payment';
@@ -48,7 +51,8 @@ const CATEGORY_OBJECT = {
   editLanguages: { methodName: 'renderLanguages', heading: 'addEditLanguages' },
   editCalendars: { methodName: 'renderIcalendarAddEdit', heading: 'addEditCalendars' },
   editPlaces: { methodName: 'renderPlacesAddDelete', heading: 'addDeleteConvenient' },
-  editImages: { methodName: 'renderImagesAddDelete', heading: 'addDeletePhotos' }
+  editImages: { methodName: 'renderImagesAddDelete', heading: 'addDeletePhotos' },
+  editDocuments: { methodName: 'renderDocumentAddEdit', heading: 'addEditDocuments' }
 };
 
 class EditFlat extends Component {
@@ -59,7 +63,8 @@ class EditFlat extends Component {
       confirmChecked: false,
       selectedLanguageCode: '',
       windowWidth: window.innerWidth,
-      lastPanel: 'editBasicInfo'
+      lastPanel: 'editDocuments'
+      // lastPanel: 'editBasicInfo'
     };
 
     this.deleteCheckedImages = this.deleteCheckedImages.bind(this);
@@ -80,6 +85,8 @@ class EditFlat extends Component {
     this.handleConfirmCheck = this.handleConfirmCheck.bind(this);
     this.handleBackToShowButton = this.handleBackToShowButton.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
+    this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
   }
 // reference for checkbox
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
@@ -1081,6 +1088,58 @@ class EditFlat extends Component {
     );
   }
 
+  handleDocumentUploadClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
+      this.props.showDocumentInsertCreateModal();
+    // });
+  }
+
+  handleDocumentLanguageSelect(event) {
+    const clickedElement = event.target;
+    console.log('in editFlat, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
+    this.props.setDocumentLanguageCode(clickedElement.value);
+  }
+
+  renderDocumentLanguageSelect() {
+    return _.map(Object.keys(Languages), (key, i) => {
+      if (Languages[key].implemented) {
+        return (
+          <option
+            key={i}
+            value={key}
+            className="booking-confirmation-document-create-link"
+          >
+            {Languages[key].flag} {Languages[key].name}
+          </option>
+        );
+      }
+    });
+  }
+
+  renderDocumentAddEdit() {
+    return (
+      <div className="edit-flat-document-box">
+        <div
+          value="template"
+          className="btn booking-request-upload-document-link"
+          onClick={this.handleDocumentUploadClick}
+        >
+          {AppLanguages.uploadTemplate[this.props.appLanguageCode]}
+        </div>
+        <select
+          type="string"
+          className="booking-request-box-document-language-select"
+          value={this.props.documentLanguageCode}
+          onChange={this.handleDocumentLanguageSelect}
+        >
+          {this.renderDocumentLanguageSelect()}
+        </select>
+      </div>
+    );
+  }
+
   // renderRentPaymentMethodAll() {
   //   return (
   //     <div>
@@ -1090,14 +1149,14 @@ class EditFlat extends Component {
   // }
 
   renderEditForm() {
-    const { handleSubmit, appLanguageCode } = this.props;
+    // const { handleSubmit, appLanguageCode } = this.props;
     const flatEmpty = _.isEmpty(this.props.flat);
 
-    // const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
-    const showMobileView = true;
+    const showMobileView = this.state.windowWidth < RESIZE_BREAK_POINT;
+    // const showMobileView = true;
 
     // const doNotShowContainer = this.props.flat && !this.props.currentUserIsOwner && (this.props.flat.places.length < 1)
-    // console.log('in edit flat, renderEditForm, flatEmpty: ', flatEmpty);
+    console.log('in edit flat, renderEditForm, showMobileView, this.state.windowWidth, RESIZE_BREAK_POINT: ', showMobileView, this.state.windowWidth, RESIZE_BREAK_POINT);
     // console.log('in edit flat, renderEditForm, this.props.flat: ', this.props.flat);
 
     // <h2 style={{ marginBottom: '30px' }}>{AppLanguages.editYourListing[appLanguageCode]}</h2>
@@ -1111,16 +1170,17 @@ class EditFlat extends Component {
                 {AppLanguages.editYourListing[this.props.appLanguageCode]}
               </div>
               <div className="page-title-box page-title-box-right">
-              {showMobileView
-                ?
+
                 <CategoryBox
                   choiceObject={CATEGORY_OBJECT}
+                  showMobileView
+                  windowWidth={this.state.windowWidth}
+                  widePagePosition={showMobileView ? null : { top: '116px', left: '', width: '250px' }}
                   setLastPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
                   setCurrentPanelState={(stateObject, callBack) => this.setState(stateObject, callBack)}
                   lastPanel={this.state.lastPanel}
                 />
-                :
-                ''}
+
               </div>
           </div>
 
@@ -1288,6 +1348,19 @@ class EditFlat extends Component {
     );
   }
 
+  renderDocumentInsertCreateForm() {
+    console.log('in editFalt, renderDocumentInsertCreateForm: ');
+    return (
+      <DocumentInsertCreateModal
+        show={this.props.showDocumentInsertCreate}
+        agreementId={null}
+        agreement={null}
+        uploadOwnDocument={false}
+        templateCreate
+      />
+    );
+  }
+
   render() {
     return (
       <div>
@@ -1304,6 +1377,7 @@ class EditFlat extends Component {
         {this.renderEditForm()}
         {this.props.showBuildingLanguageEdit ? this.renderBuildingLanguageEditForm() : ''}
         {this.props.showBuildingLanguageCreate ? this.renderBuildingLanguageCreateForm() : ''}
+        {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
       </div>
     );
   }
@@ -1501,6 +1575,8 @@ function mapStateToProps(state) {
       buildingLanguageId: state.modals.buildingLanguageId,
       appLanguages: state.auth.appLanguages,
       formObject: state.form.EditFlat,
+      documentLanguageCode: state.languages.documentLanguageCode,
+      showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };
