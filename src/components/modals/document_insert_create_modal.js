@@ -67,7 +67,8 @@ class DocumentInsertCreateModal extends Component {
       // if this is to create an upload
       if (this.props.templateCreate) formData.append('agreement[document_type]', 'template');
       formData.append('agreement[document_name]', dataToChange.insert_name);
-      formData.append('agreement[booking_id]', this.props.booking.id);
+      if (!this.props.editFlat) formData.append('agreement[booking_id]', this.props.booking.id);
+      if (this.props.editFlat) formData.append('agreement[flat_id]', this.props.flat.id);
       formData.append('agreement[document_code]', globalConstants.ownUploadedDocumentKey);
       formData.append('agreement[language_code_1]', this.props.documentLanguageCode);
       formData.append('agreement[language_code]', data.language_code);

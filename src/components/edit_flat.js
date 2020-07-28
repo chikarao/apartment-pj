@@ -87,6 +87,7 @@ class EditFlat extends Component {
     this.handleResize = this.handleResize.bind(this);
     this.handleDocumentUploadClick = this.handleDocumentUploadClick.bind(this);
     this.handleDocumentLanguageSelect = this.handleDocumentLanguageSelect.bind(this);
+    this.handleSavedDocumentShowClick = this.handleSavedDocumentShowClick.bind(this);
   }
 // reference for checkbox
 //https://www.w3schools.com/howto/howto_css_custom_checkbox.asp
@@ -1092,7 +1093,7 @@ class EditFlat extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
-      this.props.showDocumentInsertCreateModal();
+    this.props.showDocumentInsertCreateModal();
     // });
   }
 
@@ -1118,35 +1119,61 @@ class EditFlat extends Component {
     });
   }
 
+  handleSavedDocumentShowClick(event) {
+    const clickedElement = event.target;
+    const elementName = clickedElement.getAttribute('name')
+    console.log('in editFlat, handleSavedDocumentShowClick, elementName:', elementName);
+  }
+
+  renderEachTemplateSaved() {
+    return _.map(this.props.flat.agreements, (eachAgreement, i) => {
+      // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
+      if (eachAgreement.document_type === 'template') {
+        console.log('in editFlat, renderEachTemplateSaved, eachAgreement:', eachAgreement);
+        return <div
+          key={i}
+          value={`${eachAgreement.document_code},${'template'}`}
+          name={eachAgreement.id}
+          onClick={this.handleSavedDocumentShowClick}
+          // onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnTemplateShowClick : this.handleOwnSavedTemplateShowClick}
+          className="booking-confirmation-document-create-link"
+        >
+          {eachAgreement.document_name} &nbsp;
+          {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}
+        </div>
+      }
+    });
+  }
+
   renderDocumentAddEdit() {
     return (
-      <div className="edit-flat-document-box">
-        <div
-          value="template"
-          className="btn booking-request-upload-document-link"
-          onClick={this.handleDocumentUploadClick}
-        >
-          {AppLanguages.uploadTemplate[this.props.appLanguageCode]}
+      <div>
+        <div className="edit-flat-document-box">
+          <div
+            value="template"
+            className="btn edit-flat-upload-document-link"
+            onClick={this.handleDocumentUploadClick}
+          >
+            {AppLanguages.uploadTemplate[this.props.appLanguageCode]}
+          </div>
+          <div className="edit-flat-language-label">
+            {AppLanguages.selectTranslationLanguage[this.props.appLanguageCode]}
+          </div>
+          <select
+            type="string"
+            className="edit-flat-box-document-language-select"
+            value={this.props.documentLanguageCode}
+            onChange={this.handleDocumentLanguageSelect}
+          >
+            {this.renderDocumentLanguageSelect()}
+          </select>
+          <div className="edit-flat-document-list-box">
+            {this.renderEachTemplateSaved()}
+          </div>
         </div>
-        <select
-          type="string"
-          className="booking-request-box-document-language-select"
-          value={this.props.documentLanguageCode}
-          onChange={this.handleDocumentLanguageSelect}
-        >
-          {this.renderDocumentLanguageSelect()}
-        </select>
       </div>
     );
   }
-
-  // renderRentPaymentMethodAll() {
-  //   return (
-  //     <div>
-  //
-  //     </div>
-  //   );
-  // }
 
   renderEditForm() {
     // const { handleSubmit, appLanguageCode } = this.props;
@@ -1355,8 +1382,10 @@ class EditFlat extends Component {
         show={this.props.showDocumentInsertCreate}
         agreementId={null}
         agreement={null}
-        uploadOwnDocument={false}
+        uploadOwnDocument
+        flat={this.props.flat}
         templateCreate
+        editFlat
       />
     );
   }
