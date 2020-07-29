@@ -11,6 +11,7 @@ import {
   FETCH_DOCUMENT_TRANSLATION,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
   FETCH_BOOKING,
+  FETCH_TEMPLATE_OBJECTS,
   SET_DOCUMENT_LANGUAGE_CODE,
   SET_TEMPLATE_ELEMENTS_OBJECT,
   SET_PROGRESS_STATUS,
@@ -34,7 +35,8 @@ export default function (state = {
   templateTranslationElements: {},
   templateTranslationElementsByPage: {},
   listInitialValuesObject: {},
-  progressStatus: null
+  progressStatus: null,
+  templateMappingObjects: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
 
@@ -283,6 +285,7 @@ export default function (state = {
         documentLanguageCode: action.payload
       };
     }
+
     case FETCH_BOOKING: {
       return { ...state,
         allDocumentObjects: {
@@ -295,6 +298,23 @@ export default function (state = {
         },
         flat: action.payload.flat,
         agreements: action.payload.agreements,
+        documentConstants: JSON.parse(action.payload.document_constants),
+        // templateTranslationObject: JSON.parse(action.payload.template_translation_object)
+      };
+    }
+    // Action called in edit_flat
+    case FETCH_TEMPLATE_OBJECTS: {
+      return { ...state,
+        allDocumentObjects: {
+          fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),
+          importantPointsExplanationBilingualAll: JSON.parse(action.payload.important_points_explanation_bilingual_all),
+        },
+        templateMappingObjects: {
+          fixed_term_rental_contract_bilingual: JSON.parse(action.payload.template_mapping_object_fixed),
+          important_points_explanation_bilingual: JSON.parse(action.payload.template_mapping_object_important_points)
+        },
+        // flat: action.payload.flat,
+        // agreements: action.payload.agreements,
         documentConstants: JSON.parse(action.payload.document_constants),
         // templateTranslationObject: JSON.parse(action.payload.template_translation_object)
       };

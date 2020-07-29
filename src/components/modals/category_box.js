@@ -92,8 +92,9 @@ class CategoryBox extends Component {
     if (this.state.lastPanel !== elementVal) {
       // Call setState sent in CategoryBox call props
       this.props.setLastPanelState({ [this.props.lastPanel]: false }, () => {
-        this.props.setCurrentPanelState({ [elementVal]: true, lastPanel: elementVal })
-        // console.log('in CategoryBox, handleChoiceEachClick, elementVal, this.props.setLastPanelState: ', elementVal, this.props.setLastPanelState);
+        this.props.setCurrentPanelState({ [elementVal]: true, lastPanel: elementVal });
+        if (this.props.choiceObject[elementVal].fetch) this.props[this.props.choiceObject[elementVal].fetch]();
+        console.log('in CategoryBox, handleChoiceEachClick, elementVal, this.props.choiceObject[elementVal].fetch: ', elementVal, this.props.choiceObject[elementVal].fetch);
       });
     }
   }

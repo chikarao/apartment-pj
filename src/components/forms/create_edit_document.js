@@ -255,7 +255,7 @@ class CreateEditDocument extends Component {
 
       console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
       // If there are elements persisted in backend DB, populate this.props.templateElements
-      if (this.props.agreement.document_fields.length > 0) {
+      if (this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0) {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     }
@@ -2167,7 +2167,7 @@ longActionPress(props) {
   renderTemplateElements(page) {
     const { documentLanguageCode } = this.props;
     // const documentEmpty = _.isEmpty(this.props.documents);
-    const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
+    const documentEmpty = this.props.agreement.document_fields && this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let fieldComponent = '';
     // let noTabs = false;
     let newElement = false;
@@ -4513,6 +4513,7 @@ longActionPress(props) {
     };
 
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
+    console.log('in create_edit_document, handleFieldChoiceClick, this.props.agreement, templateMappingObject: ', this.props.agreement, templateMappingObject);
 
     let choiceText = null;
     let inputElement = null;
@@ -4537,7 +4538,6 @@ longActionPress(props) {
           if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) {
             choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
           }
-          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject);
           return (
             <div
               key={eachKey}
@@ -5815,8 +5815,8 @@ longActionPress(props) {
   }
 
   renderTemplateDocumentButtons() {
-    const { handleSubmit, appLanguageCode } = this.props;
-    let saveButtonActive = false;
+    const { appLanguageCode } = this.props;
+    const saveButtonActive = false;
     let agreementHasPdf = false;
     let showDocumentButtons = false;
     console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
@@ -5984,7 +5984,7 @@ longActionPress(props) {
   }
 
   render() {
-    // console.log('in create_edit_document, just render: ');
+    console.log('in create_edit_document, just render, this.props.showTemplate : ', this.props.showTemplate);
     return (
       <div className="test-image-pdf-jpg">
         {this.renderDocument()}
@@ -6106,7 +6106,13 @@ function mapStateToProps(state) {
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     };
   }
-
+  // Return object for edit flat where there is selectedFlatFromParams
+  if (state.selectedFlatFromParams) {
+    return {
+      allDocumentObjects: state.documents.allDocumentObjects,
+      templateMappingObjects: state.documents.templateMappingObjects
+    };
+  }
   return {};
 }
 

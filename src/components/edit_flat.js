@@ -27,6 +27,7 @@ import BuildingLanguageEditModal from './modals/building_language_edit_modal';
 import BuildingLanguageCreateModal from './modals/building_language_create_modal';
 import DocumentInsertCreateModal from './modals/document_insert_create_modal';
 import DocumentInsertEditModal from './modals/document_insert_edit_modal';
+import CreateEditDocument from './forms/create_edit_document';
 
 import AppLanguages from './constants/app_languages';
 // import GmStyle from './maps/gm-style';
@@ -52,7 +53,7 @@ const CATEGORY_OBJECT = {
   editCalendars: { methodName: 'renderIcalendarAddEdit', heading: 'addEditCalendars' },
   editPlaces: { methodName: 'renderPlacesAddDelete', heading: 'addDeleteConvenient' },
   editImages: { methodName: 'renderImagesAddDelete', heading: 'addDeletePhotos' },
-  editDocuments: { methodName: 'renderDocumentAddEdit', heading: 'addEditDocuments' }
+  editDocuments: { methodName: 'renderDocumentAddEdit', heading: 'addEditDocuments', fetch: 'fetchTemplateElementObjects' }
 };
 
 class EditFlat extends Component {
@@ -63,7 +64,9 @@ class EditFlat extends Component {
       confirmChecked: false,
       selectedLanguageCode: '',
       windowWidth: window.innerWidth,
-      lastPanel: 'editDocuments'
+      lastPanel: 'editDocuments',
+      showDocument: false,
+      agreementId: null
       // lastPanel: 'editBasicInfo'
     };
 
@@ -102,6 +105,7 @@ class EditFlat extends Component {
     this.props.fetchBankAccountsByUser();
     this.props.getGoogleMapBoundsKeys();
     window.addEventListener('resize', this.handleResize);
+    if (this.state.lastPanel === 'editDocuments') this.props.fetchTemplateObjects(() => {});
     // this.props.fetchPlaces(this.props.match.params.id);
 
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
@@ -1123,6 +1127,69 @@ class EditFlat extends Component {
     const clickedElement = event.target;
     const elementName = clickedElement.getAttribute('name')
     console.log('in editFlat, handleSavedDocumentShowClick, elementName:', elementName);
+    if (this.state.showDocument) {
+      this.setState({ agreementId: elementName });
+    } else {
+      this.setState({ showDocument: true, agreementId: elementName });
+    }
+  }
+
+  renderDocument() {
+    if (this.props.flat) {
+      // if (this.props.booking.agreements || this.props.documentInserts) {
+        // get agreement chosen by user. Returns array so get first index position below
+        const agreement = this.props.flat.agreements[this.state.agreementId];
+        // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
+        let showDocumentInsertBox = false;
+        // if (agreementArray.length > 0) {
+        //   if (agreementArray[0].document_code) {
+        //     showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
+        //   }
+        //   // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
+        //   // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
+        //   // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
+        //   // If template, allow document inserts
+        //   if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
+        // }
+        console.log('in editFlat, renderDocument, agreement:', agreement);
+
+        // {showDocumentInsertBox ? this.renderInsertBox(agreement.document_type === 'template') : ''}
+        return (
+          <div className="booking-confirmation-render-document-box">
+            <CreateEditDocument
+              showDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+              closeSavedDocument={() => this.setState({ showDocument: !this.state.showDocument })}
+              goToSavedDocument={() => this.setState({ showDocument: !this.state.showDocument }, () => {
+                this.setState({ showDocument: !this.state.showDocument }, () => {
+                  // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+                });
+              })}
+              showDocumentInsertEditProp={() => {
+                this.setState({ uploadOwnDocument: true }, () => {
+                  this.props.showDocumentInsertEditModal();
+                });
+              }}
+              setAgreementId={(id) => this.setState({ agreementId: id })}
+              showSavedDocument
+              agreementId={this.state.agreementId}
+              agreement={agreement}
+              showDocumentInsertBox={false}
+              appLanguageCode={this.props.appLanguageCode}
+              createDocumentKey={agreement.template_file_name}
+              showOwnUploadedDocument
+              showTemplate
+              documentFields={{}}
+              documentTranslations={{}}
+              // templateMappingObjects={{}}
+              templateElements={{}}
+              templateTranslationElements={{}}
+              templateElementsByPage={{}}
+              templateTranslationElementsByPage={{}}
+            />
+          </div>
+        );
+      // }
+    }
   }
 
   renderEachTemplateSaved() {
@@ -1171,8 +1238,15 @@ class EditFlat extends Component {
             {this.renderEachTemplateSaved()}
           </div>
         </div>
+        {this.state.showDocument ? this.renderDocument() : ''}
       </div>
     );
+  }
+
+  fetchTemplateElementObjects() {
+    console.log('in edit flat, fetchTemplateElementObjects: ');
+    // Only fetch if templateMappingObject is empty
+    if (!_.isEmpty(this.props.templateMappingObject)) this.props.fetchTemplateObjects(() => {});
   }
 
   renderEditForm() {
@@ -1200,6 +1274,7 @@ class EditFlat extends Component {
 
                 <CategoryBox
                   choiceObject={CATEGORY_OBJECT}
+                  fetchTemplateElementObjects={() => this.fetchTemplateElementObjects()}
                   showMobileView
                   windowWidth={this.state.windowWidth}
                   widePagePosition={showMobileView ? null : { top: '116px', left: '', width: '250px' }}

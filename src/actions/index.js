@@ -197,7 +197,8 @@ import {
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
   SET_PROGRESS_STATUS,
   GET_APP_BASE_OBJECTS,
-  UPLOAD_AND_CREATE_IMAGE
+  UPLOAD_AND_CREATE_IMAGE,
+  FETCH_TEMPLATE_OBJECTS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3230,6 +3231,23 @@ export function fetchAgreement(id, callback) {
     });
     callback();
   });
+  };
+}
+
+export function fetchTemplateObjects(callback) {
+  console.log('in actions index, fetchTemplateObjects: ');
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/fetch_template_objects`, {}, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to fetchTemplateObjects: ', response.data.data);
+      dispatch({
+        type: FETCH_TEMPLATE_OBJECTS,
+        payload: response.data.data
+      });
+      callback();
+    });
   };
 }
 
