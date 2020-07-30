@@ -66,7 +66,7 @@ class EditFlat extends Component {
       windowWidth: window.innerWidth,
       lastPanel: 'editDocuments',
       showDocument: false,
-      agreementId: null
+      agreementId: null,
       // lastPanel: 'editBasicInfo'
     };
 
@@ -1465,6 +1465,25 @@ class EditFlat extends Component {
     );
   }
 
+  renderDocumentInsertEditForm() {
+    console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.flat, this.state.agreementId, this.props.flat.agreements[this.state.agreementId]: ', this.props.flat, this.state.agreementId, this.props.flat.agreements[this.state.agreementId]);
+    return (
+      <DocumentInsertEditModal
+        show={this.props.showDocumentInsertEdit}
+        agreementId={this.state.agreementId}
+        // documentInsertId={this.state.documentInsertId}
+        agreement={this.props.flat.agreements[this.state.agreementId]}
+        uploadOwnDocument
+        showTemplate
+        closeDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+          // this.setState({ showDocument: !this.state.showDocument }, () => {
+          //   // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          // });
+        })}
+      />
+    );
+  }
+
   render() {
     return (
       <div>
@@ -1482,6 +1501,7 @@ class EditFlat extends Component {
         {this.props.showBuildingLanguageEdit ? this.renderBuildingLanguageEditForm() : ''}
         {this.props.showBuildingLanguageCreate ? this.renderBuildingLanguageCreateForm() : ''}
         {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
+        {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
       </div>
     );
   }
@@ -1681,6 +1701,7 @@ function mapStateToProps(state) {
       formObject: state.form.EditFlat,
       documentLanguageCode: state.languages.documentLanguageCode,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
+      showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

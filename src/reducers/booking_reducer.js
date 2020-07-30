@@ -3,6 +3,7 @@ import {
   SELECTED_DATES,
   REQUEST_BOOKING,
   FETCH_BOOKING,
+  EMPTY_BOOKING_DATA,
   FETCH_BOOKINGS_BY_USER,
   FETCH_ICAL,
   REQUIRED_FIELDS,
@@ -30,7 +31,8 @@ export default function (state = {
   selectedBookingDates: { to: null, from: null },
   requiredFields: [],
   bookingRequestData: {},
-  agreement: {}
+  agreement: {},
+  fetchBookingData: null
 }, action) {
   // console.log('in booking reducer, action.payload: ', action.payload);
 
@@ -43,6 +45,10 @@ export default function (state = {
     case REQUEST_BOOKING:
       // console.log('in booking reducer, state: ', state);
       return { ...state, bookingData: action.payload.booking };
+
+    case EMPTY_BOOKING_DATA:
+      // console.log('in booking reducer, state: ', state);
+      return { ...state, fetchBookingData: null };
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS:
       console.log('in booking reducer, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);

@@ -22,6 +22,7 @@ import {
   REQUEST_BOOKING,
   EDIT_BOOKING,
   FETCH_BOOKING,
+  EMPTY_BOOKING_DATA,
   FETCH_BOOKINGS_BY_USER,
   DELETE_BOOKING,
   CREATE_FLAT,
@@ -1034,6 +1035,13 @@ export function fetchBooking(id) {
         payload: response.data.data
       });
     });
+  };
+}
+
+export function emptyBookingData() {
+  console.log('in actions index, emptyBookingData:');
+  return function (dispatch) {
+    dispatch({ type: EMPTY_BOOKING_DATA, payload: null });
   };
 }
 //called when BookingConfirmation mounted; sent id from params

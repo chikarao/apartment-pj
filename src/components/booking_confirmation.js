@@ -84,6 +84,12 @@ class BookingConfirmation extends Component {
     console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
   }
 
+  componentWillUnmount() {
+    // When user navigates out of booking_confirmation, empty out documents/fetchBookingData
+    // So there is no conflict when user goes to editFlat
+    this.props.emptyBookingData();
+  }
+
   renderImage(images) {
     const imagesEmpty = _.isEmpty(images);
     if(!imagesEmpty) {
@@ -1209,7 +1215,6 @@ renderDocument() {
         // If template, allow document inserts
         if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
-
 
       return (
         <div className="booking-confirmation-render-document-box">

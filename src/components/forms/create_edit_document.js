@@ -5779,7 +5779,9 @@ longActionPress(props) {
   handleEditClickTemplate(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleEditClickTemplate, elementVal: ', elementVal);
     this.props.showDocumentInsertEditProp(elementVal);
+    this.props.selectedAgreementId(parseInt(elementVal, 10));
   }
 
   switchCreatePDFButton(saveButtonActive, agreementHasPdf, editTemplate) {
@@ -5819,7 +5821,7 @@ longActionPress(props) {
     const saveButtonActive = false;
     let agreementHasPdf = false;
     let showDocumentButtons = false;
-    console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox: ', this.props.showDocumentInsertBox);
+    console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox, this.props.agreementId: ', this.props.showDocumentInsertBox, this.props.agreementId);
 
     if (this.props.showSavedDocument) {
       showDocumentButtons = true;
@@ -5830,6 +5832,7 @@ longActionPress(props) {
       return (
           <div className="document-floating-button-box">
               <button
+                value={this.props.agreementId}
                 onClick={this.handleEditClickTemplate}
                 className="btn document-floating-button"
                 style={{ backgroundColor: 'blue' }}

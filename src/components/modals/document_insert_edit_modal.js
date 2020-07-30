@@ -248,7 +248,7 @@ class DocumentInsertEditModal extends Component {
   handleDeleteDocumentInsertCallback() {
     this.setState({ editDocumentInsertCompleted: true, deleteDocumentInsertCompleted: true }, () => {
       console.log('in documentInsert_edit_modal, handleDeleteDocumentInsertCallback, handleDeleteDocumentInsertCallback this.state.editDocumentInsertCompleted: ', this.state.editDocumentInsertCompleted);
-      // Close document prop passed in props in call in bookingConfirmation after deleting agreement 
+      // Close document prop passed in props in call in bookingConfirmation after deleting agreement
       if (this.props.uploadOwnDocument) this.props.closeDocument();
     });
     // this.resetAdvancedFilters();
@@ -430,10 +430,10 @@ function mapStateToProps(state) {
     let initialValues = {};
     // console.log('in DocumentInsertEditModal, mapStateToProps, state.auth.user: ', state.auth.user);
     // const agreement = getAgreement(state.bookingData.fetchBookingData.agreements, parseInt(state.modals.selectedAgreementId, 10))
-    const agreement = state.bookingData.fetchBookingData.agreements.filter((agr) => agr.id === parseInt(state.modals.selectedAgreementId, 10));
-    // console.log('in DocumentInsertEditModal, mapStateToProps, state.bookingData.fetchBookingData.agreements, tate.modals.selectedAgreementId, agreement: ', state.bookingData.fetchBookingData.agreements, agreement);
+    const agreement = state.bookingData.fetchBookingData ? state.bookingData.fetchBookingData.agreements.filter((agr) => agr.id === parseInt(state.modals.selectedAgreementId, 10)) : [state.flat.selectedFlatFromParams.agreements[state.modals.selectedAgreementId]];
+    console.log('in DocumentInsertEditModal, mapStateToProps, state.bookingData.fetchBookingData agreement, state.flat.selectedFlatFromParams, state.modals.selectedAgreementId: ', agreement, state.flat.selectedFlatFromParams, state.modals.selectedAgreementId);
     // const documentInsert = getDocumentInsert(agreement.document_inserts, parseInt(state.modals.selectedDocumentInsertId, 10));
-    const documentInsert = agreement[0] ? agreement[0].document_inserts.filter((insert) => insert.id === parseInt(state.modals.selectedDocumentInsertId, 10)) : [];
+    const documentInsert = agreement[0] && agreement[0].document_inserts ? agreement[0].document_inserts.filter((insert) => insert.id === parseInt(state.modals.selectedDocumentInsertId, 10)) : [];
     // const editDocumentInsert = getEditDocumentInsert(agreement.documentInserts, parseInt(state.modals.documentInsertToEditId, 10));
     // const date = new Date(documentInsert.documentInsert_date);
     // const dateString = date.getFullYear() + '-' + date.getMonth() + 1 + '-' + ('00' + date.getDate()).slice(-2);
@@ -442,6 +442,7 @@ function mapStateToProps(state) {
     // }
     if (_.isEmpty(documentInsert)) {
       initialValues.insert_name = agreement[0] ? agreement[0].document_name : '';
+      initialValues.language_code = agreement[0] ? agreement[0].language_code : '';
     } else {
       initialValues = documentInsert[0];
     }
@@ -474,6 +475,5 @@ function mapStateToProps(state) {
 
   return {};
 }
-
 
 export default connect(mapStateToProps, actions)(DocumentInsertEditModal);

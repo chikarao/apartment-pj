@@ -20,6 +20,7 @@ export const SELECTED_DATES = 'selected_dates';
 export const REQUEST_BOOKING = 'request_booking';
 export const EDIT_BOOKING = 'edit_booking';
 export const FETCH_BOOKING = 'fetch_booking';
+export const EMPTY_BOOKING_DATA = 'empty_booking_data';
 export const FETCH_BOOKINGS_BY_USER = 'fetch_bookings_by_user';
 export const DELETE_BOOKING = 'delete_booking';
 export const CREATE_FLAT = 'create_flat';
