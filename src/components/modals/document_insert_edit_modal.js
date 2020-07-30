@@ -36,21 +36,26 @@ class DocumentInsertEditModal extends Component {
   // }
 
   handleFormSubmit(data) {
-    const delta = {}
-    _.each(Object.keys(data), each => {
-      // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
-      if (data[each] !== this.props.initialValues[each]) {
-        console.log('in edit flat, handleFormSubmit, each: ', each);
-        delta[each] = data[each];
-      }
-    });
-    delta.agreement_id = this.props.agreementId;
+    // const delta = {}
+    // _.each(Object.keys(data), each => {
+    //   // console.log('in edit flat, handleFormSubmit, each, data[each], this.props.initialValues[each]: ', each, data[each], this.props.initialValues[each]);
+    //   if (data[each] !== this.props.initialValues[each]) {
+    //     console.log('in edit flat, handleFormSubmit, each: ', each);
+    //     delta[each] = data[each];
+    //   }
+    // });
+    // delta.agreement_id = this.props.agreementId;
+    const dataToChange = data;
+    dataToChange.agreement_id = this.props.agreementId;
 
     this.props.showLoading();
 
     const imageFiles = data.files ? data.files : [];
-
-    this.handleCreateImages(imageFiles, delta);
+    // NOTE: Don't use delta since there may be no changes in agreement keys;
+    // If just a chnage in image, the strong params require agreement params
+    // will get tripped in backend
+    // this.handleCreateImages(imageFiles, delta);
+    this.handleCreateImages(imageFiles, dataToChange);
   }
 
   handleCreateImages(files, data) {
@@ -71,7 +76,8 @@ class DocumentInsertEditModal extends Component {
       if (data.insert_name) formData.append('agreement[document_name]', data.insert_name);
       if (data.language_code) formData.append('agreement[language_code]', data.language_code);
       formData.append('id', this.props.agreementId);
-      formData.append('agreement[booking_id]', this.props.booking.id);
+      if (!this.props.editFlat) formData.append('agreement[booking_id]', this.props.booking.id);
+      if (this.props.editFlat) formData.append('edit_flat', true);
       // console.log('in edit_document_inset, handleCreateImages, this.props.agreementId: ', this.props.agreementId);
       this.props.editAgreement(formData, () => this.handleFormSubmitCallback());
     }

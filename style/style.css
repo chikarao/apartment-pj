@@ -492,7 +492,6 @@ h3 {
 
 .header-language-selection-box-select option {
    font-size: 5px !important;
-
 }
 /* ************Each Page**************** */
 
@@ -3150,6 +3149,8 @@ form {
   height: 26px;
   border-radius: 4px;
   width: 140px;
+  border: 2px solid #ccc;
+  height: 30px;
 }
 
 .edit-flat-box-document-language-select {

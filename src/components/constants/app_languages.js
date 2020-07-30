@@ -459,6 +459,7 @@ const appLanguages =
     showPaymentDetails: { en: 'Payment Details', jp: '支払い方法' },
     showBankAccounts: { en: 'My Bank Accounts', jp: '銀行口座' },
     selectTranslationLanguage: { en: 'Select Translation Language', jp: 'トランスレーションの言語を選択' },
+    documentsSavedFlat: { en: 'Documents Saved for Listing', jp: '物件のため保存されたドキュメント' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },

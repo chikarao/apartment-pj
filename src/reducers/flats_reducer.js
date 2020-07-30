@@ -42,7 +42,8 @@ import {
   DELETE_BUILDING_LANGUAGE,
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
   SET_OWNER_USER_STATUS,
-  UPLOAD_AND_CREATE_IMAGE
+  UPLOAD_AND_CREATE_IMAGE,
+  EDIT_AGREEMENT
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -120,6 +121,10 @@ export default function (state = INITIAL_STATE, action) {
       // console.log('in flats reducer, action.payload: ', action.payload);
       return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner };
     }
+
+    case EDIT_AGREEMENT:
+      // return _.mapKeys(action.payload, 'id');
+      return { ...state, selectedFlatFromParams: action.payload.flat };
 
     case CREATE_FLAT:
       // return _.mapKeys(action.payload, 'id');

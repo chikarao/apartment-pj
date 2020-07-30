@@ -1224,7 +1224,7 @@ class EditFlat extends Component {
             {AppLanguages.uploadTemplate[this.props.appLanguageCode]}
           </div>
           <div className="edit-flat-language-label">
-            {AppLanguages.selectTranslationLanguage[this.props.appLanguageCode]}
+            {AppLanguages.selectTranslationLanguage[this.props.appLanguageCode]}:
           </div>
           <select
             type="string"
@@ -1234,6 +1234,9 @@ class EditFlat extends Component {
           >
             {this.renderDocumentLanguageSelect()}
           </select>
+          <div className="edit-flat-language-label">
+            {AppLanguages.documentsSavedFlat[this.props.appLanguageCode]}:
+          </div>
           <div className="edit-flat-document-list-box">
             {this.renderEachTemplateSaved()}
           </div>
@@ -1475,6 +1478,7 @@ class EditFlat extends Component {
         agreement={this.props.flat.agreements[this.state.agreementId]}
         uploadOwnDocument
         showTemplate
+        editFlat
         closeDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
           // this.setState({ showDocument: !this.state.showDocument }, () => {
           //   // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
