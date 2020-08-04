@@ -41,7 +41,8 @@ import {
   SELECTED_DOCUMENT_INSERT_ID,
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID,
-  INSERT_FIELD_TO_EDIT_ID
+  INSERT_FIELD_TO_EDIT_ID,
+  SHOW_SELECT_EXSITING_DOCUMENT_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -191,6 +192,9 @@ export default function (
 
     case SHOW_DOCUMENT_INSERT_EDIT_MODAL:
     return { ...state, showDocumentInsertEditModal: !state.showDocumentInsertEditModal };
+
+    case SHOW_SELECT_EXSITING_DOCUMENT_MODAL:
+    return { ...state, showSelectExistingDocumentModal: !state.showSelectExistingDocumentModal };
 
     case SHOW_INSERT_FIELD_CREATE_MODAL:
     return { ...state, showInsertFieldCreateModal: !state.showInsertFieldCreateModal };

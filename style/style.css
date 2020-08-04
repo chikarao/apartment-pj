@@ -2886,6 +2886,17 @@ form {
   padding: 5px 5px 5px 10px;
 }
 
+.booking-request-upload-document-link:hover {
+  color: white;
+  background-color: lightgray;
+}
+
+.edit-flat-upload-select-box {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .modal-scroll-div {
   height: 400px;
   overflow: hidden;
@@ -3166,22 +3177,18 @@ form {
   color: gray;
 }
 
-.booking-request-upload-document-link, .edit-flat-upload-document-link {
+.booking-request-upload-document-link, .edit-flat-upload-document-link, .edit-flat-select-document-link {
   margin: 0 0 7px 6px;
   background-color: gray;
   color: white;
   font-size: 12px;
   padding: 8px 8px 6px 8px;
-  width: 140px;
+  width: auto;
 }
 
-.edit-flat-upload-document-link {
-  margin-right: auto;
-}
-
-.booking-request-upload-document-link:hover {
-  color: white;
-  background-color: lightgray;
+.edit-flat-select-document-link {
+  background-color: blue;
+  width: auto;
 }
 
 .booking-confirmation-row {

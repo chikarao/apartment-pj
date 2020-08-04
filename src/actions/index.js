@@ -178,6 +178,7 @@ import {
   DELETE_INSERT_FIELD,
   SHOW_DOCUMENT_INSERT_CREATE_MODAL,
   SHOW_DOCUMENT_INSERT_EDIT_MODAL,
+  SHOW_SELECT_EXSITING_DOCUMENT_MODAL,
   SHOW_INSERT_FIELD_CREATE_MODAL,
   SHOW_INSERT_FIELD_EDIT_MODAL,
   INSERT_FIELD_TO_EDIT_ID,
@@ -513,6 +514,13 @@ export function showDocumentInsertEditModal() {
 
   //flip state boolean
   return { type: SHOW_DOCUMENT_INSERT_EDIT_MODAL };
+}
+
+export function showSelectExistingDocumentModal() {
+  console.log('in actions index, showSelectExistingDocumentModal:');
+
+  //flip state boolean
+  return { type: SHOW_SELECT_EXSITING_DOCUMENT_MODAL };
 }
 
 export function showInsertFieldCreateModal() {

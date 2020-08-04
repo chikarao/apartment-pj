@@ -27,6 +27,7 @@ import BuildingLanguageEditModal from './modals/building_language_edit_modal';
 import BuildingLanguageCreateModal from './modals/building_language_create_modal';
 import DocumentInsertCreateModal from './modals/document_insert_create_modal';
 import DocumentInsertEditModal from './modals/document_insert_edit_modal';
+import SelectExistingDocumentModal from './modals/select_existing_document_modal';
 import CreateEditDocument from './forms/create_edit_document';
 
 import AppLanguages from './constants/app_languages';
@@ -1100,7 +1101,8 @@ class EditFlat extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
-    this.props.showDocumentInsertCreateModal();
+    if (elementVal === 'template') this.props.showDocumentInsertCreateModal();
+    if (elementVal === 'chooseExisting') this.props.showSelectExistingDocumentModal();
     // });
   }
 
@@ -1217,18 +1219,29 @@ class EditFlat extends Component {
   }
 
   renderDocumentAddEdit() {
+    const { appLanguageCode } = this.props;
     return (
       <div>
         <div className="edit-flat-document-box">
-          <div
-            value="template"
-            className="btn edit-flat-upload-document-link"
-            onClick={this.handleDocumentUploadClick}
-          >
-            {AppLanguages.uploadTemplate[this.props.appLanguageCode]}
+          <div className="edit-flat-upload-select-box">
+            <div
+              value="template"
+              className="btn edit-flat-upload-document-link"
+              onClick={this.handleDocumentUploadClick}
+            >
+              {AppLanguages.uploadTemplate[appLanguageCode]}
+            </div>
+            <div
+              value="chooseExisting"
+              className="btn edit-flat-select-document-link"
+              onClick={this.handleDocumentUploadClick}
+            >
+              {AppLanguages.selectExistingDocument[appLanguageCode]}
+            </div>
           </div>
+
           <div className="edit-flat-language-label">
-            {AppLanguages.selectTranslationLanguage[this.props.appLanguageCode]}:
+            {AppLanguages.selectTranslationLanguage[appLanguageCode]}:
           </div>
           <select
             type="string"
@@ -1239,7 +1252,7 @@ class EditFlat extends Component {
             {this.renderDocumentLanguageSelect()}
           </select>
           <div className="edit-flat-language-label">
-            {AppLanguages.documentsSavedFlat[this.props.appLanguageCode]}:
+            {AppLanguages.documentsSavedFlat[appLanguageCode]}:
           </div>
           <div className="edit-flat-document-list-box">
             {this.renderEachTemplateSaved()}
@@ -1495,6 +1508,26 @@ class EditFlat extends Component {
     );
   }
 
+  renderSelectExistingDocumentForm() {
+    console.log('in booking confirmation, renderSelectExistingDocumentForm, : ', );
+    return (
+      <SelectExistingDocumentModal
+        show={this.props.showSelectExistingDocument}
+        // agreementId={this.state.agreementId}
+        // // documentInsertId={this.state.documentInsertId}
+        // agreement={this.props.flat.agreements[this.state.agreementId]}
+        // uploadOwnDocument
+        // showTemplate
+        editFlat
+        // closeDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
+          // this.setState({ showDocument: !this.state.showDocument }, () => {
+          //   // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
+          // });
+        // })}
+      />
+    );
+  }
+
   render() {
     return (
       <div>
@@ -1513,6 +1546,7 @@ class EditFlat extends Component {
         {this.props.showBuildingLanguageCreate ? this.renderBuildingLanguageCreateForm() : ''}
         {this.props.showDocumentInsertCreate ? this.renderDocumentInsertCreateForm() : ''}
         {this.props.showDocumentInsertEdit ? this.renderDocumentInsertEditForm() : ''}
+        {this.props.showSelectExistingDocument ? this.renderSelectExistingDocumentForm() : ''}
       </div>
     );
   }
@@ -1713,6 +1747,7 @@ function mapStateToProps(state) {
       documentLanguageCode: state.languages.documentLanguageCode,
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
+      showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };
