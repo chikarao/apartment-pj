@@ -184,7 +184,7 @@ class CreateEditDocument extends Component {
     // test.test(name);
     const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
-      // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
+      console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
       let destringifiedHistory = {};
       // if localStorageHistory exists, set state to previous values
       // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
@@ -232,6 +232,7 @@ class CreateEditDocument extends Component {
       templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
+      console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate templateEditHistory', templateEditHistory);
       if (templateEditHistory && templateEditHistory.elements) {
         let highestElementId = 0;
         let highestTranslationElementId = 0;
@@ -242,6 +243,7 @@ class CreateEditDocument extends Component {
           } else {
             highestTranslationElementId = highestTranslationElementId > parseInt(eachElementKey, 10) ? highestTranslationElementId : parseInt(eachElementKey, 10);
           }
+          // get template elements in localstorage into app state as templateElements and templateTranslationElements
           this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
         this.setState({
@@ -256,6 +258,7 @@ class CreateEditDocument extends Component {
       console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
       // If there are elements persisted in backend DB, populate this.props.templateElements
       if (this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0) {
+        // get template elements in DB into app state as templateElements and templateTranslationElements
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     }
@@ -285,11 +288,13 @@ class CreateEditDocument extends Component {
       _.isEmpty(mainInsertFieldsObject) ? (mainInsertFieldsObject = DefaultMainInsertFieldsObject) : mainInsertFieldsObject;
       // console.log('in create_edit_document, componentDidMount, mainInsertFieldsObject, mainDocumentInsert', mainInsertFieldsObject, mainDocumentInsert);
       if (this.props.showSavedDocument) {
+        // For static documents (not template) that are saved (not ones that are yet to be saveed)
         // get values of each agreement document field
         // need to have this to populate document inserts
         this.props.fetchAgreement(this.props.agreementId, () => {});
         const agreement = this.props.agreement || {};
         // const agreements = this.props.agreements || [];
+        // !this.props.showOwnUploadedDocument means static document
         if (!this.props.showOwnUploadedDocument) {
           // console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
           const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement, mainDocumentInsert });
@@ -312,15 +317,37 @@ class CreateEditDocument extends Component {
           });
         }
       } else { // if this.props.showSavedDocument
+        // For static documents that are yet to be saved
         // if not save document ie creating new document, call method to assign initialValues
-        initialValuesObject = Documents[documentKey].method({ flat, booking, userOwner, tenant, appLanguageCode, documentFields, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject });
+        initialValuesObject = Documents[documentKey].method({
+          flat,
+          booking,
+          userOwner,
+          tenant,
+          appLanguageCode,
+          documentFields,
+          assignments,
+          contracts,
+          documentLanguageCode,
+          documentKey,
+          contractorTranslations,
+          staffTranslations,
+          mainInsertFieldsObject
+        });
       }
       this.props.setInitialValuesObject(initialValuesObject);
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.bookingData && Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length) {
+    // Template document intitialValues in componentDidUpdate
+    // Use selectedFlatFromParams to test since bookingData also has flat
+    // so need to distinguish flat does not test positive in bookingConfirmation
+    if ((this.props.bookingData || this.props.selectedFlatFromParams)
+        &&
+        ((Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+        ||
+        (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length))) {
       // this.props.setInitialValuesObject(initialValuesObject);
       const {
         flat,
@@ -355,7 +382,7 @@ class CreateEditDocument extends Component {
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       // Get date object at the beginning to run once instead of running on each field
-      const bookingDatesObject = getBookingDateObject(booking);
+      const bookingDatesObject = booking ? getBookingDateObject(booking) : null;
       const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: allObject, templateTranslationElements: this.props.templateTranslationElements, documentTranslationsAllInOne: this.props.documentTranslationsAllInOne, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects, documentConstants, bookingDatesObject });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
       this.props.setInitialValuesObject(initialValuesObject);
@@ -556,14 +583,15 @@ class CreateEditDocument extends Component {
     return booleanReturned;
   }
 
-  handleTemplateSubmitCallback() {
+  handleTemplateSubmitCallback(saveOrCreate) {
     this.setState({
       modifiedPersistedElementsObject: {},
       modifiedPersistedTranslationElementsObject: {},
       templateEditHistoryArray: [],
       historyIndex: 0,
       unsavedTemplateElements: {},
-      showDocumentPdf: true,
+      // If creating pdf, set showDocumentPdf to true for renderDocument
+      showDocumentPdf: (saveOrCreate === 'save_and_create') || (saveOrCreate === 'create'),
       useMainDocumentInsert: false
     }, () => {
       this.setLocalStorageHistory('handleTemplateSubmitCallback');
@@ -585,7 +613,7 @@ class CreateEditDocument extends Component {
     const deletedDocumentFieldTranslationsArray = [];
     const paramsObject = {
       flat_id: this.props.flat.id,
-      booking_id: this.props.booking.id,
+      booking_id: this.props.booking ? this.props.booking.id : null,
       document_name: this.props.agreement.document_name,
       document_field: documentFieldArray,
       deleted_document_field_id_array: deletedDocumentFieldIdArray,
@@ -678,9 +706,9 @@ class CreateEditDocument extends Component {
     if (submitAction === 'save_and_create' || submitAction === 'create') {
       paramsObject.save_and_create = true;
       paramsObject.document_language_code = this.props.documentLanguageCode;
-      this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+      this.props.saveTemplateDocumentFields(paramsObject, submitAction, (saveOrCreate) => this.handleTemplateSubmitCallback(saveOrCreate));
     } else {
-      this.props.saveTemplateDocumentFields(paramsObject, () => this.handleTemplateSubmitCallback());
+      this.props.saveTemplateDocumentFields(paramsObject, submitAction, (saveOrCreate) => this.handleTemplateSubmitCallback(saveOrCreate));
     }
     console.log('in create_edit_document, handleTemplateFormSubmit, paramsObject, data: ', paramsObject, data);
     this.props.showLoading();
@@ -2034,14 +2062,16 @@ longActionPress(props) {
   }
 
   renderTemplateTranslationElements(page) {
-    const { documentLanguageCode, appLanguageCode, agreement, documentTranslationsAllInOne } = this.props;
+    const { valuesInForm, documentLanguageCode, appLanguageCode, agreement, documentTranslationsAllInOne } = this.props;
     const documentEmpty = _.isEmpty(this.props.templateTranslationElementsByPage);
     // const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let translationText = '';
 
     if (!documentEmpty) {
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
-        translationText = this.props.valuesInForm[`${eachElement.name}+translation`] || documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
+        console.log('in create_edit_document, renderTemplateTranslationElements, valuesInForm, documentTranslationsAllInOne, ', valuesInForm, documentTranslationsAllInOne);
+
+        translationText = valuesInForm[`${eachElement.name}+translation`] || documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
         if (this.state.translationModeOn && this.state.editFieldsOn) {
           const background = document.getElementById('document-background');
           if (background) {
@@ -3073,6 +3103,7 @@ longActionPress(props) {
     // to make room for new array; Not used effectively since max is set so high
     let droppedHistory = null;
     if (newArray.length >= MAX_HISTORY_ARRAY_LENGTH) droppedHistory = newArray.shift();
+    console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, action, newArray: ', action, newArray);
 
     // if action was to delete, empty out selectedTemplateElementIdArray and allElementsChecked false
     // templateEditHistoryArray gets a new shifted, splced array with a new rung of edits in an array
@@ -5666,8 +5697,10 @@ longActionPress(props) {
     }
 
     // if (this.props.agreement) {
+    console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, showDocument: ', showDocument);
     if (showDocument) {
       if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
+        console.log('in create_edit_document, renderDocument, inside if this.showDocument, this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate: ', this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate);
         // render document only if initialValues NOT empty or if user has uploaded own document (agreement)
         let image;
         // when showing PDF (view pdf or after creating and updating pdf)
@@ -5684,7 +5717,6 @@ longActionPress(props) {
           });
           // assign array to pages for later iteration
           pages = array;
-          // console.log('in create_edit_document, renderDocument, if this.state.showDocumentPdf, pages: ', pages);
         } else {
           if (this.props.showTemplate) {
             image = this.props.agreement.document_publicid;
@@ -5706,7 +5738,8 @@ longActionPress(props) {
         // const page = 1;
 
         return _.map(pages, page => {
-          console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf: ', pages, image, page, this.state.showDocumentPdf);
+              // console.log('in create_edit_document, renderDocument, this.props.showTemplate: ', this.props.showTemplate);
+              console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
           return (
             <div
               key={page}
@@ -5987,7 +6020,7 @@ longActionPress(props) {
   }
 
   render() {
-    console.log('in create_edit_document, just render, this.props.showTemplate : ', this.props.showTemplate);
+    console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);
     return (
       <div className="test-image-pdf-jpg">
         {this.renderDocument()}
@@ -6022,6 +6055,7 @@ CreateEditDocument = reduxForm({
 function mapStateToProps(state) {
   console.log('in create_edit_document, mapStateToProps, state: ', state);
   // const initialValuesObjectEmpty = _.isEmpty(state.documents.initialValuesObject);
+  const formIsDirty = isDirty('CreateEditDocument')(state);
   if (state.bookingData.fetchBookingData) {
     let initialValues = {};
     // bookingData.flat gives access to flat.building.inspections
@@ -6049,7 +6083,6 @@ function mapStateToProps(state) {
     console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslations: ', state.documents.documentTranslations);
     // initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
-    const formIsDirty = isDirty('CreateEditDocument')(state);
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
     return {
       // flat: state.selectedFlatFromParams.selectedFlat,
@@ -6110,12 +6143,39 @@ function mapStateToProps(state) {
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
-  if (state.selectedFlatFromParams) {
+  if (state.flat.selectedFlatFromParams) {
+    const initialValues = state.documents.initialValuesObject;
+
     return {
+      flat: state.flat.selectedFlatFromParams,
+      selectedFlatFromParams: state.flat.selectedFlatFromParams,
+      booking: null,
+      userOwner: state.flat.selectedFlatFromParams.user,
+      tenant: null,
+      appLanguageCode: state.languages.appLanguageCode,
+      documentLanguageCode: state.languages.documentLanguageCode,
+      assignments: null,
+      contracts: null,
+      // NOTE: documentKey is sent as props in editFlat CreateEditDocument call
+      // documentKey: null,
+      contractorTranslations: null,
+      staffTranslations: null,
       allDocumentObjects: state.documents.allDocumentObjects,
-      templateMappingObjects: state.documents.templateMappingObjects
+      templateMappingObjects: state.documents.templateMappingObjects,
+      documentFields: {},
+      documentTranslations: {},
+      templateElements: state.documents.templateElements,
+      templateTranslationElements: state.documents.templateTranslationElements,
+      templateElementsByPage: state.documents.templateElementsByPage,
+      templateTranslationElementsByPage: state.documents.templateTranslationElementsByPage,
+      documentTranslationsAll: state.documents.documentTranslations,
+      documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
+      initialValues,
+      formIsDirty,
+      valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     };
   }
+
   return {};
 }
 

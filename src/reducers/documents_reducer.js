@@ -36,7 +36,8 @@ export default function (state = {
   templateTranslationElementsByPage: {},
   listInitialValuesObject: {},
   progressStatus: null,
-  templateMappingObjects: {}
+  templateMappingObjects: {},
+  // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
 

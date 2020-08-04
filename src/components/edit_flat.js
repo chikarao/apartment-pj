@@ -105,7 +105,10 @@ class EditFlat extends Component {
     this.props.fetchBankAccountsByUser();
     this.props.getGoogleMapBoundsKeys();
     window.addEventListener('resize', this.handleResize);
-    if (this.state.lastPanel === 'editDocuments') this.props.fetchTemplateObjects(() => {});
+    if (this.state.lastPanel === 'editDocuments') {
+      this.props.fetchTemplateObjects(() => {});
+      this.props.fetchDocumentTranslation('important_points_explanation');
+    }
     // this.props.fetchPlaces(this.props.match.params.id);
 
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
@@ -117,13 +120,13 @@ class EditFlat extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     console.log('in edit flat, componentDidUpdate, prevState, this.state: ', prevState, this.state);
-
   }
 
   componentWillUnmount() {
     // remove event listeners when closing page or unmounting
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('click', this.choiceEllipsisCloseClick);
+    this.props.emptySelectedFlatFromParams();
   }
 
   handleResize() {
@@ -1173,18 +1176,19 @@ class EditFlat extends Component {
               showSavedDocument
               agreementId={this.state.agreementId}
               agreement={agreement}
+              documentKey={agreement.template_file_name}
               showDocumentInsertBox={false}
               appLanguageCode={this.props.appLanguageCode}
               createDocumentKey={agreement.template_file_name}
               showOwnUploadedDocument
               showTemplate
-              documentFields={{}}
-              documentTranslations={{}}
-              // templateMappingObjects={{}}
-              templateElements={{}}
-              templateTranslationElements={{}}
-              templateElementsByPage={{}}
-              templateTranslationElementsByPage={{}}
+              // documentFields={{}}
+              // // documentTranslations={{}}
+              // // templateMappingObjects={{}}
+              // // templateElements={{}}
+              // // templateTranslationElements={{}}
+              // // templateElementsByPage={{}}
+              // // templateTranslationElementsByPage={{}}
             />
           </div>
         );
@@ -1249,7 +1253,10 @@ class EditFlat extends Component {
   fetchTemplateElementObjects() {
     console.log('in edit flat, fetchTemplateElementObjects: ');
     // Only fetch if templateMappingObject is empty
-    if (!_.isEmpty(this.props.templateMappingObject)) this.props.fetchTemplateObjects(() => {});
+    if (!_.isEmpty(this.props.templateMappingObject)) {
+      this.props.fetchTemplateObjects(() => {});
+      this.props.fetchDocumentTranslation('important_points_explanation');
+    }
   }
 
   renderEditForm() {

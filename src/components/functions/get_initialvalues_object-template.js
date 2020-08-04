@@ -350,17 +350,19 @@ export default (props) => {
   const profileMethod = (p) => {
     // Get userOwner or tenant record based on object.record
     const record = p.object.record === 'user_owner' ? userOwner : tenant;
+    console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p, userOwner, tenant: ', p, userOwner, tenant);
+
     // What language is the object for base or translation
     const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
     // Get profile from array of profiles based on language
-    const profile = getProfile(record.profiles, language);
+    const profile = record ? getProfile(record.profiles, language) : {};
     // If language is jp, order names last name first
     let fullName = profile.last_name ? profile.first_name.concat(` ${profile.last_name}`) : '';
     if (language === 'jp') fullName = profile.last_name ? profile.last_name.concat(` ${profile.first_name}`) : '';
 
     // return userOwner[p.key];
     let fullAddress = profile.address1 + ', ' + profile.city + ', ' + profile.state + ', ' + profile.zip;
-    if (profile.country.toLowerCase() === ('japan' || '日本'　|| '日本国') && language === 'jp') {
+    if (profile.country && profile.country.toLowerCase() === ('japan' || '日本'　|| '日本国') && language === 'jp') {
       fullAddress = ''
       fullAddress = fullAddress.concat(`${profile.zip}${profile.state}${profile.city}${profile.address1}`);
       objectReturned.owner_address = fullAddress;
@@ -577,43 +579,43 @@ export default (props) => {
     facility: {
       method: facilityMethod,
       parameters: { record: booking },
-      condition: booking.facility_bookings.length > 0
+      condition: booking && booking.facility_bookings.length > 0
     },
     // Note: owner the user for flat for booking; Not necessarily the legal owner of the flat
     // userOwner is flat.user; tenant is booking.user
     profile: {
       method: profileMethod,
       parameters: {},
-      condition: userOwner.profiles.length > 0 || tenant.profiles.length > 0
+      condition: (userOwner && userOwner.profiles.length > 0) || (tenant && tenant.profiles.length > 0)
     },
 
     tenant: {
       method: tenantMethod,
-      parameters: { record: booking.tenants },
-      condition: booking.tenants.length > 0
+      parameters: { record: booking ? booking.tenants : null },
+      condition: booking && booking.tenants.length > 0
     },
     // management is the broker managing the rental (booking.contracts...contractor);
     // Not the flat.user (the landlord)
     management: {
       method: managementBrokerMethod,
-      parameters: { record: booking.contracts, contractorType: 'rental_broker', workSubType: 'broker' },
-      condition: booking.contracts.length > 0
+      parameters: { record: booking ? booking.contracts : null, contractorType: 'rental_broker', workSubType: 'broker' },
+      condition: booking && booking.contracts.length > 0
     },
 
     inspection: {
       method: inspectionMethod,
       parameters: { record: flat.building.inspections },
-      condition: flat.building.inspections.length > 0
+      condition: flat.building && flat.building.inspections.length > 0
     },
 
     runLastInspection: {
       method: runLastMethod,
       parameters: {},
-      condition: flat.building.inspections.length > 0
+      condition: flat.building && flat.building.inspections.length > 0
       // condition: Object.keys(degradationsObject.degradations).length > 0 && degradationsObject.summaryKeys.length > 0
     }
   };
-  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant);
+  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject);
   const baseLanguageCode = agreement.language_code || 'jp';
   const translationLanguageCode = documentLanguageCode || 'en';
   let objectReturned = {};

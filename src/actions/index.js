@@ -23,6 +23,7 @@ import {
   EDIT_BOOKING,
   FETCH_BOOKING,
   EMPTY_BOOKING_DATA,
+  EMPTY_SELECTED_FLAT_FROM_PARAMS,
   FETCH_BOOKINGS_BY_USER,
   DELETE_BOOKING,
   CREATE_FLAT,
@@ -1042,6 +1043,13 @@ export function emptyBookingData() {
   console.log('in actions index, emptyBookingData:');
   return function (dispatch) {
     dispatch({ type: EMPTY_BOOKING_DATA, payload: null });
+  };
+}
+
+export function emptySelectedFlatFromParams() {
+  console.log('in actions index, emptySelectedFlatFromParams:');
+  return function (dispatch) {
+    dispatch({ type: EMPTY_SELECTED_FLAT_FROM_PARAMS, payload: null });
   };
 }
 //called when BookingConfirmation mounted; sent id from params
@@ -2997,7 +3005,7 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
   };
 }
 
-export function saveTemplateDocumentFields(agreementFieldAttributes, callback) {
+export function saveTemplateDocumentFields(agreementFieldAttributes, submitAction, callback) {
   console.log('in actions index, saveTemplateDocumentFields, agreementFieldAttributes: ', agreementFieldAttributes);
   console.log('in actions index, saveTemplateDocumentFields: localStorage.getItem, token; ', localStorage.getItem('token'));
 
@@ -3014,7 +3022,7 @@ export function saveTemplateDocumentFields(agreementFieldAttributes, callback) {
         payload: response.data.data
       });
       // sends back to createflat.js the flat_id and the images
-      callback();
+      callback(submitAction);
     })
     .catch((error) => {
       // take out error if hard coding error messages

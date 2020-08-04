@@ -43,7 +43,9 @@ import {
   GET_GOOGLE_MAP_MAP_BOUNDS_KEYS,
   SET_OWNER_USER_STATUS,
   UPLOAD_AND_CREATE_IMAGE,
-  EDIT_AGREEMENT
+  EDIT_AGREEMENT,
+  EMPTY_SELECTED_FLAT_FROM_PARAMS,
+  SAVE_TEMPLATE_DOCUMENT_FIELDS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -58,6 +60,7 @@ const INITIAL_STATE = {
   flatBuildingsResultsJustId: [],
   currentUserIsOwner: false,
   googleMapBoundsKeys: null,
+  selectedFlatFromParams: null,
 };
 export default function (state = INITIAL_STATE, action) {
   // console.log('in flats reducer, action.payload: ', action.payload);
@@ -118,9 +121,22 @@ export default function (state = INITIAL_STATE, action) {
         // NOTE: the == comparison does not work with ===
         currentUserIsOwner = action.payload.flat.user_id == userId;
       }
+
+      const flat = action.payload.flat;
+      if (flat && action.payload.agreements.length > 0) flat.agreements = _.mapKeys(action.payload.agreements, 'id')
       // console.log('in flats reducer, action.payload: ', action.payload);
-      return { ...state, selectedFlatFromParams: action.payload.flat, currentUserIsOwner };
+      return { ...state, selectedFlatFromParams: flat, currentUserIsOwner };
     }
+
+    case SAVE_TEMPLATE_DOCUMENT_FIELDS:
+      // console.log('in booking reducer, SAVE_TEMPLATE_DOCUMENT_FIELDS, action.payload: ', action.payload);
+      const flat = action.payload.flat;
+      if (flat) flat.agreements = _.mapKeys(action.payload.agreements, 'id');
+      return { ...state, selectedFlatFromParams: flat };
+
+    case EMPTY_SELECTED_FLAT_FROM_PARAMS:
+      // console.log('in booking reducer, state: ', state);
+      return { ...state, selectedFlatFromParams: null };
 
     case EDIT_AGREEMENT:
       // return _.mapKeys(action.payload, 'id');
