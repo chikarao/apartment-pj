@@ -196,3 +196,4 @@ export const GET_APP_BASE_OBJECTS = 'get_app_base_objects';
 export const UPLOAD_AND_CREATE_IMAGE = 'upload_and_create_image';
 export const FETCH_TEMPLATE_OBJECTS = 'fetch_template_objects';
 export const SHOW_SELECT_EXSITING_DOCUMENT_MODAL = 'show_select_existing_document_modal';
+export const FETCH_USER_AGREEMENTS = 'fetch_user_agreements';

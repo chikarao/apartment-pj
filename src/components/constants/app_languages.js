@@ -356,7 +356,7 @@ const appLanguages =
     undo: { en: 'Undo', jp: '終了取り消し' },
     templates: { en: 'Templates', jp: 'テンプレート' },
     uploadDocument: { en: 'Upload Your Document', jp: 'ドキュメントをアップロード' },
-    uploadTemplate: { en: 'Upload Your Template', jp: 'テンプレートをアップロード' },
+    uploadTemplate: { en: 'Upload Your Template PDF', jp: 'PDFのテンプレートをアップロード' },
     messageOwner: { en: 'Send a Message', jp: 'メッセージしよう' },
     noNearbyPlaces: { en: 'No places selected. Go to Edit page and to choose places nearby your flat.', jp: 'プレースが選択されてません。編集ページで物件の近くのプレースを選択してください。' },
     signOutMessage: { en: 'You have been signed out. \n\n Please come back soon!', jp: 'ログアウトしました。\n\nまたのご使用をお待ち申し上げております。' },

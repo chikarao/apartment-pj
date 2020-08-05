@@ -21,6 +21,11 @@ class SelectExitingDocumentModal extends Component {
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
+  componentDidMount() {
+    const showLoading = () => this.props.showLoading();
+    this.props.fetchUserAgreements(showLoading, showLoading);
+  }
+
   handleFormSubmit(data) {
     // !!!!only persist first 4 characters of account number
     // console.log('in edit flat, handleFormSubmit, data.account_number, data.account_number.slice(0, 4);: ', data.account_number, data.account_number.slice(0, 4));
@@ -63,6 +68,12 @@ class SelectExitingDocumentModal extends Component {
     }
   }
 
+  renderExistingDocuments() {
+    return (
+      <div>Existing Documents</div>
+    )
+  }
+
   renderEditFacilityForm() {
     const { handleSubmit } = this.props;
 
@@ -79,7 +90,7 @@ class SelectExitingDocumentModal extends Component {
 
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              Existing Documents
+              {this.renderExistingDocuments()}
             </div>
 
           </section>

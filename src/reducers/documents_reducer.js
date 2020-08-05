@@ -15,6 +15,7 @@ import {
   SET_DOCUMENT_LANGUAGE_CODE,
   SET_TEMPLATE_ELEMENTS_OBJECT,
   SET_PROGRESS_STATUS,
+  FETCH_USER_AGREEMENTS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -585,11 +586,11 @@ export default function (state = {
     return { ...state, editHistoryArray: [] };
 
     case SET_PROGRESS_STATUS:
-    console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
-    return { ...state, progressStatus: action.payload };
+      console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+      return { ...state, progressStatus: action.payload };
 
     case FETCH_DOCUMENT_TRANSLATION:
-    const parsedActionPayload = JSON.parse(action.payload);
+      const parsedActionPayload = JSON.parse(action.payload);
     const documentTranslations = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
     // console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
     return { ...state,
@@ -597,6 +598,10 @@ export default function (state = {
       documentTranslationsAllInOne: documentTranslations.allObject
       // documentTranslationsTreated
     };
+
+    case FETCH_USER_AGREEMENTS:
+      console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+      return { ...state, userAgreements: action.payload.agreements };
 
     default:
       return state;

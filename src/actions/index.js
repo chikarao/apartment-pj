@@ -201,7 +201,8 @@ import {
   SET_PROGRESS_STATUS,
   GET_APP_BASE_OBJECTS,
   UPLOAD_AND_CREATE_IMAGE,
-  FETCH_TEMPLATE_OBJECTS
+  FETCH_TEMPLATE_OBJECTS,
+  FETCH_USER_AGREEMENTS
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3271,6 +3272,24 @@ export function fetchTemplateObjects(callback) {
         payload: response.data.data
       });
       callback();
+    });
+  };
+}
+
+export function fetchUserAgreements(callback1, callback2) {
+  console.log('in actions index, fetchUserAgreements: ');
+  callback1();
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/fetch_user_agreements`, {}, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to fetchUserAgreements: ', response);
+      dispatch({
+        type: FETCH_USER_AGREEMENTS,
+        payload: response.data.data
+      });
+      callback2();
     });
   };
 }
