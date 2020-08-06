@@ -2886,9 +2886,40 @@ form {
   padding: 5px 5px 5px 10px;
 }
 
-.booking-request-upload-document-link:hover {
-  color: white;
-  background-color: lightgray;
+/* select_exiting_document modal */
+
+.select-existing-document-button-container {
+    height: 50px;
+    width: 350px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    /* padding: 5px 50px 5px 50px; */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.select-existing-document-button-each {
+  color: blue;
+}
+
+.select-existing-document-button-each:hover {
+  color: gray;
+}
+
+.select-existing-document-main-scroll-box {
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding: 0 20% 20% 20%;
+}
+
+.select-existing-document-each-document-box {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
 }
 
 .edit-flat-upload-select-box {
@@ -3184,6 +3215,11 @@ form {
   font-size: 12px;
   padding: 8px 8px 6px 8px;
   width: auto;
+}
+
+.booking-request-upload-document-link:hover {
+  color: white;
+  background-color: lightgray;
 }
 
 .edit-flat-select-document-link {

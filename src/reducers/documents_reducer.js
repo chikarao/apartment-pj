@@ -38,6 +38,9 @@ export default function (state = {
   listInitialValuesObject: {},
   progressStatus: null,
   templateMappingObjects: {},
+  allUserAgreementsMapped: null,
+  userFlatBookingsMapped: null,
+  agreementsByUserFlatMapped: null,
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
@@ -601,7 +604,15 @@ export default function (state = {
 
     case FETCH_USER_AGREEMENTS:
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
-      return { ...state, userAgreements: action.payload.agreements };
+
+      return { ...state,
+        // all_user_agreements is all agreements
+        allUserAgreementsMapped: action.payload.all_user_agreements,
+        // user_bookings is all bookings for user's flat with agreeemnts attached
+        userFlatBookingsMapped: action.payload.user_bookings,
+        // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
+        agreementsByUserFlatMapped: action.payload.mapped_agreements_by_user_flat
+      };
 
     default:
       return state;

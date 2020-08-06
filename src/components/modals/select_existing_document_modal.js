@@ -13,9 +13,11 @@ class SelectExitingDocumentModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // selectExistingDocumentCompleted: false,
-      // deleteFacilityCompleted: false,
-      // selectedFacilityId: ''
+      showAllDocuments: true,
+      orderByNewest: false,
+      orderByOldest: false,
+      showByFlat: false,
+      showByBooking: false,
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -68,17 +70,59 @@ class SelectExitingDocumentModal extends Component {
     }
   }
 
-  renderExistingDocuments() {
-    return (
-      <div>Existing Documents</div>
-    )
+  renderEachDocument() {
+    const { allUserAgreementsMapped } = this.props;
+    return _.map(allUserAgreementsMapped, eachAgreement => {
+      return (
+        <div
+          className="select-existing-document-each-document-box"
+          key={eachAgreement.id}
+          value={eachAgreement.id}
+        >
+          {eachAgreement.document_name}
+        </div>
+      );
+    });
   }
 
-  renderEditFacilityForm() {
+  renderExistingDocuments() {
+    return (
+      <div
+        className="select-existing-document-main-scroll-box"
+      >
+        {this.renderEachDocument()}
+      </div>
+    );
+  }
+
+  renderButtons() {
+    const { appLanguageCode } = this.props;
+    const buttonArray = ['byFlat', 'byBooking', 'showAll', 'oldest', 'newest'];
+    const renderEachButton = () => {
+      return _.map(buttonArray, eachButton => {
+        return (
+          <div
+            className="select-existing-document-button-each"
+            value={eachButton}
+          >
+            {AppLanguages[eachButton][appLanguageCode]}
+          </div>
+        );
+      });
+    };
+
+    return (
+      <div className="select-existing-document-button-container">
+        {renderEachButton()}
+      </div>
+    );
+  }
+
+  renderExistingDocumentsMain() {
     const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
-      console.log('in SelectExistingDocumentModal, renderEditFacilityForm, this.props.show ', this.props.show );
+      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show ', this.props.show );
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
 
       return (
@@ -87,10 +131,10 @@ class SelectExitingDocumentModal extends Component {
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{AppLanguages.selectDocumentForFlat[this.props.appLanguageCode]}</h3>
-
+            {this.renderButtons()}
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              {this.renderExistingDocuments()}
+              {this.props.allUserAgreementsMapped ? this.renderExistingDocuments() : ''}
             </div>
 
           </section>
@@ -118,7 +162,7 @@ class SelectExitingDocumentModal extends Component {
   render() {
     return (
       <div>
-        {this.state.selectExistingDocumentCompleted ? this.renderPostEditDeleteMessage() : this.renderEditFacilityForm()}
+        {this.state.selectExistingDocumentCompleted ? this.renderPostEditDeleteMessage() : this.renderExistingDocumentsMain()}
       </div>
     );
   }
@@ -140,6 +184,12 @@ function mapStateToProps(state) {
       // languages: state.languages,
       showFacilityCreate: state.modals.showSelectExitingDocumentModal,
       appLanguageCode: state.languages.appLanguageCode,
+        // allUserAgreementsMapped is all agreements mapped by agreeement id
+      allUserAgreementsMapped: state.documents.allUserAgreementsMapped,
+      // userFlatBookingsMapped is all bookings for user's flat with agreeemnts attached
+      userFlatBookingsMapped: state.documents.userFlatBookingsMapped,
+      // agreementsByFlatMapped contains all agreements mapped to flat regardless of use in booking
+      agreementsByUserFlatMapped: state.documents.agreementsByUserFlatMapped,
     };
   }
 
