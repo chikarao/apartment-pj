@@ -23,6 +23,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
+    this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
   }
 
   componentDidMount() {
@@ -42,6 +43,10 @@ class SelectExitingDocumentModal extends Component {
     // this.props.createFacility(dataToBeSent, () => {
     //   this.handleFormSubmitCallback();
     // });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleCloseFlatSelectionBox);
   }
 
   handleFormSubmitCallback() {
@@ -81,29 +86,59 @@ class SelectExitingDocumentModal extends Component {
           <img name={eachFlat.id} className="flat-selection-box-each-image-box" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + eachFlat.images[0].publicid + '.jpg'} alt="" />
           <div className="flat-selection-box-each-text-box">
             <div className="flat-selection-box-each-text-box-address">{eachFlat.address1}</div>
-            <div className="flat-selection-box-each-text-box-unit">Unit: {eachFlat.unit}</div>
-            <div className="flat-selection-box-each-text-box-city">{eachFlat.city}</div>
+            <div className="flat-selection-box-each-text-box-unit-city-box">
+              <div className="flat-selection-box-each-text-box-unit">Unit: {eachFlat.unit}</div>
+              <div className="flat-selection-box-each-text-box-city">{eachFlat.city}</div>
+            </div>
+            <div className="flat-selection-box-each-text-box-id">
+              <div>id: {eachFlat.id}</div>
+            </div>
           </div>
         </li>
       )
     })
   }
 
-  renderFlatSelectionBox() {
-    let flatSelectionButtonDimensions = {};
-    let modalMainDimensions = {};
-    const flatSelectionButtonElement = document.getElementById('selection-button-byFlat')
-    const modalMainElementArray = document.getElementsByClassName('modal-main')
-    // Get the flat selection button dimension so that a control box can be placed below it
-    if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
-    if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
-    const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
+  handleCloseFlatSelectionBox(event) {
+    const clickedElement = event.target;
 
-    return (
-      <div
-        className="flat-selection-box-container"
-        style={{ display: this.state.showFlatSelectionBox ? 'block' : 'none', top: positionWithinModalMain.top + 40, left: positionWithinModalMain.left }}
-      >
+    const array = [
+      'flat-selection-box-container',
+      'flat-selection-box-scrollbox',
+      'flat-selection-box-each',
+      'flat-selection-box-each-image-box',
+      'flat-selection-box-each-text-box-address',
+      'flat-selection-box-each-text-box-unit',
+      'flat-selection-box-each-text-box-city',
+      'select-existing-document-button-each'
+    ];
+
+    if (array.indexOf(clickedElement.className) === -1) {
+      const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container');
+      flatSelectionBoxArray[0].style.display = 'none';
+      this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox }, () => {
+        window.removeEventListener('click', this.handleCloseFlatSelectionBox);
+      });
+    }
+  }
+
+  renderFlatSelectionBox() {
+    // if (this.state.showFlatSelectionBox) {
+      let flatSelectionButtonDimensions = {};
+      let modalMainDimensions = {};
+      const flatSelectionButtonElement = document.getElementById('selection-button-byFlat')
+      const modalMainElementArray = document.getElementsByClassName('modal-main')
+      // Get the flat selection button dimension so that a control box can be placed below it
+      if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
+      if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
+      const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
+      console.log('in select_exiting_document, renderFlatSelectionBox, positionWithinModalMain: ', positionWithinModalMain);
+
+      return (
+        <div
+          className="flat-selection-box-container"
+          style={{ display: 'none', top: positionWithinModalMain.top ? positionWithinModalMain.top + 25 : 0, left: positionWithinModalMain.left ? positionWithinModalMain.left : 0 }}
+        >
         <ul
           className="flat-selection-box-scrollbox"
         >
@@ -120,8 +155,9 @@ class SelectExitingDocumentModal extends Component {
           {this.renderEachFlat()}
           {this.renderEachFlat()}
         </ul>
-      </div>
-    )
+        </div>
+      );
+    // }
   }
 
   renderEachDocument() {
@@ -162,7 +198,11 @@ class SelectExitingDocumentModal extends Component {
     const elementVal = clickedElement.getAttribute('value');
 
      if (elementVal === 'byFlat') {
-       this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox });
+       this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox }, () => {
+        window.addEventListener('click', this.handleCloseFlatSelectionBox);
+        const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
+        flatSelectionBoxArray[0].style.display = 'block';
+       });
      }
   }
 
