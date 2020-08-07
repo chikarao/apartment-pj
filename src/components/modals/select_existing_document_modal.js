@@ -18,9 +18,11 @@ class SelectExitingDocumentModal extends Component {
       orderByOldest: false,
       showByFlat: false,
       showByBooking: false,
+      showFlatSelectionBox: false
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -70,29 +72,98 @@ class SelectExitingDocumentModal extends Component {
     }
   }
 
+  renderEachFlat() {
+    console.log('in select_exiting_document, renderEachFlat, this.props.allUserFlatsMapped: ', this.props.allUserFlatsMapped);
+    <img className="flat-selection-box-each-image-box" src={''} alt="" />
+    return _.map(this.props.allUserFlatsMapped, eachFlat => {
+      return (
+        <li key={eachFlat.id} className="flat-selection-box-each">
+          <img name={eachFlat.id} className="flat-selection-box-each-image-box" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + eachFlat.images[0].publicid + '.jpg'} alt="" />
+          <div className="flat-selection-box-each-text-box">
+            <div className="flat-selection-box-each-text-box-address">{eachFlat.address1}</div>
+            <div className="flat-selection-box-each-text-box-unit">Unit: {eachFlat.unit}</div>
+            <div className="flat-selection-box-each-text-box-city">{eachFlat.city}</div>
+          </div>
+        </li>
+      )
+    })
+  }
+
+  renderFlatSelectionBox() {
+    let flatSelectionButtonDimensions = {};
+    let modalMainDimensions = {};
+    const flatSelectionButtonElement = document.getElementById('selection-button-byFlat')
+    const modalMainElementArray = document.getElementsByClassName('modal-main')
+    // Get the flat selection button dimension so that a control box can be placed below it
+    if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
+    if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
+    const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
+
+    return (
+      <div
+        className="flat-selection-box-container"
+        style={{ display: this.state.showFlatSelectionBox ? 'block' : 'none', top: positionWithinModalMain.top + 40, left: positionWithinModalMain.left }}
+      >
+        <ul
+          className="flat-selection-box-scrollbox"
+        >
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+          {this.renderEachFlat()}
+        </ul>
+      </div>
+    )
+  }
+
   renderEachDocument() {
     const { allUserAgreementsMapped } = this.props;
     return _.map(allUserAgreementsMapped, eachAgreement => {
       return (
-        <div
+        <li
           className="select-existing-document-each-document-box"
           key={eachAgreement.id}
           value={eachAgreement.id}
         >
-          {eachAgreement.document_name}
-        </div>
+          <div
+            className="select-existing-document-each-document-top-box"
+          >
+            {eachAgreement.document_name}
+          </div>
+          <div
+            className="select-existing-document-each-document-bottom-box"
+          >
+          </div>
+        </li>
       );
     });
   }
 
   renderExistingDocuments() {
     return (
-      <div
+      <ul
         className="select-existing-document-main-scroll-box"
       >
         {this.renderEachDocument()}
-      </div>
+      </ul>
     );
+  }
+
+  handleSelectionButtonClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+
+     if (elementVal === 'byFlat') {
+       this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox });
+     }
   }
 
   renderButtons() {
@@ -103,7 +174,10 @@ class SelectExitingDocumentModal extends Component {
         return (
           <div
             className="select-existing-document-button-each"
+            id={`selection-button-${eachButton}`}
             value={eachButton}
+            key={eachButton}
+            onClick={this.handleSelectionButtonClick}
           >
             {AppLanguages[eachButton][appLanguageCode]}
           </div>
@@ -114,6 +188,7 @@ class SelectExitingDocumentModal extends Component {
     return (
       <div className="select-existing-document-button-container">
         {renderEachButton()}
+        {this.state.showFlatSelectionBox ? this.renderFlatSelectionBox() : ''}
       </div>
     );
   }
@@ -190,6 +265,8 @@ function mapStateToProps(state) {
       userFlatBookingsMapped: state.documents.userFlatBookingsMapped,
       // agreementsByFlatMapped contains all agreements mapped to flat regardless of use in booking
       agreementsByUserFlatMapped: state.documents.agreementsByUserFlatMapped,
+      allUserFlatsMapped: state.flats.flatsByUser,
+      // allUserFlatsMapped: state.documents.allUserFlatsMapped,
     };
   }
 

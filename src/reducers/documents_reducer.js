@@ -611,7 +611,8 @@ export default function (state = {
         // user_bookings is all bookings for user's flat with agreeemnts attached
         userFlatBookingsMapped: action.payload.user_bookings,
         // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
-        agreementsByUserFlatMapped: action.payload.mapped_agreements_by_user_flat
+        agreementsByUserFlatMapped: action.payload.mapped_agreements_by_user_flat,
+        allUserFlatsMapped: action.payload.user_flats
       };
 
     default:
