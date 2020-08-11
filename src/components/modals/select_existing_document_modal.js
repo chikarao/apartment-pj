@@ -16,14 +16,18 @@ class SelectExitingDocumentModal extends Component {
       showAllDocuments: true,
       orderByNewest: false,
       orderByOldest: false,
-      showByFlat: false,
+      // showByFlat: false,
       showByBooking: false,
+      showAll: true,
+      showFromOldest: false,
+      showFromNewest: true,
       showFlatSelectionBox: false
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
     this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
+    this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
   }
 
   componentDidMount() {
@@ -77,21 +81,49 @@ class SelectExitingDocumentModal extends Component {
     }
   }
 
+  handleFlatSelectionClick(event) {
+    const clickedElement = event.target;
+    let currentElement = clickedElement;
+    // console.log('in select_exiting_document, handleFlatSelectionClick, clickedElement, clickedElement.parentElement: ', clickedElement, clickedElement.parentElement);
+    // Clicks are detected in the children of the LI selected so
+    // get the parentElement until the element is an LI element
+    while (currentElement.nodeName !== 'LI') {
+      currentElement = currentElement.parentElement;
+    }
+
+    const clickedFlatId = parseInt(currentElement.getAttribute('value'), 10)
+
+    this.setState({
+      // showByFlat: clickedFlatId !== this.state.selectedFlatId,
+      selectedFlatId: clickedFlatId === this.state.selectedFlatId ? null : clickedFlatId
+    }, () => {
+      console.log('in select_exiting_document, handleFlatSelectionClick, this.state.showByFlat, this.state.selectedFlatId: ', this.state.showByFlat, this.state.selectedFlatId);
+      this.setState({ showAll: !this.state.selectedFlatId })
+    });
+  }
+
   renderEachFlat() {
-    console.log('in select_exiting_document, renderEachFlat, this.props.allUserFlatsMapped: ', this.props.allUserFlatsMapped);
-    <img className="flat-selection-box-each-image-box" src={''} alt="" />
+    // <img className="flat-selection-box-each-image-box" src={''} alt="" />
     return _.map(this.props.allUserFlatsMapped, eachFlat => {
+      console.log('in select_exiting_document, renderEachFlat, eachFlat: ', eachFlat);
       return (
-        <li key={eachFlat.id} className="flat-selection-box-each">
-          <img name={eachFlat.id} className="flat-selection-box-each-image-box" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + eachFlat.images[0].publicid + '.jpg'} alt="" />
+        <li
+          key={eachFlat.id}
+          className="flat-selection-box-each"
+          id={`flat-selection-box-${eachFlat.id}`}
+          value={eachFlat.id}
+          onClick={this.handleFlatSelectionClick}
+          style={{ backgroundColor: eachFlat.id === this.state.selectedFlatId ? 'lightgray' : null }}
+        >
+          <img className="flat-selection-box-each-image-box" src={'http://res.cloudinary.com/chikarao/image/upload/v1524032785/' + eachFlat.images[0].publicid + '.jpg'} alt="" />
           <div className="flat-selection-box-each-text-box">
             <div className="flat-selection-box-each-text-box-address">{eachFlat.address1}</div>
             <div className="flat-selection-box-each-text-box-unit-city-box">
-              <div className="flat-selection-box-each-text-box-unit">Unit: {eachFlat.unit}</div>
+              {eachFlat.unit ? <div className="flat-selection-box-each-text-box-unit">Unit: {eachFlat.unit}</div> : ''}
               <div className="flat-selection-box-each-text-box-city">{eachFlat.city}</div>
             </div>
-            <div className="flat-selection-box-each-text-box-id">
-              <div>id: {eachFlat.id}</div>
+            <div className="flat-selection-box-each-text-box-id-box">
+              <div className="flat-selection-box-each-text-box-id">id: {eachFlat.id}</div>
             </div>
           </div>
         </li>
@@ -110,13 +142,17 @@ class SelectExitingDocumentModal extends Component {
       'flat-selection-box-each-text-box-address',
       'flat-selection-box-each-text-box-unit',
       'flat-selection-box-each-text-box-city',
+      'flat-selection-box-each-text-box-id',
+      'flat-selection-box-each-text-box-id-box',
       'select-existing-document-button-each'
     ];
 
     if (array.indexOf(clickedElement.className) === -1) {
       const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container');
       flatSelectionBoxArray[0].style.display = 'none';
-      this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox }, () => {
+      this.setState({
+        showFlatSelectionBox: !this.state.showFlatSelectionBox
+      }, () => {
         window.removeEventListener('click', this.handleCloseFlatSelectionBox);
       });
     }
@@ -126,6 +162,7 @@ class SelectExitingDocumentModal extends Component {
     // if (this.state.showFlatSelectionBox) {
       let flatSelectionButtonDimensions = {};
       let modalMainDimensions = {};
+
       const flatSelectionButtonElement = document.getElementById('selection-button-byFlat')
       const modalMainElementArray = document.getElementsByClassName('modal-main')
       // Get the flat selection button dimension so that a control box can be placed below it
@@ -142,17 +179,6 @@ class SelectExitingDocumentModal extends Component {
         <ul
           className="flat-selection-box-scrollbox"
         >
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
-          {this.renderEachFlat()}
           {this.renderEachFlat()}
         </ul>
         </div>
@@ -196,30 +222,60 @@ class SelectExitingDocumentModal extends Component {
   handleSelectionButtonClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    let newest = this.state.showFromNewest;
+    let oldest = this.state.showFromOldest;
+    if (elementVal === 'oldest' || elementVal === 'newest') {
+      if (elementVal === 'oldest') newest = !newest;
+      if (elementVal === 'newest') oldest = !oldest;
+    }
 
-     if (elementVal === 'byFlat') {
-       this.setState({ showFlatSelectionBox: !this.state.showFlatSelectionBox }, () => {
-        window.addEventListener('click', this.handleCloseFlatSelectionBox);
-        const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
-        flatSelectionBoxArray[0].style.display = 'block';
-       });
-     }
+     this.setState({
+       showFlatSelectionBox: elementVal === 'byFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
+       // When user clicks showAll and showAll is false, turn true
+       showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
+       showByBooking: elementVal === 'byBooking' ? !this.state.showByBooking : this.state.showByBooking,
+       showFromOldest: elementVal === 'oldest' && this.state.showFromNewest ? true : oldest,
+       showFromNewest: elementVal === 'newest' && this.state.showFromOldest ? true : newest,
+     }, () => {
+       // If user clicks byFlat, add addEventListener for closing the box
+       // show
+       if (elementVal === 'byFlat') {
+         window.addEventListener('click', this.handleCloseFlatSelectionBox);
+         const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
+         if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
+       }
+       // If user clicks show all and showAll is true, false and null out flat state
+       if (elementVal === 'showAll' && this.state.showAll) {
+         this.setState({
+           showFlatSelectionBox: false,
+           selectedFlatId: null,
+         });
+       }
+     });
   }
 
   renderButtons() {
     const { appLanguageCode } = this.props;
-    const buttonArray = ['byFlat', 'byBooking', 'showAll', 'oldest', 'newest'];
+    const buttonObject = {
+      // byFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
+      byFlat: { stateStyleKey: 'selectedFlatId', selectedKey: '', showBoxKey: 'showFlatSelectionBox' },
+      byBooking: { stateStyleKey: '', selectedKey: 'showByBooking' },
+      showAll: { stateStyleKey: '', selectedKey: 'showAll' },
+      oldest: { stateStyleKey: '', selectedKey: 'showFromOldest' },
+      newest: { stateStyleKey: '', selectedKey: 'showFromNewest' }
+    };
     const renderEachButton = () => {
-      return _.map(buttonArray, eachButton => {
+      return _.map(Object.keys(buttonObject), eachButtonKey => {
         return (
           <div
             className="select-existing-document-button-each"
-            id={`selection-button-${eachButton}`}
-            value={eachButton}
-            key={eachButton}
+            id={`selection-button-${eachButtonKey}`}
+            value={eachButtonKey}
+            key={eachButtonKey}
             onClick={this.handleSelectionButtonClick}
+            style={{ color: this.state[buttonObject[eachButtonKey].stateStyleKey] || this.state[buttonObject[eachButtonKey].selectedKey] || this.state[buttonObject[eachButtonKey].showBoxKey]  ? 'gray' : null }}
           >
-            {AppLanguages[eachButton][appLanguageCode]}
+            {AppLanguages[eachButtonKey][appLanguageCode]}
           </div>
         );
       });

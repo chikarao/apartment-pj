@@ -3034,6 +3034,11 @@ form {
   padding: 0 0 0 5px;
   color: gray;
   font-size: 12px;
+  /* text-overflow:ellipsis; */
+  /* overflow: hidden; */
+  /* white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; */
 }
 
 .flat-selection-box-each-text-box-unit-city-box {
@@ -3044,6 +3049,7 @@ form {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  /* text-overflow:ellipsis; */
 }
 
 .flat-selection-box-each-text-box-unit {
@@ -3051,17 +3057,21 @@ form {
   /* padding: 0 0 0 5px; */
   color: gray;
   font-size: 12px;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .flat-selection-box-each-text-box-city {
   text-align: left;
-  padding: 0 0 0 5px;
+  /* padding: 0 0 0 5px; */
   color: lightgray;
   font-size: 12px;
+  /* overflow: hidden; */
+  /* white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; */
 }
 
-.flat-selection-box-each-text-box-id {
+.flat-selection-box-each-text-box-id-box {
   text-align: left;
   padding: 0 0 0 5px;
   font-size: 12px;
