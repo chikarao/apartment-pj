@@ -2889,19 +2889,22 @@ form {
 /* select_exiting_document modal */
 
 .select-existing-document-button-container {
-  height: 50px;
+  /* height: 50px; */
   width: 350px;
   display: flex;
   justify-content: space-around;
   flex-direction: row;
   /* padding: 5px 50px 5px 50px; */
-  margin-left: auto;
+  /* margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px; */
+  margin: 0 auto 20px auto;
   position: relative;
 }
 
 .select-existing-document-button-each {
   color: blue;
+  padding: 0 0 3px 0;
 }
 
 .select-existing-document-button-each:hover {

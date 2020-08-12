@@ -39,8 +39,9 @@ export default function (state = {
   progressStatus: null,
   templateMappingObjects: {},
   allUserAgreementsMapped: null,
-  userFlatBookingsMapped: null,
-  agreementsByUserFlatMapped: null,
+  allUserAgreementsArray: null,
+  bookingsForUserFlats: null,
+  allUserFlatsMapped: null
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state);
@@ -607,12 +608,13 @@ export default function (state = {
 
       return { ...state,
         // all_user_agreements is all agreements
-        allUserAgreementsMapped: action.payload.all_user_agreements,
+        allUserAgreementsMapped: action.payload.all_user_agreements_mapped,
+        allUserAgreementsArray: action.payload.user_agreements_array_sorted,
+        // allUserAgreementsMappedSorted: action.payload.user_agreements_array_sorted,
         // user_bookings is all bookings for user's flat with agreeemnts attached
-        userFlatBookingsMapped: action.payload.user_bookings,
         // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
-        agreementsByUserFlatMapped: action.payload.mapped_agreements_by_user_flat,
-        allUserFlatsMapped: action.payload.user_flats
+        allUserFlatsMapped: action.payload.user_flats,
+        allBookingsForUserFlats: action.payload.user_bookings
       };
 
     default:

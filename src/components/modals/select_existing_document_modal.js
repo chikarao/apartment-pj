@@ -14,14 +14,14 @@ class SelectExitingDocumentModal extends Component {
     super(props);
     this.state = {
       showAllDocuments: true,
-      orderByNewest: false,
-      orderByOldest: false,
       // showByFlat: false,
       showByBooking: false,
       showAll: true,
       showFromOldest: false,
       showFromNewest: true,
-      showFlatSelectionBox: false
+      selectedFlatId: null,
+      showFlatSelectionBox: false,
+      agreementsTreated: null
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -33,6 +33,17 @@ class SelectExitingDocumentModal extends Component {
   componentDidMount() {
     const showLoading = () => this.props.showLoading();
     this.props.fetchUserAgreements(showLoading, showLoading);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.showFromNewest !== this.state.showFromNewest
+        ||
+        prevState.showByBooking !== this.state.showByBooking
+        ||
+        prevState.selectedFlatId !== this.state.selectedFlatId
+      ) {
+        console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
+      }
   }
 
   handleFormSubmit(data) {
@@ -163,7 +174,7 @@ class SelectExitingDocumentModal extends Component {
       let flatSelectionButtonDimensions = {};
       let modalMainDimensions = {};
 
-      const flatSelectionButtonElement = document.getElementById('selection-button-byFlat')
+      const flatSelectionButtonElement = document.getElementById('selection-button-showByFlat')
       const modalMainElementArray = document.getElementsByClassName('modal-main')
       // Get the flat selection button dimension so that a control box can be placed below it
       if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
@@ -186,9 +197,8 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
-  renderEachDocument() {
-    const { allUserAgreementsMapped } = this.props;
-    return _.map(allUserAgreementsMapped, eachAgreement => {
+  renderEachDocument(agreementsTreated) {
+    return _.map(agreementsTreated, eachAgreement => {
       return (
         <li
           className="select-existing-document-each-document-box"
@@ -210,11 +220,14 @@ class SelectExitingDocumentModal extends Component {
   }
 
   renderExistingDocuments() {
+    const { allUserAgreementsArray } = this.props;
+    const agreementsTreated = this.state.agreementsTreated ? this.state.agreementsTreated : allUserAgreementsArray;
+    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreated, allUserAgreementsArray ', agreementsTreated, allUserAgreementsArray);
     return (
       <ul
         className="select-existing-document-main-scroll-box"
       >
-        {this.renderEachDocument()}
+        {this.renderEachDocument(agreementsTreated)}
       </ul>
     );
   }
@@ -222,24 +235,24 @@ class SelectExitingDocumentModal extends Component {
   handleSelectionButtonClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    let newest = this.state.showFromNewest;
-    let oldest = this.state.showFromOldest;
-    if (elementVal === 'oldest' || elementVal === 'newest') {
-      if (elementVal === 'oldest') newest = !newest;
-      if (elementVal === 'newest') oldest = !oldest;
+    let newestBool = this.state.showFromNewest;
+    let oldestBool = this.state.showFromOldest;
+    if (elementVal === 'showFromOldest' || elementVal === 'showFromNewest') {
+      if (elementVal === 'showFromOldest') newestBool = !newestBool;
+      if (elementVal === 'showFromNewest') oldestBool = !oldestBool;
     }
 
      this.setState({
-       showFlatSelectionBox: elementVal === 'byFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
+       showFlatSelectionBox: elementVal === 'showByFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
        // When user clicks showAll and showAll is false, turn true
        showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
-       showByBooking: elementVal === 'byBooking' ? !this.state.showByBooking : this.state.showByBooking,
-       showFromOldest: elementVal === 'oldest' && this.state.showFromNewest ? true : oldest,
-       showFromNewest: elementVal === 'newest' && this.state.showFromOldest ? true : newest,
+       showByBooking: elementVal === 'showByBooking' ? !this.state.showByBooking : this.state.showByBooking,
+       showFromOldest: elementVal === 'showFromOldest' && this.state.showFromNewest ? true : oldestBool,
+       showFromNewest: elementVal === 'showFromNewest' && this.state.showFromOldest ? true : newestBool,
      }, () => {
-       // If user clicks byFlat, add addEventListener for closing the box
+       // If user clicks showByFlat, add addEventListener for closing the box
        // show
-       if (elementVal === 'byFlat') {
+       if (elementVal === 'showByFlat') {
          window.addEventListener('click', this.handleCloseFlatSelectionBox);
          const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
          if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
@@ -257,12 +270,12 @@ class SelectExitingDocumentModal extends Component {
   renderButtons() {
     const { appLanguageCode } = this.props;
     const buttonObject = {
-      // byFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
-      byFlat: { stateStyleKey: 'selectedFlatId', selectedKey: '', showBoxKey: 'showFlatSelectionBox' },
-      byBooking: { stateStyleKey: '', selectedKey: 'showByBooking' },
+      // showByFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
+      showByFlat: { stateStyleKey: 'selectedFlatId', selectedKey: '', showBoxKey: 'showFlatSelectionBox' },
+      showByBooking: { stateStyleKey: '', selectedKey: 'showByBooking' },
       showAll: { stateStyleKey: '', selectedKey: 'showAll' },
-      oldest: { stateStyleKey: '', selectedKey: 'showFromOldest' },
-      newest: { stateStyleKey: '', selectedKey: 'showFromNewest' }
+      showFromOldest: { stateStyleKey: '', selectedKey: 'showFromOldest' },
+      showFromNewest: { stateStyleKey: '', selectedKey: 'showFromNewest' }
     };
     const renderEachButton = () => {
       return _.map(Object.keys(buttonObject), eachButtonKey => {
@@ -273,7 +286,7 @@ class SelectExitingDocumentModal extends Component {
             value={eachButtonKey}
             key={eachButtonKey}
             onClick={this.handleSelectionButtonClick}
-            style={{ color: this.state[buttonObject[eachButtonKey].stateStyleKey] || this.state[buttonObject[eachButtonKey].selectedKey] || this.state[buttonObject[eachButtonKey].showBoxKey]  ? 'gray' : null }}
+            style={this.state[buttonObject[eachButtonKey].stateStyleKey] || this.state[buttonObject[eachButtonKey].selectedKey] || this.state[buttonObject[eachButtonKey].showBoxKey]  ? { color: 'gray', borderBottom: 'solid 1.2px gray' } : null}
           >
             {AppLanguages[eachButtonKey][appLanguageCode]}
           </div>
@@ -305,7 +318,7 @@ class SelectExitingDocumentModal extends Component {
             {this.renderButtons()}
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              {this.props.allUserAgreementsMapped ? this.renderExistingDocuments() : ''}
+              {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : ''}
             </div>
 
           </section>
@@ -356,12 +369,13 @@ function mapStateToProps(state) {
       showFacilityCreate: state.modals.showSelectExitingDocumentModal,
       appLanguageCode: state.languages.appLanguageCode,
         // allUserAgreementsMapped is all agreements mapped by agreeement id
-      allUserAgreementsMapped: state.documents.allUserAgreementsMapped,
+      allUserAgreementsArray: state.documents.allUserAgreementsArray,
       // userFlatBookingsMapped is all bookings for user's flat with agreeemnts attached
-      userFlatBookingsMapped: state.documents.userFlatBookingsMapped,
+      // userFlatBookingsMapped: state.documents.userFlatBookingsMapped,
       // agreementsByFlatMapped contains all agreements mapped to flat regardless of use in booking
-      agreementsByUserFlatMapped: state.documents.agreementsByUserFlatMapped,
+      // agreementsByUserFlatMapped: state.documents.agreementsByUserFlatMapped,
       allUserFlatsMapped: state.flats.flatsByUser,
+      allBookingsForUserFlatsMapped: state.documents.allBookingsForUserFlats,
       // allUserFlatsMapped: state.documents.allUserFlatsMapped,
     };
   }
