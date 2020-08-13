@@ -2889,7 +2889,14 @@ form {
 /* select_exiting_document modal */
 
 .select-existing-document-button-container {
-  /* height: 50px; */
+  width: 350px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto 10px auto;
+}
+
+.select-existing-document-button-container-sub {
   width: 350px;
   display: flex;
   justify-content: space-around;
@@ -2900,6 +2907,14 @@ form {
   margin-bottom: 20px; */
   margin: 0 auto 20px auto;
   position: relative;
+}
+
+.select-existing-document-button-container-sub-bottom {
+  justify-content: center;
+}
+
+.select-existing-document-button-container-sub-bottom div {
+  margin-right: 20px;
 }
 
 .select-existing-document-button-each {

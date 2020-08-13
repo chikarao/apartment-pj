@@ -16,12 +16,14 @@ class SelectExitingDocumentModal extends Component {
       showAllDocuments: true,
       // showByFlat: false,
       showByBooking: false,
-      showAll: true,
       showFromOldest: false,
       showFromNewest: true,
       selectedFlatId: null,
       showFlatSelectionBox: false,
-      agreementsTreated: null
+      agreementsTreated: null,
+      showAll: true,
+      showRentalContracts: true,
+      showImportantPoints: true,
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -41,6 +43,8 @@ class SelectExitingDocumentModal extends Component {
         prevState.showByBooking !== this.state.showByBooking
         ||
         prevState.selectedFlatId !== this.state.selectedFlatId
+        ||
+        prevState.showImportantPoints !== this.showImportantPoints
       ) {
         console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
       }
@@ -108,6 +112,7 @@ class SelectExitingDocumentModal extends Component {
       // showByFlat: clickedFlatId !== this.state.selectedFlatId,
       selectedFlatId: clickedFlatId === this.state.selectedFlatId ? null : clickedFlatId
     }, () => {
+      // if user selects flat, false out showAll
       console.log('in select_exiting_document, handleFlatSelectionClick, this.state.showByFlat, this.state.selectedFlatId: ', this.state.showByFlat, this.state.selectedFlatId);
       this.setState({ showAll: !this.state.selectedFlatId })
     });
@@ -241,14 +246,21 @@ class SelectExitingDocumentModal extends Component {
       if (elementVal === 'showFromOldest') newestBool = !newestBool;
       if (elementVal === 'showFromNewest') oldestBool = !oldestBool;
     }
+    // let showRentalContracts = this.state.showRentalContracts;
+    // let showImportantPoints = this.state.showImportantPoints;
+    // if (elementVal === 'showRentalContracts') showRentalContracts = !showRentalContracts;
+    // if (elementVal === 'showImportantPoints') showImportantPoints = !showImportantPoints;
 
      this.setState({
        showFlatSelectionBox: elementVal === 'showByFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
        // When user clicks showAll and showAll is false, turn true
-       showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
+       showAll: elementVal === 'showAll' ? true : this.state.showAll,
+       // showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
        showByBooking: elementVal === 'showByBooking' ? !this.state.showByBooking : this.state.showByBooking,
        showFromOldest: elementVal === 'showFromOldest' && this.state.showFromNewest ? true : oldestBool,
        showFromNewest: elementVal === 'showFromNewest' && this.state.showFromOldest ? true : newestBool,
+       showRentalContracts: elementVal === 'showRentalContracts' && this.state.showImportantPoints ? !this.state.showRentalContracts : this.state.showRentalContracts,
+       showImportantPoints: elementVal === 'showImportantPoints' && this.state.showRentalContracts ? !this.state.showImportantPoints : this.state.showImportantPoints,
      }, () => {
        // If user clicks showByFlat, add addEventListener for closing the box
        // show
@@ -257,27 +269,57 @@ class SelectExitingDocumentModal extends Component {
          const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
          if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
        }
+       let showAll = this.state.showAll;
+       let showFlatSelectionBox = this.state.showFlatSelectionBox;
+       let selectedFlatId = this.state.selectedFlatId;
+       let showRentalContracts = this.state.showRentalContracts;
+       let showImportantPoints = this.state.showImportantPoints;
+
        // If user clicks show all and showAll is true, false and null out flat state
        if (elementVal === 'showAll' && this.state.showAll) {
-         this.setState({
-           showFlatSelectionBox: false,
-           selectedFlatId: null,
-         });
+          showFlatSelectionBox = false;
+          selectedFlatId = null;
+          showRentalContracts = true;
+          showImportantPoints = true;
        }
+       // If selectedFlatId is not null, showAll is always false
+       // If showRentalContracts and showImportantPoints turn showAll true
+       if (showRentalContracts && showImportantPoints && !showAll && !selectedFlatId) {
+         showAll = true;
+       } else if (selectedFlatId && showAll) {
+         showAll = false;
+       }
+
+       this.setState({
+         showAll,
+         showFlatSelectionBox,
+         selectedFlatId,
+         showRentalContracts,
+         showImportantPoints,
+       }, () => {
+         // Code for getting subset of agreements
+       });
      });
   }
 
   renderButtons() {
     const { appLanguageCode } = this.props;
-    const buttonObject = {
+    const buttonObjectTop = {
       // showByFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
       showByFlat: { stateStyleKey: 'selectedFlatId', selectedKey: '', showBoxKey: 'showFlatSelectionBox' },
-      showByBooking: { stateStyleKey: '', selectedKey: 'showByBooking' },
-      showAll: { stateStyleKey: '', selectedKey: 'showAll' },
-      showFromOldest: { stateStyleKey: '', selectedKey: 'showFromOldest' },
-      showFromNewest: { stateStyleKey: '', selectedKey: 'showFromNewest' }
+      showByBooking: { stateStyleKey: '' },
+      showAll: { stateStyleKey: '' },
+      showFromOldest: { stateStyleKey: '' },
+      showFromNewest: { stateStyleKey: '' }
     };
-    const renderEachButton = () => {
+
+    const buttonObjectBottom = {
+      // showByFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
+      showRentalContracts: { stateStyleKey: '' },
+      showImportantPoints: { stateStyleKey: '' },
+    };
+
+    const renderEachButton = (buttonObject) => {
       return _.map(Object.keys(buttonObject), eachButtonKey => {
         return (
           <div
@@ -286,7 +328,7 @@ class SelectExitingDocumentModal extends Component {
             value={eachButtonKey}
             key={eachButtonKey}
             onClick={this.handleSelectionButtonClick}
-            style={this.state[buttonObject[eachButtonKey].stateStyleKey] || this.state[buttonObject[eachButtonKey].selectedKey] || this.state[buttonObject[eachButtonKey].showBoxKey]  ? { color: 'gray', borderBottom: 'solid 1.2px gray' } : null}
+            style={this.state[buttonObject[eachButtonKey].stateStyleKey] || this.state[eachButtonKey] || this.state[buttonObject[eachButtonKey].showBoxKey] ? { color: 'gray', borderBottom: 'solid 1.2px gray' } : null}
           >
             {AppLanguages[eachButtonKey][appLanguageCode]}
           </div>
@@ -296,7 +338,12 @@ class SelectExitingDocumentModal extends Component {
 
     return (
       <div className="select-existing-document-button-container">
-        {renderEachButton()}
+        <div className="select-existing-document-button-container-sub">
+        {renderEachButton(buttonObjectTop)}
+        </div>
+        <div className="select-existing-document-button-container-sub select-existing-document-button-container-sub-bottom">
+        {renderEachButton(buttonObjectBottom)}
+        </div>
         {this.state.showFlatSelectionBox ? this.renderFlatSelectionBox() : ''}
       </div>
     );

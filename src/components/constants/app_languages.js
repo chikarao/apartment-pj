@@ -468,6 +468,8 @@ const appLanguages =
     showAll: { en: 'Show All', jp: '全て並べる' },
     showFromNewest: { en: 'Newest', jp: '新しい順' },
     showFromOldest: { en: 'Oldest', jp: '古い順' },
+    showRentalContracts: { en: 'Rental Contracts', jp: '賃貸契約書' },
+    showImportantPoints: { en: 'Important Points', jp: '重要事項説明書' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },
