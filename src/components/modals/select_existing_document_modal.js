@@ -20,7 +20,7 @@ class SelectExitingDocumentModal extends Component {
       showFromNewest: true,
       selectedFlatId: null,
       showFlatSelectionBox: false,
-      agreementsTreated: null,
+      agreementsTreatedArray: null,
       showAll: true,
       showRentalContracts: true,
       showImportantPoints: true,
@@ -114,7 +114,10 @@ class SelectExitingDocumentModal extends Component {
     }, () => {
       // if user selects flat, false out showAll
       console.log('in select_exiting_document, handleFlatSelectionClick, this.state.showByFlat, this.state.selectedFlatId: ', this.state.showByFlat, this.state.selectedFlatId);
-      this.setState({ showAll: !this.state.selectedFlatId })
+      this.setState({ showAll: !this.state.selectedFlatId }, () => {
+        // After flat selection, get a new treatedAgreementObject
+        this.treatAgreementsObject();
+      });
     });
   }
 
@@ -202,8 +205,8 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
-  renderEachDocument(agreementsTreated) {
-    return _.map(agreementsTreated, eachAgreement => {
+  renderEachDocument(agreementsTreatedArray) {
+    return _.map(agreementsTreatedArray, eachAgreement => {
       return (
         <li
           className="select-existing-document-each-document-box"
@@ -213,7 +216,7 @@ class SelectExitingDocumentModal extends Component {
           <div
             className="select-existing-document-each-document-top-box"
           >
-            {eachAgreement.document_name}
+            {this.props.allUserAgreementsMapped[eachAgreement.id].document_name}
           </div>
           <div
             className="select-existing-document-each-document-bottom-box"
@@ -226,15 +229,37 @@ class SelectExitingDocumentModal extends Component {
 
   renderExistingDocuments() {
     const { allUserAgreementsArray } = this.props;
-    const agreementsTreated = this.state.agreementsTreated ? this.state.agreementsTreated : allUserAgreementsArray;
-    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreated, allUserAgreementsArray ', agreementsTreated, allUserAgreementsArray);
+    const agreementsTreatedArray = this.state.agreementsTreatedArray ? this.state.agreementsTreatedArray : allUserAgreementsArray;
+    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreatedArray, allUserAgreementsArray ', agreementsTreatedArray, allUserAgreementsArray);
     return (
       <ul
         className="select-existing-document-main-scroll-box"
       >
-        {this.renderEachDocument(agreementsTreated)}
+        {this.renderEachDocument(agreementsTreatedArray)}
       </ul>
     );
+  }
+
+  treatAgreementsObject() {
+    console.log('in SelectExistingDocumentModal, treatAgreementsObject, this.state, allUserAgreementsArray, this.state.agreementsTreatedArray,  ', this.state, this.props.allUserAgreementsArray, this.state.agreementsTreatedArray);
+    const agreementsTreatedArray = [];
+
+    const filterAgreements = () => {
+      _.each(this.props.allUserAgreementsArray, eachAgreement => {
+        const addAgreement = this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)
+        if (addAgreement && this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsTreatedArray.push(eachAgreement)
+        if (addAgreement && this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsTreatedArray.push(eachAgreement)
+        // if (this.state.selectedFlatId && eachAgreement.flat_id === this.state.selectedFlatId) agreementsTreatedArray.push(eachAgreement)
+      });
+    }
+
+    filterAgreements();
+    // Sort by date updated_at;
+    // allUserAgreementsArray has date objects created in the reducer for updated_at
+    if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.updated_at - a.updated_at)
+    if (this.state.showFromNewest) agreementsTreatedArray.sort((a, b) => a.updated_at - b.updated_at)
+
+    this.setState({ agreementsTreatedArray });
   }
 
   handleSelectionButtonClick(event) {
@@ -246,60 +271,59 @@ class SelectExitingDocumentModal extends Component {
       if (elementVal === 'showFromOldest') newestBool = !newestBool;
       if (elementVal === 'showFromNewest') oldestBool = !oldestBool;
     }
-    // let showRentalContracts = this.state.showRentalContracts;
-    // let showImportantPoints = this.state.showImportantPoints;
-    // if (elementVal === 'showRentalContracts') showRentalContracts = !showRentalContracts;
-    // if (elementVal === 'showImportantPoints') showImportantPoints = !showImportantPoints;
+
+   this.setState({
+     showFlatSelectionBox: elementVal === 'showByFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
+     // When user clicks showAll and showAll is false, turn true
+     showAll: elementVal === 'showAll' ? true : this.state.showAll,
+     // showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
+     showByBooking: elementVal === 'showByBooking' ? !this.state.showByBooking : this.state.showByBooking,
+     showFromOldest: elementVal === 'showFromOldest' && this.state.showFromNewest ? true : oldestBool,
+     showFromNewest: elementVal === 'showFromNewest' && this.state.showFromOldest ? true : newestBool,
+     showRentalContracts: elementVal === 'showRentalContracts' && this.state.showImportantPoints ? !this.state.showRentalContracts : this.state.showRentalContracts,
+     showImportantPoints: elementVal === 'showImportantPoints' && this.state.showRentalContracts ? !this.state.showImportantPoints : this.state.showImportantPoints,
+   }, () => {
+     // If user clicks showByFlat, add addEventListener for closing the box
+     // show
+     if (elementVal === 'showByFlat') {
+       window.addEventListener('click', this.handleCloseFlatSelectionBox);
+       const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
+       if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
+     }
+
+     let showAll = this.state.showAll;
+     let showFlatSelectionBox = this.state.showFlatSelectionBox;
+     let selectedFlatId = this.state.selectedFlatId;
+     let showRentalContracts = this.state.showRentalContracts;
+     let showImportantPoints = this.state.showImportantPoints;
+
+     // If user clicks show all and showAll is true, false and null out flat state
+     if (elementVal === 'showAll' && this.state.showAll) {
+        showFlatSelectionBox = false;
+        selectedFlatId = null;
+        showRentalContracts = true;
+        showImportantPoints = true;
+     }
+     // If selectedFlatId is not null, showAll is always false
+     // If showRentalContracts and showImportantPoints turn showAll true
+     if (showRentalContracts && showImportantPoints && !showAll && !selectedFlatId) {
+       showAll = true;
+     } else if (selectedFlatId && showAll) {
+       // turn showAll false if there is a flatid and showall is true
+       showAll = false;
+     }
 
      this.setState({
-       showFlatSelectionBox: elementVal === 'showByFlat' ? !this.state.showFlatSelectionBox : this.state.showFlatSelectionBox,
-       // When user clicks showAll and showAll is false, turn true
-       showAll: elementVal === 'showAll' ? true : this.state.showAll,
-       // showAll: elementVal === 'showAll' && !this.state.showAll ? true : this.state.showAll,
-       showByBooking: elementVal === 'showByBooking' ? !this.state.showByBooking : this.state.showByBooking,
-       showFromOldest: elementVal === 'showFromOldest' && this.state.showFromNewest ? true : oldestBool,
-       showFromNewest: elementVal === 'showFromNewest' && this.state.showFromOldest ? true : newestBool,
-       showRentalContracts: elementVal === 'showRentalContracts' && this.state.showImportantPoints ? !this.state.showRentalContracts : this.state.showRentalContracts,
-       showImportantPoints: elementVal === 'showImportantPoints' && this.state.showRentalContracts ? !this.state.showImportantPoints : this.state.showImportantPoints,
+       showAll,
+       showFlatSelectionBox,
+       selectedFlatId,
+       showRentalContracts,
+       showImportantPoints,
      }, () => {
-       // If user clicks showByFlat, add addEventListener for closing the box
-       // show
-       if (elementVal === 'showByFlat') {
-         window.addEventListener('click', this.handleCloseFlatSelectionBox);
-         const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
-         if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
-       }
-       let showAll = this.state.showAll;
-       let showFlatSelectionBox = this.state.showFlatSelectionBox;
-       let selectedFlatId = this.state.selectedFlatId;
-       let showRentalContracts = this.state.showRentalContracts;
-       let showImportantPoints = this.state.showImportantPoints;
-
-       // If user clicks show all and showAll is true, false and null out flat state
-       if (elementVal === 'showAll' && this.state.showAll) {
-          showFlatSelectionBox = false;
-          selectedFlatId = null;
-          showRentalContracts = true;
-          showImportantPoints = true;
-       }
-       // If selectedFlatId is not null, showAll is always false
-       // If showRentalContracts and showImportantPoints turn showAll true
-       if (showRentalContracts && showImportantPoints && !showAll && !selectedFlatId) {
-         showAll = true;
-       } else if (selectedFlatId && showAll) {
-         showAll = false;
-       }
-
-       this.setState({
-         showAll,
-         showFlatSelectionBox,
-         selectedFlatId,
-         showRentalContracts,
-         showImportantPoints,
-       }, () => {
-         // Code for getting subset of agreements
-       });
+       // Code for getting subset of agreements
+       this.treatAgreementsObject();
      });
+   });
   }
 
   renderButtons() {
@@ -339,10 +363,10 @@ class SelectExitingDocumentModal extends Component {
     return (
       <div className="select-existing-document-button-container">
         <div className="select-existing-document-button-container-sub">
-        {renderEachButton(buttonObjectTop)}
+         {renderEachButton(buttonObjectTop)}
         </div>
         <div className="select-existing-document-button-container-sub select-existing-document-button-container-sub-bottom">
-        {renderEachButton(buttonObjectBottom)}
+         {renderEachButton(buttonObjectBottom)}
         </div>
         {this.state.showFlatSelectionBox ? this.renderFlatSelectionBox() : ''}
       </div>
@@ -416,14 +440,15 @@ function mapStateToProps(state) {
       showFacilityCreate: state.modals.showSelectExitingDocumentModal,
       appLanguageCode: state.languages.appLanguageCode,
         // allUserAgreementsMapped is all agreements mapped by agreeement id
-      allUserAgreementsArray: state.documents.allUserAgreementsArray,
-      // userFlatBookingsMapped is all bookings for user's flat with agreeemnts attached
-      // userFlatBookingsMapped: state.documents.userFlatBookingsMapped,
+      allUserAgreementsMapped: state.documents.allUserAgreementsMapped,
       // agreementsByFlatMapped contains all agreements mapped to flat regardless of use in booking
-      // agreementsByUserFlatMapped: state.documents.agreementsByUserFlatMapped,
       allUserFlatsMapped: state.flats.flatsByUser,
+      // userFlatBookingsMapped is all bookings for user's flat with agreeemnts attached
       allBookingsForUserFlatsMapped: state.documents.allBookingsForUserFlats,
-      // allUserFlatsMapped: state.documents.allUserFlatsMapped,
+      // all agreements, flats and bookings array have date objects for created_at and updated_at
+      allUserAgreementsArray: state.documents.allUserAgreementsArray,
+      allUserFlatsArray: state.documents.allUserFlatsArray,
+      allBookingsForUserFlats: state.documents.allBookingsForUserFlats,
     };
   }
 

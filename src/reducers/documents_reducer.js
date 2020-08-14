@@ -603,19 +603,42 @@ export default function (state = {
       // documentTranslationsTreated
     };
 
-    case FETCH_USER_AGREEMENTS:
+    case FETCH_USER_AGREEMENTS: {
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+      // Get an array of objects with just dates and document_name (for agreements)
+      // For sorting
+      const createArrayWithDateObject = (actionPayloadObject) => {
+        const newArray = [];
+        _.each(Object.keys(actionPayloadObject), eachKey => {
+          const newObject = {};
+          newObject.id = actionPayloadObject[eachKey].id;
+          newObject.created_at = new Date(actionPayloadObject[eachKey].created_at);
+          newObject.updated_at = new Date(actionPayloadObject[eachKey].updated_at);
+          if (actionPayloadObject[eachKey].template_file_name) newObject.template_file_name = actionPayloadObject[eachKey].template_file_name;
+          if (actionPayloadObject[eachKey].booking_id) newObject.booking_id = actionPayloadObject[eachKey].booking_id;
+          if (actionPayloadObject[eachKey].flat_id) newObject.flat_id = actionPayloadObject[eachKey].flat_id;
+          // Give newObject a flat_id since agreeemnts with booking_id do not have flat_id
+          if (actionPayloadObject[eachKey].booking_id) {
+            newObject.flat_id = action.payload.user_bookings[actionPayloadObject[eachKey].booking_id].flat_id
+          }
+          newArray.push(newObject);
+        });
+        return newArray;
+      };
 
       return { ...state,
         // all_user_agreements is all agreements
         allUserAgreementsMapped: action.payload.all_user_agreements_mapped,
-        allUserAgreementsArray: action.payload.user_agreements_array_sorted,
+        allUserAgreementsArray: createArrayWithDateObject(action.payload.all_user_agreements_mapped),
         // allUserAgreementsMappedSorted: action.payload.user_agreements_array_sorted,
         // user_bookings is all bookings for user's flat with agreeemnts attached
         // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
+        allUserFlatsArray: createArrayWithDateObject(action.payload.user_flats),
         allUserFlatsMapped: action.payload.user_flats,
+        allBookingsForUserFlatsArray: createArrayWithDateObject(action.payload.user_bookings),
         allBookingsForUserFlats: action.payload.user_bookings
       };
+    }
 
     default:
       return state;
