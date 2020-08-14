@@ -470,6 +470,7 @@ const appLanguages =
     showFromOldest: { en: 'Oldest', jp: '古い順' },
     showRentalContracts: { en: 'Rental Contracts', jp: '賃貸契約書' },
     showImportantPoints: { en: 'Important Points', jp: '重要事項説明書' },
+    addAgreementToFlat: { en: 'Add Agreement to Flat', jp: '書類を物件に適用' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },

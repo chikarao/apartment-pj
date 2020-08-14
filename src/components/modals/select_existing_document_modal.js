@@ -24,12 +24,15 @@ class SelectExitingDocumentModal extends Component {
       showAll: true,
       showRentalContracts: true,
       showImportantPoints: true,
+      selectedAgreementsArray: [],
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
     this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
     this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
+    this.handleAgreementCheck = this.handleAgreementCheck.bind(this);
+    this.handleAddAgreementsClick = this.handleAddAgreementsClick.bind(this);
   }
 
   componentDidMount() {
@@ -188,7 +191,6 @@ class SelectExitingDocumentModal extends Component {
       if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
       if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
       const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
-      console.log('in select_exiting_document, renderFlatSelectionBox, positionWithinModalMain: ', positionWithinModalMain);
 
       return (
         <div
@@ -205,6 +207,23 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
+  handleAgreementCheck(event) {
+    const checkedElement = event.target;
+    const elementVal = checkedElement.getAttribute('value')
+    const selectedAgreementsArray = [...this.state.selectedAgreementsArray];
+    const index = selectedAgreementsArray.indexOf(parseInt(elementVal, 10))
+
+    if (index === -1) {
+      selectedAgreementsArray.push(parseInt(elementVal, 10));
+    } else {
+      selectedAgreementsArray.splice(index, 1);
+    }
+
+    this.setState({ selectedAgreementsArray }, () => {
+      console.log('in select_exiting_document, handleAgreementCheck, checkedElement, elementVal, this.state.selectedAgreementsArray: ', checkedElement, elementVal, this.state.selectedAgreementsArray);
+    })
+  }
+
   renderEachDocument(agreementsTreatedArray) {
     return _.map(agreementsTreatedArray, eachAgreement => {
       return (
@@ -216,8 +235,27 @@ class SelectExitingDocumentModal extends Component {
           <div
             className="select-existing-document-each-document-top-box"
           >
-            {this.props.allUserAgreementsMapped[eachAgreement.id].document_name}
+            <div
+              className="select-existing-document-each-document-top-box-left"
+            >
+              <div
+                className="select-existing-document-each-document-top-box-left-name"
+              >
+                {this.props.allUserAgreementsMapped[eachAgreement.id].document_name}
+              </div>
+              <div
+                className="select-existing-document-each-document-top-box-left-date"
+              >
+                Last updated: {`${eachAgreement.updated_at.getMonth()}/${eachAgreement.updated_at.getDay()}/${eachAgreement.updated_at.getFullYear()}`}
+              </div>
+            </div>
+            <div
+              className="select-existing-document-each-document-top-box-right"
+            >
+              <input type="checkbox" value={eachAgreement.id} onChange={this.handleAgreementCheck}/>
+            </div>
           </div>
+
           <div
             className="select-existing-document-each-document-bottom-box"
           >
@@ -373,6 +411,11 @@ class SelectExitingDocumentModal extends Component {
     );
   }
 
+  handleAddAgreementsClick() {
+    console.log('in SelectExistingDocumentModal, handleAddAgreementsClick, this.state.selectedAgreementsArray ', this.state.selectedAgreementsArray);
+
+  }
+
   renderExistingDocumentsMain() {
     const { handleSubmit } = this.props;
 
@@ -390,6 +433,23 @@ class SelectExitingDocumentModal extends Component {
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : ''}
+              {this.state.selectedAgreementsArray.length > 0
+                ?
+                <div
+                  className="btn btn-primary select-existing-document-add-button"
+                  onClick={this.handleAddAgreementsClick}
+                >
+                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
+                </div>
+                :
+                <div
+                  className="btn btn-primary select-existing-document-add-button"
+                  style={{ backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
+                >
+                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
+                </div>
+              }
+
             </div>
 
           </section>

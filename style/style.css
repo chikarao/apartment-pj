@@ -2928,6 +2928,7 @@ form {
 
 .select-existing-document-main-scroll-box {
   height: auto;
+  max-height: 330px;
   width: 350px;
   margin-right: auto;
   margin-left: auto;
@@ -2955,13 +2956,47 @@ form {
 
 .select-existing-document-each-document-top-box {
   height: 50px;
-  padding: 10px;
+  width: 100%;
+  padding: 7px;
   display: flex;
   flex-direction: row;
 }
 
+.select-existing-document-each-document-top-box-right {
+  height: auto;
+  width: auto;
+  padding: 10px;
+  /* display: flex; */
+  /* flex-direction: column; */
+}
+
+.select-existing-document-each-document-top-box-left {
+  height: auto;
+  width: 90%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.select-existing-document-each-document-top-box-left-name {
+  text-align: left;
+  font-size: 14px;
+}
+
+.select-existing-document-each-document-top-box-left-date {
+  text-align: left;
+  color: gray;
+  font-size: 12px;
+  padding: 0 0 0 5px;
+}
+
 .select-existing-document-each-document-bottom-box {
   height: 0px;
+}
+
+.select-existing-document-add-button {
+  background-color: blue;
+  margin-top: 30px;
 }
 
 /* Flat_selection_box */
@@ -3382,7 +3417,7 @@ form {
   color: gray;
 }
 
-.booking-request-upload-document-link, .edit-flat-upload-document-link, .edit-flat-select-document-link {
+.booking-request-upload-document-link, .edit-flat-upload-document-link, .edit-flat-select-document-link, .edit-flat-select-document-link {
   margin: 0 0 7px 6px;
   background-color: gray;
   color: white;
@@ -3391,9 +3426,10 @@ form {
   width: auto;
 }
 
-.booking-request-upload-document-link:hover {
+.booking-request-upload-document-link:hover, .edit-flat-upload-document-link:hover, .edit-flat-select-document-link:hover, .select-existing-document-add-button:hover {
   color: white;
   background-color: lightgray;
+  border: solid 1px #ccc;
 }
 
 .edit-flat-select-document-link {
