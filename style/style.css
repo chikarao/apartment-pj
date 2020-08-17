@@ -2950,7 +2950,7 @@ form {
   border-bottom: solid 1px #ccc;
 }
 
-.select-existing-document-each-document-box:hover {
+.select-existing-document-each-document-top-box:hover {
   background-color: #F5F5F5;
 }
 
@@ -2991,7 +2991,10 @@ form {
 }
 
 .select-existing-document-each-document-bottom-box {
-  height: 0px;
+  /* height: 0px; */
+  height: auto;
+  width: auto;
+  padding: 0 0 0 15px;
 }
 
 .select-existing-document-add-button {

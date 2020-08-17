@@ -614,6 +614,8 @@ export default function (state = {
           newObject.id = actionPayloadObject[eachKey].id;
           newObject.created_at = new Date(actionPayloadObject[eachKey].created_at);
           newObject.updated_at = new Date(actionPayloadObject[eachKey].updated_at);
+          if (actionPayloadObject[eachKey].date_start) newObject.date_start = new Date(actionPayloadObject[eachKey].date_start);
+          // if (actionPayloadObject[eachKey].date_end) newObject.date_end = new Date(actionPayloadObject[eachKey].date_end);
           if (actionPayloadObject[eachKey].template_file_name) newObject.template_file_name = actionPayloadObject[eachKey].template_file_name;
           if (actionPayloadObject[eachKey].booking_id) newObject.booking_id = actionPayloadObject[eachKey].booking_id;
           if (actionPayloadObject[eachKey].flat_id) newObject.flat_id = actionPayloadObject[eachKey].flat_id;
@@ -626,17 +628,20 @@ export default function (state = {
         return newArray;
       };
 
+      const agreementArrayWithDateObject = createArrayWithDateObject(action.payload.all_user_agreements_mapped);
+
       return { ...state,
         // all_user_agreements is all agreements
         allUserAgreementsMapped: action.payload.all_user_agreements_mapped,
-        allUserAgreementsArray: createArrayWithDateObject(action.payload.all_user_agreements_mapped),
+        allUserAgreementsArray: agreementArrayWithDateObject,
+        allUserAgreementsArrayMapped: _.mapKeys(agreementArrayWithDateObject, 'id'),
         // allUserAgreementsMappedSorted: action.payload.user_agreements_array_sorted,
         // user_bookings is all bookings for user's flat with agreeemnts attached
         // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
         allUserFlatsArray: createArrayWithDateObject(action.payload.user_flats),
         allUserFlatsMapped: action.payload.user_flats,
         allBookingsForUserFlatsArray: createArrayWithDateObject(action.payload.user_bookings),
-        allBookingsForUserFlats: action.payload.user_bookings
+        allBookingsForUserFlatsMapped: action.payload.user_bookings
       };
     }
 

@@ -241,7 +241,7 @@ class Header extends Component {
          optionIndexArray.push(i);
        }
      });
-     console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
+     // console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
      return optionIndexArray[0];
    }
 

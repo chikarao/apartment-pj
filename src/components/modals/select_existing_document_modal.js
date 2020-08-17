@@ -25,6 +25,7 @@ class SelectExitingDocumentModal extends Component {
       showRentalContracts: true,
       showImportantPoints: true,
       selectedAgreementsArray: [],
+      expandBookingId: null,
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -33,6 +34,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
     this.handleAgreementCheck = this.handleAgreementCheck.bind(this);
     this.handleAddAgreementsClick = this.handleAddAgreementsClick.bind(this);
+    this.handleBookingCaretClick = this.handleBookingCaretClick.bind(this);
   }
 
   componentDidMount() {
@@ -224,14 +226,18 @@ class SelectExitingDocumentModal extends Component {
     })
   }
 
+  handleBookingCaretClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.setState({ expandBookingId: this.state.expandBookingId ? null : parseInt(elementVal, 10) }, () => {
+      console.log('in select_exiting_document, handleBookingCaretClick, this.state.expandBookingId: ', this.state.expandBookingId);
+    });
+  }
+
   renderEachDocument(agreementsTreatedArray) {
-    return _.map(agreementsTreatedArray, eachAgreement => {
-      return (
-        <li
-          className="select-existing-document-each-document-box"
-          key={eachAgreement.id}
-          value={eachAgreement.id}
-        >
+    const renderEachAgreement = (eachAgreement) => {
+      if (this.props.allUserAgreementsMapped[eachAgreement.id] && this.props.allUserAgreementsMapped[eachAgreement.id].document_name) {
+        return (
           <div
             className="select-existing-document-each-document-top-box"
           >
@@ -246,19 +252,77 @@ class SelectExitingDocumentModal extends Component {
               <div
                 className="select-existing-document-each-document-top-box-left-date"
               >
-                Last updated: {`${eachAgreement.updated_at.getMonth()}/${eachAgreement.updated_at.getDay()}/${eachAgreement.updated_at.getFullYear()}`}
+                Last updated: {`${eachAgreement.updated_at.getMonth() + 1}/${eachAgreement.updated_at.getDate()}/${eachAgreement.updated_at.getFullYear()}`}
               </div>
             </div>
             <div
               className="select-existing-document-each-document-top-box-right"
             >
-              <input type="checkbox" value={eachAgreement.id} onChange={this.handleAgreementCheck}/>
+              <input type="checkbox" value={eachAgreement.id} onChange={this.handleAgreementCheck} />
             </div>
           </div>
+        );
+      }
+    };
+
+    const renderAgreements = (agreementArray) => {
+      return _.map(agreementArray, eachAgreement => {
+        return renderEachAgreement(eachAgreement);
+      });
+    };
+
+    const renderEachBooking = (eachBooking) => {
+      const tenant = this.props.allBookingsForUserFlatsMapped[eachBooking.id] && this.props.allBookingsForUserFlatsMapped[eachBooking.id].user ? this.props.allBookingsForUserFlatsMapped[eachBooking.id].user : null;
+      // const tenant = {};
+      if (tenant) {
+        return (
+          <div
+            className="select-existing-document-each-document-top-box"
+          >
+            <div
+              className="select-existing-document-each-document-top-box-left"
+            >
+              <div
+                className="select-existing-document-each-document-top-box-left-name"
+              >
+                Booking for: {tenant.profiles.length > 0 ? ` ${tenant.profiles[0].first_name} ${tenant.profiles[0].last_name}` : 'The user has no profile'}
+              </div>
+              <div
+                className="select-existing-document-each-document-top-box-left-date"
+              >
+                Start Date: {`${eachBooking.date_start.getMonth() + 1}/${eachBooking.date_start.getDate()}/${eachBooking.date_start.getFullYear()}`}
+              </div>
+            </div>
+            <div
+              className="select-existing-document-each-document-top-box-right"
+            >
+              {this.state.expandBookingId === eachBooking.id
+                ?
+                <i className="fas fa-caret-down" style={{ fontSize: '20px' }} value={eachBooking.id} onClick={this.handleBookingCaretClick}></i>
+                :
+                <i className="fas fa-caret-left" style={{ fontSize: '20px' }} value={eachBooking.id} onClick={this.handleBookingCaretClick}></i>
+              }
+            </div>
+          </div>
+        );
+      }
+    };
+
+
+    console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, this.state.showByBooking: ', agreementsTreatedArray, this.state.showByBooking);
+    return _.map(agreementsTreatedArray, each => {
+      return (
+        <li
+          className="select-existing-document-each-document-box"
+          key={each.id}
+          value={each.id}
+        >
+          {this.state.showByBooking ? renderEachBooking(each) : renderEachAgreement(each)}
 
           <div
             className="select-existing-document-each-document-bottom-box"
           >
+            {this.state.showByBooking && this.state.expandBookingId ? renderAgreements(each.agreements) : null}
           </div>
         </li>
       );
@@ -282,21 +346,47 @@ class SelectExitingDocumentModal extends Component {
     console.log('in SelectExistingDocumentModal, treatAgreementsObject, this.state, allUserAgreementsArray, this.state.agreementsTreatedArray,  ', this.state, this.props.allUserAgreementsArray, this.state.agreementsTreatedArray);
     const agreementsTreatedArray = [];
 
-    const filterAgreements = () => {
-      _.each(this.props.allUserAgreementsArray, eachAgreement => {
-        const addAgreement = this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)
-        if (addAgreement && this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsTreatedArray.push(eachAgreement)
-        if (addAgreement && this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsTreatedArray.push(eachAgreement)
-        // if (this.state.selectedFlatId && eachAgreement.flat_id === this.state.selectedFlatId) agreementsTreatedArray.push(eachAgreement)
+    if (!this.state.showByBooking) {
+
+      const filterAgreements = () => {
+
+        _.each(this.props.allUserAgreementsArray, eachAgreement => {
+          const addAgreement = this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)
+          if (addAgreement && this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsTreatedArray.push(eachAgreement)
+          if (addAgreement && this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsTreatedArray.push(eachAgreement)
+          // if (this.state.selectedFlatId && eachAgreement.flat_id === this.state.selectedFlatId) agreementsTreatedArray.push(eachAgreement)
+        });
+      };
+
+      filterAgreements();
+      // Sort by date updated_at;
+      // allUserAgreementsArray has date objects created in the reducer for updated_at
+      if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.updated_at - a.updated_at);
+      if (this.state.showFromNewest) agreementsTreatedArray.sort((a, b) => a.updated_at - b.updated_at);
+    } else {
+        let agreementsArray = null;
+        let bookingObject = null;
+      _.each(this.props.allBookingsForUserFlatsArray, eachBooking => {
+        // Go through the booking adding process only if there is no flat selected or for flat that is selected
+        if (this.state.selectedFlatId === null || (this.state.selectedFlatId === eachBooking.flat_id)) {
+          bookingObject = {};
+          bookingObject.id = eachBooking.id;
+          bookingObject.date_start = eachBooking.date_start;
+          bookingObject.user = this.props.allBookingsForUserFlatsMapped[eachBooking.id].user
+          agreementsArray = [];
+          _.each(this.props.allBookingsForUserFlatsMapped[eachBooking.id].agreements, eachAgreement => {
+            if (this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id])
+            if (this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id])
+          });
+          bookingObject.agreements = agreementsArray;
+          // Add booking to array only if there are agreements in the bookingObject array
+          if (bookingObject.agreements.length > 0) agreementsTreatedArray.push(bookingObject);
+        }
       });
+      if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.date_start - a.date_start);
+      if (this.state.showFromNewest) agreementsTreatedArray.sort((a, b) => a.date_start - b.date_start);
     }
-
-    filterAgreements();
-    // Sort by date updated_at;
-    // allUserAgreementsArray has date objects created in the reducer for updated_at
-    if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.updated_at - a.updated_at)
-    if (this.state.showFromNewest) agreementsTreatedArray.sort((a, b) => a.updated_at - b.updated_at)
-
+    // Set state to be used in render
     this.setState({ agreementsTreatedArray });
   }
 
@@ -358,7 +448,9 @@ class SelectExitingDocumentModal extends Component {
        showRentalContracts,
        showImportantPoints,
      }, () => {
-       // Code for getting subset of agreements
+       // Code for getting subset of agreements based on state set above
+       console.log('in SelectExistingDocumentModal, handleSelectionButtonClick, this.state ', this.state);
+
        this.treatAgreementsObject();
      });
    });
@@ -417,7 +509,7 @@ class SelectExitingDocumentModal extends Component {
   }
 
   renderExistingDocumentsMain() {
-    const { handleSubmit } = this.props;
+    // const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
       console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show ', this.props.show );
@@ -433,23 +525,14 @@ class SelectExitingDocumentModal extends Component {
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : ''}
-              {this.state.selectedAgreementsArray.length > 0
-                ?
-                <div
-                  className="btn btn-primary select-existing-document-add-button"
-                  onClick={this.handleAddAgreementsClick}
-                >
-                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
-                </div>
-                :
-                <div
-                  className="btn btn-primary select-existing-document-add-button"
-                  style={{ backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
-                >
-                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
-                </div>
-              }
 
+              <div
+                className="btn btn-primary select-existing-document-add-button"
+                onClick={this.state.selectedAgreementsArray.length > 0 ? this.handleAddAgreementsClick : null}
+                style={this.state.selectedAgreementsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
+              >
+                {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
+              </div>
             </div>
 
           </section>
@@ -504,9 +587,12 @@ function mapStateToProps(state) {
       // agreementsByFlatMapped contains all agreements mapped to flat regardless of use in booking
       allUserFlatsMapped: state.flats.flatsByUser,
       // userFlatBookingsMapped is all bookings for user's flat with agreeemnts attached
-      allBookingsForUserFlatsMapped: state.documents.allBookingsForUserFlats,
+      allBookingsForUserFlatsMapped: state.documents.allBookingsForUserFlatsMapped,
+      allBookingsForUserFlatsArray: state.documents.allBookingsForUserFlatsArray,
       // all agreements, flats and bookings array have date objects for created_at and updated_at
       allUserAgreementsArray: state.documents.allUserAgreementsArray,
+      // allUserAgreementsArrayMapped same as allUserAgreementsArray with date objects but mapped
+      allUserAgreementsArrayMapped: state.documents.allUserAgreementsArrayMapped,
       allUserFlatsArray: state.documents.allUserFlatsArray,
       allBookingsForUserFlats: state.documents.allBookingsForUserFlats,
     };
