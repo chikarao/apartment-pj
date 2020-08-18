@@ -24,17 +24,19 @@ class SelectExitingDocumentModal extends Component {
       showAll: true,
       showRentalContracts: true,
       showImportantPoints: true,
-      selectedAgreementsArray: [],
+      selectedDocumentsArray: [],
       expandBookingId: null,
+      shrinkModal: false
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
     this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
     this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
-    this.handleAgreementCheck = this.handleAgreementCheck.bind(this);
+    this.handleDocumentCheck = this.handleDocumentCheck.bind(this);
     this.handleAddAgreementsClick = this.handleAddAgreementsClick.bind(this);
     this.handleBookingCaretClick = this.handleBookingCaretClick.bind(this);
+    this.handleAgreementShowClick = this.handleAgreementShowClick.bind(this);
   }
 
   componentDidMount() {
@@ -71,6 +73,15 @@ class SelectExitingDocumentModal extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('click', this.handleCloseFlatSelectionBox);
+    if (this.state.shrinkModal) {
+      this.props.setTemplateElementsObject({
+        templateElements: {},
+        templateElementsByPage: {},
+        templateTranslationElements: {},
+        templateTranslationElementsByPage: {}
+      });
+      this.props.setAgreementId(null, false);
+    }
   }
 
   handleFormSubmitCallback() {
@@ -209,20 +220,20 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
-  handleAgreementCheck(event) {
+  handleDocumentCheck(event) {
     const checkedElement = event.target;
     const elementVal = checkedElement.getAttribute('value')
-    const selectedAgreementsArray = [...this.state.selectedAgreementsArray];
-    const index = selectedAgreementsArray.indexOf(parseInt(elementVal, 10))
+    const selectedDocumentsArray = [...this.state.selectedDocumentsArray];
+    const index = selectedDocumentsArray.indexOf(parseInt(elementVal, 10))
 
     if (index === -1) {
-      selectedAgreementsArray.push(parseInt(elementVal, 10));
+      selectedDocumentsArray.push(parseInt(elementVal, 10));
     } else {
-      selectedAgreementsArray.splice(index, 1);
+      selectedDocumentsArray.splice(index, 1);
     }
 
-    this.setState({ selectedAgreementsArray }, () => {
-      console.log('in select_exiting_document, handleAgreementCheck, checkedElement, elementVal, this.state.selectedAgreementsArray: ', checkedElement, elementVal, this.state.selectedAgreementsArray);
+    this.setState({ selectedDocumentsArray }, () => {
+      console.log('in select_exiting_document, handleDocumentCheck, checkedElement, elementVal, this.state.selectedDocumentsArray: ', checkedElement, elementVal, this.state.selectedDocumentsArray);
     })
   }
 
@@ -234,12 +245,51 @@ class SelectExitingDocumentModal extends Component {
     });
   }
 
+  handleAgreementShowClick(event) {
+    const clickedElement = event.target;
+    let clickedAgreementId = null;
+    let currentElement = clickedElement;
+    const userClickedExpand = clickedElement.nodeName === 'I';
+    const userClickedCheckbox = clickedElement.nodeName === 'INPUT' || clickedElement.className === 'select-existing-document-each-document-top-box-right';
+    // if uswer is not clicking on the expand icon when modal is shrunken
+    if (!userClickedExpand && !userClickedCheckbox) {
+      // Clicks are detected in the children of the LI selected so
+      // get the parentElement until the element is an LI element
+      while (currentElement.className !== 'select-existing-document-each-document-top-box') {
+        currentElement = currentElement.parentElement;
+      }
+
+      clickedAgreementId = parseInt(currentElement.getAttribute('value'), 10);
+    }
+    // Turn shrinkModal both when clicking agreement and expand icon
+    this.setState({
+      shrinkModal: !userClickedCheckbox ? !this.state.shrinkModal : this.state.shrinkModal,
+    }, () => {
+      // props coming from this modal call in editFlat or bookingConfirmation
+      if (clickedAgreementId) this.props.setAgreementId(clickedAgreementId, true);
+      console.log('in select_exiting_document, handleAgreementShowClick, clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId: ', clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId);
+      // empty out agreement and other element related objects to be sent to CreateEditDocument.
+      if (userClickedExpand) {
+        this.props.setAgreementId(null, false);
+        this.props.setTemplateElementsObject({
+          templateElements: {},
+          templateElementsByPage: {},
+          templateTranslationElements: {},
+          templateTranslationElementsByPage: {}
+        });
+      }
+    });
+  }
+
   renderEachDocument(agreementsTreatedArray) {
     const renderEachAgreement = (eachAgreement) => {
       if (this.props.allUserAgreementsMapped[eachAgreement.id] && this.props.allUserAgreementsMapped[eachAgreement.id].document_name) {
         return (
           <div
             className="select-existing-document-each-document-top-box"
+            onClick={this.handleAgreementShowClick}
+            value={eachAgreement.id}
+            key={eachAgreement.id}
           >
             <div
               className="select-existing-document-each-document-top-box-left"
@@ -258,7 +308,12 @@ class SelectExitingDocumentModal extends Component {
             <div
               className="select-existing-document-each-document-top-box-right"
             >
-              <input type="checkbox" value={eachAgreement.id} onChange={this.handleAgreementCheck} />
+              <input
+                type="checkbox"
+                value={eachAgreement.id}
+                onChange={this.handleDocumentCheck}
+                checked={this.state.selectedDocumentsArray.indexOf(eachAgreement.id) !== -1}
+              />
             </div>
           </div>
         );
@@ -277,6 +332,7 @@ class SelectExitingDocumentModal extends Component {
       if (tenant) {
         return (
           <div
+            key={eachBooking.id}
             className="select-existing-document-each-document-top-box"
           >
             <div
@@ -307,9 +363,9 @@ class SelectExitingDocumentModal extends Component {
         );
       }
     };
-
-
-    console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, this.state.showByBooking: ', agreementsTreatedArray, this.state.showByBooking);
+    // Render top box for agreement and booking;
+    // Render bottom box only if there are agreements attached to bookings when showByBooking true
+    // console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, this.state.showByBooking: ', agreementsTreatedArray, this.state.showByBooking);
     return _.map(agreementsTreatedArray, each => {
       return (
         <li
@@ -504,8 +560,19 @@ class SelectExitingDocumentModal extends Component {
   }
 
   handleAddAgreementsClick() {
-    console.log('in SelectExistingDocumentModal, handleAddAgreementsClick, this.state.selectedAgreementsArray ', this.state.selectedAgreementsArray);
+    console.log('in SelectExistingDocumentModal, handleAddAgreementsClick, this.state.selectedDocumentsArray ', this.state.selectedDocumentsArray);
 
+  }
+
+  renderSelectedDocumentsThumbnail() {
+    return (
+      <div
+        className="select-existing-document-thumbnail-container"
+      >
+        <div className="select-existing-document-thumbnail-each">Document Document Document</div>
+        <div className="select-existing-document-thumbnail-each">Another Another Another Another</div>
+      </div>
+    )
   }
 
   renderExistingDocumentsMain() {
@@ -514,22 +581,35 @@ class SelectExitingDocumentModal extends Component {
     // if (this.props.flat) {
       console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show ', this.props.show );
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+      // <section className="modal-main">
 
       return (
-        <div className={showHideClassName}>
-          <section className="modal-main">
+        <div
+          className={showHideClassName}
+          style={this.state.shrinkModal ? { background: 'transparent' } : null}
+        >
+          <section className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}>
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{AppLanguages.selectDocumentForFlat[this.props.appLanguageCode]}</h3>
+            {this.state.shrinkModal
+              ?
+              <i
+                className="fas fa-expand expand-modal-main-icon"
+                onClick={this.handleAgreementShowClick}
+              ></i>
+              :
+              ''}
             {this.renderButtons()}
+            {this.renderSelectedDocumentsThumbnail()}
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : ''}
 
               <div
                 className="btn btn-primary select-existing-document-add-button"
-                onClick={this.state.selectedAgreementsArray.length > 0 ? this.handleAddAgreementsClick : null}
-                style={this.state.selectedAgreementsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
+                onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddAgreementsClick : null}
+                style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
               >
                 {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
               </div>
@@ -548,7 +628,9 @@ class SelectExitingDocumentModal extends Component {
     //handleClose is a prop passed from header when SigninModal is called
     return (
       <div className={showHideClassName}>
-        <div className="modal-main">
+        <div
+          className="modal-main"
+        >
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           <div className="post-signup-message">{AppLanguages.selectDocumentCompleted[this.props.appLanguageCode]}</div>

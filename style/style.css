@@ -2926,6 +2926,26 @@ form {
   color: gray;
 }
 
+.select-existing-document-thumbnail-container {
+  width: 350px;
+  height: auto;
+  margin: 0 auto 0 auto;
+  padding: 5px;
+  border: solid 1px #ccc;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.select-existing-document-thumbnail-each {
+  width: auto;
+  padding: 5px;
+  min-width: 50px;
+  height: 25px;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+}
+
 .select-existing-document-main-scroll-box {
   height: auto;
   max-height: 330px;
@@ -2964,7 +2984,7 @@ form {
 
 .select-existing-document-each-document-top-box-right {
   height: auto;
-  width: auto;
+  width: 60px;
   padding: 10px;
   /* display: flex; */
   /* flex-direction: column; */
@@ -4595,6 +4615,20 @@ form {
 
 .modal-main form {
   margin-top: 40px;
+}
+
+.shrink-modal-main {
+  min-height: 100px;
+  height: 100px;
+  top: 18%;
+  box-shadow: 5px 10px 10px #ccc;
+}
+
+.expand-modal-main-icon {
+  position: fixed;
+  top: 70%;
+  font-size: 25px;
+  color: gray;
 }
 
 .small-modal {

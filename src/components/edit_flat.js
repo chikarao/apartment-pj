@@ -1143,7 +1143,8 @@ class EditFlat extends Component {
     if (this.props.flat) {
       // if (this.props.booking.agreements || this.props.documentInserts) {
         // get agreement chosen by user. Returns array so get first index position below
-        const agreement = this.props.flat.agreements[this.state.agreementId];
+        let agreement = this.props.flat.agreements[this.state.agreementId];
+        if (!agreement) agreement = this.props.allUserAgreementsMapped[this.state.agreementId]
         // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
         let showDocumentInsertBox = false;
         // if (agreementArray.length > 0) {
@@ -1184,6 +1185,7 @@ class EditFlat extends Component {
               createDocumentKey={agreement.template_file_name}
               showOwnUploadedDocument
               showTemplate
+              noEditOrButtons={this.props.showSelectExistingDocument}
               // documentFields={{}}
               // // documentTranslations={{}}
               // // templateMappingObjects={{}}
@@ -1513,17 +1515,9 @@ class EditFlat extends Component {
     return (
       <SelectExistingDocumentModal
         show={this.props.showSelectExistingDocument}
-        // agreementId={this.state.agreementId}
-        // // documentInsertId={this.state.documentInsertId}
-        // agreement={this.props.flat.agreements[this.state.agreementId]}
-        // uploadOwnDocument
-        // showTemplate
         editFlat
-        // closeDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument, showDocument: !this.state.showDocument }, () => {
-          // this.setState({ showDocument: !this.state.showDocument }, () => {
-          //   // console.log('in booking confirmation, renderDocument, second this.state.showSavedDocument, this.state.showDocument:', this.state.showSavedDocument, this.state.showDocument);
-          // });
-        // })}
+        // Set showDocument to true and set agreementId to be used by CreateEditDocument
+        setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
       />
     );
   }
@@ -1748,6 +1742,7 @@ function mapStateToProps(state) {
       showDocumentInsertCreate: state.modals.showDocumentInsertCreateModal,
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
+      allUserAgreementsMapped: state.documents.allUserAgreementsMapped,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

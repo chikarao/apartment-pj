@@ -390,6 +390,7 @@ class CreateEditDocument extends Component {
   }
 
   componentWillUnmount() {
+    console.log('in create_edit_document, componentWillUnmount fired');
     // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
@@ -2312,10 +2313,10 @@ longActionPress(props) {
 
         // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
         const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
+        console.log('in create_edit_document, renderTemplateElements, this.props.agreement: ', this.props.agreement);
         if (elementObject) {
           translationKey = elementObject.translation_key;
           translationText = elementObject.translation_object ? 'Translation' : '';
-          console.log('in create_edit_document, renderTemplateElements, eachElement, elementObject, this.props.documentTranslationsAll: ', eachElement, elementObject, this.props.documentTranslationsAll);
           const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
           // const appLanguages = AppLanguages[translationKey];
           label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
@@ -2327,12 +2328,12 @@ longActionPress(props) {
           // modifiedElement.name;
           // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
         } else {
-          // If no object existins in fixed and important_points, must be a list;
+          // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
           // Get first part of name to get translation from appLanguages; last part to get
           splitKey = modifiedElement.name.split('_');
           category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : '';
-          translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : ''
-          splitKey.splice(splitKey.length - 1, 1)[0]
+          translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : '';
+          splitKey.splice(splitKey.length - 1, 1)[0];
           console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
           const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
           label = category + keyText + ' ' + translationText;
@@ -2408,8 +2409,11 @@ longActionPress(props) {
               // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement: ', eachElement, adjustedHeightInPx);
             } // end of if newElement
           } // end of if eachElement.document_field_choices
-          // if ()
-          if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn) {
+
+          // NOTE: Render an editable element if editFieldsOn false and noEditOrButtons false
+          // editFieldsOn is default true and can be turned off by user in the edit controls;
+          // noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
+          if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn && !this.props.noEditOrButtons) {
             // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
             console.log('in create_edit_document, renderTemplateElements, eachElement, eachElement.height, tabPercentOfContainerH: ', eachElement, eachElement.height, tabPercentOfContainerH);
 
@@ -5750,10 +5754,10 @@ longActionPress(props) {
             >
               {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElementEditAction() : ''}
-              {this.props.showTemplate && this.state.actionExplanationObject ? this.renderExplanationBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderFontControlBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateElementEditAction() : ''}
+              {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
@@ -5860,7 +5864,8 @@ longActionPress(props) {
       showDocumentButtons = true;
       if (this.props.agreement && this.props.agreement.document_pdf_publicid) agreementHasPdf = true;
     }
-
+    // noEditOrButtons is true when user is selecting from existing documents;
+    // i.e. from select_exiting_document_modal
     if (showDocumentButtons) {
       return (
           <div className="document-floating-button-box">
@@ -6018,14 +6023,16 @@ longActionPress(props) {
         );
     } // END of if this.props.agreement
   }
-
+  
+  // NOTE: noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
   render() {
     console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);
     return (
       <div className="test-image-pdf-jpg">
         {this.renderDocument()}
         {this.renderAlert()}
-        {!this.props.showTemplate ? this.renderDocumentButtons() : this.renderTemplateDocumentButtons()}
+        {!this.props.showTemplate ? this.renderDocumentButtons() : ''}
+        {this.props.showTemplate && !this.props.noEditOrButtons ? this.renderTemplateDocumentButtons() : ''}
       </div>
     );
   }
