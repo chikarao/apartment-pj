@@ -564,15 +564,30 @@ class SelectExitingDocumentModal extends Component {
 
   }
 
+  renderEachThumbnail() {
+    return _.map(this.state.selectedDocumentsArray, eachId => {
+      const document = this.props.allUserAgreementsMapped[eachId];
+      return (
+        <div className="select-existing-document-thumbnail-each" key={document.id}>
+          <div className="select-existing-document-thumbnail-each-left">{document.document_name}</div>
+          <i
+            className="fas fa-times select-existing-document-thumbnail-each-right"
+            onClick={this.handleDocumentCheck}
+            value={document.id}
+          ></i>
+        </div>
+      );
+    });
+  }
+
   renderSelectedDocumentsThumbnail() {
     return (
       <div
         className="select-existing-document-thumbnail-container"
       >
-        <div className="select-existing-document-thumbnail-each">Document Document Document</div>
-        <div className="select-existing-document-thumbnail-each">Another Another Another Another</div>
+        {this.renderEachThumbnail()}
       </div>
-    )
+    );
   }
 
   renderExistingDocumentsMain() {
