@@ -2905,12 +2905,13 @@ form {
   /* margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px; */
-  margin: 0 auto 20px auto;
+  margin: 0 auto 15px auto;
   position: relative;
 }
 
 .select-existing-document-button-container-sub-bottom {
   justify-content: center;
+  margin: 0 auto 5px auto;
 }
 
 .select-existing-document-button-container-sub-bottom div {
@@ -2929,7 +2930,7 @@ form {
 .select-existing-document-thumbnail-container {
   width: 350px;
   height: auto;
-  margin: 0 auto 0 auto;
+  margin: 0 auto 5px auto;
   /* padding: 5px; */
   /* border: solid s1px #ccc; */
   display: flex;
@@ -2942,14 +2943,14 @@ form {
   display: flex;
   flex-direction: row;
   border: solid 1px #ccc;
-  border-radius: 5px;
+  border-radius: 15px;
   background-color: lightgray;
   margin: 3px;
 }
 
 .select-existing-document-thumbnail-each-left {
   width: auto;
-  padding: 5px;
+  padding: 5px 10px;
   min-width: 50px;
   height: 25px;
   font-size: 12px;
@@ -4487,6 +4488,21 @@ form {
   /* fixed blurriness */
 }
 
+.background-gray-transparent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  /* background: rgba(255, 255, 255, 0.7); */
+  background-color: gray;
+  opacity: 0.4;
+  /* background: gray; */
+  z-index: 10;
+  /* https://github.com/mgcrea/angular-strap/issues/1234 */
+  /* fixed blurriness */
+}
+
 .lightbox {
   position: fixed;
   top: 0;
@@ -5442,7 +5458,7 @@ form {
   top: 15%;
   left: 34%;
   /* width is create-edit-document-template-edit-action-box-elements width times n plus 2px */
-  width: 442px;
+  width: 482px;
   /* width is create-edit-document-template-edit-action-box-elements height times num of tiers plus */
   height: 70px;
   border: 1.0px solid #ccc;
@@ -5476,12 +5492,12 @@ form {
   overflow: hidden;
 }
 /* nth-child needs to be the number of buttons on top */
-.create-edit-document-template-edit-action-box div:last-child, div:nth-child(11) {
+.create-edit-document-template-edit-action-box div:last-child, div:nth-child(12) {
   border-right: none;
 }
 
 /* nth-child needs to be the number of buttons on top plus 1 */
-.create-edit-document-template-edit-action-box div:nth-child(n+12)  {
+.create-edit-document-template-edit-action-box div:nth-child(n+13)  {
   border-bottom: none;
 }
 
@@ -5504,7 +5520,7 @@ form {
   border-radius: 5px;
 }
 
-.create-edit-document-font-control-box {
+.create-edit-document-font-control-box, .create-edit-document-get-field-values-box {
   z-index: 14;
   position: fixed;
   height: 22%;
@@ -5515,7 +5531,28 @@ form {
   background-color: white;
 }
 
-.create-edit-document-font-control-box:after, .create-edit-document-font-control-box:before {
+.create-edit-document-get-field-values-box {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px 5px 10px;
+}
+
+.create-edit-document-get-field-values-box div {
+  width: 100%;
+  height: auto;
+  margin: 5px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  padding: 5px;
+  margin: 5px 0 10px 0;
+  border-radius: 5px;
+}
+
+.create-edit-document-get-field-values-box div:hover {
+  background-color: lightgray;
+}
+
+.create-edit-document-font-control-box:after, .create-edit-document-font-control-box:before, .create-edit-document-get-field-values-box:after, .create-edit-document-get-field-values-box:before  {
   bottom: 99.47%;
 	left: 50%;
 	border: solid transparent;
@@ -5527,14 +5564,14 @@ form {
   border-radius: 4px;
 }
 
-.create-edit-document-font-control-box:after {
+.create-edit-document-font-control-box:after, .create-edit-document-get-field-values-box:after {
   border-color: rgba(255, 255, 255, 0);
 	border-bottom-color: #fff;
   border-width: 20px;
 	margin-left: -20px;
 }
 
-.create-edit-document-font-control-box:before {
+.create-edit-document-font-control-box:before, .create-edit-document-get-field-values-box:before {
   border-color: rgba(204, 204, 204, 0);
   border-bottom-color: #ccc;
   border-width: 21px;

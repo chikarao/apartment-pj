@@ -46,7 +46,6 @@ class Loading extends Component {
     //handleClose is a prop passed from header when SigninModal is called
     // <div className="loading-spinner">
     // </div>
-    console.log('in loading modal, renderLoading, progressBarWidthPx, this.props.progressStatus:', progressBarWidthPx, this.props.progressStatus);
     if (this.props.progressStatus) {
       return (
         <div className={showHideClassName}>
@@ -58,6 +57,16 @@ class Loading extends Component {
                 {`${this.props.progressStatus.progress_percentage}%`}
               </div>
             </div>
+        </div>
+      );
+    }
+
+    console.log('in loading modal, renderLoading, this.props.grayOutBackgroundProp, this.props.show:', this.props.grayOutBackgroundProp, this.props.show);
+    if (this.props.grayOutBackgroundProp) {
+      // showHideClassName = this.props.show ? 'background-gray-transparent display-block' : 'background-gray-transparent display-none'
+      showHideClassName = 'background-gray-transparent display-block'
+      return (
+        <div className={showHideClassName}>
         </div>
       );
     }
@@ -86,12 +95,13 @@ class Loading extends Component {
 function mapStateToProps(state) {
   // console.log('in Loading, mapStateToProps, state: ', state);
   return {
-    auth: state.auth,
-    successMessage: state.auth.success,
-    errorMessage: state.auth.error,
+    // auth: state.auth,
+    // successMessage: state.auth.success,
+    // errorMessage: state.auth.error,
     // userProfile: state.auth.userProfile
-    initialValues: state.auth.userProfile,
-    progressStatus: state.documents.progressStatus
+    // initialValues: state.auth.userProfile,
+    progressStatus: state.documents.progressStatus,
+    grayOutBackgroundProp: state.auth.grayOutBackgroundProp
   };
 }
 

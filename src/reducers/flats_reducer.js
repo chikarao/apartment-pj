@@ -45,7 +45,8 @@ import {
   UPLOAD_AND_CREATE_IMAGE,
   EDIT_AGREEMENT,
   EMPTY_SELECTED_FLAT_FROM_PARAMS,
-  SAVE_TEMPLATE_DOCUMENT_FIELDS
+  SAVE_TEMPLATE_DOCUMENT_FIELDS,
+    ADD_EXISTING_AGREEMENTS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -126,6 +127,10 @@ export default function (state = INITIAL_STATE, action) {
       if (flat && action.payload.agreements.length > 0) flat.agreements = _.mapKeys(action.payload.agreements, 'id')
       // console.log('in flats reducer, action.payload: ', action.payload);
       return { ...state, selectedFlatFromParams: flat, currentUserIsOwner };
+    }
+
+      case ADD_EXISTING_AGREEMENTS: {
+      return { ...state, selectedFlatFromParams: action.payload.flat };
     }
 
     case SAVE_TEMPLATE_DOCUMENT_FIELDS:

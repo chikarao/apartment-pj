@@ -15,7 +15,8 @@ import {
   SET_DOCUMENT_LANGUAGE_CODE,
   SET_TEMPLATE_ELEMENTS_OBJECT,
   SET_PROGRESS_STATUS,
-  FETCH_USER_AGREEMENTS
+  FETCH_USER_AGREEMENTS,
+  ADD_EXISTING_AGREEMENTS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -44,8 +45,7 @@ export default function (state = {
   allUserFlatsMapped: null
   // documentFields: {}
 }, action) { // closes at the very end
-  // console.log('in documents reducer, action.payload, state: ', action.payload, state);
-
+  // console.log('in documents reducer, action.payload, state: ', action.payload, state)
   // NOTE: getMappedObjectWithStringIds creates template elements object mapped with id { id: templateElement }
   // and a page object { page: { templateElement } } readable by renderTemplateElements in create_edit_document.js
   function getMappedObjectWithStringIds(elementsArray, templateEditHistory, actionCreate) {
@@ -595,18 +595,18 @@ export default function (state = {
 
     case FETCH_DOCUMENT_TRANSLATION:
       const parsedActionPayload = JSON.parse(action.payload);
-    const documentTranslations = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
+      const documentTranslations = getTranslationObject({ object1: parsedActionPayload.fixed_term_rental_contract_bilingual_all, object2: parsedActionPayload.important_points_explanation_bilingual_all, action: 'categorize' })
     // console.log('in documents reducer, fetch document translation action.payload, parsedActionPayload, : ', action.payload, parsedActionPayload);
-    return { ...state,
-      documentTranslations: parsedActionPayload,
-      documentTranslationsAllInOne: documentTranslations.allObject
-      // documentTranslationsTreated
-    };
+      return { ...state,
+        documentTranslations: parsedActionPayload,
+        documentTranslationsAllInOne: documentTranslations.allObject
+        // documentTranslationsTreated
+      };
 
+    // NOTE: Two values share the same block
+    // case ADD_EXISTING_AGREEMENTS:
     case FETCH_USER_AGREEMENTS: {
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
-      // Get an array of objects with just dates and document_name (for agreements)
-      // For sorting
       const createArrayWithDateObject = (actionPayloadObject) => {
         const newArray = [];
         _.each(Object.keys(actionPayloadObject), eachKey => {
@@ -627,7 +627,8 @@ export default function (state = {
         });
         return newArray;
       };
-
+      // Get an array of objects with just dates and document_name (for agreements)
+      // For sorting
       const agreementArrayWithDateObject = createArrayWithDateObject(action.payload.all_user_agreements_mapped);
 
       return { ...state,

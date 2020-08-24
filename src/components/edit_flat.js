@@ -32,9 +32,9 @@ import CreateEditDocument from './forms/create_edit_document';
 
 import AppLanguages from './constants/app_languages';
 // import GmStyle from './maps/gm-style';
-import RentPayment from './constants/rent_payment';
+// import RentPayment from './constants/rent_payment';
 import FormChoices from './forms/form_choices';
-import Facility from './constants/facility';
+// import Facility from './constants/facility';
 import CategoryBox from './modals/category_box';
 import flatFormObject from './forms/flat_form_object';
 
@@ -44,7 +44,7 @@ const MAX_NUM_FILES = globalConstants.maxNumImages;
 const RESIZE_BREAK_POINT = globalConstants.resizeBreakPoint;
 // !!!! Took out DOM: { input ....} on React and react-dom 16.2 upgrade
 // const { DOM: { input, select, textarea } } = React;
-
+// CATEGORY_OBJECT to be passed to category_box
 const CATEGORY_OBJECT = {
   editBasicInfo: { methodName: 'renderEditBasicInfo', heading: 'editBasicInformation' },
   editBuildingInfo: { methodName: 'renderBuildingAddEdit', heading: 'addEditBuilding' },
@@ -115,7 +115,7 @@ class EditFlat extends Component {
     // console.log('in edit flat, componentDidMount, this.state.handleConfirmCheck: ', this.state.confirmChecked);
     // if (this.props.flat) {
       // console.log('in edit flat, componentDidMount, editFlatLoad called');
-    //   this.props.editFlatLoad(this.props.flat);
+    //   this.props.editUserFlatLoad(this.props.flat);
     // }
   }
 
@@ -194,7 +194,7 @@ class EditFlat extends Component {
 
     if (this.state.confirmChecked) {
       const dataSeparated = this.separateFlatAndAmenities(delta);
-      this.props.editFlat(dataSeparated, (id) => this.editFlatCallback(id));
+      this.props.editUserFlat(dataSeparated, (id) => this.editFlatCallback(id));
       this.props.showLoading();
     } else {
       // console.log('in edit flat, handleFormSubmit, checkbox not checked: ');
@@ -511,7 +511,7 @@ class EditFlat extends Component {
     const elementName = clickedElement.getAttribute('name');
     // console.log('in edit flat, handleAssignEditBuildingClick, elementVal: ', elementVal);
     if (elementName == 'add') {
-      this.props.editFlat({ flat_id: this.props.flat.id, flat: { building_id: elementVal }, amenity: { basic: true } }, () => {});
+      this.props.editUserFlat({ flat_id: this.props.flat.id, flat: { building_id: elementVal }, amenity: { basic: true } }, () => {});
     }
 
     if (elementName == 'edit') {
@@ -689,7 +689,7 @@ class EditFlat extends Component {
     const elementVal = checkedElement.getAttribute('value');
     // console.log('in edit flat, handleBankAcccountDefaultCheck, elementVal: ', elementVal);
     this.props.showLoading();
-    this.props.editFlat({ flat_id: this.props.flat.id, flat: { bank_account_id: elementVal }, amenity: { basic: true } }, () => this.handleBankAcccountDefaultCheckCallback())
+    this.props.editUserFlat({ flat_id: this.props.flat.id, flat: { bank_account_id: elementVal }, amenity: { basic: true } }, () => this.handleBankAcccountDefaultCheckCallback())
   }
 
   handleBankAcccountDefaultCheckCallback() {
@@ -768,7 +768,7 @@ class EditFlat extends Component {
     // dataToBeSent.flat_id = this.props.flat.id;
     // console.log('in BankAccountCreateModal, handlePaymentMethodFormSubmit, dataToBeSent: ', dataToBeSent);
     this.props.showLoading();
-    this.props.editFlat(dataToBeSent, () => {
+    this.props.editUserFlat(dataToBeSent, () => {
       this.handlePaymentMethodFormSubmitCallback();
     });
   }
@@ -778,7 +778,8 @@ class EditFlat extends Component {
   }
 
   renderEachRentPaymentMethodField() {
-    return _.map(RentPayment, formField => {
+    // return _.map(RentPayment, formField => {
+    return _.map(this.props.rentPayment, formField => {
       return (
         <div key={formField.name}>
           <h5>{formField[this.props.appLanguageCode]}</h5>
@@ -787,7 +788,7 @@ class EditFlat extends Component {
             // component={fieldComponent}
             component={FormChoices}
             // pass model rentpayment object
-            props={{ model: RentPayment }}
+            props={{ model: this.props.rentPayment }}
             // props={fieldComponent == FormChoices ? { model: RentPayment } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
@@ -837,7 +838,8 @@ class EditFlat extends Component {
     // console.log('in edit flat, getFacilityType facility: ', facility);
     // console.log('in edit flat, getFacilityType Facility: ', Facility);
     // console.log('in edit flat, getFacilityType Facility[facility.facility_type]: ', Facility.facility_type);
-    _.each(Facility.facility_type.choices, eachChoice => {
+    // _.each(Facility.facility_type.choices, eachChoice => {
+    _.each(this.props.facility.facility_type.choices, eachChoice => {
       if (eachChoice.value == facility.facility_type) {
         choice = eachChoice;
       }
@@ -1267,6 +1269,9 @@ class EditFlat extends Component {
 
   fetchTemplateElementObjects() {
     console.log('in edit flat, fetchTemplateElementObjects: ');
+    this.props.selectedFlatFromParams(this.props.match.params.id, () => {
+      this.selectedFlatFromParamsCallback();
+    });
     // Only fetch if templateMappingObject is empty
     if (!_.isEmpty(this.props.templateMappingObject)) {
       this.props.fetchTemplateObjects(() => {});
@@ -1743,6 +1748,8 @@ function mapStateToProps(state) {
       showDocumentInsertEdit: state.modals.showDocumentInsertEditModal,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       allUserAgreementsMapped: state.documents.allUserAgreementsMapped,
+      rentPayment: state.documents.documentConstants.rent_payment,
+      facility: state.documents.documentConstants.facility,
       // initialValues: state.selectedFlatFromParams.selectedFlatFromParams
       initialValues
     };

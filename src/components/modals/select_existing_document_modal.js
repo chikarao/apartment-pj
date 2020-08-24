@@ -34,7 +34,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
     this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
     this.handleDocumentCheck = this.handleDocumentCheck.bind(this);
-    this.handleAddAgreementsClick = this.handleAddAgreementsClick.bind(this);
+    this.handleAddExistingAgreementsClick = this.handleAddExistingAgreementsClick.bind(this);
     this.handleBookingCaretClick = this.handleBookingCaretClick.bind(this);
     this.handleAgreementShowClick = this.handleAgreementShowClick.bind(this);
   }
@@ -67,7 +67,7 @@ class SelectExitingDocumentModal extends Component {
     // console.log('in SelectExitingDocumentModal, handleFormSubmit, dataToBeSent: ', dataToBeSent);
     // this.props.showLoading();
     // this.props.createFacility(dataToBeSent, () => {
-    //   this.handleFormSubmitCallback();
+    //   this.addExistingAgreementsCallback();
     // });
   }
 
@@ -84,10 +84,10 @@ class SelectExitingDocumentModal extends Component {
     }
   }
 
-  handleFormSubmitCallback() {
-    console.log('in SelectExitingDocumentModal, handleFormSubmitCallback: ');
+  addExistingAgreementsCallback() {
+    console.log('in SelectExitingDocumentModal, addExistingAgreementsCallback: ');
     // showHideClassName = 'modal display-none';
-    // this.setState({ selectExistingDocumentCompleted: true });
+    this.setState({ selectExistingDocumentCompleted: true });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
     this.props.showLoading();
@@ -184,7 +184,7 @@ class SelectExitingDocumentModal extends Component {
 
     if (array.indexOf(clickedElement.className) === -1) {
       const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container');
-      flatSelectionBoxArray[0].style.display = 'none';
+      if (flatSelectionBoxArray[0]) flatSelectionBoxArray[0].style.display = 'none';
       this.setState({
         showFlatSelectionBox: !this.state.showFlatSelectionBox
       }, () => {
@@ -559,9 +559,10 @@ class SelectExitingDocumentModal extends Component {
     );
   }
 
-  handleAddAgreementsClick() {
-    console.log('in SelectExistingDocumentModal, handleAddAgreementsClick, this.state.selectedDocumentsArray ', this.state.selectedDocumentsArray);
-
+  handleAddExistingAgreementsClick() {
+    console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
+    this.props.addExistingAgreements({ agreementIdArray: this.state.selectedDocumentsArray, flatId: this.props.flat.id, fromEditFlat: this.props.editFlat, callback: () => this.addExistingAgreementsCallback() });
+    this.props.showLoading()
   }
 
   renderEachThumbnail() {
@@ -623,7 +624,7 @@ class SelectExitingDocumentModal extends Component {
 
               <div
                 className="btn btn-primary select-existing-document-add-button"
-                onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddAgreementsClick : null}
+                onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddExistingAgreementsClick : null}
                 style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
               >
                 {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
@@ -637,7 +638,7 @@ class SelectExitingDocumentModal extends Component {
   }
 
 
-  renderPostEditDeleteMessage() {
+  renderPostActionMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
@@ -657,7 +658,7 @@ class SelectExitingDocumentModal extends Component {
   render() {
     return (
       <div>
-        {this.state.selectExistingDocumentCompleted ? this.renderPostEditDeleteMessage() : this.renderExistingDocumentsMain()}
+        {this.state.selectExistingDocumentCompleted ? this.renderPostActionMessage() : this.renderExistingDocumentsMain()}
       </div>
     );
   }

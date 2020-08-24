@@ -16,6 +16,7 @@ import {
   EDIT_PROFILE,
   DELETE_PROFILE,
   SHOW_LOADING,
+  GRAY_OUT_BACKGROUND,
   SHOW_LIGHTBOX,
   FETCH_CUSTOMER,
   SELECTED_CARD,
@@ -122,8 +123,8 @@ export default function (state = {
     case SHOW_LOADING:
       return { ...state, showLoading: !state.showLoading };
 
-    case SHOW_LIGHTBOX:
-      return { ...state, showLightbox: !state.showLightbox };
+    case GRAY_OUT_BACKGROUND:
+      return { ...state, grayOutBackgroundProp: !state.grayOutBackgroundProp };
 
     case FETCH_CUSTOMER:
       return { ...state, customer: action.payload };

@@ -202,7 +202,9 @@ import {
   GET_APP_BASE_OBJECTS,
   UPLOAD_AND_CREATE_IMAGE,
   FETCH_TEMPLATE_OBJECTS,
-  FETCH_USER_AGREEMENTS
+  FETCH_USER_AGREEMENTS,
+  ADD_EXISTING_AGREEMENTS,
+  GRAY_OUT_BACKGROUND
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -539,11 +541,18 @@ export function showInsertFieldEditModal() {
 }
 
 
-export function showLoading(fromWhere) {
-  console.log('in actions index, showLoading:', fromWhere);
-
+export function showLoading(callback) {
+  console.log('in actions index, showLoading:', callback);
+  callback();
   //flip state boolean
   return { type: SHOW_LOADING };
+}
+
+export function grayOutBackground(fromWhere) {
+  console.log('in actions index, grayOutBackground:', fromWhere);
+
+  //flip state boolean
+  return { type: GRAY_OUT_BACKGROUND };
 }
 
 export function showLightbox() {
@@ -1156,11 +1165,11 @@ export function createMessage(messageAttributes, callback) {
   };
 }
 
-export function editFlat(flatAttributes, callback) {
+export function editUserFlat(flatAttributes, callback) {
   const { flat_id } = flatAttributes;
-  console.log('in actions index, editFlat, flatAttributes: ', flatAttributes);
+  console.log('in actions index, editUserFlat, flatAttributes: ', flatAttributes);
   // console.log('in actions index, editFlat, flat_id: ', flat_id);
-  console.log('in actions index, editFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
+  console.log('in actions index, editUserFlat: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = flatAttributes;
   return function (dispatch) {
@@ -3290,6 +3299,23 @@ export function fetchUserAgreements(callback1, callback2) {
         payload: response.data.data
       });
       callback2();
+    });
+  };
+}
+
+export function addExistingAgreements({ agreementIdArray, fromEditFlat, flatId, callback }) {
+  // console.log('in actions index, addExistingAgreements: ');
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/add_existing_agreements`, { agreement_id_array: agreementIdArray, edit_flat: fromEditFlat, flat_id: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('in actions index, response to addExistingAgreements: ', response);
+      dispatch({
+        type: ADD_EXISTING_AGREEMENTS,
+        payload: response.data.data
+      });
+      callback();
     });
   };
 }

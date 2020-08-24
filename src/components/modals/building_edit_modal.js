@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import languages from '../constants/languages';
-import Building from '../constants/building';
+// import Building from '../constants/building';
 import FormChoices from '../forms/form_choices';
 
 let showHideClassName;
@@ -97,8 +97,9 @@ class BuildingEditModal extends Component {
 
   renderEachBuildingField() {
     let fieldComponent = '';
-    return _.map(Building, (formField, i) => {
-      // console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
+    // return _.map(Building, (formField, i) => {
+    return _.map(this.props.building, (formField, i) => {
+      console.log('in building_edit_modal, renderEachBuildingField, formField: ', formField);
       if (formField.component == 'FormChoices') {
         fieldComponent = FormChoices;
       } else {
@@ -115,7 +116,7 @@ class BuildingEditModal extends Component {
             component={fieldComponent}
             // pass page to custom compoenent, if component is input then don't pass
             // props={{ appLanguageCode: this.props.appLanguageCode }}
-            props={fieldComponent == FormChoices ? { model: Building, record: this.props.flat.building, create: false } : {}}
+            props={fieldComponent == FormChoices ? { model: this.props.building, record: this.props.flat.building, create: false } : {}}
             type={formField.type}
             className={formField.component == 'input' ? 'form-control' : ''}
             // style={eachKey.component == 'input' ? }
@@ -199,7 +200,7 @@ function mapStateToProps(state) {
   // get clicked calendar
   // const calendarArray = [];
   if (state.selectedFlatFromParams.selectedFlatFromParams) {
-    const initialValues = { asbestos_survey_contents: 'Here are the contents'}
+    // const initialValues = { asbestos_survey_contents: 'Here are the contents'}
   //   const { calendars } = state.selectedFlatFromParams.selectedFlatFromParams;
   //   const { selectedBuildingId } = state.modals;
   //   // console.log('in BuildingEditModal, mapStateToProps, calendars, selectedBuildingId: ', calendars, selectedBuildingId);
@@ -221,6 +222,7 @@ function mapStateToProps(state) {
       // languages: state.languages,
       showBuildingEdit: state.modals.showBuildingEditModal,
       appLanguageCode: state.languages.appLanguageCode,
+      building: state.documents.documentConstants.building,
       // get the first calendar in array to match selectedBuildingId
       // calendar: calendarArray[0],
       // language: state.languages.selectedLanguage,
@@ -228,9 +230,9 @@ function mapStateToProps(state) {
       initialValues: state.selectedFlatFromParams.selectedFlatFromParams.building
       // initialValues
     };
-  } else {
-    return {};
   }
+
+  return {};
 }
 
 

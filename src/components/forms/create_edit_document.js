@@ -99,6 +99,7 @@ class CreateEditDocument extends Component {
       editFieldsOnPrevious: false,
       translationModeOn: false,
       documentTranslationsTreated: {},
+      getFieldValues: false
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -128,6 +129,7 @@ class CreateEditDocument extends Component {
     this.handleEditClickTemplate = this.handleEditClickTemplate.bind(this);
     this.handleViewPDFClickTemplate = this.handleViewPDFClickTemplate.bind(this);
     this.handleFieldChoiceMouseOver = this.handleFieldChoiceMouseOver.bind(this);
+    this.handleGetValueChoiceClick = this.handleGetValueChoiceClick.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -3884,6 +3886,19 @@ longActionPress(props) {
           changeDirection(elementVal);
           break;
 
+        case 'getFieldValues':
+          console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
+
+          this.setState({
+            getFieldValues: !this.state.getFieldValues
+          }, () => {
+            // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
+            document.addEventListener('click', this.handleFontControlCloseClick);
+            if (this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading())
+          });
+
+          break;
+
         default: return null;
       }
   }
@@ -4890,16 +4905,78 @@ longActionPress(props) {
       'create-edit-document-font-family-select',
       'create-edit-document-font-size-select',
       'create-edit-document-font-style-button-box',
-      'create-edit-document-font-style-button'
+      'create-edit-document-font-style-button',
+      //getFieldValues eleements
+      'create-edit-document-get-field-values-button',
+      'create-edit-document-get-field-values-box'
     ];
     // If className of clicked element is NOT in the array
     if (fontControlClassesArray.indexOf(clickedElement.className) === -1) {
-      this.setState({ showFontControlBox: false });
+      this.setState({
+        showFontControlBox: false,
+        getFieldValues: false
+      });
       const fontControlBox = document.getElementById('create-edit-document-font-control-box');
-      fontControlBox.style.display = 'none';
+      if (fontControlBox) fontControlBox.style.display = 'none';
+      const getFieldValuesBox = document.getElementById('create-edit-document-get-field-values-box');
+      if (getFieldValuesBox) getFieldValuesBox.style.display = 'none';
+      // Remove listener set in handle open
       document.removeEventListener('click', this.handleFontControlCloseClick);
+      if (!this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading())
     }
     // remove event listener
+  }
+
+  handleGetValueChoiceClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+
+    switch (elementVal) {
+      case 'originalValues':
+
+      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+        break;
+      case 'databaseValues':
+      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+        break;
+      case 'otherDocumentValues':
+      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+        break;
+    default: return null;
+    }
+  }
+
+  renderGetFieldValuesBox() {
+    let getFieldValueButtonDimensions = {};
+    const getFieldValueButtonElement = document.getElementById('create-edit-document-template-edit-action-box-elements-get-field-values');
+    if (getFieldValueButtonElement) getFieldValueButtonDimensions = getFieldValueButtonElement.getBoundingClientRect();
+    const fieldValuesArray = ['originalValues', 'databaseValues', 'otherDocumentValues'];
+    const renderButtons = () => {
+      return _.map(fieldValuesArray, each => {
+        return (
+          <div
+            key={each}
+            className="create-edit-document-get-field-values-button"
+            value={each}
+            onClick={this.handleGetValueChoiceClick}
+          >
+            {AppLanguages[each][this.props.appLanguageCode]}
+          </div>
+        );
+      });
+    };
+
+    // console.log('in create_edit_document, renderGetFieldValuesBox, this.state.actionExplanation, getFieldValueButtonElement, getFieldValueButtonDimensions: ', getFieldValueButtonElement, getFieldValueButtonDimensions);
+    return (
+      <div
+        className="create-edit-document-get-field-values-box"
+        id="create-edit-document-get-field-values-box"
+        // Set the top and left of control box to be right underneath the button
+        style={{ display: 'block', top: getFieldValueButtonElement ? getFieldValueButtonDimensions.top + 47 : null, left: getFieldValueButtonElement ? getFieldValueButtonDimensions.left - 73 : null }}
+      >
+        {renderButtons()}
+      </div>
+    );
   }
 
   renderFontControlBox() {
@@ -4912,7 +4989,7 @@ longActionPress(props) {
     // console.log('in create_edit_document, renderFontControlBox, fontButtonArray: ', fontButtonArray);
     // Get the font button dimension so that a control box can be placed below it
     if (fontButtonArray.length > 0) fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
-    // const controlBoxWidth = '165px';
+
     // add listner for clicks outside the control box opened
     // <option value="arial">Arial</option>
     // <option value="times new roman">Times New Roman</option>
@@ -5192,7 +5269,9 @@ longActionPress(props) {
     // 'Open' the font control box by setting display to 'block'
     fontControlBox.style.display = 'block';
     // Add a listener for user clicks outside the box to close and set display: 'none'
-    document.addEventListener('click', this.handleFontControlCloseClick)
+    document.addEventListener('click', this.handleFontControlCloseClick);
+    this.props.grayOutBackground(() => this.props.showLoading())
+
     // Get object with attributes assigned to each element (ie fontFamily: { arial: [id]})
     // const fontAttributeObject = this.getSelectedFontElementAttributes();
     this.setFontControlBoxValues();
@@ -5384,6 +5463,7 @@ longActionPress(props) {
   renderTemplateElementEditAction() {
     // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = !this.state.translationModeOn ? Object.keys(this.props.templateElements).length : Object.keys(this.props.templateTranslationElements).length
+    const templateElementsChecked = this.state.selectedTemplateElementIdArray.length > 0
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0;
     const translationElementsChecked = this.state.selectedTemplateElementIdArray.length > 0 && this.state.translationModeOn;
     const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
@@ -5500,6 +5580,16 @@ longActionPress(props) {
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          // onClick={() => {}}
+          // name="Change text direction,bottom"
+          value="blank"
+          // onMouseOver={this.handleMouseOverActionButtons}
+          // <i value="emptyButton" name="This button empty,bottom" style={{ color: 'gray'}} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+          // onClick={translationElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+        >
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
           value="vertical"
           onMouseOver={this.handleMouseOverActionButtons}
@@ -5591,6 +5681,22 @@ longActionPress(props) {
         {this.renderChoiceOrElementButtons({ templateElementsLength, elementsChecked, choicesChecked, onlyFontAttributeObject })}
         <div
           className="create-edit-document-template-edit-action-box-elements"
+          // id="create-edit-document-template-edit-action-box-elements-get-field-values"
+          value="getFieldValues"
+          onMouseOver={this.handleMouseOverActionButtons}
+          name="Get field values,bottom"
+        >
+          <i
+            value="getFieldValues"
+            name="Get field values,bottom"
+            onClick={templateElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+            id="create-edit-document-template-edit-action-box-elements-get-field-values"
+            style={{ color: templateElementsChecked ? 'blue' : 'gray' }}
+            className="fas fa-database"
+          ></i>
+        </div>
+        <div
+          className="create-edit-document-template-edit-action-box-elements"
           // onClick={() => {}}
           name="Change text direction,bottom"
           value="changeDirection"
@@ -5607,7 +5713,6 @@ longActionPress(props) {
             // className="far fa-compass"
           ></i>
         </div>
-
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
@@ -5758,6 +5863,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
@@ -6023,7 +6129,7 @@ longActionPress(props) {
         );
     } // END of if this.props.agreement
   }
-  
+
   // NOTE: noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
   render() {
     console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);

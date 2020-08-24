@@ -115,7 +115,7 @@ class Header extends Component {
        }
      }
 
-     if (this.props.userStatus && prevProps.userStatus !== this.props.userStatus) {
+     if (this.props.userStatus && (prevProps.userStatus !== this.props.userStatus)) {
        const onlineSelect = document.getElementById('header-online-selection-box-select');
        const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
        if (onlineSelect) {
@@ -231,17 +231,17 @@ class Header extends Component {
      // console.log('in header, getIndexOption, tagValue : ', tagValue);
      _.each(optionTags, (tag, i) => {
        // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
-       if (language && tag.value == tagValue) {
+       if (language && tag.value === tagValue) {
          console.log('in header, getIndexOption, tag.value, tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
          optionIndexArray.push(i);
        }
-
-       if (!language && parseInt(tag.value, 10) == tagValue) {
+       // !language means it's for online status
+       if (!language && parseInt(tag.value, 10) === tagValue) {
          console.log('in header, getIndexOption, parseInt(tag.value, 10), tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
          optionIndexArray.push(i);
        }
      });
-     // console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
+     console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
      return optionIndexArray[0];
    }
 
