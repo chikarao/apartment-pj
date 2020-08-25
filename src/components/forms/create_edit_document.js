@@ -99,7 +99,10 @@ class CreateEditDocument extends Component {
       editFieldsOnPrevious: false,
       translationModeOn: false,
       documentTranslationsTreated: {},
-      getFieldValues: false
+      getFieldValues: false,
+      selectedGetFieldValueChoiceArray: [],
+      getFieldValuesCompleted: false,
+      originalValuesExistForSelectedFields: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -3633,7 +3636,6 @@ longActionPress(props) {
 
       if (lastActionArray[0].action === 'update') {
         // const modifiedPersistedObject = [...this.state.modifiedPersistedElementsObject];
-
         if (doWhatNow === 'undo') {
           // Get attributes without 'o' infront
           const newLastAction = getOriginalAttributes(lastActionArray);
@@ -3644,7 +3646,9 @@ longActionPress(props) {
             const templateElement = !newLastAction[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
             const translationOrNot = !newLastAction[0].translation_element ? '' : '+translation';
             // this.props.change is imported from redux-form
-            this.props.change(`${templateElement[newLastAction[0].id].name}${translationOrNot}`, newLastAction[0].previous_value)
+            _.each(newLastAction, eachAction => {
+              this.props.change(`${templateElement[eachAction.id].name}${translationOrNot}`, eachAction.previous_value)
+            });
           }
           console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
@@ -3657,7 +3661,10 @@ longActionPress(props) {
             const templateElement = !lastActionArray[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
             const translationOrNot = !lastActionArray[0].translation_element ? '' : '+translation';
             // this.props.change is imported from redux-form
-            this.props.change(`${templateElement[lastActionArray[0].id].name}${translationOrNot}`, lastActionArray[0].value)
+            _.each(lastActionArray, eachAction => {
+              this.props.change(`${templateElement[eachAction.id].name}${translationOrNot}`, eachAction.value)
+            });
+            // this.props.change(`${templateElement[lastActionArray[0].id].name}${translationOrNot}`, lastActionArray[0].value)
           }
         }
       }
@@ -3888,9 +3895,13 @@ longActionPress(props) {
 
         case 'getFieldValues':
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
-
+          const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields()
           this.setState({
-            getFieldValues: !this.state.getFieldValues
+            getFieldValues: !this.state.getFieldValues,
+            getFieldValuesCompleted: false,
+            selectedGetFieldValueChoiceArray: [],
+            originalValuesExistForSelectedFields
+            // originalValuesExistForSelectedFields: false
           }, () => {
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
@@ -4908,6 +4919,7 @@ longActionPress(props) {
       'create-edit-document-font-style-button',
       //getFieldValues eleements
       'create-edit-document-get-field-values-button',
+      'create-edit-document-get-field-values-button button-hover',
       'create-edit-document-get-field-values-box'
     ];
     // If className of clicked element is NOT in the array
@@ -4927,40 +4939,96 @@ longActionPress(props) {
     // remove event listener
   }
 
+  findIfOriginalValuesExistForFields() {
+    const array = [];
+    let templateElement = null;
+    _.each(this.state.selectedTemplateElementIdArray, eachId => {
+      templateElement = this.props.templateElements[parseInt(eachId, 10)];
+      if (templateElement.original_value && templateElement.original_value !== templateElement.value) array.push(templateElement.id)
+    });
+
+    return array.length > 0;
+  }
+
+  getOriginalValues(callback) {
+    let templateElement = null;
+    const array = [];
+    let updateObject = {};
+    _.each(this.state.selectedTemplateElementIdArray, eachId => {
+      templateElement = this.props.templateElements[parseInt(eachId, 10)];
+      // prep obejct to be sent to updateDocumentElementLocally and setTemplateHistoryArray
+      updateObject = { id: templateElement.id, value: templateElement.original_value, previous_value: this.props.valuesInForm[templateElement.name] };
+      array.push(updateObject);
+      console.log('in create_edit_document, getOriginalValues, eachId, templateElement, array : ', eachId, templateElement, array);
+      // change the value in props/form/CreateEditDocument/templateElement.name
+      this.props.change(templateElement.name, templateElement.original_value);
+    });
+    // Update in appstate and persist history in localStorage
+    this.props.updateDocumentElementLocally(array);
+    this.setTemplateHistoryArray(array, 'update');
+    // Call back to set getFieldValuesCompleted to true 
+    callback();
+  }
+
   handleGetValueChoiceClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    const setCompleted = () => {
+      this.setState({ getFieldValuesCompleted: true });
+    };
 
-    switch (elementVal) {
-      case 'originalValues':
+    const newArray = [...this.state.selectedGetFieldValueChoiceArray];
+    newArray.push(elementVal);
 
-      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
-        break;
-      case 'databaseValues':
-      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
-        break;
-      case 'otherDocumentValues':
-      console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
-        break;
-    default: return null;
-    }
+    this.setState({
+      selectedGetFieldValueChoiceArray: newArray,
+      getFieldValuesCompleted: false
+    }, () => {
+      switch (elementVal) {
+        case 'originalValues':
+          this.getOriginalValues(setCompleted)
+
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+          break;
+        case 'databaseValues':
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+          break;
+        case 'otherDocumentValues':
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+          break;
+        default: return null;
+      }
+    });
   }
 
   renderGetFieldValuesBox() {
+    const { selectedGetFieldValueChoiceArray, getFieldValuesCompleted } = this.state;
+
     let getFieldValueButtonDimensions = {};
+
     const getFieldValueButtonElement = document.getElementById('create-edit-document-template-edit-action-box-elements-get-field-values');
+
     if (getFieldValueButtonElement) getFieldValueButtonDimensions = getFieldValueButtonElement.getBoundingClientRect();
+
     const fieldValuesArray = ['originalValues', 'databaseValues', 'otherDocumentValues'];
+
+    let disableButton = false;
+    // Disable the button if there are no original_values stored in templateElements
     const renderButtons = () => {
+      let hoverClass = '  ';
       return _.map(fieldValuesArray, each => {
+        disableButton = !this.state.originalValuesExistForSelectedFields && each === 'originalValues';
+        disableButton ? hoverClass = '' : hoverClass = 'button-hover';
         return (
           <div
             key={each}
-            className="create-edit-document-get-field-values-button"
+            // className="create-edit-document-get-field-values-button button-hover"
+            className={`create-edit-document-get-field-values-button ${hoverClass}`}
             value={each}
-            onClick={this.handleGetValueChoiceClick}
+            onClick={disableButton ? null : this.handleGetValueChoiceClick}
+            style={disableButton ? { border: '1px solid #ccc', color: '#ccc' } : null}
           >
-            {AppLanguages[each][this.props.appLanguageCode]}
+            {AppLanguages[each][this.props.appLanguageCode]}&nbsp;&nbsp;{selectedGetFieldValueChoiceArray.indexOf(each) !== -1 & getFieldValuesCompleted ? <i style={{ color: '#33a532', fontSize: '15px' }} className="fas fa-check-circle"></i> : ''}
           </div>
         );
       });

@@ -5535,6 +5535,7 @@ form {
   display: flex;
   flex-direction: column;
   padding: 5px 10px 5px 10px;
+  height: auto;
 }
 
 .create-edit-document-get-field-values-box div {
@@ -5548,7 +5549,11 @@ form {
   border-radius: 5px;
 }
 
-.create-edit-document-get-field-values-box div:hover {
+/* .create-edit-document-get-field-values-box div:hover {
+  background-color: lightgray;
+} */
+
+.button-hover:hover {
   background-color: lightgray;
 }
 
