@@ -73,6 +73,7 @@ class SelectExitingDocumentModal extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('click', this.handleCloseFlatSelectionBox);
+    window.removeEventListener('keydown', this.handleCloseFlatSelectionBox);
     if (this.state.shrinkModal) {
       this.props.setTemplateElementsObject({
         templateElements: {},
@@ -182,13 +183,14 @@ class SelectExitingDocumentModal extends Component {
       'select-existing-document-button-each'
     ];
 
-    if (array.indexOf(clickedElement.className) === -1) {
+    if (array.indexOf(clickedElement.className) === -1 || (event.key === 'Esc')) {
       const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container');
       if (flatSelectionBoxArray[0]) flatSelectionBoxArray[0].style.display = 'none';
       this.setState({
         showFlatSelectionBox: !this.state.showFlatSelectionBox
       }, () => {
         window.removeEventListener('click', this.handleCloseFlatSelectionBox);
+        window.removeEventListener('keydown', this.handleCloseFlatSelectionBox);
       });
     }
   }
@@ -471,6 +473,7 @@ class SelectExitingDocumentModal extends Component {
      // show
      if (elementVal === 'showByFlat') {
        window.addEventListener('click', this.handleCloseFlatSelectionBox);
+       window.addEventListener('keydown', this.handleCloseFlatSelectionBox);
        const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
        if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
      }

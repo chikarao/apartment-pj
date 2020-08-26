@@ -10,7 +10,29 @@ import getListValues from '../forms/get_list_values';
 
 // fixed_term_rental_contract.js
 export default (props) => {
-  const { flat, booking, userOwner, tenant, appLanguageCode, documentFields, templateTranslationElements, documentTranslationsAllInOne, agreement, documentKey, documentLanguageCode, contractorTranslations, staffTranslations, template, allObject, templateMappingObjects, documentConstants, bookingDatesObject } = props;
+  const {
+    flat,
+    booking,
+    userOwner,
+    tenant,
+    appLanguageCode,
+    documentFields,
+    templateTranslationElements,
+    documentTranslationsAllInOne,
+    agreement,
+    documentKey,
+    documentLanguageCode,
+    contractorTranslations,
+    staffTranslations,
+    template,
+    allObject,
+    templateMappingObjects,
+    documentConstants,
+    bookingDatesObject,
+    templateElementsMappedByName,
+    getSelectDataBaseValues,
+    getSelectDataBaseValuesCallback
+  } = props;
 
   function getProfile(personProfiles, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getBookingDateObject, userOwner: ', userOwner);
@@ -621,21 +643,21 @@ export default (props) => {
   let objectReturned = {};
   // object to be used in handleFormSubmit
   const allFields = {};
-  // let eachField = null;
   let allObjectEach = null;
   let keyExistsInMethodObject = false;
   let conditionTrue = false;
   let count = 0;
   let countAll = 0;
-  // Get the key and value of each inspection/inspectedPart that goes through
 
   if (template) {
-    // let objectReturnedSub = {}
-    // Iterate through documentFields; For template elements it's state.documents.templateElements
+    console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, allObject, documentFields ', allObject, documentFields);
+    // IMPORTANT start of logic:
+    //Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
       countAll++;
       // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
+      // Method to get intiialValue for field exists in methodObject
       keyExistsInMethodObject = allObjectEach
                                 && methodObject[allObjectEach.initialvalues_method_key];
       conditionTrue = allObjectEach
@@ -652,7 +674,6 @@ export default (props) => {
       // list elements do not have an all object and has list parameters in eachField,
       // eg. list_parameters: fixed_term_rental_contract_bilingual,translation,amenities,true,bath_tub,shower,ac,auto_lock
       conditionTrue = allObjectEach
-      // conditionTrue = !allObjectEach
                       && eachField.list_parameters
                       && methodObject.list
                       && methodObject.list.condition;
@@ -660,10 +681,21 @@ export default (props) => {
         count++;
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
       }
+
+      // If templateElement has a value persisted, use that value for initialValues
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before eachField.value, eachField, templateElementsMappedByName ', eachField, templateElementsMappedByName);
+      conditionTrue = !getSelectDataBaseValues
+                      && templateElementsMappedByName
+                      && templateElementsMappedByName[eachField.name]
+                      && templateElementsMappedByName[eachField.name].value
+      if (conditionTrue) {
+        count++;
+        objectReturned = { ...objectReturned, [eachField.name]: templateElementsMappedByName[eachField.name].value };
+      }
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
     });
-  } else {
+  } else { //if (template) {
     // placeholder; No need to test for template?
   }
   // !!!!!!!!!end of documentForm eachField
@@ -697,6 +729,9 @@ export default (props) => {
       objectReturned = { ...objectReturned, [nameInInitialValues]: translationText };
     })
   }
+
+  // Set state getSelectDataBaseValues to false if true
+  if (getSelectDataBaseValues) getSelectDataBaseValuesCallback();
 
   console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps

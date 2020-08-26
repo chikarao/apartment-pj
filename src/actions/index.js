@@ -543,7 +543,7 @@ export function showInsertFieldEditModal() {
 
 export function showLoading(callback) {
   console.log('in actions index, showLoading:', callback);
-  callback();
+  if (callback) callback();
   //flip state boolean
   return { type: SHOW_LOADING };
 }

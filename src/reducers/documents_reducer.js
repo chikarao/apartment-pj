@@ -42,7 +42,8 @@ export default function (state = {
   allUserAgreementsMapped: null,
   allUserAgreementsArray: null,
   bookingsForUserFlats: null,
-  allUserFlatsMapped: null
+  allUserFlatsMapped: null,
+  templateElementsMappedByName: null
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -54,6 +55,8 @@ export default function (state = {
     const object = {};
     let modifiedElement = {};
     const pageObject = {};
+    const nameMappedObject = {};
+    // const nameMappedTranslationObject = {};
 
     // IMPORTANT: updateElements Updates elements persisted in backend but edited
     // in frontend without saving (ie page accidentally refreshed)
@@ -101,8 +104,9 @@ export default function (state = {
       modifiedElement = eachElement;
       // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
-
-      // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement: ', modifiedElement);
+      // Get an object of templateElements ampped by name
+      if (!modifiedElement.translation_element) nameMappedObject[modifiedElement.name] = modifiedElement;
+      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, nameMappedObject, !modifiedElement.translation_element: ', modifiedElement, nameMappedObject, !modifiedElement.translation_element);
 
       object[modifiedElement.id.toString()] = modifiedElement;
       // Assign create so redo and undo of create works in undoRedoAction
@@ -141,7 +145,7 @@ export default function (state = {
     }); // end of each
 
     console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, before return object, pageObject : ', object, pageObject);
-    return { object, pageObject };
+    return { object, pageObject, nameMappedObject };
   }
 
   function addToTemplateElementsByPage(newElement) {
@@ -361,6 +365,7 @@ export default function (state = {
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
+        templateElementsMappedByName: mapKeysObject.nameMappedObject || {},
         templateTranslationElements: mapKeysTranslationObject.object || {},
         templateTranslationElementsByPage: mapKeysTranslationObject.pageObject || {},
         // initialValuesObject
@@ -389,6 +394,7 @@ export default function (state = {
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
+        templateElementsMappedByName: mapKeysObject.nameMappedObject,
         agreements: action.payload.agreements,
         templateTranslationElements: mapKeysObjectTranslation.object,
         templateTranslationElementsByPage: mapKeysObjectTranslation.pageObject,
