@@ -104,6 +104,8 @@ class CreateEditDocument extends Component {
       getFieldValuesCompletedArray: false,
       originalValuesExistForSelectedFields: false,
       getSelectDataBaseValues: false,
+      findIfDatabaseValuesExistForFields: false,
+      databaseValuesExistForFields: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -355,7 +357,9 @@ class CreateEditDocument extends Component {
         ||
         (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
-        ((prevState.getSelectDataBaseValues !== this.state.getSelectDataBaseValues) && this.state.getSelectDataBaseValues))
+        ((prevState.getSelectDataBaseValues !== this.state.getSelectDataBaseValues) && this.state.getSelectDataBaseValues)
+        ||
+        ((prevState.findIfDatabaseValuesExistForFields !== this.state.findIfDatabaseValuesExistForFields) && this.state.findIfDatabaseValuesExistForFields))
        ) {
       // this.props.setInitialValuesObject(initialValuesObject);
       const {
@@ -380,10 +384,11 @@ class CreateEditDocument extends Component {
 
       const mainInsertFieldsObject = null;
       let templateElementsSubset = {};
-      if (this.state.getSelectDataBaseValues) {
+      // If trying to get subset of allObject; use templateElementsSubset
+      if (this.state.getSelectDataBaseValues || this.state.findIfDatabaseValuesExistForFields) {
         _.each(this.state.selectedTemplateElementIdArray, eachId => {
-          templateElementsSubset[templateElements[eachId].name] = templateElements[eachId]
-        })
+          templateElementsSubset[templateElements[eachId].name] = templateElements[eachId];
+        });
       } else {
         if (_.isEmpty(prevProps.templateElements)) {
           templateElementsSubset = templateElements;
@@ -408,7 +413,7 @@ class CreateEditDocument extends Component {
         userOwner,
         tenant,
         appLanguageCode,
-        documentFields: this.state.getSelectDataBaseValues ? templateElementsSubset : allObject,
+        documentFields: (this.state.getSelectDataBaseValues || this.state.findIfDatabaseValuesExistForFields) ? templateElementsSubset : allObject,
         // documentFields: allObject,
         templateTranslationElements: this.props.templateTranslationElements,
         documentTranslationsAllInOne: this.props.documentTranslationsAllInOne,
@@ -427,11 +432,13 @@ class CreateEditDocument extends Component {
         bookingDatesObject,
         templateElementsMappedByName,
         getSelectDataBaseValues: this.state.getSelectDataBaseValues,
-        getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); }
+        findIfDatabaseValuesExistForFields: this.state.findIfDatabaseValuesExistForFields,
+        getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
+        findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
       });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
 
-      if (!this.state.getSelectDataBaseValues) this.props.setInitialValuesObject(initialValuesObject);
+      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
       if (this.state.getSelectDataBaseValues) {
         _.each(Object.keys(initialValuesObject.initialValuesObject), eachName => {
           console.log('in create_edit_document, componentDidUpdate, inside this.state.getSelectDataBaseValues, initialValuesObject, eachName: ', initialValuesObject, eachName);
@@ -3946,6 +3953,8 @@ longActionPress(props) {
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
+          this.findIfDatabaseValuesExistForFields();
+
           this.setState({
             getFieldValues: !this.state.getFieldValues,
             getFieldValuesCompletedArray: [],
@@ -5010,6 +5019,16 @@ longActionPress(props) {
     });
 
     return array.length > 0;
+  }
+
+  findIfDatabaseValuesExistForFields(formValuesObject) {
+    this.setState({ findIfDatabaseValuesExistForFields: !this.state.findIfDatabaseValuesExistForFields}, () => {
+      if (!this.state.findIfDatabaseValuesExistForFields) {
+        console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
+        this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
+      }
+    })
+    // databaseValuesExistForFields
   }
 
   getOriginalValues(callback) {

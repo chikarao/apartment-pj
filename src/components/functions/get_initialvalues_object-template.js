@@ -31,7 +31,9 @@ export default (props) => {
     bookingDatesObject,
     templateElementsMappedByName,
     getSelectDataBaseValues,
-    getSelectDataBaseValuesCallback
+    getSelectDataBaseValuesCallback,
+    findIfDatabaseValuesExistForFields,
+    findIfDatabaseValuesExistForFieldsCallback
   } = props;
 
   function getProfile(personProfiles, language) {
@@ -684,7 +686,7 @@ export default (props) => {
 
       // If templateElement has a value persisted, use that value for initialValues
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before eachField.value, eachField, templateElementsMappedByName ', eachField, templateElementsMappedByName);
-      conditionTrue = !getSelectDataBaseValues
+      conditionTrue = (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)
                       && templateElementsMappedByName
                       && templateElementsMappedByName[eachField.name]
                       && templateElementsMappedByName[eachField.name].value
@@ -711,7 +713,7 @@ export default (props) => {
   // nameInInitialValues corresponds to name in Field in renderTemplateTranslationElements in createEditDocument
   // name is like buildingName+translation with a '+' so that able to distinguish translation element value in submit form
   // and will not clash with underscore or hyphen in templateElements
-  if (!_.isEmpty(templateTranslationElements)) {
+  if (!_.isEmpty(templateTranslationElements) && (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)    ) {
     let nameInInitialValues = null;
     let hasOwnTranslation = false;
     let translationText = '';
@@ -732,6 +734,7 @@ export default (props) => {
 
   // Set state getSelectDataBaseValues to false if true
   if (getSelectDataBaseValues) getSelectDataBaseValuesCallback();
+  if (findIfDatabaseValuesExistForFields) findIfDatabaseValuesExistForFieldsCallback(objectReturned);
 
   console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps
