@@ -357,8 +357,10 @@ class CreateEditDocument extends Component {
         ||
         (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
+        // When user clicks getFieldValues, this.state.getSelectDataBaseValues is turned true
         ((prevState.getSelectDataBaseValues !== this.state.getSelectDataBaseValues) && this.state.getSelectDataBaseValues)
         ||
+        // When user clics opens getFieldValuesBox, state.findIfDatabaseValuesExistForFields is turned true
         ((prevState.findIfDatabaseValuesExistForFields !== this.state.findIfDatabaseValuesExistForFields) && this.state.findIfDatabaseValuesExistForFields))
        ) {
       // this.props.setInitialValuesObject(initialValuesObject);
@@ -2131,7 +2133,7 @@ longActionPress(props) {
 
     if (!documentEmpty) {
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
-        console.log('in create_edit_document, renderTemplateTranslationElements, valuesInForm, documentTranslationsAllInOne, ', valuesInForm, documentTranslationsAllInOne);
+        console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, ', eachElement);
 
         translationText = valuesInForm[`${eachElement.name}+translation`] || documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
         if (this.state.translationModeOn && this.state.editFieldsOn) {
@@ -2161,6 +2163,7 @@ longActionPress(props) {
                   type={eachElement.input_type}
                   className={'document-rectangle-template'}
                   props={{
+                      fromWhere: 'templateTranslationElements',
                       eachElement,
                       page,
                       // required: modifiedElement.required,
@@ -2361,6 +2364,7 @@ longActionPress(props) {
       let translationText = '';
       let splitKey = null;
       let category = null;
+      console.log('in create_edit_document, renderTemplateElements, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -2374,7 +2378,6 @@ longActionPress(props) {
 
         // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
         const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
-        console.log('in create_edit_document, renderTemplateElements, this.props.agreement: ', this.props.agreement);
         if (elementObject) {
           translationKey = elementObject.translation_key;
           translationText = elementObject.translation_object ? 'Translation' : '';
@@ -2496,6 +2499,7 @@ longActionPress(props) {
                   // props={fieldComponent == DocumentChoices ? { page } : {}}
                   props={fieldComponent === DocumentChoicesTemplate ?
                     {
+                      fromWhere: '(inputElement && this.state.editFieldsOn && !this.state.translationModeOn && !this.props.noEditOrButtons)',
                       eachElement: modifiedElement,
                       page,
                       required: modifiedElement.required,
@@ -2567,7 +2571,7 @@ longActionPress(props) {
               </div>
             );
           } else if (this.state.editFieldsOn && !this.state.translationModeOn) { // else if inputElement
-            console.log('in create_edit_document, test for 1a-0 renderTemplateElements, else if inputElement, modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement: ', modifiedElement, page, this.props.templateElementsByPage, localTemplateElementsByPage, this.props.editFieldsOn, this.props.agreement);
+            console.log('in create_edit_document, else if inputElement, modifiedElement, localTemplateElementsByPage: ', modifiedElement, localTemplateElementsByPage);
             return (
               <div
                 key={modifiedElement.id}
@@ -2590,6 +2594,7 @@ longActionPress(props) {
                   // props={fieldComponent == DocumentChoices ? { page } : {}}
                   props={fieldComponent === DocumentChoicesTemplate ?
                     {
+                      fromWhere: 'else if (this.state.editFieldsOn && !this.state.translationModeOn)',
                       eachElement: modifiedElement,
                       page,
                       newElement,
@@ -2657,6 +2662,7 @@ longActionPress(props) {
                 component={fieldComponent}
                 // pass page to custom compoenent, if component is input then don't pass
                 props={fieldComponent === DocumentChoicesTemplate ? {
+                  fromWhere: 'last return in renderTemplateElements',
                   page,
                   formFields: this.props.templateElementsByPage,
                   otherChoiceValues,
@@ -3953,6 +3959,7 @@ longActionPress(props) {
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
+          // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
           this.findIfDatabaseValuesExistForFields();
 
           this.setState({
@@ -5022,12 +5029,20 @@ longActionPress(props) {
   }
 
   findIfDatabaseValuesExistForFields(formValuesObject) {
+    // Turning findIfDatabaseValuesExistForFields true will trigger a run of componentDidUpdate
     this.setState({ findIfDatabaseValuesExistForFields: !this.state.findIfDatabaseValuesExistForFields}, () => {
+      // Callback in initialValuesObject method will turn findIfDatabaseValuesExistForFields false
       if (!this.state.findIfDatabaseValuesExistForFields) {
-        console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
-        this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
+        // console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
+        // If any key value paris exist with not null value,
+        let count = 0;
+        _.each(Object.keys(formValuesObject), eachKey => {
+          if (formValuesObject[eachKey]) count++;
+        });
+        // this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
+        this.setState({ databaseValuesExistForFields: count > 0 });
       }
-    })
+    });
     // databaseValuesExistForFields
   }
 
@@ -5068,6 +5083,11 @@ longActionPress(props) {
     });
   }
 
+  getOtherDocumentValues() {
+    this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
+    // this.props.showSelectExistingDocumentModalForGetFieldValues();
+  }
+
   // getSelectDataBaseValuesCallback() {}
 
   handleGetValueChoiceClick(event) {
@@ -5098,6 +5118,7 @@ longActionPress(props) {
           break;
         case 'otherDocumentValues':
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+          this.getOtherDocumentValues();
           break;
         default: return null;
       }

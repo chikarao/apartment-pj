@@ -519,10 +519,11 @@ export function showDocumentInsertEditModal() {
   return { type: SHOW_DOCUMENT_INSERT_EDIT_MODAL };
 }
 
-export function showSelectExistingDocumentModal() {
+export function showSelectExistingDocumentModal(callback) {
   console.log('in actions index, showSelectExistingDocumentModal:');
 
   //flip state boolean
+  callback();
   return { type: SHOW_SELECT_EXSITING_DOCUMENT_MODAL };
 }
 
@@ -3285,9 +3286,9 @@ export function fetchTemplateObjects(callback) {
   };
 }
 
-export function fetchUserAgreements(callback1, callback2) {
+export function fetchUserAgreements(callback) {
   console.log('in actions index, fetchUserAgreements: ');
-  callback1();
+  callback();
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/fetch_user_agreements`, {}, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
@@ -3298,7 +3299,7 @@ export function fetchUserAgreements(callback1, callback2) {
         type: FETCH_USER_AGREEMENTS,
         payload: response.data.data
       });
-      callback2();
+      callback();
     });
   };
 }

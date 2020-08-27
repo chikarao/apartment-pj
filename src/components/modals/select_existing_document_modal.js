@@ -26,7 +26,8 @@ class SelectExitingDocumentModal extends Component {
       showImportantPoints: true,
       selectedDocumentsArray: [],
       expandBookingId: null,
-      shrinkModal: false
+      shrinkModal: false,
+      loadingMessage: false
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -37,13 +38,18 @@ class SelectExitingDocumentModal extends Component {
     this.handleAddExistingAgreementsClick = this.handleAddExistingAgreementsClick.bind(this);
     this.handleBookingCaretClick = this.handleBookingCaretClick.bind(this);
     this.handleAgreementShowClick = this.handleAgreementShowClick.bind(this);
+    this.handleGetFieldValuesForAgreementClick = this.handleGetFieldValuesForAgreementClick.bind(this);
   }
 
   componentDidMount() {
     const showLoading = () => this.props.showLoading();
-    this.props.fetchUserAgreements(showLoading, showLoading);
+    console.log('in SelectExitingDocumentModal, componentDidMount, this.props: ', this.props);
+    // send showLoading twice to
+    // const loading = !this.props.getFieldValues ? showLoading : () => { this.setState({ loadingMessage: !this.state.loadingMessage }); };
+    this.props.fetchUserAgreements(showLoading);
+    // if (this.props.getFieldValues) this.props.fetchUserAgreements(showLoading);
   }
-
+  // Not yet used
   componentDidUpdate(prevProps, prevState) {
     if (prevState.showFromNewest !== this.state.showFromNewest
         ||
@@ -108,7 +114,8 @@ class SelectExitingDocumentModal extends Component {
   handleClose() {
     console.log('in SelectExitingDocumentModal, handleClose, this.props.showFacilityCreate: ', this.props.showFacilityCreate);
     if (this.props.show) {
-      this.props.showSelectExistingDocumentModal();
+      const callback = this.props.getFieldValues ? () => { this.props.showSelectExistingDocumentModalForGetFieldValues(); } : () => {}
+      this.props.showSelectExistingDocumentModal(callback);
       this.setState({ selectExistingDocumentCompleted: false });
     }
   }
@@ -235,7 +242,7 @@ class SelectExitingDocumentModal extends Component {
     }
 
     this.setState({ selectedDocumentsArray }, () => {
-      console.log('in select_exiting_document, handleDocumentCheck, checkedElement, elementVal, this.state.selectedDocumentsArray: ', checkedElement, elementVal, this.state.selectedDocumentsArray);
+      // console.log('in select_exiting_document, handleDocumentCheck, checkedElement, elementVal, this.state.selectedDocumentsArray: ', checkedElement, elementVal, this.state.selectedDocumentsArray);
     })
   }
 
@@ -243,8 +250,31 @@ class SelectExitingDocumentModal extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     this.setState({ expandBookingId: this.state.expandBookingId ? null : parseInt(elementVal, 10) }, () => {
-      console.log('in select_exiting_document, handleBookingCaretClick, this.state.expandBookingId: ', this.state.expandBookingId);
+      // console.log('in select_exiting_document, handleBookingCaretClick, this.state.expandBookingId: ', this.state.expandBookingId);
     });
+  }
+
+  handleGetFieldValuesForAgreementClick(event) {
+    const getDocumentFieldsWithSameName = (documentFields) => {
+      const array = [];
+      _.each(documentFields, eachField => {
+        // console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.props.selectedFieldObject, eachField.name: ', this.props.selectedFieldObject, eachField.name);
+        if (this.props.selectedFieldObject[eachField.name]) array.push({ [eachField.name]: eachField.value });
+      });
+
+      return array;
+    };
+
+    const clickedElement = event.target;
+    let currentElement = clickedElement;
+    while (currentElement.className !== 'select-existing-document-each-document-top-box') {
+      currentElement = currentElement.parentElement;
+    }
+    const elementVal = currentElement.getAttribute('value');
+    const selectedAgreement = this.props.allUserAgreementsMapped[parseInt(elementVal, 10)];
+    // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
+    const array = getDocumentFieldsWithSameName(selectedAgreement.document_fields)
+    console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, array: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, array);
   }
 
   handleAgreementShowClick(event) {
@@ -269,7 +299,7 @@ class SelectExitingDocumentModal extends Component {
     }, () => {
       // props coming from this modal call in editFlat or bookingConfirmation
       if (clickedAgreementId) this.props.setAgreementId(clickedAgreementId, true);
-      console.log('in select_exiting_document, handleAgreementShowClick, clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId: ', clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId);
+      // console.log('in select_exiting_document, handleAgreementShowClick, clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId: ', clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId);
       // empty out agreement and other element related objects to be sent to CreateEditDocument.
       if (userClickedExpand) {
         this.props.setAgreementId(null, false);
@@ -289,7 +319,7 @@ class SelectExitingDocumentModal extends Component {
         return (
           <div
             className="select-existing-document-each-document-top-box"
-            onClick={this.handleAgreementShowClick}
+            onClick={this.props.getFieldValues ? this.handleGetFieldValuesForAgreementClick : this.handleAgreementShowClick}
             value={eachAgreement.id}
             key={eachAgreement.id}
           >
@@ -310,12 +340,16 @@ class SelectExitingDocumentModal extends Component {
             <div
               className="select-existing-document-each-document-top-box-right"
             >
+              {this.props.getFieldValues
+              ?
+              null
+              :
               <input
                 type="checkbox"
                 value={eachAgreement.id}
                 onChange={this.handleDocumentCheck}
                 checked={this.state.selectedDocumentsArray.indexOf(eachAgreement.id) !== -1}
-              />
+              />}
             </div>
           </div>
         );
@@ -398,6 +432,10 @@ class SelectExitingDocumentModal extends Component {
         {this.renderEachDocument(agreementsTreatedArray)}
       </ul>
     );
+  }
+
+  indicateLoading() {
+    return <div style={{ margin: '30px 0 0 0' }}>Loading Agreements...</div>;
   }
 
   treatAgreementsObject() {
@@ -598,10 +636,10 @@ class SelectExitingDocumentModal extends Component {
     // const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
-      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show ', this.props.show );
+      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // <section className="modal-main">
-
+      const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues'
       return (
         <div
           className={showHideClassName}
@@ -610,7 +648,7 @@ class SelectExitingDocumentModal extends Component {
           <section className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}>
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">{AppLanguages.selectDocumentForFlat[this.props.appLanguageCode]}</h3>
+            <h3 className="auth-modal-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
             {this.state.shrinkModal
               ?
               <i
@@ -623,7 +661,7 @@ class SelectExitingDocumentModal extends Component {
             {this.renderSelectedDocumentsThumbnail()}
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
-              {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : ''}
+              {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
 
               <div
                 className="btn btn-primary select-existing-document-add-button"

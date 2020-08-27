@@ -68,6 +68,7 @@ class EditFlat extends Component {
       lastPanel: 'editDocuments',
       showDocument: false,
       agreementId: null,
+      showSelectExistingDocumentModalForGetFieldValues: false,
       // lastPanel: 'editBasicInfo'
     };
 
@@ -1104,7 +1105,7 @@ class EditFlat extends Component {
     const elementVal = clickedElement.getAttribute('value');
     // this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
     if (elementVal === 'template') this.props.showDocumentInsertCreateModal();
-    if (elementVal === 'chooseExisting') this.props.showSelectExistingDocumentModal();
+    if (elementVal === 'chooseExisting') this.props.showSelectExistingDocumentModal(() => {});
     // });
   }
 
@@ -1187,7 +1188,8 @@ class EditFlat extends Component {
               createDocumentKey={agreement.template_file_name}
               showOwnUploadedDocument
               showTemplate
-              noEditOrButtons={this.props.showSelectExistingDocument}
+              noEditOrButtons={this.props.showSelectExistingDocument && !this.state.showSelectExistingDocumentModalForGetFieldValues}
+              showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues})}
               // documentFields={{}}
               // // documentTranslations={{}}
               // // templateMappingObjects={{}}
@@ -1516,13 +1518,16 @@ class EditFlat extends Component {
   }
 
   renderSelectExistingDocumentForm() {
-    console.log('in booking confirmation, renderSelectExistingDocumentForm, : ', );
+    console.log('in editFlat, renderSelectExistingDocumentForm, : ', );
     return (
       <SelectExistingDocumentModal
         show={this.props.showSelectExistingDocument}
         editFlat
         // Set showDocument to true and set agreementId to be used by CreateEditDocument
         setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
+        getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
+        showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
+        selectedFieldObject={{ construction: 1 }}
       />
     );
   }

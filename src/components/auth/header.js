@@ -460,6 +460,7 @@ class Header extends Component {
     // <option className="header-language-option"></option>
     // <div style={{ height: '10px', width: '10px', backgroundColor: '#39ff14', borderRadius: '50%', padding: '5px', margin: '5px'}}></div>
     console.log('in header, renderOnlineOfflineSelect, this.props.userStatus: ', this.props.userStatus);
+    // NOTE: option tags cannot have any other tags as children.
     return (
       <div>
         <select

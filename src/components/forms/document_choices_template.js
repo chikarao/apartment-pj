@@ -55,6 +55,7 @@ class DocumentChoicesTemplate extends Component {
     let valueUpdated = false;
     let choiceSelectedUnselected = false;
     let formFieldChanged = false;
+    // const showSelectExistingDocumentTurnedOnOff = this.props.showSelectExistingDocument === nextProps.showSelectExistingDocument;
     // console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields', nextProps.formFields, this.props.formFields, nextProps.formFields !== this.props.formFields);
 
     if (this.props.selectedChoiceIdArray) {
@@ -68,6 +69,7 @@ class DocumentChoicesTemplate extends Component {
     }
 
     valueUpdated = nextProps.input.value != this.props.input.value;
+
     // console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected', elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected);
     // console.log('DocumentChoicesTemplate, shouldComponentUpdate (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected)', (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected));
 
@@ -585,7 +587,7 @@ class DocumentChoicesTemplate extends Component {
     const { input: { name } } = this.props;
     let choices = null;
     let element = null;
-    // console.log('in document_choices_template, render, name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices: ', name, this.props.elementName, this.props.formFields, this.props.formFields[this.props.page][this.props.elementId].document_field_choices);
+    console.log('in document_choices_template, render, , this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     // if (this.props.editTemplate) {
     if (this.props.editFieldsOn) {
       choices = this.props.formFields[this.props.page][this.props.elementId].choices;
@@ -647,6 +649,7 @@ function mapStateToProps(state) {
     allDocumentObjects: state.documents.allDocumentObjects,
     documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
     initialValuesObject: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.initial : {},
+    // showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
   };
 }
 
