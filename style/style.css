@@ -3052,6 +3052,123 @@ form {
   border: 1px solid #ccc;
   background-color: white;
 }
+
+.get-field-value-choice-modal-main {
+  z-index: 15;
+  width: 350px;
+  height: 450px;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  border-radius: 5px;
+  padding: 5px;
+  top: 0;
+}
+
+.get-field-value-choice-modal-title {
+  width: auto;
+  height: 30px;
+  /* border: 1px solid #ccc; */
+  font-size: 15px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.get-field-value-choice-modal-scrollbox {
+  width: auto;
+  height: 100%;
+  /* border: 1px solid #ccc; */
+  font-size: 12px;
+  padding: 5px;
+  overflow-y: scroll;
+}
+
+.get-field-value-choice-modal-scrollbox li:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+.get-field-value-choice-modal-values-each {
+  width: 100%;
+  height: auto;
+  border-top: 1px solid #ccc;
+  font-size: 12px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.get-field-value-choice-modal-values-each-text-box {
+  width: 100%;
+  height: auto;
+  /* border: 1px solid #ccc; */
+  font-size: 12px;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.get-field-value-choice-modal-values-each-text-box-key {
+  width: 100%;
+  height: 20px;
+  /* border: 1px solid #ccc; */
+  font-size: 12px;
+  padding: 3px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.get-field-value-choice-modal-values-each-text-box-value {
+  width: 100%;
+  height: auto;
+  /* border: 1px solid #ccc; */
+  font-size: 12px;
+  padding: 2px;
+  text-align: left;
+}
+
+.get-field-value-choice-modal-values-each-checkbox-box {
+  width: 30px;
+  height: auto;
+  /* border: 1px solid #ccc; */
+  padding: 2px 2px 2px 2px;
+}
+
+.get-field-value-choice-modal-button-box {
+  width: auto;
+  height: 70px;
+  margin: 5px auto 5px auto;
+  width: 100%;
+}
+
+
+.get-field-value-choice-modal-button-checkall-box {
+  width: 65%;
+  margin: 0 auto 0 auto;
+  height: 35px;
+  display: flex;
+  flex-direction: row;
+  color: blue;
+  justify-content: space-around;
+}
+
+.get-field-value-choice-modal-button-checkall-each:hover {
+  color: lightgray;
+}
+
+.get-field-value-choice-modal-button-apply {
+  font-size: 13px;
+  width: auto;
+  height: 30px;
+  margin: 5px auto 5px auto;
+  width: 60%;
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+}
+
 /*
 .flat-selection-box-container:after, .flat-selection-box-container:before {
   bottom: 99.47%;
@@ -5554,7 +5671,7 @@ form {
 } */
 
 .button-hover:hover {
-  background-color: lightgray;
+  background-color: #ccc;
 }
 
 .create-edit-document-font-control-box:after, .create-edit-document-font-control-box:before, .create-edit-document-get-field-values-box:after, .create-edit-document-get-field-values-box:before  {

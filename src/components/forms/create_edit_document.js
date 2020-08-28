@@ -21,6 +21,7 @@ import GlobalConstants from '../constants/global_constants';
 import DocumentChoices from './document_choices';
 import DocumentChoicesTemplate from './document_choices_template';
 import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
+import GetFieldValueChoiceModal from '../modals/get_field_value_choice_modal';
 // Functions for choices
 import setBoundaries from './set_choice_wrapper_boundaries';
 import getUpdatedElementObject from './get_element_update_object';
@@ -5088,6 +5089,12 @@ longActionPress(props) {
     // this.props.showSelectExistingDocumentModalForGetFieldValues();
   }
 
+  renderGetFieldValuesChoiceBox() {
+    return (
+      <GetFieldValueChoiceModal />
+    );
+  }
+
   // getSelectDataBaseValuesCallback() {}
 
   handleGetValueChoiceClick(event) {
@@ -6060,6 +6067,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderGetFieldValuesChoiceBox() : ''}
             </div>
           );
         });
