@@ -42,7 +42,8 @@ import {
   SELECTED_INSERT_FIELD_ID,
   SELECTED_AGREEMENT_ID,
   INSERT_FIELD_TO_EDIT_ID,
-  SHOW_SELECT_EXSITING_DOCUMENT_MODAL
+  SHOW_SELECT_EXSITING_DOCUMENT_MODAL,
+  SHOW_FIELD_VALUES_CHOICE_MODAL
 } from '../actions/types';
 //
 // const initialState = {
@@ -201,6 +202,9 @@ export default function (
 
     case SHOW_INSERT_FIELD_EDIT_MODAL:
     return { ...state, showInsertFieldEditModal: !state.showInsertFieldEditModal };
+
+    case SHOW_FIELD_VALUES_CHOICE_MODAL:
+    return { ...state, showGetFieldValuesChoiceModal: !state.showGetFieldValuesChoiceModal };
 
     case SELECTED_DOCUMENT_INSERT_ID:
     return { ...state, selectedDocumentInsertId: action.payload };

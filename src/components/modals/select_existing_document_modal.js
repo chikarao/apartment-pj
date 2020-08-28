@@ -27,10 +27,11 @@ class SelectExitingDocumentModal extends Component {
       selectedDocumentsArray: [],
       expandBookingId: null,
       shrinkModal: false,
-      loadingMessage: false
+      loadingMessage: false,
+      selectedAgreementId: null
     };
     this.handleClose = this.handleClose.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    // this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleSelectionButtonClick = this.handleSelectionButtonClick.bind(this);
     this.handleCloseFlatSelectionBox = this.handleCloseFlatSelectionBox.bind(this);
     this.handleFlatSelectionClick = this.handleFlatSelectionClick.bind(this);
@@ -39,6 +40,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleBookingCaretClick = this.handleBookingCaretClick.bind(this);
     this.handleAgreementShowClick = this.handleAgreementShowClick.bind(this);
     this.handleGetFieldValuesForAgreementClick = this.handleGetFieldValuesForAgreementClick.bind(this);
+    this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
   }
 
   componentDidMount() {
@@ -51,19 +53,22 @@ class SelectExitingDocumentModal extends Component {
   }
   // Not yet used
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.showFromNewest !== this.state.showFromNewest
-        ||
-        prevState.showByBooking !== this.state.showByBooking
-        ||
-        prevState.selectedFlatId !== this.state.selectedFlatId
-        ||
-        prevState.showImportantPoints !== this.showImportantPoints
-      ) {
-        console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
-      }
+    if ((prevProps.showGetFieldValuesChoice !== this.props.showGetFieldValuesChoice) && this.props.showGetFieldValuesChoice) {
+      window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+    }
+    // if (prevState.showFromNewest !== this.state.showFromNewest
+    //     ||
+    //     prevState.showByBooking !== this.state.showByBooking
+    //     ||
+    //     prevState.selectedFlatId !== this.state.selectedFlatId
+    //     ||
+    //     prevState.showImportantPoints !== this.showImportantPoints
+    //   ) {
+    //     console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
+    //   }
   }
 
-  handleFormSubmit(data) {
+  // handleFormSubmit(data) {
     // !!!!only persist first 4 characters of account number
     // console.log('in edit flat, handleFormSubmit, data.account_number, data.account_number.slice(0, 4);: ', data.account_number, data.account_number.slice(0, 4));
     // const dataToBeChanged = data;
@@ -75,11 +80,13 @@ class SelectExitingDocumentModal extends Component {
     // this.props.createFacility(dataToBeSent, () => {
     //   this.addExistingAgreementsCallback();
     // });
-  }
+  // }
 
   componentWillUnmount() {
     window.removeEventListener('click', this.handleCloseFlatSelectionBox);
     window.removeEventListener('keydown', this.handleCloseFlatSelectionBox);
+    window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+
     if (this.state.shrinkModal) {
       this.props.setTemplateElementsObject({
         templateElements: {},
@@ -250,8 +257,22 @@ class SelectExitingDocumentModal extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     this.setState({ expandBookingId: this.state.expandBookingId ? null : parseInt(elementVal, 10) }, () => {
-      // console.log('in select_exiting_document, handleBookingCaretClick, this.state.expandBookingId: ', this.state.expandBookingId);
     });
+  }
+
+  handleCloseGetFieldValuesChoiceBox(event) {
+    const clickedElement = event.target;
+
+    const clickedOnModal = clickedElement.className.includes('get-field-value-choice-modal');
+    const clickedOnAgreementEach = clickedElement.className.includes('select-existing-document-each-document');
+    // If user clicks on something other than a document or a getFieldValues modal element
+    // close the modal, and do clean up
+    if (!clickedOnModal && !clickedOnAgreementEach) {
+      this.props.showGetFieldValuesChoiceModal(() => {});
+      window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+      this.setState({ selectedAgreementId: null })
+    }
+    // console.log('in select_exiting_document, handleCloseGetFieldValuesChoiceBox, clickedElement, clickedOnModal: ', clickedElement, clickedOnModal);
   }
 
   handleGetFieldValuesForAgreementClick(event) {
@@ -270,11 +291,22 @@ class SelectExitingDocumentModal extends Component {
     while (currentElement.className !== 'select-existing-document-each-document-top-box') {
       currentElement = currentElement.parentElement;
     }
-    const elementVal = currentElement.getAttribute('value');
-    const selectedAgreement = this.props.allUserAgreementsMapped[parseInt(elementVal, 10)];
-    // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
-    const array = getDocumentFieldsWithSameName(selectedAgreement.document_fields)
-    console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, array: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, array);
+    const elementVal = parseInt(currentElement.getAttribute('value'), 10);
+
+    if (elementVal !== this.state.selectedAgreementId) {
+      this.setState({ selectedAgreementId: elementVal }, () => {
+        const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
+        // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
+        const array = getDocumentFieldsWithSameName(selectedAgreement.document_fields);
+        const object = { agreement: selectedAgreement, array }
+        // const callback = () => window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+        // If not open, open the modal
+        // addEventListener is called in componentDidUpdate
+        if (!this.props.showGetFieldValuesChoice) this.props.showGetFieldValuesChoiceModal(() => {});
+        this.props.setGetFieldValueDocumentObject(object);
+        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, array: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, array);
+      });
+    }
   }
 
   handleAgreementShowClick(event) {
@@ -662,14 +694,19 @@ class SelectExitingDocumentModal extends Component {
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
-
-              <div
-                className="btn btn-primary select-existing-document-add-button"
-                onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddExistingAgreementsClick : null}
-                style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
-              >
-                {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
-              </div>
+              {
+                !this.props.getFieldValues
+                ?
+                <div
+                  className="btn btn-primary select-existing-document-add-button"
+                  onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddExistingAgreementsClick : null}
+                  style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
+                >
+                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
+                </div>
+                :
+                null
+              }
             </div>
 
           </section>
@@ -734,6 +771,9 @@ function mapStateToProps(state) {
       allUserAgreementsArrayMapped: state.documents.allUserAgreementsArrayMapped,
       allUserFlatsArray: state.documents.allUserFlatsArray,
       allBookingsForUserFlats: state.documents.allBookingsForUserFlats,
+      getFieldValueDocumentObject: state.documents.getFieldValueDocumentObject,
+      showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
+
     };
   }
 

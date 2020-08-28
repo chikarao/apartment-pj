@@ -199,3 +199,5 @@ export const FETCH_TEMPLATE_OBJECTS = 'fetch_template_objects';
 export const SHOW_SELECT_EXSITING_DOCUMENT_MODAL = 'show_select_existing_document_modal';
 export const FETCH_USER_AGREEMENTS = 'fetch_user_agreements';
 export const ADD_EXISTING_AGREEMENTS = 'add_existing_agreements';
+export const SHOW_FIELD_VALUES_CHOICE_MODAL = 'show_field_values_choice_modal';
+export const SET_GET_FIELD_VALUE_DOCUMENT_OBJECT = 'set_get_field_value_document_object';

@@ -16,7 +16,8 @@ import {
   SET_TEMPLATE_ELEMENTS_OBJECT,
   SET_PROGRESS_STATUS,
   FETCH_USER_AGREEMENTS,
-  ADD_EXISTING_AGREEMENTS
+  ADD_EXISTING_AGREEMENTS,
+  SET_GET_FIELD_VALUE_DOCUMENT_OBJECT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -43,7 +44,8 @@ export default function (state = {
   allUserAgreementsArray: null,
   bookingsForUserFlats: null,
   allUserFlatsMapped: null,
-  templateElementsMappedByName: null
+  templateElementsMappedByName: null,
+  getFieldValueDocumentObject: null
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -594,6 +596,10 @@ export default function (state = {
     case EDIT_AGREEMENT_FIELDS:
     // console.log('in documents reducer, state: ', state);
     return { ...state, editHistoryArray: [] };
+
+    case SET_GET_FIELD_VALUE_DOCUMENT_OBJECT:
+    // console.log('in documents reducer, state: ', state);
+    return { ...state, getFieldValueDocumentObject: action.payload };
 
     case SET_PROGRESS_STATUS:
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);

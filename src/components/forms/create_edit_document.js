@@ -5091,7 +5091,10 @@ longActionPress(props) {
 
   renderGetFieldValuesChoiceBox() {
     return (
-      <GetFieldValueChoiceModal />
+      <GetFieldValueChoiceModal
+        top={'35%'}
+        left={'50%'}
+      />
     );
   }
 
@@ -6067,7 +6070,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderGetFieldValuesChoiceBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
             </div>
           );
         });
@@ -6488,6 +6491,7 @@ function mapStateToProps(state) {
       initialValues,
       formIsDirty,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
+      showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
     };
   }
 

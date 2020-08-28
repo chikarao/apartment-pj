@@ -204,7 +204,9 @@ import {
   FETCH_TEMPLATE_OBJECTS,
   FETCH_USER_AGREEMENTS,
   ADD_EXISTING_AGREEMENTS,
-  GRAY_OUT_BACKGROUND
+  GRAY_OUT_BACKGROUND,
+  SHOW_FIELD_VALUES_CHOICE_MODAL,
+  SET_GET_FIELD_VALUE_DOCUMENT_OBJECT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -539,6 +541,23 @@ export function showInsertFieldEditModal() {
 
   //flip state boolean
   return { type: SHOW_INSERT_FIELD_EDIT_MODAL };
+}
+
+export function showGetFieldValuesChoiceModal(callback) {
+  console.log('in actions index, showInsertFieldEditModal:');
+  callback()
+  //flip state boolean
+  return { type: SHOW_FIELD_VALUES_CHOICE_MODAL };
+}
+
+export function setGetFieldValueDocumentObject(object) {
+  console.log('in actions index, showInsertFieldEditModal:');
+  // callback();
+  //flip state boolean
+  return {
+    type: SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
+    payload: object
+  };
 }
 
 

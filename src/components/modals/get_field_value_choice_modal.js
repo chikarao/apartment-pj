@@ -56,7 +56,11 @@ class GetFieldValueChoiceModal extends Component {
 
   render() {
     return (
-      <div className="get-field-value-choice-modal-main">
+      <div
+        className="get-field-value-choice-modal-main"
+        id="get-field-value-choice-modal-main"
+        style={{ top: this.props.top, left: this.props.left }}
+      >
         <div className="get-field-value-choice-modal-title">Available Values</div>
         <ul className="get-field-value-choice-modal-scrollbox">
           {this.renderEachValue()}
