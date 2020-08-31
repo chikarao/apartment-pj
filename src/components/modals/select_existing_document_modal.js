@@ -211,28 +211,28 @@ class SelectExitingDocumentModal extends Component {
 
   renderFlatSelectionBox() {
     // if (this.state.showFlatSelectionBox) {
-      let flatSelectionButtonDimensions = {};
-      let modalMainDimensions = {};
+    let flatSelectionButtonDimensions = {};
+    let modalMainDimensions = {};
 
-      const flatSelectionButtonElement = document.getElementById('selection-button-showByFlat')
-      const modalMainElementArray = document.getElementsByClassName('modal-main')
-      // Get the flat selection button dimension so that a control box can be placed below it
-      if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
-      if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
-      const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
+    const flatSelectionButtonElement = document.getElementById('selection-button-showByFlat')
+    const modalMainElementArray = document.getElementsByClassName('modal-main')
+    // Get the flat selection button dimension so that a control box can be placed below it
+    if (flatSelectionButtonElement) flatSelectionButtonDimensions = flatSelectionButtonElement.getBoundingClientRect();
+    if (modalMainElementArray[0]) modalMainDimensions = modalMainElementArray[0].getBoundingClientRect();
+    const positionWithinModalMain = { top: flatSelectionButtonDimensions.top - modalMainDimensions.top, left: flatSelectionButtonDimensions.left - modalMainDimensions.left  }
 
-      return (
-        <div
-          className="flat-selection-box-container"
-          style={{ display: 'none', top: positionWithinModalMain.top ? positionWithinModalMain.top + 25 : 0, left: positionWithinModalMain.left ? positionWithinModalMain.left : 0 }}
-        >
-        <ul
-          className="flat-selection-box-scrollbox"
-        >
-          {this.renderEachFlat()}
-        </ul>
-        </div>
-      );
+    return (
+      <div
+        className="flat-selection-box-container"
+        style={{ display: 'none', top: positionWithinModalMain.top ? positionWithinModalMain.top + 25 : 0, left: positionWithinModalMain.left ? positionWithinModalMain.left : 0 }}
+      >
+      <ul
+        className="flat-selection-box-scrollbox"
+      >
+        {this.renderEachFlat()}
+      </ul>
+      </div>
+    );
     // }
   }
 
@@ -263,8 +263,8 @@ class SelectExitingDocumentModal extends Component {
   handleCloseGetFieldValuesChoiceBox(event) {
     const clickedElement = event.target;
 
-    const clickedOnModal = clickedElement.className.includes('get-field-value-choice-modal');
-    const clickedOnAgreementEach = clickedElement.className.includes('select-existing-document-each-document');
+    const clickedOnModal = clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
+    const clickedOnAgreementEach = clickedElement.className.indexOf('select-existing-document-each-document') !== -1;
     // If user clicks on something other than a document or a getFieldValues modal element
     // close the modal, and do clean up
     if (!clickedOnModal && !clickedOnAgreementEach) {
@@ -312,6 +312,7 @@ class SelectExitingDocumentModal extends Component {
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {
           this.props.showGetFieldValuesChoiceModal(() => {});
+          console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
         }
 

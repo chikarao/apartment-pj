@@ -11,11 +11,48 @@ class GetFieldValueChoiceModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // createBankAccountCompleted: false,
+      selectedFieldNameArray: [],
       // deleteBankAccountCompleted: false,
     };
-    // this.handleClose = this.handleClose.bind(this);
+
+    this.handleFieldCheckboxClick = this.handleFieldCheckboxClick.bind(this);
+    this.handleFieldValueApplyClick = this.handleFieldValueApplyClick.bind(this);
   }
+
+  handleFieldCheckboxClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+
+    const newArray = [...this.state.selectedFieldNameArray];
+
+    if (elementVal === 'checkAll' || elementVal === 'unCheckAll') {
+
+      _.each(this.props.fieldValueDocumentObject.array, eachObject => {
+        const index = newArray.indexOf(eachObject.fieldName);
+        if (elementVal === 'checkAll') {
+          if (index === -1) {
+            // push into newArray
+            newArray.push(eachObject.fieldName);
+          }
+        } else { // if (elementVal === 'checkAll') {
+          newArray.splice(index, 1);
+        }
+      });
+    } else { //  if (elementVal === 'checkAll' || elementVal === 'unCheckAll')
+      const index = this.state.selectedFieldNameArray.indexOf(elementVal);
+      if (index === -1) {
+        newArray.push(elementVal);
+      } else {
+        newArray.splice(index, 1);
+      }
+
+    }
+
+    this.setState({ selectedFieldNameArray: newArray }, () => {
+      console.log('in GetFieldValueChoiceModal, handleFieldCheckboxClick, elementVal, this.state.selectedFieldNameArray: ', elementVal, this.state.selectedFieldNameArray);
+    });
+  }
+
 
   renderEachValue() {
     let elementName = ''
@@ -32,7 +69,6 @@ class GetFieldValueChoiceModal extends Component {
         fromCreateEditDocument: false
       });
 
-      console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, eachFieldObject, elementName: ', this.props.fieldValueDocumentObject, eachFieldObject, elementName);
       return (
         <li key={i} className="get-field-value-choice-modal-values-each">
           <div className="get-field-value-choice-modal-values-each-text-box">
@@ -45,9 +81,11 @@ class GetFieldValueChoiceModal extends Component {
           </div>
           <div className="get-field-value-choice-modal-values-each-checkbox-box">
             <input
+              className="get-field-value-choice-modal-values-each-checkbox-box-input"
               type="checkbox"
-              // onChange={}
-              // checked={}
+              onChange={this.handleFieldCheckboxClick}
+              value={eachFieldObject.fieldName}
+              checked={this.state.selectedFieldNameArray.indexOf(eachFieldObject.fieldName) !== -1}
             />
           </div>
         </li>
@@ -55,18 +93,38 @@ class GetFieldValueChoiceModal extends Component {
     });
   }
 
+  handleFieldValueApplyClick() {
+
+  }
+
   renderButtons() {
+    const checkedAll = this.state.selectedFieldNameArray.length === this.props.fieldValueDocumentObject.array.length;
+    const checkedSome = this.state.selectedFieldNameArray.length > 0;
     return (
       <div className="get-field-value-choice-modal-button-box">
         <div className="get-field-value-choice-modal-button-checkall-box">
-          <div className="get-field-value-choice-modal-button-checkall-each">
+          <div
+            className="get-field-value-choice-modal-button-checkall-each"
+            style={{ color: checkedAll ? 'gray' : 'blue' }}
+            value="checkAll"
+            onClick={checkedAll ? () => {} : this.handleFieldCheckboxClick}
+          >
             Check All
           </div>
-          <div className="get-field-value-choice-modal-button-checkall-each">
+          <div
+            className="get-field-value-choice-modal-button-checkall-each"
+            style={{ color: checkedSome ? 'blue' : 'gray' }}
+            value="unCheckAll"
+            onClick={checkedSome ? this.handleFieldCheckboxClick : () => {}}
+          >
             Uncheck All
           </div>
         </div>
-        <div className="get-field-value-choice-modal-button-apply button-hover">
+        <div
+          className={checkedSome ? 'get-field-value-choice-modal-button-apply button-hover' : 'get-field-value-choice-modal-button-apply'}
+          onClick={checkedSome ? this.handleFieldValueApplyClick : () => {}}
+          style={checkedSome ? {} : { border: '1px solid #ccc', backgroundColor: 'lightgray' }}
+        >
           Apply Field Values
         </div>
       </div>
@@ -82,7 +140,7 @@ class GetFieldValueChoiceModal extends Component {
       >
         <div className="get-field-value-choice-modal-title">Available Values</div>
         <ul className="get-field-value-choice-modal-scrollbox">
-          {this.props.fieldValueDocumentObject.array.length > 0 ? this.renderEachValue() : 'There are no values available for the fields chosen from this document'}
+          {this.props.fieldValueDocumentObject.array.length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available from this document for the fields selected</div>}
         </ul>
           {this.renderButtons()}
       </div>
