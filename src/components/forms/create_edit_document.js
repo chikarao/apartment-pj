@@ -32,6 +32,8 @@ import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base'
 // import getListValues from './get_list_values';
 import getBookingDateObject from '../functions/get_booking_date_object';
 import getTranslationObject from './get_translation_object';
+import getElementLabel from '../functions/get_element_label';
+
 
 // Just for test
 // import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
@@ -2145,7 +2147,7 @@ longActionPress(props) {
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
             let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             if (eachElementWidthPx < TAB_WIDTH) tabLeftMarginPx = 0;
-            const label = 'Placeholder'
+            const label = 'Placeholder';
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
@@ -2323,7 +2325,7 @@ longActionPress(props) {
       let leftInPx = null;
       // let i = 0;
       let top = 0;
-      console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
+      // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
         _.each(document_field_choices, (eachChoice, i) => {
           // Convert NaN to zero
           top = (currentTop / box.height) || 0;
@@ -2353,7 +2355,7 @@ longActionPress(props) {
           currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
         });
 
-        console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, object: ', object);
+        // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, object: ', object);
         return object;
     };
     // if (this.props.documentFields[page]) {
@@ -2365,7 +2367,7 @@ longActionPress(props) {
       let translationText = '';
       let splitKey = null;
       let category = null;
-      console.log('in create_edit_document, renderTemplateElements, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
+      // console.log('in create_edit_document, renderTemplateElements, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -2378,32 +2380,43 @@ longActionPress(props) {
         }
 
         // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
-        const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
-        if (elementObject) {
-          translationKey = elementObject.translation_key;
-          translationText = elementObject.translation_object ? 'Translation' : '';
-          const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
-          // const appLanguages = AppLanguages[translationKey];
-          label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
-                  ||
-                  (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : '');
-          const category = (AppLanguages[elementObject.category] ? `${AppLanguages[elementObject.category][this.props.appLanguageCode]}/` : '');
-          const group = (AppLanguages[elementObject.group] ? `${AppLanguages[elementObject.group][this.props.appLanguageCode]}/` : '');
-          label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
-          // modifiedElement.name;
-          // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
-        } else {
-          // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
-          // Get first part of name to get translation from appLanguages; last part to get
-          splitKey = modifiedElement.name.split('_');
-          category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : '';
-          translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : '';
-          splitKey.splice(splitKey.length - 1, 1)[0];
-          console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
-          const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
-          label = category + keyText + ' ' + translationText;
-          // label = modifiedElement.name;
-        }
+        // const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
+        // if (elementObject) {
+        //   translationKey = elementObject.translation_key;
+        //   translationText = elementObject.translation_object ? 'Translation' : '';
+        //   const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
+        //   // const appLanguages = AppLanguages[translationKey];
+        //   label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
+        //           ||
+        //           (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : '');
+        //   const category = (AppLanguages[elementObject.category] ? `${AppLanguages[elementObject.category][this.props.appLanguageCode]}/` : '');
+        //   const group = (AppLanguages[elementObject.group] ? `${AppLanguages[elementObject.group][this.props.appLanguageCode]}/` : '');
+        //   label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
+        //   // modifiedElement.name;
+        //   // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
+        // } else {
+        //   // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
+        //   // Get first part of name to get translation from appLanguages; last part to get
+        //   splitKey = modifiedElement.name.split('_');
+        //   category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : '';
+        //   translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : '';
+        //   splitKey.splice(splitKey.length - 1, 1)[0];
+        //   // console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
+        //   const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
+        //   label = category + keyText + ' ' + translationText;
+        //   // label = modifiedElement.name;
+        // }
+        label = getElementLabel({
+          allDocumentObjects: this.props.allDocumentObjects,
+          documents: Documents,
+          agreement: this.props.agreement,
+          modifiedElement,
+          fieldName: modifiedElement.name,
+          documentTranslationsAll: this.props.documentTranslationsAll,
+          appLanguages: AppLanguages,
+          appLanguageCode: this.props.appLanguageCode,
+          fromCreateEditDocument: true
+        });
       // if (eachElement.page === page) {
         const editTemplate = true;
         // const width = parseInt(eachElement.width, 10)
@@ -2414,7 +2427,7 @@ longActionPress(props) {
         // For populating array with values of other buttons;
         // input and select val === 'inputFieldValue'
         if (fieldComponent === DocumentChoicesTemplate) {
-          console.log('in create_edit_document, renderTemplateElements, in fieldComponent = DocumentChoices, modifiedElement: ', modifiedElement);
+          // console.log('in create_edit_document, renderTemplateElements, in fieldComponent = DocumentChoices, modifiedElement: ', modifiedElement);
           _.each(modifiedElement.document_field_choices, eachChoice => {
             // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
             if ((eachChoice.val !== 'inputFieldValue') && (eachElement.input_type !== 'boolean')) {
@@ -2480,7 +2493,7 @@ longActionPress(props) {
           // noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
           if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn && !this.props.noEditOrButtons) {
             // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
-            console.log('in create_edit_document, renderTemplateElements, eachElement, eachElement.height, tabPercentOfContainerH: ', eachElement, eachElement.height, tabPercentOfContainerH);
+            // console.log('in create_edit_document, renderTemplateElements, eachElement, eachElement.height, tabPercentOfContainerH: ', eachElement, eachElement.height, tabPercentOfContainerH);
 
             return (
               <div
@@ -2572,7 +2585,7 @@ longActionPress(props) {
               </div>
             );
           } else if (this.state.editFieldsOn && !this.state.translationModeOn) { // else if inputElement
-            console.log('in create_edit_document, else if inputElement, modifiedElement, localTemplateElementsByPage: ', modifiedElement, localTemplateElementsByPage);
+            // console.log('in create_edit_document, else if inputElement, modifiedElement, localTemplateElementsByPage: ', modifiedElement, localTemplateElementsByPage);
             return (
               <div
                 key={modifiedElement.id}
@@ -3958,6 +3971,14 @@ longActionPress(props) {
 
         case 'getFieldValues':
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
+
+          const getSelectedFieldObject = () => {
+            const object = {};
+            _.each(this.state.selectedTemplateElementIdArray, eachId => {
+              object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
+            });
+            return _.isEmpty(object) ? null : object;
+          };
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
           // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
@@ -3967,9 +3988,10 @@ longActionPress(props) {
             getFieldValues: !this.state.getFieldValues,
             getFieldValuesCompletedArray: [],
             selectedGetFieldValueChoiceArray: [],
-            originalValuesExistForSelectedFields
+            originalValuesExistForSelectedFields,
             // originalValuesExistForSelectedFields: false
           }, () => {
+            this.props.setSelectedFieldObject(getSelectedFieldObject())
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
             document.addEventListener('keydown', this.handleFontControlCloseClick);
@@ -5002,7 +5024,7 @@ longActionPress(props) {
         getFieldValues: false,
         getFieldValuesCompletedArray: [],
         selectedGetFieldValueChoiceArray: [],
-        originalValuesExistForSelectedFields: false
+        originalValuesExistForSelectedFields: false,
       });
       const fontControlBox = document.getElementById('create-edit-document-font-control-box');
       if (fontControlBox) fontControlBox.style.display = 'none';
@@ -5113,7 +5135,7 @@ longActionPress(props) {
     newArray.push(elementVal);
 
     this.setState({
-      selectedGetFieldValueChoiceArray: newArray,
+      selectedGetFieldValueChoiceArray: newArray
       // getFieldValuesCompletedArray: [...this.state.getFieldValuesCompletedArray]
     }, () => {
       switch (elementVal) {

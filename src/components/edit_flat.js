@@ -1527,7 +1527,7 @@ class EditFlat extends Component {
         setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
         getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
         showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
-        selectedFieldObject={{ construction: 1 }}
+        // selectedFieldObject={{ construction: 1 }}
       />
     );
   }

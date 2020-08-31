@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import * as actions from '../../actions';
+import getElementLabel from '../functions/get_element_label';
+import Documents from '../constants/documents';
+import AppLanguages from '../constants/app_languages';
 
 class GetFieldValueChoiceModal extends Component {
   constructor(props) {
@@ -15,25 +18,41 @@ class GetFieldValueChoiceModal extends Component {
   }
 
   renderEachValue() {
-    return (
-      <li className="get-field-value-choice-modal-values-each">
-        <div className="get-field-value-choice-modal-values-each-text-box">
-          <div className="get-field-value-choice-modal-values-each-text-box-key">
-            Construction
+    let elementName = ''
+    return _.map(this.props.fieldValueDocumentObject.array, (eachFieldObject, i) => {
+      elementName = getElementLabel({
+        allDocumentObjects: this.props.allDocumentObjects,
+        documents: Documents,
+        agreement: this.props.fieldValueDocumentObject.agreement,
+        modifiedElement: eachFieldObject,
+        fieldName: eachFieldObject.fieldName,
+        documentTranslationsAll: this.props.documentTranslationsAll,
+        appLanguages: AppLanguages,
+        appLanguageCode: this.props.appLanguageCode,
+        fromCreateEditDocument: false
+      });
+
+      console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, eachFieldObject, elementName: ', this.props.fieldValueDocumentObject, eachFieldObject, elementName);
+      return (
+        <li key={i} className="get-field-value-choice-modal-values-each">
+          <div className="get-field-value-choice-modal-values-each-text-box">
+            <div className="get-field-value-choice-modal-values-each-text-box-key">
+              {elementName}
+            </div>
+            <div className="get-field-value-choice-modal-values-each-text-box-value">
+              {eachFieldObject[eachFieldObject.fieldName]}
+            </div>
           </div>
-          <div className="get-field-value-choice-modal-values-each-text-box-value">
-            SRC
+          <div className="get-field-value-choice-modal-values-each-checkbox-box">
+            <input
+              type="checkbox"
+              // onChange={}
+              // checked={}
+            />
           </div>
-        </div>
-        <div className="get-field-value-choice-modal-values-each-checkbox-box">
-          <input
-            type="checkbox"
-            // onChange={}
-            // checked={}
-          />
-        </div>
-      </li>
-    );
+        </li>
+      );
+    });
   }
 
   renderButtons() {
@@ -63,14 +82,7 @@ class GetFieldValueChoiceModal extends Component {
       >
         <div className="get-field-value-choice-modal-title">Available Values</div>
         <ul className="get-field-value-choice-modal-scrollbox">
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
-          {this.renderEachValue()}
+          {this.props.fieldValueDocumentObject.array.length > 0 ? this.renderEachValue() : 'There are no values available for the fields chosen from this document'}
         </ul>
           {this.renderButtons()}
       </div>
@@ -85,6 +97,10 @@ function mapStateToProps(state) {
     auth: state.auth,
     successMessage: state.auth.success,
     errorMessage: state.auth.error,
+    fieldValueDocumentObject: state.documents.fieldValueDocumentObject,
+    allDocumentObjects: state.documents.allDocumentObjects,
+    documentTranslationsAll: state.documents.documentTranslations,
+    appLanguageCode: state.languages.appLanguageCode,
     // flat: state.selectedFlatFromParams.selectedFlatFromParams,
   };
 }

@@ -206,7 +206,8 @@ import {
   ADD_EXISTING_AGREEMENTS,
   GRAY_OUT_BACKGROUND,
   SHOW_FIELD_VALUES_CHOICE_MODAL,
-  SET_GET_FIELD_VALUE_DOCUMENT_OBJECT
+  SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
+  SET_SELECTED_FIELD_OBJECT
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -556,6 +557,16 @@ export function setGetFieldValueDocumentObject(object) {
   //flip state boolean
   return {
     type: SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
+    payload: object
+  };
+}
+
+export function setSelectedFieldObject(object) {
+  console.log('in actions index, setSelectedFieldObject:');
+  // callback();
+  //flip state boolean
+  return {
+    type: SET_SELECTED_FIELD_OBJECT,
     payload: object
   };
 }
