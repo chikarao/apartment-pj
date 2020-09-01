@@ -442,7 +442,7 @@ class CreateEditDocument extends Component {
         findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
       });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
-
+      // If not for getting database values, for getting initial values for the form
       if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
       if (this.state.getSelectDataBaseValues) {
         _.each(Object.keys(initialValuesObject.initialValuesObject), eachName => {
@@ -2102,7 +2102,7 @@ longActionPress(props) {
           key={1}
           value={eachElement.id}
           className="fas fa-check-circle"
-          style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+          style={{ fontSize: '14.5px', lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
           onClick={this.handleTemplateElementCheckClick}
         >
         </i>
@@ -2110,7 +2110,7 @@ longActionPress(props) {
           key={2}
           value={eachElement.id}
           className="fas fa-truck-moving"
-          style={{ lineHeight: '1.5', color: 'gray' }}
+          style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
           onMouseDown={this.handleTemplateElementMoveClick}
         >
         </i>
@@ -2120,7 +2120,7 @@ longActionPress(props) {
             key={3}
             type={eachElement.input_type}
             value={eachElement.id}
-            className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
+            className="fas fa-expand-arrows-alt" style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
             onMouseDown={this.handleTemplateElementChangeSizeClick}
           >
         </i> : null}
@@ -5116,6 +5116,10 @@ longActionPress(props) {
       <GetFieldValueChoiceModal
         top={'35%'}
         left={'50%'}
+        updateDocumentElementLocallyAndSetHistory={(array) => {
+          this.props.updateDocumentElementLocally(array);
+          this.setTemplateHistoryArray(array, 'update');
+        }}
       />
     );
   }

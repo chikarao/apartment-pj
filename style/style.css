@@ -3169,6 +3169,23 @@ form {
   padding: 5px;
 }
 
+.get-field-value-choice-modal-title-applied-message {
+  height: 40px;
+  width: 100%;
+  background-color: #00ff00;
+  padding: 7px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* .get-field-value-choice-modal-hide-same-values-input-box {
+  height: 40px;
+  width: 100%;
+  padding: 7px;
+  text-align: center;
+  font-size: 12px;
+} */
+
 /*
 .flat-selection-box-container:after, .flat-selection-box-container:before {
   bottom: 99.47%;

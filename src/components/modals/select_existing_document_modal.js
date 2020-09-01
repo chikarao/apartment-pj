@@ -277,8 +277,10 @@ class SelectExitingDocumentModal extends Component {
 
   handleGetFieldValuesForAgreementClick(event) {
     const getDocumentFieldsWithSameName = (documentFields) => {
-      const array = [];
+      const object = {};
       const controlObject = {};
+      // Go through each field in document to see if the name of the field
+      // is in selectedFieldObject with fields selected by user
       _.each(documentFields, eachField => {
         // Keep track of multiple fields with the same name
         if (!controlObject[eachField.name]) {
@@ -288,10 +290,19 @@ class SelectExitingDocumentModal extends Component {
         }
         console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]: ', this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]);
         // selectedFieldObject is set in CreateEditDocument in case 'getFieldValues':
-        if (this.props.selectedFieldObject[eachField.name] && eachField.value && controlObject[eachField.name] <= 1) array.push({ fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue });
+        if (
+          this.props.selectedFieldObject[eachField.name] // was selected by user
+          && eachField.value // documentField of document has a value
+          // value is not the same as the value of field selected by user
+          && (eachField.value !== this.props.selectedFieldObject[eachField.name].currentValue)
+          && controlObject[eachField.name] <= 1 // test if not a repeat
+        ) {
+          // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
+          object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
+        }
       });
 
-      return array;
+      return object;
     };
 
     const clickedElement = event.target;
@@ -305,9 +316,7 @@ class SelectExitingDocumentModal extends Component {
       this.setState({ selectedAgreementId: elementVal }, () => {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
-        const array = getDocumentFieldsWithSameName(selectedAgreement.document_fields);
-        const object = { agreement: selectedAgreement, array }
-        // const callback = () => window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+        const fieldObject = getDocumentFieldsWithSameName(selectedAgreement.document_fields);
         // If not open, open the modal
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {
@@ -315,9 +324,9 @@ class SelectExitingDocumentModal extends Component {
           console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
         }
-
-        this.props.setGetFieldValueDocumentObject(object);
-        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, array: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, array);
+        // call action to set state.documents.fieldValueDocumentObject
+        this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject });
+        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
       });
     }
   }
@@ -784,7 +793,7 @@ function mapStateToProps(state) {
       allUserAgreementsArrayMapped: state.documents.allUserAgreementsArrayMapped,
       allUserFlatsArray: state.documents.allUserFlatsArray,
       allBookingsForUserFlats: state.documents.allBookingsForUserFlats,
-      getFieldValueDocumentObject: state.documents.getFieldValueDocumentObject,
+      fieldValueDocumentObject: state.documents.fieldValueDocumentObject,
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
       selectedFieldObject: state.documents.selectedFieldObject,
     };
