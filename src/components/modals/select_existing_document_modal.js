@@ -52,7 +52,7 @@ class SelectExitingDocumentModal extends Component {
     // if (this.props.getFieldValues) this.props.fetchUserAgreements(showLoading);
   }
   // Not yet used
-  componentDidUpdate(prevProps, prevState) {
+  // componentDidUpdate(prevProps, prevState) {
     // if ((prevProps.showGetFieldValuesChoice !== this.props.showGetFieldValuesChoice) && this.props.showGetFieldValuesChoice) {
     //   window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
     // }
@@ -66,7 +66,7 @@ class SelectExitingDocumentModal extends Component {
     //   ) {
     //     console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
     //   }
-  }
+  // }
 
   // handleFormSubmit(data) {
     // !!!!only persist first 4 characters of account number
@@ -260,7 +260,21 @@ class SelectExitingDocumentModal extends Component {
     });
   }
 
+  // getUpdatedSelectedFieldObject() {
+  //   const object = {};
+  //   let eachId = null;
+  //   _.each(this.props.selectedFieldObject, eachFieldObject => {
+  //     console.log('in select_exiting_document, handleCloseGetFieldValuesChoiceBox, this.props.selectedFieldObject, eachFieldObject: ', this.props.selectedFieldObject, eachFieldObject);
+  //     eachId = eachFieldObject.element.id
+  //     object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
+  //   });
+  //   return _.isEmpty(object) ? null : object;
+  // }
+
   handleCloseGetFieldValuesChoiceBox(event) {
+    // Get updated object with attributes about selected elements
+    // updated with new values in form
+
     const clickedElement = event.target;
 
     const clickedOnModal = clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
@@ -268,11 +282,14 @@ class SelectExitingDocumentModal extends Component {
     // If user clicks on something other than a document or a getFieldValues modal element
     // close the modal, and do clean up
     if (!clickedOnModal && !clickedOnAgreementEach) {
+      // When user closes the showGetFieldValuesChoiceModal, get a new setSelectedFieldObject
+      // to reflect the new value in the form
+      // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
+      // Switch off modal show
       this.props.showGetFieldValuesChoiceModal(() => {});
       window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
-      this.setState({ selectedAgreementId: null })
+      this.setState({ selectedAgreementId: null });
     }
-    // console.log('in select_exiting_document, handleCloseGetFieldValuesChoiceBox, clickedElement, clickedOnModal: ', clickedElement, clickedOnModal);
   }
 
   handleGetFieldValuesForAgreementClick(event) {
@@ -293,9 +310,10 @@ class SelectExitingDocumentModal extends Component {
         if (
           this.props.selectedFieldObject[eachField.name] // was selected by user
           && eachField.value // documentField of document has a value
-          // value is not the same as the value of field selected by user
-          && (eachField.value !== this.props.selectedFieldObject[eachField.name].currentValue)
-          && controlObject[eachField.name] <= 1 // test if not a repeat
+          // value is not the same as the current value of field in form props selected by user
+          && (eachField.value !== this.props.valuesInForm[eachField.name])
+          // && (eachField.value !== this.props.selectedFieldObject[eachField.name].currentValue)
+          && controlObject[eachField.name] <= 1 // test if not a repeat of documentField
         ) {
           // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
           object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
@@ -316,6 +334,7 @@ class SelectExitingDocumentModal extends Component {
       this.setState({ selectedAgreementId: elementVal }, () => {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
+        // const fieldObject = this.props.showGetFieldValuesChoice ? this.getUpdatedSelectedFieldObject() : getDocumentFieldsWithSameName(selectedAgreement.document_fields);
         const fieldObject = getDocumentFieldsWithSameName(selectedAgreement.document_fields);
         // If not open, open the modal
         // addEventListener is called in componentDidUpdate
@@ -324,7 +343,7 @@ class SelectExitingDocumentModal extends Component {
           console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
         }
-        // call action to set state.documents.fieldValueDocumentObject
+        // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
         this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject });
         console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
       });
@@ -796,6 +815,8 @@ function mapStateToProps(state) {
       fieldValueDocumentObject: state.documents.fieldValueDocumentObject,
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
       selectedFieldObject: state.documents.selectedFieldObject,
+      templateElements: state.documents.templateElements,
+      valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     };
   }
 

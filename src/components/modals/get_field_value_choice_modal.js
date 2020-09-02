@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+// import {
+//   // reduxForm,
+//   // Field,
+//   // isDirty,
+//   // getFormMeta,
+//   change
+// } from 'redux-form';
 
 import * as actions from '../../actions';
 import getElementLabel from '../functions/get_element_label';
@@ -132,8 +139,8 @@ class GetFieldValueChoiceModal extends Component {
     _.each(this.state.selectedFieldNameArray, eachName => {
       valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
       templateElement = this.props.selectedFieldObject[eachName].element
-      // this.props.change(eachName, valueInSelectedDocument);
-      console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,valueInSelectedDocument, templateElement: ', valueInSelectedDocument, templateElement);
+      this.props.changeFormValue(eachName, valueInSelectedDocument);
+      console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
       newArray.push(eachName);
       updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
       array.push(updateObject);
@@ -212,7 +219,7 @@ class GetFieldValueChoiceModal extends Component {
       >
         <div className="get-field-value-choice-modal-title">Available Values</div>
         <ul className="get-field-value-choice-modal-scrollbox">
-          {Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available from this document for the fields selected</div>}
+          {Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>
           {this.renderButtons()}
       </div>
@@ -232,6 +239,7 @@ function mapStateToProps(state) {
     documentTranslationsAll: state.documents.documentTranslations,
     appLanguageCode: state.languages.appLanguageCode,
     selectedFieldObject: state.documents.selectedFieldObject,
+    valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     // flat: state.selectedFlatFromParams.selectedFlatFromParams,
   };
 }

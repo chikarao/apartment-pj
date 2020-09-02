@@ -3971,7 +3971,7 @@ longActionPress(props) {
 
         case 'getFieldValues':
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
-
+          // Get object with attributes about user clicked elements
           const getSelectedFieldObject = () => {
             const object = {};
             _.each(this.state.selectedTemplateElementIdArray, eachId => {
@@ -5120,6 +5120,7 @@ longActionPress(props) {
           this.props.updateDocumentElementLocally(array);
           this.setTemplateHistoryArray(array, 'update');
         }}
+        changeFormValue={this.props.change}
       />
     );
   }
@@ -5129,7 +5130,7 @@ longActionPress(props) {
   handleGetValueChoiceClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    const setCompleted = () => {
+    const setCompletedCallback = () => {
       const newArray = [...this.state.getFieldValuesCompletedArray];
       newArray.push(elementVal);
       this.setState({ getFieldValuesCompletedArray: newArray });
@@ -5144,7 +5145,7 @@ longActionPress(props) {
     }, () => {
       switch (elementVal) {
         case 'originalValues':
-          this.getOriginalValues(setCompleted)
+          this.getOriginalValues(setCompletedCallback)
 
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
           break;

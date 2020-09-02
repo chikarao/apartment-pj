@@ -1105,7 +1105,17 @@ class EditFlat extends Component {
     const elementVal = clickedElement.getAttribute('value');
     // this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
     if (elementVal === 'template') this.props.showDocumentInsertCreateModal();
-    if (elementVal === 'chooseExisting') this.props.showSelectExistingDocumentModal(() => {});
+    if (elementVal === 'chooseExisting') {
+      this.props.showSelectExistingDocumentModal(() => {});
+      this.setState({ agreementId: null, showDocument: false });
+      this.props.setTemplateElementsObject({
+        templateElements: {},
+        templateElementsByPage: {},
+        templateTranslationElements: {},
+        templateTranslationElementsByPage: {}
+      });
+      // this.props.setAgreementId(null, false);
+    }
     // });
   }
 
