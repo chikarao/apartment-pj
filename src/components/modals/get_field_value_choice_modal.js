@@ -21,7 +21,7 @@ class GetFieldValueChoiceModal extends Component {
       selectedFieldNameArray: [],
       applySelectedDocumentValueCompleted: false,
       fieldValueAppliedArray: [],
-      hideSameValues: false
+      showAllSelectedValues: false
       // deleteBankAccountCompleted: false,
     };
 
@@ -72,15 +72,11 @@ class GetFieldValueChoiceModal extends Component {
     });
   }
 
-
   renderEachValue() {
     let elementName = '';
     let changeApplied = false;
-    // go through each fieldValueDocumentObject set by action setGetFieldValueDocumentObject
-    // called in SelectExitingDocumentModal
-    return _.map(this.props.fieldValueDocumentObject.fieldObject, (eachFieldObject, i) => {
-      console.log('in GetFieldValueChoiceModal, renderEachValue, eachFieldObject: ', eachFieldObject);
-      // getElementLabel function is shared with CreateEditDocument renderTemplateElements
+
+    const renderEach = (eachFieldObject, i) => {
       elementName = getElementLabel({
         allDocumentObjects: this.props.allDocumentObjects,
         documents: Documents,
@@ -94,7 +90,6 @@ class GetFieldValueChoiceModal extends Component {
       });
       // Test if change for field as already been applied
       changeApplied = this.state.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
-
       return (
         <li key={i} className="get-field-value-choice-modal-values-each">
           <div className="get-field-value-choice-modal-values-each-text-box">
@@ -111,7 +106,7 @@ class GetFieldValueChoiceModal extends Component {
             </div>
           </div>
           <div className="get-field-value-choice-modal-values-each-checkbox-box">
-            {!changeApplied
+            {!changeApplied && !eachFieldObject.sameValues
               ?
               <input
                 className="get-field-value-choice-modal-values-each-checkbox-box-input"
@@ -126,6 +121,19 @@ class GetFieldValueChoiceModal extends Component {
           </div>
         </li>
       );
+    };
+    // go through each fieldValueDocumentObject set by action setGetFieldValueDocumentObject
+    // called in SelectExitingDocumentModal
+    return _.map(this.props.fieldValueDocumentObject.fieldObject, (eachFieldObject, i) => {
+      console.log('in GetFieldValueChoiceModal, renderEachValue, eachFieldObject: ', eachFieldObject);
+      // getElementLabel function is shared with CreateEditDocument renderTemplateElements
+      // sameValues attribute compares currentValue in form value props
+      //and value attribute in documentField for document
+      if (this.state.showAllSelectedValues) {
+        return renderEach(eachFieldObject, i);
+      } else if (!eachFieldObject.sameValues) {
+        return renderEach(eachFieldObject, i);
+      }
     });
   }
 
@@ -203,14 +211,6 @@ class GetFieldValueChoiceModal extends Component {
     //   :
     //   null
     // }
-    // <div className="get-field-value-choice-modal-hide-same-values-input-box">
-    // <input
-    // className="get-field-value-choice-modal-hide-same-values-input"
-    // type="checkbox"
-    // onChange={() => this.setState({ hideSameValues: !this.state.hideSameValues })}
-    // checked={this.state.hideSameValues}
-    // />
-    // </div>
     return (
       <div
         className="get-field-value-choice-modal-main"
@@ -221,6 +221,17 @@ class GetFieldValueChoiceModal extends Component {
         <ul className="get-field-value-choice-modal-scrollbox">
           {Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>
+        <div className="get-field-value-choice-modal-hide-same-values-input-box">
+          <div className="get-field-value-choice-modal-hide-same-values-text">
+            Show All Selected Values
+          </div>
+          <input
+            className="get-field-value-choice-modal-hide-same-values-input"
+            type="checkbox"
+            onChange={() => this.setState({ showAllSelectedValues: !this.state.showAllSelectedValues })}
+            checked={this.state.showAllSelectedValues}
+          />
+        </div>
           {this.renderButtons()}
       </div>
     );

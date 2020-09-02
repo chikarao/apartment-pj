@@ -311,12 +311,12 @@ class SelectExitingDocumentModal extends Component {
           this.props.selectedFieldObject[eachField.name] // was selected by user
           && eachField.value // documentField of document has a value
           // value is not the same as the current value of field in form props selected by user
-          && (eachField.value !== this.props.valuesInForm[eachField.name])
-          // && (eachField.value !== this.props.selectedFieldObject[eachField.name].currentValue)
+          // && (eachField.value !== this.props.valuesInForm[eachField.name])
           && controlObject[eachField.name] <= 1 // test if not a repeat of documentField
         ) {
           // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
-          object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
+          // object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
+          object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.valuesInForm[eachField.name], sameValues: eachField.value === this.props.valuesInForm[eachField.name] };
         }
       });
 

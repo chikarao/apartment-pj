@@ -3178,13 +3178,25 @@ form {
   font-size: 12px;
 }
 
-/* .get-field-value-choice-modal-hide-same-values-input-box {
+.get-field-value-choice-modal-hide-same-values-text {
+  padding: 0px 10px 0px 0px;
+}
+
+.get-field-value-choice-modal-hide-same-values-input-box {
   height: 40px;
   width: 100%;
   padding: 7px;
   text-align: center;
   font-size: 12px;
-} */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 5px 0;
+}
+
+.get-field-value-choice-modal-hide-same-values-input-box input {
+  margin: 0 0 2px 0;
+}
 
 /*
 .flat-selection-box-container:after, .flat-selection-box-container:before {
