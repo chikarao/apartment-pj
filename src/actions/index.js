@@ -545,7 +545,7 @@ export function showInsertFieldEditModal() {
 }
 
 export function showGetFieldValuesChoiceModal(callback) {
-  console.log('in actions index, showInsertFieldEditModal:');
+  console.log('in actions index, showGetFieldValuesChoiceModal:');
   callback()
   //flip state boolean
   return { type: SHOW_FIELD_VALUES_CHOICE_MODAL };
@@ -643,7 +643,7 @@ export function fetchFlats(mapBounds, searchAttributes, callback) {
 export function fetchFlatsByUser(id, callback) {
   // const { north, south, east, west } = mapBounds;
   // console.log('in actions index, fetch flats mapBounds.east: ', mapBounds.east);
-    console.log('in action index, fetchFlatsByUser, id: ', id);
+    // console.log('in action index, fetchFlatsByUser, id: ', id);
 
   return function (dispatch) {
     axios.get(`${ROOT_URL}/api/v1/users/flats`, {
@@ -651,7 +651,7 @@ export function fetchFlatsByUser(id, callback) {
     })
     .then(response => {
       console.log('in action index, response to fetchFlatsByUser: ', response);
-      console.log('in action index, response to fetchFlatsByUser: ', response.data.data.flats);
+      // console.log('in action index, response to fetchFlatsByUser: ', response.data.data.flats);
       dispatch({
         type: FETCH_FLATS_BY_USER,
         payload: response.data.data.flats
@@ -659,11 +659,11 @@ export function fetchFlatsByUser(id, callback) {
 
       const flatIdArray = [];
       _.each(response.data.data.flats, (flat) => {
-        console.log('in action index, response to fetchFlatsByUser, each: ', flat);
+        // console.log('in action index, response to fetchFlatsByUser, each: ', flat);
         flatIdArray.push(flat.id.toString());
       });
 
-      console.log('in action index, response to fetchFlatsByUser, flatIdArray: ', flatIdArray);
+      // console.log('in action index, response to fetchFlatsByUser, flatIdArray: ', flatIdArray);
       callback(flatIdArray);
     });
   };
@@ -756,7 +756,7 @@ export function fetchConversationsByUser(callback) {
     })
     .then(response => {
       console.log('in action index, response to fetchConversationsByUser: ', response);
-      console.log('in action index, response to fetchConversationsByUser: ', response.data.data.conversations);
+      // console.log('in action index, response to fetchConversationsByUser: ', response.data.data.conversations);
       // const { conversations } = response.data.data;
       // if (conversations.length === 0) {
       //   console.log('in action index, fetchConversationByFlatAndUser, if conversation.length === 0: ', conversations.length === 0);
@@ -3300,13 +3300,13 @@ export function fetchAgreement(id, callback) {
 }
 
 export function fetchTemplateObjects(callback) {
-  console.log('in actions index, fetchTemplateObjects: ');
+  // console.log('in actions index, fetchTemplateObjects: ');
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/fetch_template_objects`, {}, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
-      console.log('in actions index, response to fetchTemplateObjects: ', response.data.data);
+      console.log('in actions index, response to fetchTemplateObjects: ', response);
       dispatch({
         type: FETCH_TEMPLATE_OBJECTS,
         payload: response.data.data

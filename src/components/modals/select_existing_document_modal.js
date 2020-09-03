@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import AppLanguages from '../constants/app_languages';
+import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
 
 let showHideClassName;
 
@@ -293,35 +294,35 @@ class SelectExitingDocumentModal extends Component {
   }
 
   handleGetFieldValuesForAgreementClick(event) {
-    const getDocumentFieldsWithSameName = (documentFields) => {
-      const object = {};
-      const controlObject = {};
-      // Go through each field in document to see if the name of the field
-      // is in selectedFieldObject with fields selected by user
-      _.each(documentFields, eachField => {
-        // Keep track of multiple fields with the same name
-        if (!controlObject[eachField.name]) {
-          controlObject[eachField.name] = 1;
-        } else {
-          controlObject[eachField.name]++;
-        }
-        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]: ', this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]);
-        // selectedFieldObject is set in CreateEditDocument in case 'getFieldValues':
-        if (
-          this.props.selectedFieldObject[eachField.name] // was selected by user
-          && eachField.value // documentField of document has a value
-          // value is not the same as the current value of field in form props selected by user
-          // && (eachField.value !== this.props.valuesInForm[eachField.name])
-          && controlObject[eachField.name] <= 1 // test if not a repeat of documentField
-        ) {
-          // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
-          // object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
-          object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.valuesInForm[eachField.name], sameValues: eachField.value === this.props.valuesInForm[eachField.name] };
-        }
-      });
-
-      return object;
-    };
+    // const getDocumentFieldsWithSameName = (documentFields, selectedFieldObject) => {
+    //   const object = {};
+    //   const controlObject = {};
+    //   // Go through each field in document to see if the name of the field
+    //   // is in selectedFieldObject with fields selected by user
+    //   _.each(documentFields, eachField => {
+    //     // Keep track of multiple fields with the same name
+    //     if (!controlObject[eachField.name]) {
+    //       controlObject[eachField.name] = 1;
+    //     } else {
+    //       controlObject[eachField.name]++;
+    //     }
+    //     console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]: ', this.props.selectedFieldObject, eachField.name, controlObject[eachField.name]);
+    //     // selectedFieldObject is set in CreateEditDocument in case 'getFieldValues':
+    //     if (
+    //       selectedFieldObject[eachField.name] // was selected by user
+    //       && eachField.value // documentField of document has a value
+    //       // value is not the same as the current value of field in form props selected by user
+    //       // && (eachField.value !== this.props.valuesInForm[eachField.name])
+    //       && controlObject[eachField.name] <= 1 // test if not a repeat of documentField
+    //     ) {
+    //       // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
+    //       // object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
+    //       object[eachField.name] = { field: eachField, fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.valuesInForm[eachField.name], sameValues: eachField.value === this.props.valuesInForm[eachField.name] };
+    //     }
+    //   });
+    //
+    //   return object;
+    // };
 
     const clickedElement = event.target;
     let currentElement = clickedElement;
@@ -335,7 +336,7 @@ class SelectExitingDocumentModal extends Component {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
         // const fieldObject = this.props.showGetFieldValuesChoice ? this.getUpdatedSelectedFieldObject() : getDocumentFieldsWithSameName(selectedAgreement.document_fields);
-        const fieldObject = getDocumentFieldsWithSameName(selectedAgreement.document_fields);
+        const fieldObject = getDocumentFieldsWithSameName({ documentFields: selectedAgreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm});
         // If not open, open the modal
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {

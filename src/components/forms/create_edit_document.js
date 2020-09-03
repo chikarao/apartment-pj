@@ -33,6 +33,8 @@ import getUpdatedElementObjectNoBase from './get_updated_element_object_no_base'
 import getBookingDateObject from '../functions/get_booking_date_object';
 import getTranslationObject from './get_translation_object';
 import getElementLabel from '../functions/get_element_label';
+import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
+
 
 
 // Just for test
@@ -139,6 +141,7 @@ class CreateEditDocument extends Component {
     this.handleViewPDFClickTemplate = this.handleViewPDFClickTemplate.bind(this);
     this.handleFieldChoiceMouseOver = this.handleFieldChoiceMouseOver.bind(this);
     this.handleGetValueChoiceClick = this.handleGetValueChoiceClick.bind(this);
+    this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -156,44 +159,7 @@ class CreateEditDocument extends Component {
   // elements in createDocumentElementLocally action.
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
-    // let testCount = 0;
-    // const object = {};
-    // const duplicateArray = [];
-    // const duplicateObject = {};
-    // // const translations = this.props.testDocumentTranslations.important_points_explanation_bilingual
-    // const translations = this.props.testDocumentTranslations.fixed_term_rental_contract_bilingual
-    // _.each(Object.keys(translations), eachPage => {
-    //   // _.each(Object.keys(FixedTermRentalContractBilingualAll), eachKey => {
-    //   _.each(Object.keys(translations[eachPage]), eachKey => {
-    //   if (!object[eachPage]) {
-    //     // object[eachPage] = { [eachKey]: ImportantPointsExplanationBilingual[eachPage][eachKey] };
-    //     object[eachPage] = { [eachKey]: `Base[:${eachKey}]` };
-    //   } else {
-    //     object[eachPage][eachKey] = `Base[:${eachKey}]`;
-    //     // object[eachPage][eachKey] = ImportantPointsExplanationBilingual[eachPage][eachKey];
-    //     if (!object[eachKey]) {
-    //         object[eachKey] = 1;
-    //         duplicateObject[eachKey] = [eachPage];
-    //       } else {
-    //           object[eachKey]++;
-    //           // duplicateArray.push(eachKey);
-    //
-    //           duplicateObject[eachKey].push(eachPage);
-    //         }
-    //   }
-    //     testCount++;
-    //   });
-    // });
-    //
-    // _.each(Object.keys(duplicateObject), each => {
-    //   if (duplicateObject[each].length < 2) {
-    //     delete duplicateObject[each];
-    //   }
-    // })
-    // console.log('in create_edit_document, componentDidMount, getLocalHistory, testCount, object, duplicateObject', testCount, object, duplicateObject);
-    // // console.log('in create_edit_document, componentDidMount, this.props.documentTranslations', this.props.documentTranslation);
-    // test.test(name);
-    const getLocalHistory = () => {
+      const getLocalHistory = () => {
       const localStorageHistory = localStorage.getItem('documentHistory');
       console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
       let destringifiedHistory = {};
@@ -460,6 +426,8 @@ class CreateEditDocument extends Component {
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
     document.removeEventListener('keydown', this.handleFontControlCloseClick);
+
+    window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
     // this.setLocalStorageHistory('componentWillUnmount');
     // console.log('in create_edit_document, componentWillUnmount ');
   }
@@ -3972,13 +3940,13 @@ longActionPress(props) {
         case 'getFieldValues':
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
           // Get object with attributes about user clicked elements
-          const getSelectedFieldObject = () => {
-            const object = {};
-            _.each(this.state.selectedTemplateElementIdArray, eachId => {
-              object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
-            });
-            return _.isEmpty(object) ? null : object;
-          };
+          // const getSelectedFieldObject = () => {
+          //   const object = {};
+          //   _.each(this.state.selectedTemplateElementIdArray, eachId => {
+          //     object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
+          //   });
+          //   return _.isEmpty(object) ? null : object;
+          // };
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
           // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
@@ -3991,7 +3959,7 @@ longActionPress(props) {
             originalValuesExistForSelectedFields,
             // originalValuesExistForSelectedFields: false
           }, () => {
-            this.props.setSelectedFieldObject(getSelectedFieldObject())
+            this.props.setSelectedFieldObject(this.getSelectedFieldObject(() => {}))
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
             document.addEventListener('keydown', this.handleFontControlCloseClick);
@@ -4998,7 +4966,7 @@ longActionPress(props) {
   }
 
   handleFontControlCloseClick(event) {
-    console.log('in create_edit_document, handleFontControlCloseClick, this.state.actionExplanation, event: ', event);
+    console.log('in create_edit_document, handleFontControlCloseClick, event.key: ', event.key);
     // if (event.defaultPrevented) {
     //   return;
     //   // Do nothing if the event was already processed
@@ -5017,8 +4985,12 @@ longActionPress(props) {
       'create-edit-document-get-field-values-button button-hover',
       'create-edit-document-get-field-values-box'
     ];
+    const didNotclickedOnButtonOrModal = fontControlClassesArray.indexOf(clickedElement.className) === -1;
+    // Dont close the modal if clicked on another modal linked to it.
+    const clickedOnOtherModal = didNotclickedOnButtonOrModal && this.props.showGetFieldValuesChoice && clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
+    const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
     // If className of clicked element is NOT in the array
-    if (fontControlClassesArray.indexOf(clickedElement.className) === -1 || (event.key === 'Esc')) {
+    if (((didNotclickedOnButtonOrModal && !event.key) || pushedEscapeKey) && !clickedOnOtherModal) {
       this.setState({
         showFontControlBox: false,
         getFieldValues: false,
@@ -5033,7 +5005,12 @@ longActionPress(props) {
       // Remove listener set in handle open
       document.removeEventListener('click', this.handleFontControlCloseClick);
       document.removeEventListener('keydown', this.handleFontControlCloseClick);
-      if (!this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading())
+      if (!this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading());
+      // clean up of other modals open linked to modal
+      // if (this.props.showGetFieldValuesChoice && pushedEscapeKey) {
+      //   document.removeEventListener('click', this.handleFontControlCloseClick);
+      //   this.props.showGetFieldValuesChoiceModal(() => {});
+      // }
     }
     // remove event listener
   }
@@ -5086,6 +5063,30 @@ longActionPress(props) {
     this.setTemplateHistoryArray(array, 'update');
     // Call back to set getFieldValuesCompletedArray to true
     callback();
+  }
+
+  getSelectedFieldObject(callback) {
+      const object = {};
+      _.each(this.state.selectedTemplateElementIdArray, eachId => {
+        object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
+      });
+      callback();
+      return _.isEmpty(object) ? null : object;
+    // let templateElement = null;
+    // const array = [];
+    // let updateObject = {};
+    // _.each(this.state.selectedTemplateElementIdArray, eachId => {
+      // templateElement = this.props.templateElements[parseInt(eachId, 10)];
+      // // prep obejct to be sent to updateDocumentElementLocally and setTemplateHistoryArray
+      // updateObject = { id: templateElement.id, value: templateElement.original_value, previous_value: this.props.valuesInForm[templateElement.name] };
+      // array.push(updateObject);
+      // // change the value in props/form/CreateEditDocument/templateElement.name
+      // this.props.change(templateElement.name, templateElement.original_value);
+    // });
+    // Update in appstate and persist history in localStorage
+    // this.props.updateDocumentElementLocally(array);
+    // this.setTemplateHistoryArray(array, 'update');
+    // Call back to set getFieldValuesCompletedArray to true
   }
 
   getSelectDataBaseValues() {
@@ -5144,11 +5145,20 @@ longActionPress(props) {
       // getFieldValuesCompletedArray: [...this.state.getFieldValuesCompletedArray]
     }, () => {
       switch (elementVal) {
-        case 'originalValues':
-          this.getOriginalValues(setCompletedCallback)
+        case 'originalValues': {
+          // this.getOriginalValues(setCompletedCallback)
+          // this.props.setSelectedFieldObject(this.getSelectedFieldObject())
+          const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true });
 
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice);
+          if (!this.props.showGetFieldValuesChoice) {
+            this.props.showGetFieldValuesChoiceModal(() => {});
+            window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+          }
+          // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
+          this.props.setGetFieldValueDocumentObject({ agreement: this.props.agreement, fieldObject });
           break;
+        }
         case 'databaseValues':
           this.getSelectDataBaseValues()
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
@@ -5160,6 +5170,27 @@ longActionPress(props) {
         default: return null;
       }
     });
+  }
+
+  handleCloseGetFieldValuesChoiceBox(event) {
+    // Get updated object with attributes about selected elements
+    // updated with new values in form
+
+    const clickedElement = event.target;
+
+    const clickedOnModal = clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
+    const clickedOnButton = clickedElement.className.indexOf('create-edit-document-get-field-values-button button-hover') !== -1;
+    // If user clicks on something other than a document or a getFieldValues modal element
+    // close the modal, and do clean up
+    if (!clickedOnModal && !clickedOnButton) {
+      // When user closes the showGetFieldValuesChoiceModal, get a new setSelectedFieldObject
+      // to reflect the new value in the form
+      // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
+      // Switch off modal show
+      this.props.showGetFieldValuesChoiceModal(() => {});
+      window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+      // this.setState({ selectedAgreementId: null });
+    }
   }
 
   renderGetFieldValuesBox() {
@@ -5176,9 +5207,10 @@ longActionPress(props) {
     let disableButton = false;
     // Disable the button if there are no original_values stored in templateElements
     const renderButtons = () => {
-      let hoverClass = '  ';
+      let hoverClass = '';
       return _.map(fieldValuesArray, each => {
         disableButton = !this.state.originalValuesExistForSelectedFields && each === 'originalValues';
+        // Add hover to button if button active; Take away button-hover if button disabled
         disableButton ? hoverClass = '' : hoverClass = 'button-hover';
         return (
           <div
@@ -6515,6 +6547,7 @@ function mapStateToProps(state) {
       documentTranslationsAll: state.documents.documentTranslations,
       documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
       templateElementsMappedByName: state.documents.templateElementsMappedByName,
+      selectedFieldObject: state.documents.selectedFieldObject,
       initialValues,
       formIsDirty,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},

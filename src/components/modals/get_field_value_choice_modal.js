@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import getElementLabel from '../functions/get_element_label';
+import getElementValueText from '../functions/get_element_value_text';
 import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
 
@@ -46,11 +47,11 @@ class GetFieldValueChoiceModal extends Component {
         valuesAlreadyApplied = this.state.fieldValueAppliedArray.indexOf(eachKey) !== -1;
         // push in to array if not already there or if value has not already been applied
         if (elementVal === 'checkAll') {
-          if (index === -1 && !valuesAlreadyApplied) {
+          if (index === -1 && !valuesAlreadyApplied && !fieldValueDocumentObject.fieldObject[eachKey].sameValues) {
             // push into newArray
             newArray.push(eachKey);
           }
-        } else { // if (elementVal === 'checkAll') {
+        } else if (index !== -1) { // if (elementVal === 'checkAll') {
           newArray.splice(index, 1);
         }
       });
@@ -74,7 +75,10 @@ class GetFieldValueChoiceModal extends Component {
 
   renderEachValue() {
     let elementName = '';
+    let elementValueText = '';
     let changeApplied = false;
+    const allObject = this.props.fieldValueDocumentObject ? this.props.allDocumentObjects[Documents[this.props.fieldValueDocumentObject.agreement.template_file_name].propsAllKey] : {};
+    console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, this.props.allDocumentObjects, allObject: ', this.props.fieldValueDocumentObject, this.props.allDocumentObjects, allObject);
 
     const renderEach = (eachFieldObject, i) => {
       elementName = getElementLabel({
@@ -87,6 +91,20 @@ class GetFieldValueChoiceModal extends Component {
         appLanguages: AppLanguages,
         appLanguageCode: this.props.appLanguageCode,
         fromCreateEditDocument: false
+      });
+
+      const getElementValue = () => getElementValueText({
+        allDocumentObjects: this.props.allDocumentObjects,
+        documents: Documents,
+        agreement: this.props.fieldValueDocumentObject.agreement,
+        eachFieldObject,
+        // fieldName: eachFieldObject.fieldName,
+        // documentTranslationsAll: this.props.documentTranslationsAll,
+        appLanguages: AppLanguages,
+        appLanguageCode: this.props.appLanguageCode,
+        fromCreateEditDocument: false,
+        documentConstants: this.props.documentConstants,
+        fieldValue: eachFieldObject[eachFieldObject.fieldName]
       });
       // Test if change for field as already been applied
       changeApplied = this.state.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
@@ -102,7 +120,7 @@ class GetFieldValueChoiceModal extends Component {
               ''}
             </div>
             <div className="get-field-value-choice-modal-values-each-text-box-value">
-              {eachFieldObject[eachFieldObject.fieldName]}
+              {!eachFieldObject.field.document_field_choices ? eachFieldObject[eachFieldObject.fieldName] : getElementValue()}
             </div>
           </div>
           <div className="get-field-value-choice-modal-values-each-checkbox-box">
@@ -125,7 +143,7 @@ class GetFieldValueChoiceModal extends Component {
     // go through each fieldValueDocumentObject set by action setGetFieldValueDocumentObject
     // called in SelectExitingDocumentModal
     return _.map(this.props.fieldValueDocumentObject.fieldObject, (eachFieldObject, i) => {
-      console.log('in GetFieldValueChoiceModal, renderEachValue, eachFieldObject: ', eachFieldObject);
+      console.log('in GetFieldValueChoiceModal, renderEachValue, eachFieldObject, allObject: ', eachFieldObject, allObject);
       // getElementLabel function is shared with CreateEditDocument renderTemplateElements
       // sameValues attribute compares currentValue in form value props
       //and value attribute in documentField for document
@@ -147,11 +165,14 @@ class GetFieldValueChoiceModal extends Component {
     _.each(this.state.selectedFieldNameArray, eachName => {
       valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
       templateElement = this.props.selectedFieldObject[eachName].element
-      this.props.changeFormValue(eachName, valueInSelectedDocument);
       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
+      // Array for state fieldValueAppliedArray
       newArray.push(eachName);
+      // Object and array for applySelectedDocumentValueCompleted
       updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
       array.push(updateObject);
+      // Calling this.props.change for reduxForm
+      this.props.changeFormValue(eachName, valueInSelectedDocument);
     });
 
     this.setState({
@@ -159,13 +180,9 @@ class GetFieldValueChoiceModal extends Component {
       selectedFieldNameArray: [],
       fieldValueAppliedArray: newArray
      }, () => {
-       // this.props.updateDocumentElementLocallyAndSetHistory(array)
+       // Apply changes in value to templateElements and in localStorageHistory
+      // this.props.updateDocumentElementLocallyAndSetHistory(array)
       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, array: ', array);
-      // setTimeout(() => {
-      //   this.setState({ applySelectedDocumentValueCompleted: false }, () => {
-      //     console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, this.state.applySelectedDocumentValueCompleted: ', this.state.applySelectedDocumentValueCompleted);
-      //   });
-      // }, 3000);
     }); // end of first setState
   }
 
@@ -250,6 +267,8 @@ function mapStateToProps(state) {
     documentTranslationsAll: state.documents.documentTranslations,
     appLanguageCode: state.languages.appLanguageCode,
     selectedFieldObject: state.documents.selectedFieldObject,
+    allDocumentObjects: state.documents.allDocumentObjects,
+    documentConstants: state.documents.documentConstants,
     valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     // flat: state.selectedFlatFromParams.selectedFlatFromParams,
   };
