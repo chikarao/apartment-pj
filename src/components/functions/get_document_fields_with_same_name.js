@@ -6,7 +6,8 @@ export default (props) => {
     documentFields,
     selectedFieldObject,
     valuesInForm,
-    fromCreateEditDocument
+    fromCreateEditDocument,
+    initialValuesObject
   } = props;
   console.log('in get_document_fields_with_same_name, props: ', props);
 
@@ -27,6 +28,7 @@ export default (props) => {
     // if from CreateEditDocument, user is trying to get all the original values
     // whereas from SelectExitingDocumentModal, user is trying to get eachField.value
     fieldValue = fromCreateEditDocument ? eachField.original_value : eachField.value;
+    if (initialValuesObject) fieldValue = initialValuesObject[eachField.name]
 
     if (
       selectedFieldObject[eachField.name] // was selected by user
@@ -38,7 +40,13 @@ export default (props) => {
     ) {
       // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
       // object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
-      object[eachField.name] = { field: eachField, fieldName: eachField.name, [eachField.name]: fieldValue, currentValue: valuesInForm[eachField.name], sameValues: fieldValue === valuesInForm[eachField.name] };
+      object[eachField.name] = {
+        field: eachField,
+        fieldName: eachField.name,
+        [eachField.name]: fieldValue,
+        currentValue: valuesInForm[eachField.name],
+        sameValues: fieldValue === valuesInForm[eachField.name]
+      };
     }
   });
 

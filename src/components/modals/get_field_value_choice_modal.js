@@ -234,7 +234,7 @@ class GetFieldValueChoiceModal extends Component {
         id="get-field-value-choice-modal-main"
         style={{ top: this.props.top, left: this.props.left }}
       >
-        <div className="get-field-value-choice-modal-title">Available Values</div>
+        <div className="get-field-value-choice-modal-title">{`Available ${this.props.getDataBaseValues ? 'Data Base' : ''} Values`}</div>
         <ul className="get-field-value-choice-modal-scrollbox">
           {Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>

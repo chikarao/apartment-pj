@@ -34,9 +34,6 @@ import getBookingDateObject from '../functions/get_booking_date_object';
 import getTranslationObject from './get_translation_object';
 import getElementLabel from '../functions/get_element_label';
 import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
-
-
-
 // Just for test
 // import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
 // import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
@@ -404,17 +401,23 @@ class CreateEditDocument extends Component {
         templateElementsMappedByName,
         getSelectDataBaseValues: this.state.getSelectDataBaseValues,
         findIfDatabaseValuesExistForFields: this.state.findIfDatabaseValuesExistForFields,
-        getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
+        getSelectDataBaseValuesCallback: () => {},
+        // getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
         findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
       });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
       // If not for getting database values, for getting initial values for the form
       if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
+      // If getting data base values set objects for GetFieldValueChoiceModal
       if (this.state.getSelectDataBaseValues) {
-        _.each(Object.keys(initialValuesObject.initialValuesObject), eachName => {
-          console.log('in create_edit_document, componentDidUpdate, inside this.state.getSelectDataBaseValues, initialValuesObject, eachName: ', initialValuesObject, eachName);
-          this.props.change(eachName, initialValuesObject.initialValuesObject[eachName]);
-        });
+        const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true, initialValuesObject: initialValuesObject.initialValuesObject });
+        if (!this.props.showGetFieldValuesChoice) {
+          this.props.showGetFieldValuesChoiceModal(() => {});
+          window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+          window.addEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
+        }
+        // call action to set state.documents.fieldValueDocumentObject to be used in GetFieldValueChoiceModal
+        this.props.setGetFieldValueDocumentObject({ agreement: this.props.agreement, fieldObject });
       }
       // this.props.setInitialValuesObject(initialValuesObject);
     } // end of if bookingData
@@ -428,6 +431,7 @@ class CreateEditDocument extends Component {
     document.removeEventListener('keydown', this.handleFontControlCloseClick);
 
     window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+    window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
     // this.setLocalStorageHistory('componentWillUnmount');
     // console.log('in create_edit_document, componentWillUnmount ');
   }
@@ -3781,7 +3785,8 @@ longActionPress(props) {
             // User does not have to turn off or on editFieldsOn each time turns on/off createNewTemplateElementOn
             editFieldsOn: !this.state.editFieldsOn,
             editFieldsOnPrevious: !this.state.editFieldsOnPrevious,
-            selectedTemplateElementIdArray: []
+            selectedTemplateElementIdArray: [],
+            allElementsChecked: false
           }, () => {
             // If user turns off editFieldsOn, turn off createNewTemplateElementOn
             if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
@@ -5033,11 +5038,13 @@ longActionPress(props) {
     this.setState({ findIfDatabaseValuesExistForFields: !this.state.findIfDatabaseValuesExistForFields}, () => {
       // Callback in initialValuesObject method will turn findIfDatabaseValuesExistForFields false
       if (!this.state.findIfDatabaseValuesExistForFields) {
-        // console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
         // If any key value paris exist with not null value,
         let count = 0;
         _.each(Object.keys(formValuesObject), eachKey => {
-          if (formValuesObject[eachKey]) count++;
+          // Count up if values in database not equal to value in redusForm prop
+          // i.e. state.forms.CreateEditDocument.value
+          if (formValuesObject[eachKey] !== this.props.valuesInForm[eachKey]) count++;
+          console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject[eachKey], this.props.valuesInForm[eachKey], count: ', formValuesObject[eachKey], this.props.valuesInForm[eachKey], count);
         });
         // this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
         this.setState({ databaseValuesExistForFields: count > 0 });
@@ -5092,9 +5099,11 @@ longActionPress(props) {
   getSelectDataBaseValues() {
     this.setState({ getSelectDataBaseValues: !this.state.getSelectDataBaseValues }, () => {
       if (!this.state.getSelectDataBaseValues) {
-        // See if original_values exist for selected elements
+        // If getSelectDataBaseValues is completed,
+        // push databaseValues into getFieldValuesCompletedArray
+        // Of button rendering etc.
         const newArray = [...this.state.getFieldValuesCompletedArray];
-        newArray.push('databaseValues');
+        // newArray.push('databaseValues');
         this.setState({
           getFieldValuesCompletedArray: newArray,
           // originalValuesExistForSelectedFields
@@ -5122,6 +5131,7 @@ longActionPress(props) {
           this.setTemplateHistoryArray(array, 'update');
         }}
         changeFormValue={this.props.change}
+        getDataBaseValues={this.state.getSelectDataBaseValues}
       />
     );
   }
@@ -5131,6 +5141,12 @@ longActionPress(props) {
   handleGetValueChoiceClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    // const setCompletedCallback = () => {
+    //   const newArray = [...this.state.getFieldValuesCompletedArray];
+    //   newArray.push(elementVal);
+    //   this.setState({ getFieldValuesCompletedArray: newArray });
+    // };
+
     const setCompletedCallback = () => {
       const newArray = [...this.state.getFieldValuesCompletedArray];
       newArray.push(elementVal);
@@ -5150,18 +5166,21 @@ longActionPress(props) {
           // this.props.setSelectedFieldObject(this.getSelectedFieldObject())
           const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true });
 
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice);
           if (!this.props.showGetFieldValuesChoice) {
             this.props.showGetFieldValuesChoiceModal(() => {});
             window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+            window.addEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
           }
           // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
           this.props.setGetFieldValueDocumentObject({ agreement: this.props.agreement, fieldObject });
           break;
         }
         case 'databaseValues':
-          this.getSelectDataBaseValues()
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
+          // getSelectDataBaseValues turns on this.state.getSelectDataBaseValues
+          // Which triggers componenetDidMount to call getInitialValueObject
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject);
+          this.getSelectDataBaseValues();
+          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
           break;
         case 'otherDocumentValues':
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
@@ -5188,7 +5207,10 @@ longActionPress(props) {
       // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
       // Switch off modal show
       this.props.showGetFieldValuesChoiceModal(() => {});
+      // Switch off this.state.getSelectDataBaseValues and do clean up after
+      if (this.state.getSelectDataBaseValues) this.getSelectDataBaseValues();
       window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+      window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
       // this.setState({ selectedAgreementId: null });
     }
   }
@@ -5209,7 +5231,8 @@ longActionPress(props) {
     const renderButtons = () => {
       let hoverClass = '';
       return _.map(fieldValuesArray, each => {
-        disableButton = !this.state.originalValuesExistForSelectedFields && each === 'originalValues';
+        disableButton = (each === 'originalValues' && !this.state.originalValuesExistForSelectedFields)
+                        || (each === 'databaseValues' && !this.state.databaseValuesExistForFields);
         // Add hover to button if button active; Take away button-hover if button disabled
         disableButton ? hoverClass = '' : hoverClass = 'button-hover';
         return (
@@ -5791,7 +5814,7 @@ longActionPress(props) {
     // };
 
     // {createButtons()}
-    console.log('in create_edit_document, renderTemplateElementEditAction, this.props.formIsDirty : ', this.props.formIsDirty);
+    console.log('in create_edit_document, renderTemplateElementEditAction, disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn : ', disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
