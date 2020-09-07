@@ -320,9 +320,9 @@ class DocumentInsertCreateModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteDocumentInsertCompleted ?
-            <div className="post-signup-message">The documentInsert has been successfully deleted.</div>
+            <div className="post-action-message">The documentInsert has been successfully deleted.</div>
             :
-            <div className="post-signup-message">{`The ${documentKind} has been successfully created.`}</div>
+            <div className="post-action-message">{`The ${documentKind} has been successfully created.`}</div>
           }
         </div>
       </div>

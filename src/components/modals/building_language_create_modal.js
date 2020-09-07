@@ -133,7 +133,7 @@ class BuildingLanguageCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your buildingLanguage has been successfully created.</div>
+          <div className="post-action-message">Your buildingLanguage has been successfully created.</div>
         </div>
       </div>
     )

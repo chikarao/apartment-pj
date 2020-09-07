@@ -131,9 +131,9 @@ class IcalendarEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteIcalendarCompleted ?
-            <div className="post-signup-message">The iCalendar has been deleted.</div>
+            <div className="post-action-message">The iCalendar has been deleted.</div>
             :
-            <div className="post-signup-message">The iCalendar has been successfully updated.</div>
+            <div className="post-action-message">The iCalendar has been successfully updated.</div>
           }
         </div>
       </div>

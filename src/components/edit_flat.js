@@ -1199,7 +1199,7 @@ class EditFlat extends Component {
               showOwnUploadedDocument
               showTemplate
               noEditOrButtons={this.props.showSelectExistingDocument && !this.state.showSelectExistingDocumentModalForGetFieldValues}
-              showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues})}
+              showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
               // documentFields={{}}
               // // documentTranslations={{}}
               // // templateMappingObjects={{}}

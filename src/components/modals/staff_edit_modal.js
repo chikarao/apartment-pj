@@ -251,9 +251,9 @@ class StaffEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteStaffCompleted ?
-            <div className="post-signup-message">The staff has been successfully deleted.</div>
+            <div className="post-action-message">The staff has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The staff has been successfully updated.</div>
+            <div className="post-action-message">The staff has been successfully updated.</div>
           }
         </div>
       </div>

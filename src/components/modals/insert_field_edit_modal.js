@@ -224,9 +224,9 @@ class InsertFieldEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteInsertFieldCompleted ?
-            <div className="post-signup-message">The PDF insert has been successfully deleted.</div>
+            <div className="post-action-message">The PDF insert has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The PDF insert has been successfully updated.</div>
+            <div className="post-action-message">The PDF insert has been successfully updated.</div>
           }
         </div>
       </div>

@@ -222,9 +222,9 @@ class ContractorEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteContractorCompleted ?
-            <div className="post-signup-message">The contractor has been successfully deleted.</div>
+            <div className="post-action-message">The contractor has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The contractor has been successfully updated.</div>
+            <div className="post-action-message">The contractor has been successfully updated.</div>
           }
         </div>
       </div>

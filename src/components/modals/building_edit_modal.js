@@ -171,9 +171,9 @@ class BuildingEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteBuildingCompleted ?
-            <div className="post-signup-message">The building has been deleted.</div>
+            <div className="post-action-message">The building has been deleted.</div>
             :
-            <div className="post-signup-message">The building has been successfully updated.</div>
+            <div className="post-action-message">The building has been successfully updated.</div>
           }
         </div>
       </div>

@@ -151,7 +151,7 @@ class ReviewEditModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your review has been successfully updated.</div>
+          <div className="post-action-message">Your review has been successfully updated.</div>
         </div>
       </div>
     )

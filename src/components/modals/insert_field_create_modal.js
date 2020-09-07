@@ -220,9 +220,9 @@ class InsertFieldCreateModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteInsertFieldCompleted ?
-            <div className="post-signup-message">The insertField has been successfully deleted.</div>
+            <div className="post-action-message">The insertField has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The insertField has been successfully created.</div>
+            <div className="post-action-message">The insertField has been successfully created.</div>
           }
         </div>
       </div>

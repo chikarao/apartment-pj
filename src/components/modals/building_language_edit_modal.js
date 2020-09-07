@@ -183,9 +183,9 @@ class BuildingLanguageEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteBuildingLanguageCompleted ?
-            <div className="post-signup-message">Your building language has been successfully deleted.</div>
+            <div className="post-action-message">Your building language has been successfully deleted.</div>
             :
-            <div className="post-signup-message">Your building language has been successfully updated.</div>
+            <div className="post-action-message">Your building language has been successfully updated.</div>
           }
         </div>
       </div>

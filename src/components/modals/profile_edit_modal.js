@@ -183,9 +183,9 @@ class ProfileEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteProfileCompleted ?
-            <div className="post-signup-message">Your profile has been successfully deleted.</div>
+            <div className="post-action-message">Your profile has been successfully deleted.</div>
             :
-            <div className="post-signup-message">Your profile has been successfully updated.</div>
+            <div className="post-action-message">Your profile has been successfully updated.</div>
           }
         </div>
       </div>

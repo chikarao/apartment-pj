@@ -24,6 +24,7 @@ import InsertFieldCreateModal from './modals/insert_field_create_modal';
 import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import DocumentEmailCreateModal from './modals/document_email_create_modal';
 import ConversationCreateModal from './modals/conversation_create_modal';
+import SelectExistingDocumentModal from './modals/select_existing_document_modal';
 // import InsertFieldEditModal from './modals/insert_field_edit_modal';
 import globalConstants from './constants/global_constants.js';
 
@@ -55,6 +56,7 @@ class BookingConfirmation extends Component {
       showTemplateCreate: false,
       showTemplate: false,
       editTemplate: false,
+      showSelectExistingDocumentModalForGetFieldValues: false,
     };
 
     this.handleDocumentCreateClick = this.handleDocumentCreateClick.bind(this);
@@ -80,6 +82,7 @@ class BookingConfirmation extends Component {
     this.props.fetchBooking(bookingId);
     this.props.fetchReviewForBookingByUser(bookingId);
     this.props.fetchDocumentTranslation('important_points_explanation');
+    this.props.fetchTemplateObjects(() => {});
 
     console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
   }
@@ -480,9 +483,21 @@ class BookingConfirmation extends Component {
   handleDocumentUploadClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'template' }, () => {
-      this.props.showDocumentInsertCreateModal();
-    });
+    if (elementVal === 'ownTemplate') {
+      this.setState({ uploadOwnDocument: true, showTemplateCreate: elementVal === 'ownTemplate' }, () => {
+        this.props.showDocumentInsertCreateModal();
+      });
+    } else {
+      // if chooseExisting
+      this.props.showSelectExistingDocumentModal(() => {});
+      this.setState({ agreementId: null, showDocument: false });
+      this.props.setTemplateElementsObject({
+        templateElements: {},
+        templateElementsByPage: {},
+        templateTranslationElements: {},
+        templateTranslationElementsByPage: {}
+      });
+    }
   }
   // When user clicks on a template saved, sets various component and app states to
   // set
@@ -525,11 +540,22 @@ class BookingConfirmation extends Component {
             <br/>
             <div className="booking-confirmation-document-box">
               <div
-                value="template"
+                value="ownTemplate"
                 className="btn booking-request-upload-document-link"
                 onClick={this.handleDocumentUploadClick}
               >
                 {AppLanguages.uploadTemplate[appLanguageCode]}
+              </div>
+              <div
+                value="chooseExisting"
+                className="btn edit-flat-select-document-link"
+                onClick={this.handleDocumentUploadClick}
+              >
+                {AppLanguages.selectExistingDocument[appLanguageCode]}
+              </div>
+
+              <div className="edit-flat-language-label">
+                {AppLanguages.selectTranslationLanguage[appLanguageCode]}:
               </div>
               <select
                 type="string"
@@ -539,43 +565,45 @@ class BookingConfirmation extends Component {
               >
                 {this.renderDocumentLanguageSelect()}
               </select>
+
             </div>
             <div className="booking-confirmation-document-box">
               {this.renderEachTemplateSaved()}
             </div>
 
-            <div className="booking-request-box-each-line">
-              <div className="booking-request-box-each-line-title">
-                {AppLanguages.createDocuments[appLanguageCode]}:
-              </div>
-              <div className="booking-request-box-each-line-data">
-              </div>
-            </div>
-            <br/>
-            <div className="booking-confirmation-document-box">
-            </div>
-            <div className="booking-confirmation-document-box">
-              {this.renderEachAgreementToCreate()}
-            </div>
-
-            <div className="booking-request-box-each-line">
-              <div className="booking-request-box-each-line-title">
-                {AppLanguages.savedDocuments[appLanguageCode]}:
-              </div>
-              <div className="booking-request-box-each-line-data">
-              </div>
-            </div>
-            <br/>
-            <div className="booking-confirmation-document-box">
-              <div value="document" className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadDocument[appLanguageCode]}</div>
-            </div>
-            <div className="booking-confirmation-document-box">
-              {this.props.booking.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
-            </div>
         </div>
       );
     }
   }
+  // Deprecated elements
+  // <div className="booking-request-box-each-line">
+  //   <div className="booking-request-box-each-line-title">
+  //     {AppLanguages.createDocuments[appLanguageCode]}:
+  //   </div>
+  //   <div className="booking-request-box-each-line-data">
+  //   </div>
+  // </div>
+  // <br/>
+  // <div className="booking-confirmation-document-box">
+  // </div>
+  // <div className="booking-confirmation-document-box">
+  //   {this.renderEachAgreementToCreate()}
+  // </div>
+  //
+  // <div className="booking-request-box-each-line">
+  //   <div className="booking-request-box-each-line-title">
+  //     {AppLanguages.savedDocuments[appLanguageCode]}:
+  //   </div>
+  //   <div className="booking-request-box-each-line-data">
+  //   </div>
+  // </div>
+  // <br/>
+  // <div className="booking-confirmation-document-box">
+  //   <div value="document" className="btn booking-request-upload-document-link" onClick={this.handleDocumentUploadClick}>{AppLanguages.uploadDocument[appLanguageCode]}</div>
+  // </div>
+  // <div className="booking-confirmation-document-box">
+  //   {this.props.booking.agreements ? this.renderEachAgreementSaved() : 'No documents on file'}
+  // </div>
 
   handleBookingRequestApprovalClick(event) {
     const { appLanguageCode } = this.props;
@@ -1239,6 +1267,8 @@ renderDocument() {
             showDocumentInsertBox
             showOwnUploadedDocument={this.state.showOwnUploadedDocument}
             showTemplate={this.state.showTemplate}
+            noEditOrButtons={this.props.showSelectExistingDocument && !this.state.showSelectExistingDocumentModalForGetFieldValues}
+            showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
           />
         </div>
       );
@@ -1386,6 +1416,23 @@ renderConversationCreateForm() {
   );
 }
 
+renderSelectExistingDocumentForm() {
+  console.log('in editFlat, renderSelectExistingDocumentForm, : ', );
+  return (
+    <SelectExistingDocumentModal
+      show={this.props.showSelectExistingDocument}
+      // comment out editFlat in BookingConfirmation
+      // editFlat
+      // Set showDocument to true and set agreementId to be used by CreateEditDocument
+      setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
+      getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
+      showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
+      booking={this.props.booking}
+      // selectedFieldObject={{ construction: 1 }}
+    />
+  );
+}
+
 // NOTE: renderDocument is for doing the following:
 // 1) create a document in 'Create Documents' by using an app-provided template
 // with already placed fields.
@@ -1411,6 +1458,7 @@ render() {
       {this.props.showInsertFieldEdit ? this.renderInsertFieldEditForm() : ''}
       {this.state.showDocumentEmailCreateModal ? this.renderDocumentEmailCreateForm() : ''}
       {this.state.showConversationCreate ? this.renderConversationCreateForm() : ''}
+      {this.props.showSelectExistingDocument ? this.renderSelectExistingDocumentForm() : ''}
     </div>
    );
   }
@@ -1445,6 +1493,7 @@ function mapStateToProps(state) {
       messageSender: state.conversation.messageSender,
       propsWebSocketConnected: state.conversation.webSocketConnected,
       propsWebSocketTimedOut: state.conversation.webSocketTimedOut,
+      showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
     };

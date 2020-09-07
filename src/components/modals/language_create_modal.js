@@ -215,7 +215,7 @@ class LanguageCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">A {this.state.selectedLanguage} language version has been successfully created for your listing.</div>
+          <div className="post-action-message">A {this.state.selectedLanguage} language version has been successfully created for your listing.</div>
         </div>
       </div>
     )

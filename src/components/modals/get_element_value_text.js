@@ -32,7 +32,6 @@ export default (props) => {
     const groupObject = documentConstants[elementObject.group];
     const categoryObject = documentConstants[elementObject.category];
     valueText = fieldValue;
-    console.log('in get_element_value_text, documentConstants, elementObject, categoryObject, groupObject: ', documentConstants, elementObject, categoryObject, groupObject);
     if (elementObject.group === 'amenities') valueText = getAmenitiesValue(groupObject);
     if (elementObject.category === 'building') valueText = getBuildingValue(categoryObject);
     // const documentTranslations = documentTranslationsAll[`${agreement.template_file_name}_all`][translationKey]

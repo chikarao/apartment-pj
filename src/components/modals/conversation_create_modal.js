@@ -113,7 +113,7 @@ class ConversationCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">Your message has been sent. Please see any responses in the messaging page (click mail icon at top).</div>
+          <div className="post-action-message">Your message has been sent. Please see any responses in the messaging page (click mail icon at top).</div>
         </div>
       </div>
     )

@@ -407,6 +407,7 @@ class CreateEditDocument extends Component {
       });
       console.log('in create_edit_document, componentDidUpdate, prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name: ', prevProps.templateElements, this.props.templateElements, initialValuesObject, this.props.agreement.template_file_name);
       // If not for getting database values, for getting initial values for the form
+      // console.log('in create_edit_document, componentDidUpdate, prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields: ', prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields);
       if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
       // If getting data base values set objects for GetFieldValueChoiceModal
       if (this.state.getSelectDataBaseValues) {
@@ -3944,14 +3945,7 @@ longActionPress(props) {
 
         case 'getFieldValues':
           console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
-          // Get object with attributes about user clicked elements
-          // const getSelectedFieldObject = () => {
-          //   const object = {};
-          //   _.each(this.state.selectedTemplateElementIdArray, eachId => {
-          //     object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
-          //   });
-          //   return _.isEmpty(object) ? null : object;
-          // };
+
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
           // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
@@ -4979,43 +4973,45 @@ longActionPress(props) {
     const clickedElement = event.target;
     // if clicked element does not include any elements in the font control box,
     // call setState to close the showFontControlBox
-    const fontControlClassesArray = [
-      'create-edit-document-font-control-box',
-      'create-edit-document-font-family-select',
-      'create-edit-document-font-size-select',
-      'create-edit-document-font-style-button-box',
-      'create-edit-document-font-style-button',
-      //getFieldValues eleements
-      'create-edit-document-get-field-values-button',
-      'create-edit-document-get-field-values-button button-hover',
-      'create-edit-document-get-field-values-box'
-    ];
-    const didNotclickedOnButtonOrModal = fontControlClassesArray.indexOf(clickedElement.className) === -1;
-    // Dont close the modal if clicked on another modal linked to it.
-    const clickedOnOtherModal = didNotclickedOnButtonOrModal && this.props.showGetFieldValuesChoice && clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
-    const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
-    // If className of clicked element is NOT in the array
-    if (((didNotclickedOnButtonOrModal && !event.key) || pushedEscapeKey) && !clickedOnOtherModal) {
-      this.setState({
-        showFontControlBox: false,
-        getFieldValues: false,
-        getFieldValuesCompletedArray: [],
-        selectedGetFieldValueChoiceArray: [],
-        originalValuesExistForSelectedFields: false,
-      });
-      const fontControlBox = document.getElementById('create-edit-document-font-control-box');
-      if (fontControlBox) fontControlBox.style.display = 'none';
-      const getFieldValuesBox = document.getElementById('create-edit-document-get-field-values-box');
-      if (getFieldValuesBox) getFieldValuesBox.style.display = 'none';
-      // Remove listener set in handle open
-      document.removeEventListener('click', this.handleFontControlCloseClick);
-      document.removeEventListener('keydown', this.handleFontControlCloseClick);
-      if (!this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading());
-      // clean up of other modals open linked to modal
-      // if (this.props.showGetFieldValuesChoice && pushedEscapeKey) {
-      //   document.removeEventListener('click', this.handleFontControlCloseClick);
-      //   this.props.showGetFieldValuesChoiceModal(() => {});
-      // }
+    if (!this.props.showGetFieldValuesChoice) {
+      const fontControlClassesArray = [
+        'create-edit-document-font-control-box',
+        'create-edit-document-font-family-select',
+        'create-edit-document-font-size-select',
+        'create-edit-document-font-style-button-box',
+        'create-edit-document-font-style-button',
+        //getFieldValues eleements
+        'create-edit-document-get-field-values-button',
+        'create-edit-document-get-field-values-button button-hover',
+        'create-edit-document-get-field-values-box'
+      ];
+      const didNotclickedOnButtonOrModal = fontControlClassesArray.indexOf(clickedElement.className) === -1;
+      // Dont close the modal if clicked on another modal linked to it.
+      const clickedOnOtherModal = didNotclickedOnButtonOrModal && this.props.showGetFieldValuesChoice && clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
+      const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
+      // If className of clicked element is NOT in the array
+      if (((didNotclickedOnButtonOrModal && !event.key) || pushedEscapeKey) && !clickedOnOtherModal) {
+        this.setState({
+          showFontControlBox: false,
+          getFieldValues: false,
+          getFieldValuesCompletedArray: [],
+          selectedGetFieldValueChoiceArray: [],
+          originalValuesExistForSelectedFields: false,
+        });
+        const fontControlBox = document.getElementById('create-edit-document-font-control-box');
+        if (fontControlBox) fontControlBox.style.display = 'none';
+        const getFieldValuesBox = document.getElementById('create-edit-document-get-field-values-box');
+        if (getFieldValuesBox) getFieldValuesBox.style.display = 'none';
+        // Remove listener set in handle open
+        document.removeEventListener('click', this.handleFontControlCloseClick);
+        document.removeEventListener('keydown', this.handleFontControlCloseClick);
+        if (!this.state.getFieldValues) this.props.grayOutBackground(() => this.props.showLoading());
+        // clean up of other modals open linked to modal
+        // if (this.props.showGetFieldValuesChoice && pushedEscapeKey) {
+          //   document.removeEventListener('click', this.handleFontControlCloseClick);
+          //   this.props.showGetFieldValuesChoiceModal(() => {});
+          // }
+        }
     }
     // remove event listener
   }
@@ -5039,12 +5035,13 @@ longActionPress(props) {
       // Callback in initialValuesObject method will turn findIfDatabaseValuesExistForFields false
       if (!this.state.findIfDatabaseValuesExistForFields) {
         // If any key value paris exist with not null value,
+        console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
         let count = 0;
         _.each(Object.keys(formValuesObject), eachKey => {
           // Count up if values in database not equal to value in redusForm prop
           // i.e. state.forms.CreateEditDocument.value
           if (formValuesObject[eachKey] !== this.props.valuesInForm[eachKey]) count++;
-          console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject[eachKey], this.props.valuesInForm[eachKey], count: ', formValuesObject[eachKey], this.props.valuesInForm[eachKey], count);
+          // console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject[eachKey], this.props.valuesInForm[eachKey], count: ', formValuesObject[eachKey], this.props.valuesInForm[eachKey], count);
         });
         // this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
         this.setState({ databaseValuesExistForFields: count > 0 });
@@ -5127,8 +5124,14 @@ longActionPress(props) {
         top={'35%'}
         left={'50%'}
         updateDocumentElementLocallyAndSetHistory={(array) => {
+          // set value for each templateElement
           this.props.updateDocumentElementLocally(array);
+          // set localHistory
           this.setTemplateHistoryArray(array, 'update');
+          // Run initialValues function in componentDidUpdate
+          // To find out if there are any database values available
+          // and different from state.forms.CreateEditDocument.values in reduxForm
+          this.findIfDatabaseValuesExistForFields();
         }}
         changeFormValue={this.props.change}
         getDataBaseValues={this.state.getSelectDataBaseValues}
@@ -5141,11 +5144,6 @@ longActionPress(props) {
   handleGetValueChoiceClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // const setCompletedCallback = () => {
-    //   const newArray = [...this.state.getFieldValuesCompletedArray];
-    //   newArray.push(elementVal);
-    //   this.setState({ getFieldValuesCompletedArray: newArray });
-    // };
 
     const setCompletedCallback = () => {
       const newArray = [...this.state.getFieldValuesCompletedArray];
@@ -6131,9 +6129,9 @@ longActionPress(props) {
         const bilingual = Documents[this.props.createDocumentKey].translation;
         // const page = 1;
 
+        console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice);
         return _.map(pages, page => {
-              // console.log('in create_edit_document, renderDocument, this.props.showTemplate: ', this.props.showTemplate);
-              console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
+              // console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
           return (
             <div
               key={page}
@@ -6539,6 +6537,7 @@ function mapStateToProps(state) {
       templateTranslationElementsByPage: state.documents.templateTranslationElementsByPage,
       documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
+      showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams

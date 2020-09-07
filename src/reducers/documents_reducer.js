@@ -318,6 +318,7 @@ export default function (state = {
     }
     // Action called in edit_flat
     case FETCH_TEMPLATE_OBJECTS: {
+      console.log('in documents reducer, state, FETCH_TEMPLATE_OBJECTS, JSON.parse(action.payload.document_constants): ', JSON.parse(action.payload.document_constants));
       return { ...state,
         allDocumentObjects: {
           fixedTermRentalContractBilingualAll: JSON.parse(action.payload.fixed_term_rental_contract_bilingual_all),

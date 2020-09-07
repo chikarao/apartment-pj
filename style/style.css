@@ -4879,7 +4879,7 @@ form {
   text-decoration: underline;
 }
 
-.post-signup-message {
+.post-signup-message, .post-action-message {
   margin: 100px 50px 30px 50px;
   font-size: 17px;
 }

@@ -191,9 +191,9 @@ class LanguageEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteLanguageCompleted ?
-            <div className="post-signup-message">The {this.state.selectedLanguage} language version has been deleted.</div>
+            <div className="post-action-message">The {this.state.selectedLanguage} language version has been deleted.</div>
             :
-            <div className="post-signup-message">The {this.state.selectedLanguage} language version has been successfully updated.</div>
+            <div className="post-action-message">The {this.state.selectedLanguage} language version has been successfully updated.</div>
           }
         </div>
       </div>

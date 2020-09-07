@@ -14,6 +14,8 @@ export default (props) => {
   const object = {};
   const controlObject = {};
   let fieldValue = null;
+  let differentValueCount = 0;
+  let sameValues = false
   // Go through each field in document to see if the name of the field
   // is in selectedFieldObject with fields selected by user
   _.each(documentFields, eachField => {
@@ -40,6 +42,8 @@ export default (props) => {
     ) {
       // if pass test, place in object to be sent to action setGetFieldValueDocumentObject
       // object[eachField.name] = { fieldName: eachField.name, [eachField.name]: eachField.value, currentValue: this.props.selectedFieldObject[eachField.name].currentValue };
+      sameValues = fieldValue === valuesInForm[eachField.name];
+      if (!sameValues) differentValueCount++;
       object[eachField.name] = {
         field: eachField,
         fieldName: eachField.name,
@@ -50,5 +54,5 @@ export default (props) => {
     }
   });
 
-  return object;
+  return { object, differentValuesExist: differentValueCount > 0 };
 };

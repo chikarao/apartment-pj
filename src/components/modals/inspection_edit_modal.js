@@ -162,9 +162,9 @@ class InspectionEditModal extends Component {
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
           {this.state.deleteInspectionCompleted ?
-            <div className="post-signup-message">The inspection has been successfully deleted.</div>
+            <div className="post-action-message">The inspection has been successfully deleted.</div>
             :
-            <div className="post-signup-message">The inspection has been successfully updated.</div>
+            <div className="post-action-message">The inspection has been successfully updated.</div>
           }
         </div>
       </div>

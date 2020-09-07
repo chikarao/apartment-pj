@@ -143,7 +143,7 @@ class BankAccountCreateModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">The bank account has been successfully created.</div>
+          <div className="post-action-message">The bank account has been successfully created.</div>
         </div>
       </div>
     );

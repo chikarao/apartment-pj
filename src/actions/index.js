@@ -3334,10 +3334,10 @@ export function fetchUserAgreements(callback) {
   };
 }
 
-export function addExistingAgreements({ agreementIdArray, fromEditFlat, flatId, callback }) {
+export function addExistingAgreements({ agreementIdArray, fromEditFlat, flatId, bookingId, callback }) {
   // console.log('in actions index, addExistingAgreements: ');
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/add_existing_agreements`, { agreement_id_array: agreementIdArray, edit_flat: fromEditFlat, flat_id: flatId }, {
+    axios.post(`${ROOT_URL}/api/v1/add_existing_agreements`, { agreement_id_array: agreementIdArray, edit_flat: fromEditFlat, flat_id: flatId, booking_id: bookingId }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

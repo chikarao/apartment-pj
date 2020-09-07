@@ -136,7 +136,7 @@ class BankAccountEditModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose.bind(this)}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">The bank account has been successfully updated.</div>
+          <div className="post-action-message">The bank account has been successfully updated.</div>
         </div>
       </div>
     );

@@ -138,7 +138,7 @@ class SelectExitingDocumentModal extends Component {
       currentElement = currentElement.parentElement;
     }
 
-    const clickedFlatId = parseInt(currentElement.getAttribute('value'), 10)
+    const clickedFlatId = parseInt(currentElement.getAttribute('value'), 10);
 
     this.setState({
       // showByFlat: clickedFlatId !== this.state.selectedFlatId,
@@ -197,8 +197,8 @@ class SelectExitingDocumentModal extends Component {
       'flat-selection-box-each-text-box-id-box',
       'select-existing-document-button-each'
     ];
-
-    if (array.indexOf(clickedElement.className) === -1 || (event.key === 'Esc')) {
+    // && !event.key in case user clicks non-eaccape key
+    if ((array.indexOf(clickedElement.className) === -1 && !event.key) || (event.key === 'Escape' || event.key === 'Esc')) {
       const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container');
       if (flatSelectionBoxArray[0]) flatSelectionBoxArray[0].style.display = 'none';
       this.setState({
@@ -336,7 +336,7 @@ class SelectExitingDocumentModal extends Component {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
         // const fieldObject = this.props.showGetFieldValuesChoice ? this.getUpdatedSelectedFieldObject() : getDocumentFieldsWithSameName(selectedAgreement.document_fields);
-        const fieldObject = getDocumentFieldsWithSameName({ documentFields: selectedAgreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm});
+        const fieldObject = getDocumentFieldsWithSameName({ documentFields: selectedAgreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm });
         // If not open, open the modal
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {
@@ -345,7 +345,7 @@ class SelectExitingDocumentModal extends Component {
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
         }
         // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
-        this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject });
+        this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject: fieldObject.object, differentValuesExist: fieldObject.differentValuesExist });
         console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
       });
     }
@@ -676,8 +676,14 @@ class SelectExitingDocumentModal extends Component {
 
   handleAddExistingAgreementsClick() {
     console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
-    this.props.addExistingAgreements({ agreementIdArray: this.state.selectedDocumentsArray, flatId: this.props.flat.id, fromEditFlat: this.props.editFlat, callback: () => this.addExistingAgreementsCallback() });
-    this.props.showLoading()
+    this.props.addExistingAgreements({
+      agreementIdArray: this.state.selectedDocumentsArray,
+      flatId: this.props.flat.id,
+      bookingId: this.props.editFlat ? null : this.props.booking.id,
+      fromEditFlat: this.props.editFlat,
+      callback: () => this.addExistingAgreementsCallback()
+    });
+    this.props.showLoading();
   }
 
   renderEachThumbnail() {
@@ -769,7 +775,7 @@ class SelectExitingDocumentModal extends Component {
         >
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">{AppLanguages.selectDocumentCompleted[this.props.appLanguageCode]}</div>
+          <div className="post-action-message">{AppLanguages.selectDocumentCompleted[this.props.appLanguageCode]}</div>
         </div>
       </div>
     );

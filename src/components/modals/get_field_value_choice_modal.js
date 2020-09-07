@@ -23,12 +23,15 @@ class GetFieldValueChoiceModal extends Component {
       applySelectedDocumentValueCompleted: false,
       fieldValueAppliedArray: [],
       showAllSelectedValues: false
-      // deleteBankAccountCompleted: false,
     };
 
     this.handleFieldCheckboxClick = this.handleFieldCheckboxClick.bind(this);
     this.handleFieldValueApplyClick = this.handleFieldValueApplyClick.bind(this);
   }
+
+  // componentDidUpdate() {
+     // this.props.fieldValueDocumentObject.fieldObject
+  // }
 
   handleFieldCheckboxClick(event) {
     const { fieldValueDocumentObject } = this.props;
@@ -158,7 +161,7 @@ class GetFieldValueChoiceModal extends Component {
   handleFieldValueApplyClick() {
     let valueInSelectedDocument = null;
     let templateElement = null;
-    const array = [];
+    const updateArray = [];
     let updateObject = null;
     const newArray = [...this.state.fieldValueAppliedArray];
 
@@ -168,9 +171,9 @@ class GetFieldValueChoiceModal extends Component {
       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
       // Array for state fieldValueAppliedArray
       newArray.push(eachName);
-      // Object and array for applySelectedDocumentValueCompleted
+      // Object and updateArray for applySelectedDocumentValueCompleted
       updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
-      array.push(updateObject);
+      updateArray.push(updateObject);
       // Calling this.props.change for reduxForm
       this.props.changeFormValue(eachName, valueInSelectedDocument);
     });
@@ -180,14 +183,15 @@ class GetFieldValueChoiceModal extends Component {
       selectedFieldNameArray: [],
       fieldValueAppliedArray: newArray
      }, () => {
+       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
        // Apply changes in value to templateElements and in localStorageHistory
-      // this.props.updateDocumentElementLocallyAndSetHistory(array)
-      console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, array: ', array);
+      this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
     }); // end of first setState
   }
 
   renderButtons() {
     const checkedAll = this.state.selectedFieldNameArray.length === Object.keys(this.props.fieldValueDocumentObject.fieldObject).length;
+    const diferentValuesExist = this.props.fieldValueDocumentObject.differentValuesExist;
     const checkedSome = this.state.selectedFieldNameArray.length > 0;
     const allValuesAlreadyApplied = this.state.fieldValueAppliedArray.length === Object.keys(this.props.fieldValueDocumentObject.fieldObject).length;
     return (

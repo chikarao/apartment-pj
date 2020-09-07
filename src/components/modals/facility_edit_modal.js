@@ -158,7 +158,7 @@ class FacilityEditModal extends Component {
         <div className="modal-main">
           <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
           {this.renderAlert()}
-          <div className="post-signup-message">The facility has been successfully {this.state.deleteFacilityCompleted ? 'deleted' : 'updated'}.</div>
+          <div className="post-action-message">The facility has been successfully {this.state.deleteFacilityCompleted ? 'deleted' : 'updated'}.</div>
         </div>
       </div>
     );
