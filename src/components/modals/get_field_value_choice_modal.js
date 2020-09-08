@@ -19,9 +19,7 @@ class GetFieldValueChoiceModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFieldNameArray: [],
       applySelectedDocumentValueCompleted: false,
-      fieldValueAppliedArray: [],
       showAllSelectedValues: false
     };
 
@@ -29,16 +27,12 @@ class GetFieldValueChoiceModal extends Component {
     this.handleFieldValueApplyClick = this.handleFieldValueApplyClick.bind(this);
   }
 
-  // componentDidUpdate() {
-     // this.props.fieldValueDocumentObject.fieldObject
-  // }
-
   handleFieldCheckboxClick(event) {
     const { fieldValueDocumentObject } = this.props;
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
 
-    const newArray = [...this.state.selectedFieldNameArray];
+    const newArray = [...this.props.fieldValueDocumentObject.selectedFieldNameArray];
     let index = 0;
     let valuesAlreadyApplied = false;
 
@@ -47,7 +41,7 @@ class GetFieldValueChoiceModal extends Component {
       // called in SelectExitingDocumentModal
       _.each(Object.keys(fieldValueDocumentObject.fieldObject), eachKey => {
         index = newArray.indexOf(eachKey);
-        valuesAlreadyApplied = this.state.fieldValueAppliedArray.indexOf(eachKey) !== -1;
+        valuesAlreadyApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachKey) !== -1;
         // push in to array if not already there or if value has not already been applied
         if (elementVal === 'checkAll') {
           if (index === -1 && !valuesAlreadyApplied && !fieldValueDocumentObject.fieldObject[eachKey].sameValues) {
@@ -60,7 +54,7 @@ class GetFieldValueChoiceModal extends Component {
       });
     } else { //  if (elementVal === 'checkAll' || elementVal === 'unCheckAll')
       // remove or add names by single user click
-      index = this.state.selectedFieldNameArray.indexOf(elementVal);
+      index = this.props.fieldValueDocumentObject.selectedFieldNameArray.indexOf(elementVal);
       if (index === -1) {
         newArray.push(elementVal);
       } else {
@@ -68,12 +62,7 @@ class GetFieldValueChoiceModal extends Component {
       }
     }
 
-    this.setState({
-      selectedFieldNameArray: newArray,
-      // fieldValueAppliedArray: []
-    }, () => {
-      console.log('in GetFieldValueChoiceModal, handleFieldCheckboxClick, elementVal, this.state.selectedFieldNameArray: ', elementVal, this.state.selectedFieldNameArray);
-    });
+    this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: newArray });
   }
 
   renderEachValue() {
@@ -110,7 +99,7 @@ class GetFieldValueChoiceModal extends Component {
         fieldValue: eachFieldObject[eachFieldObject.fieldName]
       });
       // Test if change for field as already been applied
-      changeApplied = this.state.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
+      changeApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
       return (
         <li key={i} className="get-field-value-choice-modal-values-each">
           <div className="get-field-value-choice-modal-values-each-text-box">
@@ -134,7 +123,7 @@ class GetFieldValueChoiceModal extends Component {
                 type="checkbox"
                 onChange={this.handleFieldCheckboxClick}
                 value={eachFieldObject.fieldName}
-                checked={this.state.selectedFieldNameArray.indexOf(eachFieldObject.fieldName) !== -1}
+                checked={this.props.fieldValueDocumentObject.selectedFieldNameArray.indexOf(eachFieldObject.fieldName) !== -1}
               />
               :
               ''
@@ -163,9 +152,9 @@ class GetFieldValueChoiceModal extends Component {
     let templateElement = null;
     const updateArray = [];
     let updateObject = null;
-    const newArray = [...this.state.fieldValueAppliedArray];
+    const newArray = [...this.props.fieldValueDocumentObject.fieldValueAppliedArray];
 
-    _.each(this.state.selectedFieldNameArray, eachName => {
+    _.each(this.props.fieldValueDocumentObject.selectedFieldNameArray, eachName => {
       valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
       templateElement = this.props.selectedFieldObject[eachName].element
       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
@@ -178,30 +167,32 @@ class GetFieldValueChoiceModal extends Component {
       this.props.changeFormValue(eachName, valueInSelectedDocument);
     });
 
-    this.setState({
-      // applySelectedDocumentValueCompleted: true,
-      selectedFieldNameArray: [],
-      fieldValueAppliedArray: newArray
-     }, () => {
-       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
+    this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: [], fieldValueAppliedArray: newArray });
+    console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
        // Apply changes in value to templateElements and in localStorageHistory
-      this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
-    }); // end of first setState
+    this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
   }
 
   renderButtons() {
-    const checkedAll = this.state.selectedFieldNameArray.length === Object.keys(this.props.fieldValueDocumentObject.fieldObject).length;
-    const diferentValuesExist = this.props.fieldValueDocumentObject.differentValuesExist;
-    const checkedSome = this.state.selectedFieldNameArray.length > 0;
-    const allValuesAlreadyApplied = this.state.fieldValueAppliedArray.length === Object.keys(this.props.fieldValueDocumentObject.fieldObject).length;
+    // console.log('in GetFieldValueChoiceModal, renderButtons, this.props.fieldValueDocumentObject: ', this.props.fieldValueDocumentObject);
+    const checkedAll = this.props.fieldValueDocumentObject.selectedFieldNameArray.length === this.props.fieldValueDocumentObject.differentValueCount;
+    const diferentValuesExist = this.props.fieldValueDocumentObject.differentValueCount > 0;
+    const checkedSome = this.props.fieldValueDocumentObject.selectedFieldNameArray.length > 0;
+    const allValuesAlreadyApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.length === this.props.fieldValueDocumentObject.differentValueCount;
+    let disableCheckAll = false;
+    if (diferentValuesExist && (checkedAll || allValuesAlreadyApplied)) disableCheckAll = true;
+    if (!diferentValuesExist) disableCheckAll = true;
+
     return (
       <div className="get-field-value-choice-modal-button-box">
         <div className="get-field-value-choice-modal-button-checkall-box">
           <div
             className="get-field-value-choice-modal-button-checkall-each"
-            style={{ color: checkedAll || allValuesAlreadyApplied ? 'gray' : 'blue' }}
+            style={{ color: disableCheckAll ? 'gray' : 'blue' }}
+            // style={{ color: checkedAll || allValuesAlreadyApplied ? 'gray' : 'blue' }}
             value="checkAll"
-            onClick={checkedAll || allValuesAlreadyApplied ? () => {} : this.handleFieldCheckboxClick}
+            // onClick={checkedAll || allValuesAlreadyApplied ? () => {} : this.handleFieldCheckboxClick}
+            onClick={disableCheckAll ? () => {} : this.handleFieldCheckboxClick}
           >
             Check All
           </div>
@@ -240,7 +231,7 @@ class GetFieldValueChoiceModal extends Component {
       >
         <div className="get-field-value-choice-modal-title">{`Available ${this.props.getDataBaseValues ? 'Data Base' : ''} Values`}</div>
         <ul className="get-field-value-choice-modal-scrollbox">
-          {Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
+          {this.props.fieldValueDocumentObject && Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>
         <div className="get-field-value-choice-modal-hide-same-values-input-box">
           <div className="get-field-value-choice-modal-hide-same-values-text">
@@ -253,7 +244,7 @@ class GetFieldValueChoiceModal extends Component {
             checked={this.state.showAllSelectedValues}
           />
         </div>
-          {this.renderButtons()}
+          {this.props.fieldValueDocumentObject ? this.renderButtons() : null}
       </div>
     );
   }

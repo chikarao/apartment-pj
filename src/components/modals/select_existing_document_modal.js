@@ -332,6 +332,7 @@ class SelectExitingDocumentModal extends Component {
     const elementVal = parseInt(currentElement.getAttribute('value'), 10);
     // If the selectedAgreementId is different from the user clicked agreemnt id
     if (elementVal !== this.state.selectedAgreementId) {
+      // this.props.setGetFieldValueDocumentObject(null);
       this.setState({ selectedAgreementId: elementVal }, () => {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
@@ -345,7 +346,7 @@ class SelectExitingDocumentModal extends Component {
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
         }
         // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
-        this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject: fieldObject.object, differentValuesExist: fieldObject.differentValuesExist });
+        this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject: fieldObject.object, differentValueCount: fieldObject.differentValueCount, selectedFieldNameArray: [], fieldValueAppliedArray: [] });
         console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
       });
     }

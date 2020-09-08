@@ -2946,6 +2946,7 @@ form {
   border-radius: 15px;
   background-color: lightgray;
   margin: 3px;
+  padding: 0 2px 0 0;
 }
 
 .select-existing-document-thumbnail-each-left {
