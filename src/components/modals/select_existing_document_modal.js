@@ -7,6 +7,7 @@ import _ from 'lodash';
 import * as actions from '../../actions';
 import AppLanguages from '../constants/app_languages';
 import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
+import globalConstants from '../constants/global_constants.js';
 
 let showHideClassName;
 
@@ -373,7 +374,14 @@ class SelectExitingDocumentModal extends Component {
       shrinkModal: !userClickedCheckbox ? !this.state.shrinkModal : this.state.shrinkModal,
     }, () => {
       // props coming from this modal call in editFlat or bookingConfirmation
-      if (clickedAgreementId) this.props.setAgreementId(clickedAgreementId, true);
+      if (clickedAgreementId) {
+        this.props.setAgreementId(clickedAgreementId, true);
+        this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+          // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
+          // this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
+          // this.props.selectedAgreementId(elementName);
+        });
+      }
       // console.log('in select_exiting_document, handleAgreementShowClick, clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId: ', clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId);
       // empty out agreement and other element related objects to be sent to CreateEditDocument.
       if (userClickedExpand) {

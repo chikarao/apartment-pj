@@ -1535,6 +1535,7 @@ class EditFlat extends Component {
         editFlat
         // Set showDocument to true and set agreementId to be used by CreateEditDocument
         setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
+        // setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool, showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: 'template' })}
         getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
         showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
         // selectedFieldObject={{ construction: 1 }}

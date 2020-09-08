@@ -1230,14 +1230,18 @@ renderDocument() {
   if (this.props.booking) {
     // if (this.props.booking.agreements || this.props.documentInserts) {
       // get agreement chosen by user. Returns array so get first index position below
-      const agreementArray = this.props.booking.agreements.filter(agreement => agreement.id == this.state.agreementId)
+      console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMapped:', this.state.agreementId, this.props.allUserAgreementsArrayMapped);
+      const agreementArray = this.props.showSelectExistingDocument && this.props.allUserAgreementsArrayMappedWithDocumentFields
+                              ?
+                              [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
+                              :
+                              this.props.booking.agreements.filter(agreement => agreement.id === this.state.agreementId);
       // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
       let showDocumentInsertBox = false;
       if (agreementArray.length > 0) {
         if (agreementArray[0].document_code) {
           showDocumentInsertBox = Documents[agreementArray[0].document_code].allowDocumentInserts && this.state.showSavedDocument;
         }
-        // console.log('in booking confirmation, renderDocument, showDocumentInsertBox:', showDocumentInsertBox);
         // console.log('in booking confirmation, renderDocument, Documents[agreementArray[0].document_code].allowDocumentInserts:', Documents[agreementArray[0].document_code].allowDocumentInserts);
         // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument:', this.state.showSavedDocument);
         // If template, allow document inserts
@@ -1424,7 +1428,7 @@ renderSelectExistingDocumentForm() {
       // comment out editFlat in BookingConfirmation
       // editFlat
       // Set showDocument to true and set agreementId to be used by CreateEditDocument
-      setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool })}
+      setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool, showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: true })}
       getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
       showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
       booking={this.props.booking}
@@ -1496,6 +1500,7 @@ function mapStateToProps(state) {
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
+      allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
     };
   }
 

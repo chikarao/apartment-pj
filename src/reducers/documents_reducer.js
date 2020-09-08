@@ -655,6 +655,7 @@ export default function (state = {
         allUserAgreementsMapped: action.payload.all_user_agreements_mapped,
         allUserAgreementsArray: agreementArrayWithDateObject,
         allUserAgreementsArrayMapped: _.mapKeys(agreementArrayWithDateObject, 'id'),
+        allUserAgreementsArrayMappedWithDocumentFields: action.payload.all_user_agreements_mapped,
         // allUserAgreementsMappedSorted: action.payload.user_agreements_array_sorted,
         // user_bookings is all bookings for user's flat with agreeemnts attached
         // mapped_agreements_by_flat contains all agreements mapped to flat regardless of use in booking
