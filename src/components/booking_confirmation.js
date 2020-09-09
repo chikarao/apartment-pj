@@ -525,50 +525,52 @@ class BookingConfirmation extends Component {
     const { appLanguageCode } = this.props;
     // {this.renderEachAgreementToCreate()}
 
+    // <div className="booking-request-box-each-line-title">
+    // {AppLanguages.templates[appLanguageCode]}:
+    // </div>
+    // <div className="booking-request-box-each-line">
+    // <div className="booking-request-box-each-line-data">
+    // </div>
+    // </div>
+    // <br/>
     if (this.props.booking) {
       return (
         <div className="booking-confirmation-each-box">
           <div className="booking-request-box-title">{AppLanguages.rentalDocuments[appLanguageCode]}</div>
 
-            <div className="booking-request-box-each-line">
-              <div className="booking-request-box-each-line-title">
-                {AppLanguages.templates[appLanguageCode]}:
-              </div>
-              <div className="booking-request-box-each-line-data">
-              </div>
-            </div>
-            <br/>
             <div className="booking-confirmation-document-box">
               <div
                 value="ownTemplate"
-                className="btn booking-request-upload-document-link"
+                className="btn booking-confirmation-upload-document-link"
                 onClick={this.handleDocumentUploadClick}
               >
                 {AppLanguages.uploadTemplate[appLanguageCode]}
               </div>
               <div
                 value="chooseExisting"
-                className="btn edit-flat-select-document-link"
+                className="btn booking-confirmation-select-existing-document-link"
                 onClick={this.handleDocumentUploadClick}
               >
                 {AppLanguages.selectExistingDocument[appLanguageCode]}
               </div>
 
-              <div className="edit-flat-language-label">
+              <div className="booking-confirmation-language-label">
                 {AppLanguages.selectTranslationLanguage[appLanguageCode]}:
               </div>
               <select
                 type="string"
-                className="booking-request-box-document-language-select"
+                className="booking-confirmation-box-document-language-select"
                 value={this.props.documentLanguageCode}
                 onChange={this.handleDocumentLanguageSelect}
               >
                 {this.renderDocumentLanguageSelect()}
               </select>
 
-            </div>
-            <div className="booking-confirmation-document-box">
+              <div className="booking-confirmation-language-label">
+              {AppLanguages.savedDocumentsForBooking[appLanguageCode]}:
+              </div>
               {this.renderEachTemplateSaved()}
+
             </div>
 
         </div>
@@ -1230,8 +1232,10 @@ renderDocument() {
   if (this.props.booking) {
     // if (this.props.booking.agreements || this.props.documentInserts) {
       // get agreement chosen by user. Returns array so get first index position below
-      console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMapped:', this.state.agreementId, this.props.allUserAgreementsArrayMapped);
-      const agreementArray = this.props.showSelectExistingDocument && this.props.allUserAgreementsArrayMappedWithDocumentFields
+      console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument:', this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument);
+      const agreementArray = this.props.showSelectExistingDocument
+                              && this.props.allUserAgreementsArrayMappedWithDocumentFields
+                              && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
                               ?
                               [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
                               :

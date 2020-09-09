@@ -16,7 +16,7 @@ import {
   SET_TEMPLATE_ELEMENTS_OBJECT,
   SET_PROGRESS_STATUS,
   FETCH_USER_AGREEMENTS,
-  ADD_EXISTING_AGREEMENTS,
+  // ADD_EXISTING_AGREEMENTS,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT
   // SELECTED_ICALENDAR_ID
@@ -622,8 +622,6 @@ export default function (state = {
         // documentTranslationsTreated
       };
 
-    // NOTE: Two values share the same block
-    // case ADD_EXISTING_AGREEMENTS:
     case FETCH_USER_AGREEMENTS: {
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
       const createArrayWithDateObject = (actionPayloadObject) => {

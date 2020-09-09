@@ -2883,7 +2883,13 @@ form {
 
 .edit-flat-language-label {
   text-align: left;
-  padding: 5px 5px 5px 10px;
+  padding: 10px 5px 5px 10px;
+}
+
+.booking-confirmation-language-label {
+  text-align: left;
+  padding: 5px 5px 5px 0;
+  margin: 15px 0 0 0;
 }
 
 /* select_exiting_document modal */
@@ -3584,13 +3590,17 @@ form {
   margin: 0 0 10px 0;
 }
 
-.booking-request-box-document-language-select, .edit-flat-box-document-language-select {
-  margin: 0 0 5px 6px;
+.booking-confirmation-box-document-language-select, .edit-flat-box-document-language-select {
+  margin: 0 0 0px 15px;
   height: 26px;
   border-radius: 4px;
   width: 140px;
   border: 2px solid #ccc;
   height: 30px;
+}
+
+.booking-confirmation-box-document-language-select {
+  margin: 0 0 0px 5px;
 }
 
 .edit-flat-box-document-language-select {
@@ -3606,7 +3616,12 @@ form {
   color: gray;
 }
 
-.booking-request-upload-document-link, .edit-flat-upload-document-link, .edit-flat-select-document-link, .edit-flat-select-document-link {
+.booking-confirmation-upload-document-link,
+.edit-flat-upload-document-link,
+.edit-flat-select-document-link,
+.edit-flat-select-document-link,
+.booking-confirmation-select-existing-document-link
+{
   margin: 0 0 7px 6px;
   background-color: gray;
   color: white;
@@ -3615,7 +3630,21 @@ form {
   width: auto;
 }
 
-.booking-request-upload-document-link:hover, .edit-flat-upload-document-link:hover, .edit-flat-select-document-link:hover, .select-existing-document-add-button:hover {
+.booking-confirmation-upload-document-link,
+.booking-confirmation-select-existing-document-link
+{
+  margin: 15px 0 0 0;
+}
+
+.booking-confirmation-select-existing-document-link {
+  background-color: blue;
+}
+
+.booking-confirmation-upload-document-link:hover,
+.booking-confirmation-select-existing-document-link:hover,
+.edit-flat-upload-document-link:hover,
+.edit-flat-select-document-link:hover,
+.select-existing-document-add-button:hover {
   color: white;
   background-color: lightgray;
   border: solid 1px #ccc;
@@ -3701,7 +3730,7 @@ form {
 .edit-flat-document-list-box {
   text-align: left;
   width: 100%;
-  padding: 10px 5px 5px 10px;
+  padding: 5px 5px 0 10px;
 }
 
 .booking-confirmation-progress-box {

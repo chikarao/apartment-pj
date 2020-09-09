@@ -24,6 +24,7 @@ import {
   MARK_DOCUMENTS_SIGNED,
   CREATE_MESSAGE,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
+  ADD_EXISTING_AGREEMENTS
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -151,6 +152,10 @@ export default function (state = {
     case CREATE_MESSAGE:
     // console.log('in booking reducer, state: ', state);
       return { ...state, fetchBookingData: action.payload.booking };
+
+    case ADD_EXISTING_AGREEMENTS: {
+        return { ...state, fetchBookingData: action.payload.booking };
+    }
     // case SAVE_TEMPLATE_DOCUMENT_FIELDS:
     // // console.log('in booking reducer, state: ', state);
     // return { ...state, fetchBookingData: action.payload.booking };

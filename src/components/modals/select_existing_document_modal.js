@@ -687,7 +687,7 @@ class SelectExitingDocumentModal extends Component {
     console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
     this.props.addExistingAgreements({
       agreementIdArray: this.state.selectedDocumentsArray,
-      flatId: this.props.flat.id,
+      flatId: this.props.editFlat ? this.props.flat.id : null,
       bookingId: this.props.editFlat ? null : this.props.booking.id,
       fromEditFlat: this.props.editFlat,
       callback: () => this.addExistingAgreementsCallback()

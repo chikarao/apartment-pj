@@ -475,6 +475,7 @@ const appLanguages =
     originalValues: { en: 'Revert to Pre-copy Values', jp: 'コピー前の値に戻す' },
     databaseValues: { en: 'Get Listing DB Values', jp: '物件のデータベースの値にする' },
     otherDocumentValues: { en: 'Get Values from Other Documents', jp: '他のドキュメントの値にする' },
+    savedDocumentsForBooking: { en: 'Documents Saved for Booking', jp: 'ブッキングのために保存されたドキュメント' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },
