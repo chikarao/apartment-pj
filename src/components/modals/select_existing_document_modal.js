@@ -776,10 +776,18 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
-  handleNameChangeAddClick() {
+  handleNameChangeAddClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    let form = null;
+    let formData = null;
 
+    if (elementVal === 'add') {
+      form = document.getElementById('document-name-form').elements;
+      formData = new FormData(document.forms['document-name-form']);
+      
+    }
+    console.log('in SelectExistingDocumentModal, handleNameChangeAddClick, elementVal, form, formData, formData.get(test) ', elementVal, form, formData, formData.get('test'));
   }
 
   renderEachDocumentNameInput() {
@@ -788,7 +796,7 @@ class SelectExitingDocumentModal extends Component {
         <div className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-original">
           Original Name
         </div>
-        <input className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new"/>
+        <input id="test" type="text" name="test" className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new" />
       </li>
     )
   }
@@ -801,18 +809,18 @@ class SelectExitingDocumentModal extends Component {
           <div className="select-existing-document-modal-name-agreement-sub-modal-title">
             Name Added Document
           </div>
-          <form action="" className="select-existing-document-modal-name-agreement-sub-modal-scroll-form">
+          <form id="document-name-form" method="post" className="select-existing-document-modal-name-agreement-sub-modal-form">
             <ul className="select-existing-document-modal-name-agreement-sub-modal-scroll">
               {this.renderEachDocumentNameInput()}
               {this.renderEachDocumentNameInput()}
               {this.renderEachDocumentNameInput()}
               {this.renderEachDocumentNameInput()}
             </ul>
-          </form>
+            <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
+            Please fill in a name for the document
+            </div>
 
-          <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
-          Please fill in a name for the document
-          </div>
+          </form>
           <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box">
             <div
               className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel"
@@ -823,9 +831,12 @@ class SelectExitingDocumentModal extends Component {
             <div
               className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-add"
               onClick={this.handleNameChangeAddClick}
+              value="add"
+              // type="submit"
             >
               Add
             </div>
+
           </div>
         </div>
       </div>

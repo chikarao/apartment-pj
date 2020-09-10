@@ -3062,7 +3062,7 @@ form {
 
 .select-existing-document-modal-name-agreement-sub-modal {
   width: 400px;
-  height: 300px;
+  height: 270px;
   display: flex;
   flex-direction: column;
   z-index: 12;
@@ -3084,24 +3084,18 @@ form {
   padding: 15px;
 }
 
-.select-existing-document-modal-name-agreement-sub-modal-scroll-form {
-  height: 45%;
-  width: auto;
-  /* width: 85%;
-  margin: 20px auto 20px auto;
-  padding: 0;
-  margin: 10px auto;
-  overflow-y: scroll; */
-  padding: 0;
-  margin: 15px;
+.select-existing-document-modal-name-agreement-sub-modal-form {
+  height: 200px;
+  margin: 0;
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-scroll {
-  height: 100%;
-  width: 100%;
-  /* margin: 10px auto; */
-  overflow-y: scroll;
+  height: 60%;
+  width: 85%;
+  margin: 20px auto 20px auto;
   padding: 0;
+  margin: 10px auto;
+  overflow-y: scroll;
 }
 
 /* .select-existing-document-modal-name-agreement-sub-modal-scroll li:last-child {
