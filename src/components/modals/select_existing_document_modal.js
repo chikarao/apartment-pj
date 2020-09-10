@@ -30,7 +30,8 @@ class SelectExitingDocumentModal extends Component {
       expandBookingId: null,
       shrinkModal: false,
       loadingMessage: false,
-      selectedAgreementId: null
+      selectedAgreementId: null,
+      showNameAgreementsSubModal: true
     };
     this.handleClose = this.handleClose.bind(this);
     // this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -43,6 +44,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleAgreementShowClick = this.handleAgreementShowClick.bind(this);
     this.handleGetFieldValuesForAgreementClick = this.handleGetFieldValuesForAgreementClick.bind(this);
     this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
+    this.handleNameChangeAddClick = this.handleNameChangeAddClick.bind(this);
   }
 
   componentDidMount() {
@@ -684,15 +686,17 @@ class SelectExitingDocumentModal extends Component {
   }
 
   handleAddExistingAgreementsClick() {
+    // use word agreements to accord with agreements model in api
     console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
-    this.props.addExistingAgreements({
-      agreementIdArray: this.state.selectedDocumentsArray,
-      flatId: this.props.editFlat ? this.props.flat.id : null,
-      bookingId: this.props.editFlat ? null : this.props.booking.id,
-      fromEditFlat: this.props.editFlat,
-      callback: () => this.addExistingAgreementsCallback()
-    });
-    this.props.showLoading();
+    this.state({ showNameAgreementsSubModal: true });
+    // this.props.addExistingAgreements({
+    //   agreementIdArray: this.state.selectedDocumentsArray,
+    //   flatId: this.props.editFlat ? this.props.flat.id : null,
+    //   bookingId: this.props.editFlat ? null : this.props.booking.id,
+    //   fromEditFlat: this.props.editFlat,
+    //   callback: () => this.addExistingAgreementsCallback()
+    // });
+    // this.props.showLoading();
   }
 
   renderEachThumbnail() {
@@ -772,6 +776,62 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
+  handleNameChangeAddClick() {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+
+  }
+
+  renderEachDocumentNameInput() {
+    return (
+      <li className="select-existing-document-modal-name-agreement-sub-modal-scroll-each">
+        <div className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-original">
+          Original Name
+        </div>
+        <input className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new"/>
+      </li>
+    )
+  }
+
+  renderNameAgreementSubModal() {
+    // Parent div is used to center the submodal on page
+    return (
+      <div className="select-existing-document-modal-name-agreement-sub-modal-parent">
+        <div className="select-existing-document-modal-name-agreement-sub-modal">
+          <div className="select-existing-document-modal-name-agreement-sub-modal-title">
+            Name Added Document
+          </div>
+          <form action="" className="select-existing-document-modal-name-agreement-sub-modal-scroll-form">
+            <ul className="select-existing-document-modal-name-agreement-sub-modal-scroll">
+              {this.renderEachDocumentNameInput()}
+              {this.renderEachDocumentNameInput()}
+              {this.renderEachDocumentNameInput()}
+              {this.renderEachDocumentNameInput()}
+            </ul>
+          </form>
+
+          <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
+          Please fill in a name for the document
+          </div>
+          <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box">
+            <div
+              className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel"
+              onClick={this.handleNameChangeAddClick}
+            >
+              Cancel
+            </div>
+            <div
+              className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-add"
+              onClick={this.handleNameChangeAddClick}
+            >
+              Add
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
 
   renderPostActionMessage() {
     showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
@@ -794,6 +854,7 @@ class SelectExitingDocumentModal extends Component {
     return (
       <div>
         {this.state.selectExistingDocumentCompleted ? this.renderPostActionMessage() : this.renderExistingDocumentsMain()}
+        {this.state.showNameAgreementsSubModal ? this.renderNameAgreementSubModal() : null}
       </div>
     );
   }

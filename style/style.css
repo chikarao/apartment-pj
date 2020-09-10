@@ -3048,6 +3048,129 @@ form {
   margin-top: 30px;
 }
 
+.select-existing-document-modal-name-agreement-sub-modal-parent {
+  /* width: 100%; */
+  /* height: 100%; */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 11;
+  /* background-color: gray; */
+}
+
+.select-existing-document-modal-name-agreement-sub-modal {
+  width: 400px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  z-index: 12;
+  margin: 25% auto;
+  /* position: fixed;
+  top: 25%; */
+  /* left: 50%; */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 5px 10px 10px #ccc;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-title {
+  width: 100%;
+  height: auto;
+  font-size: 18px;
+  text-align: center;
+  padding: 15px;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-scroll-form {
+  height: 45%;
+  width: auto;
+  /* width: 85%;
+  margin: 20px auto 20px auto;
+  padding: 0;
+  margin: 10px auto;
+  overflow-y: scroll; */
+  padding: 0;
+  margin: 15px;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-scroll {
+  height: 100%;
+  width: 100%;
+  /* margin: 10px auto; */
+  overflow-y: scroll;
+  padding: 0;
+}
+
+/* .select-existing-document-modal-name-agreement-sub-modal-scroll li:last-child {
+  border-bottom: 1px solid #ccc;
+} */
+
+.select-existing-document-modal-name-agreement-sub-modal-scroll-each {
+  height: auto;
+  width: auto;
+  /* border-top: 1px solid #ccc; */
+  list-style-type: none;
+  text-align: left;
+  margin: 0 0 10px 0;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-scroll-each-original {
+  width: auto;
+  font-size: 12px;
+
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-scroll-each-new {
+  font-size: 15px;
+  border: 1px solid #ccc;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box {
+  width: 70%;
+  height: 33px;
+  margin: 5px auto 15px auto;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel,
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-add {
+  height: auto;
+  border-radius: 5px;
+  width: 100px;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel:hover,
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-add:hover {
+  background-color: lightgray;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-add {
+  background-color: blue;
+  color: white;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel {
+  background-color: gray;
+  color: white;
+  border: 1px solid #ccc;
+}
+
+.select-existing-document-modal-name-agreement-sub-modal-buttons-box-error {
+  font-size: 12px;
+  color: red;
+  text-align: center;
+  width: 100%;
+  height: auto;
+  margin: 5px 0;
+}
+
 /* Flat_selection_box */
 .flat-selection-box-container {
   z-index: 14;
