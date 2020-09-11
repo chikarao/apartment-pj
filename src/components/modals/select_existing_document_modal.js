@@ -31,7 +31,9 @@ class SelectExitingDocumentModal extends Component {
       shrinkModal: false,
       loadingMessage: false,
       selectedAgreementId: null,
-      showNameAgreementsSubModal: true
+      showNameAgreementsSubModal: false,
+      blankInputElementArray: [],
+      newAgreementNameByIdObject: {}
     };
     this.handleClose = this.handleClose.bind(this);
     // this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -45,6 +47,7 @@ class SelectExitingDocumentModal extends Component {
     this.handleGetFieldValuesForAgreementClick = this.handleGetFieldValuesForAgreementClick.bind(this);
     this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
     this.handleNameChangeAddClick = this.handleNameChangeAddClick.bind(this);
+    this.handleDocumentNameInputChange = this.handleDocumentNameInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -253,7 +256,7 @@ class SelectExitingDocumentModal extends Component {
     }
 
     this.setState({ selectedDocumentsArray }, () => {
-      // console.log('in select_exiting_document, handleDocumentCheck, checkedElement, elementVal, this.state.selectedDocumentsArray: ', checkedElement, elementVal, this.state.selectedDocumentsArray);
+      console.log('in select_exiting_document, handleDocumentCheck, checkedElement, elementVal, this.state.selectedDocumentsArray: ', checkedElement, elementVal, this.state.selectedDocumentsArray);
     })
   }
 
@@ -685,18 +688,29 @@ class SelectExitingDocumentModal extends Component {
     );
   }
 
+  addExistingAgreements(newAgreementNameByIdObject) {
+    this.props.addExistingAgreements({
+      agreementIdObject: newAgreementNameByIdObject,
+      // agreementIdArray: this.state.selectedDocumentsArray,
+      flatId: this.props.editFlat ? this.props.flat.id : null,
+      bookingId: this.props.editFlat ? null : this.props.booking.id,
+      fromEditFlat: this.props.editFlat,
+      callback: () => this.addExistingAgreementsCallback()
+    });
+    this.props.showLoading();
+  }
+
   handleAddExistingAgreementsClick() {
     // use word agreements to accord with agreements model in api
     console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
-    this.state({ showNameAgreementsSubModal: true });
-    // this.props.addExistingAgreements({
-    //   agreementIdArray: this.state.selectedDocumentsArray,
-    //   flatId: this.props.editFlat ? this.props.flat.id : null,
-    //   bookingId: this.props.editFlat ? null : this.props.booking.id,
-    //   fromEditFlat: this.props.editFlat,
-    //   callback: () => this.addExistingAgreementsCallback()
-    // });
-    // this.props.showLoading();
+    const newAgreementNameByIdObject = {}
+    _.each(this.state.selectedDocumentsArray, eachAgreementId => {
+      newAgreementNameByIdObject[eachAgreementId] = `copy of ${this.props.allUserAgreementsMapped[eachAgreementId].document_name}`;
+    });
+
+    this.setState({ showNameAgreementsSubModal: true,
+                    newAgreementNameByIdObject
+                  });
   }
 
   renderEachThumbnail() {
@@ -776,61 +790,124 @@ class SelectExitingDocumentModal extends Component {
     // }
   }
 
+  setBlankInputElementArray(agreementId, emptyBool, index) {
+    const blankInputElementArray = [...this.state.blankInputElementArray];
+    // const elementId = `${agreementId},${this.props.allUserAgreementsMapped[agreementId].document_name}`
+    // const blankInputElement = document.getElementById()
+    // const index = this.state.blankInputElementArray.indexOf(agreementId);
+    // if id is not in the array and the field is blank, push into array
+    if (index === -1 && emptyBool) blankInputElementArray.push(agreementId);
+    // if id is in the array and the field is not empty, take the id out
+    if (index !== -1 && !emptyBool) blankInputElementArray.splice(index, 1);
+    if (this.state.blankInputElementArray !== blankInputElementArray) {
+      this.setState({ blankInputElementArray }, () => {
+        console.log('in SelectExistingDocumentModal, setBlankInputElementArray, this.state.blankInputElementArray, agreementId ', this.state.blankInputElementArray, agreementId);
+      });
+    }
+  }
+
   handleNameChangeAddClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    let form = null;
-    let formData = null;
-
+    // let form = null;
+    // let formData = null;
     if (elementVal === 'add') {
-      form = document.getElementById('document-name-form').elements;
-      formData = new FormData(document.forms['document-name-form']);
-      
+      // form = document.getElementById('document-name-form').elements;
+      // let newAgreementName = null;
+
+      // const newAgreementNameByIdObject = {};
+      // formData = new FormData(document.forms['document-name-form']);
+      // _.each(this.state.selectedDocumentsArray, eachAgreementId => {
+        // newAgreementName = formData.get(eachAgreementId)
+      //   if (newAgreementName) {
+      //     newAgreementNameByIdObject[eachAgreementId] = newAgreementName;
+      //   } else {
+      //     this.setBlankInputElementArray(eachAgreementId);
+      //   }
+      // })
+      // Call backend api action add_existing_agreements only if there is
+      // something in newAgreementNameByIdObject and there are no blank inputs
+      if (!_.isEmpty(this.state.newAgreementNameByIdObject) && this.state.blankInputElementArray.length === 0) this.addExistingAgreements(this.state.newAgreementNameByIdObject);
+
+    } else {
+      // close name agreement submodal
+      this.setState({ showNameAgreementsSubModal: false })
     }
     console.log('in SelectExistingDocumentModal, handleNameChangeAddClick, elementVal, form, formData, formData.get(test) ', elementVal, form, formData, formData.get('test'));
   }
 
+  handleDocumentNameInputChange(event) {
+    const changedElement = event.target;
+    const agreementId = parseInt(changedElement.getAttribute('id'), 10);
+    console.log('in SelectExistingDocumentModal, handleDocumentNameInputChange, event.target, event.target.getAttribute(id), event.target.value ', event.target, event.target.getAttribute('id'), event.target.value);
+    const newObject = { ...this.state.newAgreementNameByIdObject, [agreementId]: changedElement.value }
+    this.setState({ newAgreementNameByIdObject: newObject }, () => {
+      const index = this.state.blankInputElementArray.indexOf(agreementId)
+      if (changedElement.value === '' && index === -1) {
+        this.setBlankInputElementArray(agreementId, true, index);
+      } else if (index !== -1) {
+        this.setBlankInputElementArray(agreementId, false, index);
+      }
+    });
+  }
+
   renderEachDocumentNameInput() {
-    return (
-      <li className="select-existing-document-modal-name-agreement-sub-modal-scroll-each">
-        <div className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-original">
-          Original Name
-        </div>
-        <input id="test" type="text" name="test" className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new" />
-      </li>
-    )
+    let documentName = null;
+    let elementId = '';
+    return _.map(this.state.selectedDocumentsArray, eachAgreementId => {
+
+      documentName = this.props.allUserAgreementsMapped[eachAgreementId].document_name;
+      elementId = `${eachAgreementId},${documentName}`
+
+      return (
+        <li key={eachAgreementId} className="select-existing-document-modal-name-agreement-sub-modal-scroll-each">
+          <div className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-original">
+            {documentName}
+          </div>
+          <input
+            id={eachAgreementId}
+            type="text"
+            name="eachAgreementId"
+            value={this.state.newAgreementNameByIdObject[eachAgreementId]}
+            onChange={this.handleDocumentNameInputChange}
+            className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new"
+            style={this.state.blankInputElementArray.indexOf(eachAgreementId) !== -1 ? { border: '1px solid red' } : null}
+          />
+        </li>);
+    });
   }
 
   renderNameAgreementSubModal() {
     // Parent div is used to center the submodal on page
     return (
-      <div className="select-existing-document-modal-name-agreement-sub-modal-parent">
+      <div className="select-existing-document-modal-name-agreement-sub-modal-centering-div">
         <div className="select-existing-document-modal-name-agreement-sub-modal">
           <div className="select-existing-document-modal-name-agreement-sub-modal-title">
             Name Added Document
           </div>
+
           <form id="document-name-form" method="post" className="select-existing-document-modal-name-agreement-sub-modal-form">
             <ul className="select-existing-document-modal-name-agreement-sub-modal-scroll">
               {this.renderEachDocumentNameInput()}
-              {this.renderEachDocumentNameInput()}
-              {this.renderEachDocumentNameInput()}
-              {this.renderEachDocumentNameInput()}
             </ul>
-            <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
-            Please fill in a name for the document
-            </div>
-
           </form>
+
+          <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
+          Please fill in a name for the document
+          </div>
+
           <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box">
             <div
               className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel"
               onClick={this.handleNameChangeAddClick}
+              value="cancel"
             >
               Cancel
             </div>
             <div
               className="btn select-existing-document-modal-name-agreement-sub-modal-buttons-box-add"
-              onClick={this.handleNameChangeAddClick}
+              onClick={this.state.blankInputElementArray.length > 0 ? null : this.handleNameChangeAddClick}
+              style={this.state.blankInputElementArray.length > 0 ? { backgroundColor: 'lightgray' } : null}
               value="add"
               // type="submit"
             >
