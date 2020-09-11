@@ -765,10 +765,10 @@ class SelectExitingDocumentModal extends Component {
               :
               ''}
             {this.renderButtons()}
-            {this.renderSelectedDocumentsThumbnail()}
             <div className="edit-profile-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
+              {this.renderSelectedDocumentsThumbnail()}
               {
                 !this.props.getFieldValues
                 ?
@@ -799,11 +799,10 @@ class SelectExitingDocumentModal extends Component {
     if (index === -1 && emptyBool) blankInputElementArray.push(agreementId);
     // if id is in the array and the field is not empty, take the id out
     if (index !== -1 && !emptyBool) blankInputElementArray.splice(index, 1);
-    if (this.state.blankInputElementArray !== blankInputElementArray) {
-      this.setState({ blankInputElementArray }, () => {
-        console.log('in SelectExistingDocumentModal, setBlankInputElementArray, this.state.blankInputElementArray, agreementId ', this.state.blankInputElementArray, agreementId);
-      });
-    }
+
+    this.setState({ blankInputElementArray }, () => {
+      console.log('in SelectExistingDocumentModal, setBlankInputElementArray, this.state.blankInputElementArray, agreementId ', this.state.blankInputElementArray, agreementId);
+    });
   }
 
   handleNameChangeAddClick(event) {
@@ -871,7 +870,7 @@ class SelectExitingDocumentModal extends Component {
             value={this.state.newAgreementNameByIdObject[eachAgreementId]}
             onChange={this.handleDocumentNameInputChange}
             className="select-existing-document-modal-name-agreement-sub-modal-scroll-each-new"
-            style={this.state.blankInputElementArray.indexOf(eachAgreementId) !== -1 ? { border: '1px solid red' } : null}
+            style={this.state.blankInputElementArray.indexOf(eachAgreementId) !== -1 ? { border: '2px solid red' } : null}
           />
         </li>);
     });
@@ -893,7 +892,7 @@ class SelectExitingDocumentModal extends Component {
           </form>
 
           <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
-          Please fill in a name for the document
+          {this.state.blankInputElementArray.length > 0 ? 'Please fill in a name for the document' : ''}
           </div>
 
           <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box">

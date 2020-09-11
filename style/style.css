@@ -2899,7 +2899,7 @@ form {
   height: auto;
   display: flex;
   flex-direction: column;
-  margin: 0 auto 5px auto;
+  margin: 0 auto 15px auto;
 }
 
 .select-existing-document-button-container-sub {
@@ -3069,6 +3069,7 @@ form {
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 5px 10px 10px #ccc;
+  position: relative;
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-title {
@@ -3120,12 +3121,14 @@ form {
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-buttons-box {
-  width: 70%;
+  width: 100%;
   height: 33px;
   margin: 5px auto 15px auto;
   display: flex;
-  justify-content: space-around;
-  flex-direction: row;
+  /* justify-content: space-around; */
+  /* flex-direction: row; */
+  position: absolute;
+  bottom: 0;
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel,
@@ -3143,12 +3146,14 @@ form {
 .select-existing-document-modal-name-agreement-sub-modal-buttons-box-add {
   background-color: blue;
   color: white;
+  margin: 0 auto 0 0;
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-buttons-box-cancel {
   background-color: gray;
   color: white;
   border: 1px solid #ccc;
+  margin: 0 30px 0 auto;
 }
 
 .select-existing-document-modal-name-agreement-sub-modal-buttons-box-error {
@@ -3158,6 +3163,7 @@ form {
   width: 100%;
   height: auto;
   margin: 5px 0;
+  min-height: 12px;
 }
 
 /* Flat_selection_box */
