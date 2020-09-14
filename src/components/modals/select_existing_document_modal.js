@@ -108,7 +108,9 @@ class SelectExitingDocumentModal extends Component {
   addExistingAgreementsCallback() {
     console.log('in SelectExitingDocumentModal, addExistingAgreementsCallback: ');
     // showHideClassName = 'modal display-none';
-    this.setState({ selectExistingDocumentCompleted: true });
+    this.setState({ selectExistingDocumentCompleted: true,
+                    showNameAgreementsSubModal: false
+                  });
     // this.resetAdvancedFilters();
     // this.emptyInputFields();
     this.props.showLoading();
@@ -832,7 +834,7 @@ class SelectExitingDocumentModal extends Component {
       // close name agreement submodal
       this.setState({ showNameAgreementsSubModal: false })
     }
-    console.log('in SelectExistingDocumentModal, handleNameChangeAddClick, elementVal, form, formData, formData.get(test) ', elementVal, form, formData, formData.get('test'));
+    console.log('in SelectExistingDocumentModal, handleNameChangeAddClick, elementVal ', elementVal);
   }
 
   handleDocumentNameInputChange(event) {
@@ -885,11 +887,10 @@ class SelectExitingDocumentModal extends Component {
             Name Added Document
           </div>
 
-          <form id="document-name-form" method="post" className="select-existing-document-modal-name-agreement-sub-modal-form">
-            <ul className="select-existing-document-modal-name-agreement-sub-modal-scroll">
-              {this.renderEachDocumentNameInput()}
-            </ul>
-          </form>
+          <ul className="select-existing-document-modal-name-agreement-sub-modal-scroll">
+            {this.renderEachDocumentNameInput()}
+          </ul>
+
 
           <div className="select-existing-document-modal-name-agreement-sub-modal-buttons-box-error">
           {this.state.blankInputElementArray.length > 0 ? 'Please fill in a name for the document' : ''}
