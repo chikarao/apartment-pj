@@ -690,18 +690,6 @@ class SelectExitingDocumentModal extends Component {
     );
   }
 
-  addExistingAgreements(newAgreementNameByIdObject) {
-    this.props.addExistingAgreements({
-      agreementIdObject: newAgreementNameByIdObject,
-      // agreementIdArray: this.state.selectedDocumentsArray,
-      flatId: this.props.editFlat ? this.props.flat.id : null,
-      bookingId: this.props.editFlat ? null : this.props.booking.id,
-      fromEditFlat: this.props.editFlat,
-      callback: () => this.addExistingAgreementsCallback()
-    });
-    this.props.showLoading();
-  }
-
   handleAddExistingAgreementsClick() {
     // use word agreements to accord with agreements model in api
     console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
@@ -807,34 +795,31 @@ class SelectExitingDocumentModal extends Component {
     });
   }
 
+  addExistingAgreements(newAgreementNameByIdObject) {
+    this.props.addExistingAgreements({
+      agreementIdObject: newAgreementNameByIdObject,
+      // agreementIdArray: this.state.selectedDocumentsArray,
+      flatId: this.props.editFlat ? this.props.flat.id : null,
+      bookingId: this.props.editFlat ? null : this.props.booking.id,
+      fromEditFlat: this.props.editFlat,
+      callback: () => this.addExistingAgreementsCallback()
+    });
+    this.props.showLoading();
+  }
+
   handleNameChangeAddClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // let form = null;
-    // let formData = null;
-    if (elementVal === 'add') {
-      // form = document.getElementById('document-name-form').elements;
-      // let newAgreementName = null;
 
-      // const newAgreementNameByIdObject = {};
-      // formData = new FormData(document.forms['document-name-form']);
-      // _.each(this.state.selectedDocumentsArray, eachAgreementId => {
-        // newAgreementName = formData.get(eachAgreementId)
-      //   if (newAgreementName) {
-      //     newAgreementNameByIdObject[eachAgreementId] = newAgreementName;
-      //   } else {
-      //     this.setBlankInputElementArray(eachAgreementId);
-      //   }
-      // })
-      // Call backend api action add_existing_agreements only if there is
-      // something in newAgreementNameByIdObject and there are no blank inputs
+    if (elementVal === 'add') {
+      // If there is something in new agreement by id objecg and there are
+      // no blank inputs, call action
       if (!_.isEmpty(this.state.newAgreementNameByIdObject) && this.state.blankInputElementArray.length === 0) this.addExistingAgreements(this.state.newAgreementNameByIdObject);
 
     } else {
-      // close name agreement submodal
+      // close name agreement submodal if click on cancel
       this.setState({ showNameAgreementsSubModal: false })
     }
-    console.log('in SelectExistingDocumentModal, handleNameChangeAddClick, elementVal ', elementVal);
   }
 
   handleDocumentNameInputChange(event) {

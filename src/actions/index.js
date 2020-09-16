@@ -3012,7 +3012,7 @@ export function createAgreement(agreementAttributes, callback) {
 
 export function editAgreement(agreementFormData, callback) {
   console.log('in actions index, editAgreement, agreementFormData: ', agreementFormData);
-  console.log('in actions index, editAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, editAgreement: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = agreementFormData;
   return function (dispatch) {
@@ -3021,7 +3021,7 @@ export function editAgreement(agreementFormData, callback) {
     })
     .then(response => {
       console.log('response to editAgreement, response: ', response);
-      console.log('response to editAgreement, response.data.data: ', response.data.data);
+      // console.log('response to editAgreement, response.data.data: ', response.data.data);
       dispatch({
         type: EDIT_AGREEMENT,
         payload: response.data.data

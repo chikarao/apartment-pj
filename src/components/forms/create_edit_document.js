@@ -2444,7 +2444,7 @@ longActionPress(props) {
                   if (i === Object.keys(document_field_choices).length - 1) totalHeight += (i * marginBetween);
                 }
               }) // end of each document_field_choices
-              console.log('in create_edit_document, renderTemplateElements, newElement, eachElement, page, totalWidth, totalHeight: ', newElement, eachElement, page, totalWidth, totalHeight);
+              // console.log('in create_edit_document, renderTemplateElements, newElement, eachElement, page, totalWidth, totalHeight: ', newElement, eachElement, page, totalWidth, totalHeight);
               modifiedElement.width = `${totalWidth}%`;
               modifiedElement.height = `${totalHeight}%`;
               localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: totalWidth, height: totalHeight }, background.getBoundingClientRect(), marginBetween, true);
@@ -4003,7 +4003,8 @@ longActionPress(props) {
       templateFieldChoiceArray: newArray,
       // Somehow, array needs to be assigned specifically like below or does not empty out
       templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
-      templateElementAttributes: null
+      templateElementAttributes: null,
+      showCustomInputCreateMode: this.state.showCustomInputCreateMode ? false : this.state.showCustomInputCreateMode
     }, () => {
       // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
@@ -4075,7 +4076,7 @@ longActionPress(props) {
           //   modNewObject[elementType]--;
           // }
         }
-        console.log('in create_edit_document, handleFieldChoiceActionClick, takeOutOtherTypes, each, baseType modNewObject: ', each, baseType, modNewObject);
+        // console.log('in create_edit_document, handleFieldChoiceActionClick, takeOutOtherTypes, each, baseType modNewObject: ', each, baseType, modNewObject);
       }); // end of each
       const takoutIndexArrayLength = takeOutIndexArray.length;
       if (takoutIndexArrayLength > 0) {
@@ -4131,7 +4132,7 @@ longActionPress(props) {
         increment ? newObject[elementType] = newObject[elementType] + increment : newObject[elementType]++;
         // newObject[elementType]++;
       }
-    } else { // else of if !input || !buttons
+    } else { // else of if !input && !buttons
       if (elementType === 'buttons') {
         // Get index and elementType of same id with different type ie list
         // returnedObject = getTakeOutIndex(elementIdNoType);
@@ -4141,11 +4142,26 @@ longActionPress(props) {
         // if (returnedObject.elementTypeReturned) newObject[returnedObject.elementTypeReturned]--;
         newObject = takeOutOtherTypes(elementType, newObject);
       }
-      console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType === buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
-      newObject.array.push(elementId);
-      newObject[elementType]++;
+
+      if (elementType === 'input') {
+        const customInputIdIndex = this.state.templateElementActionIdObject.array.indexOf('input,custom')
+        if (customInputIdIndex !== -1) {
+          newObject.array.splice(customInputIdIndex, 1);
+          newObject[elementType]--;
+        } else {
+          newObject.array.push(elementId);
+          newObject[elementType]++;
+        }
+        // console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType equals === input elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+      }
+
+      // if (elementId !== 'input,custom') {
+      //   newObject.array.push(elementId);
+      //   newObject[elementType]++;
+      //   console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType === buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+      // }
     }
-    console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState after each each elementId, elementType, this.state.templateElementActionIdObject : ', elementId, elementType, this.state.templateElementActionIdObject);
+    // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState after each each elementId, elementType, this.state.templateElementActionIdObject : ', elementId, elementType, this.state.templateElementActionIdObject);
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, this.state.templateElementActionIdObject, increment: ', elementId, elementType, this.state.templateElementActionIdObject, increment);
@@ -4159,8 +4175,16 @@ longActionPress(props) {
       // if (elementType === 'input' || elementType === 'buttons' || (elementType === 'select')) {
       if (elementType === 'input' || elementType === 'buttons') {
       // if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
-        this.handleTemplateElementAddClick();
-      }
+        if (elementIdArray[1] === 'custom') {
+          this.setState({
+            showCustomInputCreateMode: !this.state.showCustomInputCreateMode
+          }, () => {
+            console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode: ', elementId, this.state.showCustomInputCreateMode);
+          });
+        } else {
+          this.handleTemplateElementAddClick();
+        } // if (elementIdArray[1] === 'custom') {
+      } // if (elementType === 'input' || elementType === 'buttons') {
     });
   }
 
@@ -4585,14 +4609,12 @@ longActionPress(props) {
     const mousedOverElement = event.target;
     const elementId = mousedOverElement.getAttribute('id');
     console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
-
   }
 
   renderEachFieldChoice() {
     const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
       const { eachIndex, valueString, choiceText } = props;
-      // console.log('in create_edit_document, renderChoiceDivs, choiceText, valueString: ', choiceText, valueString);
       return (
         <div
           key={eachIndex}
@@ -4937,10 +4959,76 @@ longActionPress(props) {
     );
   }
 
+  renderCustomFieldButton() {
+    return (
+      <div
+        className="create-edit-document-template-each-choice-custom"
+      >
+        <div
+          className="create-edit-document-template-each-choice-label-custom"
+        >
+          Custom Field
+        </div>
+        <div
+          className="create-edit-document-template-each-choice-action-box-custom"
+        >
+          <div
+            id={'input,custom'}
+            onClick={this.handleFieldChoiceActionClick}
+            style={this.state.templateElementActionIdObject.array.indexOf('input,custom') !== -1 ? { backgroundColor: 'lightgray' } : {}}
+            // className="create-edit-document-template-each-choice-action-box-button"
+          >
+            Create
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderCustomFieldNameInput() {
+    return (
+      <div
+        className="create-edit-document-template-each-choice-input"
+      >
+        <div
+          className="create-edit-document-template-each-choice-label-input"
+        >
+          Name the New Custom Field
+        </div>
+        <input type="text" className="create-edit-document-template-each-choice-action-box-input" />
+      </div>
+    );
+  }
+
+  renderCustomFieldNameControls() {
+    return (
+      <div
+        className="create-edit-document-template-each-choice-input"
+      >
+        <div
+          className="create-edit-document-template-each-choice-label-input"
+        >
+          Link to Database Value
+        </div>
+        <div className="create-edit-document-template-edit-field-box-controls-action">
+          <div
+            className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
+          >
+           <div>DB Value</div>
+           <i className="fas fa-times" style={{ margin: '3px'}}></i>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderTemplateEditFieldBox() {
     return (
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
+        {this.renderCustomFieldButton()}
+        {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameInput() : null}
+        {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameControls() : null}
         <div className="create-edit-document-template-edit-field-box-choices">
           {this.state.translationModeOn ? this.renderEachTranslationFieldChoice() : this.renderEachFieldChoice()}
         </div>
