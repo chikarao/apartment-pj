@@ -313,7 +313,6 @@ class GoogleMap extends Component {
         // END of map initialization and map addlisterners
   } // end of renderMap
 
-
   fetchFlatsCallback(fromWhere) {
     // console.log('in googlemap, fetchFlatsCallback:', fromWhere);
     this.props.showLoading(fromWhere);

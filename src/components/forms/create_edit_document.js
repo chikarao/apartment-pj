@@ -3998,13 +3998,24 @@ longActionPress(props) {
     }
     // Null elementVal means home or root, so initialize array
     if (elementVal === null) newArray = [];
-
+    // this.state.templateElementActionIdObject.array.indexOf('input,custom') === -1
+    // When showCustomInputCreateMode is true, do not reinitiallize
     this.setState({
       templateFieldChoiceArray: newArray,
       // Somehow, array needs to be assigned specifically like below or does not empty out
-      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
-      templateElementAttributes: null,
-      showCustomInputCreateMode: this.state.showCustomInputCreateMode ? false : this.state.showCustomInputCreateMode
+      // templateElementActionIdObject and templateElementAttributes
+      templateElementActionIdObject: !this.state.showCustomInputCreateMode
+                                      ?
+                                      { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
+                                      :
+                                      this.state.templateElementActionIdObject,
+      templateElementAttributes: !this.state.showCustomInputCreateMode
+                                  ?
+                                  null
+                                  :
+                                  { ...this.state.templateElementAttributes },
+
+      // showCustomInputCreateMode: this.state.showCustomInputCreateMode ? false : this.state.showCustomInputCreateMode
     }, () => {
       // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
@@ -4611,6 +4622,100 @@ longActionPress(props) {
     console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
   }
 
+  renderEachCustomFieldChoice() {
+    const elementIdArray = this.state.templateElementActionIdObject.array;
+
+    let choiceText = null;
+    let inputElement = null;
+    let translationSibling = null;
+    let choices = null;
+    let choicesYesOrNo = null;
+    let choicesObject = null;
+    let selectChoices = null;
+    let valueString = null;
+    let firstChoice = null;
+
+    const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
+    console.log('in create_edit_document, renderEachCustomFieldChoice, this.props.agreement, templateMappingObject: ', this.props.agreement, templateMappingObject);
+
+    if (templateMappingObject) {
+      return _.map(Object.keys(templateMappingObject), eachKey => {
+        // If there is a translation in AppLanguages, text comes from AppLanguages
+        if (AppLanguages[eachKey]) choiceText = AppLanguages[eachKey][this.props.appLanguageCode];
+        // If there is a translation object under eachKey, text become translation
+        if (templateMappingObject[eachKey] && templateMappingObject[eachKey].translation) choiceText = templateMappingObject[eachKey].translation[this.props.appLanguageCode];
+        // If object is a group heading such as building or tenant, list element with angle
+        // to indicate, there is something behind it
+        if (templateMappingObject[eachKey] && !(templateMappingObject[eachKey].component || templateMappingObject[eachKey].params)) {
+          // To deal with translations of objects with one choice inputFieldValue and a selectChoices associated with it
+          if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) {
+            choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
+          }
+
+          return this.renderGroupElement({ eachKey, choiceText, templateMappingObject });
+        } else if (templateMappingObject[eachKey]) { // else of if not group
+          firstChoice = templateMappingObject[eachKey].choices ? templateMappingObject[eachKey].choices[Object.keys(templateMappingObject[eachKey].choices)[0]] : null;
+          inputElement = !templateMappingObject[eachKey].params && firstChoice.params.val === 'inputFieldValue';
+          valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
+          translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
+
+          if (inputElement) {
+            return this.renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField: true })
+          }
+        }
+      });
+    } // if (templateMappingObject)
+  }
+
+  renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField }) {
+    return (
+      <div
+        key={eachKey}
+        className="create-edit-document-template-each-choice"
+        style={templateMappingObject[eachKey].extraHeightTemplate ? { height: '70px' } : {}}
+      >
+        <div
+          className="create-edit-document-template-each-choice-label"
+          style={templateMappingObject[eachKey].extraHeightTemplate ? { marginBottom: '10px' } : {}}
+        >
+          {choiceText}
+        </div>
+        <div
+          className="create-edit-document-template-each-choice-action-box"
+        >
+          <div
+            id={valueString}
+            onClick={this.handleFieldChoiceActionClick}
+            onMouseOver={this.handleFieldChoiceMouseOver}
+          >
+            {customField ? 'Link Value' : 'Add Input'}
+          </div>
+          <div
+            id={valueString + ',translation_sibling'}
+            style={!translationSibling ? { border: 'none' } : {}}
+            onClick={this.handleFieldChoiceActionClick}
+          >
+          {translationSibling && !customField ? 'Add Translation' : ''}
+          {translationSibling && customField ? 'Link Translation' : ''}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderGroupElement({ eachKey, choiceText, templateMappingObject }) {
+    return (
+      <div
+        key={eachKey}
+        className="create-edit-document-template-each-choice-group"
+        value={eachKey}
+        onClick={this.handleFieldChoiceClick}
+      >
+        {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+      </div>
+    );
+  }
+
   renderEachFieldChoice() {
     const elementIdArray = this.state.templateElementActionIdObject.array;
     const renderChoiceDivs = (props) => {
@@ -4653,7 +4758,6 @@ longActionPress(props) {
     };
 
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
-    console.log('in create_edit_document, handleFieldChoiceClick, this.props.agreement, templateMappingObject: ', this.props.agreement, templateMappingObject);
 
     let choiceText = null;
     let inputElement = null;
@@ -4678,16 +4782,18 @@ longActionPress(props) {
           if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) {
             choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
           }
-          return (
-            <div
-              key={eachKey}
-              className="create-edit-document-template-each-choice-group"
-              value={eachKey}
-              onClick={this.handleFieldChoiceClick}
-            >
-              {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
-            </div>
-          );
+
+          return this.renderGroupElement({ eachKey, choiceText, templateMappingObject });
+          // return (
+          //   <div
+          //     key={eachKey}
+          //     className="create-edit-document-template-each-choice-group"
+          //     value={eachKey}
+          //     onClick={this.handleFieldChoiceClick}
+          //   >
+          //     {choiceText}&ensp;&ensp;{!templateMappingObject[eachKey].component ? <i className="fas fa-angle-right" style={{ color: 'blue' }}></i> : ''}
+          //   </div>
+          // );
         } else if (templateMappingObject[eachKey]) {
           firstChoice = templateMappingObject[eachKey].choices ? templateMappingObject[eachKey].choices[Object.keys(templateMappingObject[eachKey].choices)[0]] : null;
           // Get the type of element to distinguish which to render
@@ -4714,37 +4820,38 @@ longActionPress(props) {
               });
             }
 
-            return (
-              <div
-                key={eachKey}
-                className="create-edit-document-template-each-choice"
-                style={templateMappingObject[eachKey].extraHeightTemplate ? { height: '70px' } : {}}
-              >
-                <div
-                  className="create-edit-document-template-each-choice-label"
-                  style={templateMappingObject[eachKey].extraHeightTemplate ? { marginBottom: '10px' } : {}}
-                >
-                  {choiceText}
-                </div>
-                <div
-                  className="create-edit-document-template-each-choice-action-box"
-                >
-                  <div
-                    id={valueString}
-                    onClick={this.handleFieldChoiceActionClick}
-                    onMouseOver={this.handleFieldChoiceMouseOver}
-                  >
-                    Add Input
-                  </div>
-                  <div
-                    id={valueString + ',translation_sibling'}
-                    style={!translationSibling ? { border: 'none' } : {}}
-                    onClick={this.handleFieldChoiceActionClick}
-                  >
-                  {translationSibling ? 'Add Translation' : ''}</div>
-                </div>
-              </div>
-            );
+            return this.renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling })
+            // return (
+            //   <div
+            //     key={eachKey}
+            //     className="create-edit-document-template-each-choice"
+            //     style={templateMappingObject[eachKey].extraHeightTemplate ? { height: '70px' } : {}}
+            //   >
+            //     <div
+            //       className="create-edit-document-template-each-choice-label"
+            //       style={templateMappingObject[eachKey].extraHeightTemplate ? { marginBottom: '10px' } : {}}
+            //     >
+            //       {choiceText}
+            //     </div>
+            //     <div
+            //       className="create-edit-document-template-each-choice-action-box"
+            //     >
+            //       <div
+            //         id={valueString}
+            //         onClick={this.handleFieldChoiceActionClick}
+            //         onMouseOver={this.handleFieldChoiceMouseOver}
+            //       >
+            //         Add Input
+            //       </div>
+            //       <div
+            //         id={valueString + ',translation_sibling'}
+            //         style={!translationSibling ? { border: 'none' } : {}}
+            //         onClick={this.handleFieldChoiceActionClick}
+            //       >
+            //       {translationSibling ? 'Add Translation' : ''}</div>
+            //     </div>
+            //   </div>
+            // );
           } // End of if inputElement
 
           // Case of field being choices but not Yes or No choices
@@ -5014,7 +5121,7 @@ longActionPress(props) {
           <div
             className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
           >
-           <div>DB Value</div>
+           <div>Building/Construction Translation</div>
            <i className="fas fa-times" style={{ margin: '3px'}}></i>
           </div>
         </div>
@@ -5023,6 +5130,7 @@ longActionPress(props) {
   }
 
   renderTemplateEditFieldBox() {
+
     return (
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
@@ -5030,7 +5138,9 @@ longActionPress(props) {
         {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameInput() : null}
         {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameControls() : null}
         <div className="create-edit-document-template-edit-field-box-choices">
-          {this.state.translationModeOn ? this.renderEachTranslationFieldChoice() : this.renderEachFieldChoice()}
+          {this.state.translationModeOn && !this.state.showCustomInputCreateMode ? this.renderEachTranslationFieldChoice() : null}
+          {!this.state.showCustomInputCreateMode && !this.state.translationModeOn ? this.renderEachFieldChoice() : null}
+          {!this.state.translationModeOn && this.state.showCustomInputCreateMode ? this.renderEachCustomFieldChoice() : null}
         </div>
       </div>
     );
