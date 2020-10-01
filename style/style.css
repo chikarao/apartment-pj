@@ -5619,7 +5619,7 @@ form {
 .create-edit-document-template-each-choice,
 .create-edit-document-template-each-choice-input {
   width: auto;
-  height: 50px;
+  height: 60px;
   color: black;
   text-align: left;
   padding: 3px 10px 5px 5px;
@@ -5697,10 +5697,11 @@ form {
   background-color: white;
 }
 
-.create-edit-document-template-each-choice-action-box div:first-child, .create-edit-document-template-each-choice-action-box-custom div:first-child{
+.create-edit-document-template-each-choice-action-box div:first-child,
+.create-edit-document-template-each-choice-action-box-custom div:first-child{
   /* width: 40%; */
   height: 100%;
-  border: 1.5px solid blue;
+  border: 2px solid blue;
   margin: 0 0 0 10px;
   padding: 2px 10px 2px 10px;
   border-radius: 5px;
@@ -5714,7 +5715,7 @@ form {
 .create-edit-document-template-each-choice-action-box div:last-child {
   /* width: 55%; */
   height: 100%;
-  border: 1.5px solid green;
+  border: 2px solid green;
   padding: 2px 5px 2px 7px;
   border-radius: 5px;
   margin-left: 5px;
@@ -5795,7 +5796,7 @@ form {
   z-index: 2;
   top: 25%;
   left: 74%;
-  width: 240px;
+  width: 250px;
   height: 470px;
   border: 1.0px solid #ccc;
   border-radius: 4px;

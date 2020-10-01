@@ -4109,6 +4109,7 @@ longActionPress(props) {
     const elementIdArray = elementId.split(',');
     // elementType (button, input, select, list)
     let elementType = elementIdArray[0];
+    const customInputId = 'input,custom';
     // Select for true or false are given increments of 2
     // for templateElementActionIdObject select count so 'add' button gets enabled
     const increment = parseInt(elementIdArray[3], 10);
@@ -4117,6 +4118,8 @@ longActionPress(props) {
     let takeOutIndex = -1;
     let returnedObject = {};
 
+    // console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType equals === input elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+    console.log('in create_edit_document, handleFieldChoiceActionClick, before elementType !== input elementId, this.state.templateElementActionIdObject : ', elementId, this.state.templateElementActionIdObject);
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
     if (elementType !== 'input' && elementType !== 'buttons') {
@@ -4155,35 +4158,32 @@ longActionPress(props) {
       }
 
       if (elementType === 'input') {
-        const customInputIdIndex = this.state.templateElementActionIdObject.array.indexOf('input,custom')
-        if (customInputIdIndex !== -1) {
-          newObject.array.splice(customInputIdIndex, 1);
+        // Get index of clicked elementId
+        const elementIdIndex = this.state.templateElementActionIdObject.array.indexOf(elementId)
+        if (elementIdIndex !== -1 && elementId !== customInputId) {
+          // If elementId is already in array, take out to swich off button
+          newObject.array.splice(elementIdIndex, 1);
           newObject[elementType]--;
-        } else {
+        } else if (this.state.templateElementActionIdObject.array.length > 0 && elementId !== customInputId) {
+          // If something is already in the array, empty out amd push the current elementId
+          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT };
+          newObject.array.push(elementId);
+          newObject[elementType]++;
+        } else if (elementId === customInputId) {
+          // If custom button is clicked initialize newObject
+          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT };
+        } else if (elementId !== customInputId) {
+          // If any button is clicked other than the custom button, push into array
           newObject.array.push(elementId);
           newObject[elementType]++;
         }
-        // console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType equals === input elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
+        console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, newObject, increment, elementIdIndex: ', elementId, elementType, newObject, increment, elementIdIndex);
       }
-
-      // if (elementId !== 'input,custom') {
-      //   newObject.array.push(elementId);
-      //   newObject[elementType]++;
-      //   console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType === buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
-      // }
     }
-    // console.log('in create_edit_document, handleFieldChoiceActionClick, test before setState after each each elementId, elementType, this.state.templateElementActionIdObject : ', elementId, elementType, this.state.templateElementActionIdObject);
 
     this.setState({ templateElementActionIdObject: newObject }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, this.state.templateElementActionIdObject, increment: ', elementId, elementType, this.state.templateElementActionIdObject, increment);
-      // if (elementType === 'select') {
-      //   allObjectEach = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][allObjectKey];
-      //   trueOrFalseSelect = allObjectEach && (allObjectEach.choices[true].valName === 'y' || allObjectEach.choices[0].valName === 'y');
-      // }
-      // console.log('in create_edit_document, handleFieldChoiceActionClick, before if clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement: ', clickedElement, this.props.allDocumentObjects, this.props.allDocumentObjects[this.props.agreement.template_file_name], elementIdArray, allObjectKey, this.props.agreement);
-      // console.log('in create_edit_document, handleFieldChoiceActionClick, before if allObjectEach: ', allObjectEach);
       // NOTE: buttons plural; If input or buttons, add element
-      // if (elementType === 'input' || elementType === 'buttons' || (elementType === 'select')) {
       if (elementType === 'input' || elementType === 'buttons') {
       // if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
         if (elementIdArray[1] === 'custom') {
@@ -4193,6 +4193,8 @@ longActionPress(props) {
             console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode: ', elementId, this.state.showCustomInputCreateMode);
           });
         } else {
+          // If input of button and not custom create the templateElementAttributes object
+          // so user can click on document and place the new element
           this.handleTemplateElementAddClick();
         } // if (elementIdArray[1] === 'custom') {
       } // if (elementType === 'input' || elementType === 'buttons') {
@@ -4211,30 +4213,64 @@ longActionPress(props) {
     const summaryObject = { parent: null, input: [], select: [], button: [], buttons: [], list: [] };
 
     if (this.state.templateElementActionIdObject.array.length > 0) {
-      _.each(this.state.templateElementActionIdObject.array, (each, i) => {
-        elementIdArray = each.split(',');
-        elementType = elementIdArray[0];
-        objectPathArray = elementIdArray.slice(1);
-        // Take out increment number 2 for select used in handleFieldChoiceActionClick
-        if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
-        indexOfChoices = objectPathArray.indexOf('choices');
-        let currentObject = !this.state.translationModeOn
-                            ?
-                            this.props.templateMappingObjects[this.props.agreement.template_file_name]
-                            :
-                            this.state.documentTranslationsTreated;
-        // let choice = null;
-        _.each(objectPathArray, (eachKey, i) => {
-          modEach = eachKey;
-          if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
-          if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
-          console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
-          currentObject = currentObject[modEach];
+      if (!this.state.showCustomInputCreateMode) {
+        _.each(this.state.templateElementActionIdObject.array, (each, i) => {
+          elementIdArray = each.split(',');
+          elementType = elementIdArray[0];
+          // get path to relevant object e.g. [building, construction]
+          objectPathArray = elementIdArray.slice(1);
+          // Take out increment number 2 for select used in handleFieldChoiceActionClick
+          if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
+          indexOfChoices = objectPathArray.indexOf('choices');
+          let currentObject = !this.state.translationModeOn
+          ?
+          this.props.templateMappingObjects[this.props.agreement.template_file_name]
+          :
+          this.state.documentTranslationsTreated;
+          // let choice = null;
+          _.each(objectPathArray, (eachKey, i) => {
+            modEach = eachKey;
+            if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
+            if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
+            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
+            currentObject = currentObject[modEach];
+          });
+          summaryObject.parent = parent;
+          summaryObject[elementType].push(currentObject);
+          console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
         });
-        summaryObject.parent = parent;
-        summaryObject[elementType].push(currentObject);
-        console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
-      });
+      } else { // customField on
+        // logic for summaryObject for custom element
+        console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
+        const elementId = this.state.templateElementActionIdObject.array[0]
+        elementIdArray = elementId.split(',');
+        let currentObject = !this.state.translationModeOn
+        ?
+        this.props.templateMappingObjects[this.props.agreement.template_file_name]
+        :
+        this.state.documentTranslationsTreated;
+
+        objectPathArray = elementIdArray.slice(1);
+        _.each(objectPathArray, each => {
+          currentObject = currentObject[each];
+        });
+
+        const customCurrentObject = {
+          // borderColor: "lightgray"
+          // category: "building"
+          // choices: {inputFieldValue: {…}}
+          // component: "DocumentChoices"
+          // examples: {en: "The Building Name", p: "O nome do Edifício"}
+          // initialvalues_method_key: "building"
+          name: currentObject.name
+          // required: true
+          // translation: {en: "Name", po: "Nome", jp: "名称"}
+          // translation_key: "buildingName"
+          // translation_object: true
+          // translation_sibling: null
+        };
+        summaryObject[elementType].push(customCurrentObject);
+      }
     }
 
     let templateElementAttributes = {};
@@ -4634,6 +4670,7 @@ longActionPress(props) {
     let selectChoices = null;
     let valueString = null;
     let firstChoice = null;
+    let count = 0;
 
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
     console.log('in create_edit_document, renderEachCustomFieldChoice, this.props.agreement, templateMappingObject: ', this.props.agreement, templateMappingObject);
@@ -4651,7 +4688,7 @@ longActionPress(props) {
           if (templateMappingObject[eachKey] && templateMappingObject[eachKey][eachKey] && templateMappingObject[eachKey][eachKey].translation) {
             choiceText = templateMappingObject[eachKey][eachKey].translation[this.props.appLanguageCode];
           }
-
+          count++;
           return this.renderGroupElement({ eachKey, choiceText, templateMappingObject });
         } else if (templateMappingObject[eachKey]) { // else of if not group
           firstChoice = templateMappingObject[eachKey].choices ? templateMappingObject[eachKey].choices[Object.keys(templateMappingObject[eachKey].choices)[0]] : null;
@@ -4659,9 +4696,15 @@ longActionPress(props) {
           valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
 
-          if (inputElement) {
-            return this.renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField: true })
-          }
+          choices = !templateMappingObject[eachKey].params && Object.keys(templateMappingObject[eachKey].choices).length > 1;
+          choicesObject = templateMappingObject[eachKey].params;
+          choicesYesOrNo = !templateMappingObject[eachKey].params && firstChoice.valName === 'y';
+
+          // if (inputElement) {
+          count++;
+          // console.log('in create_edit_document, renderEachCustomFieldChoice, count: ', count);
+          return this.renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField: true })
+          // }
         }
       });
     } // if (templateMappingObject)
@@ -4687,6 +4730,7 @@ longActionPress(props) {
             id={valueString}
             onClick={this.handleFieldChoiceActionClick}
             onMouseOver={this.handleFieldChoiceMouseOver}
+            style={this.state.templateElementActionIdObject.array.indexOf(valueString) !== -1 ? { backgroundColor: 'lightgray' } : {}}
           >
             {customField ? 'Link Value' : 'Add Input'}
           </div>
@@ -5082,7 +5126,8 @@ longActionPress(props) {
           <div
             id={'input,custom'}
             onClick={this.handleFieldChoiceActionClick}
-            style={this.state.templateElementActionIdObject.array.indexOf('input,custom') !== -1 ? { backgroundColor: 'lightgray' } : {}}
+            // style={this.state.templateElementActionIdObject.array.indexOf('input,custom') !== -1 ? { backgroundColor: 'lightgray' } : {}}
+            style={this.state.showCustomInputCreateMode ? { backgroundColor: 'lightgray' } : {}}
             // className="create-edit-document-template-each-choice-action-box-button"
           >
             Create
