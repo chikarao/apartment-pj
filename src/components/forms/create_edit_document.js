@@ -4241,34 +4241,29 @@ longActionPress(props) {
         });
       } else { // customField on
         // logic for summaryObject for custom element
-        console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
         const elementId = this.state.templateElementActionIdObject.array[0]
         elementIdArray = elementId.split(',');
-        let currentObject = !this.state.translationModeOn
-        ?
-        this.props.templateMappingObjects[this.props.agreement.template_file_name]
-        :
-        this.state.documentTranslationsTreated;
-
-        objectPathArray = elementIdArray.slice(1);
-        _.each(objectPathArray, each => {
-          currentObject = currentObject[each];
-        });
+        elementType = elementIdArray[0];
+        const customName = elementIdArray[elementIdArray.length - 1]
+        // let currentObject = !this.state.translationModeOn
+        // ?
+        // this.props.templateMappingObjects[this.props.agreement.template_file_name]
+        // :
+        // this.state.documentTranslationsTreated;
+        //
+        // objectPathArray = elementIdArray.slice(1);
+        // _.each(objectPathArray, each => {
+        //   currentObject = currentObject[each];
+        // });
 
         const customCurrentObject = {
-          // borderColor: "lightgray"
-          // category: "building"
-          // choices: {inputFieldValue: {…}}
-          // component: "DocumentChoices"
-          // examples: {en: "The Building Name", p: "O nome do Edifício"}
-          // initialvalues_method_key: "building"
-          name: currentObject.name
-          // required: true
-          // translation: {en: "Name", po: "Nome", jp: "名称"}
-          // translation_key: "buildingName"
-          // translation_object: true
-          // translation_sibling: null
+          name: customName,
+          component: 'DocumentChoices',
+          choices: {
+            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
+          }
         };
+        console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
         summaryObject[elementType].push(customCurrentObject);
       }
     }
@@ -4302,6 +4297,7 @@ longActionPress(props) {
           font_size: this.state.newFontObject.font_size,
           // !!!!!!!!!If this is a translation field, assign true
           translation_element: this.state.translationModeOn,
+          custom_element: this.state.showCustomInputCreateMode,
           transform_origin: 'top left',
           transform: null
         };
