@@ -108,6 +108,7 @@ class CreateEditDocument extends Component {
       getSelectDataBaseValues: false,
       findIfDatabaseValuesExistForFields: false,
       databaseValuesExistForFields: false,
+      showCustomInputCreateMode: false,
       customFieldNameInputValue: ''
     };
 
@@ -1136,10 +1137,19 @@ handleOnFocus(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const background = document.getElementById('document-background')
+
+    // test if custom name input is empty, do not create if empty
+    let customNameInputNotEmpty = true;
+    if (this.state.showCustomInputCreateMode) {
+      customNameInputNotEmpty = this.state.customFieldNameInputValue;
+    } else {
+      customNameInputNotEmpty = !this.state.customFieldNameInputValue;
+    }
+
     console.log('in create_edit_document, getMousePosition1, background, event.target', background, event.target);
     // const pageIndex = elementVal - 1;
     // get x and y positions in PX of cursor in browser view port (not page or parent)
-    if (clickedElement.id === 'document-background') {
+    if (clickedElement.id === 'document-background' && customNameInputNotEmpty) {
       const clientX = event.clientX;
       const clientY = event.clientY;
       // get dimensions top, bottom, left and right of parent in view port (each template document page)
@@ -1155,18 +1165,29 @@ handleOnFocus(event) {
         // createNewTemplateElementOn: false,
       }, () => {
         let templateElementAttributes = {};
+        // if costum name has changed since selecting field choice, update
+        const customName = this.state.templateElementAttributes.custom_name === this.state.customFieldNameInputValue
+                          ? this.state.templateElementAttributes.custom_name
+                          : this.state.customFieldNameInputValue;
         // Assign templateElementAttributes from state and specify left, top, page
-          const id = !this.state.translationModeOn ? `${this.state.templateElementCount}a` : `${this.state.translationElementCount}b`
-          templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id };
-          // add action element action before putting in array before setState
-          this.props.createDocumentElementLocally(templateElementAttributes);
-          // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
-          // If it has document_field_choices, history is set after coordinates for document_field_choices is set
-          // in dragElement closeDragElement function and subsequent callback. getChoiceCoordinates is called in documentChoicesTemplate componentDidMount;
-          // If it is a newElement, it calls dragElement function and sets the coordinates of the documentFieldChoices
-        // } else {
-          // templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.translationElementCount}b` };
-          console.log('in create_edit_document, getMousePosition1, templateElementAttributes', templateElementAttributes);
+        const id = !this.state.translationModeOn ? `${this.state.templateElementCount}a` : `${this.state.translationElementCount}b`;
+        templateElementAttributes = {
+          ...this.state.templateElementAttributes,
+          left: `${x}%`,
+          top: `${y}%`,
+          page: parseInt(elementVal, 10),
+          id,
+          custom_name: customName
+        };
+        // add action element action before putting in array before setState
+        this.props.createDocumentElementLocally(templateElementAttributes);
+        // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
+        // If it has document_field_choices, history is set after coordinates for document_field_choices is set
+        // in dragElement closeDragElement function and subsequent callback. getChoiceCoordinates is called in documentChoicesTemplate componentDidMount;
+        // If it is a newElement, it calls dragElement function and sets the coordinates of the documentFieldChoices
+      // } else {
+        // templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.translationElementCount}b` };
+        console.log('in create_edit_document, getMousePosition1, templateElementAttributes', templateElementAttributes);
         // }
         if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
@@ -1177,8 +1198,8 @@ handleOnFocus(event) {
         }, () => {
           document.getElementById('document-background').style.cursor = 'default';
         });
-      });
-    }
+      }); // end of setState templateElementCount
+    } // end of if (clickedElement.id === 'document-background') {
   }
 
   getChoiceCoordinates(props) {
@@ -3983,6 +4004,8 @@ longActionPress(props) {
     // Gets value of clicked link
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
+    console.log('in create_edit_document, handleFieldChoiceClick, elementVal ', elementVal);
+
     let newArray = [];
     // Places value in array if empty
     if (this.state.templateFieldChoiceArray.length === 0) {
@@ -4011,11 +4034,12 @@ longActionPress(props) {
                                       { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
                                       :
                                       this.state.templateElementActionIdObject,
-      templateElementAttributes: !this.state.showCustomInputCreateMode
-                                  ?
-                                  null
-                                  :
-                                  { ...this.state.templateElementAttributes },
+      templateElementAttributes: null
+      // templateElementAttributes: !this.state.showCustomInputCreateMode
+      //                             ?
+      //                             null
+      //                             :
+      //                             { ...this.state.templateElementAttributes },
 
       // showCustomInputCreateMode: this.state.showCustomInputCreateMode ? false : this.state.showCustomInputCreateMode
     }, () => {
@@ -4192,7 +4216,8 @@ longActionPress(props) {
         if (elementIdArray[1] === 'custom') {
           this.setState({
             showCustomInputCreateMode: !this.state.showCustomInputCreateMode,
-            templateElementAttributes: null
+            templateElementAttributes: null,
+            customFieldNameInputValue: ''
           }, () => {
             console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes: ', elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes);
           });
@@ -4259,22 +4284,25 @@ longActionPress(props) {
         // _.each(objectPathArray, each => {
         //   currentObject = currentObject[each];
         // });
+        const customCurrentObject = {
+          name,
+          custom_name: this.state.customFieldNameInputValue,
+          component: 'DocumentChoices',
+          choices: {
+            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
+          }
+        };
 
         if (this.state.customFieldNameInputValue === '') {
           this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
-            const customCurrentObject = {
-              name,
-              custom_name: this.state.customFieldNameInputValue,
-              component: 'DocumentChoices',
-              choices: {
-                inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
-              }
-            };
+            customCurrentObject.custom_name = this.state.customFieldNameInputValue;
             summaryObject[elementType].push(customCurrentObject);
             createObject();
             console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
           });
         } else {
+          // setState is async so call separately
+          summaryObject[elementType].push(customCurrentObject);
           createObject();
         }
       }
@@ -4311,7 +4339,7 @@ longActionPress(props) {
             font_size: this.state.newFontObject.font_size,
             // !!!!!!!!!If this is a translation field, assign true
             translation_element: this.state.translationModeOn,
-            custom_element: this.state.showCustomInputCreateMode,
+            // custom_element: this.state.showCustomInputCreateMode,
             custom_name: createdObject.custom_name,
             transform_origin: 'top left',
             transform: null
@@ -5150,20 +5178,16 @@ longActionPress(props) {
   }
 
   handleCustomFieldNameInput(event) {
-    const clickedElement = event.target;
+    // const clickedElement = event.target;
     // const elementVal = clickedElement.getAttribute('value');
     // For some reaons, event.target.value works but elementVal does not
     this.setState({ customFieldNameInputValue: event.target.value }, () => {
       console.log('in create_edit_document, handleCustomFieldNameInput, this.state.customFieldNameInputValue: ', this.state.customFieldNameInputValue);
-      if (this.state.templateElementAttributes) {
-        this.setState({ templateElementAttributes: { ...this.state.templateElementAttributes, custom_name: this.state.customFieldNameInputValue } }, () => {
-          console.log('in create_edit_document, handleCustomFieldNameInput, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
-        });
-      }
     });
   }
 
   renderCustomFieldNameInput() {
+    console.log('in create_edit_document, renderCustomFieldNameInput, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
     return (
       <div
         className="create-edit-document-template-each-choice-input"
@@ -5173,7 +5197,17 @@ longActionPress(props) {
         >
           Name the New Custom Field
         </div>
-        <input type="string" value={this.state.customFieldNameInputValue} onChange={this.handleCustomFieldNameInput} className="create-edit-document-template-each-choice-action-box-input" />
+        <input
+          type="string"
+          value={this.state.customFieldNameInputValue}
+          onChange={this.handleCustomFieldNameInput}
+          style={this.state.templateElementAttributes && !this.state.customFieldNameInputValue
+                  ?
+                { border: '2px solid red' }
+                  :
+                {}}
+          className="create-edit-document-template-each-choice-action-box-input"
+        />
       </div>
     );
   }
