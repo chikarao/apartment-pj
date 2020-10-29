@@ -4214,7 +4214,9 @@ longActionPress(props) {
       }
     }
 
-    this.setState({ templateElementActionIdObject: newObject }, () => {
+    this.setState({
+      templateElementActionIdObject: newObject
+    }, () => {
       console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, this.state.templateElementActionIdObject, increment: ', elementId, elementType, this.state.templateElementActionIdObject, increment);
       // NOTE: buttons plural; If input or buttons, add element
       if (elementType === 'input' || elementType === 'buttons') {
@@ -4223,7 +4225,9 @@ longActionPress(props) {
           this.setState({
             showCustomInputCreateMode: !this.state.showCustomInputCreateMode,
             templateElementAttributes: null,
-            customFieldNameInputValue: ''
+            customFieldNameInputValue: '',
+            templateFieldChoiceArray: [],
+            templateFieldChoiceObject: null
           }, () => {
             console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes: ', elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes);
           });
@@ -4276,20 +4280,11 @@ longActionPress(props) {
         });
       } else { // customField on
         // logic for summaryObject for custom element
-        const elementId = this.state.templateElementActionIdObject.array[0]
+        const elementId = this.state.templateElementActionIdObject.array[0];
         elementIdArray = elementId.split(',');
         elementType = elementIdArray[0];
         const name = elementIdArray[elementIdArray.length - 1];
-        // let currentObject = !this.state.translationModeOn
-        // ?
-        // this.props.templateMappingObjects[this.props.agreement.template_file_name]
-        // :
-        // this.state.documentTranslationsTreated;
-        //
-        // objectPathArray = elementIdArray.slice(1);
-        // _.each(objectPathArray, each => {
-        //   currentObject = currentObject[each];
-        // });
+
         const customCurrentObject = {
           name,
           custom_name: this.state.customFieldNameInputValue,
@@ -4307,10 +4302,6 @@ longActionPress(props) {
             createObject();
             console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
           });
-        // } else {
-        //   // setState is async so call separately
-        //   summaryObject[elementType].push(customCurrentObject);
-        //   createObject();
         }
       }
     }
@@ -4568,17 +4559,15 @@ longActionPress(props) {
               }
             } // end of  if (summaryObject.button.length > 0
               console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
-            }
-
-            // Placeholder until create element completed.
-            this.setState({
-              // templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
-              templateElementAttributes
-            }, () => {
-              // Change the mouse cursor if createNewTemplateElementOn
-              if (this.state.createNewTemplateElementOn) document.getElementById('document-background').style.cursor = 'crosshair';
-              console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
-            });
+          }
+          // Placeholder until create element completed.
+          this.setState({
+            templateElementAttributes
+          }, () => {
+            // Change the mouse cursor if createNewTemplateElementOn
+            if (this.state.createNewTemplateElementOn) document.getElementById('document-background').style.cursor = 'crosshair';
+            console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
+          });
     }; // end of createObject function
   }
 
@@ -5277,6 +5266,7 @@ longActionPress(props) {
   }
 
   renderTemplateEditFieldBox() {
+    console.log('in create_edit_document, renderTemplateEditFieldBox, this.state.translationModeOn, this.state.showCustomInputCreateMode: ', this.state.translationModeOn, this.state.showCustomInputCreateMode);
     return (
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
