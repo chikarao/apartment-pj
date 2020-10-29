@@ -142,6 +142,7 @@ class CreateEditDocument extends Component {
     this.handleGetValueChoiceClick = this.handleGetValueChoiceClick.bind(this);
     this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
     this.handleCustomFieldNameInput = this.handleCustomFieldNameInput.bind(this);
+    this.handleCustomFieldPathDelete = this.handleCustomFieldPathDelete.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -4189,20 +4190,25 @@ longActionPress(props) {
         const elementIdIndex = this.state.templateElementActionIdObject.array.indexOf(elementId)
         if (elementIdIndex !== -1 && elementId !== customInputId) {
           // If elementId is already in array, take out to swich off button
+          this.setState({
+            templateElementAttributes: null,
+            customFieldNameInputValue: ''
+           });
           newObject.array.splice(elementIdIndex, 1);
           newObject[elementType]--;
         } else if (this.state.templateElementActionIdObject.array.length > 0 && elementId !== customInputId) {
           // If something is already in the array, empty out amd push the current elementId
-          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT };
+          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [], [elementType]: 0  };
           newObject.array.push(elementId);
           newObject[elementType]++;
         } else if (elementId === customInputId) {
           // If custom button is clicked initialize newObject
           newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT };
         } else if (elementId !== customInputId) {
-          // If any button is clicked other than the custom button, push into array
+          // If input and any button is clicked other than the custom button, push into array
           newObject.array.push(elementId);
           newObject[elementType]++;
+          // console.log('in create_edit_document, handleFieldChoiceActionClick, in first last if elementId, elementType, newObject: ', elementId, elementType, newObject);
         }
         console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, newObject, increment, elementIdIndex: ', elementId, elementType, newObject, increment, elementIdIndex);
       }
@@ -4293,17 +4299,18 @@ longActionPress(props) {
           }
         };
 
-        if (this.state.customFieldNameInputValue === '') {
+        // If customFieldNameInputValue empty or has a custom name already assign name
+        if (this.state.customFieldNameInputValue === '' || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
           this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
             customCurrentObject.custom_name = this.state.customFieldNameInputValue;
             summaryObject[elementType].push(customCurrentObject);
             createObject();
             console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
           });
-        } else {
-          // setState is async so call separately
-          summaryObject[elementType].push(customCurrentObject);
-          createObject();
+        // } else {
+        //   // setState is async so call separately
+        //   summaryObject[elementType].push(customCurrentObject);
+        //   createObject();
         }
       }
     }
@@ -4713,7 +4720,6 @@ longActionPress(props) {
     let count = 0;
 
     const templateMappingObject = this.state.templateFieldChoiceObject === null ? this.props.templateMappingObjects[this.props.agreement.template_file_name] : this.state.templateFieldChoiceObject;
-    console.log('in create_edit_document, renderEachCustomFieldChoice, this.props.agreement, templateMappingObject: ', this.props.agreement, templateMappingObject);
 
     if (templateMappingObject) {
       return _.map(Object.keys(templateMappingObject), eachKey => {
@@ -4751,6 +4757,8 @@ longActionPress(props) {
   }
 
   renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField }) {
+    console.log('in create_edit_document, renderAddInputElement, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
+
     return (
       <div
         key={eachKey}
@@ -5212,7 +5220,34 @@ longActionPress(props) {
     );
   }
 
+  handleCustomFieldPathDelete() {
+    this.setState({
+      templateElementAttributes: null,
+      customFieldNameInputValue: '',
+      templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
+    }, () => {
+      console.log('in create_edit_document, handleCustomFieldPathDelete, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
+    });
+  }
+
   renderCustomFieldNameControls() {
+    const fieldPath = this.state.templateElementAttributes
+            ?
+            getElementLabel({
+            allDocumentObjects: this.props.allDocumentObjects,
+            documents: Documents,
+            agreement: this.props.agreement,
+            // modifiedElement,
+            modifiedElement: {},
+            fieldName: this.state.templateElementAttributes.name,
+            documentTranslationsAll: this.props.documentTranslationsAll,
+            appLanguages: AppLanguages,
+            appLanguageCode: this.props.appLanguageCode,
+            fromCreateEditDocument: true
+          })
+          :
+          null;
+            // <div>Building/Construction Translation</div>
     return (
       <div
         className="create-edit-document-template-each-choice-input"
@@ -5223,19 +5258,25 @@ longActionPress(props) {
           Link to Database Value
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-          <div
-            className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
-          >
-           <div>Building/Construction Translation</div>
-           <i className="fas fa-times" style={{ margin: '3px'}}></i>
-          </div>
+           {this.state.templateElementAttributes
+             ?
+             <div
+             className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
+             >
+              <div>{fieldPath}</div>
+              <i
+                className="fas fa-times" style={{ margin: '3px' }}
+                onClick={this.handleCustomFieldPathDelete}
+              ></i>
+             </div>
+             :
+             null}
         </div>
       </div>
     );
   }
 
   renderTemplateEditFieldBox() {
-
     return (
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}

@@ -623,7 +623,14 @@ class DocumentChoicesTemplate extends Component {
             }}
         >
           {this.renderEachChoice(choices)}
-          {this.props.editFieldsOn ? <div style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '220px', textAlign: 'left' }}>{this.props.label}</div> : ''}
+          {this.props.editFieldsOn
+            ?
+            <div
+              style={{ position: 'absolute', top: '-16px', left: '5px', fontSize: '11px', color: 'lightgray', display: 'table', width: '220px', textAlign: 'left' }}
+            >
+              {this.props.label}
+            </div>
+            : ''}
         </div>
       );
     }
