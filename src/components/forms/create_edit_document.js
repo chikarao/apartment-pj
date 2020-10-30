@@ -4251,61 +4251,6 @@ longActionPress(props) {
     const numbers = ['0', '1', '2', '3', '4', '5', '6'];
     const summaryObject = { parent: null, input: [], select: [], button: [], buttons: [], list: [] };
 
-    if (this.state.templateElementActionIdObject.array.length > 0) {
-      if (!this.state.showCustomInputCreateMode) {
-        _.each(this.state.templateElementActionIdObject.array, (each, i) => {
-          elementIdArray = each.split(',');
-          elementType = elementIdArray[0];
-          // get path to relevant object e.g. [building, construction]
-          objectPathArray = elementIdArray.slice(1);
-          // Take out increment number 2 for select used in handleFieldChoiceActionClick
-          if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
-          indexOfChoices = objectPathArray.indexOf('choices');
-          let currentObject = !this.state.translationModeOn
-          ?
-          this.props.templateMappingObjects[this.props.agreement.template_file_name]
-          :
-          this.state.documentTranslationsTreated;
-          // let choice = null;
-          _.each(objectPathArray, (eachKey, i) => {
-            modEach = eachKey;
-            if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
-            if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
-            currentObject = currentObject[modEach];
-          });
-          summaryObject.parent = parent;
-          summaryObject[elementType].push(currentObject);
-          console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
-        });
-      } else { // customField on
-        // logic for summaryObject for custom element
-        const elementId = this.state.templateElementActionIdObject.array[0];
-        elementIdArray = elementId.split(',');
-        elementType = elementIdArray[0];
-        const name = elementIdArray[elementIdArray.length - 1];
-
-        const customCurrentObject = {
-          name,
-          custom_name: this.state.customFieldNameInputValue,
-          component: 'DocumentChoices',
-          choices: {
-            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
-          }
-        };
-
-        // If customFieldNameInputValue empty or has a custom name already assign name
-        if (this.state.customFieldNameInputValue === '' || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
-          this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
-            customCurrentObject.custom_name = this.state.customFieldNameInputValue;
-            summaryObject[elementType].push(customCurrentObject);
-            createObject();
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
-          });
-        }
-      }
-    }
-
     const createObject = () => {
       let templateElementAttributes = {};
       let createdObject = null;
@@ -4570,6 +4515,62 @@ longActionPress(props) {
             console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
           });
     }; // end of createObject function
+
+    if (this.state.templateElementActionIdObject.array.length > 0) {
+      if (!this.state.showCustomInputCreateMode) {
+        _.each(this.state.templateElementActionIdObject.array, (each, i) => {
+          elementIdArray = each.split(',');
+          elementType = elementIdArray[0];
+          // get path to relevant object e.g. [building, construction]
+          objectPathArray = elementIdArray.slice(1);
+          // Take out increment number 2 for select used in handleFieldChoiceActionClick
+          if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
+          indexOfChoices = objectPathArray.indexOf('choices');
+          let currentObject = !this.state.translationModeOn
+          ?
+          this.props.templateMappingObjects[this.props.agreement.template_file_name]
+          :
+          this.state.documentTranslationsTreated;
+          // let choice = null;
+          _.each(objectPathArray, (eachKey, i) => {
+            modEach = eachKey;
+            if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
+            if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
+            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
+            currentObject = currentObject[modEach];
+          });
+          summaryObject.parent = parent;
+          summaryObject[elementType].push(currentObject);
+          console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
+        });
+        createObject();
+      } else { // customField on
+        // logic for summaryObject for custom element
+        const elementId = this.state.templateElementActionIdObject.array[0];
+        elementIdArray = elementId.split(',');
+        elementType = elementIdArray[0];
+        const name = elementIdArray[elementIdArray.length - 1];
+
+        const customCurrentObject = {
+          name,
+          custom_name: this.state.customFieldNameInputValue,
+          component: 'DocumentChoices',
+          choices: {
+            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
+          }
+        };
+
+        // If customFieldNameInputValue empty or has a custom name already assign name
+        if (this.state.customFieldNameInputValue === '' || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
+          this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
+            customCurrentObject.custom_name = this.state.customFieldNameInputValue;
+            summaryObject[elementType].push(customCurrentObject);
+            createObject();
+            console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
+          });
+        }
+      }
+    }
   }
 
   // const templateElementChoice = true;
