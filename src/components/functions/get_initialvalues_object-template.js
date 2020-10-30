@@ -237,7 +237,6 @@ export default (props) => {
     return object;
   }
 
-
   function getRecordForLanguage(baseRecord, baseRecordName, language) {
     // console.log('in get_initialvalues_object-fixed-term-contract, getRecordForLanguage, baseRecord, baseRecordName, language: ', baseRecord, baseRecordName, language);
     // get language

@@ -5,6 +5,7 @@ import * as actions from '../../actions';
 
 import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
+import getDocumentFieldValueTranslation from '../functions/get_document_field_value_translation';
 
 // custom field component based on redux forms used for creating
 // input and button inputs for forms
@@ -443,19 +444,19 @@ class DocumentChoicesTemplate extends Component {
     const language = !choice.translation ? documentBaseLanguage : this.props.documentLanguageCode;
     // const language = choice.baseLanguageField ? documentBaseLanguage : this.props.documentLanguageCode;
 
-    const getTranslation = (choices, value) => {
-      let returnObject = null;
-      let modifiedValue = value;
-      if (value === 't') modifiedValue = true;
-      if (value === 'f') modifiedValue = false;
-      if (choices[modifiedValue]) returnObject = choices[modifiedValue].translation;
-      if (choices.inputFieldValue && choices.inputFieldValue.selectChoices) {
-        returnObject = choices.inputFieldValue.selectChoices[modifiedValue]
-      }
-
-      console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value, returnObject', name, choices, value, returnObject);
-      return returnObject;
-    }; // end of getTranslation
+    // const getTranslation = (choices, value) => {
+    //   let returnObject = null;
+    //   let modifiedValue = value;
+    //   if (value === 't') modifiedValue = true;
+    //   if (value === 'f') modifiedValue = false;
+    //   if (choices[modifiedValue]) returnObject = choices[modifiedValue].translation;
+    //   if (choices.inputFieldValue && choices.inputFieldValue.selectChoices) {
+    //     returnObject = choices.inputFieldValue.selectChoices[modifiedValue]
+    //   }
+    //
+    //   console.log('DocumentChoicesTemplate, renderSelectOptions, name, choices, value, returnObject', name, choices, value, returnObject);
+    //   return returnObject;
+    // }; // end of getTranslation
 
     let translationObject = null;
     const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][name];
@@ -469,10 +470,8 @@ class DocumentChoicesTemplate extends Component {
       value = (eachChoice.value === false || eachChoice.value === 'f') ? eachChoice.value : (eachChoice.value || eachChoice.val);
 
       if (elementObject) {
-        translationObject = getTranslation(elementObject.choices, value);
-        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
-        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, translationObject', name, eachChoice, text, value, language, elementObject, translationObject);
-        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]', name, eachChoice, text, value, language, elementObject, Object.keys(elementObject.choices), typeof Object.keys(elementObject.choices)[0]);
+        translationObject = getDocumentFieldValueTranslation({ choices: elementObject.choices, value });
+        // translationObject = getTranslation(elementObject.choices, value);
         console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, translationObject', name, eachChoice, text, value, translationObject);
       }
       // text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
