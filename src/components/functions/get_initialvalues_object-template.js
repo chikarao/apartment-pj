@@ -664,13 +664,19 @@ export default (props) => {
                                 && methodObject[allObjectEach.initialvalues_method_key];
       conditionTrue = allObjectEach
                       && methodObject[allObjectEach.initialvalues_method_key]
-                      && methodObject[allObjectEach.initialvalues_method_key].condition;
+                      && methodObject[allObjectEach.initialvalues_method_key].condition
+                      // && !eachField.custom_name;
 
       // The below sends key and object as default
       // and the rest of the parameters are derieed from methodObject
       if (keyExistsInMethodObject && conditionTrue) {
         count++;
-        objectReturned = { ...objectReturned, [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({ ...methodObject[allObjectEach.initialvalues_method_key].parameters, key: eachField.name, object: allObjectEach }) };
+        objectReturned = { ...objectReturned,
+                            [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({
+                            ...methodObject[allObjectEach.initialvalues_method_key].parameters,
+                            key: eachField.name,
+                            object: allObjectEach,
+                            customField: eachField.custom_name }) };
       }
       // Code for list elements eg amenities_list amenties_list_translation
       // list elements do not have an all object and has list parameters in eachField,
@@ -678,7 +684,9 @@ export default (props) => {
       conditionTrue = allObjectEach
                       && eachField.list_parameters
                       && methodObject.list
-                      && methodObject.list.condition;
+                      && methodObject.list.condition
+                      && !eachField.custom_name;
+
       if (conditionTrue) {
         count++;
         objectReturned = { ...objectReturned, [eachField.name]: methodObject.list.method({ ...methodObject.list.parameters, listElement: eachField, documentLanguageCode: translationLanguageCode }) };
@@ -690,10 +698,18 @@ export default (props) => {
                       && templateElementsMappedByName
                       && templateElementsMappedByName[eachField.name]
                       && templateElementsMappedByName[eachField.name].value
+                      && !eachField.custom_name;
+
       if (conditionTrue) {
         count++;
         objectReturned = { ...objectReturned, [eachField.name]: templateElementsMappedByName[eachField.name].value };
       }
+
+      // // If templateElement is a custom field, get value corresponding to eachField.name
+      // conditionTrue = eachField.custom_name
+      //                 && eachField.name
+      //                 && templateElementsMappedByName
+      //                 && templateElementsMappedByName[eachField.name]
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, documentFields, eachField, allObjectEach, allObject: ', documentFields, eachField, allObjectEach, allObject);
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, eachField.name, count, countAll: ', eachField, eachField.name, count, countAll);
     });

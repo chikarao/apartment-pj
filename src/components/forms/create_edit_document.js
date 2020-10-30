@@ -207,7 +207,7 @@ class CreateEditDocument extends Component {
       // all local state values set in constructor already
       // !!!!! IMPORTATNT: When refreshing localStorageHistory, comment out below getLocalHistory
       // gotohistory
-      templateEditHistory = getLocalHistory();
+      // templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate templateEditHistory', templateEditHistory);
@@ -4005,7 +4005,7 @@ longActionPress(props) {
     // Gets value of clicked link
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleFieldChoiceClick, elementVal ', elementVal);
+    // console.log('in create_edit_document, handleFieldChoiceClick, elementVal ', elementVal);
 
     let newArray = [];
     // Places value in array if empty
@@ -4048,7 +4048,7 @@ longActionPress(props) {
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
       document.getElementById('document-background').style.cursor = 'default';
 
-      console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
+      // console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
       })
     });
   }
@@ -4068,7 +4068,7 @@ longActionPress(props) {
         }
       }
     });
-    console.log('in create_edit_document, handleFieldChoiceClick, before return currentObject: ', currentObject);
+    // console.log('in create_edit_document, handleFieldChoiceClick, before return currentObject: ', currentObject);
     return currentObject;
   }
 
@@ -4147,7 +4147,7 @@ longActionPress(props) {
     let returnedObject = {};
 
     // console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType equals === input elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
-    console.log('in create_edit_document, handleFieldChoiceActionClick, before elementType !== input elementId, this.state.templateElementActionIdObject : ', elementId, this.state.templateElementActionIdObject);
+    // console.log('in create_edit_document, handleFieldChoiceActionClick, before elementType !== input elementId, this.state.templateElementActionIdObject : ', elementId, this.state.templateElementActionIdObject);
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
     if (elementType !== 'input' && elementType !== 'buttons') {
@@ -4340,7 +4340,8 @@ longActionPress(props) {
             // custom_element: this.state.showCustomInputCreateMode,
             custom_name: createdObject.custom_name,
             transform_origin: 'top left',
-            transform: null
+            transform: null,
+            translation: this.state.templateElementActionIdObject.translation
           };
         } else if (summaryObject.buttons.length > 0) {
           // } else {
@@ -4641,7 +4642,7 @@ longActionPress(props) {
         // if the object of the eachKey has no translations, must be a category or group
         if (translationMappingObject[eachKey] && !translationMappingObject[eachKey].translations) {
           choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
-          console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText: ', eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText);
+          // console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText: ', eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText);
           return (
             <div
               key={eachKey}
@@ -4691,7 +4692,7 @@ longActionPress(props) {
   handleFieldChoiceMouseOver(event) {
     const mousedOverElement = event.target;
     const elementId = mousedOverElement.getAttribute('id');
-    console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
+    // console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
   }
 
   renderEachCustomFieldChoice() {
@@ -4746,8 +4747,7 @@ longActionPress(props) {
   }
 
   renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField }) {
-    console.log('in create_edit_document, renderAddInputElement, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
-
+    // console.log('in create_edit_document, renderAddInputElement, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
     return (
       <div
         key={eachKey}
@@ -5085,8 +5085,16 @@ longActionPress(props) {
     const elementVal = clickedElement.getAttribute('value');
     console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this: ', elementVal, this);
     const newObject = { ...this.state.templateElementActionIdObject, [elementVal]: !this.state.templateElementActionIdObject[elementVal] };
-    this.setState({ templateElementActionIdObject: newObject }, () => {
-      console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this.state.templateElementActionIdObject: ', elementVal, this.state.templateElementActionIdObject);
+    this.setState({
+      templateElementActionIdObject: newObject,
+      // If there is already templateElementAttributes, turn translation true/false
+      templateElementAttributes: this.state.templateElementAttributes
+                                  ?
+                                  { ...this.state.templateElementAttributes, translation: !this.state.templateElementAttributes.translation }
+                                  :
+                                  this.state.templateElementAttributes
+    }, () => {
+      console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes: ', elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes);
     });
   }
 
@@ -5106,7 +5114,10 @@ longActionPress(props) {
                         && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
     const listOk = this.state.templateElementActionIdObject.list > 0;
     const enableAdd = (selectOk || buttonOk || listOk) && !this.state.templateElementAttributes;
-    const disableTranslation = ((this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0) && this.state.templateElementActionIdObject.translation) || this.state.templateElementAttributes;
+    const disableTranslation = ((this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0)
+                                && this.state.templateElementActionIdObject.translation)
+                                || (this.state.showCustomInputCreateMode && this.state.templateElementActionIdObject.translation)
+                                || (this.state.templateElementAttributes && this.state.templateElementAttributes.translation);
     // console.log('in create_edit_document, renderFieldBoxControls, this.state.actionExplanation, selectOk, enableAdd, disableTranslation: ', selectOk, enableAdd, disableTranslation);
 
     return (
@@ -5122,7 +5133,9 @@ longActionPress(props) {
           {this.renderEachFieldControlButton()}
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-          {this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0
+          {this.state.templateElementActionIdObject.list > 0
+            || this.state.templateElementActionIdObject.select > 0
+            || this.state.showCustomInputCreateMode
             ?
             <div
               className="create-edit-document-template-edit-field-box-controls-action-button"
