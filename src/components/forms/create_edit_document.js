@@ -4139,7 +4139,7 @@ longActionPress(props) {
 
       if (elementType === 'input') {
         // Get index of clicked elementId
-        const elementIdIndex = this.state.templateElementActionIdObject.array.indexOf(elementId)
+        const elementIdIndex = this.state.templateElementActionIdObject.array.indexOf(elementId);
         if (elementIdIndex !== -1 && elementId !== customInputId) {
           // If elementId is already in array, take out to swich off button
           this.setState({
@@ -4150,12 +4150,12 @@ longActionPress(props) {
           newObject[elementType]--;
         } else if (this.state.templateElementActionIdObject.array.length > 0 && elementId !== customInputId) {
           // If something is already in the array, empty out amd push the current elementId
-          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [], [elementType]: 0  };
+          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [], [elementType]: 0 };
           newObject.array.push(elementId);
           newObject[elementType]++;
         } else if (elementId === customInputId) {
           // If custom button is clicked initialize newObject
-          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT };
+          newObject = { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: ['input,,'], input: 1 };
         } else if (elementId !== customInputId) {
           // If input and any button is clicked other than the custom button, push into array
           newObject.array.push(elementId);
@@ -4181,6 +4181,9 @@ longActionPress(props) {
             templateFieldChoiceArray: [],
             templateFieldChoiceObject: null
           }, () => {
+            if (this.state.showCustomInputCreateMode) {
+              this.handleTemplateElementAddClick();
+            }
             console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes: ', elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes);
           });
         } else {
@@ -4494,9 +4497,12 @@ longActionPress(props) {
       } else { // if (!this.state.showCustomInputCreateMode), i.e. customField on
         // logic for summaryObject for custom element
         const elementId = this.state.templateElementActionIdObject.array[0];
+        // split string looking like 'input,building,construction'
         elementIdArray = elementId.split(',');
+        // array like [input,building,construction]
         elementType = elementIdArray[0];
-        const name = elementIdArray[elementIdArray.length - 1];
+        // name like 'construction'
+        const name = elementIdArray[elementIdArray.length - 1] || 'customField';
 
         const customCurrentObject = {
           name,
@@ -4508,13 +4514,18 @@ longActionPress(props) {
         };
 
         // If customFieldNameInputValue empty or has a custom name already assign name
-        if (this.state.customFieldNameInputValue === '' || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
+        if (name !== 'customField'
+            || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
           this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
             customCurrentObject.custom_name = this.state.customFieldNameInputValue;
             summaryObject[elementType].push(customCurrentObject);
             createObject();
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
+            console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType, this.state.customFieldNameInputValue: ', summaryObject, elementType, this.state.customFieldNameInputValue);
           });
+        } else {
+          customCurrentObject.custom_name = this.state.customFieldNameInputValue;
+          summaryObject[elementType].push(customCurrentObject);
+          createObject();
         } // if (this.state.customFieldNameInputValue === '' || ...
       } //// if (!this.state.showCustomInputCreateMode),
     } //  if (this.state.templateElementActionIdObject.array.length > 0)
@@ -4585,6 +4596,7 @@ longActionPress(props) {
     const mousedOverElement = event.target;
     const elementId = mousedOverElement.getAttribute('id');
     // console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
+    // placeholder; not yet built out
   }
 
   renderEachCustomFieldChoice() {
@@ -5125,23 +5137,24 @@ longActionPress(props) {
   }
 
   renderCustomFieldNameControls() {
-    const fieldPath = this.state.templateElementAttributes
+    console.log('in create_edit_document, renderCustomFieldNameControls, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
+    const fieldPath = this.state.templateElementAttributes && this.state.templateElementAttributes.name !== 'customField'
             ?
             getElementLabel({
-            allDocumentObjects: this.props.allDocumentObjects,
-            documents: Documents,
-            agreement: this.props.agreement,
-            // modifiedElement,
-            modifiedElement: {},
-            fieldName: this.state.templateElementAttributes.name,
-            documentTranslationsAll: this.props.documentTranslationsAll,
-            appLanguages: AppLanguages,
-            appLanguageCode: this.props.appLanguageCode,
-            fromCreateEditDocument: true
-          })
-          :
-          null;
-            // <div>Building/Construction Translation</div>
+              allDocumentObjects: this.props.allDocumentObjects,
+              documents: Documents,
+              agreement: this.props.agreement,
+              // modifiedElement,
+              modifiedElement: {},
+              fieldName: this.state.templateElementAttributes.name,
+              documentTranslationsAll: this.props.documentTranslationsAll,
+              appLanguages: AppLanguages,
+              appLanguageCode: this.props.appLanguageCode,
+              fromCreateEditDocument: true
+            })
+            :
+            null;
+
     return (
       <div
         className="create-edit-document-template-each-choice-input"
@@ -5152,7 +5165,7 @@ longActionPress(props) {
           Link to Database Value
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-           {this.state.templateElementAttributes
+           {this.state.templateElementAttributes && this.state.templateElementAttributes.name !== 'customField'
              ?
              <div
              className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
