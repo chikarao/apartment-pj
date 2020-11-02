@@ -1,5 +1,7 @@
 // import React from 'react';
 // import _ from 'lodash';
+
+// *** This function used in getInitialValueObject and documentChoicesTemplate
 export default (props) => {
  const { choices, value } = props;
 

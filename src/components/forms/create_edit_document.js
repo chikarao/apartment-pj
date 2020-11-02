@@ -112,7 +112,7 @@ class CreateEditDocument extends Component {
       customFieldNameInputValue: ''
     };
 
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    // this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleFormCloseDeleteClick = this.handleFormCloseDeleteClick.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
@@ -385,7 +385,11 @@ class CreateEditDocument extends Component {
         userOwner,
         tenant,
         appLanguageCode,
-        documentFields: (this.state.getSelectDataBaseValues || this.state.findIfDatabaseValuesExistForFields) ? templateElementsSubset : allObject,
+        documentFields: (this.state.getSelectDataBaseValues
+                          || this.state.findIfDatabaseValuesExistForFields
+                          || (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+                          // || (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
+                        ) ? templateElementsSubset : allObject,
         // documentFields: allObject,
         templateTranslationElements: this.props.templateTranslationElements,
         documentTranslationsAllInOne: this.props.documentTranslationsAllInOne,
@@ -415,7 +419,14 @@ class CreateEditDocument extends Component {
       if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
       // If getting data base values set objects for GetFieldValueChoiceModal
       if (this.state.getSelectDataBaseValues) {
-        const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true, initialValuesObject: initialValuesObject.initialValuesObject });
+        const fieldObject = getDocumentFieldsWithSameName({
+          documentFields: this.props.agreement.document_fields,
+          selectedFieldObject: this.props.selectedFieldObject,
+          valuesInForm: this.props.valuesInForm,
+          fromCreateEditDocument: true,
+          initialValuesObject: initialValuesObject.initialValuesObject
+        });
+
         if (!this.props.showGetFieldValuesChoice) {
           this.props.showGetFieldValuesChoiceModal(() => {});
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
@@ -710,6 +721,8 @@ class CreateEditDocument extends Component {
 
           if (documentField.translation_element) documentField.value = data[`${documentField.name}+translation`];
           if (!documentField.translation_element) documentField.value = data[documentField.name];
+          // if custom field, assign value for custom_name in initialValuesObject
+          if (!documentField.custom_name) documentField.value = data[documentField.custom_name];
 
           if (documentField.document_field_choices) {
             array = [];
@@ -759,275 +772,275 @@ class CreateEditDocument extends Component {
     // Do not call setProgressStatus here so that if action cable is disconnected, the progress bar will come up and not dismount
     // this.props.setProgressStatus({ progress_percentage: 0, message: 'Received request' });
   }
-
-  handleFormSubmit({ data, submitAction }) {
-    console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
-    // object to send to API; set flat_id
-    // const contractName = 'teishaku-saimuhosho';
-    const contractName = Documents[this.props.createDocumentKey].file;
-    const paramsObject = {
-      flat_id: this.props.flat.id,
-      template_file_name: contractName,
-      document_code: this.props.createDocumentKey,
-      booking_id: this.props.booking.id,
-      document_name: data.document_name,
-      document_field: [],
-      agreement_id: this.props.agreement ? this.props.agreement.id : null,
-      document_language_code: this.props.documentLanguageCode,
-      use_own_main_agreement: this.state.useMainDocumentInsert,
-    };
-    // iterate through each key in data from form
-
-    const requiredKeysArray = this.getRequiredKeys();
-    // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
-    const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
-
-    // _.each(Object.keys(data), key => {
-    // allFields is array of all keys (only) in a document
-    let fields = {};
-    if (this.props.showSavedDocument) {
-      // get delta from data and initialValues
-      fields = this.getDeltaFields(data);
-    } else {
-      // assign all fields to fields for iteration below
-      fields = this.props.allFields;
-    }
-    // console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
-    // iterate through all fields or just delta fields depending on showSavedDocument
-    // ie user is editing an already saved document
-    _.each(Object.keys(fields), key => {
-      // console.log('in create_edit_document, handleFormSubmit, key : ', key);
-      let page = 0;
-      // find out which page the key is on
-      // iterate through Document form first level key to see if each object has key in quesiton
-      _.each(Object.keys(this.props.documentFields), eachPageKey => {
-        // console.log('in create_edit_document, handleFormSubmit, key, eachPageKey, (toString(key) in this.props.documentFields[eachPageKey]), eachPageKey: ', key, eachPageKey, (key in this.props.documentFields[eachPageKey]), this.props.documentFields[eachPageKey]);
-        // if the object has the key, that is the page the key is on
-        // so set page variable so we can get choices from input key
-        if (key in this.props.documentFields[eachPageKey]) {
-          page = eachPageKey;
-        }
-      });
-
-      let choice = {};
-      // use page and key from above to get each choice from each document field from Documents[documentKey].form
-      _.each(this.props.documentFields[page][key].choices, eachChoice => {
-        // Boolean to test if field has multiple choices
-        const keyWithMultipleChoices = Object.keys(this.props.documentFields[page][key].choices).length > 1;
-        // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key], keyWithMultipleChoices: ', key, eachChoice, data, data[key], keyWithMultipleChoices);
-        // val = '' means its an input element, not a custom field component
-        // .val is assigned inputFieldValue if it is not a button
-        if (eachChoice.params.val == 'inputFieldValue') {
-          choice = eachChoice;
-          // add data[key] (user choice) as value in the object to send to API
-          // check for other vals of choices if more than 1 choice
-          // in case input has the same value as other buttons
-          const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
-          if (!otherChoicesHaveVal) {
-            if (this.props.showSavedDocument) {
-              choice.params.id = this.props.agreementMappedByName[key].id
-            }
-            choice.params.page = page;
-            choice.params.name = this.props.documentFields[page][key].name
-            if (key in data) {
-              choice.params.value = data[key]
-              // if need to show full local language text on PDF, use documentLanguageCode from model choice
-              if (choice.showLocalLanguage) {
-                // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
-                const selectChoices = choice.selectChoices || choice.select_choices;
-                const selectChoice = this.getSelectChoice(selectChoices, data[key]);
-                // assign display as an attribute in choice params
-                choice.params.display_text = selectChoice[this.props.documentLanguageCode];
-                // paramsObject.document_field.push(choice.params);
-                // if choice is a baseLanguageField ie not a _translation field,
-                // assign Document baseLanguage
-                if (choice.baseLanguageField) {
-                  choice.params.display_text = selectChoice[Documents[this.props.documentKey].baseLanguage];
-                }
-                // console.log('in create_edit_document, handleFormSubmit, if showLocalLanguage: selectChoice', selectChoice);
-              }
-            } else {
-              choice.params.value = '';
-            }
-              // add params object with the top, left, width etc. to object to send to api
-            paramsObject.document_field.push(choice.params);
-          }
-        } // end of if inputFieldValue
-
-        // START of assigning to paramsObject if params.val is NOT inputFieldValue
-        let dataRefined = ''
-        if ((data[key] == 'true') || (data[key] == 't')) {
-          dataRefined = true;
-        } else if ((data[key] == 'false') || (data[key] == 'f')) {
-          dataRefined = false;
-        } else {
-          dataRefined = data[key];
-        }
-
-        if ((eachChoice.params.val == dataRefined) || (dataRefined == '') || (eachChoice.params.val !== 'inputFieldValue')) {
-          // console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
-          choice = eachChoice;
-          let paramsForSelectKeyExists = false;
-          // if this is a saved document on backend ie not newly creating
-          // to get document field id into params
-          if (this.props.showSavedDocument) {
-            // if this key has multiple choices and is a button field, not a select string
-            if (keyWithMultipleChoices && choice.params.input_type == 'button') {
-              // use agreementMappedByName to get id
-              const savedDocumentField = this.getSavedDocumentField(choice, key);
-              // console.log('in create_edit_document, handleFormSubmit, savedDocumentField, keyWithMultipleChoices : ', savedDocumentField, keyWithMultipleChoices);
-              choice.params.id = savedDocumentField.id;
-            } else {
-              choice.params.id = this.props.agreementMappedByName[key].id;
-            }
-          } // end of if showSavedDocument
-          // if choice is string and need to show local language
-          if (choice.showLocalLanguage) {
-            // checkIfKeyExists is for select fields, so that documentField is not created
-            // for each select choice; if change selection, pdf will overlap
-            if (keyWithMultipleChoices) {
-              // if WITH multiple choices in form eg kitchen (yes or no)
-              paramsForSelectKeyExists = this.checkIfKeyExists(key, paramsObject);
-              // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
-              if (!paramsForSelectKeyExists) {
-                // get choice from constants/some_model
-                const selectChoices = choice.selectChoices || choice.select_choices;
-                const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
-                // assign display as an attribute in choice params
-                choice.params.display_text = selectChoice[this.props.documentLanguageCode];
-                if (choice.combineLanguages) {
-                  const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
-                  const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
-                  // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
-                  choice.params.display_text = combinedString
-                }
-              }
-            } else {
-              // if without multiple choices in form eg construction, choies come from constants/building
-              const selectChoices = choice.selectChoices || choice.select_choices;
-              const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
-              // assign display as an attribute in choice params
-              choice.params.display_text = selectChoice[this.props.documentLanguageCode];
-              if (choice.combineLanguages) {
-                const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
-                const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
-                // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
-                choice.params.display_text = combinedString
-              }
-            }
-          }
-          // assign values common to all document fields and push into paramsObject
-          if (!paramsForSelectKeyExists) {
-            choice.params.value = data[key];
-            choice.params.page = page;
-            choice.params.name = this.props.documentFields[page][key].name;
-            paramsObject.document_field.push(choice.params);
-          }
-        } // end of if eachChoice.params.val...
-
-          // if (eachChoice.params.input_type == 'button' && !(key in data)) {
-          //   choice = eachChoice;
-          //   // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
-          //   choice.params.value = ;
-          //   choice.params.page = page;
-          //   choice.params.name = this.props.documentFields[page][key].name
-          //   paramsObject.document_field.push(choice.params);
-          // }
-      }); // end of documentFields each choice
-    }); // end of each Object.keys(data)
-    console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
-    if (nullRequiredKeys.length > 0) {
-      // if required keys that are null exist
-      // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
-      this.props.authError('The fields highlighted in blue are required.');
-      this.props.requiredFields(nullRequiredKeys);
-    } else if (submitAction == 'create') {
-      this.props.authError('');
-      this.props.requiredFields([]);
-      // !!!!!!!create contract is creating a pdf
-      this.props.showLoading();
-      this.props.createContract(paramsObject, () => { this.props.showLoading(); });
-    } else if (submitAction == 'save_and_create') {
-      this.props.authError('');
-      this.props.requiredFields([]);
-      // sets flag save_and_create for the backend API to save documentFields first before create PDF
-      paramsObject.save_and_create = true;
-      this.props.editAgreementFields(paramsObject, (agreement) => {
-        this.props.showLoading();
-        this.setState({ showDocumentPdf: true });
-        let initialValuesObject = {};
-        // console.log('in create_edit_document, handleFormSubmit, else if save_and_create in callback editAgreementFields agreement: ', agreement);
-        const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
-        initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-        // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
-        this.props.setInitialValuesObject(initialValuesObject);
-      });
-      this.props.showLoading();
-    } else if (submitAction == 'save') {
-      if (!this.props.showSavedDocument) {
-        this.props.authError('');
-        this.props.requiredFields([]);
-        // !!!!!!!createAgreement is creating an agreement and document fields in backend API
-        this.props.showLoading();
-        this.props.createAgreement(paramsObject, (id) => {
-          // clear out editHistory and initialValuesObject; keep documentKey!!!!!
-          this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
-          this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
-          // calls setState({ agreementId: id }) in BookingConfirmation
-          // sets agreementId with id of new agreement and same documentKey sent back from API
-          this.props.setAgreementId(id);
-          // calls setState({ showSavedDocument: true, showDocument: false }) in BookingConfirmation
-          // after agreementId is set, unmount create agreement template
-          // by this.state showDocument: false, and mount new by showSavedDocument: true
-          this.props.goToSavedDocument();
-          this.props.showLoading();
-        });
-      } else {
-        this.props.authError('');
-        this.props.requiredFields([]);
-        // if showSavedDocument set in booking_confirmation, editAgreement
-        this.props.editAgreementFields(paramsObject, (agreement) => {
-          this.props.showLoading();
-          let initialValuesObject = {};
-          const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
-          // console.log('in create_edit_document, handleFormSubmit, else in callback editAgreementFields agreement: ', agreement);
-          initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-          // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
-          this.props.setInitialValuesObject(initialValuesObject);
-          // initialize if a redux form action creator to set initialValues again, but don't need here
-          // this.props.initialize(initialValuesObject.initialValuesObject);
-        });
-        this.props.showLoading();
-      }
-    }
-  }
-
-  getModelChoice(model, choice, name) {
-    // model refers to a constants file eg building.js
-    let returnedChoice;
-    _.each(model[name].choices, eachChoice => {
-      // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
-      // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
-      if (eachChoice.value === choice.params.val) {
-        returnedChoice = eachChoice;
-        return;
-      }
-    });
-    return returnedChoice;
-  }
-
-  renderSelectChoices(choices, model, name) {
-    // rendering options for select fields
-  return _.map(Object.keys(choices), (eachKey, i) => {
-    const modelChoice = this.getModelChoice(model, choices[eachKey], name);
-    const languageCode = Documents[this.props.documentKey].baseLanguage;
-    const languageCodeTranslation = this.props.documentLanguageCode;
-      return (
-        <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]} {modelChoice[languageCodeTranslation]}</option>
-      );
-    // }
-  });
-}
+  // NOTE: This is not for template documents!!!! Outdated!!!
+//   handleFormSubmit({ data, submitAction }) {
+//     console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
+//     // object to send to API; set flat_id
+//     // const contractName = 'teishaku-saimuhosho';
+//     const contractName = Documents[this.props.createDocumentKey].file;
+//     const paramsObject = {
+//       flat_id: this.props.flat.id,
+//       template_file_name: contractName,
+//       document_code: this.props.createDocumentKey,
+//       booking_id: this.props.booking.id,
+//       document_name: data.document_name,
+//       document_field: [],
+//       agreement_id: this.props.agreement ? this.props.agreement.id : null,
+//       document_language_code: this.props.documentLanguageCode,
+//       use_own_main_agreement: this.state.useMainDocumentInsert,
+//     };
+//     // iterate through each key in data from form
+//
+//     const requiredKeysArray = this.getRequiredKeys();
+//     // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
+//     const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
+//
+//     // _.each(Object.keys(data), key => {
+//     // allFields is array of all keys (only) in a document
+//     let fields = {};
+//     if (this.props.showSavedDocument) {
+//       // get delta from data and initialValues
+//       fields = this.getDeltaFields(data);
+//     } else {
+//       // assign all fields to fields for iteration below
+//       fields = this.props.allFields;
+//     }
+//     // console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
+//     // iterate through all fields or just delta fields depending on showSavedDocument
+//     // ie user is editing an already saved document
+//     _.each(Object.keys(fields), key => {
+//       // console.log('in create_edit_document, handleFormSubmit, key : ', key);
+//       let page = 0;
+//       // find out which page the key is on
+//       // iterate through Document form first level key to see if each object has key in quesiton
+//       _.each(Object.keys(this.props.documentFields), eachPageKey => {
+//         // console.log('in create_edit_document, handleFormSubmit, key, eachPageKey, (toString(key) in this.props.documentFields[eachPageKey]), eachPageKey: ', key, eachPageKey, (key in this.props.documentFields[eachPageKey]), this.props.documentFields[eachPageKey]);
+//         // if the object has the key, that is the page the key is on
+//         // so set page variable so we can get choices from input key
+//         if (key in this.props.documentFields[eachPageKey]) {
+//           page = eachPageKey;
+//         }
+//       });
+//
+//       let choice = {};
+//       // use page and key from above to get each choice from each document field from Documents[documentKey].form
+//       _.each(this.props.documentFields[page][key].choices, eachChoice => {
+//         // Boolean to test if field has multiple choices
+//         const keyWithMultipleChoices = Object.keys(this.props.documentFields[page][key].choices).length > 1;
+//         // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key], keyWithMultipleChoices: ', key, eachChoice, data, data[key], keyWithMultipleChoices);
+//         // val = '' means its an input element, not a custom field component
+//         // .val is assigned inputFieldValue if it is not a button
+//         if (eachChoice.params.val == 'inputFieldValue') {
+//           choice = eachChoice;
+//           // add data[key] (user choice) as value in the object to send to API
+//           // check for other vals of choices if more than 1 choice
+//           // in case input has the same value as other buttons
+//           const otherChoicesHaveVal = Object.keys(this.props.documentFields[page][key].choices).length > 1 ? this.checkOtherChoicesVal(this.props.documentFields[page][key].choices, key, data) : false;
+//           if (!otherChoicesHaveVal) {
+//             if (this.props.showSavedDocument) {
+//               choice.params.id = this.props.agreementMappedByName[key].id
+//             }
+//             choice.params.page = page;
+//             choice.params.name = this.props.documentFields[page][key].name
+//             if (key in data) {
+//               choice.params.value = data[key]
+//               // if need to show full local language text on PDF, use documentLanguageCode from model choice
+//               if (choice.showLocalLanguage) {
+//                 // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
+//                 const selectChoices = choice.selectChoices || choice.select_choices;
+//                 const selectChoice = this.getSelectChoice(selectChoices, data[key]);
+//                 // assign display as an attribute in choice params
+//                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
+//                 // paramsObject.document_field.push(choice.params);
+//                 // if choice is a baseLanguageField ie not a _translation field,
+//                 // assign Document baseLanguage
+//                 if (choice.baseLanguageField) {
+//                   choice.params.display_text = selectChoice[Documents[this.props.documentKey].baseLanguage];
+//                 }
+//                 // console.log('in create_edit_document, handleFormSubmit, if showLocalLanguage: selectChoice', selectChoice);
+//               }
+//             } else {
+//               choice.params.value = '';
+//             }
+//               // add params object with the top, left, width etc. to object to send to api
+//             paramsObject.document_field.push(choice.params);
+//           }
+//         } // end of if inputFieldValue
+//
+//         // START of assigning to paramsObject if params.val is NOT inputFieldValue
+//         let dataRefined = ''
+//         if ((data[key] == 'true') || (data[key] == 't')) {
+//           dataRefined = true;
+//         } else if ((data[key] == 'false') || (data[key] == 'f')) {
+//           dataRefined = false;
+//         } else {
+//           dataRefined = data[key];
+//         }
+//
+//         if ((eachChoice.params.val == dataRefined) || (dataRefined == '') || (eachChoice.params.val !== 'inputFieldValue')) {
+//           // console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
+//           choice = eachChoice;
+//           let paramsForSelectKeyExists = false;
+//           // if this is a saved document on backend ie not newly creating
+//           // to get document field id into params
+//           if (this.props.showSavedDocument) {
+//             // if this key has multiple choices and is a button field, not a select string
+//             if (keyWithMultipleChoices && choice.params.input_type == 'button') {
+//               // use agreementMappedByName to get id
+//               const savedDocumentField = this.getSavedDocumentField(choice, key);
+//               // console.log('in create_edit_document, handleFormSubmit, savedDocumentField, keyWithMultipleChoices : ', savedDocumentField, keyWithMultipleChoices);
+//               choice.params.id = savedDocumentField.id;
+//             } else {
+//               choice.params.id = this.props.agreementMappedByName[key].id;
+//             }
+//           } // end of if showSavedDocument
+//           // if choice is string and need to show local language
+//           if (choice.showLocalLanguage) {
+//             // checkIfKeyExists is for select fields, so that documentField is not created
+//             // for each select choice; if change selection, pdf will overlap
+//             if (keyWithMultipleChoices) {
+//               // if WITH multiple choices in form eg kitchen (yes or no)
+//               paramsForSelectKeyExists = this.checkIfKeyExists(key, paramsObject);
+//               // get choice on model eg building choice SRC for en is Steel Reinforced Concrete
+//               if (!paramsForSelectKeyExists) {
+//                 // get choice from constants/some_model
+//                 const selectChoices = choice.selectChoices || choice.select_choices;
+//                 const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
+//                 // assign display as an attribute in choice params
+//                 choice.params.display_text = selectChoice[this.props.documentLanguageCode];
+//                 if (choice.combineLanguages) {
+//                   const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
+//                   const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
+//                   // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
+//                   choice.params.display_text = combinedString
+//                 }
+//               }
+//             } else {
+//               // if without multiple choices in form eg construction, choies come from constants/building
+//               const selectChoices = choice.selectChoices || choice.select_choices;
+//               const selectChoice = this.getSelectChoice(selectChoices, dataRefined);
+//               // assign display as an attribute in choice params
+//               choice.params.display_text = selectChoice[this.props.documentLanguageCode];
+//               if (choice.combineLanguages) {
+//                 const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
+//                 const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
+//                 // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
+//                 choice.params.display_text = combinedString
+//               }
+//             }
+//           }
+//           // assign values common to all document fields and push into paramsObject
+//           if (!paramsForSelectKeyExists) {
+//             choice.params.value = data[key];
+//             choice.params.page = page;
+//             choice.params.name = this.props.documentFields[page][key].name;
+//             paramsObject.document_field.push(choice.params);
+//           }
+//         } // end of if eachChoice.params.val...
+//
+//           // if (eachChoice.params.input_type == 'button' && !(key in data)) {
+//           //   choice = eachChoice;
+//           //   // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
+//           //   choice.params.value = ;
+//           //   choice.params.page = page;
+//           //   choice.params.name = this.props.documentFields[page][key].name
+//           //   paramsObject.document_field.push(choice.params);
+//           // }
+//       }); // end of documentFields each choice
+//     }); // end of each Object.keys(data)
+//     console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
+//     if (nullRequiredKeys.length > 0) {
+//       // if required keys that are null exist
+//       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
+//       this.props.authError('The fields highlighted in blue are required.');
+//       this.props.requiredFields(nullRequiredKeys);
+//     } else if (submitAction == 'create') {
+//       this.props.authError('');
+//       this.props.requiredFields([]);
+//       // !!!!!!!create contract is creating a pdf
+//       this.props.showLoading();
+//       this.props.createContract(paramsObject, () => { this.props.showLoading(); });
+//     } else if (submitAction == 'save_and_create') {
+//       this.props.authError('');
+//       this.props.requiredFields([]);
+//       // sets flag save_and_create for the backend API to save documentFields first before create PDF
+//       paramsObject.save_and_create = true;
+//       this.props.editAgreementFields(paramsObject, (agreement) => {
+//         this.props.showLoading();
+//         this.setState({ showDocumentPdf: true });
+//         let initialValuesObject = {};
+//         // console.log('in create_edit_document, handleFormSubmit, else if save_and_create in callback editAgreementFields agreement: ', agreement);
+//         const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
+//         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
+//         // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
+//         this.props.setInitialValuesObject(initialValuesObject);
+//       });
+//       this.props.showLoading();
+//     } else if (submitAction == 'save') {
+//       if (!this.props.showSavedDocument) {
+//         this.props.authError('');
+//         this.props.requiredFields([]);
+//         // !!!!!!!createAgreement is creating an agreement and document fields in backend API
+//         this.props.showLoading();
+//         this.props.createAgreement(paramsObject, (id) => {
+//           // clear out editHistory and initialValuesObject; keep documentKey!!!!!
+//           this.props.editHistory({ editHistoryItem: {}, action: 'clear' })
+//           this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+//           // calls setState({ agreementId: id }) in BookingConfirmation
+//           // sets agreementId with id of new agreement and same documentKey sent back from API
+//           this.props.setAgreementId(id);
+//           // calls setState({ showSavedDocument: true, showDocument: false }) in BookingConfirmation
+//           // after agreementId is set, unmount create agreement template
+//           // by this.state showDocument: false, and mount new by showSavedDocument: true
+//           this.props.goToSavedDocument();
+//           this.props.showLoading();
+//         });
+//       } else {
+//         this.props.authError('');
+//         this.props.requiredFields([]);
+//         // if showSavedDocument set in booking_confirmation, editAgreement
+//         this.props.editAgreementFields(paramsObject, (agreement) => {
+//           this.props.showLoading();
+//           let initialValuesObject = {};
+//           const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
+//           // console.log('in create_edit_document, handleFormSubmit, else in callback editAgreementFields agreement: ', agreement);
+//           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
+//           // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
+//           this.props.setInitialValuesObject(initialValuesObject);
+//           // initialize if a redux form action creator to set initialValues again, but don't need here
+//           // this.props.initialize(initialValuesObject.initialValuesObject);
+//         });
+//         this.props.showLoading();
+//       }
+//     }
+//   }
+//
+//   getModelChoice(model, choice, name) {
+//     // model refers to a constants file eg building.js
+//     let returnedChoice;
+//     _.each(model[name].choices, eachChoice => {
+//       // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
+//       // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
+//       if (eachChoice.value === choice.params.val) {
+//         returnedChoice = eachChoice;
+//         return;
+//       }
+//     });
+//     return returnedChoice;
+//   }
+//
+//   renderSelectChoices(choices, model, name) {
+//     // rendering options for select fields
+//   return _.map(Object.keys(choices), (eachKey, i) => {
+//     const modelChoice = this.getModelChoice(model, choices[eachKey], name);
+//     const languageCode = Documents[this.props.documentKey].baseLanguage;
+//     const languageCodeTranslation = this.props.documentLanguageCode;
+//       return (
+//         <option key={i} value={choices[eachKey].params.val}>{modelChoice[languageCode]} {modelChoice[languageCodeTranslation]}</option>
+//       );
+//     // }
+//   });
+// }
 
 handleOnBlur(event) {
   // console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
@@ -1196,6 +1209,8 @@ handleOnFocus(event) {
         this.setState({
           templateElementAttributes: null,
           templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
+          customFieldNameInputValue: '',
+          showCustomInputCreateMode: false
         }, () => {
           document.getElementById('document-background').style.cursor = 'default';
         });
@@ -2261,52 +2276,12 @@ longActionPress(props) {
   // For creating new input fields
   renderTemplateElements(page) {
     const { documentLanguageCode } = this.props;
-    // const documentEmpty = _.isEmpty(this.props.documents);
     const documentEmpty = this.props.agreement.document_fields && this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let fieldComponent = '';
-    // let noTabs = false;
     let newElement = false;
     let inputElement = true;
     let localTemplateElementsByPage = null;
 
-    // const renderTab = (eachElement, selected, tabLeftMarginPx, inputElement) => {
-    //   const tabWidth = inputElement ? TAB_WIDTH : 55;
-    //   const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
-    //   return (
-    //     <div
-    //       id={`template-element-tab-${eachElement.id}`}
-    //       className="create-edit-document-template-element-edit-tab"
-    //       style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
-    //     >
-    //       <i
-    //         key={1}
-    //         value={eachElement.id}
-    //         className="fas fa-check-circle"
-    //         style={{ lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
-    //         onClick={this.handleTemplateElementCheckClick}
-    //       >
-    //       </i>
-    //       <i
-    //         key={2}
-    //         value={eachElement.id}
-    //         className="fas fa-truck-moving"
-    //         style={{ lineHeight: '1.5', color: 'gray' }}
-    //         onMouseDown={this.handleTemplateElementMoveClick}
-    //       >
-    //       </i>
-    //       {inputElement
-    //         ?
-    //         <i
-    //           key={3}
-    //           type={eachElement.input_type}
-    //           value={eachElement.id}
-    //           className="fas fa-expand-arrows-alt" style={{ lineHeight: '1.5', color: 'gray' }}
-    //           onMouseDown={this.handleTemplateElementChangeSizeClick}
-    //         >
-    //       </i> : null}
-    //     </div>
-    //   );
-    // };
     // Function to get object used in document_choices_template.js to render fields
     // Looks like { 1: { 100: {element attr}, 101: { element attr } }}
     const getLocalTemplateElementsByPage = (eachElement, box, backgroundDim, marginBetween, isNew) => {
@@ -2376,45 +2351,20 @@ longActionPress(props) {
           fieldComponent = eachElement.component;
         }
 
-        // Test if modifiedElement.name exists in the all object; list elements would not be in there (i.e. amentiies_list)
-        // const elementObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey][modifiedElement.name];
-        // if (elementObject) {
-        //   translationKey = elementObject.translation_key;
-        //   translationText = elementObject.translation_object ? 'Translation' : '';
-        //   const documentTranslations = this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey]
-        //   // const appLanguages = AppLanguages[translationKey];
-        //   label = (documentTranslations ? documentTranslations.translations[this.props.appLanguageCode] : '')
-        //           ||
-        //           (AppLanguages[translationKey] ? AppLanguages[translationKey][this.props.appLanguageCode] : '');
-        //   const category = (AppLanguages[elementObject.category] ? `${AppLanguages[elementObject.category][this.props.appLanguageCode]}/` : '');
-        //   const group = (AppLanguages[elementObject.group] ? `${AppLanguages[elementObject.group][this.props.appLanguageCode]}/` : '');
-        //   label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
-        //   // modifiedElement.name;
-        //   // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
-        // } else {
-        //   // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
-        //   // Get first part of name to get translation from appLanguages; last part to get
-        //   splitKey = modifiedElement.name.split('_');
-        //   category = modifiedElement.list_parameters ? `${AppLanguages[modifiedElement.list_parameters.split(',')[2]][this.props.appLanguageCode]}/` : '';
-        //   translationText = splitKey[splitKey.length - 1] === 'translation' ? 'Translation' : '';
-        //   splitKey.splice(splitKey.length - 1, 1)[0];
-        //   // console.log('in create_edit_document, renderTemplateElements, eachElement, splitKey: ', eachElement, splitKey);
-        //   const keyText = AppLanguages[splitKey[0]][this.props.appLanguageCode] || translationKey
-        //   label = category + keyText + ' ' + translationText;
-        //   // label = modifiedElement.name;
-        // }
-        label = getElementLabel({
-          allDocumentObjects: this.props.allDocumentObjects,
-          documents: Documents,
-          agreement: this.props.agreement,
-          modifiedElement,
-          fieldName: modifiedElement.name,
-          documentTranslationsAll: this.props.documentTranslationsAll,
-          appLanguages: AppLanguages,
-          appLanguageCode: this.props.appLanguageCode,
-          fromCreateEditDocument: true
-        });
-      // if (eachElement.page === page) {
+        label = eachElement.custom_name
+                ? eachElement.custom_name
+                : getElementLabel({
+                    allDocumentObjects: this.props.allDocumentObjects,
+                    documents: Documents,
+                    agreement: this.props.agreement,
+                    modifiedElement,
+                    fieldName: modifiedElement.name,
+                    documentTranslationsAll: this.props.documentTranslationsAll,
+                    appLanguages: AppLanguages,
+                    appLanguageCode: this.props.appLanguageCode,
+                    fromCreateEditDocument: true
+                  });
+
         const editTemplate = true;
         // const width = parseInt(eachElement.width, 10)
         const nullRequiredField = false;
@@ -2501,7 +2451,7 @@ longActionPress(props) {
               >
                 <Field
                   key={modifiedElement.name}
-                  name={modifiedElement.name}
+                  name={modifiedElement.custom_name ? modifiedElement.custom_name : modifiedElement.name}
                   // id={`template-element-input-${modifiedElement.choices[0].params.element_id}`}
                   // setting value here does not works unless its an <input or some native element
                   // value='Bobby'
@@ -2596,7 +2546,8 @@ longActionPress(props) {
                 >
                 <Field
                   key={modifiedElement.name}
-                  name={modifiedElement.name}
+                  // name={modifiedElement.name}
+                  name={modifiedElement.custom_name ? modifiedElement.custom_name : modifiedElement.name}
                   // id={`template-element-buttons-box-${modifiedElement.choices[0].element_id}`}
                   // setting value here does not works unless its an <input or some native element
                   // value='Bobby'
@@ -2667,7 +2618,8 @@ longActionPress(props) {
             return (
               <Field
                 key={modifiedElement.id}
-                name={modifiedElement.name}
+                // name={modifiedElement.name}
+                name={modifiedElement.custom_name ? modifiedElement.custom_name : modifiedElement.name}
                 // setting value here does not works unless its an <input or some native element
                 // value='Bobby'
                 component={fieldComponent}
@@ -4256,20 +4208,19 @@ longActionPress(props) {
       let createdObject = null;
       // No parent in summaryObject indciates it is an input (no choices) or button (true or false)
       if (!summaryObject.parent) {
-        // input only has one in array
+        // input only has one in array; Used for custom input
         if (summaryObject.input.length > 0) {
           // IMPORTANT: translation field uses input to crate the templateElementAttributes
           const { translationModeOn } = this.state;
           createdObject = summaryObject.input[0];
 
           templateElementAttributes = {
-            // id: `${this.state.templateElementCount}a`,
             id: null,
             // left, top and page assigned in getMousePosition
             name: !translationModeOn ? createdObject.name : elementIdArray[elementIdArray.length - 1],
             component: !translationModeOn ? createdObject.component : null,
             // width: createdObject.choices[0].params.width,
-            width: !translationModeOn ? createdObject.choices[Object.keys(createdObject.choices)[0]].params.width : '10%',
+            width: !translationModeOn ? createdObject.choices[Object.keys(createdObject.choices)[0]].params.width : '20%',
             height: '1.6%',
             // input_type: createdObject.choices[0].params.input_type, // or 'string' if an input component
             input_type: !translationModeOn ? createdObject.choices[Object.keys(createdObject.choices)[0]].params.input_type : 'text', // or 'string' if an input component
@@ -4492,14 +4443,10 @@ longActionPress(props) {
                 // createdObject = each;
                 selectChoices = templateElementAttributes.document_field_choices[count].selectChoices || templateElementAttributes.document_field_choices[count].select_choices;
                 selectChoices[i] = {};
-                if (each.params) {
-                  selectChoices[i] = { ...each.translation, val: each.params.val };
-                } else {
-                  // _.each(Object.keys(each), eachKey => {
-                    //   console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, each, eachKey, each[eachKey]: ', summaryObject, each, eachKey, each[eachKey]);
-                    //   selectChoices[i][eachKey] = each[eachKey];
-                    // });
-                    selectChoices[i] = each;
+                  if (each.params) {
+                    selectChoices[i] = { ...each.translation, val: each.params.val };
+                  } else {
+                      selectChoices[i] = each;
                   }
                 });
               }
@@ -4544,7 +4491,7 @@ longActionPress(props) {
           console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
         });
         createObject();
-      } else { // customField on
+      } else { // if (!this.state.showCustomInputCreateMode), i.e. customField on
         // logic for summaryObject for custom element
         const elementId = this.state.templateElementActionIdObject.array[0];
         elementIdArray = elementId.split(',');
@@ -4556,7 +4503,7 @@ longActionPress(props) {
           custom_name: this.state.customFieldNameInputValue,
           component: 'DocumentChoices',
           choices: {
-            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '10%', class_name: 'document-rectangle', input_type: 'text' } },
+            inputFieldValue: { params: { val: 'inputFieldValue', top: '0%', left: '0%', width: '20%', class_name: 'document-rectangle', input_type: 'text' } },
           }
         };
 
@@ -4568,66 +4515,10 @@ longActionPress(props) {
             createObject();
             console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType: ', summaryObject, elementType);
           });
-        }
-      }
-    }
+        } // if (this.state.customFieldNameInputValue === '' || ...
+      } //// if (!this.state.showCustomInputCreateMode),
+    } //  if (this.state.templateElementActionIdObject.array.length > 0)
   }
-
-  // const templateElementChoice = true;
-  // let templateElementAttributes = {};
-  // if (templateElementChoice) {
-  //   templateElementAttributes = {
-  //     id: `${this.state.templateElementCount}a`,
-  //     left: `${x}%`,
-  //     top: `${y}%`,
-  //     page: parseInt(elementVal, 10),
-  //     name: 'name',
-  //     component: 'DocumentChoices',
-  //     // component: 'input',
-  //     width: null,
-  //     height: null,
-  //     // type: 'text', // or 'string' if an input component
-  //     input_type: 'button', // or 'string' if an input component
-  //     class_name: 'document-rectangle-template',
-  //     border_color: 'lightgray',
-  //     // font_style: this.state.newFontObject.font_style,
-  //     // font_weight: this.state.newFontObject.font_weight,
-  //     // font_family: this.state.newFontObject.font_family,
-  //     // font_size: this.state.newFontObject.font_size,
-  //     document_field_choices: {
-  //       0: { val: 'Public Water', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-  //       1: { val: 'Tank', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-  //       2: { val: 'Well', top: null, left: null, width: '5.5%', height: '1.6%', top_px: null, left_px: null, width_px: null, height_px: null, class_name: 'document-rectangle-template-button', border_radius: '50%', border: '1px solid black', input_type: 'button' },
-  //     }
-  //   };
-  //   // in get_initialvalues_object_important_points_explanation.js
-  //   // 0: { params: { val: 'Public Water', top: '66.7%', left: '17.3%', width: '5.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-  //   // 1: { params: { val: 'Tank', top: '66.7%', left: '23.3%', width: '6.5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-  //   // 2: { params: { val: 'Well', top: '66.7%', left: '30%', width: '5%', class_name: 'document-rectangle', input_type: 'button' }, dependentKeys: { fields: [], value: '' } },
-  // } else {
-  //   templateElementAttributes = {
-  //     id: `${this.state.templateElementCount}a`,
-  //     left: `${x}%`,
-  //     top: `${y}%`,
-  //     page: parseInt(elementVal, 10),
-  //     name: 'name',
-  //     component: 'DocumentChoices',
-  //     // component: 'input',
-  //     width: '25%',
-  //     height: '1.6%',
-  //     input_type: 'text', // or 'string' if an input component
-  //     class_name: 'document-rectangle-template',
-  //     border_color: 'lightgray',
-  //     font_style: this.state.newFontObject.font_style,
-  //     font_weight: this.state.newFontObject.font_weight,
-  //     font_family: this.state.newFontObject.font_family,
-  //     font_size: this.state.newFontObject.font_size
-  //   };
-  // }
-
-  // handleListClick() {
-  //   console.log('in create_edit_document, handleListClick: ');
-  // }
 
   renderEachTranslationFieldChoice() {
     const { documentTranslationsTreated } = this.state;

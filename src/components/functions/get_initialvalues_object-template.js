@@ -7,6 +7,7 @@ import _ from 'lodash';
 // import getBookingDateObject from './get_booking_date_object';
 // import getContractLength from './get_contract_length';
 import getListValues from '../forms/get_list_values';
+import getDocumentFieldValueTranslation from '../functions/get_document_field_value_translation';
 
 // fixed_term_rental_contract.js
 export default (props) => {
@@ -416,7 +417,6 @@ export default (props) => {
     // This method assumes management is same as broker;
     // In reality they usually are but sometimes not in retail;
     // And there could be multiple brokers
-    // return flat[p.key];
     // Get contract from p.record booking.contracts array
     const contractArray = p.record.filter((cont) => cont.work_type === p.contractorType);
     const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
@@ -433,16 +433,19 @@ export default (props) => {
           || p.key === 'broker_address_hq'
           || p.key === 'broker_address_hq_translation'
         ) return createAddress(contractorForLanguage);
+
     if (p.key === 'management_company'
           || p.key === 'management_company_translation'
           || p.key === 'broker_company_name'
           || p.key === 'broker_company_name_translation'
         ) return contractorForLanguage.company_name;
+
     if (p.key === 'management_name'
           || p.key === 'management_name_translation'
           || p.key === 'broker_representative_name'
           || p.key === 'broker_representative_name_translation'
         ) return language === 'jp' ? contractorForLanguage.last_name + ' ' + contractorForLanguage.first_name : contractorForLanguage.first_name + ' ' + contractorForLanguage.last_name;
+
     if (p.key === 'management_phone') return contractArray[0].contractor.phone;
     if (p.key === 'management_registration_number' || p.key === 'broker_registration_number') return contractArray[0].contractor.registration_number;
     if (p.key === 'management_registration_number_front' || p.key === 'broker_registration_front_number') return contractArray[0].contractor.registration_number_front;
@@ -457,7 +460,6 @@ export default (props) => {
     if (p.key === 'broker_staff_phone') return staffForLanguage.phone;
 
     if (p.key === 'contract_work_sub_type') return contractArray[0].work_sub_type;
-    // if (p.key === 'broker_registration_jurisdiction_translation') return contractArray[0].registration_number_front;
   };
 
   const documentMethod = (p) => {
@@ -497,7 +499,6 @@ export default (props) => {
 
     if (!inspectionForLanguage) inspectionForLanguage = latestLanguageMappedInspections[Object.keys(latestLanguageMappedInspections)[0]]
 
-
     let key = p.key;
     // If the object is a translation object take off _translation for key
     if (p.object.translation_object) {
@@ -512,14 +513,10 @@ export default (props) => {
     }
 
     if (p.object.group === 'degradations') degradationsObject.degradations[p.key] = inspectionForLanguage[p.key]
-    // console.log('in get_initialvalues_object-fixed-term-contract, inspectionMethod, p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject: ', p.key, key, latestLanguageMappedInspections, inspectionForLanguage, degradationsObject);
     // If this method runs, that means there was an inspection on record
     if (p.key === 'building_inspection_conducted') return true;
     if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') degradationsObject.summaryKeys.push(p.key);
     // Assign an inspection to
-    // if (!degradationsObject.inspection) degradationsObject.inspection = inspectionForLanguage;
-    // if (p.key === 'degradation_exists_wooden' || p.key === 'degradation_exists_concrete') return getIfAnyMatch(inspectionForLanguage);
-
     return inspectionForLanguage[key];
   };
 
@@ -537,13 +534,9 @@ export default (props) => {
   }
 
   const runLastMethod = (p) => {
-    // console.log('in get_initialvalues_object-fixed-term-contract, runLastMethod, p, p.key: ', p, p.key);
     if (p.category === 'inspection') return getIfAnyMatch(degradationsObject.degradations, 'yes');
-    // return p.record[p.key];
   };
-  // const flatMethod = (p) => {
-  //   return p.record[p.key];
-  // };
+
   const degradationsObject = { summaryKeys: [], degradations: {} };
 
   const methodObject = {
@@ -635,10 +628,10 @@ export default (props) => {
       method: runLastMethod,
       parameters: {},
       condition: flat.building && flat.building.inspections.length > 0
-      // condition: Object.keys(degradationsObject.degradations).length > 0 && degradationsObject.summaryKeys.length > 0
     }
   };
-  console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject);
+
+  // console.log('in get_initialvalues_object-fixed-term-contract, flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject: ', flat, agreement, documentLanguageCode, agreement.language_code, documentConstants, userOwner, tenant, allObject);
   const baseLanguageCode = agreement.language_code || 'jp';
   const translationLanguageCode = documentLanguageCode || 'en';
   let objectReturned = {};
@@ -649,11 +642,12 @@ export default (props) => {
   let conditionTrue = false;
   let count = 0;
   let countAll = 0;
+  let translationObject = null;
 
   if (template) {
     console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, allObject, documentFields ', allObject, documentFields);
-    // IMPORTANT start of logic:
-    //Iterate through documentFields; For template elements it's state.documents.templateElements
+    // IMPORTANT: start of logic:
+    // Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
       countAll++;
       // Get object from all object fixed term and important points
@@ -661,22 +655,44 @@ export default (props) => {
       // Method to get intiialValue for field exists in methodObject
       keyExistsInMethodObject = allObjectEach
                                 && methodObject[allObjectEach.initialvalues_method_key];
+
       conditionTrue = allObjectEach
                       && methodObject[allObjectEach.initialvalues_method_key]
-                      && methodObject[allObjectEach.initialvalues_method_key].condition
-                      // && !eachField.custom_name;
+                      && methodObject[allObjectEach.initialvalues_method_key].condition;
 
       // The below sends key and object as default
       // and the rest of the parameters are derieed from methodObject
       if (keyExistsInMethodObject && conditionTrue) {
+        console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, keyExistsInMethodObject && conditionTrue, eachField: ', eachField);
         count++;
         objectReturned = { ...objectReturned,
                             [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({
                             ...methodObject[allObjectEach.initialvalues_method_key].parameters,
                             key: eachField.name,
                             object: allObjectEach,
-                            customField: eachField.custom_name }) };
-      }
+                            })
+                          };
+
+        // if custom field and linked to a database value i.e. has name
+        if (eachField.custom_name && eachField.name) {
+          // get the translation object with values for each language code key
+          translationObject = getDocumentFieldValueTranslation({ choices: allObjectEach.choices, value: objectReturned[eachField.name] });
+
+          if (translationObject) {
+            // If tanslationObject exists get the value correspnding to the language code
+            if (eachField.translation) {
+              objectReturned[eachField.custom_name] = translationObject[translationLanguageCode] || translationObject['en'] || objectReturned[eachField.name];
+            } else {
+              objectReturned[eachField.custom_name] = translationObject[baseLanguageCode] || translationObject['jp'] || objectReturned[eachField.name];
+            } //if (eachField.translation)
+          } else {
+            // If there is no translationObject, assign current value for name to custom_name in initialValuesObject
+            objectReturned[eachField.custom_name] = objectReturned[eachField.name];
+          }// if (translationObject)
+          console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, translationObject, eachField: ', objectReturned, translationObject, eachField);
+        } // end of if (eachField.custom_name && eachField.name)
+      } // if (keyExistsInMethodObject && conditionTrue)
+
       // Code for list elements eg amenities_list amenties_list_translation
       // list elements do not have an all object and has list parameters in eachField,
       // eg. list_parameters: fixed_term_rental_contract_bilingual,translation,amenities,true,bath_tub,shower,ac,auto_lock
@@ -718,7 +734,6 @@ export default (props) => {
   // !!!!!!!!!end of documentForm eachField
   // Run last functions to get values for keys that require populating objects and arrays
   // based on run of function; For inspection, need to get all degradations added to document
-  // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before runLastInspection, methodObject.runLastInspection.condition, degradationsObject ', methodObject.runLastInspection.condition, degradationsObject);
   if (methodObject.runLastInspection.condition && degradationsObject.summaryKeys.length > 0) {
     _.each(degradationsObject.summaryKeys, eachFieldName => {
       objectReturned = { ...objectReturned, [eachFieldName]: methodObject.runLastInspection.method({ ...methodObject.runLastInspection.parameters, key: eachFieldName, category: 'inspection' }) };
@@ -754,5 +769,5 @@ export default (props) => {
   console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };
-// }
+
 };
