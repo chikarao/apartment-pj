@@ -4498,11 +4498,12 @@ longActionPress(props) {
         // logic for summaryObject for custom element
         const elementId = this.state.templateElementActionIdObject.array[0];
         // split string looking like 'input,building,construction'
+        // custom elementId is 'input,,'
         elementIdArray = elementId.split(',');
         // array like [input,building,construction]
         elementType = elementIdArray[0];
         // name like 'construction'
-        const name = elementIdArray[elementIdArray.length - 1] || 'customField';
+        const name = elementIdArray[elementIdArray.length - 1];
 
         const customCurrentObject = {
           name,
@@ -4514,7 +4515,7 @@ longActionPress(props) {
         };
 
         // If customFieldNameInputValue empty or has a custom name already assign name
-        if (name !== 'customField'
+        if ((this.state.customFieldNameInputValue === '' && name)
             || this.state.customFieldNameInputValue.indexOf('custom-') !== -1) {
           this.setState({ customFieldNameInputValue: `custom-${name}` }, () => {
             customCurrentObject.custom_name = this.state.customFieldNameInputValue;
@@ -5138,7 +5139,7 @@ longActionPress(props) {
 
   renderCustomFieldNameControls() {
     console.log('in create_edit_document, renderCustomFieldNameControls, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
-    const fieldPath = this.state.templateElementAttributes && this.state.templateElementAttributes.name !== 'customField'
+    const fieldPath = this.state.templateElementAttributes && this.state.templateElementAttributes.name
             ?
             getElementLabel({
               allDocumentObjects: this.props.allDocumentObjects,
@@ -5165,7 +5166,7 @@ longActionPress(props) {
           Link to Database Value
         </div>
         <div className="create-edit-document-template-edit-field-box-controls-action">
-           {this.state.templateElementAttributes && this.state.templateElementAttributes.name !== 'customField'
+           {this.state.templateElementAttributes && this.state.templateElementAttributes.name
              ?
              <div
              className="create-edit-document-template-edit-field-box-controls-action-thumbnail"
