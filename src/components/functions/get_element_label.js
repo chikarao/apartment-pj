@@ -11,9 +11,10 @@ export default (props) => {
     appLanguages,
     appLanguageCode,
     fieldName,
-    fromCreateEditDocument
+    fromCreateEditDocument,
+    translationMode
   } = props;
-  console.log('in get_element_label, props: ', props);
+  console.log('in get_element_label, props, props.fieldName: ', props, props.fieldName);
 
   let label = '';
   let translationKey = '';
@@ -35,6 +36,7 @@ export default (props) => {
     // modifiedElement.name;
     // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
   } else {
+    console.log('in get_element_label, in else elementObject props, props.fieldName: ', props, props.fieldName);
     // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
     // Get first part of name to get translation from appLanguages; last part to get
     const splitKey = fieldName.split('_');

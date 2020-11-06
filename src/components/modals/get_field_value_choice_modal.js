@@ -20,7 +20,8 @@ class GetFieldValueChoiceModal extends Component {
     super(props);
     this.state = {
       applySelectedDocumentValueCompleted: false,
-      showAllSelectedValues: false
+      showAllSelectedValues: false,
+      customFieldModeOn: false
     };
 
     this.handleFieldCheckboxClick = this.handleFieldCheckboxClick.bind(this);
@@ -65,6 +66,34 @@ class GetFieldValueChoiceModal extends Component {
     this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: newArray });
   }
 
+  renderCustomFields() {
+    return _.map(Object.keys(this.props.selectedFieldObject.fields), (eachFieldKey, i) => {
+      console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
+      if (this.props.selectedFieldObject.fields[eachFieldKey].customField) {
+        return (
+          <li
+            key={i}
+            className="get-field-value-choice-modal-values-each"
+            id={`custom-field-${eachFieldKey}`}
+          >
+            <div className="get-field-value-choice-modal-values-each-text-box">
+              <div className="get-field-value-choice-modal-values-each-text-box-key">
+                {this.props.selectedFieldObject.fields[eachFieldKey].element.custom_name}
+              </div>
+              <div className="get-field-value-choice-modal-values-each-text-box-value">
+                Linked to DB: {this.props.selectedFieldObject.fields[eachFieldKey].element.name
+                              ?
+                              this.props.selectedFieldObject.fields[eachFieldKey].element.name
+                              :
+                              'No'}
+              </div>
+            </div>
+          </li>
+        );
+      }
+    });
+  }
+
   renderEachValue() {
     let elementName = '';
     let elementValueText = '';
@@ -82,7 +111,8 @@ class GetFieldValueChoiceModal extends Component {
         documentTranslationsAll: this.props.documentTranslationsAll,
         appLanguages: AppLanguages,
         appLanguageCode: this.props.appLanguageCode,
-        fromCreateEditDocument: false
+        fromCreateEditDocument: false,
+        // translationModeOn: false
       });
 
       const getElementValue = () => getElementValueText({
@@ -156,7 +186,7 @@ class GetFieldValueChoiceModal extends Component {
 
     _.each(this.props.fieldValueDocumentObject.selectedFieldNameArray, eachName => {
       valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
-      templateElement = this.props.selectedFieldObject[eachName].element
+      templateElement = this.props.selectedFieldObject.fields[eachName].element
       console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
       // Array for state fieldValueAppliedArray
       newArray.push(eachName);
@@ -185,7 +215,9 @@ class GetFieldValueChoiceModal extends Component {
 
     return (
       <div className="get-field-value-choice-modal-button-box">
-        <div className="get-field-value-choice-modal-button-checkall-box">
+        <div className="get-field-value-choice-modal-button-checkall-box"
+          style={{ width: this.props.selectedFieldObject.customFieldExists ? '90%' : null }}
+        >
           <div
             className="get-field-value-choice-modal-button-checkall-each"
             style={{ color: disableCheckAll ? 'gray' : 'blue' }}
@@ -198,12 +230,24 @@ class GetFieldValueChoiceModal extends Component {
           </div>
           <div
             className="get-field-value-choice-modal-button-checkall-each"
-            style={{ color: checkedSome && !allValuesAlreadyApplied ? 'blue' : 'gray' }}
+            style={{ color: checkedSome && !allValuesAlreadyApplied ? 'blue' : 'gray'}}
             value="unCheckAll"
             onClick={checkedSome ? this.handleFieldCheckboxClick : () => {}}
           >
             Uncheck All
           </div>
+          {
+            this.props.selectedFieldObject.customFieldExists
+            ?
+            <div
+              className="get-field-value-choice-modal-button-custom-standard"
+              onClick={() => this.setState({ customFieldModeOn: !this.state.customFieldModeOn })}
+            >
+              {this.state.customFieldModeOn ? 'Standard Fields' : 'Custom Fields'}
+            </div>
+            :
+            null
+          }
         </div>
         <div
           className={checkedSome && !allValuesAlreadyApplied ? 'get-field-value-choice-modal-button-apply button-hover' : 'get-field-value-choice-modal-button-apply'}
@@ -216,21 +260,36 @@ class GetFieldValueChoiceModal extends Component {
     );
   }
 
-  render() {
-    // {this.state.applySelectedDocumentValueCompleted
-    //   ?
-    //   <div className="get-field-value-choice-modal-title-applied-message">Values Applied</div>
-    //   :
-    //   null
-    // }
+  renderMainModal() {
     return (
       <div
         className="get-field-value-choice-modal-main"
         id="get-field-value-choice-modal-main"
         style={{ top: this.props.top, left: this.props.left }}
       >
-        <div className="get-field-value-choice-modal-title">{`Available ${this.props.getDataBaseValues ? 'Data Base' : ''} Values`}</div>
-        <ul className="get-field-value-choice-modal-scrollbox">
+        {
+          this.props.selectedFieldObject.customFieldExists && this.state.customFieldModeOn
+          ?
+          <div className="get-field-value-choice-modal-category-heading"> Custom Fields</div>
+          :
+          <div className="get-field-value-choice-modal-title">{`Available ${this.props.getDataBaseValues ? 'Data Base' : ''} Values`}</div>
+        }
+        { this.state.customFieldModeOn
+          ?
+          <ul className="get-field-value-choice-modal-custom-scrollbox">
+            {this.renderCustomFields()}
+          </ul>
+          :
+          null
+        }
+        {
+          this.props.selectedFieldObject.customFieldExists && this.state.customFieldModeOn
+          ?
+          <div className="get-field-value-choice-modal-category-heading">Available Values</div>
+          :
+          null
+        }
+        <ul className={`get-field-value-choice-modal-scrollbox ${this.state.customFieldModeOn ? 'get-field-value-choice-modal-scrollbox-small' : ''}`}>
           {this.props.fieldValueDocumentObject && Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>
         <div className="get-field-value-choice-modal-hide-same-values-input-box">
@@ -247,6 +306,25 @@ class GetFieldValueChoiceModal extends Component {
           {this.props.fieldValueDocumentObject ? this.renderButtons() : null}
       </div>
     );
+  }
+
+  // renderCustomFieldSubModal() {
+  //   return (
+  //     <div
+  //       className="get-field-value-choice-modal-main-sub"
+  //     >
+  //       SUB
+  //     </div>
+  //   )
+  // }
+
+  render() {
+    // {this.renderCustomFieldSubModal()}
+    return(
+      <div>
+        {this.renderMainModal()}
+      </div>
+    )
   }
 }
 

@@ -598,15 +598,15 @@ export default function (state = {
 
     case EDIT_AGREEMENT_FIELDS:
     // console.log('in documents reducer, state: ', state);
-    return { ...state, editHistoryArray: [] };
+      return { ...state, editHistoryArray: [] };
 
     case SET_GET_FIELD_VALUE_DOCUMENT_OBJECT:
     // console.log('in documents reducer, state: ', state);
-    return { ...state, fieldValueDocumentObject: action.payload };
+      return { ...state, fieldValueDocumentObject: action.payload };
 
     case SET_SELECTED_FIELD_OBJECT:
     // console.log('in documents reducer, state: ', state);
-    return { ...state, selectedFieldObject: action.payload };
+      return { ...state, selectedFieldObject: action.payload };
 
     case SET_PROGRESS_STATUS:
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);

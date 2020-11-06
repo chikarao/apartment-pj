@@ -3181,7 +3181,7 @@ form {
 .get-field-value-choice-modal-main {
   z-index: 15;
   width: 350px;
-  height: 450px;
+  height: 590px;
   background-color: white;
   border: 1px solid #ccc;
   display: flex;
@@ -3191,6 +3191,10 @@ form {
   padding: 5px;
   top: 0;
 }
+/*
+.get-field-value-choice-modal-main-custom {
+  height: 590px;
+} */
 
 .get-field-value-choice-modal-title {
   width: auto;
@@ -3199,6 +3203,11 @@ form {
   font-size: 15px;
   padding: 5px;
   font-weight: bold;
+}
+
+.get-field-value-choice-modal-category-heading {
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .get-field-value-choice-modal-scrollbox {
@@ -3210,7 +3219,23 @@ form {
   overflow-y: scroll;
 }
 
-.get-field-value-choice-modal-scrollbox li:last-child {
+.get-field-value-choice-modal-scrollbox-small {
+  height: 50%;
+}
+
+.get-field-value-choice-modal-custom-scrollbox {
+  width: auto;
+  height: auto;
+  max-height: 50%;
+  /* border: 1px solid #ccc; */
+  font-size: 12px;
+  padding: 5px;
+  overflow-y: scroll;
+}
+
+
+.get-field-value-choice-modal-scrollbox li:last-child,
+.get-field-value-choice-modal-custom-scrollbox li:last-child {
   border-bottom: 1px solid #ccc;
 }
 

@@ -205,9 +205,11 @@ class CreateEditDocument extends Component {
     if (this.props.showTemplate) {
       // templateEditHistory can be null in later code;
       // all local state values set in constructor already
+      // *****************************************************************
       // !!!!! IMPORTATNT: When refreshing localStorageHistory, comment out below getLocalHistory
+      // *****************************************************************
       // gotohistory
-      // templateEditHistory = getLocalHistory();
+      templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate templateEditHistory', templateEditHistory);
@@ -240,81 +242,6 @@ class CreateEditDocument extends Component {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     }
-
-    // console.log('in create_edit_document, componentDidMount, this.props.agreement', this.props.agreement);
-    // if (this.props.bookingData) {
-    //   const {
-    //     flat,
-    //     booking,
-    //     userOwner,
-    //     tenant,
-    //     appLanguageCode,
-    //     // documentFields,
-    //     documentLanguageCode,
-    //     assignments,
-    //     contracts,
-    //     documentKey,
-    //     contractorTranslations,
-    //     staffTranslations
-    //   } = this.props;
-    //   const documentFields = Documents[documentKey].form
-    //   let initialValuesObject = {};
-    //   // if showing a saved document (props set in booking_confirmation.js)
-    //   const mainDocumentInsert = this.getMainDocumentInsert(this.props.documentInsertsAll[0]);
-    //   let mainInsertFieldsObject = {};
-    //   // if mainInsertFieldsObject is empty; ie user has not created a main agreement and insert fields
-    //   _.isEmpty(mainInsertFieldsObject) ? (mainInsertFieldsObject = DefaultMainInsertFieldsObject) : mainInsertFieldsObject;
-    //   // console.log('in create_edit_document, componentDidMount, mainInsertFieldsObject, mainDocumentInsert', mainInsertFieldsObject, mainDocumentInsert);
-    //   if (this.props.showSavedDocument) {
-    //     // For static documents (not template) that are saved (not ones that are yet to be saveed)
-    //     // get values of each agreement document field
-    //     // need to have this to populate document inserts
-    //     this.props.fetchAgreement(this.props.agreementId, () => {});
-    //     const agreement = this.props.agreement || {};
-    //     // const agreements = this.props.agreements || [];
-    //     // !this.props.showOwnUploadedDocument means static document
-    //     if (!this.props.showOwnUploadedDocument) {
-    //       // console.log('in create_edit_document, componentDidMount, if !this.props.showOwnUploadedDocument', !this.props.showOwnUploadedDocument);
-    //       const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement, mainDocumentInsert });
-    //       initialValuesObject = {
-    //         initialValuesObject: returnedObject.initialValuesObject,
-    //         agreementMappedByName: returnedObject.agreementMappedByName,
-    //         agreementMappedById: returnedObject.agreementMappedById,
-    //         allFields: {},
-    //         mainInsertFieldsObject
-    //       };
-    //       const countMainDocumentInserts = this.countMainDocumentInserts(this.props.agreement);
-    //       if (countMainDocumentInserts > 0) {
-    //         this.setState({ useMainDocumentInsert: true }, () => {
-    //         });
-    //       }
-    //     } else { // else for if showOwnUploadedDocument
-    //       // this.setState({ showDocumentPdf: true }, () => {
-    //       // The initial showDocumentPdf value is false if showTemplate
-    //       this.setState({ showDocumentPdf: !this.props.showTemplate }, () => {
-    //       });
-    //     }
-    //   } else { // if this.props.showSavedDocument
-    //     // For static documents that are yet to be saved
-    //     // if not save document ie creating new document, call method to assign initialValues
-    //     initialValuesObject = Documents[documentKey].method({
-    //       flat,
-    //       booking,
-    //       userOwner,
-    //       tenant,
-    //       appLanguageCode,
-    //       documentFields,
-    //       assignments,
-    //       contracts,
-    //       documentLanguageCode,
-    //       documentKey,
-    //       contractorTranslations,
-    //       staffTranslations,
-    //       mainInsertFieldsObject
-    //     });
-    //   }
-    //   this.props.setInitialValuesObject(initialValuesObject);
-    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -2352,8 +2279,10 @@ longActionPress(props) {
         }
 
         label = eachElement.custom_name
-                ? eachElement.custom_name
-                : getElementLabel({
+                ?
+                `${eachElement.custom_name} ${eachElement.translation ? 'Translation' : ''}`
+                :
+                getElementLabel({
                     allDocumentObjects: this.props.allDocumentObjects,
                     documents: Documents,
                     agreement: this.props.agreement,
@@ -5110,7 +5039,7 @@ longActionPress(props) {
         <div
           className="create-edit-document-template-each-choice-label-input"
         >
-          Name the New Custom Field
+          Name New Custom Field
         </div>
         <input
           type="string"
@@ -5273,8 +5202,8 @@ longActionPress(props) {
     const array = [];
     let templateElement = null;
     _.each(this.state.selectedTemplateElementIdArray, eachId => {
-      templateElement = this.props.templateElements[parseInt(eachId, 10)];
-      console.log('in create_edit_document, findIfOriginalValuesExistForFields, templateElement, this.props.valuesInForm[templateElement.name]: ', templateElement, this.props.valuesInForm[templateElement.name]);
+      templateElement = this.props.templateElements[eachId] || this.props.templateElements[parseInt(eachId, 10)];
+      console.log('in create_edit_document, findIfOriginalValuesExistForFields, templateElement, eachId, this.props.templateElements: ', templateElement, eachId, this.props.templateElements);
 
       if (templateElement.original_value && templateElement.original_value !== this.props.valuesInForm[templateElement.name]) array.push(templateElement.id)
     });
@@ -5322,28 +5251,27 @@ longActionPress(props) {
     callback();
   }
 
+  // Get an object with all selected field in the agreement
   getSelectedFieldObject(callback) {
-      const object = {};
-      _.each(this.state.selectedTemplateElementIdArray, eachId => {
-        object[this.props.templateElements[eachId].name] = { element: this.props.templateElements[eachId], currentValue: this.props.valuesInForm[this.props.templateElements[eachId].name] };
-      });
-      callback();
-      return _.isEmpty(object) ? null : object;
-    // let templateElement = null;
-    // const array = [];
-    // let updateObject = {};
-    // _.each(this.state.selectedTemplateElementIdArray, eachId => {
-      // templateElement = this.props.templateElements[parseInt(eachId, 10)];
-      // // prep obejct to be sent to updateDocumentElementLocally and setTemplateHistoryArray
-      // updateObject = { id: templateElement.id, value: templateElement.original_value, previous_value: this.props.valuesInForm[templateElement.name] };
-      // array.push(updateObject);
-      // // change the value in props/form/CreateEditDocument/templateElement.name
-      // this.props.change(templateElement.name, templateElement.original_value);
-    // });
-    // Update in appstate and persist history in localStorage
-    // this.props.updateDocumentElementLocally(array);
-    // this.setTemplateHistoryArray(array, 'update');
+    const object = { fields: {}, customFieldExists: false };
+    let name = null;
+    _.each(this.state.selectedTemplateElementIdArray, eachId => {
+      name = this.props.templateElements[eachId].custom_name ? this.props.templateElements[eachId].custom_name : this.props.templateElements[eachId].name;
+      if (this.props.templateElements[eachId].custom_name) object.customFieldExists = true;
+
+      object.fields[name] = {
+        element: this.props.templateElements[eachId],
+        currentValue: this.props.templateElements[eachId].custom_name
+                      ?
+                      this.props.valuesInForm[this.props.templateElements[eachId].custom_name]
+                      :
+                      this.props.valuesInForm[this.props.templateElements[eachId].name],
+        customField: this.props.templateElements[eachId].custom_name
+      };
+    });
     // Call back to set getFieldValuesCompletedArray to true
+    callback();
+    return _.isEmpty(object) ? null : object;
   }
 
   getSelectDataBaseValues() {
@@ -5374,7 +5302,7 @@ longActionPress(props) {
   renderGetFieldValuesChoiceBox() {
     return (
       <GetFieldValueChoiceModal
-        top={'35%'}
+        top={'20%'}
         left={'50%'}
         updateDocumentElementLocallyAndSetHistory={(array) => {
           // set value for each templateElement
@@ -5415,7 +5343,7 @@ longActionPress(props) {
         case 'originalValues': {
           // this.getOriginalValues(setCompletedCallback)
           // this.props.setSelectedFieldObject(this.getSelectedFieldObject())
-          const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true });
+          const fieldObject = getDocumentFieldsWithSameName({ documentFields: this.props.agreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm, fromCreateEditDocument: true, translationModeOn: false });
 
           if (!this.props.showGetFieldValuesChoice) {
             this.props.showGetFieldValuesChoiceModal(() => {});
