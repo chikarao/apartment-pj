@@ -21,11 +21,14 @@ class GetFieldValueChoiceModal extends Component {
     this.state = {
       applySelectedDocumentValueCompleted: false,
       showAllSelectedValues: false,
-      customFieldModeOn: false
+      customFieldModeOn: false,
+      selectedCustomFieldChoice: null,
+      showCustomFieldValues: false
     };
 
     this.handleFieldCheckboxClick = this.handleFieldCheckboxClick.bind(this);
     this.handleFieldValueApplyClick = this.handleFieldValueApplyClick.bind(this);
+    this.handleCustomFieldChoiceClick = this.handleCustomFieldChoiceClick.bind(this);
   }
 
   handleFieldCheckboxClick(event) {
@@ -66,26 +69,35 @@ class GetFieldValueChoiceModal extends Component {
     this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: newArray });
   }
 
+  handleCustomFieldChoiceClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    this.setState({ selectedCustomFieldChoice: elementVal }, () => {
+      console.log('in GetFieldValueChoiceModal, handleCustomFieldChoiceClick, elementVal, this.state.selectedCustomFieldChoice: ', elementVal, this.state.selectedCustomFieldChoice);
+    });
+  }
+
   renderCustomFields() {
     return _.map(Object.keys(this.props.selectedFieldObject.fields), (eachFieldKey, i) => {
-      console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
+      // console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
       if (this.props.selectedFieldObject.fields[eachFieldKey].customField) {
         return (
           <li
             key={i}
             className="get-field-value-choice-modal-values-each"
-            id={`custom-field-${eachFieldKey}`}
+            value={eachFieldKey}
+            onClick={this.handleCustomFieldChoiceClick}
           >
-            <div className="get-field-value-choice-modal-values-each-text-box">
-              <div className="get-field-value-choice-modal-values-each-text-box-key">
+            <div className="get-field-value-choice-modal-values-each-text-box" value={eachFieldKey}>
+              <div className="get-field-value-choice-modal-values-each-text-box-key" value={eachFieldKey}>
                 {this.props.selectedFieldObject.fields[eachFieldKey].element.custom_name}
               </div>
-              <div className="get-field-value-choice-modal-values-each-text-box-value">
-                Linked to DB: {this.props.selectedFieldObject.fields[eachFieldKey].element.name
+              <div className="get-field-value-choice-modal-values-each-text-box-value" value={eachFieldKey}>
+                Link to DB: {this.props.selectedFieldObject.fields[eachFieldKey].element.name
                               ?
                               this.props.selectedFieldObject.fields[eachFieldKey].element.name
                               :
-                              'No'}
+                              'None'}
               </div>
             </div>
           </li>
@@ -102,18 +114,22 @@ class GetFieldValueChoiceModal extends Component {
     console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, this.props.allDocumentObjects, allObject: ', this.props.fieldValueDocumentObject, this.props.allDocumentObjects, allObject);
 
     const renderEach = (eachFieldObject, i) => {
-      elementName = getElementLabel({
-        allDocumentObjects: this.props.allDocumentObjects,
-        documents: Documents,
-        agreement: this.props.fieldValueDocumentObject.agreement,
-        modifiedElement: eachFieldObject,
-        fieldName: eachFieldObject.fieldName,
-        documentTranslationsAll: this.props.documentTranslationsAll,
-        appLanguages: AppLanguages,
-        appLanguageCode: this.props.appLanguageCode,
-        fromCreateEditDocument: false,
-        // translationModeOn: false
-      });
+      elementName = eachFieldObject.field.custom_name
+                    ?
+                    eachFieldObject.field.custom_name
+                    :
+                    getElementLabel({
+                      allDocumentObjects: this.props.allDocumentObjects,
+                      documents: Documents,
+                      agreement: this.props.fieldValueDocumentObject.agreement,
+                      modifiedElement: eachFieldObject,
+                      fieldName: eachFieldObject.fieldName,
+                      documentTranslationsAll: this.props.documentTranslationsAll,
+                      appLanguages: AppLanguages,
+                      appLanguageCode: this.props.appLanguageCode,
+                      fromCreateEditDocument: false,
+                      // translationModeOn: false
+                    });
 
       const getElementValue = () => getElementValueText({
         allDocumentObjects: this.props.allDocumentObjects,
@@ -130,6 +146,13 @@ class GetFieldValueChoiceModal extends Component {
       });
       // Test if change for field as already been applied
       changeApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
+      let value = null;
+      if (eachFieldObject.field.custom_name) {
+        value = eachFieldObject.currentValue;
+      } else {
+        value = !eachFieldObject.field.document_field_choices ? eachFieldObject[eachFieldObject.fieldName] : getElementValue()
+      }
+
       return (
         <li key={i} className="get-field-value-choice-modal-values-each">
           <div className="get-field-value-choice-modal-values-each-text-box">
@@ -142,11 +165,11 @@ class GetFieldValueChoiceModal extends Component {
               ''}
             </div>
             <div className="get-field-value-choice-modal-values-each-text-box-value">
-              {!eachFieldObject.field.document_field_choices ? eachFieldObject[eachFieldObject.fieldName] : getElementValue()}
+              {value}
             </div>
           </div>
           <div className="get-field-value-choice-modal-values-each-checkbox-box">
-            {!changeApplied && !eachFieldObject.sameValues
+            {!changeApplied && (!eachFieldObject.sameValues)
               ?
               <input
                 className="get-field-value-choice-modal-values-each-checkbox-box-input"
@@ -162,18 +185,33 @@ class GetFieldValueChoiceModal extends Component {
         </li>
       );
     };
+
+    let renderFieldObject = false;
     // go through each fieldValueDocumentObject set by action setGetFieldValueDocumentObject
     // called in SelectExitingDocumentModal
     return _.map(this.props.fieldValueDocumentObject.fieldObject, (eachFieldObject, i) => {
-      console.log('in GetFieldValueChoiceModal, renderEachValue, eachFieldObject, allObject: ', eachFieldObject, allObject);
+      console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject: ', this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject);
+      renderFieldObject = false;
       // getElementLabel function is shared with CreateEditDocument renderTemplateElements
       // sameValues attribute compares currentValue in form value props
       //and value attribute in documentField for document
-      if (this.state.showAllSelectedValues) {
-        return renderEach(eachFieldObject, i);
-      } else if (!eachFieldObject.sameValues) {
-        return renderEach(eachFieldObject, i);
+      if (!this.state.customFieldModeOn
+          && this.state.showAllSelectedValues
+          && this.props.selectedFieldObject.fields[eachFieldObject.fieldName]
+        ) {
+        // return renderEach(eachFieldObject, i);
+        renderFieldObject = true;
+      } else if (!this.state.customFieldModeOn && (!eachFieldObject.sameValues)) {
+        // return renderEach(eachFieldObject, i);
+        renderFieldObject = true;
+      } else if (this.state.customFieldModeOn && !this.state.showCustomFieldValues) {
+        // return renderEach(eachFieldObject, i);
+        renderFieldObject = true;
+      } else if (this.state.customFieldModeOn && this.state.showCustomFieldValues && eachFieldObject.customName) {
+        renderFieldObject = true;
       }
+
+      if (renderFieldObject) return renderEach(eachFieldObject, i);
     });
   }
 
@@ -292,18 +330,18 @@ class GetFieldValueChoiceModal extends Component {
         <ul className={`get-field-value-choice-modal-scrollbox ${this.state.customFieldModeOn ? 'get-field-value-choice-modal-scrollbox-small' : ''}`}>
           {this.props.fieldValueDocumentObject && Object.keys(this.props.fieldValueDocumentObject.fieldObject).length > 0 ? this.renderEachValue() : <div style={{ padding: '20px' }}>There are no values available for update from this document for the fields selected</div>}
         </ul>
-        <div className="get-field-value-choice-modal-hide-same-values-input-box">
-          <div className="get-field-value-choice-modal-hide-same-values-text">
-            Show All Selected Values
+          <div className="get-field-value-choice-modal-hide-same-values-input-box">
+            <div className="get-field-value-choice-modal-hide-same-values-text">
+              {!this.state.customFieldModeOn ? 'Show All Selected Values' : 'Show Custom Field Values'}
+            </div>
+            <input
+              className="get-field-value-choice-modal-hide-same-values-input"
+              type="checkbox"
+              onChange={!this.state.customFieldModeOn ? () => this.setState({ showAllSelectedValues: !this.state.showAllSelectedValues }) : () => this.setState({ showCustomFieldValues: !this.state.showCustomFieldValues })}
+              checked={!this.state.customFieldModeOn ? this.state.showAllSelectedValues : this.state.showCustomFieldValues}
+            />
           </div>
-          <input
-            className="get-field-value-choice-modal-hide-same-values-input"
-            type="checkbox"
-            onChange={() => this.setState({ showAllSelectedValues: !this.state.showAllSelectedValues })}
-            checked={this.state.showAllSelectedValues}
-          />
-        </div>
-          {this.props.fieldValueDocumentObject ? this.renderButtons() : null}
+        {this.props.fieldValueDocumentObject ? this.renderButtons() : null}
       </div>
     );
   }
