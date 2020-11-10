@@ -649,7 +649,7 @@ class CreateEditDocument extends Component {
           if (documentField.translation_element) documentField.value = data[`${documentField.name}+translation`];
           if (!documentField.translation_element) documentField.value = data[documentField.name];
           // if custom field, assign value for custom_name in initialValuesObject
-          if (!documentField.custom_name) documentField.value = data[documentField.custom_name];
+          if (documentField.custom_name) documentField.value = data[documentField.custom_name];
 
           if (documentField.document_field_choices) {
             array = [];
@@ -5255,9 +5255,30 @@ longActionPress(props) {
   getSelectedFieldObject(callback) {
     const object = { fields: {}, customFieldExists: false };
     let name = null;
+    let dBlinkPath = '';
+
     _.each(this.state.selectedTemplateElementIdArray, eachId => {
       name = this.props.templateElements[eachId].custom_name ? this.props.templateElements[eachId].custom_name : this.props.templateElements[eachId].name;
-      if (this.props.templateElements[eachId].custom_name) object.customFieldExists = true;
+      dBlinkPath = '';
+
+      if (this.props.templateElements[eachId].custom_name) {
+        object.customFieldExists = true;
+        dBlinkPath = this.props.templateElements[eachId].name
+                      ?
+                      getElementLabel({
+                        allDocumentObjects: this.props.allDocumentObjects,
+                        documents: Documents,
+                        agreement: this.props.agreement,
+                        modifiedElement: this.props.templateElements[eachId],
+                        fieldName: this.props.templateElements[eachId].name,
+                        documentTranslationsAll: this.props.documentTranslationsAll,
+                        appLanguages: AppLanguages,
+                        appLanguageCode: this.props.appLanguageCode,
+                        fromCreateEditDocument: true
+                      })
+                      :
+                      null;
+      }
 
       object.fields[name] = {
         element: this.props.templateElements[eachId],
@@ -5266,7 +5287,8 @@ longActionPress(props) {
                       this.props.valuesInForm[this.props.templateElements[eachId].custom_name]
                       :
                       this.props.valuesInForm[this.props.templateElements[eachId].name],
-        customField: this.props.templateElements[eachId].custom_name
+        customField: this.props.templateElements[eachId].custom_name,
+        dBlinkPath
       };
     });
     // Call back to set getFieldValuesCompletedArray to true
@@ -5361,6 +5383,7 @@ longActionPress(props) {
           this.getSelectDataBaseValues();
           // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
           break;
+
         case 'otherDocumentValues':
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.getOtherDocumentValues();

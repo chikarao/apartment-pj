@@ -1,6 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 
+import getElementValueText from '../functions/get_element_value_text';
+import Documents from '../constants/documents';
+import AppLanguages from '../constants/app_languages';
+
 export default (props) => {
   const {
     documentFields,
@@ -8,7 +12,10 @@ export default (props) => {
     valuesInForm,
     fromCreateEditDocument,
     initialValuesObject,
-    translationModeOn
+    translationModeOn,
+    allObject,
+    documentConstants,
+    appLanguageCode
   } = props;
   console.log('in get_document_fields_with_same_name, props: ', props);
 
@@ -17,6 +24,7 @@ export default (props) => {
   let fieldValue = null;
   let name = null;
   let differentValueCount = 0;
+  let sameValues = false;
   // Go through each field in document to see if the name of the field
   // is in selectedFieldObject with fields selected by user
   _.each(documentFields, eachField => {
@@ -33,6 +41,25 @@ export default (props) => {
     // whereas from SelectExitingDocumentModal, user is trying to get eachField.value
     fieldValue = fromCreateEditDocument ? eachField.original_value : eachField.value;
     if (initialValuesObject) fieldValue = initialValuesObject[name]
+    // if a custom field and linked to DB, test if value in props is same as
+    // translatlated value ie if 'construction' value 'src' then is it 'Steel Reinforced Concrete'
+    // if (eachField.custom_name && eachField.name) {
+      // const getElementValue = () => getElementValueText({
+      //   allDocumentObjects: this.props.allDocumentObjects,
+      //   documents: Documents,
+      //   agreement: this.props.fieldValueDocumentObject.agreement,
+      //   eachFieldObject: { fieldName: fieldValue },
+      //   // fieldName: eachFieldObject.fieldName,
+      //   // documentTranslationsAll: this.props.documentTranslationsAll,
+      //   appLanguages: AppLanguages,
+      //   appLanguageCode,
+      //   fromCreateEditDocument: false,
+      //   documentConstants,
+      //   fieldValue
+      // });
+      // sameValues = eachField.value
+      // console.log('in get_document_fields_with_same_name, getElementValue: ', getElementValue);
+    // } 
 
     if (
       !eachField.translation_element

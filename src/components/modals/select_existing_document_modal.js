@@ -345,7 +345,14 @@ class SelectExitingDocumentModal extends Component {
         const selectedAgreement = this.props.allUserAgreementsMapped[elementVal];
         // const templateElement = this.props.templateElements[parseInt(elementVal, 10)]
         // const fieldObject = this.props.showGetFieldValuesChoice ? this.getUpdatedSelectedFieldObject() : getDocumentFieldsWithSameName(selectedAgreement.document_fields);
-        const fieldObject = getDocumentFieldsWithSameName({ documentFields: selectedAgreement.document_fields, selectedFieldObject: this.props.selectedFieldObject, valuesInForm: this.props.valuesInForm });
+        const fieldObject = getDocumentFieldsWithSameName({
+          documentFields: selectedAgreement.document_fields,
+          selectedFieldObject: this.props.selectedFieldObject,
+          valuesInForm: this.props.valuesInForm,
+          allObject: this.props.allDocumentObjects[selectedAgreement.template_file_name],
+          documentConstants: this.props.documentConstants,
+          appLanguageCode: this.props.appLanguageCode
+        });
         // If not open, open the modal
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {
@@ -967,6 +974,8 @@ function mapStateToProps(state) {
       selectedFieldObject: state.documents.selectedFieldObject,
       templateElements: state.documents.templateElements,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
+      allDocumentObjects: state.documents.allDocumentObjects,
+      documentConstants: state.documents.documentConstants,
     };
   }
 

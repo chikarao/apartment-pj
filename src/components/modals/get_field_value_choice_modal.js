@@ -29,6 +29,7 @@ class GetFieldValueChoiceModal extends Component {
     this.handleFieldCheckboxClick = this.handleFieldCheckboxClick.bind(this);
     this.handleFieldValueApplyClick = this.handleFieldValueApplyClick.bind(this);
     this.handleCustomFieldChoiceClick = this.handleCustomFieldChoiceClick.bind(this);
+    this.handleCustomFieldNewValueClick = this.handleCustomFieldNewValueClick.bind(this);
   }
 
   handleFieldCheckboxClick(event) {
@@ -71,7 +72,13 @@ class GetFieldValueChoiceModal extends Component {
 
   handleCustomFieldChoiceClick(event) {
     const clickedElement = event.target;
-    const elementVal = clickedElement.getAttribute('value');
+    let currentElement = clickedElement;
+
+    while (currentElement.tagName !== 'LI') {
+      currentElement = currentElement.parentElement;
+    }
+
+    const elementVal = currentElement.getAttribute('value');
     this.setState({ selectedCustomFieldChoice: elementVal }, () => {
       console.log('in GetFieldValueChoiceModal, handleCustomFieldChoiceClick, elementVal, this.state.selectedCustomFieldChoice: ', elementVal, this.state.selectedCustomFieldChoice);
     });
@@ -79,7 +86,7 @@ class GetFieldValueChoiceModal extends Component {
 
   renderCustomFields() {
     return _.map(Object.keys(this.props.selectedFieldObject.fields), (eachFieldKey, i) => {
-      // console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
+      console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
       if (this.props.selectedFieldObject.fields[eachFieldKey].customField) {
         return (
           <li
@@ -87,23 +94,58 @@ class GetFieldValueChoiceModal extends Component {
             className="get-field-value-choice-modal-values-each"
             value={eachFieldKey}
             onClick={this.handleCustomFieldChoiceClick}
+            style={this.state.selectedCustomFieldChoice === eachFieldKey ? { backgroundColor: 'lightgray' } : null}
           >
-            <div className="get-field-value-choice-modal-values-each-text-box" value={eachFieldKey}>
-              <div className="get-field-value-choice-modal-values-each-text-box-key" value={eachFieldKey}>
+            <div className="get-field-value-choice-modal-values-each-text-box">
+              <div className="get-field-value-choice-modal-values-each-text-box-key">
                 {this.props.selectedFieldObject.fields[eachFieldKey].element.custom_name}
               </div>
-              <div className="get-field-value-choice-modal-values-each-text-box-value" value={eachFieldKey}>
+              <div className="get-field-value-choice-modal-values-each-text-box-value">
                 Link to DB: {this.props.selectedFieldObject.fields[eachFieldKey].element.name
                               ?
-                              this.props.selectedFieldObject.fields[eachFieldKey].element.name
+                              this.props.selectedFieldObject.fields[eachFieldKey].dBlinkPath
                               :
                               'None'}
+              </div>
+              <div
+                className="get-field-value-choice-modal-values-each-text-box-value"
+                style={this.props.selectedFieldObject.fields[eachFieldKey].newValue !== undefined
+                        && this.props.selectedFieldObject.fields[eachFieldKey].currentValue !== this.props.selectedFieldObject.fields[eachFieldKey].newValue
+                        ?
+                        { color: 'green' } : null}
+              >
+                {this.props.selectedFieldObject.fields[eachFieldKey].newValue
+                 ?
+                 this.props.selectedFieldObject.fields[eachFieldKey].newValue
+                 :
+                 this.props.selectedFieldObject.fields[eachFieldKey].currentValue
+                }
               </div>
             </div>
           </li>
         );
       }
     });
+  }
+
+  handleCustomFieldNewValueClick(event) {
+    const clickedElement = event.target;
+    let currentElement = clickedElement;
+    // let valueChanged = false;
+    while (currentElement.tagName !== 'LI') {
+      currentElement = currentElement.parentElement;
+    }
+    const elementVal = currentElement.getAttribute('value');
+    // if (elementVal !== this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice].currentValue) {
+    //   valueChanged = true;
+    // }
+    // const updateObject = { id: eachElement.id, translation_element: true, value: blurredInput.value, previous_value: this.state.valueWhenInputFocused };
+    this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, valueChanged: true, fields: { ...this.props.selectedFieldObject.fields, [this.state.selectedCustomFieldChoice]: { ...this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice], newValue: elementVal } } })
+    // this.props.changeFormValue(`${this.state.selectedCustomFieldChoice}`, elementVal)
+    // this.props.updateDocumentElementLocally([updateObject])
+    // this.props.setTemplateHistoryArray([updateObject], 'update');
+
+    console.log('in GetFieldValueChoiceModal, handleCustomFieldNewValueClick, elementVal, clickedElement, this.props.selectedFieldObject: ', elementVal, clickedElement, this.props.selectedFieldObject);
   }
 
   renderEachValue() {
@@ -146,6 +188,7 @@ class GetFieldValueChoiceModal extends Component {
       });
       // Test if change for field as already been applied
       changeApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
+
       let value = null;
       if (eachFieldObject.field.custom_name) {
         value = eachFieldObject.currentValue;
@@ -154,7 +197,12 @@ class GetFieldValueChoiceModal extends Component {
       }
 
       return (
-        <li key={i} className="get-field-value-choice-modal-values-each">
+        <li
+          key={i}
+          className="get-field-value-choice-modal-values-each"
+          value={value}
+          onClick={this.state.customFieldModeOn && this.state.selectedCustomFieldChoice ? this.handleCustomFieldNewValueClick : () => {}}
+        >
           <div className="get-field-value-choice-modal-values-each-text-box">
             <div className="get-field-value-choice-modal-values-each-text-box-key">
               {elementName} &nbsp;
@@ -199,10 +247,10 @@ class GetFieldValueChoiceModal extends Component {
           && this.state.showAllSelectedValues
           && this.props.selectedFieldObject.fields[eachFieldObject.fieldName]
         ) {
-        // return renderEach(eachFieldObject, i);
+        // Case of standard fields, show only fields selected by user (in selectedFieldObject)
         renderFieldObject = true;
       } else if (!this.state.customFieldModeOn && (!eachFieldObject.sameValues)) {
-        // return renderEach(eachFieldObject, i);
+        // Case of standard fields, fields that have different values
         renderFieldObject = true;
       } else if (this.state.customFieldModeOn && !this.state.showCustomFieldValues) {
         // return renderEach(eachFieldObject, i);
@@ -250,6 +298,7 @@ class GetFieldValueChoiceModal extends Component {
     let disableCheckAll = false;
     if (diferentValuesExist && (checkedAll || allValuesAlreadyApplied)) disableCheckAll = true;
     if (!diferentValuesExist) disableCheckAll = true;
+    const customFieldChanged = this.props.selectedFieldObject.valueChanged;
 
     return (
       <div className="get-field-value-choice-modal-button-box">
@@ -288,9 +337,9 @@ class GetFieldValueChoiceModal extends Component {
           }
         </div>
         <div
-          className={checkedSome && !allValuesAlreadyApplied ? 'get-field-value-choice-modal-button-apply button-hover' : 'get-field-value-choice-modal-button-apply'}
-          onClick={checkedSome && !allValuesAlreadyApplied ? this.handleFieldValueApplyClick : () => {}}
-          style={checkedSome && !allValuesAlreadyApplied ? {} : { border: '1px solid #ccc', backgroundColor: 'lightgray' }}
+          className={(checkedSome && !allValuesAlreadyApplied) || customFieldChanged ? 'get-field-value-choice-modal-button-apply button-hover' : 'get-field-value-choice-modal-button-apply'}
+          onClick={(checkedSome && !allValuesAlreadyApplied) || customFieldChanged ? this.handleFieldValueApplyClick : () => {}}
+          style={(checkedSome && !allValuesAlreadyApplied) || customFieldChanged ? {} : { border: '1px solid #ccc', backgroundColor: 'lightgray' }}
         >
           Apply Field Values
         </div>
@@ -358,11 +407,11 @@ class GetFieldValueChoiceModal extends Component {
 
   render() {
     // {this.renderCustomFieldSubModal()}
-    return(
+    return (
       <div>
         {this.renderMainModal()}
       </div>
-    )
+    );
   }
 }
 
@@ -384,6 +433,14 @@ function mapStateToProps(state) {
     // flat: state.selectedFlatFromParams.selectedFlatFromParams,
   };
 }
+
+// function mapDispatchToProps(state) {
+//   console.log('in GetFieldValueChoiceModal, mapDispatchToProps, state: ', state);
+//
+//   return {
+//     change
+//   };
+// }
 
 
 export default connect(mapStateToProps, actions)(GetFieldValueChoiceModal);
