@@ -85,9 +85,13 @@ class GetFieldValueChoiceModal extends Component {
   }
 
   renderCustomFields() {
+    let changeApplied = false;
+
     return _.map(Object.keys(this.props.selectedFieldObject.fields), (eachFieldKey, i) => {
-      console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey]);
       if (this.props.selectedFieldObject.fields[eachFieldKey].customField) {
+        changeApplied = this.props.selectedFieldObject.fieldValueAppliedArray.indexOf(eachFieldKey) !== -1;
+        console.log('in GetFieldValueChoiceModal, renderCustomFields, this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey], changeApplied: ', this.props.selectedFieldObject, eachFieldKey, this.props.selectedFieldObject.fields[eachFieldKey], changeApplied);
+
         return (
           <li
             key={i}
@@ -99,6 +103,12 @@ class GetFieldValueChoiceModal extends Component {
             <div className="get-field-value-choice-modal-values-each-text-box">
               <div className="get-field-value-choice-modal-values-each-text-box-key">
                 {this.props.selectedFieldObject.fields[eachFieldKey].element.custom_name}
+                &nbsp;
+                {changeApplied
+                ?
+                <i style={{ color: ' #33a532', fontSize: '16px' }} className="fas fa-check-circle"></i>
+                :
+                ''}
               </div>
               <div className="get-field-value-choice-modal-values-each-text-box-value">
                 Link to DB: {this.props.selectedFieldObject.fields[eachFieldKey].element.name
@@ -173,6 +183,21 @@ class GetFieldValueChoiceModal extends Component {
     //   valueChangeCount--;
     // }
 
+    // if (valueChangeCount === 0 && (elementVal !== fields[this.state.selectedCustomFieldChoice].currentValue)) {
+    //     valueChanged = true;
+    //     valueChangeCount++;
+    // } else if (valueChangeCount === 1) {
+    //   if (fields[this.state.selectedCustomFieldChoice].newValue && fields[this.state.selectedCustomFieldChoice].currentValue !== fields[this.state.selectedCustomFieldChoice].newValue) {
+    //     valueChanged = true;
+    //     // one that was changed, dont change the count
+    //   } else {
+    //     // not one that has been changed
+    //     valueChangeCount++;
+    //   }
+    // } else if (valueChangeCount > 1) {
+    //
+    // }
+
     this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, valueChanged, valueChangeCount, fields: { ...this.props.selectedFieldObject.fields, [this.state.selectedCustomFieldChoice]: { ...this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice], newValue: elementVal } } })
 
     console.log('in GetFieldValueChoiceModal, handleCustomFieldNewValueClick, elementVal, clickedElement, this.props.selectedFieldObject: ', elementVal, clickedElement, this.props.selectedFieldObject);
@@ -235,7 +260,8 @@ class GetFieldValueChoiceModal extends Component {
         >
           <div className="get-field-value-choice-modal-values-each-text-box">
             <div className="get-field-value-choice-modal-values-each-text-box-key">
-              {elementName} &nbsp;
+              {elementName}
+              &nbsp;
               {changeApplied
               ?
               <i style={{ color: ' #33a532', fontSize: '16px' }} className="fas fa-check-circle"></i>
@@ -299,40 +325,46 @@ class GetFieldValueChoiceModal extends Component {
     const updateArray = [];
     let updateObject = null;
     const newArray = [...this.props.fieldValueDocumentObject.fieldValueAppliedArray];
+    const newCustomArray = [...this.props.selectedFieldObject.fieldValueAppliedArray];
 
-    _.each(this.props.fieldValueDocumentObject.selectedFieldNameArray, eachName => {
-      valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
-      templateElement = this.props.selectedFieldObject.fields[eachName].element
-      console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
-      // Array for state fieldValueAppliedArray
-      newArray.push(eachName);
-      // Object and updateArray for applySelectedDocumentValueCompleted
-      updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
-      updateArray.push(updateObject);
-      // Calling this.props.change for reduxForm
-      this.props.changeFormValue(eachName, valueInSelectedDocument);
-    });
+    if (this.props.fieldValueDocumentObject.selectedFieldNameArray) {
+      _.each(this.props.fieldValueDocumentObject.selectedFieldNameArray, eachName => {
+        valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
+        templateElement = this.props.selectedFieldObject.fields[eachName].element
+        console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick,eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue: ', eachName, valueInSelectedDocument, templateElement, this.props.changeFormValue);
+        // Array for state fieldValueAppliedArray
+        newArray.push(eachName);
+        // Object and updateArray for applySelectedDocumentValueCompleted
+        updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
+        updateArray.push(updateObject);
+        // Calling this.props.change for reduxForm
+        this.props.changeFormValue(eachName, valueInSelectedDocument);
+      });
 
-    this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: [], fieldValueAppliedArray: newArray });
+      this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: [], fieldValueAppliedArray: newArray });
+    }
     // console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
        // Apply changes in value to templateElements and in localStorageHistory
     if (this.props.selectedFieldObject.valueChanged) {
       _.each(Object.keys(this.props.selectedFieldObject.fields), eachFieldNameKey => {
         if (this.props.selectedFieldObject.fields[eachFieldNameKey].newValue) {
-            updateObject = {
-              id: this.props.selectedFieldObject.fields[eachFieldNameKey].element.id,
-              value: this.props.selectedFieldObject.fields[eachFieldNameKey].newValue,
-              previous_value: this.props.selectedFieldObject.fields[eachFieldNameKey].currentValue
-            };
+          updateObject = {
+            id: this.props.selectedFieldObject.fields[eachFieldNameKey].element.id,
+            value: this.props.selectedFieldObject.fields[eachFieldNameKey].newValue,
+            previous_value: this.props.selectedFieldObject.fields[eachFieldNameKey].currentValue
+          };
 
-            updateArray.push(updateObject);
-            // Calling this.props.change for reduxForm
-            this.props.changeFormValue(eachFieldNameKey, this.props.selectedFieldObject.fields[eachFieldNameKey].newValue);
-            console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, this.props.selectedFieldObject, eachFieldNameKey, updateObject: ', this.props.selectedFieldObject, eachFieldNameKey, updateObject);
+          updateArray.push(updateObject);
+          newCustomArray.push(eachFieldNameKey)
+          // Calling this.props.change for reduxForm
+          this.props.changeFormValue(eachFieldNameKey, this.props.selectedFieldObject.fields[eachFieldNameKey].newValue);
         }
       });
+
+      this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, fieldValueAppliedArray: newCustomArray })
     }
 
+    console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
     // this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
   }
 

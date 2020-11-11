@@ -285,9 +285,10 @@ class SelectExitingDocumentModal extends Component {
     // When user closes GetFieldValueChoiceModal,
     // take out keys that are craeted in the modal to reset it
     // to when user opens the SelectExitingDocumentModal
-    const newObject = { ...this.props.selectedFieldObject };
+    const newObject = { ...this.props.selectedFieldObject, fieldValueAppliedArray: [] };
     if (newObject.valueChanged) {
       _.each(Object.keys(newObject.fields), eachFieldNameKey => {
+        if (newObject.fields[eachFieldNameKey].currentValue !== this.props.valuesInForm[eachFieldNameKey]) newObject.fields[eachFieldNameKey].currentValue = this.props.valuesInForm[eachFieldNameKey];
         if (newObject.fields[eachFieldNameKey].newValue) delete newObject.fields[eachFieldNameKey].newValue
       });
       delete newObject.valueChanged

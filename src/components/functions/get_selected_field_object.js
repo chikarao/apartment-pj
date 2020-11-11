@@ -18,7 +18,7 @@ export default (props) => {
   } = props;
   console.log('in get_selected_field_object, props: ', props);
 
-  const object = { fields: {}, customFieldExists: false };
+  const object = { fields: {}, customFieldExists: false, fieldValueAppliedArray: [] };
   let name = null;
   let dBlinkPath = '';
 
