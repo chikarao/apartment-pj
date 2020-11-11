@@ -93,6 +93,7 @@ class SelectExitingDocumentModal extends Component {
     window.removeEventListener('click', this.handleCloseFlatSelectionBox);
     window.removeEventListener('keydown', this.handleCloseFlatSelectionBox);
     window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+    window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
     if (this.props.showGetFieldValuesChoice) this.props.showGetFieldValuesChoiceModal(() => {});
     if (this.state.shrinkModal) {
       this.props.setTemplateElementsObject({
@@ -280,23 +281,44 @@ class SelectExitingDocumentModal extends Component {
   //   return _.isEmpty(object) ? null : object;
   // }
 
+  resetSelectedFieldObject() {
+    // When user closes GetFieldValueChoiceModal,
+    // take out keys that are craeted in the modal to reset it
+    // to when user opens the SelectExitingDocumentModal
+    const newObject = { ...this.props.selectedFieldObject };
+    if (newObject.valueChanged) {
+      _.each(Object.keys(newObject.fields), eachFieldNameKey => {
+        if (newObject.fields[eachFieldNameKey].newValue) delete newObject.fields[eachFieldNameKey].newValue
+      });
+      delete newObject.valueChanged
+    }
+    console.log('in select_exiting_document, resetSelectedFieldObject, newObject ', newObject);
+    return newObject;
+  }
+
   handleCloseGetFieldValuesChoiceBox(event) {
     // Get updated object with attributes about selected elements
     // updated with new values in form
 
     const clickedElement = event.target;
-
+    // Find out if user clicked in any elements with classNames that start with below
     const clickedOnModal = clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
     const clickedOnAgreementEach = clickedElement.className.indexOf('select-existing-document-each-document') !== -1;
+    const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
+    console.log('in select_exiting_document, handleCloseGetFieldValuesChoiceBox, event.key, pushedEscapeKey', event.key, pushedEscapeKey);
+
     // If user clicks on something other than a document or a getFieldValues modal element
     // close the modal, and do clean up
-    if (!clickedOnModal && !clickedOnAgreementEach) {
+    if ((!clickedOnModal && !clickedOnAgreementEach && !event.key) || pushedEscapeKey) {
       // When user closes the showGetFieldValuesChoiceModal, get a new setSelectedFieldObject
       // to reflect the new value in the form
       // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
       // Switch off modal show
       this.props.showGetFieldValuesChoiceModal(() => {});
+      this.props.setSelectedFieldObject(this.resetSelectedFieldObject());
       window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+      window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
+
       this.setState({ selectedAgreementId: null });
     }
   }
@@ -359,10 +381,11 @@ class SelectExitingDocumentModal extends Component {
           this.props.showGetFieldValuesChoiceModal(() => {});
           console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+          window.addEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
         }
         // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
         this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject: fieldObject.object, differentValueCount: fieldObject.differentValueCount, selectedFieldNameArray: [], fieldValueAppliedArray: [] });
-        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
+        // console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);
       });
     }
   }

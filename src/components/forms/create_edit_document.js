@@ -34,6 +34,7 @@ import getBookingDateObject from '../functions/get_booking_date_object';
 import getTranslationObject from './get_translation_object';
 import getElementLabel from '../functions/get_element_label';
 import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
+import getSelectedFieldObject from '../functions/get_selected_field_object';
 // Just for test
 // import FixedTermRentalContractBilingual from '../constants/fixed_term_rental_contract_bilingual';
 // import FixedTermRentalContractBilingualAll from '../constants/fixed_term_rental_contract_bilingual_all';
@@ -3863,7 +3864,17 @@ longActionPress(props) {
             originalValuesExistForSelectedFields,
             // originalValuesExistForSelectedFields: false
           }, () => {
-            this.props.setSelectedFieldObject(this.getSelectedFieldObject(() => {}))
+            this.props.setSelectedFieldObject(getSelectedFieldObject({
+              selectedTemplateElementIdArray: this.state.selectedTemplateElementIdArray,
+              templateElements: this.props.templateElements,
+              allDocumentObjects: this.props.allDocumentObjects,
+              documents: Documents,
+              agreement: this.props.agreement,
+              documentTranslationsAll: this.props.documentTranslationsAll,
+              appLanguages: AppLanguages,
+              appLanguageCode: this.props.appLanguageCode,
+              valuesInForm: this.props.valuesInForm,
+            }));
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
             document.addEventListener('keydown', this.handleFontControlCloseClick);
@@ -5148,10 +5159,7 @@ longActionPress(props) {
 
   handleFontControlCloseClick(event) {
     console.log('in create_edit_document, handleFontControlCloseClick, event.key: ', event.key);
-    // if (event.defaultPrevented) {
-    //   return;
-    //   // Do nothing if the event was already processed
-    // }
+    // NOTE: handleFontControlCloseClick used to close getFieldValuesModal
     const clickedElement = event.target;
     // if clicked element does not include any elements in the font control box,
     // call setState to close the showFontControlBox
@@ -5173,6 +5181,7 @@ longActionPress(props) {
       const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
       // If className of clicked element is NOT in the array
       if (((didNotclickedOnButtonOrModal && !event.key) || pushedEscapeKey) && !clickedOnOtherModal) {
+        console.log('in create_edit_document, handleFontControlCloseClick, event.key inside if : ', event.key);
         this.setState({
           showFontControlBox: false,
           getFieldValues: false,
@@ -5184,6 +5193,7 @@ longActionPress(props) {
         if (fontControlBox) fontControlBox.style.display = 'none';
         const getFieldValuesBox = document.getElementById('create-edit-document-get-field-values-box');
         if (getFieldValuesBox) getFieldValuesBox.style.display = 'none';
+        // this.props.setSelectedFieldObject(null);
         // Remove listener set in handle open
         document.removeEventListener('click', this.handleFontControlCloseClick);
         document.removeEventListener('keydown', this.handleFontControlCloseClick);
@@ -5195,7 +5205,6 @@ longActionPress(props) {
           // }
         }
     }
-    // remove event listener
   }
 
   findIfOriginalValuesExistForFields() {
@@ -5252,49 +5261,49 @@ longActionPress(props) {
   }
 
   // Get an object with all selected field in the agreement
-  getSelectedFieldObject(callback) {
-    const object = { fields: {}, customFieldExists: false };
-    let name = null;
-    let dBlinkPath = '';
-
-    _.each(this.state.selectedTemplateElementIdArray, eachId => {
-      name = this.props.templateElements[eachId].custom_name ? this.props.templateElements[eachId].custom_name : this.props.templateElements[eachId].name;
-      dBlinkPath = '';
-
-      if (this.props.templateElements[eachId].custom_name) {
-        object.customFieldExists = true;
-        dBlinkPath = this.props.templateElements[eachId].name
-                      ?
-                      getElementLabel({
-                        allDocumentObjects: this.props.allDocumentObjects,
-                        documents: Documents,
-                        agreement: this.props.agreement,
-                        modifiedElement: this.props.templateElements[eachId],
-                        fieldName: this.props.templateElements[eachId].name,
-                        documentTranslationsAll: this.props.documentTranslationsAll,
-                        appLanguages: AppLanguages,
-                        appLanguageCode: this.props.appLanguageCode,
-                        fromCreateEditDocument: true
-                      })
-                      :
-                      null;
-      }
-
-      object.fields[name] = {
-        element: this.props.templateElements[eachId],
-        currentValue: this.props.templateElements[eachId].custom_name
-                      ?
-                      this.props.valuesInForm[this.props.templateElements[eachId].custom_name]
-                      :
-                      this.props.valuesInForm[this.props.templateElements[eachId].name],
-        customField: this.props.templateElements[eachId].custom_name,
-        dBlinkPath
-      };
-    });
-    // Call back to set getFieldValuesCompletedArray to true
-    callback();
-    return _.isEmpty(object) ? null : object;
-  }
+  // getSelectedFieldObject(callback) {
+  //   const object = { fields: {}, customFieldExists: false };
+  //   let name = null;
+  //   let dBlinkPath = '';
+  //
+  //   _.each(this.state.selectedTemplateElementIdArray, eachId => {
+  //     name = this.props.templateElements[eachId].custom_name ? this.props.templateElements[eachId].custom_name : this.props.templateElements[eachId].name;
+  //     dBlinkPath = '';
+  //
+  //     if (this.props.templateElements[eachId].custom_name) {
+  //       object.customFieldExists = true;
+  //       dBlinkPath = this.props.templateElements[eachId].name
+  //                     ?
+  //                     getElementLabel({
+  //                       allDocumentObjects: this.props.allDocumentObjects,
+  //                       documents: Documents,
+  //                       agreement: this.props.agreement,
+  //                       modifiedElement: this.props.templateElements[eachId],
+  //                       fieldName: this.props.templateElements[eachId].name,
+  //                       documentTranslationsAll: this.props.documentTranslationsAll,
+  //                       appLanguages: AppLanguages,
+  //                       appLanguageCode: this.props.appLanguageCode,
+  //                       fromCreateEditDocument: true
+  //                     })
+  //                     :
+  //                     null;
+  //     }
+  //
+  //     object.fields[name] = {
+  //       element: this.props.templateElements[eachId],
+  //       currentValue: this.props.templateElements[eachId].custom_name
+  //                     ?
+  //                     this.props.valuesInForm[this.props.templateElements[eachId].custom_name]
+  //                     :
+  //                     this.props.valuesInForm[this.props.templateElements[eachId].name],
+  //       customField: this.props.templateElements[eachId].custom_name,
+  //       dBlinkPath
+  //     };
+  //   });
+  //   // Call back to set getFieldValuesCompletedArray to true
+  //   callback();
+  //   return _.isEmpty(object) ? null : object;
+  // }
 
   getSelectDataBaseValues() {
     this.setState({ getSelectDataBaseValues: !this.state.getSelectDataBaseValues }, () => {
@@ -5317,6 +5326,7 @@ longActionPress(props) {
   }
 
   getOtherDocumentValues() {
+    // Note: showSelectExistingDocumentModalForGetFieldValues is defined in bookingConfirmation
     this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
     // this.props.showSelectExistingDocumentModalForGetFieldValues();
   }
@@ -5394,6 +5404,7 @@ longActionPress(props) {
   }
 
   handleCloseGetFieldValuesChoiceBox(event) {
+    console.log('in create_edit_document, handleCloseGetFieldValuesChoiceBox');
     // Get updated object with attributes about selected elements
     // updated with new values in form
 
@@ -5409,6 +5420,7 @@ longActionPress(props) {
       // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
       // Switch off modal show
       this.props.showGetFieldValuesChoiceModal(() => {});
+      this.props.setSelectedFieldObject(null);
       // Switch off this.state.getSelectDataBaseValues and do clean up after
       if (this.state.getSelectDataBaseValues) this.getSelectDataBaseValues();
       window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);

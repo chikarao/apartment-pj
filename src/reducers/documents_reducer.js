@@ -605,7 +605,7 @@ export default function (state = {
       return { ...state, fieldValueDocumentObject: action.payload };
 
     case SET_SELECTED_FIELD_OBJECT:
-    // console.log('in documents reducer, state: ', state);
+    console.log('in documents reducer, state, action.payload: ', state, action.payload);
       return { ...state, selectedFieldObject: action.payload };
 
     case SET_PROGRESS_STATUS:

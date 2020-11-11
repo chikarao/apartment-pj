@@ -131,19 +131,49 @@ class GetFieldValueChoiceModal extends Component {
   handleCustomFieldNewValueClick(event) {
     const clickedElement = event.target;
     let currentElement = clickedElement;
-    // let valueChanged = false;
+    let valueChanged = false;
+    let valueChangeCount = this.props.selectedFieldObject.valueChangeCount || 0;
     while (currentElement.tagName !== 'LI') {
       currentElement = currentElement.parentElement;
     }
     const elementVal = currentElement.getAttribute('value');
-    // if (elementVal !== this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice].currentValue) {
+
+    const { fields } = this.props.selectedFieldObject;
+    // Check if value has changed
+    _.each(Object.keys(fields), eachFieldNameKey => {
+      if ((eachFieldNameKey !== this.state.selectedCustomFieldChoice)
+            && fields[eachFieldNameKey].newValue
+            && (fields[eachFieldNameKey].currentValue !== fields[eachFieldNameKey].newValue)) {
+      // if fields other than selectedCustomFieldChoice are changed
+      // console.log('in GetFieldValueChoiceModal, handleCustomFieldNewValueClick, elementVal, eachFieldNameKey, this.state.selectedCustomFieldChoice, eachFieldNameKey === this.state.selectedCustomFieldChoice: ', elementVal, eachFieldNameKey, this.state.selectedCustomFieldChoice, eachFieldNameKey === this.state.selectedCustomFieldChoice);
+        valueChanged = true;
+      }
+
+      if ((eachFieldNameKey === this.state.selectedCustomFieldChoice)
+          && (valueChanged === false)
+          && (elementVal === fields[eachFieldNameKey].currentValue)) {
+        // if others have not changed and the value is back to original value
+        valueChanged = false;
+      } else if (eachFieldNameKey === this.state.selectedCustomFieldChoice) {
+        // console.log('in GetFieldValueChoiceModal, handleCustomFieldNewValueClick, elementVal, this.props.selectedFieldObject.fields[eachFieldNameKey], elementVal, fields[eachFieldNameKey].currentValue === elementVal, valueChanged: ', elementVal, this.props.selectedFieldObject.fields[eachFieldNameKey], elementVal, fields[eachFieldNameKey].currentValue === elementVal, valueChanged);
+        valueChanged = true;
+      }
+    });
+    // Attempt a O(1) too complicated
+    // if ((fields[this.state.selectedCustomFieldChoice].newValue && elementVal !== fields[this.state.selectedCustomFieldChoice].newValue)
+    //     ||
+    //     (!fields[this.state.selectedCustomFieldChoice].newValue && elementVal !== fields[this.state.selectedCustomFieldChoice].currentValue)
+    // ) {
     //   valueChanged = true;
+    //   valueChangeCount++;
+    // } else if (valueChangeCount === 0 && elementVal === fields[this.state.selectedCustomFieldChoice].currentValue) {
+    //   valueChanged = false;
+    // } else if (valueChangeCount === 1 && fields[this.state.selectedCustomFieldChoice].newValue && elementVal === fields[this.state.selectedCustomFieldChoice].currentValue) {
+    //   valueChanged = false;
+    //   valueChangeCount--;
     // }
-    // const updateObject = { id: eachElement.id, translation_element: true, value: blurredInput.value, previous_value: this.state.valueWhenInputFocused };
-    this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, valueChanged: true, fields: { ...this.props.selectedFieldObject.fields, [this.state.selectedCustomFieldChoice]: { ...this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice], newValue: elementVal } } })
-    // this.props.changeFormValue(`${this.state.selectedCustomFieldChoice}`, elementVal)
-    // this.props.updateDocumentElementLocally([updateObject])
-    // this.props.setTemplateHistoryArray([updateObject], 'update');
+
+    this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, valueChanged, valueChangeCount, fields: { ...this.props.selectedFieldObject.fields, [this.state.selectedCustomFieldChoice]: { ...this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice], newValue: elementVal } } })
 
     console.log('in GetFieldValueChoiceModal, handleCustomFieldNewValueClick, elementVal, clickedElement, this.props.selectedFieldObject: ', elementVal, clickedElement, this.props.selectedFieldObject);
   }
@@ -238,7 +268,7 @@ class GetFieldValueChoiceModal extends Component {
     // go through each fieldValueDocumentObject set by action setGetFieldValueDocumentObject
     // called in SelectExitingDocumentModal
     return _.map(this.props.fieldValueDocumentObject.fieldObject, (eachFieldObject, i) => {
-      console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject: ', this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject);
+      // console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject: ', this.props.fieldValueDocumentObject, eachFieldObject, this.props.selectedFieldObject, allObject);
       renderFieldObject = false;
       // getElementLabel function is shared with CreateEditDocument renderTemplateElements
       // sameValues attribute compares currentValue in form value props
@@ -284,13 +314,30 @@ class GetFieldValueChoiceModal extends Component {
     });
 
     this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: [], fieldValueAppliedArray: newArray });
-    console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
+    // console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
        // Apply changes in value to templateElements and in localStorageHistory
-    this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
+    if (this.props.selectedFieldObject.valueChanged) {
+      _.each(Object.keys(this.props.selectedFieldObject.fields), eachFieldNameKey => {
+        if (this.props.selectedFieldObject.fields[eachFieldNameKey].newValue) {
+            updateObject = {
+              id: this.props.selectedFieldObject.fields[eachFieldNameKey].element.id,
+              value: this.props.selectedFieldObject.fields[eachFieldNameKey].newValue,
+              previous_value: this.props.selectedFieldObject.fields[eachFieldNameKey].currentValue
+            };
+
+            updateArray.push(updateObject);
+            // Calling this.props.change for reduxForm
+            this.props.changeFormValue(eachFieldNameKey, this.props.selectedFieldObject.fields[eachFieldNameKey].newValue);
+            console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, this.props.selectedFieldObject, eachFieldNameKey, updateObject: ', this.props.selectedFieldObject, eachFieldNameKey, updateObject);
+        }
+      });
+    }
+
+    // this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
   }
 
   renderButtons() {
-    // console.log('in GetFieldValueChoiceModal, renderButtons, this.props.fieldValueDocumentObject: ', this.props.fieldValueDocumentObject);
+    console.log('in GetFieldValueChoiceModal, renderButtons, this.props.fieldValueDocumentObject, this.props.selectedFieldObject: ', this.props.fieldValueDocumentObject, this.props.selectedFieldObject);
     const checkedAll = this.props.fieldValueDocumentObject.selectedFieldNameArray.length === this.props.fieldValueDocumentObject.differentValueCount;
     const diferentValuesExist = this.props.fieldValueDocumentObject.differentValueCount > 0;
     const checkedSome = this.props.fieldValueDocumentObject.selectedFieldNameArray.length > 0;
