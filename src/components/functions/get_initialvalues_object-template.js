@@ -643,12 +643,14 @@ export default (props) => {
   let count = 0;
   let countAll = 0;
   let translationObject = null;
+  let name = null;
 
   if (template) {
     console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, allObject, documentFields ', allObject, documentFields);
     // IMPORTANT: start of logic:
     // Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, keyExistsInMethodObject && conditionTrue, eachField: ', eachField);
       countAll++;
       // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
@@ -663,7 +665,6 @@ export default (props) => {
       // The below sends key and object as default
       // and the rest of the parameters are derieed from methodObject
       if (keyExistsInMethodObject && conditionTrue) {
-        console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, keyExistsInMethodObject && conditionTrue, eachField: ', eachField);
         count++;
         objectReturned = { ...objectReturned,
                             [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({
@@ -674,7 +675,7 @@ export default (props) => {
                           };
 
         // if custom field and linked to a database value i.e. has name
-        if (eachField.custom_name && eachField.name) {
+        if (eachField.custom_name && eachField.name && !eachField.value) {
           // get the translation object with values for each language code key
           translationObject = getDocumentFieldValueTranslation({ choices: allObjectEach.choices, value: objectReturned[eachField.name] });
 
@@ -689,7 +690,6 @@ export default (props) => {
             // If there is no translationObject, assign current value for name to custom_name in initialValuesObject
             objectReturned[eachField.custom_name] = objectReturned[eachField.name];
           }// if (translationObject)
-          console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, translationObject, eachField: ', objectReturned, translationObject, eachField);
         } // end of if (eachField.custom_name && eachField.name)
       } // if (keyExistsInMethodObject && conditionTrue)
 
@@ -711,13 +711,17 @@ export default (props) => {
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before eachField.value, eachField, templateElementsMappedByName ', eachField, templateElementsMappedByName);
       conditionTrue = (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)
                       && templateElementsMappedByName
-                      && templateElementsMappedByName[eachField.name]
-                      && templateElementsMappedByName[eachField.name].value
-                      && !eachField.custom_name;
+                      && ((templateElementsMappedByName[eachField.name] && templateElementsMappedByName[eachField.name].value)
+                          || (templateElementsMappedByName[eachField.custom_name] && templateElementsMappedByName[eachField.custom_name].value))
+                      // && !eachField.custom_name;
 
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, templateElementsMappedByName ', eachField, templateElementsMappedByName);
+
+      if (templateElementsMappedByName && eachField.custom_name) console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before field has value eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value): ', eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value);
       if (conditionTrue) {
         count++;
-        objectReturned = { ...objectReturned, [eachField.name]: templateElementsMappedByName[eachField.name].value };
+        name = eachField.custom_name ? eachField.custom_name : eachField.name
+        objectReturned = { ...objectReturned, [name]: templateElementsMappedByName[name].value };
       }
 
       // // If templateElement is a custom field, get value corresponding to eachField.name

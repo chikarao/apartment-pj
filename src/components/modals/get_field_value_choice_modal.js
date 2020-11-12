@@ -365,7 +365,7 @@ class GetFieldValueChoiceModal extends Component {
     }
 
     console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
-    // this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
+    this.props.updateDocumentElementLocallyAndSetHistory(updateArray);
   }
 
   renderButtons() {

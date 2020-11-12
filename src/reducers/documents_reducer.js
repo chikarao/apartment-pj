@@ -72,7 +72,7 @@ export default function (state = {
        // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
       _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
-        // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element templateEditHistory.historyIndex: ', element, templateEditHistory.historyIndex);
+        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element eachEditArray, templateEditHistory.historyIndex: ', element, eachEditArray, templateEditHistory.historyIndex);
         // Do until this.state.historyIndex is less than or equal to i;
         // So if user has undone or redone, stop there
         if (i <= templateEditHistory.historyIndex) {
@@ -109,7 +109,11 @@ export default function (state = {
       // Id to string so later code works with temporary ids (eg '1a')
       modifiedElement.id = eachElement.id.toString();
       // Get an object of templateElements ampped by name
-      if (!modifiedElement.translation_element) nameMappedObject[modifiedElement.name] = modifiedElement;
+      if (!modifiedElement.translation_element) {
+        // filter out custom fields without a name
+        if (modifiedElement.name) nameMappedObject[modifiedElement.name] = modifiedElement;
+        if (modifiedElement.custom_name) nameMappedObject[modifiedElement.custom_name] = modifiedElement;
+      }
       console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, nameMappedObject, !modifiedElement.translation_element: ', modifiedElement, nameMappedObject, !modifiedElement.translation_element);
 
       object[modifiedElement.id.toString()] = modifiedElement;
@@ -370,7 +374,8 @@ export default function (state = {
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
-        templateElementsMappedByName: mapKeysObject.nameMappedObject || {},
+        // templateElementsMappedByName: mapKeysObject.nameMappedObject || {},
+        templateElementsMappedByName: mapKeysObject.nameMappedObject,
         templateTranslationElements: mapKeysTranslationObject.object || {},
         templateTranslationElementsByPage: mapKeysTranslationObject.pageObject || {},
         // initialValuesObject

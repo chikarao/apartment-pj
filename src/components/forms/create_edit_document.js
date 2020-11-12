@@ -249,10 +249,14 @@ class CreateEditDocument extends Component {
     // Template document intitialValues in componentDidUpdate
     // Use selectedFlatFromParams to test since bookingData also has flat
     // so need to distinguish flat does not test positive in bookingConfirmation
+
     if ((this.props.bookingData || this.props.selectedFlatFromParams)
         &&
-        ((Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+        (
+        // The number of templateElements hanged
+        (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
         ||
+        // The number of templateTranslationElements hanged
         (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
         // When user clicks getFieldValues, this.state.getSelectDataBaseValues is turned true
@@ -3524,7 +3528,8 @@ longActionPress(props) {
     const updateElement = (elementsArray) => {
       this.props.updateDocumentElementLocally(elementsArray);
     };
-
+    // redoUndoAction receives array of update objects [{ id: 123, o_width: '', width: '', action: 'update' }]
+    // and doWhatNow is 'undo', 'redo'
     const redoUndoAction = (lastActionArray, doWhatNow) => {
       // Remove action attribute from object when recreating and updating elements
       const removeActionAttribute = (lastActionArr) => {
@@ -3535,16 +3540,17 @@ longActionPress(props) {
           array.push(eachObjectModified);
         });
         return array;
-      };
+      }; // End of const removeActionAttribute = (lastActionArr) => {
 
       const getOriginalAttributes = (lastActionArr) => {
         const array = [];
         let withoutO = '';
         _.each(lastActionArr, eachObject => {
           // const eachModified = this.getNewElementObject(each);
+          // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, lastActionArr, eachObject ', lastActionArr, eachObject);
           const object = {};
           _.each(Object.keys(eachObject), eachKey => {
-            console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachKey, eachKey[0] === o, eachKey[1] === _  : ', eachKey, eachKey[0] === 'o', eachKey[1] === '_');
+            // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachKey, eachKey[0] === o, eachKey[1] === _  : ', eachKey, eachKey[0] === 'o', eachKey[1] === '_');
             // if ((eachKey[0] === 'o' && eachKey[1] === eachKey[1].toUpperCase())) {
             if ((eachKey[0] === 'o' && eachKey[1] === '_')) {
               // substring is (inclusive, exclusive)
@@ -3553,19 +3559,19 @@ longActionPress(props) {
               // console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, getOriginalAttributes typeof eachKey, eachKey, newKey: ', typeof eachKey, eachKey, newKey);
               // object[newKey] = eachObject[eachKey];
               object[withoutO] = eachObject[eachKey];
-              console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
+              // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
             }
             // Let id, translation_element (for separating templateElements and templateTranslationElements)
             // and previous_value (for dealing with translation element history) in the returned object
             if (eachKey === 'id' || eachKey === 'translation_element' || eachKey === 'previous_value' || eachKey === 'value') {
-              object[eachKey] = eachObject[eachKey];
+              object[eachKey] = eachObject[eachKey] === undefined ? '' : eachObject[eachKey];
             }
           });
           array.push(object);
         });
         console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create lastActionArr, array: ', lastActionArr, array);
         return array;
-      };
+      }; // End of const getOriginalAttributes = ()
       // if the last action taken was to craete an element,
       // if from undo action, call delete, and if redo, call create
       if (lastActionArray[0].action === 'create') {
@@ -3597,30 +3603,34 @@ longActionPress(props) {
           updateElement(newLastAction);
           // if there is previous_value in newLastAction,
           // Change back value of field; Only one change in value is made per history array
-          if (newLastAction[0].previous_value) {
+          // if (newLastAction[0].previous_value) {
             const templateElement = !newLastAction[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
             const translationOrNot = !newLastAction[0].translation_element ? '' : '+translation';
+            let name = null;
             // this.props.change is imported from redux-form
             _.each(newLastAction, eachAction => {
-              this.props.change(`${templateElement[eachAction.id].name}${translationOrNot}`, eachAction.previous_value)
+              name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
+              this.props.change(`${name}${translationOrNot}`, eachAction.previous_value)
             });
-          }
-          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
+          // }
+          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, undo in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
-          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
+          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, redo in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
           // if there is previous_value in lastActionArray,
           // Change back value of field; Only one change in value is made per history array
-          if (lastActionArray[0].previous_value) {
+          // if (lastActionArray[0].previous_value) {
             const templateElement = !lastActionArray[0].translation_element ? this.props.templateElements : this.props.templateTranslationElements;
             const translationOrNot = !lastActionArray[0].translation_element ? '' : '+translation';
+            let name = null;
             // this.props.change is imported from redux-form
             _.each(lastActionArray, eachAction => {
-              this.props.change(`${templateElement[eachAction.id].name}${translationOrNot}`, eachAction.value)
+              name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
+              this.props.change(`${name}${translationOrNot}`, eachAction.value)
             });
             // this.props.change(`${templateElement[lastActionArray[0].id].name}${translationOrNot}`, lastActionArray[0].value)
-          }
+          // }
         }
       }
 
@@ -3666,6 +3676,7 @@ longActionPress(props) {
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
             // console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
+            // Update historyIndex in localStorageHistory
             this.setLocalStorageHistory('undo');
           })
         }
@@ -6741,6 +6752,7 @@ function mapStateToProps(state) {
       // onlyFontAttributeObject: state.documents.onlyFontAttributeObject,
       templateDocumentChoicesObject: state.documents.templateDocumentChoicesObject,
       templateElementsByPage: state.documents.templateElementsByPage,
+      templateElementsMappedByName: state.documents.templateElementsMappedByName,
       // fixedTermRentalContractBilingualAll: state.bookingData.fixedTermRentalContractBilingualAll,
       // meta is for getting touched, active and visited for initialValue key
       // meta: getFormMeta('CreateEditDocument')(state)
