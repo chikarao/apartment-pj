@@ -380,10 +380,11 @@ class SelectExitingDocumentModal extends Component {
         // addEventListener is called in componentDidUpdate
         if (!this.props.showGetFieldValuesChoice) {
           this.props.showGetFieldValuesChoiceModal(() => {});
-          console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
+          // console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox: ', this.handleCloseGetFieldValuesChoiceBox, typeof this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
           window.addEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
         }
+        console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, fieldObject: ', fieldObject);
         // call action to set state.documents.fieldValueDocumentObject to be used in showGetFieldValuesChoiceModal
         this.props.setGetFieldValueDocumentObject({ agreement: selectedAgreement, fieldObject: fieldObject.object, differentValueCount: fieldObject.differentValueCount, selectedFieldNameArray: [], fieldValueAppliedArray: [] });
         // console.log('in select_exiting_document, handleGetFieldValuesForAgreementClick, clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject: ', clickedElement, selectedAgreement, this.props.selectedFieldObject, fieldObject);

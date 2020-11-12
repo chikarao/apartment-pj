@@ -335,7 +335,12 @@ class GetFieldValueChoiceModal extends Component {
         // Array for state fieldValueAppliedArray
         newArray.push(eachName);
         // Object and updateArray for applySelectedDocumentValueCompleted
-        updateObject = { id: templateElement.id, value: valueInSelectedDocument, previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue };
+        updateObject = {
+          id: templateElement.id,
+          value: valueInSelectedDocument,
+          previous_value: this.props.fieldValueDocumentObject.fieldObject[eachName].currentValue
+        };
+
         updateArray.push(updateObject);
         // Calling this.props.change for reduxForm
         this.props.changeFormValue(eachName, valueInSelectedDocument);
@@ -351,7 +356,13 @@ class GetFieldValueChoiceModal extends Component {
           updateObject = {
             id: this.props.selectedFieldObject.fields[eachFieldNameKey].element.id,
             value: this.props.selectedFieldObject.fields[eachFieldNameKey].newValue,
+            // Cannot have unidentified as a value to a key when saving to localStorage history
+            // so make sure to assign '' if the field has no value to start
             previous_value: this.props.selectedFieldObject.fields[eachFieldNameKey].currentValue
+                            ?
+                            this.props.selectedFieldObject.fields[eachFieldNameKey].currentValue
+                            :
+                            ''
           };
 
           updateArray.push(updateObject);

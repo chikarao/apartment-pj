@@ -162,43 +162,43 @@ class CreateEditDocument extends Component {
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
       const getLocalHistory = () => {
-      const localStorageHistory = localStorage.getItem('documentHistory');
-      console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
-      let destringifiedHistory = {};
-      // if localStorageHistory exists, set state to previous values
-      // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
-      // and next time user refreshes or mounts component on the same machine, it will be there
-      if (localStorageHistory) {
-        destringifiedHistory = JSON.parse(localStorageHistory);
-        if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
-          console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
-          // Set state with || in case localStorageHistory exists but history and other objects do not exist
-          this.setState({
-            templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
-            newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
-            // modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
-            modifiedPersistedElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject || this.state.modifiedPersistedElementsObject,
-            modifiedPersistedTranslationElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedTranslationElementsObject || this.state.modifiedPersistedTranslationElementsObject,
-            // templateElementCount: highestElementId,
-            // originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
-          }, () => {
+        const localStorageHistory = localStorage.getItem('documentHistory');
+        console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
+        let destringifiedHistory = {};
+        // if localStorageHistory exists, set state to previous values
+        // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
+        // and next time user refreshes or mounts component on the same machine, it will be there
+        if (localStorageHistory) {
+          destringifiedHistory = JSON.parse(localStorageHistory);
+          if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
+            console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
+            // Set state with || in case localStorageHistory exists but history and other objects do not exist
             this.setState({
-              historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
+              templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+              newFontObject: destringifiedHistory[this.props.agreement.id].newFontObject || this.state.newFontObject,
+              // modifiedPersistedElementsArray: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsArray || this.state.modifiedPersistedElementsArray,
+              modifiedPersistedElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject || this.state.modifiedPersistedElementsObject,
+              modifiedPersistedTranslationElementsObject: destringifiedHistory[this.props.agreement.id].modifiedPersistedTranslationElementsObject || this.state.modifiedPersistedTranslationElementsObject,
+              // templateElementCount: highestElementId,
+              // originalPersistedTemplateElements: destringifiedHistory[this.props.agreement.id].originalPersistedTemplateElements || this.state.originalPersistedTemplateElements,
             }, () => {
-              console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
-            }); // end of second setState
-          }); // end of first setState
-        } // end of if destringifiedHistory elements
-        // if there is localStorageHistory return an object for use in document reducer
-        if (destringifiedHistory[this.props.agreement.id]) {
-          return {
-            templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
-            historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex,
-            elements: destringifiedHistory[this.props.agreement.id].elements
-          };
-        }
-      } // end of if localStorageHistory
-      // if there is no localStorageHistory return null
+              this.setState({
+                historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
+              }, () => {
+                console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
+              }); // end of second setState
+            }); // end of first setState
+          } // end of if destringifiedHistory elements
+          // if there is localStorageHistory return an object for use in document reducer
+          if (destringifiedHistory[this.props.agreement.id]) {
+            return {
+              templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
+              historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex,
+              elements: destringifiedHistory[this.props.agreement.id].elements
+            };
+          }
+        } // end of if localStorageHistory
+        // if there is no localStorageHistory return null
       return null;
     }; // end of getLocalHistory
 
@@ -2935,8 +2935,6 @@ longActionPress(props) {
       }
       // return { returnObject, returnEditObject };
     }
-
-
     // Set storage object for given point in time for agreement for when user accidentally has to refresh
     // Called after element creation, deletion, update, redo, undo (after index increment, decrement)
     let destringifiedHistory = {};

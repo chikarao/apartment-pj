@@ -59,7 +59,7 @@ export default (props) => {
       // });
       // sameValues = eachField.value
       // console.log('in get_document_fields_with_same_name, getElementValue: ', getElementValue);
-    // } 
+    // }
 
     if (
       !eachField.translation_element
@@ -79,7 +79,7 @@ export default (props) => {
         field: eachField,
         fieldName: eachField.name,
         [name]: fieldValue,
-        currentValue: valuesInForm[name],
+        currentValue: !valuesInForm[name] ? '' : valuesInForm[name],
         sameValues: fieldValue === valuesInForm[name],
         customName: eachField.custom_name
       };
