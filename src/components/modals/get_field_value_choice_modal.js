@@ -15,6 +15,8 @@ import getElementValueText from '../functions/get_element_value_text';
 import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
 
+// NOTE: This class GetFieldValueChoiceModal called in
+// CreateEditDocument and SelectExitingDocumentModal
 class GetFieldValueChoiceModal extends Component {
   constructor(props) {
     super(props);
@@ -247,7 +249,7 @@ class GetFieldValueChoiceModal extends Component {
 
       let value = null;
       if (eachFieldObject.field.custom_name) {
-        value = eachFieldObject.currentValue;
+        value = this.props.getSelectDataBaseValues ? eachFieldObject[eachFieldObject.field.custom_name] : eachFieldObject.currentValue;
       } else {
         value = !eachFieldObject.field.document_field_choices ? eachFieldObject[eachFieldObject.fieldName] : getElementValue()
       }
@@ -315,29 +317,28 @@ class GetFieldValueChoiceModal extends Component {
         renderFieldObject = true;
       } else if (this.state.customFieldModeOn
                 && !this.state.showCustomFieldValues
-                && !this.state.getSelectDataBaseValues
+                && !this.props.getSelectDataBaseValues
                 ) {
         // Case of custom fields,
         renderFieldObject = true;
       } else if (this.state.customFieldModeOn
                   && this.state.showCustomFieldValues
                   && eachFieldObject.customName
-                  && !this.state.getSelectDataBaseValues
+                  && !this.props.getSelectDataBaseValues
                 ) {
         renderFieldObject = true;
       } else if (!this.state.customFieldModeOn
                   && !this.state.showCustomFieldValues
-                  // && this.state.showAllSelectedValues
-                  && this.state.getSelectDataBaseValues
+                  && this.props.getSelectDataBaseValues
+                  && this.state.showAllSelectedValues
                   && this.props.selectedFieldObject.fields[eachFieldObject.fieldName]
                 ) {
         // Case of getSelectDataBaseValues
         renderFieldObject = true;
       } else if (!this.state.customFieldModeOn
                   && !this.state.showCustomFieldValues
-                  && this.state.getSelectDataBaseValues
+                  && this.props.getSelectDataBaseValues
                   && (!eachFieldObject.sameValues)
-
         ) {
           // Case of getSelectDataBaseValues
          renderFieldObject = true;
@@ -442,7 +443,7 @@ class GetFieldValueChoiceModal extends Component {
             Uncheck All
           </div>
           {
-            this.props.selectedFieldObject.customFieldExists || !this.props.getSelectDataBaseValues
+            this.props.selectedFieldObject.customFieldExists && !this.props.getSelectDataBaseValues
             ?
             <div
               className="get-field-value-choice-modal-button-custom-standard"
@@ -478,7 +479,7 @@ class GetFieldValueChoiceModal extends Component {
           ?
           <div className="get-field-value-choice-modal-category-heading"> Custom Fields</div>
           :
-          <div className="get-field-value-choice-modal-title">{`Available ${this.props.getDataBaseValues ? 'Data Base' : ''} Values`}</div>
+          <div className="get-field-value-choice-modal-title">{`Available ${this.props.getSelectDataBaseValues ? 'Data Base' : ''} Values`}</div>
         }
         { this.state.customFieldModeOn
           ?

@@ -5374,7 +5374,6 @@ longActionPress(props) {
           this.findIfDatabaseValuesExistForFields();
         }}
         changeFormValue={this.props.change}
-        getDataBaseValues={this.state.getSelectDataBaseValues}
         getSelectDataBaseValues={this.state.getSelectDataBaseValues}
       />
     );
