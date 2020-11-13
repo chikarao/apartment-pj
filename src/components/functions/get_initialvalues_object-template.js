@@ -667,15 +667,16 @@ export default (props) => {
       if (keyExistsInMethodObject && conditionTrue) {
         count++;
         objectReturned = { ...objectReturned,
-                            [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method({
-                            ...methodObject[allObjectEach.initialvalues_method_key].parameters,
+                            [eachField.name]: methodObject[allObjectEach.initialvalues_method_key].method(
+                            { ...methodObject[allObjectEach.initialvalues_method_key].parameters,
                             key: eachField.name,
                             object: allObjectEach,
                             })
                           };
 
         // if custom field and linked to a database value i.e. has name
-        if (eachField.custom_name && eachField.name && !eachField.value) {
+        // AND does not have value OR if findIfDatabaseValuesExistForFields is true
+        if (eachField.custom_name && eachField.name && (!eachField.value || findIfDatabaseValuesExistForFields || getSelectDataBaseValues)) {
           // get the translation object with values for each language code key
           translationObject = getDocumentFieldValueTranslation({ choices: allObjectEach.choices, value: objectReturned[eachField.name] });
 

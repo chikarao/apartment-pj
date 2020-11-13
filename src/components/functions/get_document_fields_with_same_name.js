@@ -15,7 +15,8 @@ export default (props) => {
     translationModeOn,
     allObject,
     documentConstants,
-    appLanguageCode
+    appLanguageCode,
+    getSelectDataBaseValues
   } = props;
   console.log('in get_document_fields_with_same_name, props: ', props);
 
@@ -39,8 +40,15 @@ export default (props) => {
     // selectedFieldObject is set in CreateEditDocument in case 'getFieldValues':
     // if from CreateEditDocument, user is trying to get all the original values
     // whereas from SelectExitingDocumentModal, user is trying to get eachField.value
+    // if (getSelectDataBaseValues) {
+    //
+    // } else {
+    // }
     fieldValue = fromCreateEditDocument ? eachField.original_value : eachField.value;
-    if (initialValuesObject) fieldValue = initialValuesObject[name]
+
+    // NOTE: initialValuesObject is objectReturned from getInitialValueObject function,
+    // run for the purposes of getting the values in the flat DB in this.getSelectDataBaseValues 
+    if (initialValuesObject) fieldValue = initialValuesObject[name];
     // if a custom field and linked to DB, test if value in props is same as
     // translatlated value ie if 'construction' value 'src' then is it 'Steel Reinforced Concrete'
     // if (eachField.custom_name && eachField.name) {
