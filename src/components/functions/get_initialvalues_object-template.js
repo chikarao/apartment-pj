@@ -751,17 +751,34 @@ export default (props) => {
   if (!_.isEmpty(templateTranslationElements) && (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)    ) {
     let nameInInitialValues = null;
     let hasOwnTranslation = false;
+    let valueFromDocumentTranslations = null;
+
     let translationText = '';
     _.each(Object.keys(templateTranslationElements), eachKey => {
-      nameInInitialValues = `${templateTranslationElements[eachKey].name}+translation`;
-      hasOwnTranslation = templateTranslationElements[eachKey].document_field_translations
-        && templateTranslationElements[eachKey].document_field_translations[documentLanguageCode]
-        && !templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].deleted;
+      nameInInitialValues = templateTranslationElements[eachKey].name
+                            ?
+                            `${templateTranslationElements[eachKey].name}+translation`
+                            :
+                            `${templateTranslationElements[eachKey].custom_name}+translation`;
 
-      translationText = hasOwnTranslation ?
-        templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value
-        :
-        documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode];
+      hasOwnTranslation = (templateTranslationElements[eachKey].document_field_translations
+                            && templateTranslationElements[eachKey].document_field_translations[documentLanguageCode]
+                            && !templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].deleted)
+                          ||
+                          (templateTranslationElements[eachKey].language_code === documentLanguageCode
+                            && templateTranslationElements[eachKey].value);
+
+      valueFromDocumentTranslations = documentTranslationsAllInOne[templateTranslationElements[eachKey].name]
+                                      ?
+                                      documentTranslationsAllInOne[templateTranslationElements[eachKey].name].translations[documentLanguageCode]
+                                      :
+                                      '';
+
+      translationText = hasOwnTranslation
+                        ?
+                        templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value || templateTranslationElements[eachKey].value
+                        :
+                        valueFromDocumentTranslations;
       // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
       objectReturned = { ...objectReturned, [nameInInitialValues]: translationText };
     })

@@ -69,6 +69,7 @@ class GetFieldValueChoiceModal extends Component {
       }
     }
 
+    console.log('in GetFieldValueChoiceModal, handleFieldCheckboxClick, elementVal, newArray: ', elementVal, newArray);
     this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: newArray });
   }
 
@@ -171,34 +172,6 @@ class GetFieldValueChoiceModal extends Component {
         valueChanged = true;
       }
     });
-    // Attempt a O(1) too complicated
-    // if ((fields[this.state.selectedCustomFieldChoice].newValue && elementVal !== fields[this.state.selectedCustomFieldChoice].newValue)
-    //     ||
-    //     (!fields[this.state.selectedCustomFieldChoice].newValue && elementVal !== fields[this.state.selectedCustomFieldChoice].currentValue)
-    // ) {
-    //   valueChanged = true;
-    //   valueChangeCount++;
-    // } else if (valueChangeCount === 0 && elementVal === fields[this.state.selectedCustomFieldChoice].currentValue) {
-    //   valueChanged = false;
-    // } else if (valueChangeCount === 1 && fields[this.state.selectedCustomFieldChoice].newValue && elementVal === fields[this.state.selectedCustomFieldChoice].currentValue) {
-    //   valueChanged = false;
-    //   valueChangeCount--;
-    // }
-
-    // if (valueChangeCount === 0 && (elementVal !== fields[this.state.selectedCustomFieldChoice].currentValue)) {
-    //     valueChanged = true;
-    //     valueChangeCount++;
-    // } else if (valueChangeCount === 1) {
-    //   if (fields[this.state.selectedCustomFieldChoice].newValue && fields[this.state.selectedCustomFieldChoice].currentValue !== fields[this.state.selectedCustomFieldChoice].newValue) {
-    //     valueChanged = true;
-    //     // one that was changed, dont change the count
-    //   } else {
-    //     // not one that has been changed
-    //     valueChangeCount++;
-    //   }
-    // } else if (valueChangeCount > 1) {
-    //
-    // }
 
     this.props.setSelectedFieldObject({ ...this.props.selectedFieldObject, valueChanged, valueChangeCount, fields: { ...this.props.selectedFieldObject.fields, [this.state.selectedCustomFieldChoice]: { ...this.props.selectedFieldObject.fields[this.state.selectedCustomFieldChoice], newValue: elementVal } } })
 
@@ -209,11 +182,12 @@ class GetFieldValueChoiceModal extends Component {
     let elementName = '';
     let elementValueText = '';
     let changeApplied = false;
+    let customNameOrFieldName = null;
     const allObject = this.props.fieldValueDocumentObject ? this.props.allDocumentObjects[Documents[this.props.fieldValueDocumentObject.agreement.template_file_name].propsAllKey] : {};
-    console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, this.props.selectedFieldChoice, allObject: ', this.props.fieldValueDocumentObject, this.props.selectedFieldObject, allObject);
+    // console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, this.props.selectedFieldChoice, allObject: ', this.props.fieldValueDocumentObject, this.props.selectedFieldObject, allObject);
     // getSelectDataBaseValues
     const renderEach = (eachFieldObject, i) => {
-      console.log('in GetFieldValueChoiceModal, renderEachValue, renderEach, this.props.fieldValueDocumentObject, this.props.selectedFieldObject, eachFieldObject, i: ', this.props.fieldValueDocumentObject, this.props.selectedFieldObject, eachFieldObject, i);
+      // console.log('in GetFieldValueChoiceModal, renderEachValue, renderEach, this.props.getSelectDataBaseValues, this.props.fieldValueDocumentObject, this.props.selectedFieldObject, eachFieldObject, i: ', this.props.getSelectDataBaseValues, this.props.fieldValueDocumentObject, this.props.selectedFieldObject, eachFieldObject, i);
       elementName = eachFieldObject.field.custom_name
                     ?
                     eachFieldObject.field.custom_name
@@ -244,8 +218,16 @@ class GetFieldValueChoiceModal extends Component {
         documentConstants: this.props.documentConstants,
         fieldValue: eachFieldObject[eachFieldObject.fieldName]
       });
+
+      // Switch attributes based on whether getting db values for custom field or not
+      customNameOrFieldName = this.props.getSelectDataBaseValues && eachFieldObject.customName
+                              ?
+                              'customName'
+                              :
+                              'fieldName';
+
       // Test if change for field as already been applied
-      changeApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachFieldObject.fieldName) !== -1;
+      changeApplied = this.props.fieldValueDocumentObject.fieldValueAppliedArray.indexOf(eachFieldObject[customNameOrFieldName]) !== -1;
 
       let value = null;
       if (eachFieldObject.field.custom_name) {
@@ -254,6 +236,7 @@ class GetFieldValueChoiceModal extends Component {
         value = !eachFieldObject.field.document_field_choices ? eachFieldObject[eachFieldObject.fieldName] : getElementValue()
       }
 
+      console.log('in GetFieldValueChoiceModal, renderEachValue, this.props.fieldValueDocumentObject, this.props.selectedFieldChoice, this.state.customFieldModeOn: ', this.props.fieldValueDocumentObject, this.props.selectedFieldObject, this.state.customFieldModeOn);
       return (
         <li
           key={i}
@@ -276,14 +259,14 @@ class GetFieldValueChoiceModal extends Component {
             </div>
           </div>
           <div className="get-field-value-choice-modal-values-each-checkbox-box">
-            {!changeApplied && (!eachFieldObject.sameValues)
+            {(!changeApplied && (!eachFieldObject.sameValues) && !this.state.customFieldModeOn) || !this.state.customFieldModeOn
               ?
               <input
                 className="get-field-value-choice-modal-values-each-checkbox-box-input"
                 type="checkbox"
                 onChange={this.handleFieldCheckboxClick}
-                value={eachFieldObject.fieldName}
-                checked={this.props.fieldValueDocumentObject.selectedFieldNameArray.indexOf(eachFieldObject.fieldName) !== -1}
+                value={eachFieldObject[customNameOrFieldName]}
+                checked={this.props.fieldValueDocumentObject.selectedFieldNameArray.indexOf(eachFieldObject[customNameOrFieldName]) !== -1}
               />
               :
               ''
@@ -349,6 +332,7 @@ class GetFieldValueChoiceModal extends Component {
   }
 
   handleFieldValueApplyClick() {
+    // Apply changes in value to templateElements and in localStorageHistory
     let valueInSelectedDocument = null;
     let templateElement = null;
     const updateArray = [];
@@ -356,6 +340,7 @@ class GetFieldValueChoiceModal extends Component {
     const newArray = [...this.props.fieldValueDocumentObject.fieldValueAppliedArray];
     const newCustomArray = [...this.props.selectedFieldObject.fieldValueAppliedArray];
 
+    console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, this.props.fieldValueDocumentObject.selectedFieldNameArray: ', this.props.fieldValueDocumentObject.selectedFieldNameArray);
     if (this.props.fieldValueDocumentObject.selectedFieldNameArray) {
       _.each(this.props.fieldValueDocumentObject.selectedFieldNameArray, eachName => {
         valueInSelectedDocument = this.props.fieldValueDocumentObject.fieldObject[eachName][eachName];
@@ -378,7 +363,6 @@ class GetFieldValueChoiceModal extends Component {
       this.props.setGetFieldValueDocumentObject({ ...this.props.fieldValueDocumentObject, selectedFieldNameArray: [], fieldValueAppliedArray: newArray });
     }
     // console.log('in GetFieldValueChoiceModal, handleFieldValueApplyClick, updateArray: ', updateArray);
-       // Apply changes in value to templateElements and in localStorageHistory
     if (this.props.selectedFieldObject.valueChanged) {
       _.each(Object.keys(this.props.selectedFieldObject.fields), eachFieldNameKey => {
         if (this.props.selectedFieldObject.fields[eachFieldNameKey].newValue) {

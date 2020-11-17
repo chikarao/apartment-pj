@@ -602,13 +602,14 @@ class DocumentChoicesTemplate extends Component {
     // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
     if (this.props.editFieldsOn) {
       if (this.props.translationModeOn && !this.props.eachElement.translation_element) {
-        console.log('in document_choices_template, render, name, this.props.eachElement, this.props.formFields[this.props.page], this.props, this.props.translationModeOn, this.props.editFieldsOn, choices: ', name, this.props.eachElement, this.props.formFields, this.props, this.props.translationModeOn, this.props.editFieldsOn, choices);
         return (
           <div key={name}>
             {this.renderEachChoice(choices)}
           </div>
         );
       }
+
+      console.log('in document_choices_template, render, name, this.props.eachElement, this.props.formFields[this.props.page], this.props, this.props.translationModeOn, this.props.editFieldsOn, choices, this.props.label after !translation if : ', name, this.props.eachElement, this.props.formFields, this.props, this.props.translationModeOn, this.props.editFieldsOn, choices, this.props.label);
       return (
         <div
           key={name}
@@ -632,7 +633,7 @@ class DocumentChoicesTemplate extends Component {
             : ''}
         </div>
       );
-    }
+    } // if editFieldsOn
 
     return (
       <div key={name}>

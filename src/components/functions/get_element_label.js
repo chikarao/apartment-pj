@@ -12,19 +12,26 @@ export default (props) => {
     appLanguageCode,
     fieldName,
     fromCreateEditDocument,
-    translationMode
+    translationModeOn,
+    translationElement
   } = props;
   console.log('in get_element_label, props, props.fieldName: ', props, props.fieldName);
 
   let label = '';
   let translationKey = '';
   let translationText = '';
-  // const fieldName = fromCreateEditDocument ? modifiedElement.name : modifiedElement.fieldName
 
-  const elementObject = allDocumentObjects[documents[agreement.template_file_name].propsAllKey][fieldName];
-  if (elementObject) {
+  // translationModeOn is when user is creating a translation element
+  const elementObject = !translationModeOn
+                        ?
+                        allDocumentObjects[documents[agreement.template_file_name].propsAllKey][fieldName]
+                        :
+                        allDocumentObjects[fieldName];
+
+  if (elementObject && !translationModeOn) {
     translationKey = elementObject.translation_key;
     translationText = elementObject.translation_object ? 'Translation' : '';
+
     const documentTranslations = documentTranslationsAll[`${agreement.template_file_name}_all`][translationKey]
     // const appLanguages = appLanguages[translationKey];
     label = (documentTranslations ? documentTranslations.translations[appLanguageCode] : '')
@@ -35,6 +42,17 @@ export default (props) => {
     label = group ? category + group + label + ' ' + translationText : category + label + ' ' + translationText;
     // modifiedElement.name;
     // console.log('in create_edit_document, renderTemplateElements, eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label: ', eachElement, page, inputElement, newElement, group, translationKey, this.props.documentTranslationsAll[`${this.props.agreement.template_file_name}_all`][translationKey], label);
+  } else if (elementObject && translationModeOn) {
+    // for translation elements
+    const category = (appLanguages[elementObject.category] ? `${appLanguages[elementObject.category][appLanguageCode]}/` : '');
+    const group = (appLanguages[elementObject.group] ? `${appLanguages[elementObject.group][appLanguageCode]}/` : '');
+    translationText = translationElement ? 'Translation' : '';
+    label = fieldName;
+    label = group
+            ?
+            category + group + label + ' ' + translationText
+            :
+            category + label + ' ' + translationText;
   } else {
     console.log('in get_element_label, in else elementObject props, props.fieldName: ', props, props.fieldName);
     // If no object existins in fixed and important_points, must be a list element (e.g. amenities_list);
@@ -49,5 +67,6 @@ export default (props) => {
     // label = modifiedElement.name;
   }
 
+  console.log('in get_element_label, before return label: ', label);
   return label;
 };

@@ -1131,6 +1131,7 @@ handleOnFocus(event) {
                           : this.state.customFieldNameInputValue;
         // Assign templateElementAttributes from state and specify left, top, page
         const id = !this.state.translationModeOn ? `${this.state.templateElementCount}a` : `${this.state.translationElementCount}b`;
+
         templateElementAttributes = {
           ...this.state.templateElementAttributes,
           left: `${x}%`,
@@ -1152,6 +1153,7 @@ handleOnFocus(event) {
         if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
         document.removeEventListener('click', this.getMousePosition);
+
         this.setState({
           templateElementAttributes: null,
           templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] },
@@ -2094,9 +2096,11 @@ longActionPress(props) {
 
     if (!documentEmpty) {
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
-        console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, ', eachElement);
 
-        translationText = valuesInForm[`${eachElement.name}+translation`] || documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode];
+        translationText = valuesInForm[`${eachElement.name}+translation`]
+                          || (documentTranslationsAllInOne[eachElement.name]
+                              && documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode])
+                          || '';
         if (this.state.translationModeOn && this.state.editFieldsOn) {
           const background = document.getElementById('document-background');
           if (background) {
@@ -2105,7 +2109,12 @@ longActionPress(props) {
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
             let tabLeftMarginPx = eachElementWidthPx - TAB_WIDTH - TAB_REAR_SPACE;
             if (eachElementWidthPx < TAB_WIDTH) tabLeftMarginPx = 0;
-            const label = 'Placeholder';
+            const label = eachElement.custom_name
+                          ||
+                          `${AppLanguages[documentTranslationsAllInOne[eachElement.name].category][appLanguageCode]}/${documentTranslationsAllInOne[eachElement.name].translations[appLanguageCode]}`
+                          ||
+                          'No name';
+            console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, label, documentTranslationsAllInOne, appLanguageCode: ', eachElement, label, documentTranslationsAllInOne, appLanguageCode);
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
@@ -3134,6 +3143,21 @@ longActionPress(props) {
     return objectReturned;
   }
 
+  getSelectedFieldObject() {
+    return getSelectedFieldObject({
+      selectedTemplateElementIdArray: this.state.selectedTemplateElementIdArray,
+      templateElements: this.props.templateElements,
+      allDocumentObjects: this.props.allDocumentObjects,
+      documents: Documents,
+      agreement: this.props.agreement,
+      documentTranslationsAll: this.props.documentTranslationsAll,
+      appLanguages: AppLanguages,
+      appLanguageCode: this.props.appLanguageCode,
+      valuesInForm: this.props.valuesInForm,
+    });
+  }
+
+
   handleTemplateElementActionClick(event) {
     // Main function for handling template element action box button clicks
     // e.g. align, redo, trash buttons, etc
@@ -3887,17 +3911,7 @@ longActionPress(props) {
             originalValuesExistForSelectedFields,
             // originalValuesExistForSelectedFields: false
           }, () => {
-            this.props.setSelectedFieldObject(getSelectedFieldObject({
-              selectedTemplateElementIdArray: this.state.selectedTemplateElementIdArray,
-              templateElements: this.props.templateElements,
-              allDocumentObjects: this.props.allDocumentObjects,
-              documents: Documents,
-              agreement: this.props.agreement,
-              documentTranslationsAll: this.props.documentTranslationsAll,
-              appLanguages: AppLanguages,
-              appLanguageCode: this.props.appLanguageCode,
-              valuesInForm: this.props.valuesInForm,
-            }));
+            this.props.setSelectedFieldObject(this.getSelectedFieldObject());
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
             document.addEventListener('keydown', this.handleFontControlCloseClick);
@@ -3951,13 +3965,6 @@ longActionPress(props) {
                                       :
                                       this.state.templateElementActionIdObject,
       templateElementAttributes: null
-      // templateElementAttributes: !this.state.showCustomInputCreateMode
-      //                             ?
-      //                             null
-      //                             :
-      //                             { ...this.state.templateElementAttributes },
-
-      // showCustomInputCreateMode: this.state.showCustomInputCreateMode ? false : this.state.showCustomInputCreateMode
     }, () => {
       // After set state, use the array as a path for templateMappingObject to get outermost node
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
@@ -4091,12 +4098,6 @@ longActionPress(props) {
       }
     } else { // else of if !input && !buttons
       if (elementType === 'buttons') {
-        // Get index and elementType of same id with different type ie list
-        // returnedObject = getTakeOutIndex(elementIdNoType);
-        // takeOutIndex = returnedObject.takeOutIndex;
-        // // // Take out id if included in array and increment down type
-        // if (takeOutIndex !== -1) newObject.array.splice(takeOutIndex, 1);
-        // if (returnedObject.elementTypeReturned) newObject[returnedObject.elementTypeReturned]--;
         newObject = takeOutOtherTypes(elementType, newObject);
       }
 
@@ -4440,16 +4441,16 @@ longActionPress(props) {
           if (objectPathArray[objectPathArray.length - 1] === '2') objectPathArray.splice(objectPathArray.length - 1, 1)
           indexOfChoices = objectPathArray.indexOf('choices');
           let currentObject = !this.state.translationModeOn
-          ?
-          this.props.templateMappingObjects[this.props.agreement.template_file_name]
-          :
-          this.state.documentTranslationsTreated;
+                              ?
+                              this.props.templateMappingObjects[this.props.agreement.template_file_name]
+                              :
+                              this.state.documentTranslationsTreated;
           // let choice = null;
           _.each(objectPathArray, (eachKey, i) => {
             modEach = eachKey;
             if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
             if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray: ', modEach, currentObject, objectPathArray);
+            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array: ', modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array);
             currentObject = currentObject[modEach];
           });
           summaryObject.parent = parent;
@@ -4506,10 +4507,12 @@ longActionPress(props) {
       const elementIdArray = this.state.templateElementActionIdObject.array;
 
       return _.map(Object.keys(translationMappingObject), eachKey => {
+        console.log('in create_edit_document, renderEachTranslationFieldChoice, in else translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray: ', translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray);
         // if the object of the eachKey has no translations, must be a category or group
         if (translationMappingObject[eachKey] && !translationMappingObject[eachKey].translations) {
+
           choiceText = AppLanguages[eachKey] ? AppLanguages[eachKey][this.props.appLanguageCode] : eachKey;
-          // console.log('in create_edit_document, renderEachTranslationFieldChoice, after if eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText: ', eachKey, translationMappingObject, translationMappingObject[eachKey], choiceText);
+
           return (
             <div
               key={eachKey}
@@ -4521,7 +4524,9 @@ longActionPress(props) {
             </div>
           );
         } else {
+          // object has translations so not group or category
           choiceText = translationMappingObject[eachKey] ? translationMappingObject[eachKey].translations[this.props.agreement.language_code] : eachKey;
+          // choiceText = translationMappingObject[eachKey] ? translationMappingObject[eachKey].translations[this.props.appLanguageCode] : eachKey;
           valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
 
           return (
@@ -4543,10 +4548,13 @@ longActionPress(props) {
                 <div
                   id={'input,' + valueString}
                   onClick={this.handleFieldChoiceActionClick}
-                  style={elementIdArray.indexOf('input,' + valueString) !== -1 ? { backgroundColor: 'lightgray'} : {}}
+                  style={elementIdArray.indexOf('input,' + valueString) !== -1
+                          ?
+                          { backgroundColor: 'lightgray' } : {}}
+
                   // className="create-edit-document-template-each-choice-action-box-button"
                 >
-                  Add Translation
+                  {this.state.showCustomInputCreateMode ? 'Link Value' : 'Add Translation'}
                 </div>
               </div>
             </div>
@@ -4982,7 +4990,8 @@ longActionPress(props) {
                         && (this.state.templateElementActionIdObject.select > 1 || this.state.templateElementActionIdObject.select === 0));
     const listOk = this.state.templateElementActionIdObject.list > 0;
     const enableAdd = (selectOk || buttonOk || listOk) && !this.state.templateElementAttributes;
-    const disableTranslation = ((this.state.templateElementActionIdObject.list > 0 || this.state.templateElementActionIdObject.select > 0)
+    const disableTranslation = ((this.state.templateElementActionIdObject.list > 0
+                                  || this.state.templateElementActionIdObject.select > 0)
                                 && this.state.templateElementActionIdObject.translation)
                                 || (this.state.showCustomInputCreateMode && this.state.templateElementActionIdObject.translation)
                                 || (this.state.templateElementAttributes && this.state.templateElementAttributes.translation);
@@ -5003,7 +5012,7 @@ longActionPress(props) {
         <div className="create-edit-document-template-edit-field-box-controls-action">
           {this.state.templateElementActionIdObject.list > 0
             || this.state.templateElementActionIdObject.select > 0
-            || this.state.showCustomInputCreateMode
+            || (this.state.showCustomInputCreateMode && !this.state.translationModeOn)
             ?
             <div
               className="create-edit-document-template-edit-field-box-controls-action-button"
@@ -5105,7 +5114,7 @@ longActionPress(props) {
     const fieldPath = this.state.templateElementAttributes && this.state.templateElementAttributes.name
             ?
             getElementLabel({
-              allDocumentObjects: this.props.allDocumentObjects,
+              allDocumentObjects: !this.state.translationModeOn ? this.props.allDocumentObjects : this.props.documentTranslationsAllInOne,
               documents: Documents,
               agreement: this.props.agreement,
               // modifiedElement,
@@ -5114,7 +5123,9 @@ longActionPress(props) {
               documentTranslationsAll: this.props.documentTranslationsAll,
               appLanguages: AppLanguages,
               appLanguageCode: this.props.appLanguageCode,
-              fromCreateEditDocument: true
+              fromCreateEditDocument: true,
+              translationModeOn: this.state.translationModeOn,
+              translationElement: this.state.translation
             })
             :
             null;
@@ -5156,7 +5167,7 @@ longActionPress(props) {
         {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameInput() : null}
         {this.state.showCustomInputCreateMode ? this.renderCustomFieldNameControls() : null}
         <div className="create-edit-document-template-edit-field-box-choices">
-          {this.state.translationModeOn && !this.state.showCustomInputCreateMode ? this.renderEachTranslationFieldChoice() : null}
+          {this.state.translationModeOn ? this.renderEachTranslationFieldChoice() : null}
           {!this.state.showCustomInputCreateMode && !this.state.translationModeOn ? this.renderEachFieldChoice() : null}
           {!this.state.translationModeOn && this.state.showCustomInputCreateMode ? this.renderEachCustomFieldChoice() : null}
         </div>
@@ -5456,7 +5467,7 @@ longActionPress(props) {
       // this.props.setSelectedFieldObject(this.getUpdatedSelectedFieldObject());
       // Switch off modal show
       this.props.showGetFieldValuesChoiceModal(() => {});
-      this.props.setSelectedFieldObject(null);
+      this.props.setSelectedFieldObject(this.getSelectedFieldObject());
       // Switch off this.state.getSelectDataBaseValues and do clean up after
       if (this.state.getSelectDataBaseValues) this.getSelectDataBaseValues();
       window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
@@ -6728,6 +6739,9 @@ function mapStateToProps(state) {
     //   initialValues = newObject;
     // }
     initialValues = state.documents.initialValuesObject;
+
+    // if (state.documents.documentTranslationsAllInOne) console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslationsAllInOne: ', state.documents.documentTranslationsAllInOne);
+
     // initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
     console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslations: ', state.documents.documentTranslations);
     // initialValues = { name: 'Jackie' };
