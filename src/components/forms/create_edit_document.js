@@ -259,6 +259,9 @@ class CreateEditDocument extends Component {
         // The number of templateTranslationElements hanged
         (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
+        // Run if documentLanguageCode changes
+        (this.props.showDocument && (prevProps.documentLanguageCode !== this.props.documentLanguageCode))
+        ||
         // When user clicks getFieldValues, this.state.getSelectDataBaseValues is turned true in this.getSelectDataBaseValues
         ((prevState.getSelectDataBaseValues !== this.state.getSelectDataBaseValues) && this.state.getSelectDataBaseValues)
         ||
@@ -326,6 +329,7 @@ class CreateEditDocument extends Component {
         documentFields: (this.state.getSelectDataBaseValues
                           || this.state.findIfDatabaseValuesExistForFields
                           || (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+                          || prevProps.documentLanguageCode !== this.props.documentLanguageCode
                           // || (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
                         ) ? templateElementsSubset : allObject,
         // documentFields: allObject,
@@ -2098,6 +2102,8 @@ longActionPress(props) {
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
 
         translationText = valuesInForm[`${eachElement.name}+translation`]
+                          ||
+                          valuesInForm[`${eachElement.custom_name}+translation`]
                           || (documentTranslationsAllInOne[eachElement.name]
                               && documentTranslationsAllInOne[eachElement.name].translations[documentLanguageCode])
                           || '';
@@ -2114,7 +2120,7 @@ longActionPress(props) {
                           `${AppLanguages[documentTranslationsAllInOne[eachElement.name].category][appLanguageCode]}/${documentTranslationsAllInOne[eachElement.name].translations[appLanguageCode]}`
                           ||
                           'No name';
-            console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, label, documentTranslationsAllInOne, appLanguageCode: ', eachElement, label, documentTranslationsAllInOne, appLanguageCode);
+            console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, translationText, documentLanguageCode in translationModeOn: ', eachElement, translationText, documentLanguageCode);
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
@@ -2195,6 +2201,7 @@ longActionPress(props) {
           } // if background
         } else {
           // if not translationModeOn, must render a simple div
+          console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, translationText, documentLanguageCode in NOT translationModeOn: ', eachElement, translationText, documentLanguageCode);
           return (
             <div
             // component: null
@@ -2217,11 +2224,12 @@ longActionPress(props) {
             // class_name="document-rectangle-template"
               className='document-translation'
             >
-              <textarea
+              <div
                 className='document-translation-inner-textarea'
-                defaultValue={translationText}
+                // defaultValue={translationText}
               >
-              </textarea>
+                {translationText}
+              </div>
             </div>
           ); // End of return
         } // End of if (translationModeOn)

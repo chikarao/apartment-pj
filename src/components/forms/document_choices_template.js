@@ -71,10 +71,11 @@ class DocumentChoicesTemplate extends Component {
 
     valueUpdated = nextProps.input.value != this.props.input.value;
 
-    // console.log('DocumentChoicesTemplate, shouldComponentUpdate elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected', elementChanged, valueUpdated, editFieldOnChanged, choiceSelectedUnselected);
+    const documentLanguageCodeChanged = nextProps.documentLanguageCode !== this.props.documentLanguageCode;
+    console.log('DocumentChoicesTemplate, shouldComponentUpdate nextProps.documentLanguageCode, this.props.documentLanguageCode, documentLanguageCodeChanged', nextProps.documentLanguageCode, this.props.documentLanguageCode, documentLanguageCodeChanged);
     // console.log('DocumentChoicesTemplate, shouldComponentUpdate (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected)', (elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected));
 
-    return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected;
+    return elementChanged || valueUpdated || editFieldOnChanged || choiceSelectedUnselected || documentLanguageCodeChanged;
   }
 
   // Take user input in input element

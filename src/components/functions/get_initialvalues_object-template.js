@@ -716,7 +716,6 @@ export default (props) => {
                           || (templateElementsMappedByName[eachField.custom_name] && templateElementsMappedByName[eachField.custom_name].value))
                       // && !eachField.custom_name;
 
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachField, templateElementsMappedByName ', eachField, templateElementsMappedByName);
 
       if (templateElementsMappedByName && eachField.custom_name) console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before field has value eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value): ', eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value);
       if (conditionTrue) {
@@ -748,10 +747,11 @@ export default (props) => {
   // nameInInitialValues corresponds to name in Field in renderTemplateTranslationElements in createEditDocument
   // name is like buildingName+translation with a '+' so that able to distinguish translation element value in submit form
   // and will not clash with underscore or hyphen in templateElements
-  if (!_.isEmpty(templateTranslationElements) && (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)    ) {
+  if (!_.isEmpty(templateTranslationElements) && (!getSelectDataBaseValues && !findIfDatabaseValuesExistForFields)) {
     let nameInInitialValues = null;
     let hasOwnTranslation = false;
     let valueFromDocumentTranslations = null;
+    console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, agreement, documentLanguageCode ', agreement, documentLanguageCode);
 
     let translationText = '';
     _.each(Object.keys(templateTranslationElements), eachKey => {

@@ -404,8 +404,15 @@ class BookingConfirmation extends Component {
   }
 
   renderDocumentLanguageSelect() {
+    // Do not show language code of shown document 
+    const languageToHide = this.state.showDocument
+                            ?
+                            this.getAgreementArray()[0].language_code
+                            :
+                            null;
+
     return _.map(Object.keys(Languages), (key, i) => {
-      if (Languages[key].implemented) {
+      if (Languages[key].implemented && (languageToHide ? key !== languageToHide : true)) {
         return (
           <option
             key={i}
@@ -1228,18 +1235,31 @@ renderInsertBox(isTemplate) {
   );
 }
 
+getAgreementArray() {
+  return (
+    this.props.showSelectExistingDocument
+    && this.props.allUserAgreementsArrayMappedWithDocumentFields
+    && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
+    ?
+    [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
+    :
+    this.props.booking.agreements.filter(agreement => agreement.id === this.state.agreementId)
+  );
+}
+
 renderDocument() {
   if (this.props.booking) {
     // if (this.props.booking.agreements || this.props.documentInserts) {
       // get agreement chosen by user. Returns array so get first index position below
       console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument:', this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument);
-      const agreementArray = this.props.showSelectExistingDocument
-                              && this.props.allUserAgreementsArrayMappedWithDocumentFields
-                              && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
-                              ?
-                              [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
-                              :
-                              this.props.booking.agreements.filter(agreement => agreement.id === this.state.agreementId);
+      // const agreementArray = this.props.showSelectExistingDocument
+      //                         && this.props.allUserAgreementsArrayMappedWithDocumentFields
+      //                         && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
+      //                         ?
+      //                         [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
+      //                         :
+      //                         this.props.booking.agreements.filter(agreement => agreement.id === this.state.agreementId);
+      const agreementArray = this.getAgreementArray();
       // console.log('in booking confirmation, renderDocument, this.state.showSavedDocument, this.state.agreementId, agreementArray[0]:', this.state.showSavedDocument, this.state.agreementId, agreementArray[0]);
       let showDocumentInsertBox = false;
       if (agreementArray.length > 0) {
