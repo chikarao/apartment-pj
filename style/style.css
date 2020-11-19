@@ -5898,6 +5898,7 @@ form {
   color: white;
   padding: 10px;
   border-radius: 5px;
+  opacity: 0.6;
 }
 
 .create-edit-document-font-control-box, .create-edit-document-get-field-values-box {

@@ -46,7 +46,8 @@ import {
   EDIT_AGREEMENT,
   EMPTY_SELECTED_FLAT_FROM_PARAMS,
   SAVE_TEMPLATE_DOCUMENT_FIELDS,
-  ADD_EXISTING_AGREEMENTS
+  ADD_EXISTING_AGREEMENTS,
+  DELETE_IMAGES
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -292,6 +293,11 @@ export default function (state = INITIAL_STATE, action) {
 
     case UPLOAD_AND_CREATE_IMAGE:
       return { ...state, selectedFlatFromParams: action.payload };
+
+    case DELETE_IMAGES:
+    console.log('in flats reducer, DELETE_IMAGES action.payload: ', action.payload);
+
+      return { ...state, selectedFlatFromParams: action.payload.flat };
 
     default:
       return state;

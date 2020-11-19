@@ -32,6 +32,7 @@ export const DELETE_FLAT = 'delete_flat';
 export const EDIT_FLAT_LOAD = 'edit_flat_load';
 export const EDIT_FLAT = 'edit_flat';
 export const DELETE_IMAGE = 'delete_image';
+export const DELETE_IMAGES = 'delete_images';
 export const FETCH_CONVERSATION_BY_FLAT = 'fetch_conversation_by_flat';
 export const FETCH_CONVERSATION_BY_USER_AND_FLAT = 'fetch_conversation_by_user_and_flat';
 export const FETCH_CONVERSATIONS_BY_USER = 'fetch_conversations_by_user';

@@ -6033,56 +6033,7 @@ longActionPress(props) {
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
     const disableTranslation = this.state.translationModeOn;
-    // const object = {
-    //   newField: {
-    //     wrapper: {
-    //       onClick: disableCreateNewElement ? this.handleCreateNewTemplateElement : () => {},
-    //       style: this.state.createNewTemplateElementOn ? { backgroundColor: 'lightgray' } : { color: this.state.selectedTemplateElementIdArray.length > 0 ? 'gray' : 'blue' },
-    //       onMouseOver: this.handleMouseOverActionButtons,
-    //       name: 'Create a new field,top'
-    //     },
-    //     children: [
-    //       {
-    //         // value
-    //         tag: 'i',
-    //         name: 'Create a new field,top',
-    //         className: 'fas fa-plus-circle'
-    //       }
-    //     ]
-    //   }
-    // };
-    //
-    // const classNameForAll = 'create-edit-document-template-edit-action-box-elements';
-    //
-    // const createButtons = () => {
-    //   function renderChildren(children, value) {
-    //     return _.map(children, eachChild => {
-    //       if (eachChild.tag === 'i') {
-    //         return (
-    //           <i
-    //             name={eachChild.name}
-    //             className={eachChild.className}
-    //             value={value}
-    //           ></i>
-    //         );
-    //       }
-    //     });
-    //   }
-    //   return _.map(Object.keys(object), each => {
-    //     return (
-    //       <div
-    //         className={classNameForAll}
-    //         onClick={object[each].onClick}
-    //         style={object[each].style}
-    //         name={object[each].name}
-    //       >
-    //         {renderChildren(object[each].children, each)}
-    //       </div>
-    //     )
-    //   })
-    // };
 
-    // {createButtons()}
     console.log('in create_edit_document, renderTemplateElementEditAction, disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn : ', disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn);
     return (
       <div

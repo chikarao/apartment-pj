@@ -34,6 +34,7 @@ import {
   EDIT_FLAT_LOAD,
   EDIT_FLAT,
   DELETE_IMAGE,
+  DELETE_IMAGES,
   FETCH_CONVERSATION_BY_USER_AND_FLAT,
   FETCH_CONVERSATIONS_BY_USER,
   FETCH_CONVERSATION_BY_FLAT,
@@ -1381,6 +1382,27 @@ export function deleteImage(id, imageCount, callback) {
       dispatch({
         type: DELETE_IMAGE,
         payload: response.data.data.image
+      });
+    });
+  };
+}
+
+export function deleteImages(deleteImageArray, flatId, callback) {
+  console.log('in actions index, createImage: deleteImageArray: ', deleteImageArray);
+
+  // const { } = flatAttributes;
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/images/destroy_images/`, { destroy_image_array: deleteImageArray, flat_id: flatId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to deleteImages, response: ', response);
+      // console.log('response to deleteImages, response.data.data: ', response.data.data);
+
+      callback();
+      dispatch({
+        type: DELETE_IMAGES,
+        payload: response.data.data
       });
     });
   };
