@@ -779,9 +779,9 @@ export default (props) => {
                         templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value || templateTranslationElements[eachKey].value
                         :
                         valueFromDocumentTranslations;
-      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
+      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
       objectReturned = { ...objectReturned, [nameInInitialValues]: translationText };
-    })
+    }) // end of _.each(Object.keys(templateTranslationElements), eachKey =>
   }
 
   // Set state getSelectDataBaseValues to false if true

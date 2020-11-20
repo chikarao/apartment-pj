@@ -60,6 +60,7 @@ export default function (state = {
     let modifiedElement = {};
     const pageObject = {};
     const nameMappedObject = {};
+    const nameMappedTranslationObject = {};
     // const nameMappedTranslationObject = {};
 
     // IMPORTANT: updateElements Updates elements persisted in backend but edited
@@ -101,6 +102,14 @@ export default function (state = {
       // return null, delete or ok; if ok, the element is placed in this.props.templateElements
       // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element, deleted, templateEditHistory: ', element, deleted, templateEditHistory);
       return deleted || 'ok';
+    } // end of function updateElements(element)
+
+    const setNameMappedTranslationObject = (element, nameOrCustomName) => {
+      nameMappedTranslationObject[nameOrCustomName]
+      ?
+      nameMappedTranslationObject[nameOrCustomName][element.id] = element
+      :
+      nameMappedTranslationObject[nameOrCustomName] = { [element.id]: element };
     }
     // Iterate through each element persisted as agreement.document_fields
     _.each(elementsArray, eachElement => {
@@ -111,10 +120,15 @@ export default function (state = {
       // Get an object of templateElements ampped by name
       if (!modifiedElement.translation_element) {
         // filter out custom fields without a name
-        if (modifiedElement.name) nameMappedObject[modifiedElement.name] = modifiedElement;
+        if (modifiedElement.name && !modifiedElement.custom_name) nameMappedObject[modifiedElement.name] = modifiedElement;
         if (modifiedElement.custom_name) nameMappedObject[modifiedElement.custom_name] = modifiedElement;
+      } else {
+        // if there is name, wnat all names values to move same, and same with custom name
+        if (modifiedElement.name) setNameMappedTranslationObject(modifiedElement, modifiedElement.name);
+        if (modifiedElement.custom_name && !modifiedElement.name) setNameMappedTranslationObject(modifiedElement, modifiedElement.custom_name);
+        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject: ', modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject);
       }
-      console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, nameMappedObject, !modifiedElement.translation_element: ', modifiedElement, nameMappedObject, !modifiedElement.translation_element);
+      // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, nameMappedObject, !modifiedElement.translation_element: ', modifiedElement, nameMappedObject, !modifiedElement.translation_element);
 
       object[modifiedElement.id.toString()] = modifiedElement;
       // Assign create so redo and undo of create works in undoRedoAction
@@ -153,7 +167,7 @@ export default function (state = {
     }); // end of each
 
     console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, before return object, pageObject : ', object, pageObject);
-    return { object, pageObject, nameMappedObject };
+    return { object, pageObject, nameMappedObject, nameMappedTranslationObject };
   }
 
   function addToTemplateElementsByPage(newElement) {
@@ -378,6 +392,7 @@ export default function (state = {
         templateElementsMappedByName: mapKeysObject.nameMappedObject,
         templateTranslationElements: mapKeysTranslationObject.object || {},
         templateTranslationElementsByPage: mapKeysTranslationObject.pageObject || {},
+        templateTranslationElementsMappedByName: mapKeysTranslationObject.nameMappedTranslationObject,
         // initialValuesObject
       };
     }
@@ -408,6 +423,7 @@ export default function (state = {
         agreements: action.payload.agreements,
         templateTranslationElements: mapKeysObjectTranslation.object,
         templateTranslationElementsByPage: mapKeysObjectTranslation.pageObject,
+        templateTranslationElementsMappedByName: mapKeysObjectTranslation.nameMappedTranslationObject,
       };
     }
 
