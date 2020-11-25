@@ -18,7 +18,8 @@ import {
   FETCH_USER_AGREEMENTS,
   // ADD_EXISTING_AGREEMENTS,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
-  SET_SELECTED_FIELD_OBJECT
+  SET_SELECTED_FIELD_OBJECT,
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -47,7 +48,8 @@ export default function (state = {
   allUserFlatsMapped: null,
   templateElementsMappedByName: null,
   fieldValueDocumentObject: null,
-  selectedFieldObject: null
+  selectedFieldObject: null,
+  importFieldsFromOtherDocuments: false,
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -628,6 +630,9 @@ export default function (state = {
     case SET_SELECTED_FIELD_OBJECT:
     console.log('in documents reducer, state, action.payload: ', state, action.payload);
       return { ...state, selectedFieldObject: action.payload };
+
+    case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
+      return { ...state, importFieldsFromOtherDocuments: !state.importFieldsFromOtherDocuments };
 
     case SET_PROGRESS_STATUS:
       console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);

@@ -3831,7 +3831,8 @@ longActionPress(props) {
               selectedTemplateElementIdArray: [],
               allElementsChecked: false,
               selectedElementFontObject: null,
-              selectedChoiceIdArray: []
+              selectedChoiceIdArray: [],
+              databaseValuesExistForFields: false
             });
             break;
 
@@ -3910,7 +3911,7 @@ longActionPress(props) {
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
           // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
-          this.findIfDatabaseValuesExistForFields();
+          if (!this.state.translationModeOn && this.state.selectedTemplateElementIdArray.length > 0) this.findIfDatabaseValuesExistForFields();
 
           this.setState({
             getFieldValues: !this.state.getFieldValues,
@@ -3919,7 +3920,7 @@ longActionPress(props) {
             originalValuesExistForSelectedFields,
             // originalValuesExistForSelectedFields: false
           }, () => {
-            this.props.setSelectedFieldObject(this.getSelectedFieldObject());
+            if (!this.state.translationModeOn) this.props.setSelectedFieldObject(this.getSelectedFieldObject());
             // this.props.showSelectExistingDocumentModal(this.state.selectedTemplateElementIdArray);
             document.addEventListener('click', this.handleFontControlCloseClick);
             document.addEventListener('keydown', this.handleFontControlCloseClick);
@@ -5223,7 +5224,7 @@ longActionPress(props) {
       const pushedEscapeKey = (event.key === 'Escape') || (event.key === 'Esc');
       // If className of clicked element is NOT in the array
       if (((didNotclickedOnButtonOrModal && !event.key) || pushedEscapeKey) && !clickedOnOtherModal) {
-        console.log('in create_edit_document, handleFontControlCloseClick, event.key inside if : ', event.key);
+        // console.log('in create_edit_document, handleFontControlCloseClick, event.key inside if : ', event.key);
         this.setState({
           showFontControlBox: false,
           getFieldValues: false,
@@ -5377,6 +5378,11 @@ longActionPress(props) {
     // this.props.showSelectExistingDocumentModalForGetFieldValues();
   }
 
+  importFieldsFromOtherDocuments() {
+    this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
+    this.props.importFieldsFromOtherDocumentsAction();
+  }
+
   renderGetFieldValuesChoiceBox() {
     return (
       <GetFieldValueChoiceModal
@@ -5452,6 +5458,11 @@ longActionPress(props) {
           console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.getOtherDocumentValues();
           break;
+
+        case 'importFieldsFromOtherDocuments':
+          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+          this.importFieldsFromOtherDocuments();
+          break;
         default: return null;
       }
     });
@@ -5493,7 +5504,7 @@ longActionPress(props) {
 
     if (getFieldValueButtonElement) getFieldValueButtonDimensions = getFieldValueButtonElement.getBoundingClientRect();
 
-    const fieldValuesArray = ['originalValues', 'databaseValues', 'otherDocumentValues'];
+    const fieldValuesArray = ['originalValues', 'databaseValues', 'otherDocumentValues', 'importFieldsFromOtherDocuments'];
 
     let disableButton = false;
     // Disable the button if there are no original_values stored in templateElements
@@ -5501,13 +5512,13 @@ longActionPress(props) {
       let hoverClass = '';
       return _.map(fieldValuesArray, each => {
         disableButton = (each === 'originalValues' && !this.state.originalValuesExistForSelectedFields)
-                        || (each === 'databaseValues' && !this.state.databaseValuesExistForFields);
+                        || (each === 'databaseValues' && !this.state.databaseValuesExistForFields)
+                        || (each === 'otherDocumentValues' && !this.state.databaseValuesExistForFields);
         // Add hover to button if button active; Take away button-hover if button disabled
         disableButton ? hoverClass = '' : hoverClass = 'button-hover';
         return (
           <div
             key={each}
-            // className="create-edit-document-get-field-values-button button-hover"
             className={`create-edit-document-get-field-values-button ${hoverClass}`}
             value={each}
             onClick={disableButton ? null : this.handleGetValueChoiceClick}
@@ -6017,7 +6028,8 @@ longActionPress(props) {
   renderTemplateElementEditAction() {
     // Define all button conditions for enabling and disabling buttons
     const templateElementsLength = !this.state.translationModeOn ? Object.keys(this.props.templateElements).length : Object.keys(this.props.templateTranslationElements).length
-    const templateElementsChecked = this.state.selectedTemplateElementIdArray.length > 0
+    const templateElementsChecked = this.state.selectedTemplateElementIdArray.length > 0;
+    const otherAgreementsExist = this.props.agreements.length > 1;
     const elementsChecked = this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0;
     const translationElementsChecked = this.state.selectedTemplateElementIdArray.length > 0 && this.state.translationModeOn;
     const choicesChecked = this.state.selectedChoiceIdArray.length > 0;
@@ -6194,9 +6206,9 @@ longActionPress(props) {
           <i
             value="getFieldValues"
             name="Get field values,bottom"
-            onClick={templateElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+            onClick={templateElementsChecked || otherAgreementsExist ? this.handleTemplateElementActionClick : () => {}}
             id="create-edit-document-template-edit-action-box-elements-get-field-values"
-            style={{ color: templateElementsChecked ? 'blue' : 'gray' }}
+            style={{ color: templateElementsChecked || otherAgreementsExist ? 'blue' : 'gray' }}
             className="fas fa-database"
           ></i>
         </div>

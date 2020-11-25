@@ -51,11 +51,11 @@ class SelectExitingDocumentModal extends Component {
   }
 
   componentDidMount() {
-    const showLoading = () => this.props.showLoading();
-    console.log('in SelectExitingDocumentModal, componentDidMount, this.props: ', this.props);
+    // const showLoading = () => this.props.showLoading();
+    // console.log('in SelectExitingDocumentModal, componentDidMount, this.props: ', this.props);
     // send showLoading twice to
     // const loading = !this.props.getFieldValues ? showLoading : () => { this.setState({ loadingMessage: !this.state.loadingMessage }); };
-    this.props.fetchUserAgreements(showLoading);
+    this.props.fetchUserAgreements(() => this.props.showLoading());
     // if (this.props.getFieldValues) this.props.fetchUserAgreements(showLoading);
   }
   // Not yet used
@@ -134,6 +134,7 @@ class SelectExitingDocumentModal extends Component {
       const callback = this.props.getFieldValues ? () => { this.props.showSelectExistingDocumentModalForGetFieldValues(); } : () => {}
       this.props.showSelectExistingDocumentModal(callback);
       this.setState({ selectExistingDocumentCompleted: false });
+      if (this.props.importFieldsFromOtherDocuments) this.props.importFieldsFromOtherDocumentsAction();
     }
   }
 
@@ -1001,6 +1002,7 @@ function mapStateToProps(state) {
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       allDocumentObjects: state.documents.allDocumentObjects,
       documentConstants: state.documents.documentConstants,
+      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
     };
   }
 

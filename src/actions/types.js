@@ -203,3 +203,4 @@ export const ADD_EXISTING_AGREEMENTS = 'add_existing_agreements';
 export const SHOW_FIELD_VALUES_CHOICE_MODAL = 'show_field_values_choice_modal';
 export const SET_GET_FIELD_VALUE_DOCUMENT_OBJECT = 'set_get_field_value_document_object';
 export const SET_SELECTED_FIELD_OBJECT = 'set_selected_field_object';
+export const IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION = 'import_fields_from_other_documents_action';

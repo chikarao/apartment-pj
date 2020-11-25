@@ -476,6 +476,7 @@ const appLanguages =
     databaseValues: { en: 'Get Listing DB Values', jp: '物件のデータベースの値にする' },
     otherDocumentValues: { en: 'Get Values from Other Documents', jp: '他のドキュメントの値にする' },
     savedDocumentsForBooking: { en: 'Documents Saved for Booking', jp: 'ブッキングのために保存されたドキュメント' },
+    importFieldsFromOtherDocuments: { en: 'Import Fields from Other Documents', jp: '他のドキュメントからフィールドをインポートする' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },

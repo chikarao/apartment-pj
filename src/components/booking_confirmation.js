@@ -404,7 +404,7 @@ class BookingConfirmation extends Component {
   }
 
   renderDocumentLanguageSelect() {
-    // Do not show language code of shown document 
+    // Do not show language code of shown document
     const languageToHide = this.state.showDocument
                             ?
                             this.getAgreementArray()[0].language_code
@@ -1296,7 +1296,9 @@ renderDocument() {
             showOwnUploadedDocument={this.state.showOwnUploadedDocument}
             showTemplate={this.state.showTemplate}
             noEditOrButtons={this.props.showSelectExistingDocument && !this.state.showSelectExistingDocumentModalForGetFieldValues}
-            showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
+            showSelectExistingDocumentModalForGetFieldValues={() => {
+              this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues });
+            }}
           />
         </div>
       );
@@ -1525,6 +1527,7 @@ function mapStateToProps(state) {
       // agreements: state.fetchBookingData.agreements
       // flat: state.flat.selectedFlat
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
+      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
     };
   }
 
