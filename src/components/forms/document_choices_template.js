@@ -572,11 +572,9 @@ class DocumentChoicesTemplate extends Component {
       // if choice type is string, use input element above and button if not string
       if ((choice.input_type == 'string' || choice.input_type == 'date') && (!choice.selectChoices && !choice.select_choices)) {
         // define input element for user to input
-        const inputElement = this.createInputElement({ choice, meta, value, onBlur, name, input: this.props.input })
-        return inputElement;
+        return this.createInputElement({ choice, meta, value, onBlur, name, input: this.props.input });
       } else if (choice.input_type == 'text')  {
-        const textareaElement = this.createTextareaElement({ choice, meta, value, input: this.props.input })
-        return textareaElement;
+        return this.createTextareaElement({ choice, meta, value, input: this.props.input });
       } else if (choice.selectChoices || choice.select_choices) {
         if (this.props.editFieldsOn) {
           selectElement = this.createButtonElement({ choice, meta, value, input: this.props.input });
@@ -585,8 +583,7 @@ class DocumentChoicesTemplate extends Component {
         }
         return selectElement;
       } else {
-        const buttonElement = this.createButtonElement({ name, choice, onChange, meta, value, input: this.props.input })
-        return buttonElement;
+        return this.createButtonElement({ name, choice, onChange, meta, value, input: this.props.input })
       }
     });
   }
@@ -606,11 +603,14 @@ class DocumentChoicesTemplate extends Component {
         // if (this.props.eachElement.translation_element)
         element = this.props.formFields[this.props.page][this.props.elementId];
         choices = element.document_field_choices ? this.props.formFields[this.props.page][this.props.elementId].document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
+      } else if (this.props.translationModeOn) {
+        //element = this.props.formFields[this.props.page][this.props.elementId];
+        // choices = element.document_field_choices ? this.props.formFields[this.props.page][this.props.elementId].document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
       }
-    } else {
+    } else { // else of if (this.props.editFieldsOn) {
       element = this.props.formFields[this.props.page][this.props.elementId];
       choices = element.document_field_choices ? element.document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
-    }
+    } // end of if (this.props.editFieldsOn) {
     // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
     if (this.props.editFieldsOn) {
       if (this.props.translationModeOn && !this.props.eachElement.translation_element) {

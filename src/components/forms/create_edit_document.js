@@ -2134,7 +2134,7 @@ longActionPress(props) {
               >
                 <Field
                   key={eachElement.name}
-                  name={`${eachElement.name}+translation`}
+                  name={`${eachElement.custom_name && !eachElement.name ? eachElement.custom_name : eachElement.name}+translation`}
                   component={DocumentChoicesTemplate}
                   type={eachElement.input_type}
                   className={'document-rectangle-template'}
@@ -3654,10 +3654,10 @@ longActionPress(props) {
             // this.props.change is imported from redux-form
             _.each(newLastAction, eachAction => {
               name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
+              console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, undo in last action update lastActionArray, doWhatNow, newLastAction, eachAction, name: ', lastActionArray, doWhatNow, newLastAction, eachAction, name);
               this.props.change(`${name}${translationOrNot}`, eachAction.previous_value)
             });
           // }
-          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, undo in last action update lastActionArray, doWhatNow, newLastAction: ', lastActionArray, doWhatNow, newLastAction);
         } else {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
