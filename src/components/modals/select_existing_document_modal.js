@@ -6,6 +6,8 @@ import _ from 'lodash';
 
 import * as actions from '../../actions';
 import AppLanguages from '../constants/app_languages';
+import Documents from '../constants/documents';
+
 import getDocumentFieldsWithSameName from '../functions/get_document_fields_with_same_name';
 import globalConstants from '../constants/global_constants.js';
 
@@ -33,7 +35,8 @@ class SelectExitingDocumentModal extends Component {
       selectedAgreementId: null,
       showNameAgreementsSubModal: false,
       blankInputElementArray: [],
-      newAgreementNameByIdObject: {}
+      newAgreementNameByIdObject: {},
+      agreementIdUserWorkingOn: null
     };
     this.handleClose = this.handleClose.bind(this);
     // this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -57,6 +60,9 @@ class SelectExitingDocumentModal extends Component {
     // const loading = !this.props.getFieldValues ? showLoading : () => { this.setState({ loadingMessage: !this.state.loadingMessage }); };
     this.props.fetchUserAgreements(() => this.props.showLoading());
     // if (this.props.getFieldValues) this.props.fetchUserAgreements(showLoading);
+    this.setState({ agreementIdUserWorkingOn: this.props.agreementId }, () => {
+      console.log('in select_existing_document_modal, componentDidMount, this.state.agreementIdUserWorkingOn: ', this.state.agreementIdUserWorkingOn);
+    });
   }
   // Not yet used
   // componentDidUpdate(prevProps, prevState) {
@@ -415,14 +421,12 @@ class SelectExitingDocumentModal extends Component {
     }, () => {
       // props coming from this modal call in editFlat or bookingConfirmation
       if (clickedAgreementId) {
+        // setAgreementId sets showDocument to true as second argument
         this.props.setAgreementId(clickedAgreementId, true);
         this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
           // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-          // this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
-          // this.props.selectedAgreementId(elementName);
         });
       }
-      // console.log('in select_exiting_document, handleAgreementShowClick, clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId: ', clickedElement, currentElement, this.state.shrinkModal, this.state.agreementId);
       // empty out agreement and other element related objects to be sent to CreateEditDocument.
       if (userClickedExpand) {
         this.props.setAgreementId(null, false);
@@ -463,7 +467,7 @@ class SelectExitingDocumentModal extends Component {
             <div
               className="select-existing-document-each-document-top-box-right"
             >
-              {this.props.getFieldValues
+              {this.props.getFieldValues || this.props.importFieldsFromOtherDocuments
               ?
               null
               :
@@ -687,6 +691,9 @@ class SelectExitingDocumentModal extends Component {
       showFromNewest: { stateStyleKey: '' }
     };
 
+    const userWorkingOnAgreement = this.props.allUserAgreementsArrayMapped ? this.props.allUserAgreementsArrayMapped[this.state.agreementIdUserWorkingOn] : null;
+    console.log('in SelectExistingDocumentModal, renderButtons, this.props.allUserAgreementsArrayMapped, userWorkingOnAgreement, Documents: ', this.props.allUserAgreementsArrayMapped, userWorkingOnAgreement, Documents);
+
     const buttonObjectBottom = {
       // showByFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
       showRentalContracts: { stateStyleKey: '' },
@@ -725,7 +732,6 @@ class SelectExitingDocumentModal extends Component {
 
   handleAddExistingAgreementsClick() {
     // use word agreements to accord with agreements model in api
-    console.log('in SelectExistingDocumentModal, handleAddExistingAgreementsClick, this.state.selectedDocumentsArray, this.props.editFlat ', this.state.selectedDocumentsArray, this.props.editFlat);
     const newAgreementNameByIdObject = {}
     _.each(this.state.selectedDocumentsArray, eachAgreementId => {
       newAgreementNameByIdObject[eachAgreementId] = `copy of ${this.props.allUserAgreementsMapped[eachAgreementId].document_name}`;
@@ -766,14 +772,16 @@ class SelectExitingDocumentModal extends Component {
     // const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
-      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
+      // console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // <section className="modal-main">
       const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues'
       return (
         <div
           className={showHideClassName}
-          style={this.state.shrinkModal ? { background: 'transparent' } : null}
+          style={this.state.shrinkModal ? { background: 'transparent',
+                                            // pointerEvents: 'none'
+                                           } : null}
         >
           <section className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}>
 
@@ -788,7 +796,7 @@ class SelectExitingDocumentModal extends Component {
               :
               ''}
             {this.renderButtons()}
-            <div className="edit-profile-scroll-div">
+            <div className="select-existing-document-scroll-div">
               {this.renderAlert()}
               {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
               {this.renderSelectedDocumentsThumbnail()}
@@ -935,7 +943,7 @@ class SelectExitingDocumentModal extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
 

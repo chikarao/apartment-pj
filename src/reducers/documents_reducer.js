@@ -628,14 +628,14 @@ export default function (state = {
       return { ...state, fieldValueDocumentObject: action.payload };
 
     case SET_SELECTED_FIELD_OBJECT:
-    console.log('in documents reducer, state, action.payload: ', state, action.payload);
+    // console.log('in documents reducer, state, action.payload: ', state, action.payload);
       return { ...state, selectedFieldObject: action.payload };
 
     case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
       return { ...state, importFieldsFromOtherDocuments: !state.importFieldsFromOtherDocuments };
 
     case SET_PROGRESS_STATUS:
-      console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+      // console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
       return { ...state, progressStatus: action.payload };
 
     case FETCH_DOCUMENT_TRANSLATION:

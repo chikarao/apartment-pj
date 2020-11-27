@@ -5123,7 +5123,7 @@ form {
 
 /* *******************EDIT PROFILE********************* */
 
-.edit-profile-scroll-div {
+.edit-profile-scroll-div, .select-existing-document-scroll-div {
   height: 400px;
   overflow: hidden;
   overflow-y: scroll;
@@ -5134,6 +5134,7 @@ form {
   /* overflow: hidden;
   overflow-y: scroll; */
 }
+
 .edit-profile-scroll-div form .introduction textarea{
   height: 200px;
   text-align: left | top;
@@ -5404,14 +5405,78 @@ form {
   border-radius: 4px;
 }
 
+.create-edit-document-tabs-box {
+  width: 792px;
+  height: 35px;
+  margin: 20px auto -1px auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.create-edit-document-tabs-each-box {
+  width: 200px;
+  height: auto;
+  border-radius: 10px 10px 0 0;
+  background-color: white;
+  padding: 7px 0 7px 0;
+  border-color: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.create-edit-document-tabs-each-box i {
+  padding: 3.2px;
+  color: gray;
+}
+
+.create-edit-document-tab-active {
+  background-color: white;
+  border-color: none;
+}
+
+.create-edit-document-tab-inactive {
+  background-color: rgb(252, 252, 252);
+  border-color: 1px solid rgb(252, 252, 252);
+}
+
+.create-edit-document-tab-inactive:hover {
+  background-color: rgb(240, 240, 240);
+}
+/* .create-edit-document-tabs-each-box-inactive:hover .create-edit-document-tabs-each-box-name {
+  background-color: rgb(240, 240, 240);
+} */
+
+/* .create-edit-document-tabs-each-box-name:hover .create-edit-document-tabs-each-box-inactive {
+  background-color: rgb(240, 240, 240);
+} */
+
+.create-edit-document-tabs-each-box-name {
+  width: 90%;
+  height: auto;
+  /* border-left: 1.0px solid #ccc; */
+  /* pointer-events: none; */
+}
+
+.create-edit-document-tabs-each-box-name-inactive-on-right {
+  border-left: 1.5px solid #ccc;
+  /* pointer-events: none; */
+}
+
 .image-pdf-jpg-background {
+  /* margin: 0 auto 20px auto; */
+  margin: 30px auto 20px auto;
   width: 792px;
   height: 1122px;
-  margin: 30px auto 20px auto;
   /* width: 595px;
   height: 842px; */
   position: relative;
 }
+
+/* .image-pdf-jpg-background ~ .image-pdf-jpg-background {
+} */
 
 .test-image-pdf-jpg-background form {
   width: auto;

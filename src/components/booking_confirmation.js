@@ -377,7 +377,7 @@ class BookingConfirmation extends Component {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // if agreement has a template file name render
       if (eachAgreement.document_type !== 'template') {
-        console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement:', eachAgreement);
+        console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement, this.state.agreementId:', eachAgreement, this.state.agreementId);
         return <div
           key={i}
           value={eachAgreement.document_code}
@@ -385,6 +385,7 @@ class BookingConfirmation extends Component {
           name={eachAgreement.id}
           onClick={eachAgreement.document_code == globalConstants.ownUploadedDocumentKey ? this.handleOwnDocumentShowClick : this.handleSavedDocumentShowClick}
           className="booking-confirmation-document-create-link"
+          style={this.state.agreementId === eachAgreement.id ? { color: 'gray' } : null}
         >
           {eachAgreement.document_name} &nbsp;
           {eachAgreement.document_publicid ? <i className="far fa-file-pdf" style={{ color: 'black' }}></i> : ''}&nbsp;
@@ -512,7 +513,7 @@ class BookingConfirmation extends Component {
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       if (eachAgreement.document_type === 'template') {
-        console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements, eachAgreement:', this.props.booking.agreements, eachAgreement);
+        // console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements, eachAgreement:', this.props.booking.agreements, eachAgreement);
         return <div
           key={i}
           value={`${eachAgreement.document_code},${'template'}`}
@@ -1238,8 +1239,8 @@ renderInsertBox(isTemplate) {
 getAgreementArray() {
   return (
     this.props.showSelectExistingDocument
-    && this.props.allUserAgreementsArrayMappedWithDocumentFields
-    && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
+      && this.props.allUserAgreementsArrayMappedWithDocumentFields
+      && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
     ?
     [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
     :
@@ -1251,7 +1252,7 @@ renderDocument() {
   if (this.props.booking) {
     // if (this.props.booking.agreements || this.props.documentInserts) {
       // get agreement chosen by user. Returns array so get first index position below
-      console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument:', this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument);
+      // console.log('in booking confirmation, renderDocument, this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument:', this.state.agreementId, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.props.showSelectExistingDocument);
       // const agreementArray = this.props.showSelectExistingDocument
       //                         && this.props.allUserAgreementsArrayMappedWithDocumentFields
       //                         && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
@@ -1458,6 +1459,7 @@ renderSelectExistingDocumentForm() {
       getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
       showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
       booking={this.props.booking}
+      agreementId={this.state.agreementId}
       // selectedFieldObject={{ construction: 1 }}
     />
   );

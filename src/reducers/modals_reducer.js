@@ -81,6 +81,7 @@ export default function (
     showInsertFieldEditModal: false,
     showDocumentInsertCreateModal: false,
     showDocumentInsertEditModal: false,
+    showSelectExistingDocumentModal: false,
   }, action) {
   // console.log('in image count reducer, state.count:', state);
 
@@ -195,6 +196,8 @@ export default function (
     return { ...state, showDocumentInsertEditModal: !state.showDocumentInsertEditModal };
 
     case SHOW_SELECT_EXSITING_DOCUMENT_MODAL:
+    console.log('in modals reducer, SHOW_SELECT_EXSITING_DOCUMENT_MODAL:');
+
     return { ...state, showSelectExistingDocumentModal: !state.showSelectExistingDocumentModal };
 
     case SHOW_INSERT_FIELD_CREATE_MODAL:

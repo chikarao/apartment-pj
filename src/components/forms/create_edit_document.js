@@ -242,7 +242,7 @@ class CreateEditDocument extends Component {
         // get template elements in DB into app state as templateElements and templateTranslationElements
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
-    }
+    } // if (this.props.showTemplate) {
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -2095,7 +2095,6 @@ longActionPress(props) {
   renderTemplateTranslationElements(page) {
     const { valuesInForm, documentLanguageCode, appLanguageCode, agreement, documentTranslationsAllInOne } = this.props;
     const documentEmpty = _.isEmpty(this.props.templateTranslationElementsByPage);
-    // const documentEmpty = this.props.agreement.document_fields.length === 0 && _.isEmpty(this.props.templateElementsByPage);
     let translationText = '';
 
     if (!documentEmpty) {
@@ -2120,7 +2119,6 @@ longActionPress(props) {
                           `${AppLanguages[documentTranslationsAllInOne[eachElement.name].category][appLanguageCode]}/${documentTranslationsAllInOne[eachElement.name].translations[appLanguageCode]}`
                           ||
                           'No name';
-            console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, translationText, documentLanguageCode in translationModeOn: ', eachElement, translationText, documentLanguageCode);
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
@@ -2204,7 +2202,6 @@ longActionPress(props) {
           console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, translationText, documentLanguageCode in NOT translationModeOn: ', eachElement, translationText, documentLanguageCode);
           return (
             <div
-            // component: null
               id={eachElement.id}
               key={eachElement.id}
               style={{
@@ -2260,7 +2257,6 @@ longActionPress(props) {
       let leftInPx = null;
       // let i = 0;
       let top = 0;
-      // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, eachElement, box, backgroundDim, marginBetween, isNew: ', eachElement, box, backgroundDim, marginBetween, isNew);
         _.each(document_field_choices, (eachChoice, i) => {
           // Convert NaN to zero
           top = (currentTop / box.height) || 0;
@@ -2293,8 +2289,6 @@ longActionPress(props) {
         // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, object: ', object);
         return object;
     };
-    // if (this.props.documentFields[page]) {
-    // let count = 1;
     if (!documentEmpty) {
       // Map through each element
       let label = null;
@@ -2302,7 +2296,7 @@ longActionPress(props) {
       let translationText = '';
       let splitKey = null;
       let category = null;
-      // console.log('in create_edit_document, renderTemplateElements, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
+
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
         inputElement = !eachElement.document_field_choices;
@@ -2331,27 +2325,22 @@ longActionPress(props) {
                   });
 
         const editTemplate = true;
-        // const width = parseInt(eachElement.width, 10)
         const nullRequiredField = false;
-        // const otherChoiceValues = [];
 
         const otherChoiceValues = [];
         // For populating array with values of other buttons;
         // input and select val === 'inputFieldValue'
         if (fieldComponent === DocumentChoicesTemplate) {
-          // console.log('in create_edit_document, renderTemplateElements, in fieldComponent = DocumentChoices, modifiedElement: ', modifiedElement);
           _.each(modifiedElement.document_field_choices, eachChoice => {
-            // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
             if ((eachChoice.val !== 'inputFieldValue') && (eachElement.input_type !== 'boolean')) {
               otherChoiceValues.push(eachChoice.val.toString().toLowerCase());
             }
-          })
+          });
         }
         // count++;
         // Wait until document-background class is rendered to enable some logic
         const background = document.getElementById('document-background');
         const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
-        // console.log('in create_edit_document, renderTemplateElements, eachElement, editTemplate, background: ', eachElement, editTemplate, background);
         // Wait for the background to be rendered to get its dimensions
         if (editTemplate && background) {
           const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100;
@@ -2383,7 +2372,6 @@ longActionPress(props) {
                   if (i === Object.keys(document_field_choices).length - 1) totalHeight += (i * marginBetween);
                 }
               }) // end of each document_field_choices
-              // console.log('in create_edit_document, renderTemplateElements, newElement, eachElement, page, totalWidth, totalHeight: ', newElement, eachElement, page, totalWidth, totalHeight);
               modifiedElement.width = `${totalWidth}%`;
               modifiedElement.height = `${totalHeight}%`;
               localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: totalWidth, height: totalHeight }, background.getBoundingClientRect(), marginBetween, true);
@@ -2395,8 +2383,6 @@ longActionPress(props) {
               const adjustedHeightInFracs = (adjustedHeightInPx / backgroundDimensions.height);
 
               localTemplateElementsByPage = getLocalTemplateElementsByPage(eachElement, { width: (parseFloat(eachElement.width) / 100), height: adjustedHeightInFracs, top: (parseFloat(eachElement.top) / 100), left: (parseFloat(eachElement.left) / 100) }, background.getBoundingClientRect(), null, false);
-              // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions: ', eachElement, document_field_choices, localTemplateElementsByPage, adjustedHeightInPx, backgroundDimensions);
-              // console.log('in create_edit_document, renderTemplateElements, eachElement in if else document_field_choices, eachElement: ', eachElement, adjustedHeightInPx);
             } // end of if newElement
           } // end of if eachElement.document_field_choices
 
@@ -2405,8 +2391,6 @@ longActionPress(props) {
           // noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
           if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn && !this.props.noEditOrButtons) {
             // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
-            // console.log('in create_edit_document, renderTemplateElements, eachElement, eachElement.height, tabPercentOfContainerH: ', eachElement, eachElement.height, tabPercentOfContainerH);
-
             return (
               <div
                 key={modifiedElement.id}
@@ -2578,7 +2562,6 @@ longActionPress(props) {
             );
           }// end of if inputElement
 
-          // if (noTabs) { // noTabs a placeholder for now
           console.log('in create_edit_document, before last return inputElement, this.props.editFieldsOn, this.state.translationModeOn: ', inputElement, this.props.editFieldsOn, this.state.translationModeOn);
             return (
               <Field
@@ -2620,9 +2603,7 @@ longActionPress(props) {
                 // style={newElement.component == 'input' ? { position: 'absolute', top: newElement.top, left: newElement.left, width: newElement.width, height: newElement.height, borderColor: newElement.borderColor } : {}}
               />
             );
-          // } // end of if no tabs
         } // end of if editTemplate && background
-        // } // eachElement page === page
       });
     }
     // end of if documentEmpty
@@ -5379,8 +5360,9 @@ longActionPress(props) {
   }
 
   importFieldsFromOtherDocuments() {
-    this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
-    this.props.importFieldsFromOtherDocumentsAction();
+    // this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
+    // this.props.importFieldsFromOtherDocumentsAction();
+    this.props.showSelectExistingDocumentModal(() => this.props.importFieldsFromOtherDocumentsAction());
   }
 
   renderGetFieldValuesChoiceBox() {
@@ -6308,6 +6290,11 @@ longActionPress(props) {
     );
   }
 
+  renderTemplateElementsOverLayClickBoxes(page) {
+    console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, page: ', page);
+
+  }
+
   renderDocument() {
     // render each document page as a background image;
     // render each document field and translation field on top of the image
@@ -6323,7 +6310,8 @@ longActionPress(props) {
     }
 
     // if (this.props.agreement) {
-    console.log('in create_edit_document, renderDocument, before if showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf: ', showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf);
+    // console.log('in create_edit_document, renderDocument, before if showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf: ', showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf);
+    // console.log('in create_edit_document, renderDocument, before if showDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.importFieldsFromOtherDocuments, this.props.showSelectExistingDocument: ', showDocument, this.state.showDocumentPdf, this.props.showTemplate, this.props.importFieldsFromOtherDocuments, this.props.showSelectExistingDocument);
     if (showDocument) {
       if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
         console.log('in create_edit_document, renderDocument, inside if this.showDocument, this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate: ', this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate);
@@ -6385,6 +6373,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
             </div>
           );
         });
@@ -6647,10 +6636,35 @@ longActionPress(props) {
         );
     } // END of if this.props.agreement
   }
-
+  // KEEP!!!! NOT USED FOR NOW
+  // renderDocumentTabs() {
+  //   return (
+  //     <div className="create-edit-document-tabs-box">
+  //       <div className="create-edit-document-tabs-each-box create-edit-document-tab-active">
+  //         <div className="create-edit-document-tabs-each-box-name">
+  //         tab 1
+  //         </div>
+  //         <i className="fas fa-times"></i>
+  //       </div>
+  //       <div className="create-edit-document-tabs-each-box create-edit-document-tab-inactive">
+  //        <div className="create-edit-document-tabs-each-box-name create-edit-document-tabs-each-box-name-inactive-on-right">
+  //         tab 2
+  //        </div>
+  //        <i className="fas fa-times"></i>
+  //       </div>
+  //       <div className="create-edit-document-tabs-each-box create-edit-document-tab-inactive">
+  //        <div className="create-edit-document-tabs-each-box-name create-edit-document-tabs-each-box-name-inactive-on-right">
+  //         tab 3
+  //        </div>
+  //        <i className="fas fa-times"></i>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   // NOTE: noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
   render() {
     console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);
+    // {this.renderDocumentTabs()}
     return (
       <div className="test-image-pdf-jpg">
         {this.renderDocument()}
@@ -6659,23 +6673,8 @@ longActionPress(props) {
         {this.props.showTemplate && !this.props.noEditOrButtons ? this.renderTemplateDocumentButtons() : ''}
       </div>
     );
-  }
-  // render() {
-  //   const { handleSubmit, appLanguageCode } = this.props;
-  //   // console.log('CreateEditDocument, render, this.props', this.props);
-  //   return (
-  //     <div className="test-image-pdf-jpg">
-  //       <div value='close' className="btn document-floating-button" style={{ left: '45%', backgroundColor: 'gray' }} onClick={this.handleFormCloseDeleteClick.bind(this)}>Close</div>
-  //       <div value='save' className="btn document-floating-button" style={{ left: '60%', backgroundColor: 'cornflowerblue' }} onClick={this.handleFormCloseDeleteClick.bind(this)}>Save</div>
-  //       <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-  //           {this.renderDocument()}
-  //           {this.renderAlert()}
-  //         <button action="submit" id="submit-all" className="btn document-floating-button" style={{ left: '30%', backgroundColor: 'blue' }}>{AppLanguages.submit[appLanguageCode]}</button>
-  //       </form>
-  //     </div>
-  //   );
-  // }
-}
+  } // end of render
+}// end of class
 
 CreateEditDocument = reduxForm({
   form: 'CreateEditDocument',
@@ -6776,6 +6775,8 @@ function mapStateToProps(state) {
       documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
+      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -6812,6 +6813,8 @@ function mapStateToProps(state) {
       formIsDirty,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
+      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
     };
   }
 

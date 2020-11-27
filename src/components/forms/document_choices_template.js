@@ -25,6 +25,7 @@ class DocumentChoicesTemplate extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleFieldClick = this.handleFieldClick.bind(this);
     // this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
   }
 
@@ -161,7 +162,7 @@ class DocumentChoicesTemplate extends Component {
     let left = !this.props.editFieldsOn ? choice.left : '';
     let position = !this.props.editFieldsOn ? 'absolute' : '';
     // If being rendered without a wrapper ie just an input, assign the choice values
-    console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
+    // console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
     if (translationModeOn && !eachElement.translation_element) {
       height = choice.height;
       width = choice.width;
@@ -588,6 +589,12 @@ class DocumentChoicesTemplate extends Component {
     });
   }
 
+  handleFieldClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value')
+    console.log('DocumentChoicesTemplate, renderEachChoice elementVal: ', elementVal)
+  }
+
   render() {
     // IMPORTANT: In template elements, got rid of params in choices: { 0: { params: {}}};
     // it is just choices: { attributes }
@@ -595,7 +602,6 @@ class DocumentChoicesTemplate extends Component {
     const { input: { name } } = this.props;
     let choices = null;
     let element = null;
-    console.log('in document_choices_template, render, , this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     // if (this.props.editTemplate) {
     if (this.props.editFieldsOn) {
       choices = this.props.formFields[this.props.page][this.props.elementId].choices;
@@ -612,6 +618,7 @@ class DocumentChoicesTemplate extends Component {
       choices = element.document_field_choices ? element.document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
     } // end of if (this.props.editFieldsOn) {
     // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
+    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before first return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     if (this.props.editFieldsOn) {
       if (this.props.translationModeOn && !this.props.eachElement.translation_element) {
         return (
@@ -621,7 +628,7 @@ class DocumentChoicesTemplate extends Component {
         );
       }
 
-      console.log('in document_choices_template, render, name, this.props.eachElement, this.props.formFields[this.props.page], this.props, this.props.translationModeOn, this.props.editFieldsOn, choices, this.props.label after !translation if : ', name, this.props.eachElement, this.props.formFields, this.props, this.props.translationModeOn, this.props.editFieldsOn, choices, this.props.label);
+      console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before second return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
       return (
         <div
           key={name}
@@ -647,6 +654,20 @@ class DocumentChoicesTemplate extends Component {
       );
     } // if editFieldsOn
 
+    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before third return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+    if (this.props.showSelectExistingDocument && this.props.importFieldsFromOtherDocuments) {
+      return (
+        <div
+          key={name}
+          value={this.props.elementId}
+          onClick={this.handleFieldClick}
+        >
+          {this.renderEachChoice(choices)}
+        </div>
+      );
+    }
+
+    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before fourth return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     return (
       <div key={name}>
         {this.renderEachChoice(choices)}
@@ -670,6 +691,8 @@ function mapStateToProps(state) {
     templateTranslationElementsMappedByName: state.documents.templateTranslationElementsMappedByName,
     initialValuesObject: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.initial : {},
     // showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
+    // importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+    // showSelectExistingDocument: state.documents.showSelectExistingDocument,
   };
 }
 
