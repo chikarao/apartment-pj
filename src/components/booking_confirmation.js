@@ -1272,6 +1272,7 @@ renderDocument() {
         // If template, allow document inserts
         if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
+      console.log('in booking confirmation, renderDocument, this.state.agreementId:', this.state.agreementId);
 
       return (
         <div className="booking-confirmation-render-document-box">
@@ -1460,6 +1461,7 @@ renderSelectExistingDocumentForm() {
       showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
       booking={this.props.booking}
       agreementId={this.state.agreementId}
+      setShowSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument })}
       // selectedFieldObject={{ construction: 1 }}
     />
   );

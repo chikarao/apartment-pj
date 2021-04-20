@@ -209,7 +209,8 @@ import {
   SHOW_FIELD_VALUES_CHOICE_MODAL,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT,
-  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -579,6 +580,16 @@ export function importFieldsFromOtherDocumentsAction() {
   //flip state boolean
   return {
     type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
+  };
+}
+
+export function importFieldsFromOtherDocumentsObjectAction(array) {
+  console.log('in actions index, importFieldsFromOtherDocumentsAction:');
+  // callback();
+  //flip state boolean
+  return {
+    type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
+    payload: array
   };
 }
 

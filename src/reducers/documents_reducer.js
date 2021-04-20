@@ -19,7 +19,8 @@ import {
   // ADD_EXISTING_AGREEMENTS,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT,
-  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -50,6 +51,7 @@ export default function (state = {
   fieldValueDocumentObject: null,
   selectedFieldObject: null,
   importFieldsFromOtherDocuments: false,
+  importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [] },
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -633,6 +635,9 @@ export default function (state = {
 
     case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
       return { ...state, importFieldsFromOtherDocuments: !state.importFieldsFromOtherDocuments };
+
+    case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION:
+      return { ...state, importFieldsFromOtherDocumentsObject: action.payload };
 
     case SET_PROGRESS_STATUS:
       // console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);

@@ -427,6 +427,9 @@ class SelectExitingDocumentModal extends Component {
           // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
         });
       }
+
+      // console.log('in SelectExistingDocumentModal, renderEachDocument, this.state.shrinkModal, clickedAgreementId, userClickedExpand: ', this.state.shrinkModal, clickedAgreementId, userClickedExpand);
+
       // empty out agreement and other element related objects to be sent to CreateEditDocument.
       if (userClickedExpand) {
         this.props.setAgreementId(null, false);
@@ -526,25 +529,40 @@ class SelectExitingDocumentModal extends Component {
         );
       }
     };
+    // if (this.props.importFieldsFromOtherDocuments
+    //       && agreementUserWorkingOn
+    //       && Documents[agreementUserWorkingOn.template_file_name].appLanguagesKey === eachButtonKey)
     // Render top box for agreement and booking;
     // Render bottom box only if there are agreements attached to bookings when showByBooking true
-    // console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, this.state.showByBooking: ', agreementsTreatedArray, this.state.showByBooking);
-    return _.map(agreementsTreatedArray, each => {
-      return (
-        <li
-          className="select-existing-document-each-document-box"
-          key={each.id}
-          value={each.id}
-        >
-          {this.state.showByBooking ? renderEachBooking(each) : renderEachAgreement(each)}
+    let renderAgreement = true;
+    const agreementUserWorkingOn = this.props.allUserAgreementsArrayMapped && this.props.importFieldsFromOtherDocuments ? this.props.allUserAgreementsArrayMapped[this.state.agreementIdUserWorkingOn] : null;
+    console.log('in SelectExistingDocumentModal, renderEachDocument, this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents: ', this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents);
 
-          <div
-            className="select-existing-document-each-document-bottom-box"
+    return _.map(agreementsTreatedArray, each => {
+      renderAgreement = true;
+      console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, each: ', agreementsTreatedArray, each);
+      if (this.props.importFieldsFromOtherDocuments
+            && agreementUserWorkingOn
+            && each.template_file_name !== agreementUserWorkingOn.template_file_name
+          ) renderAgreement = false;
+
+      if (renderAgreement) {
+        return (
+          <li
+            className="select-existing-document-each-document-box"
+            key={each.id}
+            value={each.id}
           >
-            {this.state.showByBooking && this.state.expandBookingId ? renderAgreements(each.agreements) : null}
-          </div>
-        </li>
-      );
+            {this.state.showByBooking ? renderEachBooking(each) : renderEachAgreement(each)}
+
+            <div
+              className="select-existing-document-each-document-bottom-box"
+            >
+              {this.state.showByBooking && this.state.expandBookingId ? renderAgreements(each.agreements) : null}
+            </div>
+          </li>
+        );
+      }
     });
   }
 
@@ -691,8 +709,6 @@ class SelectExitingDocumentModal extends Component {
       showFromNewest: { stateStyleKey: '' }
     };
 
-    const userWorkingOnAgreement = this.props.allUserAgreementsArrayMapped ? this.props.allUserAgreementsArrayMapped[this.state.agreementIdUserWorkingOn] : null;
-    console.log('in SelectExistingDocumentModal, renderButtons, this.props.allUserAgreementsArrayMapped, userWorkingOnAgreement, Documents: ', this.props.allUserAgreementsArrayMapped, userWorkingOnAgreement, Documents);
 
     const buttonObjectBottom = {
       // showByFlat button gets grayed when 1) there is a flat selected, and 2) when the box is open; Hover is in CSS style
@@ -722,9 +738,13 @@ class SelectExitingDocumentModal extends Component {
         <div className="select-existing-document-button-container-sub">
          {renderEachButton(buttonObjectTop)}
         </div>
-        <div className="select-existing-document-button-container-sub select-existing-document-button-container-sub-bottom">
-         {renderEachButton(buttonObjectBottom)}
-        </div>
+         {!this.props.importFieldsFromOtherDocuments
+           ?
+           <div className="select-existing-document-button-container-sub select-existing-document-button-container-sub-bottom">
+            {renderEachButton(buttonObjectBottom)}
+           </div>
+           :
+           null}
         {this.state.showFlatSelectionBox ? this.renderFlatSelectionBox() : ''}
       </div>
     );
@@ -780,10 +800,13 @@ class SelectExitingDocumentModal extends Component {
         <div
           className={showHideClassName}
           style={this.state.shrinkModal ? { background: 'transparent',
-                                            // pointerEvents: 'none'
+                                            pointerEvents: 'none'
                                            } : null}
         >
-          <section className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}>
+          <section
+            className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}
+            style={{ pointerEvents: 'auto' }}
+          >
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
             <h3 className="auth-modal-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
@@ -952,7 +975,10 @@ class SelectExitingDocumentModal extends Component {
     // showHideClassName = 'modal display-block';
     //handleClose is a prop passed from header when SigninModal is called
     return (
-      <div className={showHideClassName}>
+      <div
+        className={showHideClassName}
+        // style={this.props.importFieldsFromOtherDocuments ? { pointerEvents: 'none' } : {}}
+      >
         <div
           className="modal-main"
         >

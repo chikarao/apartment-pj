@@ -110,7 +110,8 @@ class CreateEditDocument extends Component {
       findIfDatabaseValuesExistForFields: false,
       databaseValuesExistForFields: false,
       showCustomInputCreateMode: false,
-      customFieldNameInputValue: ''
+      customFieldNameInputValue: '',
+      // importFieldsFromOtherDocumentsObject: [],
     };
 
     // this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -144,6 +145,7 @@ class CreateEditDocument extends Component {
     this.handleCloseGetFieldValuesChoiceBox = this.handleCloseGetFieldValuesChoiceBox.bind(this);
     this.handleCustomFieldNameInput = this.handleCustomFieldNameInput.bind(this);
     this.handleCustomFieldPathDelete = this.handleCustomFieldPathDelete.bind(this);
+    this.handleOverlayClickBox = this.handleOverlayClickBox.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -6290,9 +6292,60 @@ longActionPress(props) {
     );
   }
 
-  renderTemplateElementsOverLayClickBoxes(page) {
-    console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, page: ', page);
+  handleOverlayClickBox(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    const elementName = parseInt(clickedElement.getAttribute('name'), 10);
+    const newArray = [...this.props.importFieldsFromOtherDocumentsObject.fieldsArray];
+    const elementIndex = newArray.indexOf(elementVal);
 
+    if (elementIndex === -1) {
+      newArray.push(elementVal);
+    } else {
+      newArray.splice(elementIndex, 1);
+    }
+
+    this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: elementName, fieldsArray: newArray });
+    //
+    // this.setState({ importFieldsFromOtherDocumentsObject }, () => {
+    console.log('in create_edit_document, handleOverlayClickBox, clicked, this.props., elementName, elementVal', this.props.importFieldsFromOtherDocumentsObject, elementName, elementVal);
+    // });
+  }
+
+  renderTemplateElementsOverLayClickBoxes(page) {
+      return _.map(this.props.templateElementsByPage[page], eachElement => {
+        console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, eachElement: ', eachElement);
+        return (
+          <div
+            key={eachElement.id}
+            value={eachElement.id}
+            name={eachElement.agreement_id}
+            id={`template-element-overlay-click-box-${eachElement.id}`}
+            className="create-edit-document-template-element-container"
+            onClick={this.handleOverlayClickBox}
+            style={{
+              top: eachElement.top,
+              left: eachElement.left,
+              width: eachElement.width,
+              height: eachElement.height,
+              borderRadius: '5px',
+              margin: eachElement.input_type === 'string' || eachElement.input_type === 'text' ? '0 0 0 5px' : '',
+              border: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachElement.id) !== -1
+                      &&
+                      this.props.importFieldsFromOtherDocumentsObject.agreementId
+                      &&
+                      this.props.importFieldsFromOtherDocumentsObject.agreementId === eachElement.agreement_id
+                      ?
+                      '3px solid blue'
+                      :
+                      '1.5px solid blue',
+              // transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+              // transformOrigin: 'top left'
+            }}
+          >
+          </div>
+        );
+      });
   }
 
   renderDocument() {
@@ -6777,6 +6830,7 @@ function mapStateToProps(state) {
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
+      importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -6815,6 +6869,7 @@ function mapStateToProps(state) {
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
+      importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject
     };
   }
 

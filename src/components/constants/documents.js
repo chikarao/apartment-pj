@@ -61,6 +61,7 @@ const Documents =
       // Below for templates
       templateCompatible: true,
       documentProp: 'templateMappingObjects', // state.document.templateMappingObjects
+      appLanguagesKey: 'showRentalContracts',
     },
 
     important_points_explanation_bilingual: {
@@ -80,6 +81,7 @@ const Documents =
       // Below for templates
       templateCompatible: true,
       documentProp: 'templateMappingObjects', // state.document.templateMappingObjects
+      appLanguagesKey: 'showImportantPoints',
     },
 
     // Key kept in global constants
