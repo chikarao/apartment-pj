@@ -51,7 +51,7 @@ export default function (state = {
   fieldValueDocumentObject: null,
   selectedFieldObject: null,
   importFieldsFromOtherDocuments: false,
-  importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [] },
+  importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [], baseAgreementId: null },
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)

@@ -406,6 +406,8 @@ class BookingConfirmation extends Component {
 
   renderDocumentLanguageSelect() {
     // Do not show language code of shown document
+    console.log('in booking confirmation, renderDocumentLanguageSelect, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+
     const languageToHide = this.state.showDocument
                             ?
                             this.getAgreementArray()[0].language_code
@@ -484,6 +486,7 @@ class BookingConfirmation extends Component {
           this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
           this.props.selectedAgreementId(elementName);
         });
+        // show document
       });
     }
   }
@@ -1237,6 +1240,8 @@ renderInsertBox(isTemplate) {
 }
 
 getAgreementArray() {
+  // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+
   return (
     this.props.showSelectExistingDocument
       && this.props.allUserAgreementsArrayMappedWithDocumentFields
@@ -1272,7 +1277,7 @@ renderDocument() {
         // If template, allow document inserts
         if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
-      console.log('in booking confirmation, renderDocument, this.state.agreementId:', this.state.agreementId);
+      // console.log('in booking confirmation, renderDocument, this.state.agreementId:', this.state.agreementId);
 
       return (
         <div className="booking-confirmation-render-document-box">
@@ -1449,14 +1454,17 @@ renderConversationCreateForm() {
 }
 
 renderSelectExistingDocumentForm() {
-  console.log('in editFlat, renderSelectExistingDocumentForm, : ', );
+  // console.log('in booking confirmation, renderSelectExistingDocumentForm, : ', );
   return (
     <SelectExistingDocumentModal
       show={this.props.showSelectExistingDocument}
       // comment out editFlat in BookingConfirmation
       // editFlat
       // Set showDocument to true and set agreementId to be used by CreateEditDocument
-      setAgreementId={(id, bool) => this.setState({ agreementId: id, showDocument: bool, showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: true })}
+      setAgreementId={(id, bool1, bool2, bool3, bool4, callback) => this.setState({ agreementId: id, showDocument: bool1, showSavedDocument: bool2, showOwnUploadedDocument: bool3, showTemplate: bool4 }, () => {
+        console.log('in booking confirmatio, renderSelectExistingDocumentForm, this.state.agreementId : ', this.state.agreementId);
+        callback();
+      })}
       getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
       showSelectExistingDocumentModalForGetFieldValues={() => this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues })}
       booking={this.props.booking}

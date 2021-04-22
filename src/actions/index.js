@@ -574,22 +574,24 @@ export function setSelectedFieldObject(object) {
   };
 }
 
-export function importFieldsFromOtherDocumentsAction() {
+export function importFieldsFromOtherDocumentsAction(callback) {
   console.log('in actions index, importFieldsFromOtherDocumentsAction:');
   // callback();
   //flip state boolean
+  // callback is importFieldsFromOtherDocumentsObjectAction
+  callback();
   return {
     type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
   };
 }
 
-export function importFieldsFromOtherDocumentsObjectAction(array) {
+export function importFieldsFromOtherDocumentsObjectAction(object) {
   console.log('in actions index, importFieldsFromOtherDocumentsAction:');
   // callback();
   //flip state boolean
   return {
     type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
-    payload: array
+    payload: object
   };
 }
 

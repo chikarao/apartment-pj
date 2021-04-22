@@ -5362,9 +5362,36 @@ longActionPress(props) {
   }
 
   importFieldsFromOtherDocuments() {
-    // this.props.showSelectExistingDocumentModal(() => this.props.showSelectExistingDocumentModalForGetFieldValues());
-    // this.props.importFieldsFromOtherDocumentsAction();
-    this.props.showSelectExistingDocumentModal(() => this.props.importFieldsFromOtherDocumentsAction());
+
+    // Turn on importFieldsFromOtherDocumentsAction and assign the current agreementId to baseAgreementId
+    this.props.closeSavedDocument()
+    // this.props.showDocument()
+    this.props.setAgreementId(null);
+    this.props.setTemplateElementsObject({
+      templateElements: {},
+      templateElementsByPage: {},
+      templateTranslationElements: {},
+      templateTranslationElementsByPage: {}
+    });
+    // Turn off grayed background since SelectExistingDocumentModal has its own gray background
+    this.props.grayOutBackground(() => {});
+
+    this.props.showSelectExistingDocumentModal(
+      () => this.props.importFieldsFromOtherDocumentsAction(
+        () => {
+          this.props.importFieldsFromOtherDocumentsObjectAction({
+            agreementId: null,
+            fieldsArray: [],
+            baseAgreementId: this.props.agreementId,
+            // baseAgreementElements: {
+            //   templateElements: this.props.templateElements,
+            //   templateElementsByPage: this.props.templateElementsByPage,
+            //   templateTranslationElements: this.props.templateTranslationElements,
+            //   templateTranslationElementsByPage: this.props.templateTranslationElementsByPage
+            // }
+          });
+        }
+      ));
   }
 
   renderGetFieldValuesChoiceBox() {
@@ -6305,7 +6332,7 @@ longActionPress(props) {
       newArray.splice(elementIndex, 1);
     }
 
-    this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: elementName, fieldsArray: newArray });
+    this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: elementName, fieldsArray: newArray, baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
     //
     // this.setState({ importFieldsFromOtherDocumentsObject }, () => {
     console.log('in create_edit_document, handleOverlayClickBox, clicked, this.props., elementName, elementVal', this.props.importFieldsFromOtherDocumentsObject, elementName, elementVal);
