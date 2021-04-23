@@ -148,11 +148,6 @@ class SelectExitingDocumentModal extends Component {
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
     if (this.props.show) {
-      const callback = this.props.getFieldValues ? () => { this.props.showSelectExistingDocumentModalForGetFieldValues(); } : () => {}
-      this.props.showSelectExistingDocumentModal(callback);
-      this.setState({ selectExistingDocumentCompleted: false,
-                      // shrinkModal: false
-                    });
       // Reinitiallize importFieldsFromOtherDocumentsObject if array empty but keep baseAgreementId
       // Which is the agreement being edited
       if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length < 1) this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
@@ -160,32 +155,22 @@ class SelectExitingDocumentModal extends Component {
       if (this.props.importFieldsFromOtherDocuments) {
         this.props.importFieldsFromOtherDocumentsAction(() => {});
 
-        // this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-        //   // Empty out current templateElements if not empty
-        //   // Does not work: if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
-        //   this.props.setTemplateElementsObject({
-        //     templateElements: {},
-        //     templateElementsByPage: {},
-        //     templateTranslationElements: {},
-        //     templateTranslationElementsByPage: {}
-        //   });
-        //   // .ownUploadedDocumentKey either 'own_uploaded_document' or 'own_uploaded_template',
-        //   this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-        //     // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-        //     this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
-        //     this.props.selectedAgreementId(elementName);
-        //   });
-        // });
+        // When user closes modal, null out and close current agreement, and
+        // display the base agreement (original) in a callback
+        // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
         this.props.setAgreementId(null, false, false, false, false, () => {
           this.props.setAgreementId(this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, true, true, true, true, () => {});
           this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
         });
-        // // if (this.props.grayOutBackgroundProp) this.props.grayOutBackground(() => {})
-        // this.props.selectedAgreementId(this.props.importFieldsFromOtherDocumentsObject.baseAgreementId);
         console.log('in SelectExitingDocumentModal, handleClose, this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length: ', this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length);
-          // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
         });
       } //  if (this.props.importFieldsFromOtherDocuments) {
+
+      const callback = this.props.getFieldValues ? () => { this.props.showSelectExistingDocumentModalForGetFieldValues(); } : () => {}
+      this.props.showSelectExistingDocumentModal(callback);
+      this.setState({ selectExistingDocumentCompleted: false,
+        // shrinkModal: false
+      });
     } //if (this.props.show) {
   }
 

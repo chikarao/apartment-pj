@@ -111,6 +111,7 @@ class CreateEditDocument extends Component {
       databaseValuesExistForFields: false,
       showCustomInputCreateMode: false,
       customFieldNameInputValue: '',
+      editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
       // importFieldsFromOtherDocumentsObject: [],
     };
 
@@ -245,6 +246,18 @@ class CreateEditDocument extends Component {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     } // if (this.props.showTemplate) {
+
+    if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0) {
+      let actionButtonDimensions = { top: 0, left: 0 };
+      const actionButton = document.getElementById('create-edit-document-template-edit-action-box-elements-pasteFields');
+      if (actionButton) {
+        actionButtonDimensions = actionButton.getBoundingClientRect();
+      }
+
+      this.setState({ editActionBoxCallForActionObject: { top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') }}, () => {
+        console.log('in create_edit_document, componentDidMount, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -5173,12 +5186,33 @@ longActionPress(props) {
     const explanation = this.state.actionExplanationObject.explanation.split(',')[0]
     const height = placement === 'top' ? -47 : 27;
     // {this.state.actionExplanationObject.explanation}
+    // if (!this.state.editActionBoxCallForActionObject.value && (this.state.actionExplanationObject.value !== this.state.editActionBoxCallForActionObject.value)) {
+      return (
+        <div
+          className="create-edit-document-explanation-box"
+          style={{ top: `${(this.state.actionExplanationObject.top + height)}px`, left: `${(this.state.actionExplanationObject.left + 0)}px` }}
+        >
+          {explanation}
+        </div>
+      );
+    // }
+  }
+
+  renderExplanationBoxCallForAction() {
+    const placement = this.state.editActionBoxCallForActionObject.message.split(',')[1]
+    const message = this.state.editActionBoxCallForActionObject.message.split(',')[0]
+    const height = placement === 'top' ? -47 : 27;
+    // {this.state.actionExplanationObject.explanation}
     return (
       <div
         className="create-edit-document-explanation-box"
-        style={{ top: `${(this.state.actionExplanationObject.top + height)}px`, left: `${(this.state.actionExplanationObject.left + 0)}px` }}
+        style={{
+          top: `${(this.state.editActionBoxCallForActionObject.top + height)}px`,
+          left: `${(this.state.editActionBoxCallForActionObject.left + 0)}px`,
+          // backgroundColor: 'yellow'
+        }}
       >
-        {explanation}
+        {message}
       </div>
     );
   }
@@ -5671,6 +5705,7 @@ longActionPress(props) {
     const mousedOverElement = event.target;
     // mousedOverElement.style.backgroundColor = '#ccc';
     const elementName = mousedOverElement.getAttribute('name');
+    const elementValue = mousedOverElement.getAttribute('value');
     // if moused over element I an i (icon) or SPAN (NOT DIV) to avoid
     // both children and parent setting off this handler
     if (mousedOverElement.tagName === 'I' || mousedOverElement.tagName === 'SPAN') {
@@ -5683,7 +5718,8 @@ longActionPress(props) {
           actionExplanationObject: {
             top: elementDimensions.top,
             left: elementDimensions.left,
-            explanation: elementName
+            explanation: elementName,
+            value: elementValue
           }
         });
         // end of setState callback
@@ -5695,7 +5731,8 @@ longActionPress(props) {
           actionExplanationObject: {
             top: elementDimensions.top,
             left: elementDimensions.left,
-            explanation: elementName
+            explanation: elementName,
+            value: elementValue
           }
         });
         // if there is no explanation showing
@@ -6106,16 +6143,31 @@ longActionPress(props) {
         >
           <i value="translation" name="Work on translations,top" className="fas fa-language" style={{ fontSize: '20px', padding: '3.5px 0 0 1px' }}></i>
         </div>
-        <div
-          className="create-edit-document-template-edit-action-box-elements"
-          // onClick={() => {}}
-          // name="Change text direction,bottom"
-          value="blank"
-          // onMouseOver={this.handleMouseOverActionButtons}
-          // <i value="emptyButton" name="This button empty,bottom" style={{ color: 'gray'}} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
-          // onClick={translationElementsChecked ? this.handleTemplateElementActionClick : () => {}}
-        >
-        </div>
+        {
+          this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
+          ?
+          <div
+            className="create-edit-document-template-edit-action-box-elements"
+            onClick={() => {}}
+            name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`}
+            value="pasteFields"
+            onMouseOver={this.handleMouseOverActionButtons}
+            id="create-edit-document-template-edit-action-box-elements-pasteFields"
+          >
+            <i value="pasteFields" name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`} style={{ color: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? 'red' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-paste"></i>
+          </div>
+          :
+          <div
+            className="create-edit-document-template-edit-action-box-elements"
+            // onClick={() => {}}
+            // name="Change text direction,bottom"
+            value="blank"
+            // onMouseOver={this.handleMouseOverActionButtons}
+            // <i value="emptyButton" name="This button empty,bottom" style={{ color: 'gray'}} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-arrows-alt-h"></i>
+            // onClick={translationElementsChecked ? this.handleTemplateElementActionClick : () => {}}
+          >
+          </div>
+        }
         <div
           className="create-edit-document-template-edit-action-box-elements"
           onClick={multipleElementsChecked || multipleChoicesChecked ? this.handleTemplateElementActionClick : () => {}}
@@ -6454,6 +6506,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
+              {this.props.showTemplate && this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 && !this.props.noEditOrButtons ? this.renderExplanationBoxCallForAction() : ''}
             </div>
           );
         });

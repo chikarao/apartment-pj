@@ -527,8 +527,14 @@ class Header extends Component {
           }
           { !onMyPage
             ?
-            <li className="nav-item">
-              <Link className="nav-link header-auth-link" to={'/mypage'} >{AppLanguages.myPage[this.props.appLanguageCode]}</Link>
+            <li style={{ paddingTop: '15px' }} className="nav-item">
+              <Link
+              className="nav-link header-auth-link"
+              to={'/mypage'}
+              // {AppLanguages.myPage[this.props.appLanguageCode]}
+              >
+              <i style={{ fontSize: '25px' }}className="fas fa-user-circle"></i>
+              </Link>
             </li>
             :
             ''
