@@ -3166,6 +3166,31 @@ form {
   min-height: 12px;
 }
 
+.select-existing-document-title {
+  margin-bottom: 10px !important;
+}
+
+.select-existing-document-control-and-message {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* border: 1px solid #ccc; */
+  margin-bottom: 30px;
+}
+
+.select-existing-document-control {
+  width: auto;
+  height: auto;
+}
+
+.select-existing-document-message {
+  /* border: 1px solid #ccc; */
+  width: 40%;
+  color: 'green';
+}
+
 /* Flat_selection_box */
 .flat-selection-box-container {
   z-index: 14;

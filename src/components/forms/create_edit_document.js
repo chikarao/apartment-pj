@@ -5185,8 +5185,11 @@ longActionPress(props) {
     const placement = this.state.actionExplanationObject.explanation.split(',')[1]
     const explanation = this.state.actionExplanationObject.explanation.split(',')[0]
     const height = placement === 'top' ? -47 : 27;
+    console.log('in create_edit_document, renderExplanationBoxCallForAction, this.state.editActionBoxCallForActionObject, this.state.actionExplanationObject: ', this.state.editActionBoxCallForActionObject, this.state.actionExplanationObject);
     // {this.state.actionExplanationObject.explanation}
-    // if (!this.state.editActionBoxCallForActionObject.value && (this.state.actionExplanationObject.value !== this.state.editActionBoxCallForActionObject.value)) {
+    if (!this.state.editActionBoxCallForActionObject.value
+        || (this.state.editActionBoxCallForActionObject.value && (this.state.actionExplanationObject.value !== this.state.editActionBoxCallForActionObject.value))
+      ) {
       return (
         <div
           className="create-edit-document-explanation-box"
@@ -5195,12 +5198,12 @@ longActionPress(props) {
           {explanation}
         </div>
       );
-    // }
+    }
   }
 
   renderExplanationBoxCallForAction() {
-    const placement = this.state.editActionBoxCallForActionObject.message.split(',')[1]
-    const message = this.state.editActionBoxCallForActionObject.message.split(',')[0]
+    const placement = this.state.editActionBoxCallForActionObject.message.split(',')[1];
+    const message = this.state.editActionBoxCallForActionObject.message.split(',')[0];
     const height = placement === 'top' ? -47 : 27;
     // {this.state.actionExplanationObject.explanation}
     return (
@@ -5209,7 +5212,10 @@ longActionPress(props) {
         style={{
           top: `${(this.state.editActionBoxCallForActionObject.top + height)}px`,
           left: `${(this.state.editActionBoxCallForActionObject.left + 0)}px`,
-          // backgroundColor: 'yellow'
+          backgroundColor: 'white',
+          color: 'black',
+          border: '2px solid green',
+          zIndex: '14'
         }}
       >
         {message}
@@ -6154,7 +6160,7 @@ longActionPress(props) {
             onMouseOver={this.handleMouseOverActionButtons}
             id="create-edit-document-template-edit-action-box-elements-pasteFields"
           >
-            <i value="pasteFields" name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`} style={{ color: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? 'red' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-paste"></i>
+            <i value="pasteFields" name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`} style={{ color: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-paste"></i>
           </div>
           :
           <div

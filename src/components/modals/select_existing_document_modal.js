@@ -450,7 +450,6 @@ class SelectExitingDocumentModal extends Component {
     this.setState({
       shrinkModal: !userClickedCheckbox ? !this.state.shrinkModal : this.state.shrinkModal,
     }, () => {
-      console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId, clickedElement, this.state.shrinkModal: ', clickedAgreementId, clickedElement, this.state.shrinkModal);
       // props coming from this modal call in editFlat or bookingConfirmation
       // empty out agreement and other element related objects to be sent to CreateEditDocument.
       if (this.props.grayOutBackgroundProp) this.props.grayOutBackground(() => {});
@@ -469,6 +468,11 @@ class SelectExitingDocumentModal extends Component {
 
       if (clickedAgreementId) {
         // setAgreementId sets showDocument to true as second argument
+        if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
+          const newObject = { ...this.props.importFieldsFromOtherDocumentsObject, fieldsArray: [], agreementId: clickedAgreementId };
+          console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId, clickedElement, this.state.shrinkModal, newObject: ', clickedAgreementId, clickedElement, this.state.shrinkModal, newObject);
+          this.props.importFieldsFromOtherDocumentsObjectAction(newObject)
+        }
         this.props.setAgreementId(clickedAgreementId, true, true, true, true, () => {});
         this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
           // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
@@ -832,7 +836,11 @@ class SelectExitingDocumentModal extends Component {
       // console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // <section className="modal-main">
-      const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues'
+      const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues';
+      const copiedMessage = this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
+                            ? `${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''} copied to clipboard`
+                            :
+                            '';
       return (
         <div
           className={showHideClassName}
@@ -846,15 +854,24 @@ class SelectExitingDocumentModal extends Component {
           >
 
             <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
+            <h3 className="auth-modal-title select-existing-document-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
             {this.state.shrinkModal
               ?
-              <i
-                className="fas fa-expand expand-modal-main-icon"
-                onClick={this.handleAgreementShowClick}
-              ></i>
+              <div className="select-existing-document-control-and-message">
+                <div className="select-existing-document-message"></div>
+                <div className="select-existing-document-control">
+                  <i
+                  className="fas fa-expand expand-modal-main-icon"
+                  onClick={this.handleAgreementShowClick}
+                  ></i>
+                </div>
+                <div className="select-existing-document-message">
+                  {copiedMessage}
+                </div>
+              </div>
               :
               ''}
+
             {this.renderButtons()}
             <div className="select-existing-document-scroll-div">
               {this.renderAlert()}
