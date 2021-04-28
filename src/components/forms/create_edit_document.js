@@ -1115,7 +1115,7 @@ handleOnFocus(event) {
     // yielded same as layerX and layerY
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    const background = document.getElementById('document-background')
+    const background = document.getElementById('document-background');
 
     // test if custom name input is empty, do not create if empty
     let customNameInputNotEmpty = true;
@@ -3184,12 +3184,64 @@ longActionPress(props) {
       elementValue = elementVal;
       elementVal = elementName;
     };
-    console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
+    // console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     // const getChangeChoiceIdArray = () => {
     //
     // }
+
+    const pasteFields = () => {
+      const copiedAgreement = this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.importFieldsFromOtherDocumentsObject.agreementId]
+      console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject: ', elementVal, this.props.importFieldsFromOtherDocumentsObject);
+      let newElement = {};
+      const newElementArray = [];
+      let newDocumentFieldChoice = {};
+      let newDocumentFieldChoices = {};
+      let newSelectChoice = {};
+      let newSelectChoices = {};
+      let templateElementCount = this.state.templateElementCount;
+      let translationElementCount = this.state.translationElementCount;
+      // templateElementCount: this.state.templateElementCount + 1,
+      // translationElementCount: this.state.translationElementCount + 1
+      _.each(copiedAgreement.document_fields, eachField => {
+        newDocumentFieldChoice = {};
+        newDocumentFieldChoices = {};
+        newSelectChoice = {};
+        newSelectChoices = {};
+        //fieldArrays ids are string
+        if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachField.id.toString()) !== -1) {
+          // increment count to assign to elements; Later update state
+          if (!eachField.translation_element) {
+            templateElementCount++;
+            // null out document_field_choices ids
+            if (eachField.document_field_choices) {
+              _.each(Object.keys(eachField.document_field_choices), (eachKey) => {
+                if (eachField.document_field_choices[eachKey].select_choices) {
+                  _.each(Object.keys(eachField.document_field_choices[eachKey].select_choices), (eachSelectKey) => {
+                    newSelectChoice = { ...eachField.document_field_choices[eachKey].select_choices[eachSelectKey], id: null, document_field_choice_id: null };
+                    newSelectChoices[eachSelectKey] = newSelectChoice;
+                  })
+                }
+                newDocumentFieldChoice = { ...eachField.document_field_choices[eachKey], document_field_id: null, id: null, select_choices: eachField.document_field_choices[eachKey].select_choices ? newSelectChoices : null }
+                newDocumentFieldChoices[eachKey] = newDocumentFieldChoice;
+              })
+            }
+            newElement = { ...eachField, id: templateElementCount + 'a', agreement_id: this.props.agreementId, document_field_choices: _.isEmpty(newDocumentFieldChoices) ? null : newDocumentFieldChoices, action: 'create' };
+          } else {
+            translationElementCount++;
+            newElement = { ...eachField, id: translationElementCount + 'b', agreement_id: this.props.agreementId, action: 'create' };
+          } // else if (eachField.translation_element) {
+            newElementArray.push(newElement);
+        } //  if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachField.id.toString()) !== -1)
+      }) // _.each(copiedAgreement.document_fields, eachField => {
+        _.each(newElementArray, eachNewElement => {
+          console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray, eachNewElement: ', elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray, eachNewElement);
+          // createElement(eachNewElement);
+        })
+        // this.setTemplateHistoryArray([templateElementAttributes], 'create');
+    } // const pasteFields = () => {
+
 
     const align = (alignWhat) => {
       // aligningElement for aligning wrappers
@@ -3651,6 +3703,7 @@ longActionPress(props) {
             _.each(newLastAction, eachAction => {
               name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
               console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, undo in last action update lastActionArray, doWhatNow, newLastAction, eachAction, name: ', lastActionArray, doWhatNow, newLastAction, eachAction, name);
+              // change is a reduxForm method
               this.props.change(`${name}${translationOrNot}`, eachAction.previous_value)
             });
           // }
@@ -3667,6 +3720,7 @@ longActionPress(props) {
             // this.props.change is imported from redux-form
             _.each(lastActionArray, eachAction => {
               name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
+              // change is a reduxForm method
               this.props.change(`${name}${translationOrNot}`, eachAction.value)
             });
             // this.props.change(`${templateElement[lastActionArray[0].id].name}${translationOrNot}`, lastActionArray[0].value)
@@ -3772,6 +3826,10 @@ longActionPress(props) {
           })
           break;
         // align method aligns elements and choices to a base element or choice
+        case 'pasteFields':
+          pasteFields(elementVal);
+          break;
+
         case 'vertical':
           align(elementVal);
           break;
@@ -6154,7 +6212,7 @@ longActionPress(props) {
           ?
           <div
             className="create-edit-document-template-edit-action-box-elements"
-            onClick={() => {}}
+            onClick={this.handleTemplateElementActionClick}
             name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`}
             value="pasteFields"
             onMouseOver={this.handleMouseOverActionButtons}
@@ -6917,6 +6975,7 @@ function mapStateToProps(state) {
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
+      allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -6955,7 +7014,8 @@ function mapStateToProps(state) {
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
-      importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject
+      importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
+      allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields
     };
   }
 
