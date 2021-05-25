@@ -598,7 +598,8 @@ export function importFieldsFromOtherDocumentsObjectAction(object) {
 
 export function showLoading(callback) {
   console.log('in actions index, showLoading:', callback);
-  if (callback) callback();
+  // if (callback) callback();
+  if (typeof callback === 'function') callback();
   //flip state boolean
   return { type: SHOW_LOADING };
 }

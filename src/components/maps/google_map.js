@@ -25,8 +25,6 @@ class GoogleMap extends Component {
       flatMarkersArray: [],
       buildingMarkersArray: []
     };
-
-    // this.createMarkers = this.createMarkers.bind(this);
   }
 
   componentDidMount() {
@@ -41,8 +39,7 @@ class GoogleMap extends Component {
     // NOTE: if googleMapBoundsKeys already exists when CDM is called, call render map;
     // Otherwise, check in componentDidUpdate if googleMapBoundsKeys goes from null to not null
     if (this.props.googleMapBoundsKeys) this.renderMap({ flats: this.props.flats, buildings: this.props.flatBuildings });
-  }
-  //end of componentDidMount
+  }//end of componentDidMount
 
   // CDU called After createMarkers setState or change in this.props.flat
   // or this.props.flatBuildings;
@@ -54,7 +51,6 @@ class GoogleMap extends Component {
   // and also setMap null; same for flatBuildings
 
   componentDidUpdate(prevProps) {
-    // console.log('in googlemaps componentDidUpdate, prevProps.googleMapBoundsKeys, this.props.googleMapBoundsKeys: ', prevProps.googleMapBoundsKeys, this.props.googleMapBoundsKeys);
     // flatsEmpty is prop passed in map render
     // and is true if there are no search results for the map area or criteria
     // Note; googleMapBoundsKeys are passed from the backend to deal with frequent google api changes
@@ -69,7 +65,6 @@ class GoogleMap extends Component {
     // and creates array of prev flats with just IDs so that easy to compare this and prev props
     const prevPropsFlatIdArray = prevProps.flatsId;
     const currentPropsFlatIdArray = this.props.flatsId;
-    // console.log('in googlemaps componentDidUpdate, currentPropsFlatIdArray: ', currentPropsFlatIdArray);
 
     const newFlatsArray = [];
     // iterate over this.props.flats to get array of new flats and flat ids
@@ -151,6 +146,19 @@ class GoogleMap extends Component {
        });
        // Call create markers with all parameters prepared above
        this.createMarkers(newFlatsArray, oldFlatMarkersArray, newBuildingsObject, oldBuildingMarkersArray);
+
+       // Below is workaround to get layer of GM to be z-index higher than the
+       // other standard GM layers. Somehow GM api has set other laters to be
+       // z-index 100003, so need to set layer with markers and draggable map
+       // to be higher; Same with zoom buttons 
+       const gmStyleElement = document.getElementsByClassName('gm-style')[0];
+       const zoomButtonElement = document.getElementsByClassName('gmnoprint gm-bundled-control gm-bundled-control-on-bottom')[0];
+       // const gmStyleElement = document.getElementsByClassName('gm-style').item(0).getElementsByTagName('div')[0];
+       // console.log('in googlemap, componentDidUpdate gmStyleElement: ', gmStyleElement);
+       if (gmStyleElement && zoomButtonElement) {
+         gmStyleElement.getElementsByTagName('div')[0].style.zIndex = '1000004';
+         zoomButtonElement.style.zIndex = '1000004';
+       }
      }
      // END of if this.props.flatBuildings && flats
      // create markers passing array of new flats and
@@ -205,10 +213,11 @@ class GoogleMap extends Component {
     }); // end of const map = new google.maps.Map(....)
 
     // store map in state and call createmarkers in callback when map is stored
+    // Show circle instead of marker if user on showFlat page
     this.setState({ map }, () => {
       this.props.setMap(map);
-      if (this.props.showFlat){
-        this.createCircle()
+      if (this.props.showFlat) {
+        this.createCircle();
       } else {
         this.createMarkers(flats, [], buildings, []);
       }
@@ -287,11 +296,8 @@ class GoogleMap extends Component {
       //   north: bounds.f.f,
       //   south: bounds.f.b
       // };
-
       MAP_DIMENSIONS = { mapBounds, mapCenter, mapZoom };
-
       // updateMapBounds not available as app state obj but not currently used
-
       // console.log('in googlemap, this.props.mapBounds: ', this.props.mapBounds);
 
       //!!!!!!!!!!!!!run fetchFlats if map is not being rendered in show flat page!!!!!!!!!!!!!!!!!
@@ -305,6 +311,10 @@ class GoogleMap extends Component {
         this.props.showLoading('google maps');
       }
     }); // end of addlistner idle
+
+    // google.maps.event.addListener(map, 'click', () => {
+    //   console.log('in googlemap, map clicked inside renderMap function: ');
+    // });
 
     // gets lat lng of point on map where click
     // google.maps.event.addListener(map, 'click', (event) => {

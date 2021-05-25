@@ -16,7 +16,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('in app.js, componentDidMount, this.props: ', this.props);
+    // console.log('in app.js, componentDidMount, this.props: ', this.props);
     // placeSearchLanguageCode needed to reload google map api on to the page,
     // otherwise, multiple googlemap scripts will be loaded and cause problems
     // When user clicks on difference language, in map_interaction.js, sets state placeSearchLanguageCode,
@@ -44,7 +44,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('in app.js, componentDidUpdate, this.props: ', this.props);
+    // console.log('in app.js, componentDidUpdate, this.props: ', this.props);
 
     if (this.props.placeSearchLanguageCode !== prevProps.placeSearchLanguageCode) {
       localStorage.setItem('placeSearchLanguageCode', this.props.placeSearchLanguageCode);
@@ -67,8 +67,10 @@ class App extends Component {
     window.initMap = this.loadedMap;
     const API_KEY = process.env.GOOGLEMAP_API_KEY;
     // console.log('in app.js, componentWillMount, API_KEY: ', API_KEY)
+    // https://developers.google.com/maps/documentation/javascript/versions
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${language}&callback=initMap`;
+    // script.src = `https://maps.googleapis.com/maps/api/js?v=3.45&key=${API_KEY}&libraries=places&language=${language}&callback=initMap`;
     // script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&language=${this.props.placeSearchLanguageCode}&callback=initMap`;
     // added async and defer to make sure gmap loads before component...
     // https://medium.com/@nikjohn/speed-up-google-maps-and-everything-else-with-async-defer-7b9814efb2b
