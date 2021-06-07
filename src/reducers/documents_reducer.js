@@ -174,18 +174,47 @@ export default function (state = {
     return { object, pageObject, nameMappedObject, nameMappedTranslationObject };
   }
 
-  function addToTemplateElementsByPage(newElement) {
-    const newObject = !newElement.translation_element
-                      ?
-                      { ...state.templateElementsByPage }
-                      :
-                      { ...state.templateTranslationElementsByPage };
-    if (newObject[newElement.page]) {
-      newObject[newElement.page][newElement.id] = newElement;
-    } else {
-      newObject[newElement.page] = {};
-      newObject[newElement.page][newElement.id] = newElement;
-    }
+  function addToTemplateElementsByPage(newElementArray) {
+    // const newObject = !newElementArray[0].translation_element
+    //                   ?
+    //                   { ...state.templateElementsByPage }
+    //                   :
+    //                   { ...state.templateTranslationElementsByPage };
+    const newObject = {
+      templateElements: { ...state.templateElementsByPage },
+      templateTranslationElements: { ...state.templateTranslationElementsByPage }
+    };
+
+    const placeInNewObject = (key, newElement) => {
+      if (newObject[key][newElement.page]) {
+        newObject[key][newElement.page][newElement.id] = newElement;
+      } else {
+        newObject[key][newElement.page] = {};
+        newObject[key][newElement.page][newElement.id] = newElement;
+      }
+    };
+
+    let nameOfKey = null;
+
+    _.each(newElementArray, eachElement => {
+      if (!eachElement.translation_element) {
+        nameOfKey = 'templateElements';
+      } else {
+        nameOfKey = 'templateTranslationElements';
+      }
+
+      placeInNewObject(nameOfKey, eachElement);
+    });
+   //
+   //
+   // _.each(newElementArray, newElement => {
+   //   if (newObject[newElement.page]) {
+   //     newObject[newElement.page][newElement.id] = newElement;
+   //   } else {
+   //     newObject[newElement.page] = {};
+   //     newObject[newElement.page][newElement.id] = newElement;
+   //   }
+   // });
     return newObject;
   }
 
@@ -432,18 +461,29 @@ export default function (state = {
     }
 
     case CREATE_DOCUMENT_ELEMENT_LOCALLY: {
-      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       // This action creates elements for template and templateTranslation
+      // Takes an array of new elements and returns template elements
+      console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, beginning: ', action.payload);
         const newObject = {}
-        let createdObject = {}
+        const newTranslationObject = {}
+        const createdObject = {}
+        const createdTranslationObject = {}
         let templateElementsByPage = {}
         // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
         // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
         // Keep out any object that have no id
-        if (action.payload.id) {
-          createdObject = { [action.payload.id]: action.payload };
+
+        if (action.payload.length > 0 && action.payload[0].id) {
+          _.each(action.payload, eachElement => {
+            if (!eachElement.translation_element) {
+              createdObject[eachElement.id] = eachElement;
+            } else {
+              createdTranslationObject[eachElement.id] = eachElement;
+            }
+          });
           templateElementsByPage = addToTemplateElementsByPage(action.payload);
         }
+        // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
         // let initialValuesObject = { ...state.initialValuesObject };
         // let listValues = '';
         // if (action.payload.list_parameters) {
@@ -451,25 +491,30 @@ export default function (state = {
           //   // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state first: ', action.payload, listValues, initialValuesObject, state);
           //   initialValuesObject = { [action.payload.name]: listValues }
           // }
-          const originalObject = !action.payload.translation_element ? state.templateElements : state.templateTranslationElements;
+          const originalObject = state.templateElements;
+          const originalTranslationObject = state.templateTranslationElements;
           const mergedObject = _.merge(newObject, originalObject, createdObject);
+          const mergedTranslationObject = _.merge(newTranslationObject, originalTranslationObject, createdTranslationObject);
           // console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, listValues, initialValuesObject, state, templateElementsByPage: ', action.payload, listValues, initialValuesObject, state, templateElementsByPage);
           // const someOtherObject = { amenities_list: 'hello' };
           // IMPORTANT: Somehow, initialValuesObject passed to mapStateToProps becomes undefined;
           // So, created listInitialValuesObject which gets passed fine, so merge them with initialValuesObject in mapStateToProps
-        if (!action.payload.translation_element) {
-          return { ...state,
-            templateElements: mergedObject,
-            templateElementsByPage,
-            // initialValuesObject,
-            // listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
-            // templateDocumentChoicesObject
-          };
-        }
+        // if (!action.payload.translation_element) {
+        //   return { ...state,
+        //     templateElements: mergedObject,
+        //     templateElementsByPage,
+        //     // initialValuesObject,
+        //     // listInitialValuesObject: listValues ? { ...state.listInitialValuesObject, [action.payload.name]: listValues } : { ...state.listInitialValuesObject }
+        //     // templateDocumentChoicesObject
+        //   };
+        // }
         // If not template then return for templateTranslations
+        console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, templateElementsByPage, mergedObject, mergedTranslationObject: ', action.payload, templateElementsByPage, mergedObject, mergedTranslationObject);
         return { ...state,
-          templateTranslationElements: mergedObject,
-          templateTranslationElementsByPage: templateElementsByPage,
+          templateElements: mergedObject,
+          templateElementsByPage: templateElementsByPage.templateElements,
+          templateTranslationElements: mergedTranslationObject,
+          templateTranslationElementsByPage: templateElementsByPage.templateTranslationElements,
         };
         // end of if (action.payload.type === 'template') {
     }

@@ -161,6 +161,14 @@ class SelectExitingDocumentModal extends Component {
         this.props.setAgreementId(null, false, false, false, false, () => {
           this.props.setAgreementId(this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, true, true, true, true, () => {});
           this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+          // Empty out element-related objects when close agreement 
+          this.props.setTemplateElementsObject({
+            templateElements: {},
+            templateElementsByPage: {},
+            templateTranslationElements: {},
+            templateTranslationElementsByPage: {}
+          });
+
         });
         console.log('in SelectExitingDocumentModal, handleClose, this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length: ', this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length);
         });

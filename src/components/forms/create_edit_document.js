@@ -216,10 +216,11 @@ class CreateEditDocument extends Component {
       templateEditHistory = getLocalHistory();
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
-      console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate templateEditHistory', templateEditHistory);
       if (templateEditHistory && templateEditHistory.elements) {
         let highestElementId = 0;
         let highestTranslationElementId = 0;
+        const newElementArray = [];
+
         _.each(Object.keys(templateEditHistory.elements), eachElementKey => {
           // get the highest id to avoid duplicate element id after templateElements repopulated
           if (!templateEditHistory.elements[eachElementKey].translation_element) {
@@ -227,9 +228,14 @@ class CreateEditDocument extends Component {
           } else {
             highestTranslationElementId = highestTranslationElementId > parseInt(eachElementKey, 10) ? highestTranslationElementId : parseInt(eachElementKey, 10);
           }
+          newElementArray.push(templateEditHistory.elements[eachElementKey]);
           // get template elements in localstorage into app state as templateElements and templateTranslationElements
-          this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
+          // this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
+
+        console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate newElementArray', newElementArray);
+        this.props.createDocumentElementLocally(newElementArray);
+
         this.setState({
           templateElementCount: highestElementId,
           translationElementCount: highestTranslationElementId,
@@ -1160,7 +1166,7 @@ handleOnFocus(event) {
           custom_name: customName
         };
         // add action element action before putting in array before setState
-        this.props.createDocumentElementLocally(templateElementAttributes);
+        this.props.createDocumentElementLocally([templateElementAttributes]);
         // IMPORTANT: If the new element does not have document_field_choices, call setTemplateHistoryArray here;
         // If it has document_field_choices, history is set after coordinates for document_field_choices is set
         // in dragElement closeDragElement function and subsequent callback. getChoiceCoordinates is called in documentChoicesTemplate componentDidMount;
@@ -3228,19 +3234,26 @@ longActionPress(props) {
               })
             }
             newElement = { ...eachField, id: templateElementCount + 'a', agreement_id: this.props.agreementId, document_field_choices: _.isEmpty(newDocumentFieldChoices) ? null : newDocumentFieldChoices, action: 'create' };
-          } else {
+          } else { //  if (!eachField.translation_element) {
             translationElementCount++;
             newElement = { ...eachField, id: translationElementCount + 'b', agreement_id: this.props.agreementId, action: 'create' };
           } // else if (eachField.translation_element) {
             newElementArray.push(newElement);
         } //  if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachField.id.toString()) !== -1)
       }) // _.each(copiedAgreement.document_fields, eachField => {
-        _.each(newElementArray, eachNewElement => {
-          console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray, eachNewElement: ', elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray, eachNewElement);
-          // createElement(eachNewElement);
-        })
-        // this.setTemplateHistoryArray([templateElementAttributes], 'create');
-    } // const pasteFields = () => {
+
+        console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray: ', elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray);
+        // create elements in template elements and templateElementsByPage in document reducer
+        createElement(newElementArray);
+        // Persist in localStroageHistory
+        this.setTemplateHistoryArray(newElementArray, 'create');
+        // Emplty out clipboard
+        this.props.importFieldsFromOtherDocumentsObjectAction({
+          agreementId: null,
+          fieldsArray: [],
+          baseAgreementId: this.props.agreementId,
+        });
+    }; // const pasteFields = () => {
 
 
     const align = (alignWhat) => {
@@ -3609,8 +3622,8 @@ longActionPress(props) {
       }
     } // end of changeDirection
 
-    const createElement = (elementObject) => {
-      this.props.createDocumentElementLocally(elementObject);
+    const createElement = (elementObjectArray) => {
+      this.props.createDocumentElementLocally(elementObjectArray);
     };
 
     const deleteElement = (elementsIdArray, translationModeOn) => {
@@ -3684,7 +3697,7 @@ longActionPress(props) {
           });
         } // send array of id
         // No need to do logic for persisted elements since none are created just fetched from backend
-        if (doWhatNow === 'redo') createElement(lastActionArray[0]); // send just object hash
+        if (doWhatNow === 'redo') createElement(lastActionArray); // send just object hash
       }
 
       if (lastActionArray[0].action === 'update') {
@@ -3730,11 +3743,14 @@ longActionPress(props) {
 
       if (lastActionArray[0].action === 'delete') {
         console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
-        const newLastAction = removeActionAttribute(lastActionArray);
+        const newLastActionArray = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
-          _.each(newLastAction, eachElement => {
-            createElement(eachElement);
-          });
+          // _.each(newLastAction, eachElement => {
+          createElement(newLastActionArray);
+          // });
+          // _.each(newLastAction, eachElement => {
+          //   createElement(eachElement);
+          // });
         }
 
         if (doWhatNow === 'redo') {
