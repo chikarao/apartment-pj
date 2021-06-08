@@ -485,6 +485,13 @@ class BookingConfirmation extends Component {
           // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
           this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
           this.props.selectedAgreementId(elementName);
+
+          // For document tabs; If document tab not already there, push into array 
+          if (this.props.selectedAgreementIdArray.indexOf(parseInt(elementName, 10)) === -1) {
+            const newArray = [...this.props.selectedAgreementIdArray];
+            newArray.push(parseInt(elementName, 10));
+            this.props.setSelectedAgreementIdArray(newArray);
+          }
         });
         // show document
       });
@@ -1540,6 +1547,7 @@ function mapStateToProps(state) {
       // flat: state.flat.selectedFlat
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
     };
   }
 

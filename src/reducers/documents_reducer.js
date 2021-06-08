@@ -20,7 +20,8 @@ import {
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
-  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION
+  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
+  SET_SELECTED_AGREEMENT_ID_ARRAY
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -52,6 +53,7 @@ export default function (state = {
   selectedFieldObject: null,
   importFieldsFromOtherDocuments: false,
   importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [], baseAgreementId: null },
+  selectedAgreementIdArray: [],
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -698,8 +700,7 @@ export default function (state = {
         // documentTranslationsTreated
       };
 
-    case FETCH_USER_AGREEMENTS: {
-      console.log('in documents reducer, SET_PROGRESS_STATUS, action.payload: ', action.payload);
+      case FETCH_USER_AGREEMENTS: {
       const createArrayWithDateObject = (actionPayloadObject) => {
         const newArray = [];
         _.each(Object.keys(actionPayloadObject), eachKey => {
@@ -739,6 +740,11 @@ export default function (state = {
         allBookingsForUserFlatsMapped: action.payload.user_bookings
       };
     }
+
+    case SET_SELECTED_AGREEMENT_ID_ARRAY:
+
+    console.log('in documents reducer, SET_SELECTED_AGREEMENT_ID_ARRAY action.payload: ', action.payload);
+    return { ...state, selectedAgreementIdArray: action.payload };
 
     default:
       return state;

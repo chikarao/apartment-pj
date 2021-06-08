@@ -166,7 +166,7 @@ class CreateEditDocument extends Component {
   componentDidMount() {
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
-        console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
+        // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
         let destringifiedHistory = {};
         // if localStorageHistory exists, set state to previous values
         // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
@@ -174,7 +174,7 @@ class CreateEditDocument extends Component {
         if (localStorageHistory) {
           destringifiedHistory = JSON.parse(localStorageHistory);
           if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
-            console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
+            // console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
             // Set state with || in case localStorageHistory exists but history and other objects do not exist
             this.setState({
               templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
@@ -188,7 +188,7 @@ class CreateEditDocument extends Component {
               this.setState({
                 historyIndex: destringifiedHistory[this.props.agreement.id].historyIndex || this.state.historyIndex
               }, () => {
-                console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
+                // console.log('in create_edit_document, componentDidMount, getLocalHistory, this.state.templateEditHistoryArray, this.state.templateElementCount', this.state.templateEditHistoryArray, this.state.templateElementCount);
               }); // end of second setState
             }); // end of first setState
           } // end of if destringifiedHistory elements
@@ -233,7 +233,7 @@ class CreateEditDocument extends Component {
           // this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
 
-        console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate newElementArray', newElementArray);
+        // console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate newElementArray', newElementArray);
         this.props.createDocumentElementLocally(newElementArray);
 
         this.setState({
@@ -241,11 +241,11 @@ class CreateEditDocument extends Component {
           translationElementCount: highestTranslationElementId,
           unsavedTemplateElements: templateEditHistory.elements
         }, () => {
-          console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
+          // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
         });
       }
 
-      console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
+      // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
       // If there are elements persisted in backend DB, populate this.props.templateElements
       if (this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0) {
         // get template elements in DB into app state as templateElements and templateTranslationElements
@@ -261,7 +261,7 @@ class CreateEditDocument extends Component {
       }
 
       this.setState({ editActionBoxCallForActionObject: { top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') }}, () => {
-        console.log('in create_edit_document, componentDidMount, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
+        // console.log('in create_edit_document, componentDidMount, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
       })
     }
   }
@@ -6473,7 +6473,7 @@ longActionPress(props) {
 
   renderTemplateElementsOverLayClickBoxes(page) {
       return _.map(this.props.templateElementsByPage[page], eachElement => {
-        console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, eachElement: ', eachElement);
+        // console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, eachElement: ', eachElement);
         return (
           <div
             key={eachElement.id}
@@ -6507,6 +6507,51 @@ longActionPress(props) {
       });
   }
 
+  getAgreementArray() {
+    // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+
+    return (
+      this.props.showSelectExistingDocument
+        && this.props.allUserAgreementsArrayMappedWithDocumentFields
+        && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
+      ?
+      [this.props.allUserAgreementsArrayMappedWithDocumentFields]
+      :
+      this.props.booking.agreements
+      // this.props.booking.agreements.filter(agreement => agreement.id === this.props.agreementId)
+    );
+  }
+
+  renderDocumentTab() {
+    console.log('in create_edit_document, renderDocumentTab, this.props.selectedAgreementIdArray, this.getAgreementArray(): ', this.props.selectedAgreementIdArray,this. getAgreementArray());
+    return (
+      <div
+        className="create-edit-document-document-tab-container"
+      >
+        <div
+          className="create-edit-document-document-tab-each"
+          style={{ backgroundColor: 'white' }}
+        >
+          <div
+            className="create-edit-document-document-tab-each-text"
+          >
+            Tab1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          </div>
+          <i className="fas fa-times-circle"></i>
+        </div>
+        <div
+          className="create-edit-document-document-tab-each"
+          style={{ borderBottom: '1px solid #ccc', backgroundColor: 'rgb(252,252,252)' }}
+        >Tab2</div>
+        <div
+          className="create-edit-document-document-tab-remaining"
+          style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none', borderBottom: '1px solid #ccc', backgroundColor: 'rgb(252,252,252)' }}
+        ></div>
+
+      </div>
+    );
+  }
+
   renderDocument() {
     // render each document page as a background image;
     // render each document field and translation field on top of the image
@@ -6520,6 +6565,9 @@ longActionPress(props) {
     } else {
       showDocument = true;
     }
+    // To be used when pages other than a4 used.
+    // 595 points is 794 pixels
+    const dimensionConversion = { 595: 794, 841: 1122 };
 
     // if (this.props.agreement) {
     // console.log('in create_edit_document, renderDocument, before if showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf: ', showDocument, this.props.showTemplate, initialValuesEmpty, this.props.showOwnUploadedDocument, this.state.showDocumentPdf);
@@ -6880,6 +6928,7 @@ longActionPress(props) {
     // {this.renderDocumentTabs()}
     return (
       <div className="test-image-pdf-jpg">
+        {this.renderDocumentTab()}
         {this.renderDocument()}
         {this.renderAlert()}
         {!this.props.showTemplate ? this.renderDocumentButtons() : ''}
@@ -6992,6 +7041,7 @@ function mapStateToProps(state) {
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
+      selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7031,7 +7081,8 @@ function mapStateToProps(state) {
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
-      allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields
+      allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
+      selectedAgreementIdArray: state.documents.selectedAgreementIdArray
     };
   }
 

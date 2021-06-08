@@ -211,6 +211,7 @@ import {
   SET_SELECTED_FIELD_OBJECT,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
+  SET_SELECTED_AGREEMENT_ID_ARRAY,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -592,6 +593,16 @@ export function importFieldsFromOtherDocumentsObjectAction(object) {
   return {
     type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
     payload: object
+  };
+}
+
+export function setSelectedAgreementIdArray(array) {
+  console.log('in actions index, setSelectedAgreementIdArray:');
+  // callback();
+  //flip state boolean
+  return {
+    type: SET_SELECTED_AGREEMENT_ID_ARRAY,
+    payload: array
   };
 }
 
