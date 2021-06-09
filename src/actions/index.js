@@ -597,7 +597,7 @@ export function importFieldsFromOtherDocumentsObjectAction(object) {
 }
 
 export function setSelectedAgreementIdArray(array) {
-  console.log('in actions index, setSelectedAgreementIdArray:');
+  console.log('in actions index, setSelectedAgreementIdArray, array:', array);
   // callback();
   //flip state boolean
   return {

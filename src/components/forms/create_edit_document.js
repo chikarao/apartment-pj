@@ -147,6 +147,7 @@ class CreateEditDocument extends Component {
     this.handleCustomFieldNameInput = this.handleCustomFieldNameInput.bind(this);
     this.handleCustomFieldPathDelete = this.handleCustomFieldPathDelete.bind(this);
     this.handleOverlayClickBox = this.handleOverlayClickBox.bind(this);
+    this.handleDocumentTabClick = this.handleDocumentTabClick.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -6507,47 +6508,99 @@ longActionPress(props) {
       });
   }
 
-  getAgreementArray() {
-    // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+  handleDocumentTabClick(event) {
+    const clickedElement = event.target;
+    const elementVal = clickedElement.getAttribute('value');
+    // comma delimted close or activate, inactive or active, agreementId
+    // const elementName = clickedElement.getAttribute('name'); // active or inactive tab
+    // const elementKey = clickedElement.getAttribute('key'); // active or inactive tab
+    const closeOrActivate = elementVal.split(',')[0];
+    const activeOrInactive = elementVal.split(',')[1];
+    const agreementIdClicked = elementVal.split(',')[2];
+    console.log('in create_edit_document, handleDocumentTabClick elementVal, closeOrActivate, activeOrInactive, agreementIdClicked: ', elementVal, closeOrActivate, activeOrInactive, agreementIdClicked);
 
+    if (closeOrActivate === 'close') {
+      const newArray = [...this.props.selectedAgreementIdArray];
+
+      if (activeOrInactive === 'inactive') {
+        newArray.splice(newArray.indexOf(parseInt(agreementIdClicked, 10)), 1)
+        this.props.setSelectedAgreementIdArray(newArray);
+      } else { //if (activeOrInactive === 'inactive') {
+        if (this.props.selectedAgreementIdArray.length > 1) {
+          // has more than 1 agreement open
+          // this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
+          // if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {}, templateTranslationElements: {}, templateTranslationElementsByPage: {},  });
+          newArray.splice(newArray.indexOf(parseInt(agreementIdClicked, 10)), 1)
+          this.props.setSelectedAgreementIdArray(newArray);
+          // this.props.setAgreementId(newArray[0]);
+          this.props.openOrSwitchAgreements(parseInt(newArray[0], 10), true, false)
+        } else { // has only 1 agreement open
+          this.handleClose();
+          this.props.setSelectedAgreementIdArray([]);
+        } //  if (this.props.selectedAgreementIdArray.length > 1) {
+      } // else if (activeOrInactive === 'inactive') {
+    } else if (activeOrInactive === 'inactive') { // else if (elementVal === 'close') {
+      this.props.openOrSwitchAgreements(parseInt(agreementIdClicked, 10), true, false);
+      this.props.setSelectedAgreementIdArray([]);
+    }
+  }
+
+  getMappedAgreementObject() {
+    // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
     return (
       this.props.showSelectExistingDocument
         && this.props.allUserAgreementsArrayMappedWithDocumentFields
         && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
       ?
-      [this.props.allUserAgreementsArrayMappedWithDocumentFields]
+      this.props.allUserAgreementsArrayMappedWithDocumentFields
       :
-      this.props.booking.agreements
+      this.props.mappedAgreementObject
       // this.props.booking.agreements.filter(agreement => agreement.id === this.props.agreementId)
     );
   }
 
-  renderDocumentTab() {
-    console.log('in create_edit_document, renderDocumentTab, this.props.selectedAgreementIdArray, this.getAgreementArray(): ', this.props.selectedAgreementIdArray,this. getAgreementArray());
-    return (
-      <div
-        className="create-edit-document-document-tab-container"
-      >
+  renderEachDocumentTab() {
+    let activeTab = false;
+    const mappedAgreementObject = this.getMappedAgreementObject();
+
+    return _.map(this.props.selectedAgreementIdArray, eachAgreementId => {
+      activeTab = this.props.agreementId === eachAgreementId;
+      return (
         <div
           className="create-edit-document-document-tab-each"
-          style={{ backgroundColor: 'white' }}
+          style={activeTab ? { backgroundColor: 'white' } : { backgroundColor: 'rgb(252, 252, 252)', borderBottom: '1px solid #ccc' }}
+          key={eachAgreementId}
+          value={`activate,${activeTab ? 'active' : 'inactive'},${eachAgreementId}`}
+          onClick={this.handleDocumentTabClick}
         >
           <div
             className="create-edit-document-document-tab-each-text"
           >
-            Tab1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+           {mappedAgreementObject[eachAgreementId].document_name}
           </div>
-          <i className="fas fa-times-circle"></i>
+          <i
+            className="fas fa-times-circle"
+            value={`close,${activeTab ? 'active' : 'inactive'},${eachAgreementId}`}
+            onClick={this.handleDocumentTabClick}
+          ></i>
         </div>
-        <div
-          className="create-edit-document-document-tab-each"
-          style={{ borderBottom: '1px solid #ccc', backgroundColor: 'rgb(252,252,252)' }}
-        >Tab2</div>
+      );
+    });
+  }
+
+  renderDocumentTab() {
+    // console.log('in create_edit_document, renderDocumentTab, this.props.selectedAgreementIdArray, this.getAgreementArray(), this.props.mappedAgreementObject: ', this.props.selectedAgreementIdArray, this.getMappedAgreementObject(), this.props.mappedAgreementObject);
+    return (
+      <div
+        className="create-edit-document-document-tab-container"
+      >
+        {this.renderEachDocumentTab()}
         <div
           className="create-edit-document-document-tab-remaining"
           style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none', borderBottom: '1px solid #ccc', backgroundColor: 'rgb(252,252,252)' }}
-        ></div>
-
+          key={'remaining'}
+        >
+        </div>
       </div>
     );
   }
@@ -6647,7 +6700,7 @@ longActionPress(props) {
     this.props.editHistory({ editHistoryItem: {}, action: 'clear' });
     this.props.setCreateDocumentKey('', () => {});
     this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
-    if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} })
+    if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {}, templateTranslationElements: {}, templateTranslationElementsByPage: {},  });
   }
 
   handleFormCloseDeleteClick(event) {

@@ -452,6 +452,35 @@ class BookingConfirmation extends Component {
     }
   }
 
+  openOrSwitchAgreements(newAgreementId, template, openNewBoolean) {
+    // First make false and nullout relavant state elements, AND app state elements
+    // Then set relevant state to show own document
+    this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
+      // Empty out current templateElements if not empty
+      // Does not work: if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
+      this.props.setTemplateElementsObject({
+        templateElements: {},
+        templateElementsByPage: {},
+        templateTranslationElements: {},
+        templateTranslationElementsByPage: {}
+      });
+      // .ownUploadedDocumentKey either 'own_uploaded_document' or 'own_uploaded_template',
+      this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+        // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
+        this.setState({ showDocument: true, agreementId: parseInt(newAgreementId, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
+        this.props.selectedAgreementId(newAgreementId);
+
+        // For document tabs; If document tab not already there, push into array
+        if (this.props.selectedAgreementIdArray.indexOf(parseInt(newAgreementId, 10)) === -1 && openNewBoolean) {
+          const newArray = [...this.props.selectedAgreementIdArray];
+          newArray.push(parseInt(newAgreementId, 10));
+          this.props.setSelectedAgreementIdArray(newArray);
+        }
+      });
+      // show document
+    });
+  }
+
   handleOwnDocumentShowClick(event) {
     const clickedElement = event.target;
     // elementVal is documentCode or document key in documents.js
@@ -462,39 +491,14 @@ class BookingConfirmation extends Component {
     // boolean to test if doc is a template
     const template = elementValArray[1] === 'template';
     // elementName is agreement id
-    const elementName = clickedElement.getAttribute('name');
-    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
+    const newAgreementId = clickedElement.getAttribute('name');
+    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, newAgreementId:', documentCode, template, newAgreementId);
     // if the language_code of agreement is same as documentLanguageCode(translated language)
 
-    if (this.props.booking.agreements_mapped[parseInt(elementName, 10)].language_code === this.props.documentLanguageCode) {
+    if (this.props.booking.agreements_mapped[parseInt(newAgreementId, 10)].language_code === this.props.documentLanguageCode) {
       window.alert('Please select a translated language that is not the base language of the template.')
     } else {
-      // First make false and nullout relavant state elements, AND app state elements
-      // Then set relevant state to show own document
-      this.setState({ showDocument: false, agreementId: '', showSavedDocument: false }, () => {
-        // Empty out current templateElements if not empty
-        // Does not work: if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {} });
-        this.props.setTemplateElementsObject({
-          templateElements: {},
-          templateElementsByPage: {},
-          templateTranslationElements: {},
-          templateTranslationElementsByPage: {}
-        });
-        // .ownUploadedDocumentKey either 'own_uploaded_document' or 'own_uploaded_template',
-        this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-          // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-          this.setState({ showDocument: true, agreementId: parseInt(elementName, 10), showSavedDocument: true, showOwnUploadedDocument: true, showTemplate: template });
-          this.props.selectedAgreementId(elementName);
-
-          // For document tabs; If document tab not already there, push into array 
-          if (this.props.selectedAgreementIdArray.indexOf(parseInt(elementName, 10)) === -1) {
-            const newArray = [...this.props.selectedAgreementIdArray];
-            newArray.push(parseInt(elementName, 10));
-            this.props.setSelectedAgreementIdArray(newArray);
-          }
-        });
-        // show document
-      });
+      this.openOrSwitchAgreements(newAgreementId, template, true);
     }
   }
 
@@ -1284,7 +1288,7 @@ renderDocument() {
         // If template, allow document inserts
         if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
-      // console.log('in booking confirmation, renderDocument, this.state.agreementId:', this.state.agreementId);
+      console.log('in booking confirmation, renderDocument, agreementArray, this.props.booking.agreements:', agreementArray, this.props.booking.agreements);
 
       return (
         <div className="booking-confirmation-render-document-box">
@@ -1306,6 +1310,7 @@ renderDocument() {
             showSavedDocument={this.state.showSavedDocument}
             agreementId={this.state.agreementId}
             agreement={agreementArray[0]}
+            mappedAgreementObject={_.mapKeys(this.props.booking.agreements, 'id')}
             showDocumentInsertBox
             showOwnUploadedDocument={this.state.showOwnUploadedDocument}
             showTemplate={this.state.showTemplate}
@@ -1313,6 +1318,7 @@ renderDocument() {
             showSelectExistingDocumentModalForGetFieldValues={() => {
               this.setState({ showSelectExistingDocumentModalForGetFieldValues: !this.state.showSelectExistingDocumentModalForGetFieldValues });
             }}
+            openOrSwitchAgreements={(newAgreementId, template, openNewBoolean)=> this.openOrSwitchAgreements(newAgreementId, template, openNewBoolean)}
           />
         </div>
       );

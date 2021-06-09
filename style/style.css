@@ -5444,7 +5444,7 @@ form {
 }
 
 .create-edit-document-document-tab-each {
-  min-width: 200px;
+  min-width: 230px;
   height: auto;
   border-radius: 5px 5px 0 0;
   padding: 8px 5px;
@@ -5462,6 +5462,7 @@ form {
   text-align: center;
   overflow: hidden;
   padding: 0 5px;
+  pointer-events: none;
 }
 
 .create-edit-document-document-tab-container i {
