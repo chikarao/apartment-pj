@@ -150,28 +150,28 @@ class SelectExitingDocumentModal extends Component {
     if (this.props.show) {
       // Reinitiallize importFieldsFromOtherDocumentsObject if array empty but keep baseAgreementId
       // Which is the agreement being edited
-      if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length < 1) this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
+      // if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length < 1) this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
       // if user closes the modal, turn off importFieldsFromOtherDocuments
       if (this.props.importFieldsFromOtherDocuments) {
-        this.props.importFieldsFromOtherDocumentsAction(() => {});
+        // this.props.importFieldsFromOtherDocumentsAction(() => {});
 
         // When user closes modal, null out and close current agreement, and
         // display the base agreement (original) in a callback
         // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-        this.props.setAgreementId(null, false, false, false, false, () => {
-          this.props.setAgreementId(this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, true, true, true, true, () => {});
-          this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-          // Empty out element-related objects when close agreement 
-          this.props.setTemplateElementsObject({
-            templateElements: {},
-            templateElementsByPage: {},
-            templateTranslationElements: {},
-            templateTranslationElementsByPage: {}
-          });
-
-        });
-        console.log('in SelectExitingDocumentModal, handleClose, this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length: ', this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length);
-        });
+        // this.props.setAgreementId(null, false, false, false, false, () => {
+        //   this.props.setAgreementId(this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, true, true, true, true, () => {});
+        //   this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+        //   // Empty out element-related objects when close agreement
+        //   this.props.setTemplateElementsObject({
+        //     templateElements: {},
+        //     templateElementsByPage: {},
+        //     templateTranslationElements: {},
+        //     templateTranslationElementsByPage: {}
+        //   });
+        //
+        // });
+        // console.log('in SelectExitingDocumentModal, handleClose, this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length: ', this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length);
+        // });
       } //  if (this.props.importFieldsFromOtherDocuments) {
 
       const callback = this.props.getFieldValues ? () => { this.props.showSelectExistingDocumentModalForGetFieldValues(); } : () => {}
@@ -478,21 +478,26 @@ class SelectExitingDocumentModal extends Component {
         // setAgreementId sets showDocument to true as second argument
         if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
           const newObject = { ...this.props.importFieldsFromOtherDocumentsObject, fieldsArray: [], agreementId: clickedAgreementId };
-          console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId, clickedElement, this.state.shrinkModal, newObject: ', clickedAgreementId, clickedElement, this.state.shrinkModal, newObject);
-          this.props.importFieldsFromOtherDocumentsObjectAction(newObject)
+          // console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId, clickedElement, this.state.shrinkModal, newObject: ', clickedAgreementId, clickedElement, this.state.shrinkModal, newObject);
+          this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
         }
-        this.props.setAgreementId(clickedAgreementId, true, true, true, true, () => {});
-        this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-          // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-        });
+        // this.props.setAgreementId(clickedAgreementId, true, true, true, true, () => {});
+        // this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
+        //   // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
+        // });
+        // In import fields When user chooses an agreement
+        // Props from bookingConfirmation
+        this.props.openOrSwitchAgreements(clickedAgreementId, true, true);
+        // this.props.showSelectExistingDocumentModal(() => {});
+        // this.props.showSelectExistingDocumentModal(()=> {});
+        this.handleClose();
       }
-
-      // console.log('in SelectExistingDocumentModal, renderEachDocument, this.state.shrinkModal, clickedAgreementId, userClickedExpand: ', this.state.shrinkModal, clickedAgreementId, userClickedExpand);
       // show other documents
     });
   }
 
   renderEachDocument(agreementsTreatedArray) {
+    // console.log('in SelectExistingDocumentModal, renderEachDocument: ');
     const renderEachAgreement = (eachAgreement) => {
       if (this.props.allUserAgreementsMapped[eachAgreement.id] && this.props.allUserAgreementsMapped[eachAgreement.id].document_name) {
         return (
@@ -841,7 +846,7 @@ class SelectExitingDocumentModal extends Component {
     // const { handleSubmit } = this.props;
 
     // if (this.props.flat) {
-      // console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
+      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
       showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
       // <section className="modal-main">
       const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues';

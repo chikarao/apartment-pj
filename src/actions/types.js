@@ -206,3 +206,4 @@ export const SET_SELECTED_FIELD_OBJECT = 'set_selected_field_object';
 export const IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION = 'import_fields_from_other_documents_action';
 export const IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION = 'import_fields_from_other_documents_object_action';
 export const SET_SELECTED_AGREEMENT_ID_ARRAY = 'set_selected_agreement_id_array';
+export const SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT = 'set_edit_action_box_call_for_action_object';

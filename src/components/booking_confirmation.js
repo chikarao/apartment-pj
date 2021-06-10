@@ -406,7 +406,7 @@ class BookingConfirmation extends Component {
 
   renderDocumentLanguageSelect() {
     // Do not show language code of shown document
-    console.log('in booking confirmation, renderDocumentLanguageSelect, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+    console.log('in booking confirmation, renderDocumentLanguageSelect, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray(): ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray());
 
     const languageToHide = this.state.showDocument
                             ?
@@ -1251,11 +1251,12 @@ renderInsertBox(isTemplate) {
 }
 
 getAgreementArray() {
-  // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
+  console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument);
 
   return (
-    this.props.showSelectExistingDocument
-      && this.props.allUserAgreementsArrayMappedWithDocumentFields
+    // this.props.showSelectExistingDocument
+      // && 
+      this.props.allUserAgreementsArrayMappedWithDocumentFields
       && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
     ?
     [this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]]
@@ -1484,6 +1485,7 @@ renderSelectExistingDocumentForm() {
       agreementId={this.state.agreementId}
       setShowSavedDocument={() => this.setState({ showSavedDocument: !this.state.showSavedDocument })}
       // selectedFieldObject={{ construction: 1 }}
+      openOrSwitchAgreements={(newAgreementId, template, openNewBoolean)=> this.openOrSwitchAgreements(newAgreementId, template, openNewBoolean)}
     />
   );
 }

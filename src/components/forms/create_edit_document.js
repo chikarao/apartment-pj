@@ -111,7 +111,7 @@ class CreateEditDocument extends Component {
       databaseValuesExistForFields: false,
       showCustomInputCreateMode: false,
       customFieldNameInputValue: '',
-      editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
+      // editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
       // importFieldsFromOtherDocumentsObject: [],
     };
 
@@ -253,18 +253,6 @@ class CreateEditDocument extends Component {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     } // if (this.props.showTemplate) {
-
-    if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0) {
-      let actionButtonDimensions = { top: 0, left: 0 };
-      const actionButton = document.getElementById('create-edit-document-template-edit-action-box-elements-pasteFields');
-      if (actionButton) {
-        actionButtonDimensions = actionButton.getBoundingClientRect();
-      }
-
-      this.setState({ editActionBoxCallForActionObject: { top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') }}, () => {
-        // console.log('in create_edit_document, componentDidMount, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
-      })
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -409,7 +397,31 @@ class CreateEditDocument extends Component {
       }
       // this.props.setInitialValuesObject(initialValuesObject);
     } // end of if bookingData
-  }
+
+    if ((this.props.importFieldsFromOtherDocumentsObject
+      && prevProps.importFieldsFromOtherDocumentsObject
+      && prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length !==
+         this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length)
+      // || (this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
+      //   && (
+      //     this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length !==
+      //       && this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length
+      //   )
+      //
+      // )
+    ) {
+      let actionButtonDimensions = { top: 0, left: 0 };
+      const actionButton = document.getElementById('create-edit-document-template-edit-action-box-elements-pasteFields');
+      if (actionButton) {
+        actionButtonDimensions = actionButton.getBoundingClientRect();
+        // this.setState({ editActionBoxCallForActionObject: { top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') } }, () => {
+        //   // console.log('in create_edit_document, componentDidUpdate, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
+        // })
+        const newObject = { ...this.props.editActionBoxCallForActionObject, top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') };
+        this.props.setEditActionBoxCallForActionObject(newObject);
+      }
+    }
+  } // End of componentDidUpdate
 
   componentWillUnmount() {
     console.log('in create_edit_document, componentWillUnmount fired');
@@ -5256,14 +5268,13 @@ longActionPress(props) {
   }
 
   renderExplanationBox() {
-    console.log('in create_edit_document, renderExplanationBox, this.state.actionExplanation, this.state.actionExplanationObject: ', this.state.actionExplanationObject);
+    // console.log('in create_edit_document, renderExplanationBox, this.state.actionExplanation, this.state.actionExplanationObject: ', this.state.actionExplanationObject);
     const placement = this.state.actionExplanationObject.explanation.split(',')[1]
     const explanation = this.state.actionExplanationObject.explanation.split(',')[0]
     const height = placement === 'top' ? -47 : 27;
-    console.log('in create_edit_document, renderExplanationBoxCallForAction, this.state.editActionBoxCallForActionObject, this.state.actionExplanationObject: ', this.state.editActionBoxCallForActionObject, this.state.actionExplanationObject);
     // {this.state.actionExplanationObject.explanation}
-    if (!this.state.editActionBoxCallForActionObject.value
-        || (this.state.editActionBoxCallForActionObject.value && (this.state.actionExplanationObject.value !== this.state.editActionBoxCallForActionObject.value))
+    if (!this.props.editActionBoxCallForActionObject.value
+        || (this.props.editActionBoxCallForActionObject.value && (this.state.actionExplanationObject.value !== this.props.editActionBoxCallForActionObject.value))
       ) {
       return (
         <div
@@ -5277,16 +5288,17 @@ longActionPress(props) {
   }
 
   renderExplanationBoxCallForAction() {
-    const placement = this.state.editActionBoxCallForActionObject.message.split(',')[1];
-    const message = this.state.editActionBoxCallForActionObject.message.split(',')[0];
+    const placement = this.props.editActionBoxCallForActionObject.message.split(',')[1];
+    const message = this.props.editActionBoxCallForActionObject.message.split(',')[0];
     const height = placement === 'top' ? -47 : 27;
     // {this.state.actionExplanationObject.explanation}
+    // console.log('in create_edit_document, renderExplanationBoxCallForAction, this.state.editActionBoxCallForActionObject, this.state.actionExplanationObject: ', this.props.editActionBoxCallForActionObject, this.state.actionExplanationObject);
     return (
       <div
         className="create-edit-document-explanation-box"
         style={{
-          top: `${(this.state.editActionBoxCallForActionObject.top + height)}px`,
-          left: `${(this.state.editActionBoxCallForActionObject.left + 0)}px`,
+          top: `${(this.props.editActionBoxCallForActionObject.top + height)}px`,
+          left: `${(this.props.editActionBoxCallForActionObject.left + 0)}px`,
           backgroundColor: 'white',
           color: 'black',
           border: '2px solid green',
@@ -5479,31 +5491,27 @@ longActionPress(props) {
   importFieldsFromOtherDocuments() {
 
     // Turn on importFieldsFromOtherDocumentsAction and assign the current agreementId to baseAgreementId
-    this.props.closeSavedDocument()
-    // this.props.showDocument()
-    this.props.setAgreementId(null);
-    this.props.setTemplateElementsObject({
-      templateElements: {},
-      templateElementsByPage: {},
-      templateTranslationElements: {},
-      templateTranslationElementsByPage: {}
-    });
+    // this.props.closeSavedDocument(); // turs showDocument off
+    // this.props.setAgreementId(null);
+    // this.props.setTemplateElementsObject({
+    //   templateElements: {},
+    //   templateElementsByPage: {},
+    //   templateTranslationElements: {},
+    //   templateTranslationElementsByPage: {}
+    // });
     // Turn off grayed background since SelectExistingDocumentModal has its own gray background
     this.props.grayOutBackground(() => {});
 
     this.props.showSelectExistingDocumentModal(
+      // Turn on switch to import fields
       () => this.props.importFieldsFromOtherDocumentsAction(
         () => {
+          // Reinitialize object for import fields with current baseAgreementId
+          // If object already populated, keep data until next fields clicked
           this.props.importFieldsFromOtherDocumentsObjectAction({
-            agreementId: null,
-            fieldsArray: [],
-            baseAgreementId: this.props.agreementId,
-            // baseAgreementElements: {
-            //   templateElements: this.props.templateElements,
-            //   templateElementsByPage: this.props.templateElementsByPage,
-            //   templateTranslationElements: this.props.templateTranslationElements,
-            //   templateTranslationElementsByPage: this.props.templateTranslationElementsByPage
-            // }
+            agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
+            fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
+            baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
           });
         }
       ));
@@ -5573,7 +5581,7 @@ longActionPress(props) {
         case 'databaseValues':
           // getSelectDataBaseValues turns on this.state.getSelectDataBaseValues
           // Which triggers componenetDidMount to call getInitialValueObject
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject);
+          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject);
           // getSelectDataBaseValues function turns on this.state.getDataBaseValues Which
           // triggers componentDidUpdate logic
           this.getSelectDataBaseValues();
@@ -5581,12 +5589,12 @@ longActionPress(props) {
           break;
 
         case 'otherDocumentValues':
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.getOtherDocumentValues();
           break;
 
         case 'importFieldsFromOtherDocuments':
-          console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
+          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.importFieldsFromOtherDocuments();
           break;
         default: return null;
@@ -6175,7 +6183,7 @@ longActionPress(props) {
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
     const disableTranslation = this.state.translationModeOn;
 
-    console.log('in create_edit_document, renderTemplateElementEditAction, disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn : ', disableCheckAll, !this.state.editFieldsOn, (templateElementsLength < 1), this.state.allElementsChecked, this.state.createNewTemplateElementOn);
+    console.log('in create_edit_document, renderTemplateElementEditAction, this.props.importFieldsFromOtherDocumentsObject : ', this.props.importFieldsFromOtherDocumentsObject);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -6230,12 +6238,12 @@ longActionPress(props) {
           <div
             className="create-edit-document-template-edit-action-box-elements"
             onClick={this.handleTemplateElementActionClick}
-            name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`}
+            name={`Copied ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`}
             value="pasteFields"
             onMouseOver={this.handleMouseOverActionButtons}
             id="create-edit-document-template-edit-action-box-elements-pasteFields"
           >
-            <i value="pasteFields" name={`Paste ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`} style={{ color: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-paste"></i>
+            <i value="pasteFields" name={`Copied ${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''},top`} style={{ color: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? 'blue' : 'gray' }} onMouseOver={this.handleMouseOverActionButtons} className="fas fa-paste"></i>
           </div>
           :
           <div
@@ -6453,22 +6461,35 @@ longActionPress(props) {
   }
 
   handleOverlayClickBox(event) {
+    const { agreementId, fieldsArray, baseAgreementId } = this.props.importFieldsFromOtherDocumentsObject;
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     const elementName = parseInt(clickedElement.getAttribute('name'), 10);
-    const newArray = [...this.props.importFieldsFromOtherDocumentsObject.fieldsArray];
+    let newArray = [...fieldsArray];
     const elementIndex = newArray.indexOf(elementVal);
 
-    if (elementIndex === -1) {
-      newArray.push(elementVal);
+    // if same agreement keep array and agreementId
+    // Otherwise update agreementId and create new array with new clicked field
+    if (elementName === agreementId) {
+      if (elementIndex === -1) {
+        newArray.push(elementVal);
+      } else {
+        newArray.splice(elementIndex, 1);
+      }
     } else {
-      newArray.splice(elementIndex, 1);
+      newArray = [elementVal];
     }
 
-    this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: elementName, fieldsArray: newArray, baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
+    const newObject = {
+      agreementId: agreementId === elementName ? agreementId : elementName,
+      fieldsArray: newArray,
+      baseAgreementId
+    };
+
+    console.log('in create_edit_document, handleOverlayClickBox, clicked, newObject, elementName, elementVal', newObject, elementName, elementVal);
+    this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
     //
     // this.setState({ importFieldsFromOtherDocumentsObject }, () => {
-    console.log('in create_edit_document, handleOverlayClickBox, clicked, this.props., elementName, elementVal', this.props.importFieldsFromOtherDocumentsObject, elementName, elementVal);
     // });
   }
 
@@ -6512,12 +6533,14 @@ longActionPress(props) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // comma delimted close or activate, inactive or active, agreementId
-    // const elementName = clickedElement.getAttribute('name'); // active or inactive tab
-    // const elementKey = clickedElement.getAttribute('key'); // active or inactive tab
     const closeOrActivate = elementVal.split(',')[0];
     const activeOrInactive = elementVal.split(',')[1];
     const agreementIdClicked = elementVal.split(',')[2];
-    console.log('in create_edit_document, handleDocumentTabClick elementVal, closeOrActivate, activeOrInactive, agreementIdClicked: ', elementVal, closeOrActivate, activeOrInactive, agreementIdClicked);
+    // LOGIC: If the user clicks close, the tabs are either active or inactive
+    // If inactive, take out that agreementId from the selectedAgreementIdArray
+    // it is no longer rendered; If active, run openOrSwitchAgreements
+    // If not close, and inactive, run openOrSwitchAgreements, props from bookingConfirmation.js
+    console.log('in create_edit_document, handleDocumentTabClick, elementVal: ', elementVal);
 
     if (closeOrActivate === 'close') {
       const newArray = [...this.props.selectedAgreementIdArray];
@@ -6532,36 +6555,36 @@ longActionPress(props) {
           // if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {}, templateTranslationElements: {}, templateTranslationElementsByPage: {},  });
           newArray.splice(newArray.indexOf(parseInt(agreementIdClicked, 10)), 1)
           this.props.setSelectedAgreementIdArray(newArray);
-          // this.props.setAgreementId(newArray[0]);
-          this.props.openOrSwitchAgreements(parseInt(newArray[0], 10), true, false)
+          // props from bookingConfirmation.js
+          this.props.openOrSwitchAgreements(parseInt(newArray[0], 10), true, false);
         } else { // has only 1 agreement open
           this.handleClose();
           this.props.setSelectedAgreementIdArray([]);
         } //  if (this.props.selectedAgreementIdArray.length > 1) {
       } // else if (activeOrInactive === 'inactive') {
     } else if (activeOrInactive === 'inactive') { // else if (elementVal === 'close') {
+      // User clicks inactive tab to switch documents to show
       this.props.openOrSwitchAgreements(parseInt(agreementIdClicked, 10), true, false);
-      this.props.setSelectedAgreementIdArray([]);
     }
   }
 
   getMappedAgreementObject() {
-    // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId);
     return (
-      this.props.showSelectExistingDocument
-        && this.props.allUserAgreementsArrayMappedWithDocumentFields
+      // this.props.showSelectExistingDocument
+        // &&
+        this.props.allUserAgreementsArrayMappedWithDocumentFields
         && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
       ?
       this.props.allUserAgreementsArrayMappedWithDocumentFields
       :
       this.props.mappedAgreementObject
-      // this.props.booking.agreements.filter(agreement => agreement.id === this.props.agreementId)
     );
   }
 
   renderEachDocumentTab() {
     let activeTab = false;
     const mappedAgreementObject = this.getMappedAgreementObject();
+    console.log('in create_edit_document, renderEachDocumentTab, mappedAgreementObject, this.props.selectedAgreementIdArray', mappedAgreementObject, this.props.selectedAgreementIdArray);
 
     return _.map(this.props.selectedAgreementIdArray, eachAgreementId => {
       activeTab = this.props.agreementId === eachAgreementId;
@@ -6663,12 +6686,21 @@ longActionPress(props) {
 
         const bilingual = Documents[this.props.createDocumentKey].translation;
         // const page = 1;
+        let documentForBookingOrFlat = false;
+        if (this.props.importFieldsFromOtherDocuments
+            && this.props.allUserAgreementsArrayMappedWithDocumentFields
+            && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
+            ){
+          documentForBookingOrFlat = this.props.booking.id === this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId].booking_id
+        }
 
-        console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);
+        // console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);
+        // console.log('in create_edit_document, renderDocument, this.props.agreementId, documentForBookingOrFlat, this.props.importFieldsFromOtherDocuments: ', this.props.agreementId, documentForBookingOrFlat, this.props.importFieldsFromOtherDocuments);
         return _.map(pages, page => {
               // console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
               // {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               // {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
+              // {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
           return (
             <div
               key={page}
@@ -6686,7 +6718,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
               {this.props.showTemplate && this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 && !this.props.noEditOrButtons ? this.renderExplanationBoxCallForAction() : ''}
             </div>
           );
@@ -7095,6 +7127,7 @@ function mapStateToProps(state) {
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
+      editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7135,7 +7168,8 @@ function mapStateToProps(state) {
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
-      selectedAgreementIdArray: state.documents.selectedAgreementIdArray
+      selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
+      editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject
     };
   }
 

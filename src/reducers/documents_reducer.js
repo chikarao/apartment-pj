@@ -21,7 +21,8 @@ import {
   SET_SELECTED_FIELD_OBJECT,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
-  SET_SELECTED_AGREEMENT_ID_ARRAY
+  SET_SELECTED_AGREEMENT_ID_ARRAY,
+  SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -54,6 +55,7 @@ export default function (state = {
   importFieldsFromOtherDocuments: false,
   importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [], baseAgreementId: null },
   selectedAgreementIdArray: [],
+  editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -742,9 +744,12 @@ export default function (state = {
     }
 
     case SET_SELECTED_AGREEMENT_ID_ARRAY:
-
-    console.log('in documents reducer, SET_SELECTED_AGREEMENT_ID_ARRAY action.payload: ', action.payload);
+    // console.log('in documents reducer, SET_SELECTED_AGREEMENT_ID_ARRAY action.payload: ', action.payload);
     return { ...state, selectedAgreementIdArray: action.payload };
+
+    case SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT:
+    console.log('in documents reducer, SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT action.payload: ', action.payload);
+    return { ...state, editActionBoxCallForActionObject: action.payload };
 
     default:
       return state;

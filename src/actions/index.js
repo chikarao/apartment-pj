@@ -212,6 +212,7 @@ import {
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
   SET_SELECTED_AGREEMENT_ID_ARRAY,
+  SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -603,6 +604,16 @@ export function setSelectedAgreementIdArray(array) {
   return {
     type: SET_SELECTED_AGREEMENT_ID_ARRAY,
     payload: array
+  };
+}
+
+export function setEditActionBoxCallForActionObject(object) {
+  console.log('in actions index, setEditActionBoxCallForActionObject, object:', object);
+  // callback();
+  //flip state boolean
+  return {
+    type: SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
+    payload: object
   };
 }
 
