@@ -576,14 +576,15 @@ export function setSelectedFieldObject(object) {
   };
 }
 
-export function importFieldsFromOtherDocumentsAction(callback) {
+export function importFieldsFromOtherDocumentsAction(boolean, callback) {
   console.log('in actions index, importFieldsFromOtherDocumentsAction:');
   // callback();
-  //flip state boolean
+  //flip state boolean only if false
   // callback is importFieldsFromOtherDocumentsObjectAction
   callback();
   return {
-    type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION
+    type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+    payload: boolean
   };
 }
 

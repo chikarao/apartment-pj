@@ -476,20 +476,14 @@ class SelectExitingDocumentModal extends Component {
 
       if (clickedAgreementId) {
         // setAgreementId sets showDocument to true as second argument
-        if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
-          const newObject = { ...this.props.importFieldsFromOtherDocumentsObject, fieldsArray: [], agreementId: clickedAgreementId };
-          // console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId, clickedElement, this.state.shrinkModal, newObject: ', clickedAgreementId, clickedElement, this.state.shrinkModal, newObject);
-          this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
-        }
-        // this.props.setAgreementId(clickedAgreementId, true, true, true, true, () => {});
-        // this.props.setCreateDocumentKey(globalConstants.ownUploadedDocumentKey, () => {
-        //   // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
-        // });
+        console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments: ', clickedAgreementId, this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments);
+        // if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
+        //   const newObject = { ...this.props.importFieldsFromOtherDocumentsObject, fieldsArray: [], agreementId: clickedAgreementId };
+        //   this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
+        // }
         // In import fields When user chooses an agreement
         // Props from bookingConfirmation
         this.props.openOrSwitchAgreements(clickedAgreementId, true, true);
-        // this.props.showSelectExistingDocumentModal(() => {});
-        // this.props.showSelectExistingDocumentModal(()=> {});
         this.handleClose();
       }
       // show other documents
@@ -497,7 +491,6 @@ class SelectExitingDocumentModal extends Component {
   }
 
   renderEachDocument(agreementsTreatedArray) {
-    // console.log('in SelectExistingDocumentModal, renderEachDocument: ');
     const renderEachAgreement = (eachAgreement) => {
       if (this.props.allUserAgreementsMapped[eachAgreement.id] && this.props.allUserAgreementsMapped[eachAgreement.id].document_name) {
         return (

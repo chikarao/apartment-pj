@@ -5504,17 +5504,23 @@ longActionPress(props) {
 
     this.props.showSelectExistingDocumentModal(
       // Turn on switch to import fields
-      () => this.props.importFieldsFromOtherDocumentsAction(
-        () => {
-          // Reinitialize object for import fields with current baseAgreementId
-          // If object already populated, keep data until next fields clicked
-          this.props.importFieldsFromOtherDocumentsObjectAction({
-            agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
-            fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
-            baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
-          });
-        }
-      ));
+      // First callback
+      () => {
+        // Turn on importFieldsFromOtherDocuments if false
+        this.props.importFieldsFromOtherDocumentsAction(
+          // Send boolean, if true, keep true
+          this.props.importFieldsFromOtherDocuments,
+          // Second callback
+          () => {
+            // Reinitialize object for import fields with current baseAgreementId
+            // If object already populated, keep data until next fields clicked
+            this.props.importFieldsFromOtherDocumentsObjectAction({
+              agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
+              fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
+              baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
+            });
+          }); // end of second callback
+      }); // end of first callback
   }
 
   renderGetFieldValuesChoiceBox() {
@@ -6494,8 +6500,9 @@ longActionPress(props) {
   }
 
   renderTemplateElementsOverLayClickBoxes(page) {
+    console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, this.props.importFieldsFromOtherDocumentsObject: ', this.props.importFieldsFromOtherDocumentsObject);
+
       return _.map(this.props.templateElementsByPage[page], eachElement => {
-        // console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, eachElement: ', eachElement);
         return (
           <div
             key={eachElement.id}

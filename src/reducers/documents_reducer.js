@@ -683,7 +683,8 @@ export default function (state = {
       return { ...state, selectedFieldObject: action.payload };
 
     case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
-      return { ...state, importFieldsFromOtherDocuments: !state.importFieldsFromOtherDocuments };
+    // Flip importFieldsFromOtherDocuments only if currently false
+      return { ...state, importFieldsFromOtherDocuments: action.payload ? action.payload : !state.importFieldsFromOtherDocuments };
 
     case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION:
       return { ...state, importFieldsFromOtherDocumentsObject: action.payload };
