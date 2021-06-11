@@ -19,7 +19,7 @@ import {
   // ADD_EXISTING_AGREEMENTS,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT,
-  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+  // IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT
@@ -682,9 +682,9 @@ export default function (state = {
     // console.log('in documents reducer, state, action.payload: ', state, action.payload);
       return { ...state, selectedFieldObject: action.payload };
 
-    case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
-    // Flip importFieldsFromOtherDocuments only if currently false
-      return { ...state, importFieldsFromOtherDocuments: action.payload ? action.payload : !state.importFieldsFromOtherDocuments };
+    // case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION:
+    // // Flip importFieldsFromOtherDocuments only if currently false
+    //   return { ...state, importFieldsFromOtherDocuments: action.payload ? action.payload : !state.importFieldsFromOtherDocuments };
 
     case IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION:
       return { ...state, importFieldsFromOtherDocumentsObject: action.payload };

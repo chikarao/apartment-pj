@@ -209,7 +209,7 @@ import {
   SHOW_FIELD_VALUES_CHOICE_MODAL,
   SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
   SET_SELECTED_FIELD_OBJECT,
-  IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+  // IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
@@ -576,17 +576,17 @@ export function setSelectedFieldObject(object) {
   };
 }
 
-export function importFieldsFromOtherDocumentsAction(boolean, callback) {
-  console.log('in actions index, importFieldsFromOtherDocumentsAction:');
-  // callback();
-  //flip state boolean only if false
-  // callback is importFieldsFromOtherDocumentsObjectAction
-  callback();
-  return {
-    type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
-    payload: boolean
-  };
-}
+// export function importFieldsFromOtherDocumentsAction(boolean, callback) {
+//   console.log('in actions index, importFieldsFromOtherDocumentsAction:');
+//   // callback();
+//   //flip state boolean only if false
+//   // callback is importFieldsFromOtherDocumentsObjectAction
+//   callback();
+//   return {
+    // type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
+//     payload: boolean
+//   };
+// }
 
 export function importFieldsFromOtherDocumentsObjectAction(object) {
   console.log('in actions index, importFieldsFromOtherDocumentsAction:');

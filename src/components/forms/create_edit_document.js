@@ -5489,37 +5489,18 @@ longActionPress(props) {
   }
 
   importFieldsFromOtherDocuments() {
-
     // Turn on importFieldsFromOtherDocumentsAction and assign the current agreementId to baseAgreementId
-    // this.props.closeSavedDocument(); // turs showDocument off
-    // this.props.setAgreementId(null);
-    // this.props.setTemplateElementsObject({
-    //   templateElements: {},
-    //   templateElementsByPage: {},
-    //   templateTranslationElements: {},
-    //   templateTranslationElementsByPage: {}
-    // });
-    // Turn off grayed background since SelectExistingDocumentModal has its own gray background
-    this.props.grayOutBackground(() => {});
-
     this.props.showSelectExistingDocumentModal(
       // Turn on switch to import fields
-      // First callback
+      // Callback
       () => {
-        // Turn on importFieldsFromOtherDocuments if false
-        this.props.importFieldsFromOtherDocumentsAction(
-          // Send boolean, if true, keep true
-          this.props.importFieldsFromOtherDocuments,
-          // Second callback
-          () => {
-            // Reinitialize object for import fields with current baseAgreementId
-            // If object already populated, keep data until next fields clicked
-            this.props.importFieldsFromOtherDocumentsObjectAction({
-              agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
-              fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
-              baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
-            });
-          }); // end of second callback
+      // Reinitialize object for import fields with current baseAgreementId
+      // If object already populated, keep data until next fields clicked
+        this.props.importFieldsFromOtherDocumentsObjectAction({
+          agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
+          fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
+          baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
+        });
       }); // end of first callback
   }
 
@@ -6461,7 +6442,7 @@ longActionPress(props) {
       <div
         className="create-edit-document-document-name-and-pages"
       >
-        {`< ${this.props.agreement.document_name}   `} (page: {` ${page} of ${this.props.agreement.document_pages}) >`}
+        {`< id: ${this.props.agreement.id}  ${this.props.agreement.document_name}   `} (page: {` ${page} of ${this.props.agreement.document_pages}) >`}
       </div>
     );
   }
@@ -6536,31 +6517,41 @@ longActionPress(props) {
       });
   }
 
+  // closeRelatedTabs(agreementIdClicked) {
+  //   console.log('in create_edit_document, closeRelatedTabs, agreementIdClicked, this.props.importFieldsFromOtherDocumentsObject: ', agreementIdClicked, this.props.importFieldsFromOtherDocumentsObject);
+  //
+  // }
+
   handleDocumentTabClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     // comma delimted close or activate, inactive or active, agreementId
     const closeOrActivate = elementVal.split(',')[0];
     const activeOrInactive = elementVal.split(',')[1];
-    const agreementIdClicked = elementVal.split(',')[2];
+    const agreementIdClicked = parseInt(elementVal.split(',')[2], 10);
     // LOGIC: If the user clicks close, the tabs are either active or inactive
     // If inactive, take out that agreementId from the selectedAgreementIdArray
     // it is no longer rendered; If active, run openOrSwitchAgreements
     // If not close, and inactive, run openOrSwitchAgreements, props from bookingConfirmation.js
-    console.log('in create_edit_document, handleDocumentTabClick, elementVal: ', elementVal);
+    const processAgreementIfBaseAgreement = () => {
+      // this.closeRelatedTabs(agreementIdClicked)
+      this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: null });
+      // this.props.setSelectedAgreementIdArray([]);
+    }
 
     if (closeOrActivate === 'close') {
       const newArray = [...this.props.selectedAgreementIdArray];
+      if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId === agreementIdClicked) processAgreementIfBaseAgreement();
 
       if (activeOrInactive === 'inactive') {
-        newArray.splice(newArray.indexOf(parseInt(agreementIdClicked, 10)), 1)
+        newArray.splice(newArray.indexOf(agreementIdClicked), 1);
         this.props.setSelectedAgreementIdArray(newArray);
       } else { //if (activeOrInactive === 'inactive') {
         if (this.props.selectedAgreementIdArray.length > 1) {
           // has more than 1 agreement open
           // this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
           // if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {}, templateTranslationElements: {}, templateTranslationElementsByPage: {},  });
-          newArray.splice(newArray.indexOf(parseInt(agreementIdClicked, 10)), 1)
+          newArray.splice(newArray.indexOf(agreementIdClicked), 1);
           this.props.setSelectedAgreementIdArray(newArray);
           // props from bookingConfirmation.js
           this.props.openOrSwitchAgreements(parseInt(newArray[0], 10), true, false);
@@ -6571,7 +6562,7 @@ longActionPress(props) {
       } // else if (activeOrInactive === 'inactive') {
     } else if (activeOrInactive === 'inactive') { // else if (elementVal === 'close') {
       // User clicks inactive tab to switch documents to show
-      this.props.openOrSwitchAgreements(parseInt(agreementIdClicked, 10), true, false);
+      this.props.openOrSwitchAgreements(agreementIdClicked, true, false);
     }
   }
 
@@ -6694,7 +6685,8 @@ longActionPress(props) {
         const bilingual = Documents[this.props.createDocumentKey].translation;
         // const page = 1;
         let documentForBookingOrFlat = false;
-        if (this.props.importFieldsFromOtherDocuments
+        // if (this.props.importFieldsFromOtherDocuments
+        if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
             && this.props.allUserAgreementsArrayMappedWithDocumentFields
             && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
             ){
@@ -6725,7 +6717,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
               {this.props.showTemplate && this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 && !this.props.noEditOrButtons ? this.renderExplanationBoxCallForAction() : ''}
             </div>
           );
@@ -7129,7 +7121,7 @@ function mapStateToProps(state) {
       documentTranslationsAllInOne: state.documents.documentTranslationsAllInOne,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
-      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      // importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
@@ -7171,7 +7163,7 @@ function mapStateToProps(state) {
       formIsDirty,
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       showGetFieldValuesChoice: state.modals.showGetFieldValuesChoiceModal,
-      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      // importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       showSelectExistingDocument: state.modals.showSelectExistingDocumentModal,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,

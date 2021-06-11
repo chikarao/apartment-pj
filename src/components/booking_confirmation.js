@@ -513,6 +513,7 @@ class BookingConfirmation extends Component {
       // if chooseExisting
       this.props.showSelectExistingDocumentModal(() => {});
       this.setState({ agreementId: null, showDocument: false });
+      this.props.importFieldsFromOtherDocumentsObjectAction( { agreementId: null, fieldsArray: [], baseAgreementId: null })
       this.props.setTemplateElementsObject({
         templateElements: {},
         templateElementsByPage: {},
@@ -1255,7 +1256,7 @@ getAgreementArray() {
 
   return (
     // this.props.showSelectExistingDocument
-      // && 
+      // &&
       this.props.allUserAgreementsArrayMappedWithDocumentFields
       && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.state.agreementId]
     ?

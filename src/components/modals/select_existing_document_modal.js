@@ -60,27 +60,46 @@ class SelectExitingDocumentModal extends Component {
     // const loading = !this.props.getFieldValues ? showLoading : () => { this.setState({ loadingMessage: !this.state.loadingMessage }); };
     this.props.fetchUserAgreements(() => this.props.showLoading());
     // if (this.props.getFieldValues) this.props.fetchUserAgreements(showLoading);
-    this.setState({ agreementIdUserWorkingOn: this.props.agreementId }, () => {
-      console.log('in select_existing_document_modal, componentDidMount, this.state.agreementIdUserWorkingOn: ', this.state.agreementIdUserWorkingOn);
+    this.setState({ agreementIdUserWorkingOn: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+                    ?
+                    this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+                    :
+                    this.props.agreementId }, () => {
+      // console.log('in select_existing_document_modal, componentDidMount, this.state.agreementIdUserWorkingOn: ', this.state.agreementIdUserWorkingOn);
     });
   }
   // Not yet used
   // componentDidUpdate(prevProps, prevState) {
-    // if ((prevProps.showGetFieldValuesChoice !== this.props.showGetFieldValuesChoice) && this.props.showGetFieldValuesChoice) {
-    //   window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
-    // }
-    // if (prevState.showFromNewest !== this.state.showFromNewest
-    //     ||
-    //     prevState.showByBooking !== this.state.showByBooking
-    //     ||
-    //     prevState.selectedFlatId !== this.state.selectedFlatId
-    //     ||
-    //     prevState.showImportantPoints !== this.showImportantPoints
-    //   ) {
-    //     console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
-    //   }
+  //   if ((prevProps.showGetFieldValuesChoice !== this.props.showGetFieldValuesChoice) && this.props.showGetFieldValuesChoice) {
+  //     window.addEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
+  //   }
+  //   if (prevState.showFromNewest !== this.state.showFromNewest
+  //       ||
+  //       prevState.showByBooking !== this.state.showByBooking
+  //       ||
+  //       prevState.selectedFlatId !== this.state.selectedFlatId
+  //       ||
+  //       prevState.showImportantPoints !== this.showImportantPoints
+  //     ) {
+  //       console.log('in SelectExitingDocumentModal, componentDidUpdate, prevState, this.state: ', prevState, this.state);
+  //     }
   // }
 
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('in select_existing_document_modal, componentDidUpdate, prevProps.allUserAgreementsArray, this.props.allUserAgreementsArray, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId: ', prevProps.allUserAgreementsArray, this.props.allUserAgreementsArray,this.props.importFieldsFromOtherDocumentsObject.baseAgreementId);
+  //   if (!prevProps.allUserAgreementsArray
+  //       && this.props.allUserAgreementsArray
+  //       && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId) {
+  //     const agreementsTreatedArray = [];
+  //     _.each(this.props.allUserAgreementsArray, eachAgreement => {
+  //
+  //       if (eachAgreement.id !== this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+  //         && eachAgreement.template_file_name === this.props.allUserAgreementsArrayMapped[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId].template_file_name
+  //       ) agreementsTreatedArray.push(eachAgreement)
+  //     });
+  //     this.setState({ agreementsTreatedArray });
+  //   }
+  // }
   // handleFormSubmit(data) {
     // !!!!only persist first 4 characters of account number
     // console.log('in edit flat, handleFormSubmit, data.account_number, data.account_number.slice(0, 4);: ', data.account_number, data.account_number.slice(0, 4));
@@ -148,13 +167,9 @@ class SelectExitingDocumentModal extends Component {
   // set component state so that it shows the right message or render the edit modal;
   handleClose() {
     if (this.props.show) {
-      // Reinitiallize importFieldsFromOtherDocumentsObject if array empty but keep baseAgreementId
-      // Which is the agreement being edited
-      // if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length < 1) this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId });
-      // if user closes the modal, turn off importFieldsFromOtherDocuments
-      if (this.props.importFieldsFromOtherDocuments) {
+      if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId) {
         // this.props.importFieldsFromOtherDocumentsAction(() => {});
-
+        // if (this.props.grayOutBackgroundProp) this.props.grayOutBackground(() => {});
         // When user closes modal, null out and close current agreement, and
         // display the base agreement (original) in a callback
         // callback to setCreateDocumentKey; Set agreementId to pass to CreateEditDocument
@@ -511,13 +526,13 @@ class SelectExitingDocumentModal extends Component {
               <div
                 className="select-existing-document-each-document-top-box-left-date"
               >
-                Last updated: {`${eachAgreement.updated_at.getMonth() + 1}/${eachAgreement.updated_at.getDate()}/${eachAgreement.updated_at.getFullYear()}`}
+                id: { `${eachAgreement.id}`} Last updated: {`${eachAgreement.updated_at.getMonth() + 1}/${eachAgreement.updated_at.getDate()}/${eachAgreement.updated_at.getFullYear()}`}
               </div>
             </div>
             <div
               className="select-existing-document-each-document-top-box-right"
             >
-              {this.props.getFieldValues || this.props.importFieldsFromOtherDocuments
+              {this.props.getFieldValues || this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
               ?
               null
               :
@@ -540,7 +555,12 @@ class SelectExitingDocumentModal extends Component {
     };
 
     const renderEachBooking = (eachBooking) => {
-      const tenant = this.props.allBookingsForUserFlatsMapped[eachBooking.id] && this.props.allBookingsForUserFlatsMapped[eachBooking.id].user ? this.props.allBookingsForUserFlatsMapped[eachBooking.id].user : null;
+      const tenant = this.props.allBookingsForUserFlatsMapped[eachBooking.id]
+                      && this.props.allBookingsForUserFlatsMapped[eachBooking.id].user
+                      ?
+                      this.props.allBookingsForUserFlatsMapped[eachBooking.id].user
+                      :
+                      null;
       // const tenant = {};
       if (tenant) {
         return (
@@ -576,24 +596,63 @@ class SelectExitingDocumentModal extends Component {
         );
       }
     };
+
+    const bookingHasSameTemplateFileNameDiffIds = (eachBooking, templateFileName, id) => {
+      let returnBoolean = false;
+      _.each(eachBooking.agreements, eachAgreement => {
+        if (eachAgreement.template_file_name === templateFileName
+            && eachAgreement.id !== id) returnBoolean = true;
+      });
+      return returnBoolean;
+    };
     // if (this.props.importFieldsFromOtherDocuments
     //       && agreementUserWorkingOn
     //       && Documents[agreementUserWorkingOn.template_file_name].appLanguagesKey === eachButtonKey)
     // Render top box for agreement and booking;
     // Render bottom box only if there are agreements attached to bookings when showByBooking true
-    let renderAgreement = true;
-    const agreementUserWorkingOn = this.props.allUserAgreementsArrayMapped && this.props.importFieldsFromOtherDocuments ? this.props.allUserAgreementsArrayMapped[this.state.agreementIdUserWorkingOn] : null;
+    let renderAgreementOrBooking = true;
+    const agreementUserWorkingOn = this.props.allUserAgreementsArrayMapped
+                                    && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+                                    ?
+                                    this.props.allUserAgreementsArrayMapped[this.state.agreementIdUserWorkingOn]
+                                    :
+                                    null;
+
+    const checkForSameIdAndTemplateFileName = (each) => {
+      if ((each.id === agreementUserWorkingOn.id
+            || each.template_file_name !== agreementUserWorkingOn.template_file_name)
+          ) return false;
+      return true;
+    };
+
     console.log('in SelectExistingDocumentModal, renderEachDocument, this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents: ', this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents);
-
+    // agreementsTreatedArray is an array that has either array of agreements or bookings
+    // based on user choice
     return _.map(agreementsTreatedArray, each => {
-      renderAgreement = true;
-      console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, each: ', agreementsTreatedArray, each);
-      if (this.props.importFieldsFromOtherDocuments
-            && agreementUserWorkingOn
-            && each.template_file_name !== agreementUserWorkingOn.template_file_name
-          ) renderAgreement = false;
-
-      if (renderAgreement) {
+      renderAgreementOrBooking = true;
+      // If importing fields (i.e. baseAgreementId exists)
+      // this.state.agreementsTreatedArray
+      // Do not render the same agreement being worked on OR
+      // a different type of template (i.d. rental contract vs. important points)
+      if ((!this.state.agreementsTreatedArray
+            && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+            // && agreementUserWorkingOn
+           )
+            && (each.id === this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+            || each.template_file_name !== this.props.allUserAgreementsArrayMapped[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId].template_file_name)
+          ) renderAgreementOrBooking = false;
+      // if (!each.date_start
+      //     && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+      //     && agreementUserWorkingOn) renderAgreementOrBooking = checkForSameIdAndTemplateFileName(each);
+      // // Check booking for any of same ids and differennt template_file_name
+      // if ((each.date_start
+      //       && (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+      //         && agreementUserWorkingOn))
+      //     && (!bookingHasSameTemplateFileNameDiffIds(each, agreementUserWorkingOn.template_file_name, agreementUserWorkingOn.id))
+      //   ) renderAgreementOrBooking = false;
+      //   console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, each, agreementUserWorkingOn, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, renderAgreementOrBooking: ', agreementsTreatedArray, each, agreementUserWorkingOn, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, renderAgreementOrBooking);
+      // if (renderAgreementOrBooking) {
+      if (renderAgreementOrBooking) {
         return (
           <li
             className="select-existing-document-each-document-box"
@@ -615,8 +674,8 @@ class SelectExitingDocumentModal extends Component {
 
   renderExistingDocuments() {
     const { allUserAgreementsArray } = this.props;
+    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreatedArray, allUserAgreementsArray, this.props.importFieldsFromOtherDocumentsObject ', agreementsTreatedArray, allUserAgreementsArray, this.props.importFieldsFromOtherDocumentsObject);
     const agreementsTreatedArray = this.state.agreementsTreatedArray ? this.state.agreementsTreatedArray : allUserAgreementsArray;
-    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreatedArray, allUserAgreementsArray ', agreementsTreatedArray, allUserAgreementsArray);
     return (
       <ul
         className="select-existing-document-main-scroll-box"
@@ -631,18 +690,38 @@ class SelectExitingDocumentModal extends Component {
   }
 
   treatAgreementsObject() {
-    console.log('in SelectExistingDocumentModal, treatAgreementsObject, this.state, allUserAgreementsArray, this.state.agreementsTreatedArray,  ', this.state, this.props.allUserAgreementsArray, this.state.agreementsTreatedArray);
     const agreementsTreatedArray = [];
+    const { baseAgreementId } = this.props.importFieldsFromOtherDocumentsObject;
+    const showRentalContracts = baseAgreementId ? this.props.allUserAgreementsArrayMapped[baseAgreementId].template_file_name === 'fixed_term_rental_contract_bilingual' : this.state.showRentalContracts;
+    const showImportantPoints = baseAgreementId ? this.props.allUserAgreementsArrayMapped[baseAgreementId].template_file_name === 'important_points_explanation_bilingual' : this.state.showImportantPoints;
 
     if (!this.state.showByBooking) {
 
       const filterAgreements = () => {
 
         _.each(this.props.allUserAgreementsArray, eachAgreement => {
-          const addAgreement = this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)
-          if (addAgreement && this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsTreatedArray.push(eachAgreement)
-          if (addAgreement && this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsTreatedArray.push(eachAgreement)
+          // Test if user is adding agreements or adding fields from other agreements
+          // And if user has selected an agreement for own flat
+          const addAgreement = (!this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+                                  && (this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)))
+                                ||
+                               (baseAgreementId
+                                  && eachAgreement.id !== baseAgreementId
+                                  && (this.state.selectedFlatId === null || (this.state.selectedFlatId === eachAgreement.flat_id)))
+
+          // If addAgreement is true test to see if user has selected rental or important points agreements
+          // And add to array only if same agreement type
+          if (addAgreement
+              && showRentalContracts
+              && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual'
+            ) agreementsTreatedArray.push(eachAgreement);
+
+          if (addAgreement
+              && showImportantPoints
+              && eachAgreement.template_file_name === 'important_points_explanation_bilingual'
+            ) agreementsTreatedArray.push(eachAgreement)
           // if (this.state.selectedFlatId && eachAgreement.flat_id === this.state.selectedFlatId) agreementsTreatedArray.push(eachAgreement)
+          // console.log('in SelectExistingDocumentModal, treatAgreementsObject, addAgreement, agreementsTreatedArray, eachAgreement, this.props.allUserAgreementsArrayMapped[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId],  ', addAgreement, agreementsTreatedArray, eachAgreement, this.props.allUserAgreementsArrayMapped[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId]);
         });
       };
 
@@ -651,9 +730,11 @@ class SelectExitingDocumentModal extends Component {
       // allUserAgreementsArray has date objects created in the reducer for updated_at
       if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.updated_at - a.updated_at);
       if (this.state.showFromNewest) agreementsTreatedArray.sort((a, b) => a.updated_at - b.updated_at);
-    } else {
+    } else { // if show by booking
         let agreementsArray = null;
         let bookingObject = null;
+        let addAgreement = true;
+
       _.each(this.props.allBookingsForUserFlatsArray, eachBooking => {
         // Go through the booking adding process only if there is no flat selected or for flat that is selected
         if (this.state.selectedFlatId === null || (this.state.selectedFlatId === eachBooking.flat_id)) {
@@ -662,13 +743,20 @@ class SelectExitingDocumentModal extends Component {
           bookingObject.date_start = eachBooking.date_start;
           bookingObject.user = this.props.allBookingsForUserFlatsMapped[eachBooking.id].user
           agreementsArray = [];
+
           _.each(this.props.allBookingsForUserFlatsMapped[eachBooking.id].agreements, eachAgreement => {
-            if (this.state.showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id])
-            if (this.state.showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id])
+            addAgreement = true;
+            if (baseAgreementId
+                && this.props.allUserAgreementsArrayMapped[baseAgreementId].id === eachAgreement.id
+                ) addAgreement = false;
+
+            if (addAgreement && showImportantPoints && eachAgreement.template_file_name === 'important_points_explanation_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id]);
+            if (addAgreement && showRentalContracts && eachAgreement.template_file_name === 'fixed_term_rental_contract_bilingual') agreementsArray.push(this.props.allUserAgreementsArrayMapped[eachAgreement.id]);
           });
           bookingObject.agreements = agreementsArray;
           // Add booking to array only if there are agreements in the bookingObject array
-          if (bookingObject.agreements.length > 0) agreementsTreatedArray.push(bookingObject);
+          // if (bookingObject.agreements.length > 0) 
+          agreementsTreatedArray.push(bookingObject);
         }
       });
       if (this.state.showFromOldest) agreementsTreatedArray.sort((a, b) => b.date_start - a.date_start);
@@ -785,7 +873,7 @@ class SelectExitingDocumentModal extends Component {
         <div className="select-existing-document-button-container-sub">
          {renderEachButton(buttonObjectTop)}
         </div>
-         {!this.props.importFieldsFromOtherDocuments
+         {!this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
            ?
            <div className="select-existing-document-button-container-sub select-existing-document-button-container-sub-bottom">
             {renderEachButton(buttonObjectBottom)}
@@ -837,70 +925,69 @@ class SelectExitingDocumentModal extends Component {
 
   renderExistingDocumentsMain() {
     // const { handleSubmit } = this.props;
-
     // if (this.props.flat) {
-      console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.show, this.props.getFieldValues ', this.props.show, this.props.getFieldValues);
-      showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
-      // <section className="modal-main">
-      const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues';
-      const copiedMessage = this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
-                            ? `${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''} copied to clipboard`
-                            :
-                            '';
-      return (
-        <div
-          className={showHideClassName}
-          style={this.state.shrinkModal ? { background: 'transparent',
-                                            pointerEvents: 'none'
-                                           } : null}
+    console.log('in SelectExistingDocumentModal, renderExistingDocumentsMain, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, this.props.getFieldValues ', this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, this.props.getFieldValues);
+    showHideClassName = this.props.show ? 'modal display-block' : 'modal display-none';
+    // <section className="modal-main">
+    const title = this.props.getFieldValues ? 'selectDocumentForFlat' : 'selectDocumentForFieldValues';
+    const copiedMessage = this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
+                          ? `${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length} field${this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 1 ? 's' : ''} copied to clipboard`
+                          :
+                          '';
+    return (
+      <div
+        className={showHideClassName}
+        style={this.state.shrinkModal ? { background: 'transparent',
+                                          pointerEvents: 'none'
+                                         } : null}
+      >
+        <section
+          className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}
+          style={{ pointerEvents: 'auto' }}
         >
-          <section
-            className={`modal-main ${this.state.shrinkModal ? 'shrink-modal-main' : ''}`}
-            style={{ pointerEvents: 'auto' }}
-          >
 
-            <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
-            <h3 className="auth-modal-title select-existing-document-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
-            {this.state.shrinkModal
+          <button className="modal-close-button" onClick={this.handleClose}><i className="fa fa-window-close"></i></button>
+          <h3 className="auth-modal-title select-existing-document-title">{AppLanguages[title][this.props.appLanguageCode]}</h3>
+          {this.state.shrinkModal
+            ?
+            <div className="select-existing-document-control-and-message">
+              <div className="select-existing-document-message"></div>
+              <div className="select-existing-document-control">
+                <i
+                className="fas fa-expand expand-modal-main-icon"
+                onClick={this.handleAgreementShowClick}
+                ></i>
+              </div>
+              <div className="select-existing-document-message">
+                {copiedMessage}
+              </div>
+            </div>
+            :
+            ''}
+
+          {this.renderButtons()}
+          <div className="select-existing-document-scroll-div">
+            {this.renderAlert()}
+            {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
+            {this.renderSelectedDocumentsThumbnail()}
+            {
+              !this.props.getFieldValues && !this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
               ?
-              <div className="select-existing-document-control-and-message">
-                <div className="select-existing-document-message"></div>
-                <div className="select-existing-document-control">
-                  <i
-                  className="fas fa-expand expand-modal-main-icon"
-                  onClick={this.handleAgreementShowClick}
-                  ></i>
-                </div>
-                <div className="select-existing-document-message">
-                  {copiedMessage}
-                </div>
+              <div
+                className="btn btn-primary select-existing-document-add-button"
+                onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddExistingAgreementsClick : null}
+                style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
+              >
+                {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
               </div>
               :
-              ''}
+              null
+            }
+          </div>
 
-            {this.renderButtons()}
-            <div className="select-existing-document-scroll-div">
-              {this.renderAlert()}
-              {this.props.allUserAgreementsArray ? this.renderExistingDocuments() : this.indicateLoading()}
-              {this.renderSelectedDocumentsThumbnail()}
-              {
-                !this.props.getFieldValues
-                ?
-                <div
-                  className="btn btn-primary select-existing-document-add-button"
-                  onClick={this.state.selectedDocumentsArray.length > 0 ? this.handleAddExistingAgreementsClick : null}
-                  style={this.state.selectedDocumentsArray.length > 0 ? null : { backgroundColor: 'lightgray', border: 'solid 1px #ccc'}}
-                >
-                  {AppLanguages.addAgreementToFlat[this.props.appLanguageCode]}
-                </div>
-                :
-                null
-              }
-            </div>
-
-          </section>
-        </div>
-      );
+        </section>
+      </div>
+    );
     // }
   }
 
@@ -1096,7 +1183,7 @@ function mapStateToProps(state) {
       valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
       allDocumentObjects: state.documents.allDocumentObjects,
       documentConstants: state.documents.documentConstants,
-      importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
+      // importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       grayOutBackgroundProp: state.auth.grayOutBackgroundProp,
     };
