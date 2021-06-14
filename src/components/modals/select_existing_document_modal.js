@@ -492,10 +492,29 @@ class SelectExitingDocumentModal extends Component {
       if (clickedAgreementId) {
         // setAgreementId sets showDocument to true as second argument
         console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments: ', clickedAgreementId, this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments);
+        if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId) {
         // if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
-        //   const newObject = { ...this.props.importFieldsFromOtherDocumentsObject, fieldsArray: [], agreementId: clickedAgreementId };
-        //   this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
-        // }
+          let newAssociationObject = {}
+          // If associationObject is empty assign new one
+          if (_.isEmpty(this.props.importFieldsFromOtherDocumentsObject.associationObject)) {
+            newAssociationObject = { [this.props.importFieldsFromOtherDocumentsObject.baseAgreementId]: [clickedAgreementId] }
+          } else { // if (!this.props.importFieldsFromOtherDocumentsObject.association) {
+            newAssociationObject = { ...this.props.importFieldsFromOtherDocumentsObject.associationObject };
+            if (newAssociationObject[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId]
+                && newAssociationObject[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId].indexOf(clickedAgreementId) === -1
+              ) {
+              newAssociationObject[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId].push(clickedAgreementId)
+            } else {
+              newAssociationObject[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId] = [clickedAgreementId]
+            }
+          } // end of else   if (!this.props.importFieldsFromOtherDocumentsObject.association) {
+          const newObject = { ...this.props.importFieldsFromOtherDocumentsObject,
+                              fieldsArray: [],
+                              agreementId: clickedAgreementId,
+                              associationObject: newAssociationObject
+                              };
+          this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
+        }
         // In import fields When user chooses an agreement
         // Props from bookingConfirmation
         this.props.openOrSwitchAgreements(clickedAgreementId, true, true);
@@ -618,13 +637,6 @@ class SelectExitingDocumentModal extends Component {
                                     :
                                     null;
 
-    const checkForSameIdAndTemplateFileName = (each) => {
-      if ((each.id === agreementUserWorkingOn.id
-            || each.template_file_name !== agreementUserWorkingOn.template_file_name)
-          ) return false;
-      return true;
-    };
-
     console.log('in SelectExistingDocumentModal, renderEachDocument, this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents: ', this.props.allUserAgreementsArrayMapped, agreementUserWorkingOn, Documents);
     // agreementsTreatedArray is an array that has either array of agreements or bookings
     // based on user choice
@@ -641,16 +653,7 @@ class SelectExitingDocumentModal extends Component {
             && (each.id === this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
             || each.template_file_name !== this.props.allUserAgreementsArrayMapped[this.props.importFieldsFromOtherDocumentsObject.baseAgreementId].template_file_name)
           ) renderAgreementOrBooking = false;
-      // if (!each.date_start
-      //     && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
-      //     && agreementUserWorkingOn) renderAgreementOrBooking = checkForSameIdAndTemplateFileName(each);
-      // // Check booking for any of same ids and differennt template_file_name
-      // if ((each.date_start
-      //       && (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
-      //         && agreementUserWorkingOn))
-      //     && (!bookingHasSameTemplateFileNameDiffIds(each, agreementUserWorkingOn.template_file_name, agreementUserWorkingOn.id))
-      //   ) renderAgreementOrBooking = false;
-      //   console.log('in select_exiting_document, renderEachDocument, agreementsTreatedArray, each, agreementUserWorkingOn, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, renderAgreementOrBooking: ', agreementsTreatedArray, each, agreementUserWorkingOn, this.props.importFieldsFromOtherDocumentsObject.baseAgreementId, renderAgreementOrBooking);
+
       // if (renderAgreementOrBooking) {
       if (renderAgreementOrBooking) {
         return (
@@ -745,6 +748,8 @@ class SelectExitingDocumentModal extends Component {
           agreementsArray = [];
 
           _.each(this.props.allBookingsForUserFlatsMapped[eachBooking.id].agreements, eachAgreement => {
+            // Test if under import fields whether agreements is being worked on
+            // with baseAgreementId
             addAgreement = true;
             if (baseAgreementId
                 && this.props.allUserAgreementsArrayMapped[baseAgreementId].id === eachAgreement.id
@@ -755,7 +760,7 @@ class SelectExitingDocumentModal extends Component {
           });
           bookingObject.agreements = agreementsArray;
           // Add booking to array only if there are agreements in the bookingObject array
-          // if (bookingObject.agreements.length > 0) 
+          // if (bookingObject.agreements.length > 0)
           agreementsTreatedArray.push(bookingObject);
         }
       });

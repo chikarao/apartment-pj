@@ -5490,16 +5490,29 @@ longActionPress(props) {
 
   importFieldsFromOtherDocuments() {
     // Turn on importFieldsFromOtherDocumentsAction and assign the current agreementId to baseAgreementId
+    const getBaseAgreementId = () => {
+      let agreementIdReturned = this.props.importFieldsFromOtherDocumentsObject.baseAgreementId;
+      // If baseAgreementId is different from currently open document
+      // return currently opened document if has booking_id of current booking
+      if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId !== this.props.agreementId
+          && this.props.booking.agreements_mapped[this.props.agreementId]
+        ) agreementIdReturned = this.props.agreementId;
+
+      return agreementIdReturned;
+    };
+
     this.props.showSelectExistingDocumentModal(
       // Turn on switch to import fields
       // Callback
       () => {
+        console.log('in create_edit_document, importFieldsFromOtherDocuments, agreementBelongsToBooking this.props.agreementId, this.props.booking: ', this.props.agreementId, this.props.booking);
       // Reinitialize object for import fields with current baseAgreementId
       // If object already populated, keep data until next fields clicked
         this.props.importFieldsFromOtherDocumentsObjectAction({
           agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
           fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
-          baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : this.props.agreementId,
+          baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : getBaseAgreementId(),
+          associationObject: _.isEmpty(this.props.importFieldsFromOtherDocumentsObject.associationObject) ? {} : this.props.importFieldsFromOtherDocumentsObject.associationObject,
         });
       }); // end of first callback
   }
@@ -6468,9 +6481,9 @@ longActionPress(props) {
     }
 
     const newObject = {
+      ...this.props.importFieldsFromOtherDocumentsObject,
       agreementId: agreementId === elementName ? agreementId : elementName,
       fieldsArray: newArray,
-      baseAgreementId
     };
 
     console.log('in create_edit_document, handleOverlayClickBox, clicked, newObject, elementName, elementVal', newObject, elementName, elementVal);
@@ -6518,7 +6531,6 @@ longActionPress(props) {
   }
 
   // closeRelatedTabs(agreementIdClicked) {
-  //   console.log('in create_edit_document, closeRelatedTabs, agreementIdClicked, this.props.importFieldsFromOtherDocumentsObject: ', agreementIdClicked, this.props.importFieldsFromOtherDocumentsObject);
   //
   // }
 
@@ -6535,24 +6547,80 @@ longActionPress(props) {
     // If not close, and inactive, run openOrSwitchAgreements, props from bookingConfirmation.js
     const processAgreementIfBaseAgreement = () => {
       // this.closeRelatedTabs(agreementIdClicked)
-      this.props.importFieldsFromOtherDocumentsObjectAction({ agreementId: null, fieldsArray: [], baseAgreementId: null });
-      // this.props.setSelectedAgreementIdArray([]);
-    }
+      let newAssociationObject = {};
+      const newArray = [...this.props.selectedAgreementIdArray];
+      newAssociationObject = { ...this.props.importFieldsFromOtherDocumentsObject.associationObject };
+      // Take out associated agreements from tab array
+      _.each(newAssociationObject[agreementIdClicked], eachAssociatedAgreementId => {
+        newArray.splice(newArray.indexOf(eachAssociatedAgreementId), 1);
+      });
+      // Take out relevant clicked base agreement from tab array
+      newArray.splice(newArray.indexOf(agreementIdClicked), 1);
+      this.props.setSelectedAgreementIdArray(newArray);
+      delete newAssociationObject[agreementIdClicked];
+      console.log('in create_edit_document, handleDocumentTabClick, processAgreementIfBaseAgreement, agreementIdClicked, newAssociationObject: ', agreementIdClicked, newAssociationObject);
+
+      const closedBaseAgreement = agreementIdClicked === this.props.importFieldsFromOtherDocumentsObject.baseAgreementId;
+
+      this.props.importFieldsFromOtherDocumentsObjectAction({
+            agreementId: closedBaseAgreement ? null : this.props.importFieldsFromOtherDocumentsObject.agreementId,
+            fieldsArray: closedBaseAgreement ? [] : this.props.importFieldsFromOtherDocumentsObject.fieldsArray,
+            baseAgreementId: closedBaseAgreement ? null : this.props.importFieldsFromOtherDocumentsObject.baseAgreementId,
+            associationObject: newAssociationObject
+          });
+      // If no more tabs, close CreateEditDocument
+      if (newArray.length < 1) this.handleClose();
+    };
+
+    const takeOutFromAssociatedObject = (inactive) => {
+      const newAssociationObject = { ...this.props.importFieldsFromOtherDocumentsObject.associationObject };
+      let newArray = null;
+      let index = null;
+      _.each(Object.keys(newAssociationObject), eachBaseAgreementId => {
+        newArray = [...newAssociationObject[eachBaseAgreementId]]
+        // _.each(newAssociationObject[eachBaseAgreementId], eachAssociatedAgreementId => {
+        index = newArray.indexOf(agreementIdClicked);
+        if (index !== -1) newArray.splice(index, 1);
+        // })
+        newAssociationObject[eachBaseAgreementId] = newArray;
+        if (newArray.length < 1) delete newAssociationObject[eachBaseAgreementId];
+      });
+        const nothingInFieldsArrayOrAssociation =  this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length < 1
+                      && _.isEmpty(newAssociationObject)
+        this.props.importFieldsFromOtherDocumentsObjectAction({ ...this.props.importFieldsFromOtherDocumentsObject,
+            associationObject: newAssociationObject,
+            // If nothing in fieldsarray and associationObject empty, null out
+            agreementId: nothingInFieldsArrayOrAssociation
+                          ? null : this.props.importFieldsFromOtherDocumentsObject.agreementId,
+            baseAgreementId: nothingInFieldsArrayOrAssociation
+                          ? null : this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
+            // !!!!keep agreementId and fieldsArray; Can still copy even if closed
+          });
+    };
+
+    let oneOfBaseAgreements = false;
 
     if (closeOrActivate === 'close') {
       const newArray = [...this.props.selectedAgreementIdArray];
-      if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId === agreementIdClicked) processAgreementIfBaseAgreement();
+      if (this.props.importFieldsFromOtherDocumentsObject.associationObject[agreementIdClicked]) {
+        processAgreementIfBaseAgreement();
+        oneOfBaseAgreements = true;
+      }
 
-      if (activeOrInactive === 'inactive') {
+      if (activeOrInactive === 'inactive' && !oneOfBaseAgreements) {
         newArray.splice(newArray.indexOf(agreementIdClicked), 1);
         this.props.setSelectedAgreementIdArray(newArray);
-      } else { //if (activeOrInactive === 'inactive') {
+        // true inactive
+        takeOutFromAssociatedObject(true);
+      } else if (!oneOfBaseAgreements) { //if (activeOrInactive === 'inactive') {
         if (this.props.selectedAgreementIdArray.length > 1) {
           // has more than 1 agreement open
           // this.props.setInitialValuesObject({ initialValuesObject: {}, agreementMappedByName: {}, agreementMappedById: {}, allFields: [], overlappedkeysMapped: {} })
           // if (!_.isEmpty(this.props.templateElements)) this.props.setTemplateElementsObject({ templateElements: {}, templateElementsByPage: {}, templateTranslationElements: {}, templateTranslationElementsByPage: {},  });
           newArray.splice(newArray.indexOf(agreementIdClicked), 1);
           this.props.setSelectedAgreementIdArray(newArray);
+          // false inactive
+          takeOutFromAssociatedObject(false);
           // props from bookingConfirmation.js
           this.props.openOrSwitchAgreements(parseInt(newArray[0], 10), true, false);
         } else { // has only 1 agreement open
