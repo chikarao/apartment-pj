@@ -22,7 +22,8 @@ import {
   // IMPORT_FIELD_FROM_OTHER_DOCUMENTS_ACTION,
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
   SET_SELECTED_AGREEMENT_ID_ARRAY,
-  SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT
+  SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
+  SET_CACHED_INITIAL_VALUES_OBJECT
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -56,6 +57,7 @@ export default function (state = {
   importFieldsFromOtherDocumentsObject: { agreementId: null, fieldsArray: [], baseAgreementId: null },
   selectedAgreementIdArray: [],
   editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
+  cachedInitialValuesObject: {},
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -751,6 +753,10 @@ export default function (state = {
     case SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT:
     console.log('in documents reducer, SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT action.payload: ', action.payload);
     return { ...state, editActionBoxCallForActionObject: action.payload };
+
+    case SET_CACHED_INITIAL_VALUES_OBJECT:
+    console.log('in documents reducer, SET_CACHED_INITIAL_VALUES_OBJECT action.payload: ', action.payload);
+    return { ...state, cachedInitialValuesObject: action.payload };
 
     default:
       return state;

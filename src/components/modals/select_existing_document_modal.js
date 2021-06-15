@@ -491,7 +491,6 @@ class SelectExitingDocumentModal extends Component {
 
       if (clickedAgreementId) {
         // setAgreementId sets showDocument to true as second argument
-        console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments: ', clickedAgreementId, this.props.importFieldsFromOtherDocumentsObject, this.props.importFieldsFromOtherDocuments);
         if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId) {
         // if (this.props.importFieldsFromOtherDocuments && this.props.importFieldsFromOtherDocumentsObject.agreementId) {
           let newAssociationObject = {}
@@ -512,11 +511,15 @@ class SelectExitingDocumentModal extends Component {
                               fieldsArray: [],
                               agreementId: clickedAgreementId,
                               associationObject: newAssociationObject
-                              };
+                            };
           this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
         }
         // In import fields When user chooses an agreement
         // Props from bookingConfirmation
+        // console.log('in SelectExistingDocumentModal, handleAgreementShowClick, clickedAgreementId tthis.props.valuesInForm: ', clickedAgreementId, this.props.valuesInForm);
+        // Keep each agreement's values in a mapped object for later use
+        this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.props.agreementId]: this.props.valuesInForm });
+        // openOrSwitchAgreements is props from bookingConfirmation
         this.props.openOrSwitchAgreements(clickedAgreementId, true, true);
         this.handleClose();
       }
@@ -1191,6 +1194,7 @@ function mapStateToProps(state) {
       // importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       grayOutBackgroundProp: state.auth.grayOutBackgroundProp,
+      cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
     };
   }
 

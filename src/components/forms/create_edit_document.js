@@ -259,15 +259,21 @@ class CreateEditDocument extends Component {
     // Template document intitialValues in componentDidUpdate
     // Use selectedFlatFromParams to test since bookingData also has flat
     // so need to distinguish flat does not test positive in bookingConfirmation
+    const templateElementsCountChanged = (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+    const templateTranslationElementsCountChanged = (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
+    const documentChanged = prevProps.agreementId !== this.props.agreementId;
 
+    console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, this.props.selectedAgreementIdArray, templateElementsCountChanged, templateTranslationElementsCountChanged, documentChanged: ', prevProps.agreementId, this.props.agreementId, this.props.selectedAgreementIdArray, templateElementsCountChanged, templateTranslationElementsCountChanged, documentChanged);
     if ((this.props.bookingData || this.props.selectedFlatFromParams)
         &&
         (
         // The number of templateElements hanged
-        (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+        templateElementsCountChanged
+        // (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
         ||
-        // The number of templateTranslationElements hanged
-        (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
+        // The number of templateTranslationElements changed
+        templateTranslationElementsCountChanged
+        // (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
         // Run if documentLanguageCode changes
         (this.props.showDocument && (prevProps.documentLanguageCode !== this.props.documentLanguageCode))
@@ -329,43 +335,49 @@ class CreateEditDocument extends Component {
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       // Get date object at the beginning to run once instead of running on each field
       const bookingDatesObject = booking ? getBookingDateObject(booking) : null;
-
-      const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({
-        flat,
-        booking,
-        userOwner,
-        tenant,
-        appLanguageCode,
-        documentFields: (this.state.getSelectDataBaseValues
+      // if values for documentCached, and count has not changed, used cached values
+      // otherwise, run initialValuesObject
+      const initialValuesObject = this.props.cachedInitialValuesObject[this.props.agreementId]
+          && documentChanged
+        ?
+         { initialValuesObject: this.props.cachedInitialValuesObject[this.props.agreementId] }
+        :
+        Documents[this.props.agreement.template_file_name].templateMethod({
+          flat,
+          booking,
+          userOwner,
+          tenant,
+          appLanguageCode,
+          documentFields: (this.state.getSelectDataBaseValues
                           || this.state.findIfDatabaseValuesExistForFields
                           || (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
                           || prevProps.documentLanguageCode !== this.props.documentLanguageCode
                           // || (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
                         ) ? templateElementsSubset : allObject,
-        // documentFields: allObject,
-        templateTranslationElements: this.props.templateTranslationElements,
-        documentTranslationsAllInOne: this.props.documentTranslationsAllInOne,
-        assignments,
-        contracts,
-        documentLanguageCode,
-        documentKey,
-        contractorTranslations,
-        staffTranslations,
-        mainInsertFieldsObject,
-        template: true,
-        allObject,
-        agreement,
-        templateMappingObjects,
-        documentConstants,
-        bookingDatesObject,
-        templateElementsMappedByName,
-        getSelectDataBaseValues: this.state.getSelectDataBaseValues,
-        findIfDatabaseValuesExistForFields: this.state.findIfDatabaseValuesExistForFields,
-        getSelectDataBaseValuesCallback: () => {},
-        // getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
-        findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
-      });
-      console.log('in create_edit_document, componentDidUpdate, initialValuesObject: ', initialValuesObject);
+          // documentFields: allObject,
+          templateTranslationElements: this.props.templateTranslationElements,
+          documentTranslationsAllInOne: this.props.documentTranslationsAllInOne,
+          assignments,
+          contracts,
+          documentLanguageCode,
+          documentKey,
+          contractorTranslations,
+          staffTranslations,
+          mainInsertFieldsObject,
+          template: true,
+          allObject,
+          agreement,
+          templateMappingObjects,
+          documentConstants,
+          bookingDatesObject,
+          templateElementsMappedByName,
+          getSelectDataBaseValues: this.state.getSelectDataBaseValues,
+          findIfDatabaseValuesExistForFields: this.state.findIfDatabaseValuesExistForFields,
+          getSelectDataBaseValuesCallback: () => {},
+          // getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
+          findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
+        });
+      console.log('in create_edit_document, componentDidUpdate, this.props.agreementId, this.props.cachedInitialValuesObject, initialValuesObject: ', this.props.agreementId, this.props.cachedInitialValuesObject, initialValuesObject);
       // If not for getting database values, for getting initial values for the form
       // console.log('in create_edit_document, componentDidUpdate, prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields: ', prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields);
       if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
@@ -3262,9 +3274,10 @@ longActionPress(props) {
         this.setTemplateHistoryArray(newElementArray, 'create');
         // Emplty out clipboard
         this.props.importFieldsFromOtherDocumentsObjectAction({
+          ...this.props.importFieldsFromOtherDocumentsObject,
           agreementId: null,
           fieldsArray: [],
-          baseAgreementId: this.props.agreementId,
+          // baseAgreementId: this.props.agreementId,
         });
     }; // const pasteFields = () => {
 
@@ -5511,7 +5524,8 @@ longActionPress(props) {
         this.props.importFieldsFromOtherDocumentsObjectAction({
           agreementId: this.props.importFieldsFromOtherDocumentsObject.agreementId ? this.props.importFieldsFromOtherDocumentsObject.agreementId : null,
           fieldsArray: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 ? this.props.importFieldsFromOtherDocumentsObject.fieldsArray : [],
-          baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : getBaseAgreementId(),
+          // baseAgreementId: this.props.importFieldsFromOtherDocumentsObject.baseAgreementId ? this.props.importFieldsFromOtherDocumentsObject.baseAgreementId : getBaseAgreementId(),
+          baseAgreementId: getBaseAgreementId(),
           associationObject: _.isEmpty(this.props.importFieldsFromOtherDocumentsObject.associationObject) ? {} : this.props.importFieldsFromOtherDocumentsObject.associationObject,
         });
       }); // end of first callback
@@ -6598,14 +6612,31 @@ longActionPress(props) {
           });
     };
 
+    const processCachedInitialValueObject = (action) => {
+      const newObject = { ...this.props.cachedInitialValuesObject };
+      let changed = false;
+
+      if (action === 'close') delete newObject[agreementIdClicked];
+      // If tab made inactive and not yet in object, put it in
+      if (action === 'activate' && !newObject[this.props.agreementId]) {
+        newObject[this.props.agreementId] = this.props.valuesInForm;
+        changed = true;
+      }
+      // Run setCachedInitialValuesObject only if object changed
+      if (action === 'close' || changed) this.props.setCachedInitialValuesObject(newObject);
+    };
+
     let oneOfBaseAgreements = false;
 
     if (closeOrActivate === 'close') {
       const newArray = [...this.props.selectedAgreementIdArray];
-      if (this.props.importFieldsFromOtherDocumentsObject.associationObject[agreementIdClicked]) {
+      if (this.props.importFieldsFromOtherDocumentsObject.associationObject
+          && this.props.importFieldsFromOtherDocumentsObject.associationObject[agreementIdClicked]) {
         processAgreementIfBaseAgreement();
         oneOfBaseAgreements = true;
       }
+
+      processCachedInitialValueObject('close');
 
       if (activeOrInactive === 'inactive' && !oneOfBaseAgreements) {
         newArray.splice(newArray.indexOf(agreementIdClicked), 1);
@@ -6629,6 +6660,7 @@ longActionPress(props) {
         } //  if (this.props.selectedAgreementIdArray.length > 1) {
       } // else if (activeOrInactive === 'inactive') {
     } else if (activeOrInactive === 'inactive') { // else if (elementVal === 'close') {
+      processCachedInitialValueObject('activate');
       // User clicks inactive tab to switch documents to show
       this.props.openOrSwitchAgreements(agreementIdClicked, true, false);
     }
@@ -7195,6 +7227,7 @@ function mapStateToProps(state) {
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
       editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
+      cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7236,7 +7269,8 @@ function mapStateToProps(state) {
       importFieldsFromOtherDocumentsObject: state.documents.importFieldsFromOtherDocumentsObject,
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
-      editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject
+      editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
+      cachedInitialValuesObject: state.documents.cachedInitialValuesObject
     };
   }
 

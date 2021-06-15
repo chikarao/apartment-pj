@@ -213,6 +213,7 @@ import {
   IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
+  SET_CACHED_INITIAL_VALUES_OBJECT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -614,6 +615,16 @@ export function setEditActionBoxCallForActionObject(object) {
   //flip state boolean
   return {
     type: SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
+    payload: object
+  };
+}
+
+export function setCachedInitialValuesObject(object) {
+  console.log('in actions index, setCachedInitialValuesObject, object:', object);
+  // callback();
+  //flip state boolean
+  return {
+    type: SET_CACHED_INITIAL_VALUES_OBJECT,
     payload: object
   };
 }

@@ -498,6 +498,8 @@ class BookingConfirmation extends Component {
     if (this.props.booking.agreements_mapped[parseInt(newAgreementId, 10)].language_code === this.props.documentLanguageCode) {
       window.alert('Please select a translated language that is not the base language of the template.')
     } else {
+      // Keep open agreement form values in cache
+      if (this.state.agreementId) this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.state.agreementId]: this.props.valuesInForm });
       this.openOrSwitchAgreements(newAgreementId, template, true);
     }
   }
@@ -1557,6 +1559,8 @@ function mapStateToProps(state) {
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       importFieldsFromOtherDocuments: state.documents.importFieldsFromOtherDocuments,
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
+      cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
+      valuesInForm: state.form.CreateEditDocument && state.form.CreateEditDocument.values ? state.form.CreateEditDocument.values : {},
     };
   }
 
