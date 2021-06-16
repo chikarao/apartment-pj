@@ -214,6 +214,7 @@ import {
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
   SET_CACHED_INITIAL_VALUES_OBJECT,
+  SET_LAST_MOUNTED_DOCUMENT_ID
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -559,8 +560,7 @@ export function showGetFieldValuesChoiceModal(callback) {
 
 export function setGetFieldValueDocumentObject(object) {
   console.log('in actions index, showInsertFieldEditModal:');
-  // callback();
-  //flip state boolean
+
   return {
     type: SET_GET_FIELD_VALUE_DOCUMENT_OBJECT,
     payload: object
@@ -569,8 +569,7 @@ export function setGetFieldValueDocumentObject(object) {
 
 export function setSelectedFieldObject(object) {
   console.log('in actions index, setSelectedFieldObject:');
-  // callback();
-  //flip state boolean
+
   return {
     type: SET_SELECTED_FIELD_OBJECT,
     payload: object
@@ -591,8 +590,7 @@ export function setSelectedFieldObject(object) {
 
 export function importFieldsFromOtherDocumentsObjectAction(object) {
   console.log('in actions index, importFieldsFromOtherDocumentsAction:');
-  // callback();
-  //flip state boolean
+
   return {
     type: IMPORT_FIELD_FROM_OTHER_DOCUMENTS_OBJECT_ACTION,
     payload: object
@@ -601,8 +599,7 @@ export function importFieldsFromOtherDocumentsObjectAction(object) {
 
 export function setSelectedAgreementIdArray(array) {
   console.log('in actions index, setSelectedAgreementIdArray, array:', array);
-  // callback();
-  //flip state boolean
+
   return {
     type: SET_SELECTED_AGREEMENT_ID_ARRAY,
     payload: array
@@ -611,8 +608,7 @@ export function setSelectedAgreementIdArray(array) {
 
 export function setEditActionBoxCallForActionObject(object) {
   console.log('in actions index, setEditActionBoxCallForActionObject, object:', object);
-  // callback();
-  //flip state boolean
+
   return {
     type: SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
     payload: object
@@ -621,14 +617,21 @@ export function setEditActionBoxCallForActionObject(object) {
 
 export function setCachedInitialValuesObject(object) {
   console.log('in actions index, setCachedInitialValuesObject, object:', object);
-  // callback();
-  //flip state boolean
+
   return {
     type: SET_CACHED_INITIAL_VALUES_OBJECT,
     payload: object
   };
 }
 
+export function setLastMountedocumentId(object) {
+  console.log('in actions index, setLastMountedocumentId, object:', object);
+
+  return {
+    type: SET_LAST_MOUNTED_DOCUMENT_ID,
+    payload: object
+  };
+}
 
 export function showLoading(callback) {
   console.log('in actions index, showLoading:', callback);

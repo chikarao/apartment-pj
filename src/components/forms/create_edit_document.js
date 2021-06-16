@@ -253,6 +253,11 @@ class CreateEditDocument extends Component {
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     } // if (this.props.showTemplate) {
+
+      // setLastMountedocumentId to current agreementId so that can
+      // track if is running componentDidUpdateuser has changed agreements or
+      // or another reason
+    this.props.setLastMountedocumentId(this.props.agreementId);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -260,10 +265,11 @@ class CreateEditDocument extends Component {
     // Use selectedFlatFromParams to test since bookingData also has flat
     // so need to distinguish flat does not test positive in bookingConfirmation
     const templateElementsCountChanged = (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+    const templateElementsCountChangedFromZero = (Object.keys(prevProps.templateElements).length < 1 && Object.keys(this.props.templateElements).length) > 1
     const templateTranslationElementsCountChanged = (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
-    const documentChanged = prevProps.agreementId !== this.props.agreementId;
+    const templateTranslationElementsCountChangedFromZero = (Object.keys(prevProps.templateTranslationElements).length < 1 && Object.keys(this.props.templateTranslationElements).length) > 1
 
-    console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, this.props.selectedAgreementIdArray, templateElementsCountChanged, templateTranslationElementsCountChanged, documentChanged: ', prevProps.agreementId, this.props.agreementId, this.props.selectedAgreementIdArray, templateElementsCountChanged, templateTranslationElementsCountChanged, documentChanged);
+    console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements);
     if ((this.props.bookingData || this.props.selectedFlatFromParams)
         &&
         (
@@ -274,6 +280,8 @@ class CreateEditDocument extends Component {
         // The number of templateTranslationElements changed
         templateTranslationElementsCountChanged
         // (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
+        ||
+        prevProps.lastMountedocumentId !== this.props.agreementId
         ||
         // Run if documentLanguageCode changes
         (this.props.showDocument && (prevProps.documentLanguageCode !== this.props.documentLanguageCode))
@@ -315,30 +323,34 @@ class CreateEditDocument extends Component {
           // templateElementsSubset[templateElements[eachId].name] = templateElements[eachId];
           templateElementsSubset[eachId] = templateElements[eachId];
         });
-      } else {
+      } else if (_.isEmpty(prevProps.templateElements)) {
         // if prevProps is empty, createEditDocument is loading the agreement
-        if (_.isEmpty(prevProps.templateElements)) {
-          templateElementsSubset = templateElements;
-        } else {
-          // This needs work; Needs to add to initialValuesObject; not create new object
-          // If prevProps is not empty, there was an element added
-          // Find any new elements in templateElements that are not in prevProps
-          // and put them in templateElementsSubset
-          _.each(Object.keys(templateElements), eachId => {
-            if (Object.keys(prevProps.templateElements).indexOf(eachId) === -1) templateElementsSubset[eachId] = templateElements[eachId];
-          });
-          if (_.isEmpty(templateElementsSubset)) templateElementsSubset = templateElements;
-        }
+        templateElementsSubset = templateElements;
+      } else {
+        // This needs work; Needs to add to initialValuesObject; not create new object
+        // If prevProps is not empty, there was an element added
+        // Find any new elements in templateElements that are not in prevProps
+        // and put them in templateElementsSubset
+        _.each(Object.keys(templateElements), eachId => {
+          if (!prevProps.templateElements[eachId]) templateElementsSubset[eachId] = templateElements[eachId];
+        });
+        // if (_.isEmpty(templateElementsSubset)) templateElementsSubset = templateElements;
       }
-
       const allObject = this.props.allDocumentObjects[Documents[this.props.agreement.template_file_name].propsAllKey]
+      // allObject has all keys and objects for document type
+      // fixedTermRentalContractBilingualAll and importantPointsExplanationBilingualAll
       // const initialValuesObject = Documents[this.props.agreement.template_file_name].templateMethod({ flat, booking, userOwner, tenant, appLanguageCode, documentFields: templateElementsSubset, assignments, contracts, documentLanguageCode, documentKey, contractorTranslations, staffTranslations, mainInsertFieldsObject, template: true, allObject, agreement, templateMappingObjects });
       // Get date object at the beginning to run once instead of running on each field
       const bookingDatesObject = booking ? getBookingDateObject(booking) : null;
-      // if values for documentCached, and count has not changed, used cached values
-      // otherwise, run initialValuesObject
+      // if values exist for for documentCached use cached values
+      // otherwise, AND the document HAS chnaged run getInitialValuesObject
+      // console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, allObject, this.props.allDocumentObjects, templateElementsSubset, templateElements, prevProps.templateElements: ', prevProps.agreementId, allObject, this.props.allDocumentObjects, templateElementsSubset, templateElements, prevProps.templateElements);
+      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId);
+      const currentInitialValuesObject = this.props.initialValues;
+      const documentsChanged = prevProps.lastMountedocumentId !== this.props.agreementId;
+
       const initialValuesObject = this.props.cachedInitialValuesObject[this.props.agreementId]
-          && documentChanged
+            && documentsChanged
         ?
          { initialValuesObject: this.props.cachedInitialValuesObject[this.props.agreementId] }
         :
@@ -377,10 +389,15 @@ class CreateEditDocument extends Component {
           // getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
           findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
         });
-      console.log('in create_edit_document, componentDidUpdate, this.props.agreementId, this.props.cachedInitialValuesObject, initialValuesObject: ', this.props.agreementId, this.props.cachedInitialValuesObject, initialValuesObject);
+
+      // If the document has not changed a templateelement has been added
+      // so merge the initialValues for the elements subset with the original initialValues
+      const finalInitialValuesObject = !documentsChanged ? { ...initialValuesObject.initialValuesObject, ...currentInitialValuesObject } : initialValuesObject.initialValuesObject;
+
       // If not for getting database values, for getting initial values for the form
-      // console.log('in create_edit_document, componentDidUpdate, prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields: ', prevState.findIfDatabaseValuesExistForFields, this.state.findIfDatabaseValuesExistForFields);
-      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject(initialValuesObject);
+      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ ...initialValuesObject, initialValuesObject: finalInitialValuesObject });
+      // Update cachedInitialValuesObject with values with new elements added 
+      if (!documentsChanged) this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.props.agreementId]: finalInitialValuesObject });
       // If getting data base values set objects for GetFieldValueChoiceModal
       if (this.state.getSelectDataBaseValues) {
         const fieldObject = getDocumentFieldsWithSameName({
@@ -7228,6 +7245,7 @@ function mapStateToProps(state) {
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
       editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
       cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
+      lastMountedocumentId: state.documents.lastMountedocumentId,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7270,7 +7288,8 @@ function mapStateToProps(state) {
       allUserAgreementsArrayMappedWithDocumentFields: state.documents.allUserAgreementsArrayMappedWithDocumentFields,
       selectedAgreementIdArray: state.documents.selectedAgreementIdArray,
       editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
-      cachedInitialValuesObject: state.documents.cachedInitialValuesObject
+      cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
+      lastMountedocumentId: state.documents.lastMountedocumentId,
     };
   }
 
