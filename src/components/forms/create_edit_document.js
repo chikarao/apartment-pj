@@ -265,11 +265,10 @@ class CreateEditDocument extends Component {
     // Use selectedFlatFromParams to test since bookingData also has flat
     // so need to distinguish flat does not test positive in bookingConfirmation
     const templateElementsCountChanged = (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
-    const templateElementsCountChangedFromZero = (Object.keys(prevProps.templateElements).length < 1 && Object.keys(this.props.templateElements).length) > 1
     const templateTranslationElementsCountChanged = (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
-    const templateTranslationElementsCountChangedFromZero = (Object.keys(prevProps.templateTranslationElements).length < 1 && Object.keys(this.props.templateTranslationElements).length) > 1
+    const documentMountedChanged = prevProps.lastMountedocumentId !== this.props.agreementId;
 
-    console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements);
+    // console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId, prevProps.templateElements, this.props.templateElements);
     if ((this.props.bookingData || this.props.selectedFlatFromParams)
         &&
         (
@@ -281,7 +280,8 @@ class CreateEditDocument extends Component {
         templateTranslationElementsCountChanged
         // (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
         ||
-        prevProps.lastMountedocumentId !== this.props.agreementId
+        // another document was mounted
+        documentMountedChanged
         ||
         // Run if documentLanguageCode changes
         (this.props.showDocument && (prevProps.documentLanguageCode !== this.props.documentLanguageCode))
@@ -344,13 +344,11 @@ class CreateEditDocument extends Component {
       const bookingDatesObject = booking ? getBookingDateObject(booking) : null;
       // if values exist for for documentCached use cached values
       // otherwise, AND the document HAS chnaged run getInitialValuesObject
-      // console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, allObject, this.props.allDocumentObjects, templateElementsSubset, templateElements, prevProps.templateElements: ', prevProps.agreementId, allObject, this.props.allDocumentObjects, templateElementsSubset, templateElements, prevProps.templateElements);
-      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, this.props.lastMountedocumentId);
+      // Keep the current initialValues for later merge with new elements
       const currentInitialValuesObject = this.props.initialValues;
-      const documentsChanged = prevProps.lastMountedocumentId !== this.props.agreementId;
 
       const initialValuesObject = this.props.cachedInitialValuesObject[this.props.agreementId]
-            && documentsChanged
+            && documentMountedChanged
         ?
          { initialValuesObject: this.props.cachedInitialValuesObject[this.props.agreementId] }
         :
@@ -362,10 +360,11 @@ class CreateEditDocument extends Component {
           appLanguageCode,
           documentFields: (this.state.getSelectDataBaseValues
                           || this.state.findIfDatabaseValuesExistForFields
-                          || (Object.keys(prevProps.templateElements).length !== Object.keys(this.props.templateElements).length)
+                          || templateElementsCountChanged
+                          || templateTranslationElementsCountChanged
                           || prevProps.documentLanguageCode !== this.props.documentLanguageCode
-                          // || (Object.keys(prevProps.templateTranslationElements).length !== Object.keys(this.props.templateTranslationElements).length)
-                        ) ? templateElementsSubset : allObject,
+                        )
+                        ? templateElementsSubset : allObject,
           // documentFields: allObject,
           templateTranslationElements: this.props.templateTranslationElements,
           documentTranslationsAllInOne: this.props.documentTranslationsAllInOne,
@@ -392,12 +391,13 @@ class CreateEditDocument extends Component {
 
       // If the document has not changed a templateelement has been added
       // so merge the initialValues for the elements subset with the original initialValues
-      const finalInitialValuesObject = !documentsChanged ? { ...initialValuesObject.initialValuesObject, ...currentInitialValuesObject } : initialValuesObject.initialValuesObject;
-
+      // Second property overwrites first if same key exists
+      const finalInitialValuesObject = !documentMountedChanged ? { ...currentInitialValuesObject, ...initialValuesObject.initialValuesObject } : initialValuesObject.initialValuesObject;
       // If not for getting database values, for getting initial values for the form
-      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ ...initialValuesObject, initialValuesObject: finalInitialValuesObject });
-      // Update cachedInitialValuesObject with values with new elements added 
-      if (!documentsChanged) this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.props.agreementId]: finalInitialValuesObject });
+      // Just importing fields, not value so current value takes precedence
+      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ initialValuesObject: finalInitialValuesObject, ...initialValuesObject });
+      // Update cachedInitialValuesObject with values with new elements added
+      if (!documentMountedChanged) this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.props.agreementId]: finalInitialValuesObject });
       // If getting data base values set objects for GetFieldValueChoiceModal
       if (this.state.getSelectDataBaseValues) {
         const fieldObject = getDocumentFieldsWithSameName({
@@ -431,23 +431,18 @@ class CreateEditDocument extends Component {
       && prevProps.importFieldsFromOtherDocumentsObject
       && prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length !==
          this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length)
-      // || (this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0
-      //   && (
-      //     this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length !==
-      //       && this.prevProps.importFieldsFromOtherDocumentsObject.fieldsArray.length
-      //   )
-      //
-      // )
-    ) {
-      let actionButtonDimensions = { top: 0, left: 0 };
+      ) {
       const actionButton = document.getElementById('create-edit-document-template-edit-action-box-elements-pasteFields');
       if (actionButton) {
-        actionButtonDimensions = actionButton.getBoundingClientRect();
-        // this.setState({ editActionBoxCallForActionObject: { top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') } }, () => {
-        //   // console.log('in create_edit_document, componentDidUpdate, this.state.editActionBoxCallForActionObject, actionButton', this.state.editActionBoxCallForActionObject, actionButton);
-        // })
-        const newObject = { ...this.props.editActionBoxCallForActionObject, top: actionButtonDimensions.top, left: actionButtonDimensions.left, message: actionButton.getAttribute('name'), value: actionButton.getAttribute('value') };
-        this.props.setEditActionBoxCallForActionObject(newObject);
+        const actionButtonDimensions = actionButton.getBoundingClientRect() || { top: 0, left: 0 };
+
+        this.props.setEditActionBoxCallForActionObject({
+              ...this.props.editActionBoxCallForActionObject,
+              top: actionButtonDimensions.top,
+              left: actionButtonDimensions.left,
+              message: actionButton.getAttribute('name'),
+              value: actionButton.getAttribute('value')
+            });
       }
     }
   } // End of componentDidUpdate
@@ -2107,7 +2102,6 @@ longActionPress(props) {
       choicesOriginalObject[each] = { eachElementId, eachChoiceId, choice: button, choiceDimensions: button.getBoundingClientRect(), width: button.style.width, height: button.style.height };
     });
     const actionCallback = (updatedElementsArray) => {
-      console.log('in create_edit_document, handleTemplateChoiceActionMouseDown, updatedElementsArray, ', updatedElementsArray);
       this.props.updateDocumentElementLocally(updatedElementsArray);
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
@@ -2115,50 +2109,65 @@ longActionPress(props) {
     this.longActionPress({ action: elementVal, choicesArray, templateElements: this.props.templateElements, choicesOriginalObject, selectedChoiceIdArray: this.state.selectedChoiceIdArray, actionCallback });
   }
 
-  renderTab(eachElement, selected, tabLeftMarginPx, inputElement) {
+  renderTab(eachElement, selected, tabLeftMarginPx, inputElement, dummyTab) {
     const tabWidth = inputElement ? TAB_WIDTH : 55;
     const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
     const className = !this.state.translationModeOn ? 'template-element' : 'template-translation-element'
-    return (
-      <div
-        id={`${className}-tab-${eachElement.id}`}
-        className="create-edit-document-template-element-edit-tab"
-        style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
-      >
-        <i
-          key={1}
-          value={eachElement.id}
-          className="fas fa-check-circle"
-          style={{ fontSize: '14.5px', lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
-          onClick={this.handleTemplateElementCheckClick}
+    if (!dummyTab) {
+      console.log('in create_edit_document, renderTab, in renderTab !dummyTab, ', dummyTab);
+      return (
+        <div
+          id={`${className}-tab-${eachElement.id}`}
+          className="create-edit-document-template-element-edit-tab"
+          style={{ height: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px` }}
         >
-        </i>
-        <i
-          key={2}
-          value={eachElement.id}
-          className="fas fa-truck-moving"
-          style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
-          onMouseDown={this.handleTemplateElementMoveClick}
-        >
-        </i>
-        {inputElement
-          ?
           <i
-            key={3}
-            type={eachElement.input_type}
+            key={1}
             value={eachElement.id}
-            className="fas fa-expand-arrows-alt" style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
-            onMouseDown={this.handleTemplateElementChangeSizeClick}
+            className="fas fa-check-circle"
+            style={{ fontSize: '14.5px', lineHeight: '1.5', color: selected ? '#fb4f14' : 'gray' }}
+            onClick={this.handleTemplateElementCheckClick}
           >
-        </i> : null}
-      </div>
-    );
+          </i>
+          <i
+            key={2}
+            value={eachElement.id}
+            className="fas fa-truck-moving"
+            style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
+            onMouseDown={this.handleTemplateElementMoveClick}
+          >
+          </i>
+          {inputElement
+            ?
+            <i
+              key={3}
+              type={eachElement.input_type}
+              value={eachElement.id}
+              className="fas fa-expand-arrows-alt" style={{ fontSize: '14.5px', lineHeight: '1.5', color: 'gray' }}
+              onMouseDown={this.handleTemplateElementChangeSizeClick}
+            >
+          </i> : null}
+        </div>
+      );
+    } else {
+      console.log('in create_edit_document, renderTab, in renderTab else !dummyTab, ', dummyTab);
+      return (
+        <div
+          id={`${className}-tab-${eachElement.id}`}
+          className="create-edit-document-template-element-edit-tab"
+          style={{ minHeight: `${TAB_HEIGHT}px`, width: `${tabWidth}px`, marginLeft: `${modTabLeftMarginPx}px`, borderColor: 'transparent' }}
+        >
+        </div>
+      );
+    }
   }
 
   renderTemplateTranslationElements(page) {
     const { valuesInForm, documentLanguageCode, appLanguageCode, agreement, documentTranslationsAllInOne } = this.props;
     const documentEmpty = _.isEmpty(this.props.templateTranslationElementsByPage);
     let translationText = '';
+    // Check if agreementId agreement is editable (i.e. for current booking for flat)
+    const documentForBookingOrFlat = this.props.allUserAgreementsArrayMappedWithDocumentFields ? this.checkIfAgreementForBookingOrFlat() : true;
 
     if (!documentEmpty) {
       return _.map(this.props.templateTranslationElementsByPage[page], eachElement => {
@@ -2184,14 +2193,22 @@ longActionPress(props) {
                           'No name';
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
-            const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`
+            const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`;
             // console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper: ', eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper);
             return (
               <div
                 key={eachElement.id}
                 id={`template-translation-element-${eachElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: eachElement.top, left: eachElement.left, width: eachElement.width, height: wrapperDivHeight, transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`, transformOrigin: 'top left' }}
+                style={{
+                  top: eachElement.top,
+                  left: eachElement.left,
+                  width: eachElement.width,
+                  height: wrapperDivHeight,
+                  transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+                  transformOrigin: 'top left',
+                  border: !documentForBookingOrFlat ? 'transparent' : null
+                }}
               >
                 <Field
                   key={eachElement.name}
@@ -2241,7 +2258,8 @@ longActionPress(props) {
                       agreement: this.props.agreement,
                       selectedChoiceIdArray: [],
                       innerDivPercentageOfWrapper,
-                      inputElement: true
+                      inputElement: true,
+                      documentForBookingOrFlat
                     }}
                   // props={{ model: }}
                   style={{}}
@@ -2256,7 +2274,11 @@ longActionPress(props) {
                   //     flex: '1 1 auto'
                   //   }}
                 />
-                {this.renderTab(eachElement, selected, tabLeftMarginPx, true)}
+                {documentForBookingOrFlat
+                  ?
+                  this.renderTab(eachElement, selected, tabLeftMarginPx, true, false)
+                  :
+                  this.renderTab(eachElement, selected, tabLeftMarginPx, true, true)}
               </div>
             );
           } // if background
@@ -2359,6 +2381,7 @@ longActionPress(props) {
       let translationText = '';
       let splitKey = null;
       let category = null;
+      const documentForBookingOrFlat = this.props.allUserAgreementsArrayMappedWithDocumentFields ? this.checkIfAgreementForBookingOrFlat() : true;
 
       return _.map(this.props.templateElementsByPage[page], eachElement => {
         // if there are document_field_choices, assign true else false
@@ -2459,7 +2482,13 @@ longActionPress(props) {
                 key={modifiedElement.id}
                 id={`template-element-${modifiedElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
+                style={{
+                  top: modifiedElement.top,
+                  left: modifiedElement.left,
+                  width: modifiedElement.width,
+                  height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%`,
+                  borderColor: !documentForBookingOrFlat ? 'transparent' : null
+                }}
               >
                 <Field
                   key={modifiedElement.name}
@@ -2540,7 +2569,11 @@ longActionPress(props) {
                     {}
                   }
                 />
-                {this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
+                {documentForBookingOrFlat
+                  ?
+                  this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement, false)
+                  :
+                  this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement, true)}
               </div>
             );
           } else if (this.state.editFieldsOn && !this.state.translationModeOn) { // else if inputElement
@@ -2550,7 +2583,14 @@ longActionPress(props) {
                 key={modifiedElement.id}
                 id={`template-element-${modifiedElement.id}`}
                 className="create-edit-document-template-element-container"
-                style={{ border: '1px solid #ccc', top: modifiedElement.top, left: modifiedElement.left, width: modifiedElement.width, height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%` }}
+                style={{
+                  border: '1px solid #ccc',
+                  borderColor: !documentForBookingOrFlat ? 'transparent' : null,
+                  top: modifiedElement.top,
+                  left: modifiedElement.left,
+                  width: modifiedElement.width,
+                  height: `${parseFloat(modifiedElement.height) + tabPercentOfContainerH}%`
+                }}
               >
                 <div
                   key={modifiedElement.id}
@@ -2611,16 +2651,20 @@ longActionPress(props) {
                       fontFamily: modifiedElement.font_family,
                       fontStyle: modifiedElement.font_style,
                       fontWeight: modifiedElement.font_weight,
-                      borderColor: modifiedElement.border_color,
+                      border: !documentForBookingOrFlat ? 'transparent' : modifiedElement.border_color,
                       margin: '0px !important',
-                      flex: '1 1 auto'
+                      flex: '1 1 auto',
                     }
                     :
                     {}
                   }
                 />
                 </div>
-                {this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement)}
+                {documentForBookingOrFlat
+                  ?
+                  this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement, false)
+                  :
+                  this.renderTab(modifiedElement, selected, tabLeftMarginPx, inputElement, true) }
               </div>
             );
           }// end of if inputElement
@@ -6519,46 +6563,47 @@ longActionPress(props) {
 
     console.log('in create_edit_document, handleOverlayClickBox, clicked, newObject, elementName, elementVal', newObject, elementName, elementVal);
     this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
-    //
-    // this.setState({ importFieldsFromOtherDocumentsObject }, () => {
-    // });
   }
 
   renderTemplateElementsOverLayClickBoxes(page) {
-    console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, this.props.importFieldsFromOtherDocumentsObject: ', this.props.importFieldsFromOtherDocumentsObject);
+      const elementsObjectArray = [this.props.templateElementsByPage, this.props.templateTranslationElementsByPage];
 
-      return _.map(this.props.templateElementsByPage[page], eachElement => {
-        return (
-          <div
-            key={eachElement.id}
-            value={eachElement.id}
-            name={eachElement.agreement_id}
-            id={`template-element-overlay-click-box-${eachElement.id}`}
-            className="create-edit-document-template-element-container"
-            onClick={this.handleOverlayClickBox}
-            style={{
-              top: eachElement.top,
-              left: eachElement.left,
-              width: eachElement.width,
-              height: eachElement.height,
-              borderRadius: '5px',
-              margin: eachElement.input_type === 'string' || eachElement.input_type === 'text' ? '0 0 0 5px' : '',
-              border: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachElement.id) !== -1
-                      &&
-                      this.props.importFieldsFromOtherDocumentsObject.agreementId
-                      &&
-                      this.props.importFieldsFromOtherDocumentsObject.agreementId === eachElement.agreement_id
-                      ?
-                      '3px solid blue'
-                      :
-                      '1.5px solid blue',
-              // transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
-              // transformOrigin: 'top left'
-            }}
-          >
-          </div>
-        );
-      });
+      return _.map(elementsObjectArray, eachByPageObject => {
+        // console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, this.props.templateElementsByPage, this.props.templateTranElementsByPage, eachByPageObject: ', this.props.templateElementsByPage, this.props.templateTranElementsByPage, eachByPageObject);
+        // return _.map(this.props.templateElementsByPage[page], eachElement => {
+        return _.map(eachByPageObject[page], eachElement => {
+          return (
+            <div
+              key={eachElement.id}
+              value={eachElement.id}
+              name={eachElement.agreement_id}
+              id={`template-element-overlay-click-box-${eachElement.id}`}
+              className="create-edit-document-template-element-container"
+              onClick={this.handleOverlayClickBox}
+              style={{
+                top: eachElement.top,
+                left: eachElement.left,
+                width: eachElement.width,
+                height: eachElement.height,
+                borderRadius: '5px',
+                margin: eachElement.input_type === 'string' || eachElement.input_type === 'text' ? '0 0 0 5px' : '',
+                border: this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachElement.id) !== -1
+                        &&
+                        this.props.importFieldsFromOtherDocumentsObject.agreementId
+                        &&
+                        this.props.importFieldsFromOtherDocumentsObject.agreementId === eachElement.agreement_id
+                        ?
+                        '3px solid blue'
+                        :
+                        '1.5px solid blue',
+                // transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+                // transformOrigin: 'top left'
+              }}
+            >
+            </div>
+          );
+        });
+      }); // end of each
   }
 
   // closeRelatedTabs(agreementIdClicked) {
@@ -6743,6 +6788,10 @@ longActionPress(props) {
     );
   }
 
+  checkIfAgreementForBookingOrFlat() {
+    return this.props.booking.id === this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId].booking_id
+  }
+
   renderDocument() {
     // render each document page as a background image;
     // render each document field and translation field on top of the image
@@ -6806,8 +6855,9 @@ longActionPress(props) {
         if (this.props.importFieldsFromOtherDocumentsObject.baseAgreementId
             && this.props.allUserAgreementsArrayMappedWithDocumentFields
             && this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId]
-            ){
-          documentForBookingOrFlat = this.props.booking.id === this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId].booking_id
+            ) {
+          // documentForBookingOrFlat = this.props.booking.id === this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.agreementId].booking_id
+          documentForBookingOrFlat = this.props.allUserAgreementsArrayMappedWithDocumentFields ? this.checkIfAgreementForBookingOrFlat() : true;
         }
 
         // console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);

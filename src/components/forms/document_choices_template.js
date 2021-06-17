@@ -145,6 +145,7 @@ class DocumentChoicesTemplate extends Component {
   getStyleOfInputElement(value, choice) {
     const { eachElement, editFieldsOn, nullRequiredField, translationModeOn } = this.props;
     let elementStyle = {};
+
     if (nullRequiredField && !value) {
       // elementStyle = { top: choice.top, left: choice.left, borderColor: 'blue', width: choice.width };
       elementStyle = { borderColor: 'blue', padding: '0px', top: choice.top, left: choice.left, width: choice.width, height: choice.height, fontSize: choice.font_size, textAlign: choice.text_align };
@@ -162,7 +163,6 @@ class DocumentChoicesTemplate extends Component {
     let left = !this.props.editFieldsOn ? choice.left : '';
     let position = !this.props.editFieldsOn ? 'absolute' : '';
     // If being rendered without a wrapper ie just an input, assign the choice values
-    // console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
     if (translationModeOn && !eachElement.translation_element) {
       height = choice.height;
       width = choice.width;
@@ -177,6 +177,7 @@ class DocumentChoicesTemplate extends Component {
     const selectChoices = choice.selectChoices || choice.select_choices;
     // If selectChoices in choice object, get width and height from choice
     if (this.props.editTemplate) {
+      const editModeBorderColor = !this.props.documentForBookingOrFlat ? choice.border_color : 'transparent';
       elementStyle = {
         width: selectChoices ? choice.width : width,
         height: selectChoices ? choice.height : height,
@@ -186,14 +187,15 @@ class DocumentChoicesTemplate extends Component {
         fontFamily: selectChoices ? eachElement.font_family : choice.font_family,
         fontStyle: selectChoices ? eachElement.font_style : choice.font_style,
         fontWeight: selectChoices ? eachElement.font_weight : choice.font_weight,
-        borderColor: selectChoices ? eachElement.font_color : choice.border_color,
+        borderColor: selectChoices ? eachElement.font_color : editModeBorderColor,
+        // borderColor: selectChoices ? eachElement.font_color : choice.border_color,
         position,
         margin: '0px !important',
         flex: '1 1 auto'
       };
+      // console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, choice.border_color, editModeBorderColor ', eachElement, value, choice, choice.border_color, editModeBorderColor);
     }
-
-    console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
+    // console.log('DocumentChoicesTemplate, getStyleOfInputElement, eachElement value, choice, elementStyle ', eachElement, value, choice, elementStyle);
     return elementStyle;
   }
   // https://stackoverflow.com/questions/37189881/how-to-clear-some-fields-in-form-redux-form
