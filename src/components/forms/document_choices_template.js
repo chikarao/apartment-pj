@@ -368,14 +368,14 @@ class DocumentChoicesTemplate extends Component {
           // if object for the language_code exists, assign id if exists
           returnedObject.o_document_field_translations = { ...each.document_field_translations,
                                                             [documentLanguageCode]: {
-                                                              id: each.document_field_translations[documentLanguageCode] ? each.document_field_translations[documentLanguageCode] : null,
+                                                              id: each.document_field_translations[documentLanguageCode] ? each.document_field_translations[documentLanguageCode].id : null,
                                                               value: this.state.valueWhenInputFocused,
                                                               language_code: documentLanguageCode,
                                                               deleted: false
                                                             } };
           returnedObject.document_field_translations = { ...each.document_field_translations,
                                                             [documentLanguageCode]: {
-                                                              id: each.document_field_translations[documentLanguageCode] ? each.document_field_translations[documentLanguageCode] : null,
+                                                              id: each.document_field_translations[documentLanguageCode] ? each.document_field_translations[documentLanguageCode].id : null,
                                                               value: blurredInput.value,
                                                               language_code: documentLanguageCode,
                                                               deleted: false

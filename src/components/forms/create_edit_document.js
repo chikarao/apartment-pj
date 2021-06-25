@@ -736,7 +736,7 @@ class CreateEditDocument extends Component {
             array = [];
             const selectArray = [];
             _.each(Object.keys(documentField.document_field_choices), each => {
-              console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
+              // console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
               if (documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices) {
                 const selectChoices = documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices;
                 _.each(Object.keys(selectChoices), eachSelect => {
@@ -2181,6 +2181,8 @@ longActionPress(props) {
         if (this.state.translationModeOn && this.state.editFieldsOn) {
           const background = document.getElementById('document-background');
           if (background) {
+            const category = documentTranslationsAllInOne[eachElement.name] ? documentTranslationsAllInOne[eachElement.name].category : 'building'
+            const translation = documentTranslationsAllInOne[eachElement.name] ? documentTranslationsAllInOne[eachElement.name].translations[appLanguageCode] : ''
             const selected = this.state.selectedTemplateElementIdArray.indexOf(eachElement.id) !== -1;
             const tabPercentOfContainerH = (TAB_HEIGHT / background.getBoundingClientRect().height) * 100;
             const eachElementWidthPx = background.getBoundingClientRect().width * (parseFloat(eachElement.width) / 100)
@@ -2188,7 +2190,7 @@ longActionPress(props) {
             if (eachElementWidthPx < TAB_WIDTH) tabLeftMarginPx = 0;
             const label = eachElement.custom_name
                           ||
-                          `${AppLanguages[documentTranslationsAllInOne[eachElement.name].category][appLanguageCode]}/${documentTranslationsAllInOne[eachElement.name].translations[appLanguageCode]}`
+                          `${AppLanguages[category][appLanguageCode]}/${translation}`
                           ||
                           'No name';
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
@@ -2205,9 +2207,9 @@ longActionPress(props) {
                   left: eachElement.left,
                   width: eachElement.width,
                   height: wrapperDivHeight,
-                  transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+                  transform: `rotate(-${parseInt(eachElement.transform, 10)}deg)`,
                   transformOrigin: 'top left',
-                  border: !documentForBookingOrFlat ? 'transparent' : null
+                  border: !documentForBookingOrFlat ? 'transparent' : 'lightgray'
                 }}
               >
                 <Field
@@ -2241,7 +2243,9 @@ longActionPress(props) {
                                             class_name: eachElement.class_name,
                                             // !!! height works only with px
                                             input_type: eachElement.input_type,
-                                            element_id: eachElement.id
+                                            element_id: eachElement.id,
+                                            // transform: eachElement.transform ? `deg(-${eachElement.tranform})` : null,
+                                            // transform_origin: eachElement.transform_origin
                           } } } } },
                       charLimit: eachElement.charLimit,
                       // otherChoiceValues,
@@ -2298,7 +2302,7 @@ longActionPress(props) {
                 fontSize: eachElement.font_size,
                 fontStyle: eachElement.font_style,
                 fontWeight: eachElement.font_weight,
-                transform: `rotate(${parseInt(eachElement.transform, 10)}deg)`,
+                transform: `rotate(-${parseInt(eachElement.transform, 10)}deg)`,
                 // transformOrigin: eachElement.transform_origin
                 transformOrigin: 'top left'
               }}
@@ -2585,7 +2589,7 @@ longActionPress(props) {
                 className="create-edit-document-template-element-container"
                 style={{
                   border: '1px solid #ccc',
-                  borderColor: !documentForBookingOrFlat ? 'transparent' : null,
+                  borderColor: !documentForBookingOrFlat ? 'transparent' : 'lightgray',
                   top: modifiedElement.top,
                   left: modifiedElement.left,
                   width: modifiedElement.width,
@@ -4339,7 +4343,7 @@ longActionPress(props) {
     const createObject = () => {
       let templateElementAttributes = {};
       let createdObject = null;
-      // No parent in summaryObject indciates it is an input (no choices) or button (true or false)
+      // No parent in summaryObject indciates it is an input (no choices) or button/select (true or false)
       if (!summaryObject.parent) {
         // input only has one in array; Used for custom input
         if (summaryObject.input.length > 0) {
@@ -4373,7 +4377,7 @@ longActionPress(props) {
             translation: this.state.templateElementActionIdObject.translation
           };
         } else if (summaryObject.buttons.length > 0) {
-          // } else {
+          // else of if (summaryObject.input.length > 0) {
             createdObject = summaryObject.buttons[0];
             templateElementAttributes = {
               // id: `${this.state.templateElementCount}a`,
@@ -4412,6 +4416,7 @@ longActionPress(props) {
               };
             });
           } else if (summaryObject.select.length > 0) {
+            // else of if (summaryObject.input.length > 0) {
             createdObject = summaryObject.select[0];
             const selectFirstChoice = createdObject.choices[true] || createdObject.choices[0]
             templateElementAttributes = {
@@ -4450,6 +4455,7 @@ longActionPress(props) {
                   translation: this.state.templateElementActionIdObject.translation,
                   // border_radius: '3px',
                   border: '1px solid black',
+                  // 0 for true is a peculiarity we need to live with
                   selectChoices: {
                     0: { value: true },
                     1: { value: false }
@@ -4457,10 +4463,9 @@ longActionPress(props) {
                 }
               }
             };
-
-            console.log('in create_edit_document, handleTemplateElementAddClick, summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
-            // return;
+            // console.log('in create_edit_document, handleTemplateElementAddClick, summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
           } else if (summaryObject.list.length > 0) {
+            // else of if (summaryObject.input.length > 0) {
             createdObject = summaryObject.list[0];
             let nameString = '';
             // If user has selected translation
@@ -4500,7 +4505,7 @@ longActionPress(props) {
               transform_origin: 'top left',
               transform: null
             };
-          }
+          } // end of if (summaryObject.input.length > 0) {
         } else { // else of if (!summaryObject.parent)
           if (summaryObject.button.length > 0 || summaryObject.select.length > 0) {
             let count = 0;
@@ -4579,7 +4584,7 @@ longActionPress(props) {
                   if (each.params) {
                     selectChoices[i] = { ...each.translation, val: each.params.val };
                   } else {
-                      selectChoices[i] = each;
+                    selectChoices[i] = each;
                   }
                 });
               }
@@ -6840,7 +6845,7 @@ longActionPress(props) {
             pages = array;
           } else {
             // constantAssetsFolder = 'apartmentpj-constant-assets/'
-            constantAssetsFolder = GlobalConstants.constantAssetsFolder
+            constantAssetsFolder = GlobalConstants.constantAssetsFolder;
             // if showing document form, get array of pages from constants/documents
             image = Documents[this.props.createDocumentKey].file;
             // assign array to pages varaible for later iteration

@@ -2330,7 +2330,7 @@ export function deleteDocumentElementLocally(props) {
 }
 
 export function populateTemplateElementsLocally(array, callback, templateEditHistory) {
-  console.log('in actions index, populateTemplateElements array, callback:', array, callback);
+  console.log('in actions index, populateTemplateElementsLocally array, callback, templateEditHistory:', array, callback, templateEditHistory);
   callback();
   return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array, templateEditHistory } };
 }
