@@ -114,7 +114,7 @@ class CreateEditDocument extends Component {
       databaseValuesExistForFields: false,
       showCustomInputCreateMode: false,
       customFieldNameInputValue: '',
-      documentPagesObject: { documentPagesArray: [], prevPagesInViewport: [], pagesInViewport: [1] }
+      documentPagesObject: { documentPagesArray: [], prevPagesInViewport: [], pagesInViewport: [1], parentOfAlldocumentPages: null, documentPagesMapAgainstParent: {} }
       // editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
       // importFieldsFromOtherDocumentsObject: [],
     };
@@ -172,9 +172,22 @@ class CreateEditDocument extends Component {
   componentDidMount() {
       window.addEventListener('scroll', this.handleDocumentScroll);
       const documentPagesArray = document.getElementsByClassName('image-pdf-jpg-background')
-      this.setState({ documentPagesObject: { ...this.state.documentPagesArray, documentPagesArray } }, () => {
+      const parentOfAlldocumentPages = document.getElementsByClassName('test-image-pdf-jpg')[0]
+      const parentBoundingClientRect = parentOfAlldocumentPages.getBoundingClientRect()
+      let eachPageBoundingClientRect = null;
+      const documentPagesMapAgainstParent = {};
+
+      _.each(documentPagesArray, eachPageObject => {
+        eachPageBoundingClientRect = eachPageObject.getBoundingClientRect();
+        documentPagesMapAgainstParent[parseInt(eachPageObject.getAttribute('value'), 10)] = {
+          top: eachPageBoundingClientRect.top - parentBoundingClientRect.top,
+          bottom: eachPageBoundingClientRect.bottom - parentBoundingClientRect.top,
+        };
+        // console.log('in create_edit_document, componentDidMount, eachPageBoundingClientRect, parentBoundingClientRect, achPageObject.getAttribute(value): ', eachPageBoundingClientRect, parentBoundingClientRect, eachPageObject.getAttribute('value'));
+      });
+      this.setState({ documentPagesObject: { ...this.state.documentPagesArray, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
       // this.setState({ ...this.state.documentPagesObject, documentPagesArray: document.getElementsByClassName('image-pdf-jpg-background') }, () => {
-        console.log('in create_edit_document, componentDidMount, this.state.documentPagesObject.documentPagesArray', this.state.documentPagesObject.documentPagesArray);
+        console.log('in create_edit_document, componentDidMount, this.state.documentPagesObject.documentPagesArray: ', this.state.documentPagesObject);
       });
 
       const getLocalHistory = () => {
@@ -6771,20 +6784,38 @@ longActionPress(props) {
       let bottomInViewPort = false;
       let currentPositionInViewportBottom = 0;
       let boundingClientRect = null;
-      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject: ', this.state.documentPagesObject);
 
-      _.each(this.state.documentPagesObject.documentPagesArray, eachPageElement => {
+      const currentParentBoundingClientRect = this.state.documentPagesObject.parentOfAlldocumentPages.getBoundingClientRect()
+      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject: ', this.state.documentPagesObject);
+      //
+      // _.each(this.state.documentPagesObject.documentPagesArray, eachPageElement => {
+      //   // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute(value), viewportHeight: ', eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute('value'), viewportHeight);
+      //   boundingClientRect = eachPageElement.getBoundingClientRect();
+      //   topInViewPort = boundingClientRect.top > 0 && Math.abs(boundingClientRect.top) < viewportHeight;
+      //   viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
+      //   // bottomInViewPort = boundingClientRect.top + viewportHeight > boundingClientRect.bottom;
+      //   bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
+      //   if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageElement.getAttribute('value'), 10));
+      //   // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
+      // });
+        const { documentPagesMapAgainstParent } = this.state.documentPagesObject;
+        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, documentPagesMapAgainstParent ', this.state.documentPagesObject, documentPagesMapAgainstParent);
+
+      _.each(Object.keys(documentPagesMapAgainstParent), eachPageNumberKey => {
         // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute(value), viewportHeight: ', eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute('value'), viewportHeight);
-        boundingClientRect = eachPageElement.getBoundingClientRect();
+        boundingClientRect = { top: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].top,
+                               bottom: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].bottom };
         topInViewPort = boundingClientRect.top > 0 && Math.abs(boundingClientRect.top) < viewportHeight;
         viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
         // bottomInViewPort = boundingClientRect.top + viewportHeight > boundingClientRect.bottom;
         bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
-        if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageElement.getAttribute('value'), 10));
-        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
+        if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageNumberKey, 10));
+        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
       });
-      this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray } }, () => {
-        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, newArray);
+
+        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, currentParentBoundingClientRect ', currentParentBoundingClientRect);
+      this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray.length < 1 ? [1] : newArray } }, () => {
+        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
       });
     } // const afterScrollingStopped = () => {
 
