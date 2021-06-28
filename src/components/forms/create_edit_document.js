@@ -56,6 +56,9 @@ const MAX_HISTORY_ARRAY_LENGTH = 1000000;
 let explanationTimerArray = [];
 const INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT = { array: [], select: 0, list: 0, input: 0, button: 0, buttons: 0, translation: false };
 
+// let scrollCount = 0
+let scrollingTimer = 0
+
 class CreateEditDocument extends Component {
   constructor(props) {
     super(props);
@@ -111,6 +114,7 @@ class CreateEditDocument extends Component {
       databaseValuesExistForFields: false,
       showCustomInputCreateMode: false,
       customFieldNameInputValue: '',
+      documentPagesObject: { documentPagesArray: [], prevPagesInViewport: [], pagesInViewport: [1] }
       // editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
       // importFieldsFromOtherDocumentsObject: [],
     };
@@ -148,6 +152,7 @@ class CreateEditDocument extends Component {
     this.handleCustomFieldPathDelete = this.handleCustomFieldPathDelete.bind(this);
     this.handleOverlayClickBox = this.handleOverlayClickBox.bind(this);
     this.handleDocumentTabClick = this.handleDocumentTabClick.bind(this);
+    this.handleDocumentScroll = this.handleDocumentScroll.bind(this);
   }
 
   // InitialValues section implement after redux form v7.4.2 upgrade
@@ -165,6 +170,13 @@ class CreateEditDocument extends Component {
   // elements in createDocumentElementLocally action.
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
+      window.addEventListener('scroll', this.handleDocumentScroll);
+      const documentPagesArray = document.getElementsByClassName('image-pdf-jpg-background')
+      this.setState({ documentPagesObject: { ...this.state.documentPagesArray, documentPagesArray } }, () => {
+      // this.setState({ ...this.state.documentPagesObject, documentPagesArray: document.getElementsByClassName('image-pdf-jpg-background') }, () => {
+        console.log('in create_edit_document, componentDidMount, this.state.documentPagesObject.documentPagesArray', this.state.documentPagesObject.documentPagesArray);
+      });
+
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
         // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
@@ -456,6 +468,7 @@ class CreateEditDocument extends Component {
 
     window.removeEventListener('click', this.handleCloseGetFieldValuesChoiceBox);
     window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
+    window.removeEventListener('scroll', this.handleDocumentScroll);
     // this.setLocalStorageHistory('componentWillUnmount');
     // console.log('in create_edit_document, componentWillUnmount ');
   }
@@ -6744,6 +6757,49 @@ longActionPress(props) {
       :
       this.props.mappedAgreementObject
     );
+  }
+
+  handleDocumentScroll() {
+    // scrollCount++;
+    const afterScrollingStopped = () => {
+      // const documentPagesArray = document.getElementsByClassName('image-pdf-jpg-background')
+      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, documentPagesArray: ', documentPagesArray);
+      const viewportHeight = window.innerHeight;
+      const newArray = [];
+      let topInViewPort = false;
+      let viewPortInMiddle = false;
+      let bottomInViewPort = false;
+      let currentPositionInViewportBottom = 0;
+      let boundingClientRect = null;
+      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject: ', this.state.documentPagesObject);
+
+      _.each(this.state.documentPagesObject.documentPagesArray, eachPageElement => {
+        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute(value), viewportHeight: ', eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute('value'), viewportHeight);
+        boundingClientRect = eachPageElement.getBoundingClientRect();
+        topInViewPort = boundingClientRect.top > 0 && Math.abs(boundingClientRect.top) < viewportHeight;
+        viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
+        // bottomInViewPort = boundingClientRect.top + viewportHeight > boundingClientRect.bottom;
+        bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
+        if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageElement.getAttribute('value'), 10));
+        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
+      });
+      this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray } }, () => {
+        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, newArray);
+      });
+    } // const afterScrollingStopped = () => {
+
+    if (scrollingTimer !== null) {
+      clearTimeout(scrollingTimer);
+      // console.log('in create_edit_document, handleDocumentScroll, inside if null scrollingTimer: ', scrollingTimer);
+    }
+
+    scrollingTimer = setTimeout(() => {
+      // In setTimeout callback
+      afterScrollingStopped();
+       console.log('in create_edit_document, handleDocumentScroll, scrolling stopped, scrollingTimer: ', scrollingTimer);
+     }, 150);
+      // console.log('in create_edit_document, handleDocumentScroll, scrollCount: ', scrollCount);
+    // const eachPage = documet.getElementById('document-background')
   }
 
   renderEachDocumentTab() {
