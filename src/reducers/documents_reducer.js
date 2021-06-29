@@ -372,6 +372,7 @@ export default function (state = {
         flat: action.payload.flat,
         agreements: action.payload.agreements,
         documentConstants: JSON.parse(action.payload.document_constants),
+        agreements_meta: JSON.parse(action.payload.agreements_meta),
         // templateTranslationObject: JSON.parse(action.payload.template_translation_object)
       };
     }

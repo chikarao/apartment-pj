@@ -170,6 +170,10 @@ class CreateEditDocument extends Component {
   // elements in createDocumentElementLocally action.
   // NOTE: The history is cleared out when user saves work to backend.
   componentDidMount() {
+    // ************ Code for when user scrolls on document **********
+    // Maps each page location relative to parent and when user scrolls,
+    // handleDocumentScroll gets the parent bounds relative to the viewport
+    // and calculates if each page is in the viewport
       window.addEventListener('scroll', this.handleDocumentScroll);
       const documentPagesArray = document.getElementsByClassName('image-pdf-jpg-background')
       const parentOfAlldocumentPages = document.getElementsByClassName('test-image-pdf-jpg')[0]
@@ -179,16 +183,18 @@ class CreateEditDocument extends Component {
 
       _.each(documentPagesArray, eachPageObject => {
         eachPageBoundingClientRect = eachPageObject.getBoundingClientRect();
+        // Create object mapped by page number with dimensions relative to parent
         documentPagesMapAgainstParent[parseInt(eachPageObject.getAttribute('value'), 10)] = {
           top: eachPageBoundingClientRect.top - parentBoundingClientRect.top,
           bottom: eachPageBoundingClientRect.bottom - parentBoundingClientRect.top,
         };
         // console.log('in create_edit_document, componentDidMount, eachPageBoundingClientRect, parentBoundingClientRect, achPageObject.getAttribute(value): ', eachPageBoundingClientRect, parentBoundingClientRect, eachPageObject.getAttribute('value'));
       });
+
       this.setState({ documentPagesObject: { ...this.state.documentPagesArray, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
-      // this.setState({ ...this.state.documentPagesObject, documentPagesArray: document.getElementsByClassName('image-pdf-jpg-background') }, () => {
-        console.log('in create_edit_document, componentDidMount, this.state.documentPagesObject.documentPagesArray: ', this.state.documentPagesObject);
+
       });
+    // ************ Code for when user scrolls on document **********
 
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
@@ -197,6 +203,7 @@ class CreateEditDocument extends Component {
         // if localStorageHistory exists, set state to previous values
         // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
         // and next time user refreshes or mounts component on the same machine, it will be there
+        // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
         if (localStorageHistory) {
           destringifiedHistory = JSON.parse(localStorageHistory);
           if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
@@ -240,6 +247,8 @@ class CreateEditDocument extends Component {
       // *****************************************************************
       // gotohistory
       templateEditHistory = getLocalHistory();
+      console.log('in create_edit_document, componentDidMount, getLocalHistory, after getLocalHistory templateEditHistory', templateEditHistory);
+
       // If there is templateEditHistory object, create elements with temporary ids (ie id: '1a')
       // calculate highestElementId for templateElementCount (for numbering element temporary ids)
       if (templateEditHistory && templateEditHistory.elements) {
@@ -275,6 +284,8 @@ class CreateEditDocument extends Component {
       // If there are elements persisted in backend DB, populate this.props.templateElements
       if (this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0) {
         // get template elements in DB into app state as templateElements and templateTranslationElements
+        console.log('in create_edit_document, componentDidMount, inside if this.props.agreement.document_fields this.props.agreement.document_fields', this.props.agreement.document_fields);
+
         this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
       }
     } // if (this.props.showTemplate) {
@@ -6775,49 +6786,43 @@ longActionPress(props) {
   handleDocumentScroll() {
     // scrollCount++;
     const afterScrollingStopped = () => {
-      // const documentPagesArray = document.getElementsByClassName('image-pdf-jpg-background')
       // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, documentPagesArray: ', documentPagesArray);
       const viewportHeight = window.innerHeight;
       const newArray = [];
       let topInViewPort = false;
       let viewPortInMiddle = false;
       let bottomInViewPort = false;
-      let currentPositionInViewportBottom = 0;
       let boundingClientRect = null;
 
       const currentParentBoundingClientRect = this.state.documentPagesObject.parentOfAlldocumentPages.getBoundingClientRect()
-      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject: ', this.state.documentPagesObject);
-      //
-      // _.each(this.state.documentPagesObject.documentPagesArray, eachPageElement => {
-      //   // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute(value), viewportHeight: ', eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute('value'), viewportHeight);
-      //   boundingClientRect = eachPageElement.getBoundingClientRect();
-      //   topInViewPort = boundingClientRect.top > 0 && Math.abs(boundingClientRect.top) < viewportHeight;
-      //   viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
-      //   // bottomInViewPort = boundingClientRect.top + viewportHeight > boundingClientRect.bottom;
-      //   bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
-      //   if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageElement.getAttribute('value'), 10));
-      //   // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
-      // });
-        const { documentPagesMapAgainstParent } = this.state.documentPagesObject;
-        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, documentPagesMapAgainstParent ', this.state.documentPagesObject, documentPagesMapAgainstParent);
 
+        const { documentPagesMapAgainstParent } = this.state.documentPagesObject;
+        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, documentPagesMapAgainstParent ', this.state.documentPagesObject, documentPagesMapAgainstParent);
       _.each(Object.keys(documentPagesMapAgainstParent), eachPageNumberKey => {
-        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute(value), viewportHeight: ', eachPageElement, eachPageElement.getBoundingClientRect(), eachPageElement.getAttribute('value'), viewportHeight);
         boundingClientRect = { top: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].top,
                                bottom: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].bottom };
+        // Figure if top, buttom in viewport, or middle of page is inside viewport
         topInViewPort = boundingClientRect.top > 0 && Math.abs(boundingClientRect.top) < viewportHeight;
         viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
-        // bottomInViewPort = boundingClientRect.top + viewportHeight > boundingClientRect.bottom;
         bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
         if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageNumberKey, 10));
         // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
       });
 
-        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, currentParentBoundingClientRect ', currentParentBoundingClientRect);
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray.length < 1 ? [1] : newArray } }, () => {
         console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
-      });
-    } // const afterScrollingStopped = () => {
+        let pageToFetch = null
+        _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
+          if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
+              && (_.isEmpty(this.props.templateElementsByPage[eachPage])
+                  && _.isEmpty(this.props.templateTranslationElementsByPage[eachPage]))
+            ) {
+              pageToFetch = eachPage
+              console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
+          } //  if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
+        }); //  _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
+      }); //this.setState({ documentPagesObject:
+    }; // const afterScrollingStopped = () => {
 
     if (scrollingTimer !== null) {
       clearTimeout(scrollingTimer);
@@ -6827,7 +6832,7 @@ longActionPress(props) {
     scrollingTimer = setTimeout(() => {
       // In setTimeout callback
       afterScrollingStopped();
-       console.log('in create_edit_document, handleDocumentScroll, scrolling stopped, scrollingTimer: ', scrollingTimer);
+       // console.log('in create_edit_document, handleDocumentScroll, scrolling stopped, scrollingTimer: ', scrollingTimer);
      }, 150);
       // console.log('in create_edit_document, handleDocumentScroll, scrollCount: ', scrollCount);
     // const eachPage = documet.getElementById('document-background')
