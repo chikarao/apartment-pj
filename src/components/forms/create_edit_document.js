@@ -191,7 +191,7 @@ class CreateEditDocument extends Component {
         // console.log('in create_edit_document, componentDidMount, eachPageBoundingClientRect, parentBoundingClientRect, achPageObject.getAttribute(value): ', eachPageBoundingClientRect, parentBoundingClientRect, eachPageObject.getAttribute('value'));
       });
 
-      this.setState({ documentPagesObject: { ...this.state.documentPagesArray, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
+      this.setState({ documentPagesObject: { ...this.state.documentPagesObject, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
 
       });
     // ************ Code for when user scrolls on document **********
@@ -425,15 +425,16 @@ class CreateEditDocument extends Component {
           findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
         });
 
-      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject);
 
       // If the document has not changed a templateelement has been added
       // so merge the initialValues for the elements subset with the original initialValues
       // Second property overwrites first if same key exists
       const finalInitialValuesObject = !documentMountedChanged ? { ...currentInitialValuesObject, ...initialValuesObject.initialValuesObject } : initialValuesObject.initialValuesObject;
+      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject);
       // If not for getting database values, for getting initial values for the form
       // Just importing fields, not value so current value takes precedence
-      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ initialValuesObject: finalInitialValuesObject, ...initialValuesObject });
+      // if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ initialValuesObject: finalInitialValuesObject, ...initialValuesObject });
+      if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ initialValuesObject: finalInitialValuesObject });
       // Update cachedInitialValuesObject with values with new elements added
       if (!documentMountedChanged) this.props.setCachedInitialValuesObject({ ...this.props.cachedInitialValuesObject, [this.props.agreementId]: finalInitialValuesObject });
       // If getting data base values set objects for GetFieldValueChoiceModal
@@ -6792,8 +6793,6 @@ longActionPress(props) {
 
   handleDocumentScroll() {
     // scrollCount++;
-
-
     const afterScrollingStopped = () => {
       // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, documentPagesArray: ', documentPagesArray);
       const viewportHeight = window.innerHeight;
@@ -6832,8 +6831,8 @@ longActionPress(props) {
           console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
 
           if (pageToFetch) {
-            this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }, () => { this.handleDocumentScrollCallback(); } )
             window.removeEventListener('scroll', this.handleDocumentScroll);
+            this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }, () => { this.handleDocumentScrollCallback(); } )
           }
       }); //this.setState({ documentPagesObject:
     }; // const afterScrollingStopped = () => {
@@ -6971,9 +6970,12 @@ longActionPress(props) {
           documentForBookingOrFlat = this.props.allUserAgreementsArrayMappedWithDocumentFields ? this.checkIfAgreementForBookingOrFlat() : true;
         }
 
+        let pageInViewport = false;
+
         // console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);
-        // console.log('in create_edit_document, renderDocument, this.props.agreementId, documentForBookingOrFlat, this.props.importFieldsFromOtherDocuments: ', this.props.agreementId, documentForBookingOrFlat, this.props.importFieldsFromOtherDocuments);
+        console.log('in create_edit_document, renderDocument, this.state.documentPagesObject.pagesInViewport: ', this.state.documentPagesObject.pagesInViewport);
         return _.map(pages, page => {
+          pageInViewport = this.state.documentPagesObject.pagesInViewport.indexOf(page) !== -1;
               // console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
               // {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               // {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
@@ -6991,10 +6993,10 @@ longActionPress(props) {
               {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateElements(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderTemplateTranslationElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && pageInViewport ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && pageInViewport ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice && pageInViewport ? this.renderGetFieldValuesChoiceBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
               {this.props.showTemplate && this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 && !this.props.noEditOrButtons ? this.renderExplanationBoxCallForAction() : ''}
             </div>
