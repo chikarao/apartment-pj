@@ -214,7 +214,8 @@ import {
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
   SET_CACHED_INITIAL_VALUES_OBJECT,
-  SET_LAST_MOUNTED_DOCUMENT_ID
+  SET_LAST_MOUNTED_DOCUMENT_ID,
+  FETCH_DOCUMENT_FIELDS_FOR_PAGE
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3202,7 +3203,7 @@ export function editHistory(editHistoryObject) {
 
 export function fetchDocumentTranslation(documentName) {
   console.log('in actions index, fetchDocumentTranslation, documentName: ', documentName);
-  console.log('in actions index, fetchDocumentTranslation: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, fetchDocumentTranslation: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = reviewAttributes;
   return function (dispatch) {
@@ -3211,7 +3212,7 @@ export function fetchDocumentTranslation(documentName) {
     })
     .then(response => {
       console.log('response to fetchDocumentTranslation, response: ', response);
-      console.log('response to fetchDocumentTranslation, response.data.data: ', response.data.data);
+      // console.log('response to fetchDocumentTranslation, response.data.data: ', response.data.data);
       // localStorage.setItem('image', response.data.data);
       dispatch({
         type: FETCH_DOCUMENT_TRANSLATION,
@@ -3225,7 +3226,7 @@ export function fetchDocumentTranslation(documentName) {
 
 export function createDocumentInsert(documentInsertAttributes, callback) {
   console.log('in actions index, createDocumentInsert, documentInsertAttributes: ', documentInsertAttributes);
-  console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, createDocumentInsert: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = documentInsertAttributes;
   return function (dispatch) {
@@ -3234,7 +3235,7 @@ export function createDocumentInsert(documentInsertAttributes, callback) {
     })
     .then(response => {
       console.log('response to createDocumentInsert, response: ', response);
-      console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
+      // console.log('response to createDocumentInsert, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_DOCUMENT_INSERT,
         payload: response.data.data
@@ -3247,7 +3248,7 @@ export function createDocumentInsert(documentInsertAttributes, callback) {
 
 export function createInsertField(insertFieldAttributes, callback) {
   console.log('in actions index, createInsertField, insertFieldAttributes: ', insertFieldAttributes);
-  console.log('in actions index, createInsertField: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, createInsertField: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   // const { } = insertFieldAttributes;
   return function (dispatch) {
@@ -3256,7 +3257,7 @@ export function createInsertField(insertFieldAttributes, callback) {
     })
     .then(response => {
       console.log('response to createInsertField, response: ', response);
-      console.log('response to createInsertField, response.data.data: ', response.data.data);
+      // console.log('response to createInsertField, response.data.data: ', response.data.data);
       dispatch({
         type: CREATE_INSERT_FIELD,
         payload: response.data.data
@@ -3551,6 +3552,25 @@ export function getAppBaseObjects() {
       dispatch({
         type: GET_APP_BASE_OBJECTS,
         payload: response.data.data
+      });
+    });
+  };
+}
+
+export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEditHistory, callback) {
+  console.log('index action fetchDocumentFieldsForPage, pageNumber, agreementId: ', pageNumber, agreementId);
+  this.showLoading();
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/fetch_document_fields_for_page`, { agreement_id: agreementId, page: pageNumber }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to fetchDocumentFieldsForPage: ', response);
+      // this.showLoading();
+      callback();
+      dispatch({
+        type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
+        payload: { array: response.data.data.document_fields, templateEditHistory }
       });
     });
   };

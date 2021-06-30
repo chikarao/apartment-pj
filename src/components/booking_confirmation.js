@@ -83,8 +83,12 @@ class BookingConfirmation extends Component {
     this.props.fetchReviewForBookingByUser(bookingId);
     this.props.fetchDocumentTranslation('important_points_explanation');
     this.props.fetchTemplateObjects(() => {});
-
+    this.props.showLoading();
     console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.booking && this.props.booking) this.props.showLoading();
   }
 
   componentWillUnmount() {

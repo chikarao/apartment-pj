@@ -383,8 +383,8 @@ class CreateEditDocument extends Component {
       // Keep the current initialValues for later merge with new elements
       const currentInitialValuesObject = this.props.initialValues;
 
-      const initialValuesObject = this.props.cachedInitialValuesObject[this.props.agreementId]
-            && documentMountedChanged
+      const initialValuesObject = (this.props.cachedInitialValuesObject[this.props.agreementId]
+        && documentMountedChanged)
         ?
          { initialValuesObject: this.props.cachedInitialValuesObject[this.props.agreementId] }
         :
@@ -424,6 +424,8 @@ class CreateEditDocument extends Component {
           // getSelectDataBaseValuesCallback: () => { this.getSelectDataBaseValues(); },
           findIfDatabaseValuesExistForFieldsCallback: (objectReturned) => { this.findIfDatabaseValuesExistForFields(objectReturned); }
         });
+
+      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject);
 
       // If the document has not changed a templateelement has been added
       // so merge the initialValues for the elements subset with the original initialValues
@@ -6783,8 +6785,15 @@ longActionPress(props) {
     );
   }
 
+  handleDocumentScrollCallback() {
+    this.props.showLoading();
+    window.addEventListener('scroll', this.handleDocumentScroll);
+  }
+
   handleDocumentScroll() {
     // scrollCount++;
+
+
     const afterScrollingStopped = () => {
       // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, documentPagesArray: ', documentPagesArray);
       const viewportHeight = window.innerHeight;
@@ -6818,9 +6827,14 @@ longActionPress(props) {
                   && _.isEmpty(this.props.templateTranslationElementsByPage[eachPage]))
             ) {
               pageToFetch = eachPage
-              console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
           } //  if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
         }); //  _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
+          console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
+
+          if (pageToFetch) {
+            this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }, () => { this.handleDocumentScrollCallback(); } )
+            window.removeEventListener('scroll', this.handleDocumentScroll);
+          }
       }); //this.setState({ documentPagesObject:
     }; // const afterScrollingStopped = () => {
 

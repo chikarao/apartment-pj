@@ -31,11 +31,11 @@ class Header extends Component {
   constructor() {
      super();
      this.state = {
-          windowWidth: window.innerWidth,
-          mobileNavVisible: false,
-          show: false, // for auth modal
-          showNewMessageBadge: true,
-          webSocketConnected: false,
+        windowWidth: window.innerWidth,
+        mobileNavVisible: false,
+        show: false, // for auth modal
+        showNewMessageBadge: true,
+        webSocketConnected: false,
      };
      this.handleResize = this.handleResize.bind(this);
      this.handleLanguageSelectChange = this.handleLanguageSelectChange.bind(this);
@@ -69,7 +69,7 @@ class Header extends Component {
    // shouldComponentUpdate() {
    // }
 
-   // **************** Need to have to pass to actionCableManager
+   // **************** Need to have these fucntions to pass to actionCableManager
    setComponentState = (stateObject, callback) => {
      this.setState(stateObject, callback);
    }
@@ -103,7 +103,7 @@ class Header extends Component {
    setProgressStatus = (status) => {
      this.props.setProgressStatus(status);
    }
-   // **************** Need to have to pass to actionCableManager
+   // **************** Need to have these fucntions to pass to actionCableManager
 
    componentDidUpdate(prevProps) {
      // specify which language at which the app state is currently set and change select box
