@@ -195,6 +195,9 @@ class CreateEditDocument extends Component {
 
       });
     // ************ Code for when user scrolls on document **********
+    // ************ Code for caching rest of document_fields for agreement **********
+    this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId);
+    // ************ Code for caching rest of document_fields for agreement **********
 
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
@@ -6846,7 +6849,7 @@ longActionPress(props) {
       // In setTimeout callback
       afterScrollingStopped();
        // console.log('in create_edit_document, handleDocumentScroll, scrolling stopped, scrollingTimer: ', scrollingTimer);
-     }, 150);
+     }, 100);
       // console.log('in create_edit_document, handleDocumentScroll, scrollCount: ', scrollCount);
     // const eachPage = documet.getElementById('document-background')
   }
@@ -6970,12 +6973,13 @@ longActionPress(props) {
           documentForBookingOrFlat = this.props.allUserAgreementsArrayMappedWithDocumentFields ? this.checkIfAgreementForBookingOrFlat() : true;
         }
 
-        let pageInViewport = false;
+        // let pageInViewport = false;
+        let doNotRenderElementsOnPage = false;
 
         // console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);
         console.log('in create_edit_document, renderDocument, this.state.documentPagesObject.pagesInViewport: ', this.state.documentPagesObject.pagesInViewport);
         return _.map(pages, page => {
-          pageInViewport = this.state.documentPagesObject.pagesInViewport.indexOf(page) !== -1;
+          doNotRenderElementsOnPage = this.state.documentPagesObject.pagesInViewport.indexOf(page) === -1 && this.state.editFieldsOn;
               // console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
               // {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               // {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
@@ -6986,6 +6990,7 @@ longActionPress(props) {
               value={page}
               id="document-background"
               className="image-pdf-jpg-background"
+              // style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.pdf)` }}
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateEditFieldBox() : ''}
@@ -6993,10 +6998,10 @@ longActionPress(props) {
               {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && pageInViewport ? this.renderTemplateElements(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && pageInViewport ? this.renderTemplateTranslationElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !doNotRenderElementsOnPage ? this.renderTemplateElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !  doNotRenderElementsOnPage ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice && pageInViewport ? this.renderGetFieldValuesChoiceBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
               {this.props.showTemplate && this.props.importFieldsFromOtherDocumentsObject.fieldsArray.length > 0 && !this.props.noEditOrButtons ? this.renderExplanationBoxCallForAction() : ''}
             </div>

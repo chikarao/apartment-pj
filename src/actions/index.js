@@ -215,7 +215,8 @@ import {
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
   SET_CACHED_INITIAL_VALUES_OBJECT,
   SET_LAST_MOUNTED_DOCUMENT_ID,
-  FETCH_DOCUMENT_FIELDS_FOR_PAGE
+  FETCH_DOCUMENT_FIELDS_FOR_PAGE,
+  CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -3566,11 +3567,31 @@ export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEdit
     })
     .then(response => {
       console.log('response to fetchDocumentFieldsForPage: ', response);
+      // console.log('response to fetchDocumentFieldsForPage, JSON.parse(response.data.data.document_fields): ', JSON.parse(response.data.data.document_fields));
       // this.showLoading();
       callback();
       dispatch({
         type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
         payload: { array: response.data.data.document_fields, templateEditHistory }
+      });
+    });
+  };
+}
+
+export function cacheDocumentFieldsForRestOfPages(agreementId) {
+  console.log('index action cacheDocumentFieldsForRestOfPages, agreementId: ', agreementId);
+  // this.showLoading();
+  return function (dispatch) {
+    axios.post(`${ROOT_URL}/api/v1/cache_document_fields_for_pages`, { agreement_id: agreementId }, {
+      headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
+    })
+    .then(response => {
+      console.log('response to cacheDocumentFieldsForRestOfPages: ', response);
+      // this.showLoading();
+      // callback();
+      dispatch({
+        type: CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES,
+        payload: { array: response.data.data.document_fields }
       });
     });
   };

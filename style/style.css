@@ -4206,7 +4206,7 @@ form {
 /* *********SPINNER************** */
 .spinner {
   padding-top: 20px;
-  font-size: 18px;
+  font-size: 15px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -4934,6 +4934,7 @@ form {
 .loading-spinner {
   margin-top: 200px;
   text-align: center;
+  font-size: 9.5px
   /* display: flex;
   justify-content: center;
   align-content: center; */
