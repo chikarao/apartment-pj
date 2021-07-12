@@ -373,6 +373,7 @@ export default function (state = {
         agreements: action.payload.agreements,
         documentConstants: JSON.parse(action.payload.document_constants),
         agreements_meta: JSON.parse(action.payload.agreements_meta),
+        mappedAgreementsWithCachedDocumentFields: action.payload.agreements_with_cached_document_fields_hash
         // templateTranslationObject: JSON.parse(action.payload.template_translation_object)
       };
     }
@@ -426,7 +427,6 @@ export default function (state = {
       // gets object with string ids and a pageObject { 1: { id: element }}
       const mapKeysTranslationObject = getMappedObjectWithStringIds(mergedTranslationObject, action.payload.templateEditHistory, true);
       console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject: ', mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject);
-
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,

@@ -3558,11 +3558,11 @@ export function getAppBaseObjects() {
   };
 }
 
-export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEditHistory, callback) {
+export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEditHistory, callback, pagesAlreadyInFrontEndArray) {
   console.log('index action fetchDocumentFieldsForPage, pageNumber, agreementId: ', pageNumber, agreementId);
   this.showLoading();
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/fetch_document_fields_for_page`, { agreement_id: agreementId, page: pageNumber }, {
+    axios.post(`${ROOT_URL}/api/v1/fetch_document_fields_for_page`, { agreement_id: agreementId, page: pageNumber, pages_already_in_front_end_array: pagesAlreadyInFrontEndArray }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {

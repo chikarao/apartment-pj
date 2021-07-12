@@ -188,7 +188,6 @@ class CreateEditDocument extends Component {
           top: eachPageBoundingClientRect.top - parentBoundingClientRect.top,
           bottom: eachPageBoundingClientRect.bottom - parentBoundingClientRect.top,
         };
-        // console.log('in create_edit_document, componentDidMount, eachPageBoundingClientRect, parentBoundingClientRect, achPageObject.getAttribute(value): ', eachPageBoundingClientRect, parentBoundingClientRect, eachPageObject.getAttribute('value'));
       });
 
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
@@ -196,7 +195,9 @@ class CreateEditDocument extends Component {
       });
     // ************ Code for when user scrolls on document **********
     // ************ Code for caching rest of document_fields for agreement **********
-    this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId);
+    // standard documents are already cached
+    console.log('in create_edit_document, componentDidMount, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
+    if (!this.props.agreement.standard_document) this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId);
     // ************ Code for caching rest of document_fields for agreement **********
 
       const getLocalHistory = () => {
@@ -285,11 +286,21 @@ class CreateEditDocument extends Component {
 
       // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
       // If there are elements persisted in backend DB, populate this.props.templateElements
-      if (this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0) {
+      if ((this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0)
+          || this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]) {
         // get template elements in DB into app state as templateElements and templateTranslationElements
-        console.log('in create_edit_document, componentDidMount, inside if this.props.agreement.document_fields this.props.agreement.document_fields', this.props.agreement.document_fields);
-
-        this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
+        let newArray = [];
+        if (this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]) {
+          const pageToLoad = 1;
+          _.each(Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]), eachPage => {
+            if (eachPage == pageToLoad) newArray = newArray.concat(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][eachPage])
+            console.log('in create_edit_document, componentDidMount, inside if this.props.agreement.document_fields this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage', this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage);
+          })
+        } else {
+          newArray = this.props.agreement.document_fields;
+          // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
+        }
+        this.props.populateTemplateElementsLocally(newArray, () => {}, templateEditHistory);
       }
     } // if (this.props.showTemplate) {
 
@@ -485,8 +496,16 @@ class CreateEditDocument extends Component {
               message: actionButton.getAttribute('name'),
               value: actionButton.getAttribute('value')
             });
-      }
-    }
+      } // End of if (actionButton) {
+    } // End of if ((this.props.importFieldsFromOtherDocumentsObject
+      console.log('in create_edit_document, componentDidUpdate, this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged: ', this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged);
+      if ((templateElementsCountChanged
+            || templateTranslationElementsCountChanged)
+          && this.props.showLoadingProp
+        ) {
+          // if (this.props.showLoadingProp) this.props.showLoading();
+          console.log('in create_edit_document, componentDidUpdate, inside if this.props.showLoadingProp: ', this.props.showLoadingProp);
+        }
   } // End of componentDidUpdate
 
   componentWillUnmount() {
@@ -6789,8 +6808,10 @@ longActionPress(props) {
     );
   }
 
-  handleDocumentScrollCallback() {
-    this.props.showLoading();
+  handleDocumentScrollCallback(callShowLoading) {
+    console.log('in create_edit_document, handleDocumentScrollCallback, inside if action this.props.showLoadingProp, callShowLoading: ', this.props.showLoadingProp, callShowLoading);
+
+    if (callShowLoading) this.props.showLoading();
     window.addEventListener('scroll', this.handleDocumentScroll);
   }
 
@@ -6823,19 +6844,31 @@ longActionPress(props) {
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray.length < 1 ? [1] : newArray } }, () => {
         console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
         let pageToFetch = null
+        // For each page in the viewPort, if there are document fields on the page, AND
+        // both templateElements and templateTranslationElements are empty set pageToFetch to that page
         _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
           if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
               && (_.isEmpty(this.props.templateElementsByPage[eachPage])
                   && _.isEmpty(this.props.templateTranslationElementsByPage[eachPage]))
             ) {
-              pageToFetch = eachPage
+              pageToFetch = eachPage;
           } //  if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
         }); //  _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
           console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
-
           if (pageToFetch) {
+            //templateEditHistory to be used in populateTemplateElementsLocally
+            const templateEditHistory = { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }
             window.removeEventListener('scroll', this.handleDocumentScroll);
-            this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }, () => { this.handleDocumentScrollCallback(); } )
+            const pagesInPropsTemplateElements = Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId])
+            // this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(); }, pagesInPropsTemplateElements)
+            if (!this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch]) {
+              this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(true); }, pagesInPropsTemplateElements)
+              // this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(); })
+            } else {
+              // this.props.showLoading();
+              console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback just called action showLoading ');
+              this.props.populateTemplateElementsLocally(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch], () => { this.handleDocumentScrollCallback(false); }, templateEditHistory)
+            }
           }
       }); //this.setState({ documentPagesObject:
     }; // const afterScrollingStopped = () => {
@@ -7414,6 +7447,8 @@ function mapStateToProps(state) {
       editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
       cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
       lastMountedocumentId: state.documents.lastMountedocumentId,
+      mappedAgreementsWithCachedDocumentFields: state.documents.mappedAgreementsWithCachedDocumentFields,
+      showLoadingProp: state.auth.showLoading,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7458,6 +7493,8 @@ function mapStateToProps(state) {
       editActionBoxCallForActionObject: state.documents.editActionBoxCallForActionObject,
       cachedInitialValuesObject: state.documents.cachedInitialValuesObject,
       lastMountedocumentId: state.documents.lastMountedocumentId,
+      mappedAgreementsWithCachedDocumentFields: state.documents.mappedAgreementsWithCachedDocumentFields,
+      showLoadingProp: state.auth.showLoading,
     };
   }
 
