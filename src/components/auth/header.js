@@ -119,7 +119,7 @@ class Header extends Component {
        const onlineSelect = document.getElementById('header-online-selection-box-select');
        const optionOnlineIndex = this.getIndexOption('header-online-option', this.props.userStatus.online, false);
        if (onlineSelect) {
-         console.log('in header, componentDidUpdate, in if this.props.userStatus, onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex: ', onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex);
+         // console.log('in header, componentDidUpdate, in if this.props.userStatus, onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex: ', onlineSelect, onlineSelect.selectedIndex, optionOnlineIndex);
          onlineSelect.selectedIndex = optionOnlineIndex;
        }
      }
@@ -146,20 +146,20 @@ class Header extends Component {
      // Case: not connected, is authenticated, no change in timeout, is not timed out and on cable connect page
      // also Connects when non currentUserIsOwner on showFlat jumps to non showflat page
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
-       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       // console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection(onShowPage);
      }
      // logic for when websocked connection time out props CHANGES and IS NOT timed out
      // Case: not connected, is authenticated, IS a change in timeout, IS timed out and on cable connect page
      // So case for reconnecting after being timedout
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut !== this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && cableConnectPage) {
-       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       // console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection(onShowPage);
      }
      // if CASE for 1) socket not connected, 2) authenticated, 3) NOT timed out with no change in timed out
      // 4) nonCablePageOverriden changes (in showpage) and 5) is on page where cable is connected
      if (!this.props.propsWebSocketConnected && this.props.auth.authenticated && (prevProps.propsWebSocketTimedOut === this.props.propsWebSocketTimedOut) && !this.props.propsWebSocketTimedOut && (prevProps.nonCablePageOverriden !== this.props.nonCablePageOverriden) && cableConnectPage) {
-       console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
+       // console.log('in header, componentDidUpdate, in not connected and is authenticated this.state.webSocketConnected: ', this.state.webSocketConnected);
        this.createSocketConnection(onShowPage);
      }
      // if CASE for user not currentUserIsOwner flat page jumps to other page that is not showFlat non currentUserIsOwner flat page
@@ -170,7 +170,7 @@ class Header extends Component {
    }
 
    createSocketConnection(onShowPage) {
-     console.log('in header, createSocketConnection, onShowPage : ', onShowPage);
+     // console.log('in header, createSocketConnection, onShowPage : ', onShowPage);
      let disconnectTime = 0;
      // !!!! Set disconnect time with below logic based on current page and if currentUserIsOwner
      if (onShowPage) {
@@ -188,9 +188,9 @@ class Header extends Component {
        const lapseTime = () => {
          if (subTimer > 0) {
            subTimer--;
-           console.log('createSocketConnection in lapseTime, subTimer ');
+           // console.log('createSocketConnection in lapseTime, subTimer ');
          } else {
-           console.log('createSocketConnection in lapseTime, subTimer in else ', subTimer);
+           // console.log('createSocketConnection in lapseTime, subTimer in else ', subTimer);
            // typingTimer--;
            clearInterval(timer);
            connectionTimer = subTimer;
@@ -232,16 +232,16 @@ class Header extends Component {
      _.each(optionTags, (tag, i) => {
        // console.log('in header, getIndexOption,  this.props.appLanguageCode: ', this.props.appLanguageCode);
        if (language && tag.value === tagValue) {
-         console.log('in header, getIndexOption, tag.value, tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
+         // console.log('in header, getIndexOption, tag.value, tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
          optionIndexArray.push(i);
        }
        // !language means it's for online status
        if (!language && parseInt(tag.value, 10) === tagValue) {
-         console.log('in header, getIndexOption, parseInt(tag.value, 10), tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
+         // console.log('in header, getIndexOption, parseInt(tag.value, 10), tagValue, tag.value == tagValue : ', tag.value, tagValue, tag.value == tagValue);
          optionIndexArray.push(i);
        }
      });
-     console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
+     // console.log('in header, getIndexOption, optionIndexArray : ', optionIndexArray);
      return optionIndexArray[0];
    }
 

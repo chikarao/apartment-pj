@@ -97,7 +97,7 @@ class DocumentChoicesTemplate extends Component {
     // onChange(event.target.value);
     onChange(changeValue);
     // console.log('DocumentChoicesTemplate, handleInputChange input, meta, meta.dirty, value, event.target.value, this.props.dirtyFields', input,meta,  meta.dirty, value, event.target.value, this.props.dirtyFields);
-    console.log('DocumentChoicesTemplate, handleInputChange value, event.target.value, changeValue', value, event.target.value, changeValue);
+    // console.log('DocumentChoicesTemplate, handleInputChange value, event.target.value, changeValue', value, event.target.value, changeValue);
     // check if name is false in dirtyFields in state; if so flip
     // if (this.props.dirtyFields[name] != meta.dirty) {
     //   this.props.editHistory({ editHistoryItem: null, action: 'flipDirtyField', name, dirty: meta.dirty })
@@ -119,7 +119,7 @@ class DocumentChoicesTemplate extends Component {
     let elementStyle = { color: 'lightgray', textAlign: 'center', fontSize: '11px', padding: '1px' };
 
     // console.log('DocumentChoicesTemplate, getStyleOfButton, name, typeof value, value, typeof choice.val, choice.val ', name, typeof value, value, typeof choice.val, choice.val);
-    console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
+    // console.log('DocumentChoicesTemplate, getStyleOfButton, name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
     if (((value.toString().toLowerCase() == choice.val.toString().toLowerCase()) || (typeof value === 'boolean' && value.toString().toLowerCase()[0] === choice.val.toString().toLowerCase())) && !choice.enclosed_text) {
       elementStyle = { ...elementStyle, top: choice.top, left: choice.left, borderColor: this.props.editFieldsOn ? 'lightgray' : 'black', width: choice.width, height: choice.height };
     } else {
@@ -135,7 +135,7 @@ class DocumentChoicesTemplate extends Component {
     }
 
     if (this.props.selectedChoiceIdArray.indexOf(`${choice.element_id}-${choice.choice_index}`) !== -1) {
-      console.log('DocumentChoicesTemplate, test for 1a-0 getStyleOfButton, in if selectedChoiceIdArray name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
+      // console.log('DocumentChoicesTemplate, test for 1a-0 getStyleOfButton, in if selectedChoiceIdArray name, value, choice, this.props.selectedChoiceIdArray ', name, value, choice, this.props.selectedChoiceIdArray);
       elementStyle = { ...elementStyle, borderColor: 'green', top: choice.top, left: choice.left, width: choice.width, height: choice.height };
     }
 
@@ -246,7 +246,7 @@ class DocumentChoicesTemplate extends Component {
     const elementIdAndIndex = `${choice.element_id},${choice.choice_index}`
 
     const handleClick = () => {
-      console.log('DocumentChoicesTemplate, createButtonElement, handleClick, before if editFieldsOn', this.props.editFieldsOn);
+      // console.log('DocumentChoicesTemplate, createButtonElement, handleClick, before if editFieldsOn', this.props.editFieldsOn);
 
       if (!fieldInactive) {
         if (value == choice.val && this.props.formFields[this.props.page][this.props.elementId].second_click_off) {
@@ -350,7 +350,7 @@ class DocumentChoicesTemplate extends Component {
 
     // Define method to get array of object to send to reducer and setLocalStorageHistory
     const getUpdateObjectArray = () => {
-      console.log('DocumentChoicesTemplate, handleOnBlur, elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues', elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues);
+      // console.log('DocumentChoicesTemplate, handleOnBlur, elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues', elementName, blurredInput, blurredInput.value, documentTranslationsAllInOne, initialValuesObject, valueInAllInONe, valueInInitialValues);
       // translation elements use custom name if not linked to to name and
       // name if linked to name (e.g. building/construction)
       const valueInFormName = eachElement.custom_name ? (eachElement.name || eachElement.custom_name) : eachElement.name;
@@ -406,7 +406,7 @@ class DocumentChoicesTemplate extends Component {
         // and the value does not equal the standard translation
         // or update the value of the existing language_code
         const updatedObjectArray = getUpdateObjectArray()
-        console.log('DocumentChoicesTemplate, handleOnBlur, updatedObjectArray', updatedObjectArray);
+        // console.log('DocumentChoicesTemplate, handleOnBlur, updatedObjectArray', updatedObjectArray);
         this.props.updateDocumentElementLocally(updatedObjectArray);
         this.props.setTemplateHistoryArray(updatedObjectArray, 'update');
       } // if (translationModeOn) {
@@ -417,7 +417,7 @@ class DocumentChoicesTemplate extends Component {
     const focusedInput = event.target;
     const valueWhenInputFocused = event.target.value;
     this.setState({ focusedInput, valueWhenInputFocused }, () => {
-    console.log('DocumentChoicesTemplate, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
+    // console.log('DocumentChoicesTemplate, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
     });
   }
 
@@ -487,7 +487,7 @@ class DocumentChoicesTemplate extends Component {
       if (elementObject) {
         translationObject = getDocumentFieldValueTranslation({ choices: elementObject.choices, value });
         // translationObject = getTranslation(elementObject.choices, value);
-        console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, translationObject', name, eachChoice, text, value, translationObject);
+        // console.log('DocumentChoicesTemplate, renderSelectOptions, name, eachChoice, text, value, translationObject', name, eachChoice, text, value, translationObject);
       }
       // text = eachChoice.translation ? eachChoice.translation[language] : eachChoice[language];
       text = translationObject ? translationObject[language] : value;
@@ -509,7 +509,7 @@ class DocumentChoicesTemplate extends Component {
     } else {
       valueSwitch = (this.props.otherChoiceValues.indexOf(value.toString().toLowerCase()) !== -1) ? '' : value;
     }
-    console.log('DocumentChoicesTemplate, createSelectElement, choice, value, this.props.otherChoiceValues: ', choice, value, this.props.otherChoiceValues);
+    // console.log('DocumentChoicesTemplate, createSelectElement, choice, value, this.props.otherChoiceValues: ', choice, value, this.props.otherChoiceValues);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     return (
         <select
@@ -535,7 +535,7 @@ class DocumentChoicesTemplate extends Component {
   }
 
   createTextareaElement({ choice, value, input }) {
-    console.log('DocumentChoicesTemplate, createTextareaElement choice, value, input', choice, value, input);
+    // console.log('DocumentChoicesTemplate, createTextareaElement choice, value, input', choice, value, input);
     // const dirtyValue = this.state.inputValue || (meta.dirty ? this.state.inputValue : value);
     // Set idname for getElementById in element move and resize
     const idName = !this.props.translationModeOn ? 'template-element' : 'template-translation-element'
@@ -563,7 +563,7 @@ class DocumentChoicesTemplate extends Component {
 
   renderEachChoice(choices) {
     const { input: { value, onChange, name, onBlur }, meta, input } = this.props;
-    console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props, choices: ', name, value, input, this.props, choices)
+    // console.log('DocumentChoicesTemplate, renderEachChoice name, value, input, this.props, choices: ', name, value, input, this.props, choices)
     // Field has choices in document_form object; iterate through choices
     // For some reason, cannot destructure page from this.props!!!!!!
     // reference : https://redux-form.com/6.0.0-rc.3/docs/api/field.md/#props
@@ -594,7 +594,7 @@ class DocumentChoicesTemplate extends Component {
   handleFieldClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value')
-    console.log('DocumentChoicesTemplate, renderEachChoice elementVal: ', elementVal)
+    // console.log('DocumentChoicesTemplate, renderEachChoice elementVal: ', elementVal)
   }
 
   render() {
@@ -620,7 +620,7 @@ class DocumentChoicesTemplate extends Component {
       choices = element.document_field_choices ? element.document_field_choices : { 0: { ...element, val: 'inputFieldValue', choice_index: 0, element_id: element.id, position: 'absolute' } };
     } // end of if (this.props.editFieldsOn) {
     // {this.renderEachChoice(this.props.formFields[this.props.page][this.props.elementId].choices)}
-    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before first return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+    // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before first return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     if (this.props.editFieldsOn) {
       if (this.props.translationModeOn && !this.props.eachElement.translation_element) {
         return (
@@ -630,7 +630,7 @@ class DocumentChoicesTemplate extends Component {
         );
       }
 
-      console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before second return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+      // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before second return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
       return (
         <div
           key={name}
@@ -656,7 +656,7 @@ class DocumentChoicesTemplate extends Component {
       );
     } // if editFieldsOn
 
-    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before third return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+    // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before third return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     if (this.props.showSelectExistingDocument && this.props.importFieldsFromOtherDocuments) {
       return (
         <div
@@ -669,7 +669,7 @@ class DocumentChoicesTemplate extends Component {
       );
     }
 
-    console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before fourth return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+    // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before fourth return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
     return (
       <div key={name}>
         {this.renderEachChoice(choices)}
@@ -679,7 +679,7 @@ class DocumentChoicesTemplate extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log('in document_choices_template, mapStateToProps, state: ', state);
+  // console.log('in document_choices_template, mapStateToProps, state: ', state);
   // console.log('in document_choices_template, mapStateToProps: ');
   return {
     allValues: state.form && state.form.CreateEditDocument ? state.form.CreateEditDocument.values : {},

@@ -14,6 +14,6 @@ export default (props) => {
    returnObject = choices.inputFieldValue.selectChoices[modifiedValue];
  }
 
- console.log('get_field_value_translation, choices, value, returnObject', choices, value, returnObject);
+ // console.log('get_field_value_translation, choices, value, returnObject', choices, value, returnObject);
  return returnObject;
 };

@@ -113,7 +113,7 @@ export default (props) => {
   function createAddress(record) {
     let addressFieldArray = [];
     let withComma = false;
-    console.log('in get_initialvalues_object-fixed-term-contract, createAddress, record: ', record);
+    // console.log('in get_initialvalues_object-fixed-term-contract, createAddress, record: ', record);
     // if (record.country.toLowerCase() == ('usa' || 'united states of america' || 'us' || 'united states')) {
     // change order of address depending on country
     if (record.country && record.country.toLowerCase() == ('japan' || '日本' || '日本国' || 'japon')) {
@@ -164,7 +164,7 @@ export default (props) => {
   function getLanguage(languages, languageCode) {
     let objectReturned = {};
     languages.some((eachLanguage) => {
-        console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
+        // console.log('in get_initialvalues_object-fixed-term-contract, getInitialValuesObject, getLanguage languages, languageCode: ', languages, languageCode);
         if (eachLanguage.language_code === languageCode) {
           objectReturned = eachLanguage;
           return objectReturned;
@@ -300,7 +300,7 @@ export default (props) => {
     if (p.address || p.key === 'address' || key[0] === 'address') return createAddress(recordWithLanguage);
     // if (p.key === 'construction_translation') return recordWithLanguage.construction;
     // return value of recordWithLanguage
-    console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, key, recordWithLanguage, recordWithLanguage[key]: ', p.key, key, recordWithLanguage, recordWithLanguage[key]);
+    // console.log('in get_initialvalues_object-fixed-term-contract, recordWithLanguagesArrayMethod, p.key, key, recordWithLanguage, recordWithLanguage[key]: ', p.key, key, recordWithLanguage, recordWithLanguage[key]);
     return recordWithLanguage[key];
   };
 
@@ -374,7 +374,7 @@ export default (props) => {
   const profileMethod = (p) => {
     // Get userOwner or tenant record based on object.record
     const record = p.object.record === 'user_owner' ? userOwner : tenant;
-    console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p, userOwner, tenant: ', p, userOwner, tenant);
+    // console.log('in get_initialvalues_object-fixed-term-contract, profileMethod, p, userOwner, tenant: ', p, userOwner, tenant);
 
     // What language is the object for base or translation
     const language = p.object.translation_object ? translationLanguageCode : baseLanguageCode;
@@ -646,11 +646,11 @@ export default (props) => {
   let name = null;
 
   if (template) {
-    console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, allObject, documentFields ', allObject, documentFields);
+    // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, allObject, documentFields ', allObject, documentFields);
     // IMPORTANT: start of logic:
     // Iterate through documentFields; For template elements it's state.documents.templateElements
     _.each(documentFields, eachField => {
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, keyExistsInMethodObject && conditionTrue, eachField: ', eachField);
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, keyExistsInMethodObject && conditionTrue, eachField: ', eachField);
       countAll++;
       // Get object from all object fixed term and important points
       allObjectEach = allObject[eachField.name];
@@ -717,7 +717,7 @@ export default (props) => {
                       // && !eachField.custom_name;
 
 
-      if (templateElementsMappedByName && eachField.custom_name) console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before field has value eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value): ', eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value);
+      // if (templateElementsMappedByName && eachField.custom_name) console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, before field has value eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value): ', eachField, templateElementsMappedByName, templateElementsMappedByName[eachField.custom_name], templateElementsMappedByName[eachField.custom_name].value);
       if (conditionTrue) {
         count++;
         name = eachField.custom_name ? eachField.custom_name : eachField.name
@@ -751,7 +751,7 @@ export default (props) => {
     let nameInInitialValues = null;
     let hasOwnTranslation = false;
     let valueFromDocumentTranslations = null;
-    console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, agreement, documentLanguageCode ', agreement, documentLanguageCode);
+    // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, agreement, documentLanguageCode ', agreement, documentLanguageCode);
 
     let translationText = '';
     _.each(Object.keys(templateTranslationElements), eachKey => {
@@ -779,7 +779,7 @@ export default (props) => {
                         templateTranslationElements[eachKey].document_field_translations[documentLanguageCode].value || templateTranslationElements[eachKey].value
                         :
                         valueFromDocumentTranslations;
-      console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
+      // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText ', templateTranslationElements[eachKey], eachKey, templateTranslationElements[eachKey], hasOwnTranslation, translationText);
       objectReturned = { ...objectReturned, [nameInInitialValues]: translationText };
     }) // end of _.each(Object.keys(templateTranslationElements), eachKey =>
   }
@@ -788,7 +788,7 @@ export default (props) => {
   if (getSelectDataBaseValues) getSelectDataBaseValuesCallback();
   if (findIfDatabaseValuesExistForFields) findIfDatabaseValuesExistForFieldsCallback(objectReturned);
 
-  console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
+  // console.log('in get_initialvalues_object-fixed-term-contract-template, getInitialValuesObject, objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length ', objectReturned, count, countAll, template, documentFields, Object.keys(documentFields).length);
   // return objectReturned for assignment to initialValues in mapStateToProps
   return { initialValuesObject: objectReturned, allFields };
 };

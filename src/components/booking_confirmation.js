@@ -84,7 +84,7 @@ class BookingConfirmation extends Component {
     this.props.fetchDocumentTranslation('important_points_explanation');
     this.props.fetchTemplateObjects(() => {});
     this.props.showLoading();
-    console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
+    // console.log('booking_confirmation componentDidMount in not connected but authenticated, in lapseTime, subTimer in else this.context ', this.context);
   }
 
   componentDidUpdate(prevProps) {
@@ -253,7 +253,7 @@ class BookingConfirmation extends Component {
     const { appLanguageCode } = this.props;
     // const { description, area, beds } = booking.flat;
     const age = CalculateAge(birthday);
-    console.log('in booking_confirmation renderEachTenantLine, age: ', age);
+    // console.log('in booking_confirmation renderEachTenantLine, age: ', age);
     const addressString = city + ' ' + state + ' ' + `${country.toLowerCase() == ('日本' || 'japan') ? '' : country}`
     const numberOfTenants = this.getNumberOfTenants(this.props.booking, profile)
 
@@ -361,7 +361,7 @@ class BookingConfirmation extends Component {
   renderEachAgreementToCreate() {
     // <div value={'important_points_explanation_jp'} onClick={this.handleDocumentCreateClick} className="booking-confirmation-document-create-link">{Documents[eachDocumentKey][this.props.appLanguageCode]}</div>
     return _.map(Object.keys(Documents), (eachDocumentKey, i) => {
-      console.log('in booking confirmation, renderEachAgreementToCreate, eachDocumentKey, this.props.appLanguageCode:', eachDocumentKey, this.props.appLanguageCode);
+      // console.log('in booking confirmation, renderEachAgreementToCreate, eachDocumentKey, this.props.appLanguageCode:', eachDocumentKey, this.props.appLanguageCode);
       return (
         <div
           key={i}
@@ -381,7 +381,7 @@ class BookingConfirmation extends Component {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // if agreement has a template file name render
       if (eachAgreement.document_type !== 'template') {
-        console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement, this.state.agreementId:', eachAgreement, this.state.agreementId);
+        // console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement, this.state.agreementId:', eachAgreement, this.state.agreementId);
         return <div
           key={i}
           value={eachAgreement.document_code}
@@ -404,14 +404,13 @@ class BookingConfirmation extends Component {
 
   handleDocumentLanguageSelect(event) {
     const clickedElement = event.target;
-    console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
+    // console.log('in booking confirmation, handleDocumentLanguageSelect, clickedElement, clickedElement.value:', clickedElement, clickedElement.value);
     this.props.setDocumentLanguageCode(clickedElement.value);
   }
 
   renderDocumentLanguageSelect() {
     // Do not show language code of shown document
-    console.log('in booking confirmation, renderDocumentLanguageSelect, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray(): ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray());
-
+    // console.log('in booking confirmation, renderDocumentLanguageSelect, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray(): ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.getAgreementArray());
     const languageToHide = this.state.showDocument
                             ?
                             this.getAgreementArray()[0].language_code
@@ -437,7 +436,7 @@ class BookingConfirmation extends Component {
     const clickedElement = event.target;
     // elementVal is documentCode or document key in documents.js
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in booking confirmation, handleSavedDocumentShowClick, elementVal:', elementVal);
+    // console.log('in booking confirmation, handleSavedDocumentShowClick, elementVal:', elementVal);
     const elementValArray = elementVal.split(',')
     const documentCode = elementValArray[0];
     // boolean to test if doc is a template
@@ -445,7 +444,7 @@ class BookingConfirmation extends Component {
 
     // elementName is agreement id
     const elementName = clickedElement.getAttribute('name');
-    console.log('in booking confirmation, handleSavedDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
+    // console.log('in booking confirmation, handleSavedDocumentShowClick, documentCode, template, elementName:', documentCode, template, elementName);
 
     if (this.state.showOwnUploadedDocument && (elementVal != globalConstants.ownUploadedDocumentKey)) {
       this.setState({ showOwnUploadedDocument: false }, () => {
@@ -496,7 +495,7 @@ class BookingConfirmation extends Component {
     const template = elementValArray[1] === 'template';
     // elementName is agreement id
     const newAgreementId = clickedElement.getAttribute('name');
-    console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, newAgreementId:', documentCode, template, newAgreementId);
+    // console.log('in booking confirmation, handleOwnDocumentShowClick, documentCode, template, newAgreementId:', documentCode, template, newAgreementId);
     // if the language_code of agreement is same as documentLanguageCode(translated language)
 
     if (this.props.booking.agreements_mapped[parseInt(newAgreementId, 10)].language_code === this.props.documentLanguageCode) {
@@ -659,7 +658,7 @@ class BookingConfirmation extends Component {
     const clickedElement = event.target;
     // elementVal is booking.id
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in booking confirmation, handleDocumentsSignedClick, elementVal:', elementVal);
+    // console.log('in booking confirmation, handleDocumentsSignedClick, elementVal:', elementVal);
     this.setState({ showDocumentEmailCreateModal: true, signedDocumentsModal: true });
   }
 
@@ -794,7 +793,7 @@ class BookingConfirmation extends Component {
   }
 
   findConversation() {
-    console.log('in booking confirmation, findConversation, this.props.booking.user:', this.props.booking.user);
+    // console.log('in booking confirmation, findConversation, this.props.booking.user:', this.props.booking.user);
     const conversations = this.props.booking.user.conversations;
     let conversation = null;
     _.each(conversations, each => {
@@ -850,7 +849,7 @@ class BookingConfirmation extends Component {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
     if (window.confirm('End this rental?')) {
-      console.log('in booking confirmation, handleEndRentalClick, elementVal:', elementVal);
+      // console.log('in booking confirmation, handleEndRentalClick, elementVal:', elementVal);
     }
   }
 
@@ -919,7 +918,7 @@ class BookingConfirmation extends Component {
         // find out if any documents sent to tenant
         const documentsSent = this.findDocumentsStatus(booking.agreements, 'sent_to_tenant');
         const documentsSigned = this.findDocumentsStatus(booking.agreements, 'tenant_signed');
-        console.log('in booking confirmation, renderBookingData, booking: ', booking);
+        // console.log('in booking confirmation, renderBookingData, booking: ', booking);
 
         return (
           <div>
@@ -981,7 +980,7 @@ renderStars() {
   const { rating } = this.props.review;
   const totalStars = 5;
   const grayStarsNum = 5 - rating;
-  console.log('in booking confirmation, renderStars, grayStarsNum:', grayStarsNum);
+  // console.log('in booking confirmation, renderStars, grayStarsNum:', grayStarsNum);
   //
   // for (let i = 0; i < rating; i++) {
   // }
@@ -1037,7 +1036,7 @@ renderReview() {
 
   const reviewEmpty = _.isEmpty(review);
   if (!reviewEmpty) {
-    console.log('in booking confirmation, renderReview, this.props.review:', review.user.profile.image);
+    // console.log('in booking confirmation, renderReview, this.props.review:', review.user.profile.image);
     const date = new Date(review.created_at)
     return (
       <div className="review-container">
@@ -1110,8 +1109,8 @@ handleUploadedPdfClick(event) {
   const clickedElement = event.target;
   const elementVal = clickedElement.getAttribute('value');
   const elementName = clickedElement.getAttribute('name');
-  console.log('in booking confirmation, handleUploadedPdfClick, elementVal:', elementVal);
-  console.log('in booking confirmation, handleUploadedPdfClick, elementName:', elementName);
+  // console.log('in booking confirmation, handleUploadedPdfClick, elementVal:', elementVal);
+  // console.log('in booking confirmation, handleUploadedPdfClick, elementName:', elementName);
   this.props.showDocumentInsertEditModal();
   this.props.selectedDocumentInsertId(elementVal);
   this.props.selectedAgreementId(elementName);
@@ -1143,7 +1142,7 @@ handleEachInsertFieldClick(event) {
   const clickedElement = event.target;
   const elementVal = clickedElement.getAttribute('value');
   const elementName = clickedElement.getAttribute('Name');
-  console.log('in booking confirmation, handleEachInsertFieldClick, clickedElement:', clickedElement);
+  // console.log('in booking confirmation, handleEachInsertFieldClick, clickedElement:', clickedElement);
   // this.props.selectedDocumentInsertId(elementVal);
   // this.props.selectedAgreementId(elementName);
   this.props.selectedInsertFieldId(elementVal);
@@ -1182,7 +1181,7 @@ renderEachInsertField(eachInsert) {
   // console.log('in booking confirmation, renderEachInsertField, insertFieldObject:', insertFieldObject);
 
   return _.map(Object.keys(insertFieldObject), eachFieldKey => {
-    console.log('in booking confirmation, renderEachInsertField, insertFieldObject[eachFieldKey]:', insertFieldObject[eachFieldKey]);
+    // console.log('in booking confirmation, renderEachInsertField, insertFieldObject[eachFieldKey]:', insertFieldObject[eachFieldKey]);
     const choice = this.getInsertFieldChoice(insertFieldObject[eachFieldKey][0]);
     return (
       <div key={insertFieldObject[eachFieldKey][0].id} className="document-insert-box-documents-each-box-fields-each">
@@ -1205,7 +1204,7 @@ renderEachInsertField(eachInsert) {
 
 renderEachUploadedPdf() {
   return _.map(this.props.documentInserts, eachInsert => {
-    console.log('in booking confirmation, renderEachUploadedPdf, eachInsert:', eachInsert);
+    // console.log('in booking confirmation, renderEachUploadedPdf, eachInsert:', eachInsert);
     return (
       <div key={eachInsert.id} className="document-insert-box-documents-each-box-container">
         <div className="document-insert-box-documents-each-box">
@@ -1258,7 +1257,7 @@ renderInsertBox(isTemplate) {
 }
 
 getAgreementArray() {
-  console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument);
+  // console.log('in booking confirmation, getAgreementArray, this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument: ', this.props.booking, this.props.allUserAgreementsArrayMappedWithDocumentFields, this.state.agreementId, this.props.showSelectExistingDocument);
 
   return (
     // this.props.showSelectExistingDocument
@@ -1296,7 +1295,7 @@ renderDocument() {
         // If template, allow document inserts
         if (agreementArray[0].document_type === 'template') showDocumentInsertBox = true;
       }
-      console.log('in booking confirmation, renderDocument, agreementArray, this.props.booking.agreements:', agreementArray, this.props.booking.agreements);
+      // console.log('in booking confirmation, renderDocument, agreementArray, this.props.booking.agreements:', agreementArray, this.props.booking.agreements);
 
       return (
         <div className="booking-confirmation-render-document-box">
@@ -1407,7 +1406,7 @@ renderDocumentInsertCreateForm() {
 }
 
 renderDocumentInsertEditForm() {
-  console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.booking: ', this.props.booking);
+  // console.log('in booking confirmation, renderDocumentInsertEditForm, this.props.booking: ', this.props.booking);
   return (
     <DocumentInsertEditModal
       show={this.props.showDocumentInsertEdit}
@@ -1483,7 +1482,7 @@ renderSelectExistingDocumentForm() {
       // editFlat
       // Set showDocument to true and set agreementId to be used by CreateEditDocument
       setAgreementId={(id, bool1, bool2, bool3, bool4, callback) => this.setState({ agreementId: id, showDocument: bool1, showSavedDocument: bool2, showOwnUploadedDocument: bool3, showTemplate: bool4 }, () => {
-        console.log('in booking confirmatio, renderSelectExistingDocumentForm, this.state.agreementId : ', this.state.agreementId);
+        // console.log('in booking confirmatio, renderSelectExistingDocumentForm, this.state.agreementId : ', this.state.agreementId);
         callback();
       })}
       getFieldValues={this.state.showSelectExistingDocumentModalForGetFieldValues}
@@ -1510,7 +1509,7 @@ renderSelectExistingDocumentForm() {
 // 5) Upload own template to place fields on it
 
 render() {
-  console.log('in booking confirmation,  render, this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate: ', this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate);
+  // console.log('in booking confirmation,  render, this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate: ', this.state.showDocument, this.state.showSavedDocument, this.state.uploadOwnDocument, this.state.agreementId, this.state.showOwnUploadedDocument, this.state.showTemplate);
   return (
     <div>
       {this.renderReviewEditModal()}

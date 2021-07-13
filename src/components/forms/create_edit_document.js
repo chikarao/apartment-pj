@@ -202,16 +202,13 @@ class CreateEditDocument extends Component {
 
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
-        // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory, this.props.agreement', localStorageHistory, this.props.agreement);
         let destringifiedHistory = {};
         // if localStorageHistory exists, set state to previous values
         // if localStorageHistory does not exist, all state values are set in constructor (ie empty)
         // and next time user refreshes or mounts component on the same machine, it will be there
-        // console.log('in create_edit_document, componentDidMount, getLocalHistory, localStorageHistory', localStorageHistory);
         if (localStorageHistory) {
           destringifiedHistory = JSON.parse(localStorageHistory);
           if (destringifiedHistory[this.props.agreement.id] && destringifiedHistory[this.props.agreement.id].elements) {
-            // console.log('in create_edit_document, componentDidMount, getLocalHistory, destringifiedHistory', destringifiedHistory);
             // Set state with || in case localStorageHistory exists but history and other objects do not exist
             this.setState({
               templateEditHistoryArray: destringifiedHistory[this.props.agreement.id].history || this.state.templateEditHistoryArray,
@@ -272,7 +269,6 @@ class CreateEditDocument extends Component {
           // this.props.createDocumentElementLocally(templateEditHistory.elements[eachElementKey]);
         }); // end of each elements
 
-        // console.log('in create_edit_document, componentDidMount, getLocalHistory, in if showTemplate newElementArray', newElementArray);
         this.props.createDocumentElementLocally(newElementArray);
 
         this.setState({
@@ -283,8 +279,6 @@ class CreateEditDocument extends Component {
           // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
         });
       }
-
-      // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.props.agreement.document_fields', this.props.agreement.document_fields);
       // If there are elements persisted in backend DB, populate this.props.templateElements
       if ((this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0)
           || this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]) {
@@ -294,7 +288,7 @@ class CreateEditDocument extends Component {
           const pageToLoad = 1;
           _.each(Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]), eachPage => {
             if (eachPage == pageToLoad) newArray = newArray.concat(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][eachPage])
-            console.log('in create_edit_document, componentDidMount, inside if this.props.agreement.document_fields this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage', this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage);
+            // console.log('in create_edit_document, componentDidMount, inside if this.props.agreement.document_fields this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage', this.props.agreement.document_fields, this.props.mappedAgreementsWithCachedDocumentFields, newArray, eachPage);
           })
         } else {
           newArray = this.props.agreement.document_fields;
@@ -444,7 +438,7 @@ class CreateEditDocument extends Component {
       // so merge the initialValues for the elements subset with the original initialValues
       // Second property overwrites first if same key exists
       const finalInitialValuesObject = !documentMountedChanged ? { ...currentInitialValuesObject, ...initialValuesObject.initialValuesObject } : initialValuesObject.initialValuesObject;
-      console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject);
+      // console.log('in create_edit_document, componentDidUpdate, prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject: ', prevProps.agreementId, this.props.agreementId, prevProps.lastMountedocumentId, documentMountedChanged, currentInitialValuesObject, initialValuesObject.initialValuesObject, finalInitialValuesObject);
       // If not for getting database values, for getting initial values for the form
       // Just importing fields, not value so current value takes precedence
       // if (!this.state.getSelectDataBaseValues && !this.state.findIfDatabaseValuesExistForFields) this.props.setInitialValuesObject({ initialValuesObject: finalInitialValuesObject, ...initialValuesObject });
@@ -498,18 +492,19 @@ class CreateEditDocument extends Component {
             });
       } // End of if (actionButton) {
     } // End of if ((this.props.importFieldsFromOtherDocumentsObject
-      console.log('in create_edit_document, componentDidUpdate, this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged: ', this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged);
-      if ((templateElementsCountChanged
-            || templateTranslationElementsCountChanged)
-          && this.props.showLoadingProp
-        ) {
-          // if (this.props.showLoadingProp) this.props.showLoading();
-          console.log('in create_edit_document, componentDidUpdate, inside if this.props.showLoadingProp: ', this.props.showLoadingProp);
-        }
+      // console.log('in create_edit_document, componentDidUpdate, this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged: ', this.props.showLoadingProp, templateElementsCountChanged, templateTranslationElementsCountChanged);
+      // if ((templateElementsCountChanged
+      //       || templateTranslationElementsCountChanged)
+      //     && this.props.showLoadingProp
+      //   ) {
+      //     if (this.props.showLoadingProp) this.props.showLoading();
+      //     // gotoscroll
+      //     console.log('in create_edit_document, componentDidUpdate, inside if this.props.showLoadingProp: ', this.props.showLoadingProp);
+      //   }
   } // End of componentDidUpdate
 
   componentWillUnmount() {
-    console.log('in create_edit_document, componentWillUnmount fired');
+    // console.log('in create_edit_document, componentWillUnmount fired');
     // Housekeeping for when component unmounts
     document.removeEventListener('click', this.getMousePosition);
     document.removeEventListener('click', this.handleFontControlCloseClick);
@@ -519,7 +514,6 @@ class CreateEditDocument extends Component {
     window.removeEventListener('keydown', this.handleCloseGetFieldValuesChoiceBox);
     window.removeEventListener('scroll', this.handleDocumentScroll);
     // this.setLocalStorageHistory('componentWillUnmount');
-    // console.log('in create_edit_document, componentWillUnmount ');
   }
 
   countMainDocumentInserts(agreement) {
@@ -537,7 +531,6 @@ class CreateEditDocument extends Component {
 
     if (!_.isEmpty(mainDocumentInsert)) {
       _.each(mainDocumentInsert.insert_fields, eachInsertField => {
-        // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, mainDocumentInsert, eachInsertField: ', mainDocumentInsert, eachInsertField);
         if (!mainInsertFieldsObject[eachInsertField.name]) {
           mainInsertFieldsObject[eachInsertField.name] = [];
           mainInsertFieldsObject[eachInsertField.name].push({ name: eachInsertField.name, value: eachInsertField.value, language_code: eachInsertField.language_code });
@@ -551,7 +544,6 @@ class CreateEditDocument extends Component {
   }
 
   getSavedDocumentInitialValuesObject({ agreement, mainDocumentInsert }) {
-    // console.log('in create_edit_document, getSavedDocumentInitialValuesObject, agreement: ', agreement);
     const initialValuesObject = {};
     const agreementMappedByName = {}
     const agreementMappedById = {}
@@ -577,7 +569,6 @@ class CreateEditDocument extends Component {
   }
 
   getMainDocumentInsert(documentInsertsAll) {
-    // console.log('in create_edit_document, getMainDocument, documentInsertsAll: ', documentInsertsAll);
     let objectReturned = {};
     if (documentInsertsAll) {
       if (documentInsertsAll.length > 0) {
@@ -612,15 +603,12 @@ class CreateEditDocument extends Component {
         }
       });
     });
-    // console.log('in create_edit_document, getRequiredKeys array: ', array);
     return array;
   }
 
   checkIfRequiredKeysNull(requiredKeysArray, data) {
-    // console.log('in create_edit_document, checkIfRequiredKeysNull, requiredKeys, data: ', requiredKeys, data);
     const array = [];
     _.each(requiredKeysArray, eachKey => {
-      // console.log('in create_edit_document, checkIfRequiredKeysNull, eachKey, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == : ', requiredKeys, eachKey, data[eachKey], typeof data[eachKey], data[eachKey] == ('' || undefined || null));
       if (data[eachKey] == (undefined || null)) {
         array.push(eachKey);
       }
@@ -630,14 +618,12 @@ class CreateEditDocument extends Component {
         array.push(eachKey);
       }
     });
-    // console.log('in create_edit_document, checkIfRequiredKeysNull array', array);
     return array;
   }
 
   checkOtherChoicesVal(choices, key, data) {
     let haveOrNot = false;
     _.each(choices, choice => {
-      // console.log('in create_edit_document, checkOtherChoicesVal, choice, key, data[key]: ', choice, key, data[key]);
       if (choice.params.val == data[key]) {
         haveOrNot = true;
       }
@@ -647,10 +633,8 @@ class CreateEditDocument extends Component {
 
   getSelectChoice(choices, value) {
     // model refers to a constants file eg building.js
-    // console.log('in create_edit_document, getSelectChoice choices, value: ', choices, value);
     let returnedChoice;
     _.each(choices, eachChoice => {
-      // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
       if (eachChoice.value === value) {
         returnedChoice = eachChoice;
         return;
@@ -660,33 +644,26 @@ class CreateEditDocument extends Component {
   }
 
   // handleFormSubmitSave(dataPassed) {
-  //   console.log('in create_edit_document, handleFormSubmitSave, data: ', data);
   //   const data = dataPassed.data;
   //   const contractName = Documents[this.props.createDocumentKey].file;
   //   const paramsObject = { flat_id: this.props.flat.id, contract_name: contractName }
   //
   // }
   getDeltaFields(dataFormSubmit) {
-    // console.log('in create_edit_document, getDeltaFields dataFormSubmit, this.props.initialValues: ', dataFormSubmit, this.props.initialValues);
     const delta = {};
     _.each(Object.keys(dataFormSubmit), key => {
       if (dataFormSubmit[key] !== this.props.initialValues[key]) {
-        // console.log('in create_edit_document, getDeltaFields dataFormSubmit[key], this.props.initialValues[key]: ', dataFormSubmit[key], this.props.initialValues[key]);
         delta[key] = dataFormSubmit[key];
       }
     });
-    console.log('in create_edit_document, getDeltaFields delta: ', delta);
     return delta;
   }
 
   getSavedDocumentField(choice, key) {
     const { agreementMappedById } = this.props;
     let objectReturned = {};
-    // console.log('in create_edit_document, getSavedDocumentField, choice : ', choice);
-    // console.log('in create_edit_document, getSavedDocumentField, agreementMappedById : ', agreementMappedById);
     // Iterate through all saved document fields
     _.each(Object.keys(this.props.agreementMappedById), eachSavedFieldKey => {
-      // console.log('in create_edit_document, getSavedDocumentField, eachSavedFieldKey : ', eachSavedFieldKey);
       // if the name and key match AND the val matches return object
       if ((agreementMappedById[eachSavedFieldKey].name == key) && (agreementMappedById[eachSavedFieldKey].val == choice.params.val)) {
         objectReturned = agreementMappedById[eachSavedFieldKey];
@@ -697,7 +674,6 @@ class CreateEditDocument extends Component {
   }
 
   checkIfKeyExists(key, paramsObject) {
-    // console.log('in create_edit_document, checkIfKeyExists, key, paramsObject : ', key, paramsObject);
     let booleanReturned = false;
     _.each(paramsObject.document_field, eachDocumentField => {
       if (eachDocumentField.name == key) {
@@ -755,7 +731,6 @@ class CreateEditDocument extends Component {
       templateTranslationElements: { modifiedObject: this.state.modifiedPersistedTranslationElementsObject, translations: true }
     }
 
-    console.log('in create_edit_document, handleTemplateFormSubmit, data, submitAction: ', data, submitAction);
     _.each(Object.keys(object), eachElementTypeKey => {
       _.each(Object.keys(object[eachElementTypeKey].modifiedObject), eachKey => {
         let documentField = null;
@@ -766,7 +741,6 @@ class CreateEditDocument extends Component {
           // if not deleted === true, its been modified or newly created
           // eachElementTypeKey is this.props[templateElements] or templateTranslationElements
           documentField = this.props[eachElementTypeKey][eachKey];
-          console.log('in create_edit_document, handleTemplateFormSubmit, eachElementTypeKey, eachKey, object[eachElementTypeKey].modifiedObject[eachKey], documentField: ', eachElementTypeKey, eachKey, object[eachElementTypeKey].modifiedObject[eachKey], documentField);
           // Keep track of which document_field_translations were deleted
           // if the documentField is a translation element and not a new element with id 'b'
           // and has document_field_translations
@@ -798,7 +772,6 @@ class CreateEditDocument extends Component {
             array = [];
             const selectArray = [];
             _.each(Object.keys(documentField.document_field_choices), each => {
-              // console.log('in create_edit_document, handleTemplateFormSubmit, documentField.document_field_choices, each, documentField.document_field_choices[each]: ', documentField.document_field_choices, each, documentField.document_field_choices[each]);
               if (documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices) {
                 const selectChoices = documentField.document_field_choices[each].selectChoices || documentField.document_field_choices[each].select_choices;
                 _.each(Object.keys(selectChoices), eachSelect => {
@@ -844,7 +817,6 @@ class CreateEditDocument extends Component {
   }
   // NOTE: This is not for template documents!!!! Outdated!!!
 //   handleFormSubmit({ data, submitAction }) {
-//     console.log('in create_edit_document, handleFormSubmit, data, this.props, this.props.allFields, submitAction: ', data, this.props, this.props.allFields, submitAction);
 //     // object to send to API; set flat_id
 //     // const contractName = 'teishaku-saimuhosho';
 //     const contractName = Documents[this.props.createDocumentKey].file;
@@ -862,7 +834,6 @@ class CreateEditDocument extends Component {
 //     // iterate through each key in data from form
 //
 //     const requiredKeysArray = this.getRequiredKeys();
-//     // console.log('in create_edit_document, handleFormSubmit, requiredKeysArray: ', requiredKeysArray);
 //     const nullRequiredKeys = this.checkIfRequiredKeysNull(requiredKeysArray, data)
 //
 //     // _.each(Object.keys(data), key => {
@@ -875,16 +846,13 @@ class CreateEditDocument extends Component {
 //       // assign all fields to fields for iteration below
 //       fields = this.props.allFields;
 //     }
-//     // console.log('in create_edit_document, handleFormSubmit, fields, this.props.documentFields: ', fields, this.props.documentFields);
 //     // iterate through all fields or just delta fields depending on showSavedDocument
 //     // ie user is editing an already saved document
 //     _.each(Object.keys(fields), key => {
-//       // console.log('in create_edit_document, handleFormSubmit, key : ', key);
 //       let page = 0;
 //       // find out which page the key is on
 //       // iterate through Document form first level key to see if each object has key in quesiton
 //       _.each(Object.keys(this.props.documentFields), eachPageKey => {
-//         // console.log('in create_edit_document, handleFormSubmit, key, eachPageKey, (toString(key) in this.props.documentFields[eachPageKey]), eachPageKey: ', key, eachPageKey, (key in this.props.documentFields[eachPageKey]), this.props.documentFields[eachPageKey]);
 //         // if the object has the key, that is the page the key is on
 //         // so set page variable so we can get choices from input key
 //         if (key in this.props.documentFields[eachPageKey]) {
@@ -897,7 +865,6 @@ class CreateEditDocument extends Component {
 //       _.each(this.props.documentFields[page][key].choices, eachChoice => {
 //         // Boolean to test if field has multiple choices
 //         const keyWithMultipleChoices = Object.keys(this.props.documentFields[page][key].choices).length > 1;
-//         // console.log('in create_edit_document, handleFormSubmit, key, eachChoice, data, data[key], keyWithMultipleChoices: ', key, eachChoice, data, data[key], keyWithMultipleChoices);
 //         // val = '' means its an input element, not a custom field component
 //         // .val is assigned inputFieldValue if it is not a button
 //         if (eachChoice.params.val == 'inputFieldValue') {
@@ -927,7 +894,6 @@ class CreateEditDocument extends Component {
 //                 if (choice.baseLanguageField) {
 //                   choice.params.display_text = selectChoice[Documents[this.props.documentKey].baseLanguage];
 //                 }
-//                 // console.log('in create_edit_document, handleFormSubmit, if showLocalLanguage: selectChoice', selectChoice);
 //               }
 //             } else {
 //               choice.params.value = '';
@@ -948,7 +914,6 @@ class CreateEditDocument extends Component {
 //         }
 //
 //         if ((eachChoice.params.val == dataRefined) || (dataRefined == '') || (eachChoice.params.val !== 'inputFieldValue')) {
-//           // console.log('in create_edit_document, handleFormSubmit, eachChoice, key : ', eachChoice, key);
 //           choice = eachChoice;
 //           let paramsForSelectKeyExists = false;
 //           // if this is a saved document on backend ie not newly creating
@@ -958,7 +923,6 @@ class CreateEditDocument extends Component {
 //             if (keyWithMultipleChoices && choice.params.input_type == 'button') {
 //               // use agreementMappedByName to get id
 //               const savedDocumentField = this.getSavedDocumentField(choice, key);
-//               // console.log('in create_edit_document, handleFormSubmit, savedDocumentField, keyWithMultipleChoices : ', savedDocumentField, keyWithMultipleChoices);
 //               choice.params.id = savedDocumentField.id;
 //             } else {
 //               choice.params.id = this.props.agreementMappedByName[key].id;
@@ -981,7 +945,6 @@ class CreateEditDocument extends Component {
 //                 if (choice.combineLanguages) {
 //                   const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
 //                   const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
-//                   // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
 //                   choice.params.display_text = combinedString
 //                 }
 //               }
@@ -994,7 +957,6 @@ class CreateEditDocument extends Component {
 //               if (choice.combineLanguages) {
 //                 const baseString = selectChoice[Documents[this.props.documentKey].baseLanguage];
 //                 const combinedString = baseString.concat(` ${selectChoice[this.props.documentLanguageCode]}`);
-//                 // console.log('in create_edit_document, handleFormSubmit, if (choice.combineLanguages: combinedString', combinedString);
 //                 choice.params.display_text = combinedString
 //               }
 //             }
@@ -1010,7 +972,6 @@ class CreateEditDocument extends Component {
 //
 //           // if (eachChoice.params.input_type == 'button' && !(key in data)) {
 //           //   choice = eachChoice;
-//           //   // console.log('in create_edit_document, handleFormSubmit, eachChoice.params.val, key, data[key] choice.params: ', eachChoice.params.val, key, data[key], choice.params);
 //           //   choice.params.value = ;
 //           //   choice.params.page = page;
 //           //   choice.params.name = this.props.documentFields[page][key].name
@@ -1018,10 +979,8 @@ class CreateEditDocument extends Component {
 //           // }
 //       }); // end of documentFields each choice
 //     }); // end of each Object.keys(data)
-//     console.log('in create_edit_document, handleFormSubmit, object for params in API paramsObject: ', paramsObject);
 //     if (nullRequiredKeys.length > 0) {
 //       // if required keys that are null exist
-//       // console.log('in create_edit_document, handleFormSubmit, construction is required: ', data['construction']);
 //       this.props.authError('The fields highlighted in blue are required.');
 //       this.props.requiredFields(nullRequiredKeys);
 //     } else if (submitAction == 'create') {
@@ -1039,10 +998,8 @@ class CreateEditDocument extends Component {
 //         this.props.showLoading();
 //         this.setState({ showDocumentPdf: true });
 //         let initialValuesObject = {};
-//         // console.log('in create_edit_document, handleFormSubmit, else if save_and_create in callback editAgreementFields agreement: ', agreement);
 //         const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
 //         initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-//         // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
 //         this.props.setInitialValuesObject(initialValuesObject);
 //       });
 //       this.props.showLoading();
@@ -1073,9 +1030,7 @@ class CreateEditDocument extends Component {
 //           this.props.showLoading();
 //           let initialValuesObject = {};
 //           const returnedObject = this.getSavedDocumentInitialValuesObject({ agreement });
-//           // console.log('in create_edit_document, handleFormSubmit, else in callback editAgreementFields agreement: ', agreement);
 //           initialValuesObject = { initialValuesObject: returnedObject.initialValuesObject, agreementMappedByName: returnedObject.agreementMappedByName, agreementMappedById: returnedObject.agreementMappedById }
-//           // console.log('in create_edit_document, handleFormSubmit, initialValuesObject: ', initialValuesObject);
 //           this.props.setInitialValuesObject(initialValuesObject);
 //           // initialize if a redux form action creator to set initialValues again, but don't need here
 //           // this.props.initialize(initialValuesObject.initialValuesObject);
@@ -1089,8 +1044,6 @@ class CreateEditDocument extends Component {
 //     // model refers to a constants file eg building.js
 //     let returnedChoice;
 //     _.each(model[name].choices, eachChoice => {
-//       // console.log('in create_edit_document, getModelChoice model, choice, name, eachChoice: ', model, choice, name, eachChoice);
-//       // console.log('in create_edit_document, getModelChoice eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val: ', eachChoice, choice.params, eachChoice.value, choice.params.val, eachChoice.value == choice.params.val);
 //       if (eachChoice.value === choice.params.val) {
 //         returnedChoice = eachChoice;
 //         return;
@@ -1113,10 +1066,7 @@ class CreateEditDocument extends Component {
 // }
 
 handleOnBlur(event) {
-  // console.log('in create_edit_document, handleOnBlur, event.target.value: ', event.target.value);
   const blurredInput = event.target
-  // console.log('DocumentChoices, handleOnBlur, blurredInput', blurredInput);
-  // console.log('DocumentChoices, handleOnBlur, this.state.valueWhenInputFocused', this.state.valueWhenInputFocused);
   if (blurredInput.value != this.state.valueWhenInputFocused) {
     const newEditHistoryItem = { before: { value: this.state.valueWhenInputFocused, name: blurredInput.name }, after: { value: blurredInput.value, name: blurredInput.name } }
     // this.setState(prevState => ({
@@ -1127,19 +1077,16 @@ handleOnBlur(event) {
 }
 
 handleOnFocus(event) {
-  // console.log('in create_edit_document, handleOnFocus, event.target.value: ', event.target.value);
-  const focusedInput = event.target
-  const valueWhenInputFocused = event.target.value
+  const focusedInput = event.target;
+  const valueWhenInputFocused = event.target.value;
   this.setState({ focusedInput, valueWhenInputFocused }, () => {
-    // console.log('DocumentChoices, handleOnFocus, this.state.focusedInput', this.state.focusedInput);
-  })
+  });
 }
 
 // renderEachDocumentField(page) {
 //   let fieldComponent = '';
 //   // if (this.props.documentFields[page]) {
 //     return _.map(this.props.documentFields[page], (formField, i) => {
-//       console.log('in create_edit_document, renderEachDocumentField, formField', formField);
 //       if (formField.component == 'DocumentChoices') {
 //         fieldComponent = DocumentChoices;
 //       } else {
@@ -1157,13 +1104,11 @@ handleOnFocus(event) {
 //       let otherChoiceValues = [];
 //       if (fieldComponent == DocumentChoices) {
 //         _.each(formField.choices, eachChoice => {
-//           // console.log('in create_edit_document, renderEachDocumentField, eachChoice: ', eachChoice);
 //           if ((eachChoice.params.val !== 'inputFieldValue') && (formField.input_type != 'boolean')) {
 //             otherChoiceValues.push(eachChoice.params.val.toLowerCase());
 //           }
 //         })
 //       }
-//       // console.log('in create_edit_document, renderEachDocumentField,otherChoiceValues: ', otherChoiceValues);
 //       // select objects that are not DocumentChoices components
 //       // Field gets the initialValue from this.props.initialValues
 //       // the 'name' attribute is matched with initialValues object keys
@@ -1230,7 +1175,6 @@ handleOnFocus(event) {
       customNameInputNotEmpty = !this.state.customFieldNameInputValue;
     }
 
-    console.log('in create_edit_document, getMousePosition1, background, event.target', background, event.target);
     // const pageIndex = elementVal - 1;
     // get x and y positions in PX of cursor in browser view port (not page or parent)
     if (clickedElement.id === 'document-background' && customNameInputNotEmpty) {
@@ -1272,7 +1216,6 @@ handleOnFocus(event) {
         // If it is a newElement, it calls dragElement function and sets the coordinates of the documentFieldChoices
       // } else {
         // templateElementAttributes = { ...this.state.templateElementAttributes, left: `${x}%`, top: `${y}%`, page: parseInt(elementVal, 10), id: `${this.state.translationElementCount}b` };
-        console.log('in create_edit_document, getMousePosition1, templateElementAttributes', templateElementAttributes);
         // }
         if (!templateElementAttributes.document_field_choices) this.setTemplateHistoryArray([templateElementAttributes], 'create');
         // remove listener
@@ -1319,8 +1262,6 @@ handleOnFocus(event) {
     const clickedElement = event.target;
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value')
-    console.log('in create_edit_document, handleTemplateElementCheckClick, event.target, ', event.target);
-    // console.log('in create_edit_document, handleTemplateElementCheckClick, elementVal, ', elementVal);
     // when element has not been checked
     if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
@@ -1336,14 +1277,12 @@ handleOnFocus(event) {
         this.setState({
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
         }, () => {
-          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, this.state.selectedTemplateElementIdArray, ', this.state.allElementsChecked, this.state.selectedTemplateElementIdArray);
-        })
-        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
+        });
       });
     } else {
       // if user clicks on check icon of element in checked array
       // form a new array from existing array since cannot mutate state elements
-      const newArray = [...this.state.selectedTemplateElementIdArray]
+      const newArray = [...this.state.selectedTemplateElementIdArray];
       // get index of element in array
       const index = newArray.indexOf(elementVal);
       // take out element at index in array
@@ -1354,7 +1293,6 @@ handleOnFocus(event) {
           allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
           newFontObject: { ...this.state.newFontObject, override: true }
         }, () => {
-          console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
           // Get the font attributes of selected elements to show on the control box font button
           this.getSelectedFontElementAttributes();
           // If there are no more checked elements, set selectedElementFontObject to null
@@ -1362,8 +1300,7 @@ handleOnFocus(event) {
           if (this.state.selectedTemplateElementIdArray.length === 0) {
             this.setState({ selectedElementFontObject: null })
           }
-        })
-        // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.selectedTemplateElementIdArray, ', this.state.selectedTemplateElementIdArray);
+        });
       });
     }
   }
@@ -1383,7 +1320,6 @@ handleOnFocus(event) {
     // Use input elements and not selectedElements since input element dimensions
     // drive the size of the wrapper and the tabs
     if (inputElements) {
-      console.log('in create_edit_document, dragElement, inputElements, ', inputElements);
       // if inputElements exists then must be resize drag
       _.each(inputElements, eachElement => {
         const inputElementDimensions = eachElement.getBoundingClientRect();
@@ -1421,9 +1357,7 @@ handleOnFocus(event) {
         width: element.style.width,
         height: element.style.height
       };
-    }
-    console.log('in create_edit_document, dragElement, element, inputElements, selectedElements, originalValueObject, ', element, inputElements, selectedElements, originalValueObject);
-
+    };
     // CAll main function
     dragMouseDown();
 
@@ -1453,7 +1387,6 @@ handleOnFocus(event) {
       // set this round to use for next round in pos 1 and 2
       pos3 = e.clientX;
       pos4 = e.clientY;
-      // console.log('in create_edit_document, dragElement, pos3, pos4, parentRect, move ', pos3, pos4, parentRect, move);
       // set the element's new position:
       // In percentages; Assign to element.
       // offsetTop returns the distance of the current element relative to the top of the offsetParent node
@@ -1463,7 +1396,6 @@ handleOnFocus(event) {
         modifiedElement.style.left = `${((element.offsetLeft - pos1) / (parentRect.right - parentRect.left)) * 100}%`;
         if (selectedElements.length > 0) {
           _.each(selectedElements, eachElement => {
-            // console.log('in create_edit_document, dragElement, in each selectedElements, eachElement, ', eachElement);
             const modifiedElem = eachElement;
             if (eachElement.id !== element.id) {
               modifiedElem.style.top = `${((eachElement.offsetTop - pos2) / (parentRect.bottom - parentRect.top)) * 100}%`;
@@ -1504,8 +1436,7 @@ handleOnFocus(event) {
           modifiedTab.style.marginLeft = `${(originalTabMarginLeft - pos1)}px`;
         });
       }
-      // console.log('in create_edit_document, dragElement, selectedElements, inputElement, element, tabs, ', selectedElements, inputElements, element, tabs);
-    }
+    };
 
     function closeDragElement() {
       // stop moving when mouse button is released:
@@ -1518,9 +1449,6 @@ handleOnFocus(event) {
       let choiceElement = null;
       let wrapperDiv = null;
       let wrapperDivDimensions = null;
-
-      console.log('in create_edit_document, dragElement, closeDragElement, in each, pos3, pos4, deltaX, deltaY, originalValueObject, ', pos3, pos4, deltaX, deltaY, originalValueObject);
-
       // Object to be sent to reducer in array below
       let updatedElementObject = null;
       const array = [];
@@ -1574,9 +1502,7 @@ handleOnFocus(event) {
               delete updatedElementObject.o_left;
               delete updatedElementObject.o_document_field_choices;
             }
-            console.log('in create_edit_document, dragElement, closeDragElement, in each, eachElementId, interatedElements, originalValueObject, array, ', eachElementId, interatedElements, originalValueObject, array);
           } else { // else of if (templateElements[elementId].document_field_choices
-
             updatedElementObject = {
               // !!!!NOTE: Need to keep id as string so can check in backend if id includes "a"
               id: eachElementId, // get the id part of template-element-[id]
@@ -1602,7 +1528,6 @@ handleOnFocus(event) {
         _.each(interatedElements, eachElement => {
           // when translationModeOn, elementId is in index 3
           eachElementId = !translationModeOn ? eachElement.id.split('-')[2] : eachElement.id.split('-')[3]
-          console.log('in create_edit_document, dragElement, closeDragElement, eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
 
           !translationModeOn
           ?
@@ -1625,7 +1550,6 @@ handleOnFocus(event) {
               o_height: `${(originalValueObject[eachElementId].height / parentRect.height) * 100}%`,
               action: 'update',
             };
-            // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, inputElements, originalValueObject, ', eachElement, inputElements, originalValueObject);
             // place in array to be processed in action and reducer
             array.push(updatedElementObject);
           // }
@@ -1633,7 +1557,6 @@ handleOnFocus(event) {
       } // end of else
       // console.log('in create_edit_document, dragElement, closeDragElement, array, ', array);
       // Callback defined in resize and move handlers
-      console.log('in create_edit_document, dragElement, closeDragElement, before callback, array, ', array);
       actionCallback(array);
     }
   }
@@ -1662,8 +1585,6 @@ dragChoice(props) {
     // Turn choiceMoved boolean true if mouse moved dragMouseDown
     // If remains false in closeDragElement, do not run code in closeDragElement
     let choiceMoved = false;
-
-      // console.log('in create_edit_document, dragChoice, pos1, pos2, pos3, pos4 ', pos1, pos2, pos3, pos4);
     let newWrapperDivDimensions = null;
     let newChoiceButtonDimensions = null;
     // Get choice stored in app state
@@ -1737,8 +1658,6 @@ dragChoice(props) {
       // Get object with element dimensions { top: xxpx, height: xxpx }
       newWrapperDivDimensions = modifiedwrapperDiv.getBoundingClientRect();
       newChoiceButtonDimensions = modifiedChoiceButton.getBoundingClientRect();
-      console.log('in create_edit_document, test for choicebutton width and height dragChoice, closeDragElement, wrapperDivDimensions.bottom, newWrapperDivDimensions.bottom, wrapperDivDimensions.left, newWrapperDivDimensions.left', wrapperDivDimensions.bottom, newWrapperDivDimensions.bottom, wrapperDivDimensions.bottom - newWrapperDivDimensions.bottom, wrapperDivDimensions.left, newWrapperDivDimensions.left, wrapperDivDimensions.bottom - newWrapperDivDimensions.bottom, wrapperDivDimensions.left - newWrapperDivDimensions.left);
-
       // Get change in top of original wrapper div and updated wrapper div
       const cumulDeltaTop = newWrapperDivDimensions.top - wrapperDivDimensions.top;
       // If there is vertical movement
@@ -1783,7 +1702,6 @@ dragChoice(props) {
           modifiedwrapperDiv.style.height = `${((newWrapperDivDimensions.height - pos2) / backgroundDimensions.height) * 100}%`;
           // Set height and top of choiceButton
           modifiedChoiceButton.style.top = `${(1 - (choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT))) * 100}%`;
-          // console.log('in create_edit_document, dragChoice, in if offsetBottom <= 0, pos1, pos2, pos3, pos4, modifiedChoiceButton.style.top, newWrapperDivDimensions, newInnerDivDimensions, newChoiceButtonDimensions  ', pos1, pos2, pos3, pos4, modifiedChoiceButton.style.top, newWrapperDivDimensions, newInnerDivDimensions, newChoiceButtonDimensions);
           modifiedChoiceButton.style.height = `${(choiceButtonHeightInPx / (newWrapperDivDimensions.height - TAB_HEIGHT)) * 100}%`;
           // Adjust height of other buttons since the wrapper div height will change
           // Set height and top of other elements within the wrapperDiv
@@ -1854,7 +1772,6 @@ dragChoice(props) {
         }
         // if not hitting either wrapperDiv boundary, adjust left of choiceButton
         if (!againstRight && !againstLeft) {
-          // console.log('in create_edit_document, dragChoice, elementDrag pos1 if NOT against right or left offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions ', offsetLeft, offsetRight, againstOtherLeft, againstOtherRight, newWrapperDivDimensions);
           modifiedChoiceButton.style.left = `${((((parseFloat(modifiedChoiceButton.style.left) / 100) * newWrapperDivDimensions.width) - pos1) / (newWrapperDivDimensions.width)) * 100}%`;
           if (offsetLeft <= 1 || offsetRight <= 1) {
             modifiedwrapperDiv.style.left = `${((((parseFloat(modifiedwrapperDiv.style.left) / 100) * backgroundDimensions.width) - pos1) / backgroundDimensions.width) * 100}%`;
@@ -1874,8 +1791,6 @@ dragChoice(props) {
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
-      // console.log('in create_edit_document, dragChoice, closeDragElement, document.onmouseup, document.onmousemove: ',  document.onmouseup, document.onmousemove);
-      console.log('in create_edit_document, dragChoice, closeDragElement, choiceButton, otherChoicesObject: ', choiceButton, otherChoicesObject);
       // Get all elements in array
       if (choiceMoved) {
         const iteratedElements = [...otherChoicesArray, choiceButton];
@@ -1905,7 +1820,6 @@ longActionPress(props) {
   // When user mouses up, the coordinates are set in app state
   const { action, choicesArray, templateElements, choicesOriginalObject, selectedChoiceIdArray, actionCallback } = props;
 
-  console.log('in create_edit_document, longActionPress action, choicesArray, templateElements, ', action, choicesArray, templateElements);
   let timer = null;
   let increment = 1;
   let totalIncremented = 0;
@@ -1962,7 +1876,6 @@ longActionPress(props) {
     // getUpdatedElementObjectNoBase gets new wrapper div attributes,
     // and new choice element attributes to send to action creator and reducer
     const array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray, choicesArray, tabHeight: TAB_HEIGHT, templateElements, longActionPress: true, action });
-    console.log('in create_edit_document, longActionPress, closeLongActionPress, choicesArray, array, totalIncremented ', choicesArray, array, totalIncremented);
     // !!!!! IMPORTANT: Somehow, each choice in the DOM needs to be reset to
     // its original % style.width and height, or when rerender from values
     // in app state, the same DOM choice width and height values become
@@ -1990,7 +1903,6 @@ longActionPress(props) {
         array.push(document.getElementById(`${elementIdString}${id}`));
       }
     });
-    console.log('in create_edit_document, getSelectedActualElements, elementIdString, ids, resize, array, ', elementIdString, ids, resize, array);
     return array;
   }
 
@@ -2044,7 +1956,6 @@ longActionPress(props) {
     let tabs = [];
     const clickedElement = event.target;
     // elementVal is id of template element
-    console.log('in create_edit_document, handleTemplateElementChangeSizeClick, clickedElement, ', clickedElement);
     const elementVal = clickedElement.getAttribute('value');
     const elementType = clickedElement.getAttribute('type')
     // gets the wrapping div for the template element;
@@ -2099,14 +2010,12 @@ longActionPress(props) {
         selectedChoiceIdArray: [...this.state.selectedChoiceIdArray, `${elementId}-${choiceIndex}`],
         selectedTemplateElementIdArray: []
       }, () => {
-        // console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
       });
     } else {
       const newArray = [...this.state.selectedChoiceIdArray];
       const index = newArray.indexOf(`${elementId}-${choiceIndex}`);
       newArray.splice(index, 1);
       this.setState({ selectedChoiceIdArray: newArray }, () => {
-        // console.log('in create_edit_document, handleButtonTemplateElementClick, this.state.selectedChoiceIdArray: ', this.state.selectedChoiceIdArray);
       });
     }
   }
@@ -2142,7 +2051,6 @@ longActionPress(props) {
       this.setTemplateHistoryArray(updatedElementsArray, 'update');
     };
 
-    console.log('in create_edit_document, handleButtonTemplateElementMove, choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray: ', choiceButton, choiceButtonDimensions, wrapperDiv, wrapperDivDimensions, otherChoicesArray);
     this.dragChoice({ choiceButton, choiceId, choiceIndex, otherChoicesArray, wrapperDiv, choiceButtonDimensions, wrapperDivDimensions, backgroundDimensions, tab, templateElements: this.props.templateElements, actionCallback });
   }
 
@@ -2159,7 +2067,6 @@ longActionPress(props) {
       eachElementId = each.split('-')[0];
       eachChoiceId = each.split('-')[1];
       button = document.getElementById(`template-element-button-${eachElementId},${eachChoiceId}`);
-      console.log('in create_edit_document, handleTemplateChoiceActionMouseDown, button: ', button);
       choicesArray.push(button);
       choicesOriginalObject[each] = { eachElementId, eachChoiceId, choice: button, choiceDimensions: button.getBoundingClientRect(), width: button.style.width, height: button.style.height };
     });
@@ -2176,7 +2083,6 @@ longActionPress(props) {
     const modTabLeftMarginPx = inputElement ? tabLeftMarginPx : tabLeftMarginPx - 6;
     const className = !this.state.translationModeOn ? 'template-element' : 'template-translation-element'
     if (!dummyTab) {
-      console.log('in create_edit_document, renderTab, in renderTab !dummyTab, ', dummyTab);
       return (
         <div
           id={`${className}-tab-${eachElement.id}`}
@@ -2212,7 +2118,6 @@ longActionPress(props) {
         </div>
       );
     } else {
-      console.log('in create_edit_document, renderTab, in renderTab else !dummyTab, ', dummyTab);
       return (
         <div
           id={`${className}-tab-${eachElement.id}`}
@@ -2258,7 +2163,6 @@ longActionPress(props) {
             const wrappingDivDocumentCreateH = parseFloat(eachElement.height) / (parseFloat(eachElement.height) + tabPercentOfContainerH);
             const wrapperDivHeight = `${parseFloat(eachElement.height) + tabPercentOfContainerH}%`;
             const innerDivPercentageOfWrapper = `${(1 - (tabPercentOfContainerH / parseFloat(wrapperDivHeight))) * 100}%`;
-            // console.log('in create_edit_document, renderTemplateTranslationElements, getLocalTemplateElementsByPage, eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper: ', eachElement, this.props.documentTranslationsAllInOne, translationText, eachElement.height, tabPercentOfContainerH, innerDivPercentageOfWrapper);
             return (
               <div
                 key={eachElement.id}
@@ -2350,7 +2254,6 @@ longActionPress(props) {
           } // if background
         } else {
           // if not translationModeOn, must render a simple div
-          console.log('in create_edit_document, renderTemplateTranslationElements, eachElement, translationText, documentLanguageCode in NOT translationModeOn: ', eachElement, translationText, documentLanguageCode);
           return (
             <div
               id={eachElement.id}
@@ -2437,7 +2340,6 @@ longActionPress(props) {
           currentTop = parseFloat(currentTop) + marginBetween + parseFloat(eachChoice.height);
         });
 
-        // console.log('in create_edit_document, renderTemplateElements, getLocalTemplateElementsByPage, object: ', object);
         return object;
     };
     if (!documentEmpty) {
@@ -2542,7 +2444,6 @@ longActionPress(props) {
           // editFieldsOn is default true and can be turned off by user in the edit controls;
           // noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
           if (inputElement && this.state.editFieldsOn && !this.state.translationModeOn && !this.props.noEditOrButtons) {
-            // console.log('in create_edit_document, renderTemplateElements, eachElement in if inputElement and newElement, modifiedElement: ', modifiedElement);
             return (
               <div
                 key={modifiedElement.id}
@@ -2643,7 +2544,6 @@ longActionPress(props) {
               </div>
             );
           } else if (this.state.editFieldsOn && !this.state.translationModeOn) { // else if inputElement
-            // console.log('in create_edit_document, else if inputElement, modifiedElement, localTemplateElementsByPage: ', modifiedElement, localTemplateElementsByPage);
             return (
               <div
                 key={modifiedElement.id}
@@ -2734,8 +2634,6 @@ longActionPress(props) {
               </div>
             );
           }// end of if inputElement
-
-          console.log('in create_edit_document, before last return inputElement, this.props.editFieldsOn, this.state.translationModeOn: ', inputElement, this.props.editFieldsOn, this.state.translationModeOn);
             return (
               <Field
                 key={modifiedElement.id}
@@ -2821,7 +2719,6 @@ longActionPress(props) {
       createNewTemplateElementOn: !this.state.createNewTemplateElementOn,
     }, () => {
       // In callback to setState, if turning on addEventListener
-      // console.log('in create_edit_document, handleCreateNewTemplateElement, this.state.createNewTemplateElementOn, this.state.translationModeOn: ', this.state.createNewTemplateElementOn, this.state.translationModeOn);
       if (this.state.createNewTemplateElementOn) {
         document.addEventListener('click', this.getMousePosition);
         this.setState({ editFieldsOn: true });
@@ -2870,7 +2767,6 @@ longActionPress(props) {
   //                         // { '0b': { deleted: false, updated: 0 } }
   //   const returnEditObject = {};
   //   const setEditObject = (editObject) => {
-  //     console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
   //     if (returnObject[editObject.id]) {
   //       // Think 1. CRUD (Create, [Read], Update, Delete),
   //       // 2. temporary and persisted elements,
@@ -2882,11 +2778,9 @@ longActionPress(props) {
   //           returnObject[editObject.id] = { deleted: false, updated: 0 };
   //           returnEditObject[editObject.id] = editObject;
   //         }
-  //         console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
   //       }
   //
   //       if (editObject.action === 'update') {
-  //         console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in update redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
   //         // In case of update and object exists, increment up update
   //         if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') returnObject[editObject.id].updated++;
   //         // returnObject[editObject.id].updated++;
@@ -2922,7 +2816,6 @@ longActionPress(props) {
   //     } else { // if object with element id does not exist in object
   //       // If object for element does not exist in modifiedPersistedElementsObject
   //       if (editObject.action === 'create') {
-  //         console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in else create redoOrUndo, returnObject, editObject, this.historyIndex, index: ', redoOrUndo, returnObject, editObject, this.state.historyIndex, index);
   //         if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') returnObject[editObject.id] = { deleted: false, updated: 0 };
   //         if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) {
   //           returnObject[editObject.id] = { deleted: false, updated: 0 };
@@ -3001,7 +2894,6 @@ longActionPress(props) {
         modifiedPersistedObject
         :
         modifiedPersistedTranslationObject;
-        console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, redoOrUndo, selectedObject, editObject, this.historyIndex, index: ', redoOrUndo, selectedObject, editObject, this.state.historyIndex, index);
         if (selectedObject[editObject.id]) {
           // Think 1. CRUD (Create, [Read], Update, Delete),
           // 2. temporary and persisted elements,
@@ -3013,11 +2905,9 @@ longActionPress(props) {
               selectedObject[editObject.id] = { deleted: false, updated: 0 };
               returnEditObject[editObject.id] = editObject;
             }
-            console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in create redoOrUndo, selectedObject, editObject, this.historyIndex, index: ', redoOrUndo, selectedObject, editObject, this.state.historyIndex, index);
           }
 
           if (editObject.action === 'update') {
-            console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in update redoOrUndo, selectedObject, editObject, this.historyIndex, index: ', redoOrUndo, selectedObject, editObject, this.state.historyIndex, index);
             // In case of update and object exists, increment up update
             if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') selectedObject[editObject.id].updated++;
             // selectedObject[editObject.id].updated++;
@@ -3053,7 +2943,6 @@ longActionPress(props) {
         } else { // if object with element id does not exist in object
           // If object for element does not exist in modifiedPersistedElementsObject
           if (editObject.action === 'create') {
-            console.log('in create_edit_document, setLocalStorageHistory, getModifiedObject, in else create redoOrUndo, selectedObject, editObject, this.historyIndex, index: ', redoOrUndo, selectedObject, editObject, this.state.historyIndex, index);
             if (redoOrUndo !== 'undo' && redoOrUndo !== 'redo') selectedObject[editObject.id] = { deleted: false, updated: 0 };
             if (redoOrUndo === 'redo' && editObject.id.indexOf('a') !== -1) {
               selectedObject[editObject.id] = { deleted: false, updated: 0 };
@@ -3137,7 +3026,6 @@ longActionPress(props) {
     // Get an object like lookes like: { 1a: { deleted: false, updated: 1 }, 2: { deleted: true; updated: 0 }}
     // To be used
     getModifiedObject(fromWhere);
-    console.log('in create_edit_document, setLocalStorageHistory, right after call of getModifiedObjec: ');
     const unsavedTemplateElements = { ...this.state.unsavedTemplateElements };
 
     const cleanUpObjects = (eachObject, eachElementKey) => {
@@ -3156,8 +3044,6 @@ longActionPress(props) {
         const modifiedEachObject = eachObject;
         // _.each(Object.key.returnObject), eachElementKey => {
         _.each(Object.keys(eachObject), eachElementKey => {
-
-          console.log('in create_edit_doc ument, setLocalStorageHistory, fromWhere, eachElementKey: ', fromWhere, eachElementKey);
           // if element is a template element with an 'a' put into unsavedTemplateElements from this.props.templateElements
           if (eachElementKey.indexOf('a') !== -1) {
             this.props.templateElements[eachElementKey] ? unsavedTemplateElements[eachElementKey] = this.props.templateElements[eachElementKey] : cleanUpObjects(eachObject, eachElementKey);
@@ -3168,8 +3054,6 @@ longActionPress(props) {
           }
 
           if (eachElementKey === 'undefined' || eachElementKey === null) delete modifiedEachObject[eachElementKey]
-          // console.log('in create_edit_document, setLocalStorageHistory, this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey: ', this.state.historyIndex, this.state.templateEditHistoryArray, fromWhere, this.props.agreement, this.props.templateElements, eachElementKey);
-          console.log('in create_edit_document, setLocalStorageHistory, eachObject, eachElementKey, unsavedTemplateElements: ', eachObject, eachElementKey, unsavedTemplateElements);
         });
       });
     }
@@ -3194,14 +3078,12 @@ longActionPress(props) {
         modifiedPersistedTranslationElementsObject: this.state.modifiedPersistedTranslationElementsObject
       }
       // Looks like { 3: { elements: { top: y, left: x, ... }, history: [[history array], ...], historyIndex: x, newFontObject: { fontFamily: 'arial' ...}}}
-      console.log('in create_edit_document, setLocalStorageHistory, destringifiedHistory, destringifiedHistory.modifiedPersistedElementsObject: ', destringifiedHistory, destringifiedHistory[this.props.agreement.id].modifiedPersistedElementsObject);
       localStorage.setItem('documentHistory', JSON.stringify(destringifiedHistory));
     })
   }
 
   setTemplateHistoryArray(elementArray, action) {
     // !!! NOTE: ONLY set historyId and templateEditHistoryArray HERE to avoid unruly code !!!!!
-    console.log('in create_edit_document, setTemplateHistoryArray, action, elementArray: ', action, elementArray);
     // Function to create a new array so don't have to mutate state
     const getNewExistingHistoryArray = () => {
       const newArray = [];
@@ -3227,7 +3109,6 @@ longActionPress(props) {
     // if there is no element in parameters, ie the action was based on selected elements ie 'delete'
     const templateElements = !this.state.translationModeOn ? this.props.templateElements : this.props.templateTranslationElements;
     if (!elementArray) {
-      console.log('in create_edit_document, setTemplateHistoryArray, if !elementArray: ', action, elementArray);
       _.each(this.state.selectedTemplateElementIdArray, eachSelectedId => {
         // if id is in mapped template elements object { id: {element} }
         if (templateElements[eachSelectedId]) {
@@ -3239,7 +3120,6 @@ longActionPress(props) {
         }
       });
     } else { // else there is an element e.g. new element
-      console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray: ', action, elementArray);
       _.each(elementArray, eachElement => {
         const modifiedElement = this.getNewElementObject(eachElement);
         modifiedElement.action = action;
@@ -3254,8 +3134,6 @@ longActionPress(props) {
     // to make room for new array; Not used effectively since max is set so high
     let droppedHistory = null;
     if (newArray.length >= MAX_HISTORY_ARRAY_LENGTH) droppedHistory = newArray.shift();
-    console.log('in create_edit_document, setTemplateHistoryArray, if else !elementArray, action, newArray: ', action, newArray);
-
     // if action was to delete, empty out selectedTemplateElementIdArray and allElementsChecked false
     // templateEditHistoryArray gets a new shifted, splced array with a new rung of edits in an array
     this.setState({
@@ -3265,12 +3143,10 @@ longActionPress(props) {
       allElementsChecked: action === 'delete' ? false : this.state.selectedTemplateElementIdArray.length === Object.keys(templateElements).length,
       templateEditHistoryArray: [...newArray, array], // add new array of history
     }, () => {
-      // console.log('in create_edit_document, setTemplateHistoryArray, this.state.templateEditHistoryArray: ', this.state.templateEditHistoryArray);
       this.setState({
         // !!!!! Index is set at End of array when user creates, deletes or updates (not in redo or undo)
         historyIndex: this.state.templateEditHistoryArray.length - 1,
       }, () => {
-        console.log('in create_edit_document, setTemplateHistoryArray, this.state.undoingAndRedoing, droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray: ', droppedHistory, this.state.historyIndex, this.state.templateEditHistoryArray);
         // Persist the history objects in localStorage
         this.setLocalStorageHistory('setTemplateHistoryArray');
       });
@@ -3342,7 +3218,6 @@ longActionPress(props) {
       elementValue = elementVal;
       elementVal = elementName;
     };
-    // console.log('in create_edit_document, handleTemplateElementActionClick, after re-assign elementVal, elementValue, elementName, clickedElement, clickedElement.value: ', elementVal, elementValue, elementName, clickedElement, clickedElement.value);
     // function to be used for aligning horizontal and vertical values
     // make fat arrow function to set context to be able to use this.props and state
     // const getChangeChoiceIdArray = () => {
@@ -3351,7 +3226,6 @@ longActionPress(props) {
 
     const pasteFields = () => {
       const copiedAgreement = this.props.allUserAgreementsArrayMappedWithDocumentFields[this.props.importFieldsFromOtherDocumentsObject.agreementId]
-      console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject: ', elementVal, this.props.importFieldsFromOtherDocumentsObject);
       let newElement = {};
       const newElementArray = [];
       let newDocumentFieldChoice = {};
@@ -3393,8 +3267,6 @@ longActionPress(props) {
             newElementArray.push(newElement);
         } //  if (this.props.importFieldsFromOtherDocumentsObject.fieldsArray.indexOf(eachField.id.toString()) !== -1)
       }) // _.each(copiedAgreement.document_fields, eachField => {
-
-        console.log('in create_edit_document, handleTemplateElementActionClick, elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray: ', elementVal, this.props.importFieldsFromOtherDocumentsObject, newElementArray);
         // create elements in template elements and templateElementsByPage in document reducer
         createElement(newElementArray);
         // Persist in localStroageHistory
@@ -3414,7 +3286,6 @@ longActionPress(props) {
       const aligningElement = this.state.selectedTemplateElementIdArray.length > 0;
       // aligningChoice for aligning choice buttons
       const aligningChoice = this.state.selectedChoiceIdArray.length > 0;
-      console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, aligningElement, aligningChoice, this.state.selectedChoiceIdArray: ', elementVal, aligningElement, aligningChoice, this.state.selectedChoiceIdArray);
       if (aligningElement || aligningChoice) {
         // get the first element to be clicked to make as a basis for move
         // first clicked element (one user clicked first, so first in array) is baseElement
@@ -3473,12 +3344,10 @@ longActionPress(props) {
                 if (alignWhat === 'horizontal') wrapperDiv.style.left = baseElement.left;
 
                 updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT });
-                // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
                 array.push(updatedElementObject)
               } // end of if (!eachElement.document_field_choices
             } // end of if (eachElement && eachElement.id !== baseElement.id)
           }); // end of each
-          console.log('in create_edit_document, handleTemplateElementActionClick, move() elementVal, array: ', elementVal, array);
           // call action to update each template element object in reducer
           this.props.updateDocumentElementLocally(array);
           this.setTemplateHistoryArray(array, 'update');
@@ -3530,7 +3399,6 @@ longActionPress(props) {
           // (except for the first which is the base for alignment)
           _.each(this.state.selectedChoiceIdArray, eachChoiceId => {
               eachElementId = eachChoiceId.split('-')[0];
-              console.log('in create_edit_document, handleTemplateElementActionClick, test for multi align if baseChoice this.state.selectedChoiceIdArray, eachChoiceId, alignControlArray: ', this.state.selectedChoiceIdArray, eachChoiceId, alignControlArray);
               // If element (wrapper and its choices) has not been aligned
               if (alignControlArray.indexOf(eachElementId) === -1) {
                 // push eachElementId avoid doing the same element multiple times
@@ -3558,7 +3426,6 @@ longActionPress(props) {
                 }); // end of _.each(Object.keys(eachElementInState.document_field_choices
 
                 attribute = alignObject[alignWhat];
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv: ', otherChoicesArray, changeChoicesArray, eachWrapperDiv, wrapperDiv);
                 // change and align document field choices based on base choice
                 allChoicesObject = getOtherChoicesObject({ wrapperDiv: eachWrapperDiv, baseWrapperDiv: wrapperDiv, otherChoicesArray: otherChoicesArray.concat(changeChoicesArray), templateElements: this.props.templateElements, backgroundDimensions, wrapperDivDimensions: eachWrapperDiv.getBoundingClientRect(), notDrag: true, tabHeight: TAB_HEIGHT, widthHeight, changeChoiceIndexArray, choiceButton, attribute: attribute.choiceAttr });
 
@@ -3571,7 +3438,6 @@ longActionPress(props) {
                 // // get wrapper dimensions
                 lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: lastWrapperDivDimsPre, adjustmentPx: 0 });
                 updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight: TAB_HEIGHT })
-                console.log('in create_edit_document, handleTemplateElementActionClick, align if baseChoice attribute set updatedElementObject: ', updatedElementObject);
                 arrayForAction.push(updatedElementObject)
 
                 allChoicesObject = {};
@@ -3594,7 +3460,6 @@ longActionPress(props) {
       let array = [];
       if (this.state.selectedChoiceIdArray.length > 0) {
         const expandContractIncrement = 1;
-        console.log('in create_edit_document, handleTemplateElementActionClick, expandContractElements expandContract : ', expandContract);
         array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray: this.state.selectedChoiceIdArray, expandContractIncrement, expandContract, tabHeight: TAB_HEIGHT, templateElements: this.props.templateElements });
 
       } // End of if (this.state.selectedTemplateElementIdArray.length > 0)
@@ -3603,7 +3468,6 @@ longActionPress(props) {
     }
 
     const moveElements = (direction) => {
-      // console.log('in create_edit_document, handleTemplateElementActionClick, move() direction, this.state.selectedTemplateElementIdArray: ', direction, this.state.selectedTemplateElementIdArray);
       let array = [];
       const originalValueObject = {};
       const moveIncrement = 1;
@@ -3612,7 +3476,6 @@ longActionPress(props) {
       let backgroundDimensions = null;
       let wrapperDivDimensions = null;
 
-      console.log('in create_edit_document, handleTemplateElementActionClick, moveElements() direction, backgroundDimensions: ', direction, backgroundDimensions);
       if (this.state.selectedTemplateElementIdArray.length > 0 || this.state.selectedChoiceIdArray.length > 0) {
         if (this.state.selectedTemplateElementIdArray.length > 0) {
           const idName = !this.state.translationModeOn ? 'template-element' : 'template-translation-element';
@@ -3654,8 +3517,6 @@ longActionPress(props) {
                 // getUpdatedElementObjectMoveWrapper for moving wrapper div and
                 // having choices move along with it
                 const updatedElementObject = getUpdatedElementObjectMoveWrapper({ wrapperDiv, eachElementId, originalWrapperDivDimensions: wrapperDivDimensions, templateElements: this.props.templateElements, elementDrag: true, tabHeight: TAB_HEIGHT })
-
-                // console.log('in create_edit_document, dragElement, closeDragElement, in each eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx ', eachElement, lastWrapperDivDims, wrapperDivDimensions, updatedElementObject, lastWrapperDivDimsInPx);
                 array.push(updatedElementObject);
               } // end of else if eachElement.document_field_choices
             } // end of if (eachElement)
@@ -3666,7 +3527,6 @@ longActionPress(props) {
           // updateDocumentElementLocally for when moving choices themselves
           // and not moving wrapperDiv
           array = getUpdatedElementObjectNoBase({ selectedChoiceIdArray: this.state.selectedChoiceIdArray, moveIncrement, direction, tabHeight: TAB_HEIGHT, templateElements: this.props.templateElements });
-          console.log('in create_edit_document, dragElement, closeDragElement, in if selectedChoiceIdArray array ', array);
         }
 
         this.setTemplateHistoryArray(array, 'update');
@@ -3692,7 +3552,6 @@ longActionPress(props) {
             };
           } // end of if eachElement
           // Set elemntValue to turn on and off bold and italic
-          console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, before turning on and off style and weight fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked: ', fontAttribute, elementVal, elementName, elementValue, clickedElement.value, this.state.allElementsChecked);
           if (fontAttribute === 'fontWeight') elementValue = eachElement.font_weight === 'bold' ? 'normal' : elementValue;
           if (fontAttribute === 'fontStyle') elementValue = eachElement.font_style === 'italic' ? 'normal' : elementValue
 
@@ -3717,7 +3576,6 @@ longActionPress(props) {
               [fontKeySwitch[fontAttribute]]: elementValue || clickedElement.value,
             }
           }, () => {
-            // console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, if all checked this.state.newFontObject, this.state.selectedElementFontObject: ', this.state.newFontObject, this.state.selectedElementFontObject);
             this.props.updateDocumentElementLocally(array);
             this.setTemplateHistoryArray(array, 'update');
             this.setFontControlBoxValues();
@@ -3749,8 +3607,7 @@ longActionPress(props) {
         }, () => {
           this.setTemplateHistoryArray(array, 'update');
           this.setFontControlBoxValues();
-          console.log('in create_edit_document, handleTemplateElementActionClick, changeFont, this.state.newFontObject: ', this.state.newFontObject);
-        })
+        });
       }
     }; // end of changeFont
 
@@ -3769,7 +3626,6 @@ longActionPress(props) {
           // array.push({ id: eachId, transform: originalTransform ? `${originalTransform + 90}` : '90', o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
           array.push({ id: eachId, transform: newTransform, o_transform: originalTransform, translation_element: eachElement.translation_element, action: 'update', addKey: 'transform' });
         });
-        console.log('in create_edit_document, handleTemplateElementActionClick, changeDirection, array: ', array);
         updateElement(array);
         this.setTemplateHistoryArray(array, 'update');
       }
@@ -3805,7 +3661,6 @@ longActionPress(props) {
         let withoutO = '';
         _.each(lastActionArr, eachObject => {
           // const eachModified = this.getNewElementObject(each);
-          // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, lastActionArr, eachObject ', lastActionArr, eachObject);
           const object = {};
           _.each(Object.keys(eachObject), eachKey => {
             // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachKey, eachKey[0] === o, eachKey[1] === _  : ', eachKey, eachKey[0] === 'o', eachKey[1] === '_');
@@ -3814,10 +3669,8 @@ longActionPress(props) {
               // substring is (inclusive, exclusive)
               withoutO = eachKey.substring(2, eachKey.length);
               // const newKey = withoutO[0].toLowerCase() + withoutO.substring(1);
-              // console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, getOriginalAttributes typeof eachKey, eachKey, newKey: ', typeof eachKey, eachKey, newKey);
               // object[newKey] = eachObject[eachKey];
               object[withoutO] = eachObject[eachKey];
-              // console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]: ', eachObject, eachKey, withoutO, eachObject[eachKey], eachObject[withoutO]);
             }
             // Let id, translation_element (for separating templateElements and templateTranslationElements)
             // and previous_value (for dealing with translation element history) in the returned object
@@ -3827,13 +3680,11 @@ longActionPress(props) {
           });
           array.push(object);
         });
-        console.log('in create_edit_document, handleTemplateElementActionClick, getOriginalAttributes, in last action create lastActionArr, array: ', lastActionArr, array);
         return array;
       }; // End of const getOriginalAttributes = ()
       // if the last action taken was to craete an element,
       // if from undo action, call delete, and if redo, call create
       if (lastActionArray[0].action === 'create') {
-        console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action create lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         if (doWhatNow === 'undo') {
           deleteElement([lastActionArray[0].id], lastActionArray[0].translation_element)
           // Take the checked element ids out of selectedTemplateElementIdArray
@@ -3868,7 +3719,6 @@ longActionPress(props) {
             // this.props.change is imported from redux-form
             _.each(newLastAction, eachAction => {
               name = templateElement[eachAction.id].custom_name ? templateElement[eachAction.id].custom_name : templateElement[eachAction.id].name
-              console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, undo in last action update lastActionArray, doWhatNow, newLastAction, eachAction, name: ', lastActionArray, doWhatNow, newLastAction, eachAction, name);
               // change is a reduxForm method
               this.props.change(`${name}${translationOrNot}`, eachAction.previous_value)
             });
@@ -3876,7 +3726,6 @@ longActionPress(props) {
         } else {
           // Use lastActionArray as is [{ id: xx, left: xx, top: xx}, { id: xx, left: xx, top: xx}]
           updateElement(lastActionArray);
-          console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, redo in last action update lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
           // if there is previous_value in lastActionArray,
           // Change back value of field; Only one change in value is made per history array
           // if (lastActionArray[0].previous_value) {
@@ -3895,7 +3744,6 @@ longActionPress(props) {
       }
 
       if (lastActionArray[0].action === 'delete') {
-        console.log('in create_edit_document, handleTemplateElementActionClick, redoUndoAction, in last action delete lastActionArray, doWhatNow: ', lastActionArray, doWhatNow);
         const newLastActionArray = removeActionAttribute(lastActionArray);
         if (doWhatNow === 'undo') {
           // _.each(newLastAction, eachElement => {
@@ -3938,13 +3786,11 @@ longActionPress(props) {
           redoUndoAction(lastActionArray, doWhat)
           // Decrement historyIndex
           this.setState({ historyIndex: this.state.historyIndex - 1 }, () => {
-            // console.log('in create_edit_document, handleTemplateElementActionClick, in if else state !undoingAndRedoing after setState elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
             // Update historyIndex in localStorageHistory
             this.setLocalStorageHistory('undo');
           })
         }
       } else { // else for if doWhat undo; else REDO
-        // console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
         // First increment historyIndex
         this.setState({
           historyIndex: this.state.historyIndex + 1
@@ -3952,13 +3798,11 @@ longActionPress(props) {
           // Get array of objects at historyIndex
           lastActionArray = this.state.templateEditHistoryArray[this.state.historyIndex]
           redoUndoAction(lastActionArray, doWhat);
-          // console.log('in create_edit_document, handleTemplateElementActionClick, in else doWhat == redo after set state historyIndex elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray: ', elementVal, this.state.templateEditHistoryArray, this.state.historyIndex, lastActionArray);
           this.setLocalStorageHistory('redo')
         });
       }
     };
 
-    console.log('in create_edit_document, handleTemplateElementActionClick, clickedElement, elementVal, this.state.selectedTemplateElementIdArray: ', clickedElement, elementVal, this.state.selectedTemplateElementIdArray);
       switch (elementVal) {
         case 'editFields':
           this.setState({
@@ -3971,7 +3815,6 @@ longActionPress(props) {
           }, () => {
             // If user turns off editFieldsOn, turn off createNewTemplateElementOn
             if (!this.state.editFieldsOn) this.setState({ createNewTemplateElementOn: false });
-            // console.log('in create_edit_document, handleTemplateElementActionClick, this.state.editFieldsOn: ', this.state.editFieldsOn);
           })
           break;
         //gotoswitchtranslation
@@ -3991,8 +3834,7 @@ longActionPress(props) {
             this.setState({
               documentTranslationsTreated: returnedObject.treatedObject,
             });
-            console.log('in create_edit_document, handleTemplateElementActionClick, this.state.translationModeOn: ', this.state.translationModeOn);
-          })
+          });
           break;
         // align method aligns elements and choices to a base element or choice
         case 'pasteFields':
@@ -4039,7 +3881,6 @@ longActionPress(props) {
               // Gets a map of all font attributes used in elements on agreement
               const fontObject = this.getSelectedFontElementAttributes();
               // fontObject is { object: {element font mapping}, selectObject: { fontFamily: 'arial', fontSize: '12px' ...}}
-              console.log('in create_edit_document, handleTemplateElementActionClick, fontObject, this.state.newFontObject: ', fontObject, this.state.newFontObject);
               this.setState({ selectedElementFontObject: fontObject.selectObject })
             });
           }
@@ -4129,8 +3970,6 @@ longActionPress(props) {
           break;
 
         case 'getFieldValues':
-          console.log('in create_edit_document, handleTemplateElementActionClick, in getFieldValues, elementVal ', elementVal);
-
           // Open getFieldValuesBox
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
           // findIfDatabaseValuesExistForFields runs initialValues method in componentDidUpdate
@@ -4166,7 +4005,6 @@ longActionPress(props) {
     // Gets value of clicked link
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    // console.log('in create_edit_document, handleFieldChoiceClick, elementVal ', elementVal);
 
     let newArray = [];
     // Places value in array if empty
@@ -4202,7 +4040,6 @@ longActionPress(props) {
       this.setState({ templateFieldChoiceObject: this.getFieldChoiceObject() }, () => {
       document.getElementById('document-background').style.cursor = 'default';
 
-      // console.log('in create_edit_document, handleFieldChoiceClick, elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject: ', elementVal, this.state.templateFieldChoiceArray, this.state.templateFieldChoiceObject, this.state.templateElementActionIdObject);
       })
     });
   }
@@ -4213,7 +4050,6 @@ longActionPress(props) {
                         : this.state.documentTranslationsTreated;
     // Use the templateFieldChoiceArray like ['flat', 'amenities'] to get to the currentObject
     _.each(this.state.templateFieldChoiceArray, each => {
-      console.log('in create_edit_document, handleFieldChoiceClick, each, this.state.templateFieldChoiceArray, currentObject: ', each, this.state.templateFieldChoiceArray, currentObject);
       if (currentObject[each]) {
         if (currentObject[each].choices && Object.keys(currentObject[each]).length > 1) {
           currentObject = currentObject[each].choices;
@@ -4222,7 +4058,6 @@ longActionPress(props) {
         }
       }
     });
-    // console.log('in create_edit_document, handleFieldChoiceClick, before return currentObject: ', currentObject);
     return currentObject;
   }
 
@@ -4268,7 +4103,6 @@ longActionPress(props) {
           //   modNewObject[elementType]--;
           // }
         }
-        // console.log('in create_edit_document, handleFieldChoiceActionClick, takeOutOtherTypes, each, baseType modNewObject: ', each, baseType, modNewObject);
       }); // end of each
       const takoutIndexArrayLength = takeOutIndexArray.length;
       if (takoutIndexArrayLength > 0) {
@@ -4300,8 +4134,6 @@ longActionPress(props) {
     let takeOutIndex = -1;
     let returnedObject = {};
 
-    // console.log('in create_edit_document, handleFieldChoiceActionClick, in if elementType equals === input elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
-    // console.log('in create_edit_document, handleFieldChoiceActionClick, before elementType !== input elementId, this.state.templateElementActionIdObject : ', elementId, this.state.templateElementActionIdObject);
     let newObject = { ...this.state.templateElementActionIdObject };
     // input and buttons are created with one click; others are selected and added with add link
     if (elementType !== 'input' && elementType !== 'buttons') {
@@ -4322,7 +4154,6 @@ longActionPress(props) {
         // console.log('in create_edit_document, handleFieldChoiceActionClick, inside > 0 if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject, increment : ', elementId, elementType, newObject, this.state.templateElementActionIdObject, increment);
       } else { // else of length > 0
         // If nothing in array, push elementId
-        // console.log('in create_edit_document, handleFieldChoiceActionClick, in else inside if !input !buttons elementId, elementType, newObject, this.state.templateElementActionIdObject : ', elementId, elementType, newObject, this.state.templateElementActionIdObject);
         newObject.array.push(elementId);
         // if there is an increment value (e.g. select)
         increment ? newObject[elementType] = newObject[elementType] + increment : newObject[elementType]++;
@@ -4356,16 +4187,13 @@ longActionPress(props) {
           // If input and any button is clicked other than the custom button, push into array
           newObject.array.push(elementId);
           newObject[elementType]++;
-          // console.log('in create_edit_document, handleFieldChoiceActionClick, in first last if elementId, elementType, newObject: ', elementId, elementType, newObject);
         }
-        console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, newObject, increment, elementIdIndex: ', elementId, elementType, newObject, increment, elementIdIndex);
       }
     }
 
     this.setState({
       templateElementActionIdObject: newObject
     }, () => {
-      console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, elementType, this.state.templateElementActionIdObject, increment: ', elementId, elementType, this.state.templateElementActionIdObject, increment);
       // NOTE: buttons plural; If input or buttons, add element
       if (elementType === 'input' || elementType === 'buttons') {
       // if (elementType === 'input' || elementType === 'buttons' || trueOrFalseSelect) {
@@ -4380,7 +4208,6 @@ longActionPress(props) {
             if (this.state.showCustomInputCreateMode) {
               this.handleTemplateElementAddClick();
             }
-            console.log('in create_edit_document, handleFieldChoiceActionClick, test after setState each elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes: ', elementId, this.state.showCustomInputCreateMode, this.state.templateElementAttributes);
           });
         } else {
           // If input of button and not custom create the templateElementAttributes object
@@ -4525,7 +4352,6 @@ longActionPress(props) {
                 }
               }
             };
-            // console.log('in create_edit_document, handleTemplateElementAddClick, summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
           } else if (summaryObject.list.length > 0) {
             // else of if (summaryObject.input.length > 0) {
             createdObject = summaryObject.list[0];
@@ -4540,7 +4366,6 @@ longActionPress(props) {
               nameString = `${each.name}`
               if (i < summaryObject.list.length - 1) nameString = `${each.name},`
               listParameters = listParameters.concat(nameString);
-              console.log('in create_edit_document, handleTemplateElementAddClick, if !parent list in each summaryObject, each, listParameters: ', summaryObject, each, listParameters);
             });
 
             templateElementAttributes = {
@@ -4599,7 +4424,6 @@ longActionPress(props) {
             if (summaryObject.button.length > 0) {
               _.each(summaryObject.button, each => {
                 createdObject = each;
-                console.log('in create_edit_document, handleTemplateElementAddClick, if parent, summaryObject.button > 0, each, summaryObject, createdObject, templateElementAttributes: ', each, summaryObject, createdObject, templateElementAttributes);
                 templateElementAttributes.document_field_choices[count] = {
                   val: createdObject.value || createdObject.val || createdObject.params.val,
                   // val: createdObject.val,
@@ -4651,7 +4475,6 @@ longActionPress(props) {
                 });
               }
             } // end of  if (summaryObject.button.length > 0
-              console.log('in create_edit_document, handleTemplateElementAddClick, if button || select summaryObject, createdObject, templateElementAttributes: ', summaryObject, createdObject, templateElementAttributes);
           }
           // Placeholder until create element completed.
           this.setState({
@@ -4659,7 +4482,7 @@ longActionPress(props) {
           }, () => {
             // Change the mouse cursor if createNewTemplateElementOn
             if (this.state.createNewTemplateElementOn) document.getElementById('document-background').style.cursor = 'crosshair';
-            console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
+            // console.log('in create_edit_document, handleTemplateElementAddClick, this.state.templateElementAttributes, summaryObject: ', this.state.templateElementAttributes, summaryObject);
           });
     }; // end of createObject function
 
@@ -4683,12 +4506,12 @@ longActionPress(props) {
             modEach = eachKey;
             if (numbers.indexOf(each) !== -1) modEach = parseInt(modEach, 10)
             if (i === (indexOfChoices - 1)) parent = currentObject[modEach];
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array: ', modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array);
+            // console.log('in create_edit_document, handleFieldChoiceActionClick, in each modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array: ', modEach, currentObject, objectPathArray, this.state.templateElementActionIdObject.array);
             currentObject = currentObject[modEach];
           });
           summaryObject.parent = parent;
           summaryObject[elementType].push(currentObject);
-          console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
+          // console.log('in create_edit_document, handleTemplateElementAddClick, elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject: ', elementIdArray, elementType, objectPathArray, currentObject, parent, indexOfChoices, summaryObject);
         });
         createObject();
       } else { // if (!this.state.showCustomInputCreateMode), i.e. customField on
@@ -4718,7 +4541,7 @@ longActionPress(props) {
             customCurrentObject.custom_name = this.state.customFieldNameInputValue;
             summaryObject[elementType].push(customCurrentObject);
             createObject();
-            console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType, this.state.customFieldNameInputValue: ', summaryObject, elementType, this.state.customFieldNameInputValue);
+            // console.log('in create_edit_document, handleFieldChoiceActionClick, in else summaryObject, elementType, this.state.customFieldNameInputValue: ', summaryObject, elementType, this.state.customFieldNameInputValue);
           });
         } else {
           customCurrentObject.custom_name = this.state.customFieldNameInputValue;
@@ -4740,7 +4563,7 @@ longActionPress(props) {
       const elementIdArray = this.state.templateElementActionIdObject.array;
 
       return _.map(Object.keys(translationMappingObject), eachKey => {
-        console.log('in create_edit_document, renderEachTranslationFieldChoice, in else translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray: ', translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray);
+        // console.log('in create_edit_document, renderEachTranslationFieldChoice, in else translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray: ', translationMappingObject, eachKey, this.state.templateElementActionIdObject, elementIdArray);
         // if the object of the eachKey has no translations, must be a category or group
         if (translationMappingObject[eachKey] && !translationMappingObject[eachKey].translations) {
 
@@ -4800,7 +4623,6 @@ longActionPress(props) {
   handleFieldChoiceMouseOver(event) {
     const mousedOverElement = event.target;
     const elementId = mousedOverElement.getAttribute('id');
-    // console.log('in create_edit_document, handleFieldChoiceMouseOver, elementId: ', elementId);
     // placeholder; not yet built out
   }
 
@@ -4847,7 +4669,6 @@ longActionPress(props) {
 
           // if (inputElement) {
           count++;
-          // console.log('in create_edit_document, renderEachCustomFieldChoice, count: ', count);
           return this.renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField: true })
           // }
         }
@@ -4856,7 +4677,6 @@ longActionPress(props) {
   }
 
   renderAddInputElement({ eachKey, templateMappingObject, choiceText, valueString, translationSibling, customField }) {
-    // console.log('in create_edit_document, renderAddInputElement, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
     return (
       <div
         key={eachKey}
@@ -4994,7 +4814,6 @@ longActionPress(props) {
           choicesYesOrNo = !templateMappingObject[eachKey].params && firstChoice.valName === 'y';
           // choicesYesOrNo = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].choices[0].valName === 'y';
           translationSibling = !templateMappingObject[eachKey].params && templateMappingObject[eachKey].translation_sibling;
-          console.log('in create_edit_document, handleFieldChoiceClick, in else if eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject, inputElement, choices, choicesObject, choicesYesOrNo: ', eachKey, AppLanguages[eachKey], templateMappingObject[eachKey], templateMappingObject, inputElement, choices, choicesObject, choicesYesOrNo);
 
           if (inputElement) {
             valueString = 'input,' + this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
@@ -5045,10 +4864,8 @@ longActionPress(props) {
           } // End of if inputElement
 
           // Case of field being choices but not Yes or No choices
-          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           if (choicesObject && !choicesYesOrNo) {
             // receivs eachKey of 0, 1 of templateMappingObject is {0=>{}, 1=>{}}
-            // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, in if choices not yes or no eachKey, this.state.templateFieldChoiceArray, templateMappingObject: ', eachKey, this.state.templateFieldChoiceArray, templateMappingObject);
             selectChoices = templateMappingObject[eachKey].selectChoices || templateMappingObject[eachKey].select_choices;
             choiceText = templateMappingObject[eachKey].translation ? templateMappingObject[eachKey].translation[this.props.appLanguageCode] : templateMappingObject[eachKey].params.val;
             if (selectChoices) {
@@ -5064,7 +4881,6 @@ longActionPress(props) {
             }
           }
 
-          // console.log('in create_edit_document, handleFieldChoiceClick, eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo: ', eachKey, templateMappingObject[eachKey], templateMappingObject, choices, choicesYesOrNo);
           // For yes or now (true, false) fields such as amenities
           // IMPORTANT: Note that id has 'buttons' (plural)
           if (choices && choicesYesOrNo) {
@@ -5121,7 +4937,6 @@ longActionPress(props) {
           if (!templateMappingObject[eachKey].nonTemplate) {
             // for keys such as dates with years, month and day behind it
             // valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
-            console.log('in create_edit_document, handleFieldChoiceClick, in if (!templateMappingObject[eachKey].nonTemplate eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]: ', eachKey, choiceText, templateMappingObject, templateMappingObject[eachKey]);
             // To place a button for creating a list along with a nav div (click through)
             if (templateMappingObject[eachKey].button_on_field_choice_nav) {
               valueString = this.state.templateFieldChoiceArray.join(',') + ',' + eachKey;
@@ -5192,7 +5007,6 @@ longActionPress(props) {
   handleFieldPreferencesClick(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this: ', elementVal, this);
     const newObject = { ...this.state.templateElementActionIdObject, [elementVal]: !this.state.templateElementActionIdObject[elementVal] };
     this.setState({
       templateElementActionIdObject: newObject,
@@ -5203,7 +5017,7 @@ longActionPress(props) {
                                   :
                                   this.state.templateElementAttributes
     }, () => {
-      console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes: ', elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes);
+      // console.log('in create_edit_document, handleFieldPreferencesClick, elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes: ', elementVal, this.state.templateElementActionIdObject, this.state.templateElementAttributes);
     });
   }
 
@@ -5228,8 +5042,6 @@ longActionPress(props) {
                                 && this.state.templateElementActionIdObject.translation)
                                 || (this.state.showCustomInputCreateMode && this.state.templateElementActionIdObject.translation)
                                 || (this.state.templateElementAttributes && this.state.templateElementAttributes.translation);
-    // console.log('in create_edit_document, renderFieldBoxControls, this.state.actionExplanation, selectOk, enableAdd, disableTranslation: ', selectOk, enableAdd, disableTranslation);
-
     return (
       <div className="create-edit-document-template-edit-field-box-controls">
         <div className="create-edit-document-template-edit-field-box-controls-navigate">
@@ -5302,12 +5114,12 @@ longActionPress(props) {
     // const elementVal = clickedElement.getAttribute('value');
     // For some reaons, event.target.value works but elementVal does not
     this.setState({ customFieldNameInputValue: event.target.value }, () => {
-      console.log('in create_edit_document, handleCustomFieldNameInput, this.state.customFieldNameInputValue: ', this.state.customFieldNameInputValue);
+      // console.log('in create_edit_document, handleCustomFieldNameInput, this.state.customFieldNameInputValue: ', this.state.customFieldNameInputValue);
     });
   }
 
   renderCustomFieldNameInput() {
-    console.log('in create_edit_document, renderCustomFieldNameInput, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
+    // console.log('in create_edit_document, renderCustomFieldNameInput, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
     return (
       <div
         className="create-edit-document-template-each-choice-input"
@@ -5338,12 +5150,12 @@ longActionPress(props) {
       customFieldNameInputValue: '',
       templateElementActionIdObject: { ...INITIAL_TEMPLATE_ELEMENT_ACTION_ID_OBJECT, array: [] }
     }, () => {
-      console.log('in create_edit_document, handleCustomFieldPathDelete, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
+      // console.log('in create_edit_document, handleCustomFieldPathDelete, this.state.templateElementActionIdObject: ', this.state.templateElementActionIdObject);
     });
   }
 
   renderCustomFieldNameControls() {
-    console.log('in create_edit_document, renderCustomFieldNameControls, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
+    // console.log('in create_edit_document, renderCustomFieldNameControls, this.state.templateElementAttributes: ', this.state.templateElementAttributes);
     const fieldPath = this.state.templateElementAttributes && this.state.templateElementAttributes.name
             ?
             getElementLabel({
@@ -5392,7 +5204,7 @@ longActionPress(props) {
   }
 
   renderTemplateEditFieldBox() {
-    console.log('in create_edit_document, renderTemplateEditFieldBox, this.state.translationModeOn, this.state.showCustomInputCreateMode: ', this.state.translationModeOn, this.state.showCustomInputCreateMode);
+    // console.log('in create_edit_document, renderTemplateEditFieldBox, this.state.translationModeOn, this.state.showCustomInputCreateMode: ', this.state.translationModeOn, this.state.showCustomInputCreateMode);
     return (
       <div className="create-edit-document-template-edit-field-box">
         {this.renderFieldBoxControls()}
@@ -5452,7 +5264,7 @@ longActionPress(props) {
   }
 
   handleFontControlCloseClick(event) {
-    console.log('in create_edit_document, handleFontControlCloseClick, event.key: ', event.key);
+    // console.log('in create_edit_document, handleFontControlCloseClick, event.key: ', event.key);
     // NOTE: handleFontControlCloseClick used to close getFieldValuesModal
     const clickedElement = event.target;
     // if clicked element does not include any elements in the font control box,
@@ -5506,7 +5318,6 @@ longActionPress(props) {
     let templateElement = null;
     _.each(this.state.selectedTemplateElementIdArray, eachId => {
       templateElement = this.props.templateElements[eachId] || this.props.templateElements[parseInt(eachId, 10)];
-      console.log('in create_edit_document, findIfOriginalValuesExistForFields, templateElement, eachId, this.props.templateElements: ', templateElement, eachId, this.props.templateElements);
 
       if (templateElement.original_value && templateElement.original_value !== this.props.valuesInForm[templateElement.name]) array.push(templateElement.id)
     });
@@ -5520,13 +5331,11 @@ longActionPress(props) {
       // Callback in initialValuesObject method will turn findIfDatabaseValuesExistForFields false
       if (!this.state.findIfDatabaseValuesExistForFields) {
         // If any key value pairs exist with not null value,
-        console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject: ', formValuesObject);
         let count = 0;
         _.each(Object.keys(formValuesObject), eachKey => {
           // Count up if values in database not equal to value in redusForm prop
           // i.e. state.forms.CreateEditDocument.value
           if (formValuesObject[eachKey] !== this.props.valuesInForm[eachKey]) count++;
-          // console.log('in create_edit_document, findIfDatabaseValuesExistForFields, formValuesObject[eachKey], this.props.valuesInForm[eachKey], count: ', formValuesObject[eachKey], this.props.valuesInForm[eachKey], count);
         });
         // this.setState({ databaseValuesExistForFields: Object.keys(formValuesObject).length > 0 })
         this.setState({ databaseValuesExistForFields: count > 0 });
@@ -5613,12 +5422,10 @@ longActionPress(props) {
           // originalValuesExistForSelectedFields
         }, () => {
           const originalValuesExistForSelectedFields = this.findIfOriginalValuesExistForFields();
-          console.log('in create_edit_document, getSelectDataBaseValues, originalValuesExistForSelectedFields, this.state.getFieldValuesCompletedArray: ', originalValuesExistForSelectedFields, this.state.getFieldValuesCompletedArray);
           this.setState({ originalValuesExistForSelectedFields })
         });
       } else {
-        console.log('in create_edit_document, getSelectDataBaseValues, this.state.getSelectDataBaseValues: ', this.state.getSelectDataBaseValues);
-
+        // console.log('in create_edit_document, getSelectDataBaseValues, this.state.getSelectDataBaseValues: ', this.state.getSelectDataBaseValues);
       }
     });
   }
@@ -5646,7 +5453,6 @@ longActionPress(props) {
       // Turn on switch to import fields
       // Callback
       () => {
-        console.log('in create_edit_document, importFieldsFromOtherDocuments, agreementBelongsToBooking this.props.agreementId, this.props.booking: ', this.props.agreementId, this.props.booking);
       // Reinitialize object for import fields with current baseAgreementId
       // If object already populated, keep data until next fields clicked
         this.props.importFieldsFromOtherDocumentsObjectAction({
@@ -5723,20 +5529,16 @@ longActionPress(props) {
         case 'databaseValues':
           // getSelectDataBaseValues turns on this.state.getSelectDataBaseValues
           // Which triggers componenetDidMount to call getInitialValueObject
-          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.showGetFieldValuesChoice, this.props.selectedFieldObject);
           // getSelectDataBaseValues function turns on this.state.getDataBaseValues Which
           // triggers componentDidUpdate logic
           this.getSelectDataBaseValues();
-          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal, this.state.selectedTemplateElementIdArray: ', elementVal, this.state.selectedTemplateElementIdArray, this.props.templateElements[parseInt(this.state.selectedTemplateElementIdArray[0], 10)]);
           break;
 
         case 'otherDocumentValues':
-          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.getOtherDocumentValues();
           break;
 
         case 'importFieldsFromOtherDocuments':
-          // console.log('in create_edit_document, handleGetValueChoiceClick, this.state.actionExplanation, elementVal: ', elementVal);
           this.importFieldsFromOtherDocuments();
           break;
         default: return null;
@@ -5745,10 +5547,8 @@ longActionPress(props) {
   }
 
   handleCloseGetFieldValuesChoiceBox(event) {
-    console.log('in create_edit_document, handleCloseGetFieldValuesChoiceBox');
     // Get updated object with attributes about selected elements
     // updated with new values in form
-
     const clickedElement = event.target;
 
     const clickedOnModal = clickedElement.className.indexOf('get-field-value-choice-modal') !== -1;
@@ -5806,7 +5606,6 @@ longActionPress(props) {
       });
     };
 
-    // console.log('in create_edit_document, renderGetFieldValuesBox, this.state.actionExplanation, getFieldValueButtonElement, getFieldValueButtonDimensions: ', getFieldValueButtonElement, getFieldValueButtonDimensions);
     return (
       <div
         className="create-edit-document-get-field-values-box"
@@ -5821,12 +5620,10 @@ longActionPress(props) {
 
   renderFontControlBox() {
     const onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
-
     // For rendering box for setting font family, size, style and weight
     // Get the font button in array
     let fontButtonDimensions = {};
     const fontButtonArray = document.getElementsByClassName('create-edit-document-template-edit-action-box-elements-double')
-    // console.log('in create_edit_document, renderFontControlBox, fontButtonArray: ', fontButtonArray);
     // Get the font button dimension so that a control box can be placed below it
     if (fontButtonArray.length > 0) fontButtonDimensions = fontButtonArray[0].getBoundingClientRect();
 
@@ -5914,11 +5711,9 @@ longActionPress(props) {
     const lapseTime = () => {
       if (subTimer > 0) {
         subTimer--;
-        // console.log('in create_edit_document, setExplanationTimer, subTimer > 0: ', subTimer);
       } else {
         // when subtimer is 0, assign typing timer at 0
         subTimer = 0;
-        // console.log('in create_edit_document, setExplanationTimer, subTimer == 0: ', subTimer);
         // this.setState({ actionExplanationObject: null });
         callback();
         clearInterval(timer);
@@ -5954,7 +5749,6 @@ longActionPress(props) {
           }
         });
         // end of setState callback
-        console.log('in create_edit_document, handleMouseOverActionButtons, in if: ', explanationTimerArray);
           // clear timers with callback to null out explantion object and setting new one
           this.clearAllTimers(callback);
       } else { // if timer not runnig and explantion does not show simultaneously
@@ -5968,13 +5762,11 @@ longActionPress(props) {
         });
         // if there is no explanation showing
         if (!this.state.actionExplanationObject) {
-          console.log('in create_edit_document, handleMouseOverActionButtons, in else if : ', explanationTimerArray);
           // clear timers in case there are timers running
           this.clearAllTimers(() => {});
           // set timer with second, text to show, and callback
           this.setExplanationTimer(1, elementName, showExplantion);
         } else { // catch all
-          console.log('in create_edit_document, handleMouseOverActionButtons, in else if else1  : ', explanationTimerArray);
           // !!! Somehow, this handler does not work without this else showExplantion
           showExplantion(); // function call
         }
@@ -5985,7 +5777,6 @@ longActionPress(props) {
   handleMouseLeaveActionButtons(event) {
     const mousedLeaveElement = event.target;
     // const elementName = mousedLeaveElement.getAttribute('name')
-    console.log('in create_edit_document, handleMouseLeaveActionButtons, mousedLeaveElement, mousedLeaveElement.tagName : ', mousedLeaveElement, mousedLeaveElement.tagName);
     if (this.state.actionExplanationObject) {
       this.setState({ actionExplanationObject: null });
     }
@@ -6015,7 +5806,6 @@ longActionPress(props) {
         // Go through each attribute in object;
         // Get an array of ids for each type of font_family, font_size etc.
         eachElement = !this.state.translationModeOn ? this.props.templateElements[eachId] : this.props.templateTranslationElements[eachId];
-        // console.log('in create_edit_document, getSelectedFontElementAttributes, eachElement: ', eachElement);
         elementWithInputOrSelect = !eachElement.document_field_choices || (eachElement.document_field_choices && findIfHasSelectChoice(eachElement));
         // If element is an input element or has a select choice (only element that matter for fonts)
         // populate object; eachKey is font_family, font_size etc
@@ -6051,7 +5841,6 @@ longActionPress(props) {
       });
     }
     // this.state.selectedElementFontObject looks like { fontFamily: 'arial' }
-    console.log('in create_edit_document, getSelectedFontElementAttributes, object, selectObject: ', object, selectObject);
     this.setState({ selectedElementFontObject: _.isEmpty(selectObject) ? null : selectObject });
     return { object, selectObject };
   }
@@ -6065,7 +5854,6 @@ longActionPress(props) {
     const fontWeight = document.getElementById('fontWeight');
     const fontStyle = document.getElementById('fontStyle');
     // const fontInputs = [fontFamily, fontSize, fontWeight, fontStyle];
-    console.log('in create_edit_document, setFontControlBoxValues, fontAttributeObject, fontSize, fontFamily: ', fontAttributeObject, fontSize, fontFamily);
     // let objectLength;
     // Go through array of fontAttributeObject ie fontFamily, fontSize, fontWeight, fontStyle
     _.each(Object.keys(fontAttributeObject), eachFontAttribute => {
@@ -6074,7 +5862,6 @@ longActionPress(props) {
       // objectLength = Object.keys(fontAttributeObject[eachFontAttribute]).length;
       // Get an array of actual fonts used in selected elements
       // const selectValue = Object.keys(fontAttributeObject[eachFontAttribute])
-      console.log('in create_edit_document, setFontControlBoxValues, fontAttributeObject[eachFontAttribute]: ', fontAttributeObject[eachFontAttribute]);
       if (eachFontAttribute === 'font_family') fontFamily.value = fontAttributeObject[eachFontAttribute];
       if (eachFontAttribute === 'font_size') fontSize.value = fontAttributeObject[eachFontAttribute];
       if (eachFontAttribute === 'font_weight') {
@@ -6104,7 +5891,6 @@ longActionPress(props) {
 
   handleUserInput(event) {
     const blurredElement = event.target;
-    console.log('in create_edit_document, handleUserInput, blurredElement ', blurredElement);
   }
 
   handleShowFontControlBox() {
@@ -6325,7 +6111,6 @@ longActionPress(props) {
     const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
     const disableTranslation = this.state.translationModeOn;
 
-    console.log('in create_edit_document, renderTemplateElementEditAction, this.props.importFieldsFromOtherDocumentsObject : ', this.props.importFieldsFromOtherDocumentsObject);
     return (
       <div
         className="create-edit-document-template-edit-action-box"
@@ -6628,7 +6413,6 @@ longActionPress(props) {
       fieldsArray: newArray,
     };
 
-    console.log('in create_edit_document, handleOverlayClickBox, clicked, newObject, elementName, elementVal', newObject, elementName, elementVal);
     this.props.importFieldsFromOtherDocumentsObjectAction(newObject);
   }
 
@@ -6636,7 +6420,6 @@ longActionPress(props) {
       const elementsObjectArray = [this.props.templateElementsByPage, this.props.templateTranslationElementsByPage];
 
       return _.map(elementsObjectArray, eachByPageObject => {
-        // console.log('in create_edit_document, renderTemplateElementsOverLayClickBoxes, this.props.templateElementsByPage, this.props.templateTranElementsByPage, eachByPageObject: ', this.props.templateElementsByPage, this.props.templateTranElementsByPage, eachByPageObject);
         // return _.map(this.props.templateElementsByPage[page], eachElement => {
         return _.map(eachByPageObject[page], eachElement => {
           return (
@@ -6701,7 +6484,6 @@ longActionPress(props) {
       newArray.splice(newArray.indexOf(agreementIdClicked), 1);
       this.props.setSelectedAgreementIdArray(newArray);
       delete newAssociationObject[agreementIdClicked];
-      console.log('in create_edit_document, handleDocumentTabClick, processAgreementIfBaseAgreement, agreementIdClicked, newAssociationObject: ', agreementIdClicked, newAssociationObject);
 
       const closedBaseAgreement = agreementIdClicked === this.props.importFieldsFromOtherDocumentsObject.baseAgreementId;
 
@@ -6809,16 +6591,14 @@ longActionPress(props) {
   }
 
   handleDocumentScrollCallback(callShowLoading) {
-    console.log('in create_edit_document, handleDocumentScrollCallback, inside if action this.props.showLoadingProp, callShowLoading: ', this.props.showLoadingProp, callShowLoading);
-
     if (callShowLoading) this.props.showLoading();
+    console.log('in create_edit_document, handleDocumentScrollCallback, callShowLoading, this.props.showLoadingProp', callShowLoading, this.props.showLoadingProp);
     window.addEventListener('scroll', this.handleDocumentScroll);
   }
 
   handleDocumentScroll() {
     // scrollCount++;
     const afterScrollingStopped = () => {
-      // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, documentPagesArray: ', documentPagesArray);
       const viewportHeight = window.innerHeight;
       const newArray = [];
       let topInViewPort = false;
@@ -6829,7 +6609,6 @@ longActionPress(props) {
       const currentParentBoundingClientRect = this.state.documentPagesObject.parentOfAlldocumentPages.getBoundingClientRect()
 
         const { documentPagesMapAgainstParent } = this.state.documentPagesObject;
-        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, documentPagesMapAgainstParent ', this.state.documentPagesObject, documentPagesMapAgainstParent);
       _.each(Object.keys(documentPagesMapAgainstParent), eachPageNumberKey => {
         boundingClientRect = { top: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].top,
                                bottom: currentParentBoundingClientRect.top + documentPagesMapAgainstParent[eachPageNumberKey].bottom };
@@ -6838,11 +6617,10 @@ longActionPress(props) {
         viewPortInMiddle = boundingClientRect.top < 0 && boundingClientRect.bottom > viewportHeight;
         bottomInViewPort = boundingClientRect.bottom > 0 && viewportHeight > Math.abs(boundingClientRect.bottom);
         if (topInViewPort || bottomInViewPort || viewPortInMiddle) newArray.push(parseInt(eachPageNumberKey, 10));
-        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute(value): ', boundingClientRect.top, boundingClientRect.bottom, viewportHeight, topInViewPort, viewPortInMiddle, bottomInViewPort, eachPageElement.getAttribute('value'));
       });
 
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray.length < 1 ? [1] : newArray } }, () => {
-        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
+        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
         let pageToFetch = null
         // For each page in the viewPort, if there are document fields on the page, AND
         // both templateElements and templateTranslationElements are empty set pageToFetch to that page
@@ -6854,7 +6632,7 @@ longActionPress(props) {
               pageToFetch = eachPage;
           } //  if (this.props.agreement.agreement_meta.document_fields_num_by_page[eachPage]
         }); //  _.each(this.state.documentPagesObject.pagesInViewport, eachPage => {
-          console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
+          // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback, pageToFetch ', pageToFetch);
           if (pageToFetch) {
             //templateEditHistory to be used in populateTemplateElementsLocally
             const templateEditHistory = { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }
@@ -6868,6 +6646,7 @@ longActionPress(props) {
               // this.props.showLoading();
               console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback just called action showLoading ');
               this.props.populateTemplateElementsLocally(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch], () => { this.handleDocumentScrollCallback(false); }, templateEditHistory)
+              // gotoscroll
             }
           }
       }); //this.setState({ documentPagesObject:
@@ -6875,22 +6654,19 @@ longActionPress(props) {
 
     if (scrollingTimer !== null) {
       clearTimeout(scrollingTimer);
-      // console.log('in create_edit_document, handleDocumentScroll, inside if null scrollingTimer: ', scrollingTimer);
     }
 
     scrollingTimer = setTimeout(() => {
       // In setTimeout callback
       afterScrollingStopped();
-       // console.log('in create_edit_document, handleDocumentScroll, scrolling stopped, scrollingTimer: ', scrollingTimer);
      }, 100);
-      // console.log('in create_edit_document, handleDocumentScroll, scrollCount: ', scrollCount);
     // const eachPage = documet.getElementById('document-background')
   }
 
   renderEachDocumentTab() {
     let activeTab = false;
     const mappedAgreementObject = this.getMappedAgreementObject();
-    console.log('in create_edit_document, renderEachDocumentTab, mappedAgreementObject, this.props.selectedAgreementIdArray', mappedAgreementObject, this.props.selectedAgreementIdArray);
+    // console.log('in create_edit_document, renderEachDocumentTab, mappedAgreementObject, this.props.selectedAgreementIdArray', mappedAgreementObject, this.props.selectedAgreementIdArray);
 
     return _.map(this.props.selectedAgreementIdArray, eachAgreementId => {
       activeTab = this.props.agreementId === eachAgreementId;
@@ -6960,7 +6736,7 @@ longActionPress(props) {
     // console.log('in create_edit_document, renderDocument, before if showDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.importFieldsFromOtherDocuments, this.props.showSelectExistingDocument: ', showDocument, this.state.showDocumentPdf, this.props.showTemplate, this.props.importFieldsFromOtherDocuments, this.props.showSelectExistingDocument);
     if (showDocument) {
       if (!initialValuesEmpty || this.props.showOwnUploadedDocument) {
-        console.log('in create_edit_document, renderDocument, inside if this.showDocument, this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate: ', this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate);
+        // console.log('in create_edit_document, renderDocument, inside if this.showDocument, this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate: ', this.state.showDocumentPdf, showDocument, this.props.agreement, this.props.showTemplate);
         // render document only if initialValues NOT empty or if user has uploaded own document (agreement)
         let image;
         // when showing PDF (view pdf or after creating and updating pdf)
@@ -7009,11 +6785,9 @@ longActionPress(props) {
         // let pageInViewport = false;
         let doNotRenderElementsOnPage = false;
 
-        // console.log('in create_edit_document, renderDocument, this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement: ', this.props.showTemplate, this.state.showDocumentPdf, this.props.showGetFieldValuesChoice, pages, this.props.agreement);
-        console.log('in create_edit_document, renderDocument, this.state.documentPagesObject.pagesInViewport: ', this.state.documentPagesObject.pagesInViewport);
+        // console.log('in create_edit_document, renderDocument, this.state.documentPagesObject.pagesInViewport: ', this.state.documentPagesObject.pagesInViewport);
         return _.map(pages, page => {
           doNotRenderElementsOnPage = this.state.documentPagesObject.pagesInViewport.indexOf(page) === -1 && this.state.editFieldsOn;
-              // console.log('in create_edit_document, renderDocument, pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage): ', pages, image, page, this.state.showDocumentPdf, this.state.actionExplanationObject, constantAssetsFolder, this.props.flat, this.state.showDocumentPdf, this.state.actionExplanationObject, bilingual, this.props.templateElementsByPage, this.props.flat, _.isEmpty(this.props.templateElementsByPage));
               // {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               // {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
               // {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
@@ -7092,13 +6866,11 @@ longActionPress(props) {
   handleEditClickTemplate(event) {
     const clickedElement = event.target;
     const elementVal = clickedElement.getAttribute('value');
-    console.log('in create_edit_document, handleEditClickTemplate, elementVal: ', elementVal);
     this.props.showDocumentInsertEditProp(elementVal);
     this.props.selectedAgreementId(parseInt(elementVal, 10));
   }
 
   switchCreatePDFButton(saveButtonActive, agreementHasPdf, editTemplate) {
-    console.log('in create_edit_document, switchCreatePDFButton, saveButtonActive, agreementHasPdf: ', saveButtonActive, agreementHasPdf);
     const { handleSubmit, appLanguageCode } = this.props;
     const submitFunction = editTemplate ? 'handleTemplateFormSubmit' : 'handleFormSubmit';
 
@@ -7134,7 +6906,7 @@ longActionPress(props) {
     const saveButtonActive = false;
     let agreementHasPdf = false;
     let showDocumentButtons = false;
-    console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox, this.props.agreementId: ', this.props.showDocumentInsertBox, this.props.agreementId);
+    // console.log('in create_edit_document, renderDocumentButtons, this.props.showDocumentInsertBox, this.props.agreementId: ', this.props.showDocumentInsertBox, this.props.agreementId);
 
     if (this.props.showSavedDocument) {
       showDocumentButtons = true;
@@ -7326,7 +7098,7 @@ longActionPress(props) {
   // }
   // NOTE: noEditOrButtons is turned on when user views document from SelectExistingDocumentModal
   render() {
-    console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);
+    // console.log('in create_edit_document, just render, this.props.showTemplate, this.props.flat : ', this.props.showTemplate, this.props.flat);
     // {this.renderDocumentTabs()}
     return (
       <div className="test-image-pdf-jpg">

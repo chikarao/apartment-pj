@@ -121,6 +121,8 @@ export default function (state = {
       return { ...state, user: action.payload };
 
     case SHOW_LOADING:
+      console.log('in auth reducer, state.showLoading: ', state.showLoading);
+
       return { ...state, showLoading: !state.showLoading };
 
     case GRAY_OUT_BACKGROUND:

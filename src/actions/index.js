@@ -636,7 +636,7 @@ export function setLastMountedocumentId(object) {
 }
 
 export function showLoading(callback) {
-  console.log('in actions index, showLoading:', callback);
+  // console.log('in actions index, showLoading:', callback);
   // if (callback) callback();
   if (typeof callback === 'function') callback();
   //flip state boolean
@@ -2331,9 +2331,10 @@ export function deleteDocumentElementLocally(props) {
   return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: props };
 }
 
-export function populateTemplateElementsLocally(array, callback, templateEditHistory) {
+export function populateTemplateElementsLocally(array, callback, templateEditHistory, runShowLoading) {
   console.log('in actions index, populateTemplateElementsLocally array, callback, templateEditHistory:', array, callback, templateEditHistory);
   callback();
+  // if (runShowLoading) this.showLoading()
   return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array, templateEditHistory } };
 }
 

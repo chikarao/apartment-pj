@@ -85,7 +85,7 @@ export default function (state = {
        // (created in setTemplateHistoryArray fucntion in create_edit_document.js);
        // Lookes like [[ { id: 1, width: 10, o_width: 9, action: 'update' }], [ {}, {}...]]
       _.each(templateEditHistory.templateEditHistoryArray, (eachEditArray, i) => {
-        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element eachEditArray, templateEditHistory.historyIndex: ', element, eachEditArray, templateEditHistory.historyIndex);
+        // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, updateElements element eachEditArray, templateEditHistory.historyIndex: ', element, eachEditArray, templateEditHistory.historyIndex);
         // Do until this.state.historyIndex is less than or equal to i;
         // So if user has undone or redone, stop there
         if (i <= templateEditHistory.historyIndex) {
@@ -138,7 +138,7 @@ export default function (state = {
         // if there is name, wnat all names values to move same, and same with custom name
         if (modifiedElement.name) setNameMappedTranslationObject(modifiedElement, modifiedElement.name);
         if (modifiedElement.custom_name && !modifiedElement.name) setNameMappedTranslationObject(modifiedElement, modifiedElement.custom_name);
-        console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject: ', modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject);
+        // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject: ', modifiedElement, modifiedElement.translation_element, nameMappedTranslationObject);
       }
       // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, in each elementArray modifiedElement, nameMappedObject, !modifiedElement.translation_element: ', modifiedElement, nameMappedObject, !modifiedElement.translation_element);
 
@@ -178,7 +178,7 @@ export default function (state = {
       } // end of else if templateEditHistory
     }); // end of each
 
-    console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, before return object, pageObject : ', object, pageObject);
+    // console.log('in documents reducer, getMappedObjectWithStringIds, for POPULATE_TEMPLATE_ELEMENTS, before return object, pageObject : ', object, pageObject);
     return { object, pageObject, nameMappedObject, nameMappedTranslationObject };
   }
 
@@ -397,7 +397,7 @@ export default function (state = {
     }
 
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
-      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
+      // console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {};
       const newTranslationObject = {};
       const templateElementsArray = [];
@@ -426,7 +426,7 @@ export default function (state = {
       const mergedTranslationObject = _.merge(newTranslationObject, state.templateTranslationElements, templateTranslationsElementsArray);
       // gets object with string ids and a pageObject { 1: { id: element }}
       const mapKeysTranslationObject = getMappedObjectWithStringIds(mergedTranslationObject, action.payload.templateEditHistory, true);
-      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject: ', mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject);
+      // console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject: ', mergedObject, mapKeysObject, mergedTranslationObject, mapKeysTranslationObject);
       return { ...state,
         templateElements: mapKeysObject.object,
         templateElementsByPage: mapKeysObject.pageObject,
@@ -455,7 +455,7 @@ export default function (state = {
       });
       const mapKeysObject = getMappedObjectWithStringIds(array, true);
       const mapKeysObjectTranslation = getMappedObjectWithStringIds(translationArray, true);
-      console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
+      // console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, mapKeysObject: ', mapKeysObject);
       // const newAgreementArray = [...state.agreements];
       // newAgreementArray.push(action.payload.agreement);
       return { ...state,
