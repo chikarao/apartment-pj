@@ -24,7 +24,7 @@ import {
   SET_SELECTED_AGREEMENT_ID_ARRAY,
   SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT,
   SET_CACHED_INITIAL_VALUES_OBJECT,
-  SET_LAST_MOUNTED_DOCUMENT_ID
+  SET_LAST_MOUNTED_DOCUMENT_ID,
   // SELECTED_ICALENDAR_ID
 } from '../actions/types';
 
@@ -60,6 +60,7 @@ export default function (state = {
   editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
   cachedInitialValuesObject: {},
   lastMountedocumentId: null,
+  mappedAgreementsWithCachedDocumentFields: {},
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -444,9 +445,25 @@ export default function (state = {
       // Rather than calling _.mapKeys, do the same thing while
       // creating page object in one iteration to templateElements
       // and turn ids into strings and assign action: create
+      const getDocumentFieldsForPagesInViewport = (cachedDocumentFieldsObjectForAgreement) => {
+        let newArray = []
+        // console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, cachedDocumentFieldsObjectForAgreement: ', cachedDocumentFieldsObjectForAgreement);
+        _.each(Object.keys(cachedDocumentFieldsObjectForAgreement), eachPageKey => {
+          if (action.payload.pages_in_viewport.indexOf(parseInt(eachPageKey, 10)) !== -1) newArray = newArray.concat(cachedDocumentFieldsObjectForAgreement[eachPageKey])
+        });
+        return newArray;
+      };
+
       const array = [];
       const translationArray = [];
-      _.each(action.payload.document_fields, each => {
+      const documentFields = action.payload.agreements_with_cached_document_fields_hash[action.payload.agreement_id]
+                              ?
+                              getDocumentFieldsForPagesInViewport(action.payload.agreements_with_cached_document_fields_hash[action.payload.agreement_id])
+                              :
+                              action.payload.document_fields
+
+      // console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, documentFields: ', documentFields);
+      _.each(documentFields, each => {
         if (each.translation_element) {
           translationArray.push(each);
         } else {

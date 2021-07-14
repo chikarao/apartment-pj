@@ -685,6 +685,8 @@ class CreateEditDocument extends Component {
   }
 
   handleTemplateSubmitCallback(saveOrCreate) {
+    console.log('in create_edit_document, handleTemplateSubmitCallback, saveOrCreate: ', saveOrCreate);
+
     this.setState({
       modifiedPersistedElementsObject: {},
       modifiedPersistedTranslationElementsObject: {},
@@ -722,7 +724,8 @@ class CreateEditDocument extends Component {
       // new_document_field: newDocumentFieldArray,
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
-      use_main_document_insert: this.state.useMainDocumentInsert
+      use_main_document_insert: this.state.useMainDocumentInsert,
+      pages_in_view_port: this.state.documentPagesObject.pagesInViewport
       // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
@@ -6620,7 +6623,7 @@ longActionPress(props) {
       });
 
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, prevPagesInViewport: this.state.documentPagesObject.pagesInViewport, pagesInViewport: newArray.length < 1 ? [1] : newArray } }, () => {
-        // console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, newArray ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
+        console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport ', this.state.documentPagesObject, this.state.documentPagesObject.pagesInViewport);
         let pageToFetch = null
         // For each page in the viewPort, if there are document fields on the page, AND
         // both templateElements and templateTranslationElements are empty set pageToFetch to that page

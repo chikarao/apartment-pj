@@ -3142,7 +3142,7 @@ export function editAgreementFields(agreementFieldAttributes, callback) {
 
 export function saveTemplateDocumentFields(agreementFieldAttributes, submitAction, callback) {
   console.log('in actions index, saveTemplateDocumentFields, agreementFieldAttributes: ', agreementFieldAttributes);
-  console.log('in actions index, saveTemplateDocumentFields: localStorage.getItem, token; ', localStorage.getItem('token'));
+  // console.log('in actions index, saveTemplateDocumentFields: localStorage.getItem, token; ', localStorage.getItem('token'));
 
   return function (dispatch) {
     axios.post(`${ROOT_URL}/api/v1/save_template_agreement_fields`, agreementFieldAttributes, {
@@ -3150,7 +3150,7 @@ export function saveTemplateDocumentFields(agreementFieldAttributes, submitActio
     })
     .then(response => {
       console.log('response to saveTemplateDocumentFields, response: ', response);
-      console.log('response to saveTemplateDocumentFields, response.data.data: ', response.data.data);
+      // console.log('response to saveTemplateDocumentFields, response.data.data: ', response.data.data);
       // EDIT_AGREEMENT_FIELDS called in booking and document reducer
       dispatch({
         type: SAVE_TEMPLATE_DOCUMENT_FIELDS,
@@ -3159,14 +3159,14 @@ export function saveTemplateDocumentFields(agreementFieldAttributes, submitActio
       // sends back to createflat.js the flat_id and the images
       callback(submitAction);
     })
-    .catch((error) => {
-      // take out error if hard coding error messages
-      // if request is bad
-      // show error to user
-      console.log('action index, saveTemplateDocumentFields, catch, error.response.data.messages:', error.response.data.messages);
-      dispatch(authError(error.response.data.messages));
-      // dispatch(authError('Bad login info...'));
-    });
+    // .catch((error) => {
+    //   // take out error if hard coding error messages
+    //   // if request is bad
+    //   // show error to user
+    //   console.log('action index, saveTemplateDocumentFields, catch, error.response:', error.response);
+    //   dispatch(authError(error.response));
+    //   // dispatch(authError('Bad login info...'));
+    // });
   };
 }
 
