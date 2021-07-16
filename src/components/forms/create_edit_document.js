@@ -193,12 +193,29 @@ class CreateEditDocument extends Component {
       this.setState({ documentPagesObject: { ...this.state.documentPagesObject, documentPagesArray, parentOfAlldocumentPages, documentPagesMapAgainstParent } }, () => {
 
       });
-    // ************ Code for when user scrolls on document **********
-    // ************ Code for caching rest of document_fields for agreement **********
-    // standard documents are already cached
-    console.log('in create_edit_document, componentDidMount, this.props.agreement, this.props.templateElementsByPage: ', this.props.agreement, this.props.templateElementsByPage);
-    if (!this.props.agreement.standard_document) this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId);
-    // ************ Code for caching rest of document_fields for agreement **********
+
+    const getRestOfDocumentFieldsForAgreement = (localHistory) => {
+      // ************ Code for caching rest of document_fields for agreement **********
+      // standard documents are already cached
+      console.log('in create_edit_document, componentDidMount, before cacheDocumentFieldsForRestOfPages, this.props.agreement, this.props.templateElementsByPage, localHistory: ', this.props.agreement, this.props.templateElementsByPage, localHistory);
+      // if (!this.props.agreement.standard_document) this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId);
+      const getDocumentFieldsPagesArray = () => {
+        const arrayReturned = [];
+        _.each(this.props.agreement.document_fields, eachDF => {
+          if (arrayReturned.indexOf(eachDF.page) === -1) arrayReturned.push(eachDF.page);
+        });
+        return arrayReturned;
+      };
+
+      const documentFieldsPagesAlreadyReceivedArray = this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId]
+                                                      ?
+                                                      Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId])
+                                                      :
+                                                      getDocumentFieldsPagesArray();
+
+      this.props.cacheDocumentFieldsForRestOfPages(this.props.agreementId, documentFieldsPagesAlreadyReceivedArray, localHistory, this.props.agreement);
+      // ************ Code for caching rest of document_fields for agreement **********
+    }
 
       const getLocalHistory = () => {
         const localStorageHistory = localStorage.getItem('documentHistory');
@@ -277,9 +294,13 @@ class CreateEditDocument extends Component {
           unsavedTemplateElements: templateEditHistory.elements
         }, () => {
           // console.log('in create_edit_document, componentDidMount, getLocalHistory, right before populateTemplateElementsLocally, this.state.templateElementCount', this.state.templateElementCount);
+          // getRestOfDocumentFieldsForAgreement(templateEditHistory)
         });
+      } else { //if (templateEditHistory && templateEditHistory.elements) {
+        // getRestOfDocumentFieldsForAgreement({})
       }
       // If there are elements persisted in backend DB, populate this.props.templateElements
+      // mappedAgreementsWithCachedDocumentFields has cached document_fields and agreement.document_field would be null
       if ((this.props.agreement.document_fields && this.props.agreement.document_fields.length > 0)
           || this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]) {
         // get template elements in DB into app state as templateElements and templateTranslationElements
@@ -294,7 +315,8 @@ class CreateEditDocument extends Component {
           newArray = this.props.agreement.document_fields;
           // this.props.populateTemplateElementsLocally(this.props.agreement.document_fields, () => {}, templateEditHistory);
         }
-        this.props.populateTemplateElementsLocally(newArray, () => {}, templateEditHistory);
+        // this.props.populateTemplateElementsLocally(newArray, () => {}, templateEditHistory, this.props.agreement);
+        this.props.populateTemplateElementsLocally(newArray, () => getRestOfDocumentFieldsForAgreement(), templateEditHistory, this.props.agreement);
       }
     } // if (this.props.showTemplate) {
 
@@ -725,7 +747,7 @@ class CreateEditDocument extends Component {
       agreement_id: this.props.agreement ? this.props.agreement.id : null,
       document_language_code: this.props.documentLanguageCode,
       use_main_document_insert: this.state.useMainDocumentInsert,
-      pages_in_view_port: this.state.documentPagesObject.pagesInViewport
+      pages_in_viewport: this.state.documentPagesObject.pagesInViewport
       // deleted_document_field: this.state.modifiedPersistedElementsArray,
     };
 
@@ -1266,6 +1288,8 @@ handleOnFocus(event) {
     // elementVal is id or id of template element
     const elementVal = clickedElement.getAttribute('value')
     // when element has not been checked
+    const templateElementRunningCount = !this.props.translationModeOn ? this.props.templateElementsRunningCountTotal : this.props.templateTranslationElementsRunningCountTotal;
+
     if (this.state.selectedTemplateElementIdArray.indexOf(elementVal) === -1) {
       // place in array of checked elements
       this.setState({
@@ -1278,8 +1302,10 @@ handleOnFocus(event) {
         this.getSelectedFontElementAttributes();
         // if all elements checked, set to true
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
+          // allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === templateElementRunningCount
         }, () => {
+          // console.log('in create_edit_document, handleTemplateElementCheckClick, this.state.allElementsChecked, ', this.state.allElementsChecked);
         });
       });
     } else {
@@ -1293,7 +1319,8 @@ handleOnFocus(event) {
       // assign new array to state
       this.setState({ selectedTemplateElementIdArray: newArray }, () => {
         this.setState({
-          allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
+          // allElementsChecked: this.state.selectedTemplateElementIdArray.length === Object.keys(this.props.templateElements).length,
+          allElementsChecked: this.state.selectedTemplateElementIdArray.length === templateElementCount,
           newFontObject: { ...this.state.newFontObject, override: true }
         }, () => {
           // Get the font attributes of selected elements to show on the control box font button
@@ -3884,7 +3911,7 @@ longActionPress(props) {
               // Gets a map of all font attributes used in elements on agreement
               const fontObject = this.getSelectedFontElementAttributes();
               // fontObject is { object: {element font mapping}, selectObject: { fontFamily: 'arial', fontSize: '12px' ...}}
-              this.setState({ selectedElementFontObject: fontObject.selectObject })
+              this.setState({ selectedElementFontObject: fontObject.selectObject });
             });
           }
           // }
@@ -6640,15 +6667,20 @@ longActionPress(props) {
             //templateEditHistory to be used in populateTemplateElementsLocally
             const templateEditHistory = { historyIndex: this.state.historyIndex, templateEditHistoryArray: this.state.templateEditHistoryArray }
             window.removeEventListener('scroll', this.handleDocumentScroll);
-            const pagesInPropsTemplateElements = Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId])
+            const pagesInPropsTemplateElements = this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId]
+                                                  ? Object.keys(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreementId])
+                                                  : []
             // this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(); }, pagesInPropsTemplateElements)
-            if (!this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch]) {
-              this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(true); }, pagesInPropsTemplateElements)
+            if (!this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id]
+                  ||
+                !this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch]
+                ) {
+              this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(true); }, pagesInPropsTemplateElements, this.props.agreement)
               // this.props.fetchDocumentFieldsForPage(pageToFetch, this.props.agreement.id, templateEditHistory, () => { this.handleDocumentScrollCallback(); })
             } else {
               // this.props.showLoading();
               console.log('in create_edit_document, handleDocumentScroll, afterScrollingStopped, in setState callback just called action showLoading ');
-              this.props.populateTemplateElementsLocally(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch], () => { this.handleDocumentScrollCallback(false); }, templateEditHistory)
+              this.props.populateTemplateElementsLocally(this.props.mappedAgreementsWithCachedDocumentFields[this.props.agreement.id][pageToFetch], () => { this.handleDocumentScrollCallback(false); }, templateEditHistory, this.props.agreement)
               // gotoscroll
             }
           }
@@ -6790,7 +6822,10 @@ longActionPress(props) {
 
         // console.log('in create_edit_document, renderDocument, this.state.documentPagesObject.pagesInViewport: ', this.state.documentPagesObject.pagesInViewport);
         return _.map(pages, page => {
-          doNotRenderElementsOnPage = this.state.documentPagesObject.pagesInViewport.indexOf(page) === -1 && this.state.editFieldsOn;
+          doNotRenderElementsOnPage = this.state.documentPagesObject.pagesInViewport.indexOf(page) === -1;
+          // doNotRenderElementsOnPage = this.state.documentPagesObject.pagesInViewport.indexOf(page) === -1 && this.state.editFieldsOn;
+          // console.log('in create_edit_document, renderDocument, inside map this.state.documentPagesObject.pagesInViewport, page, doNotRenderElementsOnPage: ', this.state.documentPagesObject.pagesInViewport, page, doNotRenderElementsOnPage);
+
               // {this.state.showDocumentPdf ? '' : this.renderEachDocumentField(page)}
               // {(bilingual && !this.state.showDocumentPdf) ? this.renderEachDocumentTranslation(page) : ''}
               // {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocuments && this.props.showSelectExistingDocument && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
@@ -6809,7 +6844,7 @@ longActionPress(props) {
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !doNotRenderElementsOnPage ? this.renderTemplateElements(page) : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && !  doNotRenderElementsOnPage ? this.renderTemplateTranslationElements(page) : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !doNotRenderElementsOnPage ? this.renderTemplateTranslationElements(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf ? this.renderDocumentName(page) : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.showGetFieldValuesChoice ? this.renderGetFieldValuesChoiceBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && this.props.importFieldsFromOtherDocumentsObject.baseAgreementId && !documentForBookingOrFlat ? this.renderTemplateElementsOverLayClickBoxes(page) : ''}
@@ -7152,7 +7187,7 @@ function mapStateToProps(state) {
     // if (state.documents.documentTranslationsAllInOne) console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslationsAllInOne: ', state.documents.documentTranslationsAllInOne);
 
     // initialValues = { ...state.documents.initialValuesObject, name: 'Jackie' };
-    console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslations: ', state.documents.documentTranslations);
+    // console.log('in create_edit_document, mapStateToProps, state.documents.documentTranslations: ', state.documents.documentTranslations);
     // initialValues = { name: 'Jackie' };
     // selector from redux form; true if any field on form is dirty
     // console.log('in create_edit_document, mapStateToProps, initialValues: ', initialValues);
@@ -7224,6 +7259,8 @@ function mapStateToProps(state) {
       lastMountedocumentId: state.documents.lastMountedocumentId,
       mappedAgreementsWithCachedDocumentFields: state.documents.mappedAgreementsWithCachedDocumentFields,
       showLoadingProp: state.auth.showLoading,
+      templateElementsRunningCountTotal: state.documents.templateElementsRunningCountTotal,
+      templateTranslationElementsRunningCountTotal: state.documents.templateTranslationElementsRunningCountTotal,
     };
   }
   // Return object for edit flat where there is selectedFlatFromParams
@@ -7270,6 +7307,8 @@ function mapStateToProps(state) {
       lastMountedocumentId: state.documents.lastMountedocumentId,
       mappedAgreementsWithCachedDocumentFields: state.documents.mappedAgreementsWithCachedDocumentFields,
       showLoadingProp: state.auth.showLoading,
+      templateElementsRunningCountTotal: state.documents.templateElementsRunningCountTotal,
+      templateTranslationElementsRunningCountTotal: state.documents.templateTranslationElementsRunningCountTotal,
     };
   }
 

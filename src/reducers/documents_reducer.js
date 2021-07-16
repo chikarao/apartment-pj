@@ -61,6 +61,8 @@ export default function (state = {
   cachedInitialValuesObject: {},
   lastMountedocumentId: null,
   mappedAgreementsWithCachedDocumentFields: {},
+  templateElementsRunningCountTotal: 0,
+  templateTranslationElementsRunningCountTotal: 0
   // documentFields: {}
 }, action) { // closes at the very end
   // console.log('in documents reducer, action.payload, state: ', action.payload, state)
@@ -398,17 +400,21 @@ export default function (state = {
     }
 
     case POPULATE_TEMPLATE_ELEMENTS_LOCALLY: {
-      // console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
+      console.log('in documents reducer, state, POPULATE_TEMPLATE_ELEMENTS_LOCALLY, action.payload, state.templateElements, state.templateMappingObjects: ', action.payload, state.templateElements, state.templateMappingObjects);
       const newObject = {};
       const newTranslationObject = {};
       const templateElementsArray = [];
       const templateTranslationsElementsArray = [];
+      const templateElementsRunningCountTotal = action.payload.agreement.agreement_meta.original_total_document_field_count;
+      const templateTranslationElementsRunningCountTotal = action.payload.agreement.agreement_meta.original_total_document_translation_field_count;
       // divide action.payload array of elements into translations and not
       _.each(action.payload.array, each => {
         if (!each.translation_element) {
           templateElementsArray.push(each);
+          // templateElementsRunningCountTotal++;
         } else {
-          templateTranslationsElementsArray.push(each)
+          templateTranslationsElementsArray.push(each);
+          // templateTranslationElementsRunningCountTotal++;
         }
       })
       // const listValues = getListValues({ listElement: action.payload, flat: state.flat, templateMappingObjects: state.templateMappingObjects })
@@ -436,6 +442,8 @@ export default function (state = {
         templateTranslationElements: mapKeysTranslationObject.object || {},
         templateTranslationElementsByPage: mapKeysTranslationObject.pageObject || {},
         templateTranslationElementsMappedByName: mapKeysTranslationObject.nameMappedTranslationObject,
+        templateElementsRunningCountTotal,
+        templateTranslationElementsRunningCountTotal,
         // initialValuesObject
       };
     }
@@ -460,7 +468,7 @@ export default function (state = {
                               ?
                               getDocumentFieldsForPagesInViewport(action.payload.agreements_with_cached_document_fields_hash[action.payload.agreement_id])
                               :
-                              action.payload.document_fields
+                              action.payload.document_fields;
 
       // console.log('in documents reducer, state, SAVE_TEMPLATE_DOCUMENT_FIELDS, documentFields: ', documentFields);
       _.each(documentFields, each => {
@@ -490,11 +498,13 @@ export default function (state = {
       // This action creates elements for template and templateTranslation
       // Takes an array of new elements and returns template elements
       console.log('in documents reducer, state, CREATE_DOCUMENT_ELEMENT_LOCALLY, action.payload, beginning: ', action.payload);
-        const newObject = {}
-        const newTranslationObject = {}
-        const createdObject = {}
-        const createdTranslationObject = {}
-        let templateElementsByPage = {}
+        const newObject = {};
+        const newTranslationObject = {};
+        const createdObject = {};
+        const createdTranslationObject = {};
+        let templateElementsByPage = {};
+        let templateElementsRunningCountTotal = state.templateElementsRunningCountTotal;
+        let templateTranslationElementsRunningCountTotal = state.templateTranslationElementsRunningCountTotal;
         // REFERENCE: https://stackoverflow.com/questions/19965844/lodash-difference-between-extend-assign-and-merge
         // Use lodash merge to get elements in mapped object { 1: {}, 2: {} }
         // Keep out any object that have no id
@@ -503,8 +513,10 @@ export default function (state = {
           _.each(action.payload, eachElement => {
             if (!eachElement.translation_element) {
               createdObject[eachElement.id] = eachElement;
+              templateElementsRunningCountTotal++;
             } else {
               createdTranslationObject[eachElement.id] = eachElement;
+              templateTranslationElementsRunningCountTotal++
             }
           });
           templateElementsByPage = addToTemplateElementsByPage(action.payload);
@@ -541,6 +553,8 @@ export default function (state = {
           templateElementsByPage: templateElementsByPage.templateElements,
           templateTranslationElements: mergedTranslationObject,
           templateTranslationElementsByPage: templateElementsByPage.templateTranslationElements,
+          templateElementsRunningCountTotal,
+          templateTranslationElementsRunningCountTotal,
         };
         // end of if (action.payload.type === 'template') {
     }
@@ -552,6 +566,8 @@ export default function (state = {
       const templateElements = !action.payload.translationModeOn ? state.templateElements : state.templateTranslationElements;
       const templateElementsByPage = !action.payload.translationModeOn ? { ...state.templateElementsByPage } : { ...state.templateTranslationElementsByPage };
       const newDeleteObject = _.merge({}, templateElements);
+      let templateElementsRunningCountTotal = state.templateElementsRunningCountTotal;
+      let templateTranslationElementsRunningCountTotal = state.templateTranslationElementsRunningCountTotal;
       // const templateElementsByPage = { ...templateElementsByPage };
       // iterate through each element id in action payload
       // and delete id: elementObj in state.templateElements (object)
@@ -561,6 +577,7 @@ export default function (state = {
         delete newDeleteObject[eachElementId];
         element = templateElements[eachElementId];
         delete templateElementsByPage[element.page][eachElementId];
+        !action.payload.translationModeOn ? templateElementsRunningCountTotal-- : templateTranslationElementsRunningCountTotal--;
       });
 
       // const templateDocumentChoicesObject = getDocumentChoicesObject(newDeleteObject, null);
@@ -569,14 +586,16 @@ export default function (state = {
       if (!action.payload.translationModeOn) {
         return { ...state,
           templateElements: newDeleteObject,
-          templateElementsByPage
+          templateElementsByPage,
+          templateElementsRunningCountTotal
           // templateDocumentChoicesObject
         };
       }
 
       return { ...state,
         templateTranslationElements: newDeleteObject,
-        templateTranslationElementsByPage: templateElementsByPage
+        templateTranslationElementsByPage: templateElementsByPage,
+        templateTranslationElementsRunningCountTotal
       };
     }
 

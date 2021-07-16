@@ -27,7 +27,7 @@ export default (props) => {
 
   _.each(Object.keys(eachElement.document_field_choices), eachChoiceIdx => {
     choice = document.getElementById(`template-element-button-${eachElementId},${eachChoiceIdx}`);
-    choiceElementsArray.push(choice)
+    choiceElementsArray.push(choice);
   });
 
   const allChoicesObject = getOtherChoicesObject({ wrapperDiv, otherChoicesArray: choiceElementsArray, templateElements, backgroundDimensions, wrapperDivDimensions, elementDrag, tabHeight, delta });

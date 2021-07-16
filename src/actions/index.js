@@ -2331,11 +2331,11 @@ export function deleteDocumentElementLocally(props) {
   return { type: DELETE_DOCUMENT_ELEMENT_LOCALLY, payload: props };
 }
 
-export function populateTemplateElementsLocally(array, callback, templateEditHistory, runShowLoading) {
+export function populateTemplateElementsLocally(array, callback, templateEditHistory, agreement) {
   console.log('in actions index, populateTemplateElementsLocally array, callback, templateEditHistory:', array, callback, templateEditHistory);
   callback();
   // if (runShowLoading) this.showLoading()
-  return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array, templateEditHistory } };
+  return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array, templateEditHistory, agreement } };
 }
 
 export function searchBuildings(buildingAttributes) {
@@ -3159,14 +3159,14 @@ export function saveTemplateDocumentFields(agreementFieldAttributes, submitActio
       // sends back to createflat.js the flat_id and the images
       callback(submitAction);
     })
-    // .catch((error) => {
-    //   // take out error if hard coding error messages
-    //   // if request is bad
-    //   // show error to user
-    //   console.log('action index, saveTemplateDocumentFields, catch, error.response:', error.response);
-    //   dispatch(authError(error.response));
-    //   // dispatch(authError('Bad login info...'));
-    // });
+    .catch((error) => {
+      // take out error if hard coding error messages
+      // if request is bad
+      // show error to user
+      console.log('action index, saveTemplateDocumentFields, catch, error.response:', error.response);
+      dispatch(authError(error.response));
+      // dispatch(authError('Bad login info...'));
+    });
   };
 }
 
@@ -3559,7 +3559,7 @@ export function getAppBaseObjects() {
   };
 }
 
-export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEditHistory, callback, pagesAlreadyInFrontEndArray) {
+export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEditHistory, callback, pagesAlreadyInFrontEndArray, agreement) {
   console.log('index action fetchDocumentFieldsForPage, pageNumber, agreementId: ', pageNumber, agreementId);
   this.showLoading();
   return function (dispatch) {
@@ -3573,26 +3573,39 @@ export function fetchDocumentFieldsForPage(pageNumber, agreementId, templateEdit
       callback();
       dispatch({
         type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
-        payload: { array: response.data.data.document_fields, templateEditHistory }
+        payload: { array: response.data.data.document_fields, templateEditHistory, agreement }
       });
     });
   };
 }
 
-export function cacheDocumentFieldsForRestOfPages(agreementId) {
+export function cacheDocumentFieldsForRestOfPages(agreementId, documentFieldsPagesAlreadyReceivedArray, templateEditHistory, agreement) {
   console.log('index action cacheDocumentFieldsForRestOfPages, agreementId: ', agreementId);
   // this.showLoading();
   return function (dispatch) {
-    axios.post(`${ROOT_URL}/api/v1/cache_document_fields_for_pages`, { agreement_id: agreementId }, {
+    axios.post(`${ROOT_URL}/api/v1/cache_document_fields_for_rest_of_pages`, { agreement_id: agreementId, document_fields_pages_already_received_array: documentFieldsPagesAlreadyReceivedArray }, {
       headers: { 'AUTH-TOKEN': localStorage.getItem('token') }
     })
     .then(response => {
       console.log('response to cacheDocumentFieldsForRestOfPages: ', response);
-      // this.showLoading();
+      // this.showLoading();agreements_with_cached_document_fields_hash
       // callback();
+      // dispatch({
+      //   type: CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES,
+      //   payload: { array: response.data.data.document_fields }
+      // });
+      // agreements_with_cached_document_fields_hash
+      // response.data.data.
+      let newArray = []
+      const documentFieldsPageMapped = response.data.data.agreements_with_cached_document_fields_hash[agreementId]
+      _.each(Object.keys(documentFieldsPageMapped), eachPage => {
+        newArray = newArray.concat(documentFieldsPageMapped[eachPage])
+      });
+      console.log('response to cacheDocumentFieldsForRestOfPages, documentFieldsPageMapped, newArray: ', documentFieldsPageMapped, newArray);
+      // return { type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY, payload: { array: newArray, templateEditHistory, agreement } };
       dispatch({
-        type: CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES,
-        payload: { array: response.data.data.document_fields }
+        type: POPULATE_TEMPLATE_ELEMENTS_LOCALLY,
+        payload: { array: newArray, templateEditHistory, agreement }
       });
     });
   };
