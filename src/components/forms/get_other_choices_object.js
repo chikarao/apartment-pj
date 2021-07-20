@@ -215,6 +215,7 @@ export default (props) => {
     _.each(otherChoicesArray, each => {
       let moveLeftIncrementVal = 0;
       let moveTopIncrementVal = 0;
+      const modifiedEach = each;
       // eachElementId = each.getAttribute('value').split(',')[0];
       choiceIndex = parseInt(each.getAttribute('value').split(',')[1], 10);
       choicesObject[choiceIndex] = {};
@@ -230,13 +231,15 @@ export default (props) => {
       // wrapperDims = changeChoiceIndexObject[eachElementId].wrapperDims;
       leftValue = ((parseFloat(each.style.left) / 100) * wrapperDivDimensions.width) + wrapperDivDimensions.left + moveLeftIncrementVal;
       topValue = ((parseFloat(each.style.top) / 100) * (wrapperDivDimensions.height - tabHeight)) + wrapperDivDimensions.top + moveTopIncrementVal;
-      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveLeftIncrementVal: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveLeftIncrementVal);
+      console.log('in get_other_choices_object, if not drag before return each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveTopIncrementVal, moveLeftIncrementVal: ', each.id, each.style.left, wrapperDivDimensions, leftValue, topValue, moveTopIncrementVal, moveLeftIncrementVal);
+      // each.style.left = leftValue;
+      // each.style.top = topValue;
 
       choicesObject[choiceIndex].topInPx = topValue;
       choicesObject[choiceIndex].leftInPx = leftValue;
       choicesObject[choiceIndex].widthInPx = (parseFloat(eachChoiceInState.width) / 100) * backgroundDimensions.width;
       choicesObject[choiceIndex].heightInPx = (parseFloat(eachChoiceInState.height) / 100) * backgroundDimensions.height;
-    }) // end of _.each(otherChoicesArray
+    }); // end of _.each(otherChoicesArray
   }
 
   if (choiceExpandContract) {

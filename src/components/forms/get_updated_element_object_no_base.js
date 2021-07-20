@@ -1,8 +1,8 @@
 // import React from 'react';
 import _ from 'lodash';
 
-import setBoundaries from './set_choice_wrapper_boundaries';
-import getUpdatedElementObject from './get_element_update_object';
+import setChoiceWrapperBoundaries from './set_choice_wrapper_boundaries';
+import getElementUpdateObject from './get_element_update_object';
 import getNewDocumentFieldChoices from './get_new_document_field_choices';
 import getOtherChoicesObject from './get_other_choices_object';
 
@@ -50,10 +50,12 @@ export default (props) => {
   let updatedElementObject = null;
 
   const backgroundDimensions = document.getElementById(`template-element-${selectedChoiceIdArray[0].split('-')[0]}`).parentElement.getBoundingClientRect();
+  console.log('in create_edit_document, getUpdatedElementObjectNoBase, moveIncrementLocal, direction, selectedChoiceIdArray', moveIncrementLocal, direction, selectedChoiceIdArray);
 
   _.each(selectedChoiceIdArray, eachChoiceId => {
     // Go through each choice Id and get an array of choices to be changed
     // Get new document_field_choices
+    // eachChoiceId is "templateElementId-indexOfchoice"
     eachElementId = eachChoiceId.split('-')[0];
     if (alignControlArray.indexOf(eachElementId) === -1) {
       // push eachElementId avoid doing the same element multiple times
@@ -103,11 +105,11 @@ export default (props) => {
       newDocumentFieldChoices = documentFieldObject.newDocumentFieldChoices;
       oldDocumentFieldChoices = documentFieldObject.oldDocumentFieldChoices;
       // get wrapper dimensions
-      lastWrapperDivDims = setBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
-      updatedElementObject = getUpdatedElementObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight })
+      lastWrapperDivDims = setChoiceWrapperBoundaries({ elementsArray: eachChoicePxDimensionsArray, newWrapperDims: {}, adjustmentPx: 0 });
+      updatedElementObject = getElementUpdateObject({ elementId: eachElementId, lastWrapperDivDims, backgroundDimensions, wrapperDivDimensions: eachWrapperDivDimensions, newDocumentFieldChoices, oldDocumentFieldChoices, tabHeight })
       // push into array to be sent to action and reducer
       array.push(updatedElementObject)
-      console.log('in create_edit_document, getUpdatedElementObjectNoBase, moveElement allChoicesObject, array: ', allChoicesObject, array);
+        console.log('in create_edit_document, getUpdatedElementObjectNoBase, moveElement allChoicesObject, array, lastWrapperDivDims: ', allChoicesObject, array, lastWrapperDivDims);
 
       changeChoiceIndexArray = [];
       changeChoicesArray = [];
