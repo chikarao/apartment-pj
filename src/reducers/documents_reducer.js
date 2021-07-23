@@ -757,6 +757,7 @@ export default function (state = {
           if (actionPayloadObject[eachKey].template_file_name) newObject.template_file_name = actionPayloadObject[eachKey].template_file_name;
           if (actionPayloadObject[eachKey].booking_id) newObject.booking_id = actionPayloadObject[eachKey].booking_id;
           if (actionPayloadObject[eachKey].flat_id) newObject.flat_id = actionPayloadObject[eachKey].flat_id;
+          if (actionPayloadObject[eachKey].standard_document) newObject.standard_document = actionPayloadObject[eachKey].standard_document;
           // Give newObject a flat_id since agreeemnts with booking_id do not have flat_id
           if (actionPayloadObject[eachKey].booking_id) {
             newObject.flat_id = action.payload.user_bookings[actionPayloadObject[eachKey].booking_id].flat_id
@@ -768,6 +769,8 @@ export default function (state = {
       // Get an array of objects with just dates and document_name (for agreements)
       // For sorting
       const agreementArrayWithDateObject = createArrayWithDateObject(action.payload.all_user_agreements_mapped);
+      const mappedAgreementsWithCachedDocumentFields = { ...state.mappedAgreementsWithCachedDocumentFields, ...action.payload.agreements_with_cached_document_fields_hash };
+
 
       return { ...state,
         // all_user_agreements is all agreements
@@ -781,7 +784,8 @@ export default function (state = {
         allUserFlatsArray: createArrayWithDateObject(action.payload.user_flats),
         allUserFlatsMapped: action.payload.user_flats,
         allBookingsForUserFlatsArray: createArrayWithDateObject(action.payload.user_bookings),
-        allBookingsForUserFlatsMapped: action.payload.user_bookings
+        allBookingsForUserFlatsMapped: action.payload.user_bookings,
+        mappedAgreementsWithCachedDocumentFields
       };
     }
 

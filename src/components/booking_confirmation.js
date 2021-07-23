@@ -581,7 +581,6 @@ class BookingConfirmation extends Component {
               >
                 {AppLanguages.selectExistingDocument[appLanguageCode]}
               </div>
-
               <div className="booking-confirmation-language-label">
                 {AppLanguages.selectTranslationLanguage[appLanguageCode]}:
               </div>
