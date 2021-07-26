@@ -6962,8 +6962,8 @@ longActionPress(props) {
               // style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.pdf)` }}
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
-              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderTemplateElementEditAction() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !this.props.agreement.standard_document ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !this.props.agreement.standard_document ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
@@ -7074,11 +7074,16 @@ longActionPress(props) {
       showDocumentButtons = true;
       if (this.props.agreement && this.props.agreement.document_pdf_publicid) agreementHasPdf = true;
     }
+
+    console.log('in create_edit_document, renderTemplateDocumentButtons, saveButtonActive, agreementHasPdf, showDocumentButtons: ', saveButtonActive, agreementHasPdf, showDocumentButtons);
+
     // noEditOrButtons is true when user is selecting from existing documents;
     // i.e. from select_exiting_document_modal
     if (showDocumentButtons) {
       return (
           <div className="document-floating-button-box">
+            {!this.props.agreement.standard_document
+              ?
               <button
                 value={this.props.agreementId}
                 onClick={this.handleEditClickTemplate}
@@ -7087,6 +7092,9 @@ longActionPress(props) {
               >
                 {AppLanguages.document[appLanguageCode]}
               </button>
+              :
+              null
+            }
 
             {agreementHasPdf && !this.state.showDocumentPdf ?
               <button
@@ -7106,11 +7114,30 @@ longActionPress(props) {
               </button>
             }
 
+            {this.props.agreement.standard_document
+              ?
+              <button
+                // onClick={this.handleViewPDFClickTemplate}
+                className={"btn document-floating-button"}
+                style={{ backgroundColor: 'blue', color: 'white', width: '120px' }}
+                // style={agreementHasPdf ? { backgroundColor: 'blue', color: 'white' } : { display: 'none'}}
+              >
+                {AppLanguages.addDocument[appLanguageCode]}
+              </button>
+              :
+              null
+            }
+
+            {!this.props.agreement.standard_document
+              ?
               <div className="update-create-pdf-button-box">
                 {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf, true)}
                 {this.props.showDocumentInsertBox ? <input type="checkbox" onChange={this.handleDocumentInsertCheckBox} checked={this.state.useMainDocumentInsert} /> : ''}
                 {this.props.showDocumentInsertBox ? <div style={{　fontSize: '10px'　}}>{AppLanguages.insertDocument[appLanguageCode]}</div> : ''}
               </div>
+              :
+              null
+            }
 
             {agreementHasPdf ?
               <a
@@ -7212,23 +7239,23 @@ longActionPress(props) {
               {AppLanguages.close[appLanguageCode]}
             </button>
             <div
-                value='save'
-                // submit save only if formIsDirty
-                // handleSubmit has been destructured from this.props
-                onClick={saveButtonActive ?
-                  handleSubmit(data =>
-                    this.handleFormSubmit({
-                      data,
-                      submitAction: 'save'
-                    }))
-                    :
-                    () => {}
-                }
-                className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
-                style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
-              >
-                {AppLanguages.save[appLanguageCode]}
-              </div>
+              value='save'
+              // submit save only if formIsDirty
+              // handleSubmit has been destructured from this.props
+              onClick={saveButtonActive ?
+                handleSubmit(data =>
+                  this.handleFormSubmit({
+                    data,
+                    submitAction: 'save'
+                  }))
+                  :
+                  () => {}
+              }
+              className={saveButtonActive ? 'btn document-floating-button' : 'document-floating-button'  }
+              style={saveButtonActive ? { backgroundColor: 'cornflowerblue' } : { backgroundColor: 'white', border: '1px solid lightgray', color: 'lightgray' }}
+            >
+              {AppLanguages.save[appLanguageCode]}
+            </div>
           </div>
         );
     } // END of if this.props.agreement

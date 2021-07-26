@@ -380,7 +380,10 @@ class BookingConfirmation extends Component {
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
       // if agreement has a template file name render
-      if (eachAgreement.document_type !== 'template') {
+      if (
+          eachAgreement.document_type !== 'template'
+          // && !eachAgreement.standard_document
+        ) {
         // console.log('in booking confirmation, renderEachAgreementSaved, eachAgreement, this.state.agreementId:', eachAgreement, this.state.agreementId);
         return <div
           key={i}
@@ -532,7 +535,10 @@ class BookingConfirmation extends Component {
   renderEachTemplateSaved() {
     return _.map(this.props.booking.agreements, (eachAgreement, i) => {
       // return <div key={i} value={eachAgreement.document_code} name={eachAgreement.id} onClick={this.handleSavedDocumentShowClick} className="booking-confirmation-document-create-link">{Documents[eachAgreement.document_code][this.props.appLanguageCode]}</div>
-      if (eachAgreement.document_type === 'template') {
+      if (eachAgreement.document_type === 'template'
+          &&
+          !eachAgreement.standard_document
+          ) {
         // console.log('in booking confirmation, renderEachTemplateSaved, this.props.booking.agreements, eachAgreement:', this.props.booking.agreements, eachAgreement);
         return <div
           key={i}

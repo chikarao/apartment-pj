@@ -684,7 +684,7 @@ class SelectExitingDocumentModal extends Component {
     // const agreementsTreatedArray = this.state.agreementsTreatedArray ? this.state.agreementsTreatedArray : allUserAgreementsArray;
     const agreementsTreatedArray = this.state.agreementsTreatedArray ? this.state.agreementsTreatedArray : allUserAgreementsArray;
 
-    // console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreatedArray: ', agreementsTreatedArray);
+    console.log('in SelectExistingDocumentModal, renderExistingDocuments, agreementsTreatedArray: ', agreementsTreatedArray);
 
     return (
       <ul
@@ -813,6 +813,7 @@ class SelectExitingDocumentModal extends Component {
        const flatSelectionBoxArray = document.getElementsByClassName('flat-selection-box-container')
        if (this.state.showFlatSelectionBox) flatSelectionBoxArray[0].style.display = 'block';
      }
+
      let {
        showAll,
        showFlatSelectionBox,
@@ -822,13 +823,6 @@ class SelectExitingDocumentModal extends Component {
        showImportantPoints,
        showStandardDocuments
      } = this.state;
-     // let showAll = this.state.showAll;
-     // let showFlatSelectionBox = this.state.showFlatSelectionBox;
-     // let selectedFlatId = this.state.selectedFlatId;
-     // let showByBooking = this.state.showByBooking;
-     // let showRentalContracts = this.state.showRentalContracts;
-     // let showImportantPoints = this.state.showImportantPoints;
-     // let showStandardDocuments = this.state.showStandardDocuments;
 
      // If user clicks show all and showAll is true, false and null out flat state
      if (elementVal === 'showAll' && this.state.showAll) {
