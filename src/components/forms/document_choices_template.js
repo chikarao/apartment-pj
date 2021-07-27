@@ -26,6 +26,7 @@ class DocumentChoicesTemplate extends Component {
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleFieldClick = this.handleFieldClick.bind(this);
+    this.handleShowMessage = this.handleShowMessage.bind(this);
     // this.handleButtonTemplateElementMove = this.handleButtonTemplateElementMove.bind(this);
   }
 
@@ -223,7 +224,6 @@ class DocumentChoicesTemplate extends Component {
   checkOverAllDegradation({ pageObject, wooden, meta, lastClickedValue, name }) {
     let count = 0;
     _.each(pageObject, eachField => {
-      // console.log('DocumentChoicesTemplate, checkOverAllDegradation eachField: ', eachField)
       if (eachField.degradationKey && this.props.allValues[eachField.name] == 'Yes') {
         count++;
       }
@@ -240,6 +240,20 @@ class DocumentChoicesTemplate extends Component {
     } else {
       this.changeOtherFieldValues([summaryObject.name], meta, false);
     }
+  }
+
+  handleShowMessage(event) {
+    document.activeElement.blur();
+
+    console.log('DocumentChoicesTemplate, handleShowMessage document.activeElement: ', document.activeElement)
+    this.props.showLoading(() => {
+    this.props.setMessageToUserObject({ message: AppLanguages.noRightsToEdit[this.props.appLanguageCode],
+      // positive: 'Ok',
+      // negative: 'No',
+      timer: 3000,
+      iconClassName: 'fas fa-exclamation-triangle'
+      });
+    });
   }
 
   createButtonElement({ choice, meta, onChange, value, name, input }) {
@@ -314,7 +328,7 @@ class DocumentChoicesTemplate extends Component {
           value={`${choice.element_id},${choice.choice_index}`}
           id={`template-element-button-${elementIdAndIndex}`}
           onMouseDown={this.props.handleButtonTemplateElementMove()}
-          onClick={this.props.handleButtonTemplateElementClick()}
+          onClick={this.props.editDisabled ? this.handleShowMessage : this.props.handleButtonTemplateElementClick()}
           className={choice.class_name}
           style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
         >
@@ -332,7 +346,7 @@ class DocumentChoicesTemplate extends Component {
         type={choice.input_type}
         value={`${choice.element_id},${choice.choice_index}`}
         id={`template-element-button-${elementIdAndIndex}`}
-        onClick={handleClick}
+        onClick={this.props.editDisabled ? this.handleShowMessage : handleClick}
         className={choice.class_name}
         style={this.getStyleOfButtonElement({ required: this.props.required, value, choice, inactive: fieldInactive, name })}
       >
@@ -342,6 +356,8 @@ class DocumentChoicesTemplate extends Component {
   }
 
   handleOnBlur(event) {
+    // console.log('DocumentChoicesTemplate, handleOnBlur document.activeElement: ', document.activeElement)
+
     const { documentTranslationsAllInOne, initialValuesObject, elementName, documentLanguageCode, translationModeOn, eachElement, templateTranslationElementsMappedByName } = this.props;
     const blurredInput = event.target;
     const valueInAllInONe = documentTranslationsAllInOne[elementName] ? documentTranslationsAllInOne[elementName].translations[documentLanguageCode] : null
@@ -439,7 +455,7 @@ class DocumentChoicesTemplate extends Component {
         // value with this.state.inputValue is no longer need in RF v7.4.2;
         key={choice.val}
         onBlur={this.handleOnBlur}
-        onFocus={this.handleOnFocus}
+        onFocus={this.props.editDisabled ? this.handleShowMessage : this.handleOnFocus}
         type={choice.input_type}
         className={choice.class_name}
         // placeholder={choice.placeholder}
@@ -522,9 +538,9 @@ class DocumentChoicesTemplate extends Component {
           // name={elementIdAndIndex}
           maxLength={this.props.charLimit}
           key={choice.val}
-          onChange={this.handleInputChange}
-          onBlur={this.handleOnBlur}
-          onFocus={this.handleOnFocus}
+          onChange={this.props.editDisabled ? this.handleShowMessage : this.handleInputChange}
+          onBlur={this.props.editDisabled ? this.handleShowMessage : this.handleOnBlur}
+          onFocus={this.props.editDisabled ? this.handleShowMessage : this.handleOnFocus}
           type={choice.input_type}
           className={choice.class_name}
           style={this.getStyleOfInputElement(value, choice)}
@@ -554,7 +570,8 @@ class DocumentChoicesTemplate extends Component {
           onChange={this.handleInputChange}
           type={choice.input_type}
           onBlur={this.handleOnBlur}
-          onFocus={this.handleOnFocus}
+          // If editDisabled (i.e. standard_document), show message that cannot be edited
+          onFocus={this.props.editDisabled ? this.handleShowMessage : this.handleOnFocus}
           className={choice.class_name}
           style={this.getStyleOfInputElement(value, choice)}
         />
@@ -598,6 +615,8 @@ class DocumentChoicesTemplate extends Component {
   }
 
   render() {
+    // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before second return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
+    // console.log('in document_choices_template, this.props.editDis: ', this.props.editDis);
     // IMPORTANT: In template elements, got rid of params in choices: { 0: { params: {}}};
     // it is just choices: { attributes }
     // destructure local props set by redux forms Field compoenent
@@ -630,7 +649,6 @@ class DocumentChoicesTemplate extends Component {
         );
       }
 
-      // console.log('in document_choices_template, render, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields, before second return: ', this.props.page, this.props.elementId, this.props.fromWhere, name, this.props.elementName, this.props.page, this.props.elementId, this.props.formFields);
       return (
         <div
           key={name}

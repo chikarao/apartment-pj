@@ -18,7 +18,7 @@ import Documents from '../constants/documents';
 import AppLanguages from '../constants/app_languages';
 import GlobalConstants from '../constants/global_constants';
 
-import DocumentChoices from './document_choices';
+// import DocumentChoices from './document_choices';
 import DocumentChoicesTemplate from './document_choices_template';
 import DefaultMainInsertFieldsObject from '../constants/default_main_insert_fields';
 import GetFieldValueChoiceModal from '../modals/get_field_value_choice_modal';
@@ -329,16 +329,16 @@ class CreateEditDocument extends Component {
     this.props.setLastMountedocumentId(this.props.agreementId);
     // Set logic for admin rights for standard_documents here
     if (this.props.agreement.standard_document) this.setState({ disableStandardDocumentEdit: true });
-    if (this.props.agreement.standard_document) {
-        this.props.showLoading(() => {
-        this.props.setMessageToUserObject({ message: AppLanguages.noRightsToEdit[this.props.appLanguageCode],
-        // positive: 'Ok',
-        // negative: 'No',
-        timer: 3000,
-        iconClassName: 'fas fa-exclamation-triangle'
-        });
-      });
-    } //  if (this.props.agreement.standard_document)
+    // if (this.props.agreement.standard_document) {
+    //     this.props.showLoading(() => {
+    //     this.props.setMessageToUserObject({ message: AppLanguages.noRightsToEdit[this.props.appLanguageCode],
+    //     // positive: 'Ok',
+    //     // negative: 'No',
+    //     timer: 3000,
+    //     iconClassName: 'fas fa-exclamation-triangle'
+    //     });
+    //   });
+    // } //  if (this.props.agreement.standard_document)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -2273,7 +2273,8 @@ longActionPress(props) {
                       selectedChoiceIdArray: [],
                       innerDivPercentageOfWrapper,
                       inputElement: true,
-                      documentForBookingOrFlat
+                      documentForBookingOrFlat,
+                      editDisabled: this.props.agreement.standard_document && this.state.disableStandardDocumentEdit
                     }}
                   // props={{ model: }}
                   style={{}}
@@ -2567,7 +2568,8 @@ longActionPress(props) {
                       editFieldsOn: this.state.editFieldsOn,
                       // label: modifiedElement.name,
                       label,
-                      agreement: this.props.agreement
+                      agreement: this.props.agreement,
+                      editDisabled: this.props.agreement.standard_document && this.state.disableStandardDocumentEdit
                     }
                     :
                     {}}
@@ -2655,7 +2657,8 @@ longActionPress(props) {
                       selectedChoiceIdArray: this.state.selectedChoiceIdArray,
                       // label: modifiedElement.name,
                       label,
-                      agreement: this.props.agreement
+                      agreement: this.props.agreement,
+                      editDisabled: this.props.agreement.standard_document && this.state.disableStandardDocumentEdit
                       // dragChoice: () => this.dragChoice()
                     }
                     :
@@ -2720,7 +2723,8 @@ longActionPress(props) {
                   selectedChoiceIdArray: this.state.selectedChoiceIdArray,
                   documentKey: this.props.documentKey,
                   editTemplate,
-                  agreement: this.props.agreement
+                  agreement: this.props.agreement,
+                  editDisabled: this.props.agreement.standard_document && this.state.disableStandardDocumentEdit
                 } : {}}
                 // props={fieldComponent == DocumentChoices ? { page } : {}}
                 type={modifiedElement.input_type}
@@ -6274,7 +6278,7 @@ longActionPress(props) {
     const enableRedo = (this.state.templateEditHistoryArray.length > 0 && this.state.historyIndex !== this.state.templateEditHistoryArray.length - 1) && !this.state.createNewTemplateElementOn;
     // if this.props.onlyFontAttributeObject is not null, use this.props.onlyFontAttributeObject
     let onlyFontAttributeObject = this.state.selectedElementFontObject ? this.state.selectedElementFontObject : this.state.newFontObject;
-    const disableEditFields = templateElementsLength < 1 || this.state.editFieldsOn;
+    const editDisabledFields = templateElementsLength < 1 || this.state.editFieldsOn;
     const disableTranslation = this.state.translationModeOn;
 
     return (
@@ -6313,7 +6317,7 @@ longActionPress(props) {
           name="Edit document fields,top"
           value="editFields"
         >
-          <i value="editFields" onMouseOver={this.handleMouseOverActionButtons} name="Edit document fields,top" style={{ fontSize: '17px', color: disableEditFields ? 'gray' : 'blue' }} className="far fa-edit"></i>
+          <i value="editFields" onMouseOver={this.handleMouseOverActionButtons} name="Edit document fields,top" style={{ fontSize: '17px', color: editDisabledFields ? 'gray' : 'blue' }} className="far fa-edit"></i>
         </div>
         <div
           className="create-edit-document-template-edit-action-box-elements"
