@@ -216,7 +216,8 @@ import {
   SET_CACHED_INITIAL_VALUES_OBJECT,
   SET_LAST_MOUNTED_DOCUMENT_ID,
   FETCH_DOCUMENT_FIELDS_FOR_PAGE,
-  CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES
+  CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES,
+  SET_MESSAGE_TO_USER_OBJECT,
 } from './types';
 
 // const ROOT_URL = 'http://localhost:3090';
@@ -636,7 +637,7 @@ export function setLastMountedocumentId(object) {
 }
 
 export function showLoading(callback) {
-  // console.log('in actions index, showLoading:', callback);
+  console.log('in actions index, showLoading:', callback);
   // if (callback) callback();
   if (typeof callback === 'function') callback();
   //flip state boolean
@@ -3638,6 +3639,16 @@ export function setProgressStatus(statusObject) {
     // SET_USER_STATUS in conversation reducer
     type: SET_PROGRESS_STATUS,
     payload: statusObject
+  };
+}
+
+export function setMessageToUserObject(messageToUserObject) {
+  // data is an object with connected and timedOut
+  console.log('in actions index, setMessageToUserObject, messageToUserObject:', messageToUserObject);
+  return {
+    // SET_USER_STATUS in conversation reducer
+    type: SET_MESSAGE_TO_USER_OBJECT,
+    payload: messageToUserObject
   };
 }
 

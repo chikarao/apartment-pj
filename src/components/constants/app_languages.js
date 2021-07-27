@@ -480,6 +480,7 @@ const appLanguages =
     showStandardDocuments: { en: 'Standard Documents', jp: 'スタンダード' },
     selectStandardDocuments: { en: 'Select from Standard Documents', jp: 'スタンダードから選ぶ' },
     addDocument: { en: 'Add Document', jp: 'ドキュメントを追加' },
+    noRightsToEdit: { en: 'You do not have rights to edit this document.', jp: '編集する権限がありません。' },
     // editBasicInfoHeading: { en: 'Basic Info & Amenities', jp: '基本情報＆設備' },
     // editBuildingInfoHeading: { en: 'Building Info', jp: '基本情報＆設備' },
     // editFacilitiesInfoHeading: { en: 'Facilities Info', jp: 'ファシリティー情報' },

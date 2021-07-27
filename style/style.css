@@ -4973,6 +4973,63 @@ form {
   margin: 7px;
 }
 
+.message-to-user-box-container{
+  width: 300px;
+  min-height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  padding: 20px 10px 5px 10px;
+}
+
+.message-to-user-box-message-text {
+  width: 90%;
+  height: 25%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5%;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.message-to-user-box-button-box {
+  width: 90%;
+  height: 25%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.message-to-user-box-button-positive, .message-to-user-box-button-negative {
+  border: solid 2px blue;
+  padding: 5px;
+  width: 70px;
+  background-color: blue;
+  color: white;
+  font-weight: bold;
+}
+
+.message-to-user-box-button-negative {
+  border: solid 2px red;
+  background-color: red;
+  /* color: white; */
+}
+
+.message-to-user-box-button-positive:hover, .message-to-user-box-button-negative:hover {
+  /* background-color: gray; */
+  color: gray;
+}
+
 .modal-main {
   position:fixed;
   background: white;

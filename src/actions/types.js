@@ -210,3 +210,4 @@ export const SET_EDIT_ACTION_BOX_CALL_FOR_ACTION_OBJECT = 'set_edit_action_box_c
 export const SET_CACHED_INITIAL_VALUES_OBJECT = 'set_cached_initial_values_object';
 export const SET_LAST_MOUNTED_DOCUMENT_ID = 'set_last_mounted_document_id';
 export const CACHE_DOCUMENT_FIELDS_FOR_REST_OF_PAGES = 'cache_document_fields_for_rest_of_pages';
+export const SET_MESSAGE_TO_USER_OBJECT = 'set_message_to_user_object';

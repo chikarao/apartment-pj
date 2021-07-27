@@ -38,7 +38,8 @@ import {
   DELETE_STAFF,
   SET_GET_ONLINE_OFFLINE,
   SET_USER_STATUS,
-  GET_APP_BASE_OBJECTS
+  GET_APP_BASE_OBJECTS,
+  SET_MESSAGE_TO_USER_OBJECT
  } from '../actions/types';
 
 export default function (state = {
@@ -51,7 +52,8 @@ export default function (state = {
   existingUser: false,
   customer: {},
   bankAccounts: [],
-  appLanguages: {}
+  appLanguages: {},
+  messageToUserObject: null,
 }, action) {
   switch (action.type) {
     case AUTH_USER:
@@ -184,6 +186,10 @@ export default function (state = {
 
     case GET_APP_BASE_OBJECTS:
       return { ...state, appLanguages: JSON.parse(action.payload.app_languages) };
+
+    case SET_MESSAGE_TO_USER_OBJECT:
+    // console.log('in auth reducer, state.messageToUserObject, action.payload: ', state.messageToUserObject, action.payload);
+      return { ...state, messageToUserObject: action.payload };
 
     default:
       return state;

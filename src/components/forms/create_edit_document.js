@@ -116,7 +116,8 @@ class CreateEditDocument extends Component {
       showCustomInputCreateMode: false,
       customFieldNameInputValue: '',
       documentPagesObject: { documentPagesArray: [], prevPagesInViewport: [], pagesInViewport: [1], parentOfAlldocumentPages: null, documentPagesMapAgainstParent: {} },
-      moveIncrement: 0
+      moveIncrement: 0,
+      disableStandardDocumentEdit: false,
       // editActionBoxCallForActionObject: { top: 0, left: 0, message: '', value: null },
       // importFieldsFromOtherDocumentsObject: [],
     };
@@ -326,6 +327,18 @@ class CreateEditDocument extends Component {
       // track if is running componentDidUpdateuser has changed agreements or
       // or another reason
     this.props.setLastMountedocumentId(this.props.agreementId);
+    // Set logic for admin rights for standard_documents here
+    if (this.props.agreement.standard_document) this.setState({ disableStandardDocumentEdit: true });
+    if (this.props.agreement.standard_document) {
+        this.props.showLoading(() => {
+        this.props.setMessageToUserObject({ message: AppLanguages.noRightsToEdit[this.props.appLanguageCode],
+        // positive: 'Ok',
+        // negative: 'No',
+        timer: 3000,
+        iconClassName: 'fas fa-exclamation-triangle'
+        });
+      });
+    } //  if (this.props.agreement.standard_document)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -6962,8 +6975,8 @@ longActionPress(props) {
               // style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.pdf)` }}
               style={{ backgroundImage: `url(http://res.cloudinary.com/chikarao/image/upload/w_792,h_1122,q_60,pg_${page}/${constantAssetsFolder}${image}.jpg)` }}
             >
-              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !this.props.agreement.standard_document ? this.renderTemplateEditFieldBox() : ''}
-              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !this.props.agreement.standard_document ? this.renderTemplateElementEditAction() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !(this.props.agreement.standard_document && this.state.disableStandardDocumentEdit) ? this.renderTemplateEditFieldBox() : ''}
+              {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && !(this.props.agreement.standard_document && this.state.disableStandardDocumentEdit) ? this.renderTemplateElementEditAction() : ''}
               {this.props.showTemplate && this.state.actionExplanationObject && !this.props.noEditOrButtons ? this.renderExplanationBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons ? this.renderFontControlBox() : ''}
               {this.props.showTemplate && !this.state.showDocumentPdf && !this.props.noEditOrButtons && this.state.getFieldValues ? this.renderGetFieldValuesBox() : ''}
@@ -7082,7 +7095,7 @@ longActionPress(props) {
     if (showDocumentButtons) {
       return (
           <div className="document-floating-button-box">
-            {!this.props.agreement.standard_document
+            {!(this.props.agreement.standard_document && this.state.disableStandardDocumentEdit)
               ?
               <button
                 value={this.props.agreementId}
@@ -7114,7 +7127,7 @@ longActionPress(props) {
               </button>
             }
 
-            {this.props.agreement.standard_document
+            {this.state.disableStandardDocumentEdit
               ?
               <button
                 // onClick={this.handleViewPDFClickTemplate}
@@ -7128,7 +7141,7 @@ longActionPress(props) {
               null
             }
 
-            {!this.props.agreement.standard_document
+            {!(this.props.agreement.standard_document && this.state.disableStandardDocumentEdit)
               ?
               <div className="update-create-pdf-button-box">
                 {this.switchCreatePDFButton(saveButtonActive, agreementHasPdf, true)}

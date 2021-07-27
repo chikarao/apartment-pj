@@ -7,6 +7,7 @@ import * as actions from '../../actions';
 let showHideClassName;
 // Use global variable progressBarWidthPx to avoid setting state in componentDidUpdate
 let progressBarWidthPx = 0;
+let messageTimer = null;
 
 class Loading extends Component {
   // constructor(props) {
@@ -17,7 +18,9 @@ class Loading extends Component {
   // }
 
   // componentDidMount() {
+  //   console.log('in loading modal, componentDidMount, this.props.messageToUserObject:', this.props.messageToUserObject);
   // }
+
   componentDidUpdate(prevProps) {
     if (!prevProps.progressStatus && this.props.progressStatus) {
       const bar = document.getElementById('progress-bar-bar');
@@ -28,6 +31,16 @@ class Loading extends Component {
       //   console.log('in loading modal, componentDidUpdate, this.state.progressBarWidthPx, this.props.progressStatus:', this.state.progressBarWidthPx, this.props.progressStatus);
       // });
     }
+
+    if (!prevProps.messageToUserObject && this.props.messageToUserObject && this.props.messageToUserObject.timer) {
+      console.log('in loading modal, componentDidUpdate, this.props.messageToUserObject:', this.props.messageToUserObject);
+      messageTimer = setTimeout(() => this.turnOffMessage(), this.props.messageToUserObject.timer);
+    }
+  }
+
+  turnOffMessage() {
+    console.log('in loading modal, turnOffMessage, this.props.messageToUserObject:', this.props.messageToUserObject);
+    this.props.showLoading(() => this.props.setMessageToUserObject(null));
   }
 
   renderProgressEach() {
@@ -35,6 +48,12 @@ class Loading extends Component {
     return (
       <div style={{ height: '100%', backgroundColor: 'blue', width: this.props.progressStatus.progress_percentage ? progressBarWidthPx * (this.props.progressStatus.progress_percentage / 100) : 0 }}>
       </div>
+    );
+  }
+
+  renderMessageToUser() {
+    return (
+      <div>{this.props.messageToUserObject.message}</div>
     );
   }
 
@@ -61,7 +80,37 @@ class Loading extends Component {
       );
     }
 
-    console.log('in loading modal, renderLoading, this.props.grayOutBackgroundProp, this.props.show:', this.props.grayOutBackgroundProp, this.props.show);
+    if (this.props.messageToUserObject) {
+      console.log('in loading modal, renderLoading, this.props.messageToUserObject:', this.props.messageToUserObject);
+
+      return (
+        <div className={showHideClassName}>
+            <div className="message-to-user-box-container">
+              <div className="message-to-user-box-message-text">
+                {this.renderMessageToUser()}
+              </div>
+              <div className="message-to-user-box-button-box">
+                {
+                  this.props.messageToUserObject.positive
+                  ?
+                  <div className="btn message-to-user-box-button-positive">{this.props.messageToUserObject.positive}</div>
+                  :
+                  null
+                }
+                {
+                  this.props.messageToUserObject.negative
+                  ?
+                  <div className="btn message-to-user-box-button-negative">{this.props.messageToUserObject.negative}</div>
+                  :
+                  null
+                }
+              </div>
+            </div>
+        </div>
+      );
+    }
+
+    // console.log('in loading modal, renderLoading, this.props.grayOutBackgroundProp, this.props.show:', this.props.grayOutBackgroundProp, this.props.show);
     if (this.props.grayOutBackgroundProp) {
       // showHideClassName = this.props.show ? 'background-gray-transparent display-block' : 'background-gray-transparent display-none'
       showHideClassName = 'background-gray-transparent display-block'
@@ -93,7 +142,7 @@ class Loading extends Component {
 
 // !!!!!! initialValues required for redux form to prepopulate fields
 function mapStateToProps(state) {
-  // console.log('in Loading, mapStateToProps, state: ', state);
+  console.log('in Loading, mapStateToProps, state: ', state);
   return {
     // auth: state.auth,
     // successMessage: state.auth.success,
@@ -101,7 +150,8 @@ function mapStateToProps(state) {
     // userProfile: state.auth.userProfile
     // initialValues: state.auth.userProfile,
     progressStatus: state.documents.progressStatus,
-    grayOutBackgroundProp: state.auth.grayOutBackgroundProp
+    grayOutBackgroundProp: state.auth.grayOutBackgroundProp,
+    messageToUserObject: state.auth.messageToUserObject
   };
 }
 
